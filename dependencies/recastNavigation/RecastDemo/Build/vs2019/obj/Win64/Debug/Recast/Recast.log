@@ -1,0 +1,13 @@
+﻿  Recast.cpp
+  RecastAlloc.cpp
+  RecastArea.cpp
+  RecastAssert.cpp
+  RecastContour.cpp
+  RecastFilter.cpp
+  RecastLayers.cpp
+  RecastMesh.cpp
+  RecastMeshDetail.cpp
+  RecastRasterization.cpp
+  RecastRegion.cpp
+  Generating Code...
+  Recast.vcxproj -> D:\+++Work\recastnavigation-master\RecastDemo\Build\vs2019\lib\Debug\Recast.lib

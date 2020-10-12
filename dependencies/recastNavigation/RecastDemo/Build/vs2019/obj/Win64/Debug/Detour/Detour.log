@@ -1,0 +1,9 @@
+﻿  DetourAlloc.cpp
+  DetourAssert.cpp
+  DetourCommon.cpp
+  DetourNavMesh.cpp
+  DetourNavMeshBuilder.cpp
+  DetourNavMeshQuery.cpp
+  DetourNode.cpp
+  Generating Code...
+  Detour.vcxproj -> D:\+++Work\recastnavigation-master\RecastDemo\Build\vs2019\lib\Debug\Detour.lib
