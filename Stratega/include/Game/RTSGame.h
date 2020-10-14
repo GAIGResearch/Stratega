@@ -15,7 +15,7 @@ namespace SGA
 		RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
 
 		void update(double deltaTime) override;
-		bool isGameOver() override { return Game::isGameOver() || gameState->isGameOver; };
+		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; };
 
 		const RTSForwardModel& getForwardModel() const
 		{
