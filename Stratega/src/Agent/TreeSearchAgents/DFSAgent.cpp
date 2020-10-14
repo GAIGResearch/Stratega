@@ -48,7 +48,7 @@ namespace SGA
 	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
-		if (depth == maxDepth)
+		if (depth == maxDepth || gameState.isGameOver)
 		{
 			return _stateHeuristic.evaluateGameState(forwardModel, gameState);
 		}
@@ -79,7 +79,7 @@ namespace SGA
 		const int playerID = gameState.currentPlayer;
 		forwardModel.advanceGameState(gameState, action);
 		
-		while (gameState.currentPlayer != playerID)
+		while (gameState.currentPlayer != playerID && !gameState.isGameOver)
 		{
 			ActionSpace<Vector2i> endTurnActionSpace;
 			forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
