@@ -12,6 +12,8 @@ namespace SGA
 				remainingForwardModelCalls = forwardModelCalls;
 
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
 				auto actionSpace = forwardModel.getActions(gameState);
 				if (actionSpace->count() == 1)
 				{

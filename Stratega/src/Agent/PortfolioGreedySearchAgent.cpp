@@ -10,6 +10,8 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
 				auto actionSpace = forwardModel.getActions(gameState);
 
 				if (actionSpace->count() == 1)

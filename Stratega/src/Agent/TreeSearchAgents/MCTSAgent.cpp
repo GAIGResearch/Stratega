@@ -9,8 +9,10 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{
                 TBSGameState gameState = gameCommunicator.getGameState();
-                auto actionSpace = forwardModel.getActions(gameState);
+                if (gameState.isGameOver)
+                    break;
 				
+                auto actionSpace = forwardModel.getActions(gameState);
                 // Initialization
 				/*
                 if (rootNode == nullptr)
@@ -62,6 +64,7 @@ namespace SGA
                         previousActionIndex = -1;
                     }
                 }
+
 			}
 		}
 	}

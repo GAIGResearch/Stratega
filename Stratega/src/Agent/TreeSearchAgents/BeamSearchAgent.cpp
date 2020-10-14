@@ -10,6 +10,9 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{				
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
+				
 				TreeNode rootNode = TreeNode(forwardModel, gameState);
 
 				if (rootNode.actionSpace->count() == 1)

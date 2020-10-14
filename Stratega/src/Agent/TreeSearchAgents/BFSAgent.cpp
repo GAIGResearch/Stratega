@@ -9,6 +9,8 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{				
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
 				const auto actionSpace = forwardModel.getActions(gameState);
 
 				/*
