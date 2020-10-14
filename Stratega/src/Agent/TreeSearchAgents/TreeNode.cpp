@@ -31,7 +31,7 @@ namespace SGA
 		// roll the state using a the next action that hasn't been expanded yet
 		TBSGameState gsCopy = TBSGameState(gameState);
 		forwardModel.advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
-		while (gsCopy.currentPlayer != gameState.currentPlayer)
+		while (gsCopy.currentPlayer != gameState.currentPlayer && !gameState.isGameOver)
 		{
 			ActionSpace<Vector2i> endTurnActionSpace;
 			forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
