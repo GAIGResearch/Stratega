@@ -27,7 +27,7 @@ namespace SGA {
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
-        while (gameState.currentPlayer != params.PLAYER_ID)
+        while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
         {
             ActionSpace<Vector2i> endTurnActionSpace;
             forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
