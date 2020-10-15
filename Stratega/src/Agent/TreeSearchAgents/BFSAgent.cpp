@@ -30,6 +30,7 @@ namespace SGA
 				}
 				else // else we run a full search
 				{
+					const int playerID = gameState.currentPlayer;
 					if (continuePreviousSearch && previousActionIndex != -1 && gameState.currentGameTurn == playerTurn)
 					{
 						// in case of deterministic games we know which move has been done by us
@@ -57,7 +58,7 @@ namespace SGA
 
 					for (TreeNode* node : openNodes)
 					{
-						double value = heuristic.evaluateGameState(forwardModel, node->gameState);
+						double value = heuristic.evaluateGameState(forwardModel, node->gameState, playerID);
 						if (value > bestHeuristicValue)
 						{
 							bestHeuristicValue = value;

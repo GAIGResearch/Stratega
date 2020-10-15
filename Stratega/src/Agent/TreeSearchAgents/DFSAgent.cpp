@@ -24,12 +24,13 @@ namespace SGA
 
 					double bestHeuristicValue = -std::numeric_limits<double>::max();
 					int bestActionIndex = 0;
+					const int playerID = gameState.currentPlayer;
 
 					for (size_t i = 0; i < actionSpace->count(); i++)
 					{
 						TBSGameState gsCopy(gameState);
 						forwardModel.advanceGameState(gsCopy, actionSpace->getAction(i));
-						const double value = evaluateRollout(forwardModel, gameState, 1);
+						const double value = evaluateRollout(forwardModel, gameState, 1, playerID);
 						if (value > bestHeuristicValue)
 						{
 							bestHeuristicValue = value;
@@ -47,12 +48,12 @@ namespace SGA
 		}		
 	}
 
-	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth)
+	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
 		if (depth == maxDepth || gameState.isGameOver)
 		{
-			return _stateHeuristic.evaluateGameState(forwardModel, gameState);
+			return _stateHeuristic.evaluateGameState(forwardModel, gameState, playerID);
 		}
 		else
 		{
@@ -62,7 +63,7 @@ namespace SGA
 				TBSGameState gsCopy(gameState);
 				applyActionToGameState(forwardModel, gameState, action);
 
-				double value = evaluateRollout(forwardModel, gsCopy, depth + 1);
+				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
 				if (value > bestValue)
 				{
 					bestValue = value;

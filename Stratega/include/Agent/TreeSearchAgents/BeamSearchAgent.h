@@ -16,7 +16,7 @@ namespace SGA
 	public:
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 		Action<Vector2i> beamSearch(TBSForwardModel& forwardModel, TreeNode& root);
-		std::vector<TreeNode*> Simulate(TBSForwardModel& forwardModel, TreeNode& node);
+		std::vector<TreeNode*> Simulate(TBSForwardModel& forwardModel, TreeNode& node, const int playerID);
 		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 
 	};

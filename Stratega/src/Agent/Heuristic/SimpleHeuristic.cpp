@@ -12,7 +12,7 @@ namespace SGA {
 	{
 	}
 
-	double SimpleHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState)
+	double SimpleHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID)
 	{
 		std::vector<double> scores = std::vector<double>(numberOfPlayers);
 		double myScore = 0.0;

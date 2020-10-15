@@ -31,7 +31,7 @@ namespace SGA
 	{
 		int me = root.gameState.currentPlayer;
 
-		std::vector<TreeNode*> bestSimulations = Simulate(forwardModel, root);
+		std::vector<TreeNode*> bestSimulations = Simulate(forwardModel, root, me);
 
 		for (int i = 1; i < playerDepth; i++)
 		{
@@ -39,7 +39,7 @@ namespace SGA
 			
 			for (TreeNode* child : bestSimulations)
 			{
-				std::vector<TreeNode*> childSims = Simulate(forwardModel, *child);
+				std::vector<TreeNode*> childSims = Simulate(forwardModel, *child, me);
 				for (TreeNode* childSim : childSims)
 				{
 					newBestSimulations.push_back(childSim);
@@ -69,7 +69,7 @@ namespace SGA
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::Simulate(TBSForwardModel& forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::Simulate(TBSForwardModel& forwardModel, TreeNode& node, const int playerID)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		// fully expand the whole node
@@ -79,7 +79,7 @@ namespace SGA
 		for (size_t i = 0; i < node.children.size(); i++)
 		{
 			auto child = node.children.at(i).get();
-			child->value = heuristic.evaluateGameState(forwardModel, child->gameState);
+			child->value = heuristic.evaluateGameState(forwardModel, child->gameState, playerID);
 			bestSimulations.push_back(child);
 		}
 

@@ -4,6 +4,7 @@ namespace SGA {
 
     PortfolioRHEAGenome::PortfolioRHEAGenome(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params)
     {
+        const int playerID = gameState.currentPlayer;
         auto actionSpace = forwardModel.getActions(gameState);
 
         size_t length = 0;
@@ -21,7 +22,7 @@ namespace SGA {
         }
 
         // rate newly created individual
-        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState);    	
+        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);    	
     }
 
     PortfolioRHEAGenome::PortfolioRHEAGenome(std::vector<Action<Vector2i>>& actions, std::vector<int>& portfolioIndices, double value) :
@@ -54,6 +55,7 @@ namespace SGA {
     void PortfolioRHEAGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params, std::mt19937& randomGenerator)
     {
         auto actionSpace = forwardModel.getActions(gameState);
+        const int playerID = gameState.currentPlayer;
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
@@ -101,13 +103,14 @@ namespace SGA {
         }
 
         // rate mutated individual
-        this->value = params.HEURISTIC.evaluateGameState(forwardModel, gameState);
+        this->value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 
     PortfolioRHEAGenome PortfolioRHEAGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params, std::mt19937& randomGenerator, PortfolioRHEAGenome& parent1, PortfolioRHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
         auto actionSpace = forwardModel.getActions(gameState);
+        const int playerID = gameState.currentPlayer;
 
         // initialize variables for the new genome to be created
         std::vector<Action<Vector2i>> actions;
@@ -165,12 +168,14 @@ namespace SGA {
             actIdx++;
         }
     	
-        const double value = params.HEURISTIC.evaluateGameState(forwardModel, gameState);
+        const double value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
         return PortfolioRHEAGenome(actions, portfolioIndices, value);
     }	
 
     void PortfolioRHEAGenome::shift(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params)
     {
+        const int playerID = gameState.currentPlayer;
+
     	// reuse previous solution
         std::rotate(portfolioIndices.begin(), portfolioIndices.begin() + 1, portfolioIndices.end());
         std::rotate(actions.begin(), actions.begin() + 1, actions.end());
@@ -196,14 +201,14 @@ namespace SGA {
     	}
 
     	// re-evaluate the shifted individual
-        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState);
+        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 
     void PortfolioRHEAGenome::toString() const
     {
         std::cout << "PortfolioRHEAGenome" << "\n";
         std::cout << "\tactions=" << "\n";
-        for (Action action : actions)
+        for (Action<Vector2i> action : actions)
         {
             std::cout << "\t\t" << action.getPlayerID() << ";" << action.getSourceUnitID() << ";" << action.getTargetUnitID() << "\n";
         }

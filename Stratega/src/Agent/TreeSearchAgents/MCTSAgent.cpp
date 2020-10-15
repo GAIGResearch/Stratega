@@ -47,7 +47,7 @@ namespace SGA
                     }
                 	
                     MCTSParams params = MCTSParams();
-                    params.playerID = gameCommunicator.getPlayerID();
+                    params.playerID = gameState.currentPlayer;
                     //params.printDetails();
                 	
                     rootNode->searchMCTS(forwardModel, params, gameCommunicator.getRNGEngine());

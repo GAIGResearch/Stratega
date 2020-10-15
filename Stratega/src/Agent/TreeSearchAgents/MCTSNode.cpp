@@ -205,10 +205,10 @@ namespace SGA
 				applyActionToGameState(forwardModel, gsCopy, actions->getAction(randomDistribution(randomGenerator)), params);
 				thisDepth++;
 			}
-			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy), 0, 1);
+			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.playerID), 0, 1);
 		}
 
-		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState), 0, 1);
+		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.playerID), 0, 1);
 	}
 
 	bool MCTSNode::rolloutFinished(TBSGameState& rollerState, int depth, MCTSParams& params)

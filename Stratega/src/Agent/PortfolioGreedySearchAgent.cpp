@@ -103,6 +103,7 @@ namespace SGA
 	// returns the heuristic value of the simulated game state
 	double PortfolioGreedySearchAgent::Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BasePortfolio*>& playerPortfolios, std::map<int, BasePortfolio*>& opponentPortfolios)
 	{
+		const int playerID = gameState.currentPlayer;
 		auto actionSpace = forwardModel.getActions(gameState);
 		int simulatedTurns = 0;
 		while (simulatedTurns < params_.NR_OF_TURNS_PLANNED && !gameState.isGameOver && actionSpace->count()!=0)
@@ -118,7 +119,7 @@ namespace SGA
 			}
 		}
 		
-		return params_.HEURISTIC.evaluateGameState(forwardModel, gameState);
+		return params_.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
 	}
 
 	// returns the action defined by the player's portfolio
