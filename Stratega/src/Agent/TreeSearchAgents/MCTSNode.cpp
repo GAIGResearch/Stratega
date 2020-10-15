@@ -226,9 +226,19 @@ namespace SGA
 		forwardModel.advanceGameState(gameState, action);
 		while (gameState.currentPlayer != params.playerID && !gameState.isGameOver)
 		{
-			ActionSpace<Vector2i> endTurnActionSpace;
-			forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-			forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
+			{
+				params.REMAINING_FM_CALLS--;
+				auto actionSpace = forwardModel.getActions(gameState);
+				auto opAction = params.opponentModel->getAction(gameState, actionSpace);
+				forwardModel.advanceGameState(gameState, opAction);
+			}
+			else // skip opponent turn
+			{
+				ActionSpace<Vector2i> endTurnActionSpace;
+				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			}
 		}
 	}
 

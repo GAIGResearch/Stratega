@@ -36,6 +36,7 @@ namespace SGA {
 		std::vector<std::unique_ptr<BasePortfolio>> portfolios = std::vector<std::unique_ptr<BasePortfolio>>();	// the portfolios used to sample actions of a genome
 		LinearSumHeuristic HEURISTIC{ LinearSumHeuristic() };	// the heuristic used to evaluate a genome
 		double EPSILON = 1e-2;									// the amount of noise for randomly modifying an individuals value
+		std::unique_ptr<BasePortfolio> opponentModel = std::make_unique<AttackClosest>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
 		PortfolioRHEAParams() {
 			std::unique_ptr<BasePortfolio> attackClose = std::make_unique<AttackClosest>();
