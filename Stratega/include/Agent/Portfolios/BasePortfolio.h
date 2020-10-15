@@ -13,5 +13,12 @@ namespace SGA {
 		
 		virtual Action<Vector2i> getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const = 0;
 		virtual Action<Vector2i> getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const = 0;
+		virtual std::string toString() const = 0;
+		
+		friend std::ostream& operator<<(std::ostream& os, const BasePortfolio& dt)
+		{
+			os << dt.toString();
+			return os;
+		};
 	};
 }
