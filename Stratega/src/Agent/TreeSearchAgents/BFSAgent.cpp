@@ -96,7 +96,7 @@ namespace SGA
 			while (child == nullptr)
 			{
 				TreeNode* currentNode = openNodes.front();
-				child = currentNode->expand(forwardModel);
+				child = currentNode->expand(forwardModel, opponentModel.get(), i);
 				if (child == nullptr)
 				{
 					openNodes.pop_front();	//node cannot be further expanded

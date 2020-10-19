@@ -73,7 +73,8 @@ namespace SGA
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		// fully expand the whole node
-		while (node.expand(forwardModel) != nullptr) {};
+		int forwardModelCalls = 0;
+		while (node.expand(forwardModel, opponentModel.get(), forwardModelCalls) != nullptr) {};
 		
 		// rate each child according to scoring function
 		for (size_t i = 0; i < node.children.size(); i++)

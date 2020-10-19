@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 
+
 namespace SGA
 {
 
@@ -20,8 +21,10 @@ namespace SGA
 	/// Expanding the node with the next children. May fail in case the node is fully expanded.
 	/// </summary>
 	/// <param name="forwardModel"></param>
+	/// <param name="opponentModel"></param>
+	/// <param name="forwardModelCalls"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel)
+	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, BasePortfolio* opponentModel, int& forwardModelCalls)
 	{
 		//std::cout << "expand" << std::endl;
 		
@@ -33,9 +36,19 @@ namespace SGA
 		forwardModel.advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
 		while (gsCopy.currentPlayer != gameState.currentPlayer && !gameState.isGameOver)
 		{
-			ActionSpace<Vector2i> endTurnActionSpace;
-			forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-			forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
+			{
+				auto actionSpace = forwardModel.getActions(gameState);
+				auto opAction = opponentModel->getAction(gameState, actionSpace);
+				forwardModel.advanceGameState(gameState, opAction);
+			}
+			else // skip opponent turn
+			{
+				ActionSpace<Vector2i> endTurnActionSpace;
+				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			}
+			forwardModelCalls++;
 		}
 		
 		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, children.size())));
