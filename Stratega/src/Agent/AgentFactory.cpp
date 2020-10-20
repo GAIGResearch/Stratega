@@ -11,6 +11,7 @@
 #include <Agent/PortfolioRHEA/PortfolioRHEAAgent.h>
 #include <Agent/PortfolioGreedySearchAgent.h>
 #include <Agent/MetaPortfolioOptimizer/MetaPOAgent.h>
+#include <Agent/MOPortfolioRHEA/MOPortfolioRHEAAgent.h>
 
 namespace SGA
 {
@@ -53,6 +54,7 @@ namespace SGA
 		factory.registerAgent<PortfolioRHEAAgent>("PortfolioRHEAAgent");
 		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
 		factory.registerAgent<MetaPOAgent>("MetaPOAgent");
+		factory.registerAgent<MOPortfolioRHEAAgent>("MOPRHEAAgent");
 		
 		return factory;
 	}
