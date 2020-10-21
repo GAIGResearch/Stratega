@@ -39,11 +39,10 @@ namespace SGA {
         const int startTurn = gameState.currentGameTurn;
         int lastKnownTurn = gameState.currentGameTurn;
         const int playerID = gameState.currentPlayer;
-        const int turnsEnded = 0;
     	
         std::map<int, BasePortfolio*> tmpMap(unitScript);
     	
-    	while (!gameState.isGameOver || gameState.currentGameTurn - startTurn < params.HORIZON)
+    	while (!gameState.isGameOver && gameState.currentGameTurn - startTurn < params.HORIZON)
     	{
             auto actionSpace = forwardModel.getActions(gameState);
             params.REMAINING_FM_CALLS--;
