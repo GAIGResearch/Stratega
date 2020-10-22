@@ -209,7 +209,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 			{
 				selectedUnits.clear();
 				auto* unit = gameStateCopy.getUnit(worldPos);
-				if (unit != nullptr)
+				if (unit != nullptr&& unit->playerID==getPlayerID())
 					selectedUnits.emplace(unit->unitID);
 			}
 		}
@@ -227,6 +227,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 				sf::Vector2f screenPos= toISO(unit.position.x, unit.position.y);
 				if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 				{
+					if (unit.playerID == getPlayerID())
 					selectedUnits.emplace(unit.unitID);
 				}
 			}
@@ -403,6 +404,7 @@ void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	createWindowUnits();
 	createWindowNavMesh();
 }
+
 void RTSGameStateRender::createWindowInfo()
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
@@ -435,7 +437,6 @@ void RTSGameStateRender::createWindowInfo()
 	
 	ImGui::End();
 }
-
 
 void RTSGameStateRender::createWindowUnits()
 {
@@ -511,4 +512,3 @@ void RTSGameStateRender::createWindowNavMesh()
 
 	ImGui::End();
 }
-
