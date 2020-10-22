@@ -6,10 +6,14 @@ cmake_minimum_required (VERSION 3.8)
 # Add library
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "*.cpp" "*.h")
 
-add_library(Stratega STATIC ${sources})
+add_library(Stratega STATIC ${sources} "include/Representation/Path.h" "include/Representation/Navigation.h" "include/Representation/BuildContext.h" "src/Representation/BuildContext.cpp")
 
 target_include_directories(Stratega PUBLIC include)
 target_link_libraries(Stratega PUBLIC yaml-cpp)
+target_link_libraries(Stratega PUBLIC Recast)
+target_link_libraries(Stratega PUBLIC Detour)
+target_link_libraries(Stratega PUBLIC DebugUtils)
+
 
 # ToDo disable yaml-cpp warnings so we can enable this
 #target_compile_options(Stratega PRIVATE

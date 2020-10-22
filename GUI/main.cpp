@@ -48,12 +48,23 @@ int main()
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
-			game->addCommunicator(std::move(comm));
+			game->addCommunicator(std::move(comm));			
 		}
 		
 		playerID++;
 	}
 	
+	//Build Navmesh
+	if (gameConfig.gameType == "RTS")
+	{
+		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
+		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
+		SGA::RTSGameState& state = *gameRTS.gameState;
+		fm.buildNavMesh(state);
+	}
+	
+
+
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();

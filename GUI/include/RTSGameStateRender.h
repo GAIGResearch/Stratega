@@ -5,6 +5,7 @@
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
+#include <RTSUnitLayer.h>
 
 class RTSGameStateRender : public GameStateRenderer<SGA::RTSGameState>
 {
@@ -14,6 +15,11 @@ public:
 
 	// GameCommunicator functions
 	void onGameStateAdvanced() override;
+
+	bool isSelected(int unitID)
+	{
+		return selectedUnits.find(unitID) != selectedUnits.end();
+	}
 
 private:
 	void init() override;
@@ -37,8 +43,9 @@ private:
 	//HUD
 	void createHUD(sf::RenderWindow& window);
 
-	void createWindowInfo()const;
+	void createWindowInfo();
 	void createWindowUnits();
+	void createWindowNavMesh();
 
 private:
 	//Game Data
@@ -54,6 +61,7 @@ private:
 	SGA::Vector2f currentMousePos;
 	sf::Vector2f oldPos;
 	bool moving = false;
+	bool dragging = false;
 
 	//FPS
 	int fpsLimit = 60;
@@ -66,10 +74,13 @@ private:
 
 	//Human player
 	int  selectedUnitID=-1;
+	std::unordered_set<int> selectedUnits;
 
 	//Imgui
 	sf::Clock deltaClock;
 
+	//Debug mode
+	bool drawDebug = true;
 
 	std::mutex advanceMutex;
 };

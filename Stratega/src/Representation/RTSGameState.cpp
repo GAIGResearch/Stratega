@@ -8,10 +8,12 @@ namespace SGA
 		lastUsedPlayerID(0),
 		lastUsedUnitID(0),
 		winnerPlayerID(0),
-		tileScale(1)
+		tileScale(1),
+		navigation(std::make_shared<Navigation>())
 	{
-	}
-	
+		
+	}	
+
 	RTSGameState::RTSGameState(const RTSGameState& copy) noexcept :		
 		unitTypes(copy.unitTypes),
 		tileTypes(copy.tileTypes),
@@ -21,9 +23,9 @@ namespace SGA
 		players(copy.players),
 		lastUsedPlayerID(copy.lastUsedPlayerID),
 		lastUsedUnitID(copy.lastUsedUnitID),
-		winnerPlayerID(copy.winnerPlayerID)
+		winnerPlayerID(copy.winnerPlayerID),
+		navigation(copy.navigation)
 	{
-		
  		setOwner();
 	}
 
@@ -107,5 +109,4 @@ namespace SGA
 		if (it != units.end())
 			units.erase(it);
 	}
-
 }

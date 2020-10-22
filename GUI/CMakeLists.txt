@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "*.cpp" "*.h")
-add_executable (GUI ${sources})
+add_executable (GUI ${sources} "include/RTSUnitLayer.h" "src/RTSUnityLayer.cpp")
 
 target_include_directories(GUI PUBLIC include)
 target_link_libraries(GUI PUBLIC Stratega)

@@ -6,11 +6,13 @@
 #include <Representation/UnitType.h>
 #include <Representation/Player.h>
 
+#include "Navigation.h"
+
 namespace SGA
 {
 	class RTSPlayer;
 	class RTSUnit;
-	
+
 	class RTSGameState
 	{
 	public:
@@ -27,6 +29,8 @@ namespace SGA
 		int lastUsedUnitID;
 		int winnerPlayerID;
 		
+		std::shared_ptr<Navigation> navigation;
+
 		RTSGameState();
 		RTSGameState(Board board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes) :
 			board(std::move(board)),
@@ -36,11 +40,13 @@ namespace SGA
 			lastUsedPlayerID(-1),
 			lastUsedUnitID(-1),
 			winnerPlayerID(-1),
-			tileScale(1)
-		{
-		}
+			tileScale(1),
+			navigation( std::make_shared<Navigation>())
 
+		{
 		
+		}
+				
 		RTSGameState(const RTSGameState& copy) noexcept;
 		RTSGameState(RTSGameState&& other) noexcept;
 		RTSGameState& operator=(RTSGameState other) noexcept;
@@ -58,17 +64,16 @@ namespace SGA
 			swap(lhs.tileScale, rhs.tileScale);			
 			swap(lhs.unitTypes, rhs.unitTypes);
 			swap(lhs.tileTypes, rhs.tileTypes);
-
+			swap(lhs.navigation, rhs.navigation);
+			
 			lhs.setOwner();
 			rhs.setOwner();
-		}
-	
+		}	
 		
 		std::vector<RTSUnit>& getUnits() { return units; }
 
 		RTSUnit* getUnit(int unitID);
 		RTSUnit* getUnit(Vector2f pos, float maxDistance = 1);
-
 		
 		[[nodiscard]] double getTileScale() const { return tileScale; }
 		[[nodiscard]] const Board& getBoard() const { return board; }
@@ -83,6 +88,8 @@ namespace SGA
 		int addUnit(int playerID, int typeID, const Vector2i& position);
 		void removeUnit(int id);
 
+	public:
+	
 	private:
 		double tileScale;
 		void setOwner() noexcept;

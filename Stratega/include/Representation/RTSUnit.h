@@ -3,12 +3,12 @@
 #include <Representation/RTSGameState.h>
 #include <ForwardModel/ActionType.h>
 #include <ForwardModel/Action.h>
-
+#include <Representation/Path.h>
 
 namespace SGA
 {
 	class RTSGameState;
-	
+
 	class RTSUnit
 	{
 	public:
@@ -48,5 +48,8 @@ namespace SGA
 		int attackDamage;
 		int healAmount;
 		std::reference_wrapper<RTSGameState> state;
+		
+		//Navigation path
+		Path path;
 	};
 }
