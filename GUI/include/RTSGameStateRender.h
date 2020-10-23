@@ -6,10 +6,14 @@
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
 #include <RTSUnitLayer.h>
+#include <RTSOverlayLayer.h>
 
 class RTSGameStateRender : public GameStateRenderer<SGA::RTSGameState>
 {
 public:
+	//Debug mode
+	bool drawDebug = true;
+	
 	RTSGameStateRender(SGA::RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
 	void run(bool& isRunning) override;
 
@@ -46,6 +50,7 @@ private:
 	void createWindowInfo();
 	void createWindowUnits();
 	void createWindowNavMesh();
+	
 
 private:
 	//Game Data
@@ -77,9 +82,6 @@ private:
 
 	//Imgui
 	sf::Clock deltaClock;
-
-	//Debug mode
-	bool drawDebug = true;
 
 	std::mutex advanceMutex;
 };

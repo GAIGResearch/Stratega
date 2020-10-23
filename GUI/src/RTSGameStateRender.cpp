@@ -356,7 +356,7 @@ void RTSGameStateRender::initializeLayers()
 	renderLayers.back()->init(gameStateCopy);
 
 	//Init Unit Layer
-	renderLayers.emplace_back(std::make_unique<RTSOverlayLayer>(assetCache, currentMousePos));
+	renderLayers.emplace_back(std::make_unique<RTSOverlayLayer>(assetCache, *this,currentMousePos));
 	renderLayers.back()->init(gameStateCopy);
 }
 
