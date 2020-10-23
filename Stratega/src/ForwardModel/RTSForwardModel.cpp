@@ -143,7 +143,7 @@ namespace SGA
 		if (healer == nullptr || target == nullptr)
 			return false;
 
-		return healer->actionCooldown <= 0 && healer->position.distance(target->position) <= healer->actionRange;
+		return healer->actionCooldown <= 0 &&target->health<target->maxHealth&& healer->position.distance(target->position) <= healer->actionRange;
 	}
 
 	void RTSForwardModel::executeMove(RTSFMState& state, RTSUnit& unit) const
@@ -152,10 +152,6 @@ namespace SGA
 		{
 			unit.executingAction = nullptr;
 			return;
-		}
-		if (unit.playerID == 0)
-		{
-			std::cout << "test";
 		}
 		
 		Vector2f targetPos=unit.executingAction->getTargetPosition();
@@ -188,19 +184,11 @@ namespace SGA
 			unit.path.currentPathIndex++;
 			if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
 			{
-				/*targetPos = unit.executingAction->getTargetPosition();
-
-				auto movementDir = targetPos - unit.position;
-				auto movementDistance = movementDir.magnitude();
-				auto movementSpeed = unit.movementSpeed * deltaTime;
-				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
-				*/
 				if (movementDistance <= movementSpeed) {
 					unit.position = targetPos;
 					unit.executingAction = nullptr;
 					unit.path = Path();
-				}
-				
+				}				
 			}			
 		}
 		else
@@ -217,7 +205,6 @@ namespace SGA
 			{
 				unit.executingAction = nullptr;
 			}
-			
 			
 			unit.path = Path();
 			return;
@@ -315,6 +302,9 @@ namespace SGA
 		
 		auto* targetUnit = unit.state.get().getUnit(unit.executingAction->getTargetUnitID());
 		targetUnit->health += unit.healAmount;
+		
+		if (targetUnit->health > targetUnit->maxHealth)
+			targetUnit->health = targetUnit->maxHealth;
 		
 		unit.actionCooldown = unit.maxActionCooldown;
 	}

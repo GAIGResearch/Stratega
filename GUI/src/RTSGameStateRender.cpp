@@ -22,12 +22,10 @@ void RTSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
 	gameStateCopy = game->getStateCopy();
-
 	
 	//Add state to buffer
 	gameStatesBuffer.add(gameStateCopy);
-	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
-	
+	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();	
 }
 	
 void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
@@ -50,8 +48,6 @@ void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSp
 	assetCache.loadTexture("circleCollider", "../GUI/Assets/circleColliderFixed.png");
 	assetCache.loadTexture("boxCollider", "../GUI/Assets/boxColliderFixed.png");
 	assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
-
-
 }
 	 
 void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -227,8 +223,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 			}
 		}
 		else
-		{
-			
+		{			
 			// The user selected an area
 			auto prevMouseWorldPos = oldPos;
 			auto xLeft = std::min(prevMouseWorldPos.x, pos.x);
@@ -254,44 +249,7 @@ void RTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 	{
 		oldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		dragging = true;
-
-		sf::Vector2f pos = toGridFloat(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
-
-		//
-		/*if (selectedUnitID != -1)
-		{
-			game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), selectedUnitID, SGA::Vector2f(pos.x, pos.y)));
-			selectedUnitID = -1;
-			return;
-		}*/
-
-		SGA::RTSUnit* unit = gameStateCopy.getUnit(SGA::Vector2f(pos.x, pos.y));
-
-		if (unit)
-		{
-			////Assign selected unit
-			//if (unit->playerID == getPlayerID())
-			//	selectedUnitID = unit->unitID;
-			//else
-			//{
-			//	//Check if there is enemy units
-			//	game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), selectedUnitID, unit->position, unit->unitID));
-
-			//	//Attack units
-			//	for (const auto& i : selectedUnits)
-			//	{
-			//		game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
-			//	}
-			//}
-			
-		}
-		else
-		{
-			////Restart selected actions of unit and selected unit
-			//selectedUnitID = -1;
-		}
-	}
-	
+	}	
 	// Mouse button is pressed, get the position and set moving as active
 	if (event.mouseButton.button == sf::Mouse::Middle)
 	{
@@ -499,10 +457,10 @@ void RTSGameStateRender::createWindowNavMesh()
 
 	ImGui::Separator();
 	ImGui::Text("Agent");
-	ImGui::SliderFloat("Height", &game->gameState->navigation->m_agentHeight, 0.1f, 5.0f);
+	//ImGui::SliderFloat("Height", &game->gameState->navigation->m_agentHeight, 0.1f, 5.0f);
 	ImGui::SliderFloat("Radius", &game->gameState->navigation->m_agentRadius, 0.0f, 5.0f);
-	ImGui::SliderFloat("Max Climb", &game->gameState->navigation->m_agentMaxClimb, 0.1f, 5.0f);
-	ImGui::SliderFloat("Max Slope", &game->gameState->navigation->m_agentMaxSlope, 0.0f, 90.0f);
+	/*ImGui::SliderFloat("Max Climb", &game->gameState->navigation->m_agentMaxClimb, 0.1f, 5.0f);
+	ImGui::SliderFloat("Max Slope", &game->gameState->navigation->m_agentMaxSlope, 0.0f, 90.0f);*/
 
 	ImGui::Separator();
 	ImGui::Text("Region");
