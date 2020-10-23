@@ -73,7 +73,7 @@ private:
 	int gameStatesBufferRCurrentIndex = 0;
 
 	//Human player
-	int  selectedUnitID=-1;
+	/*int  selectedUnitID=-1;*/
 	std::unordered_set<int> selectedUnits;
 
 	//Imgui

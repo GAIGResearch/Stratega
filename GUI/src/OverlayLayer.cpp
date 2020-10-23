@@ -140,8 +140,9 @@ void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) c
 	//Draw paths of units
 	for (auto& unit : units)
 	{
-		if (unit.executingAction) {
-			
+		if(unit.executingAction)
+		if(unit.executingAction->getType()==SGA::ActionType::Move|| unit.executingAction->getType() == SGA::ActionType::Attack)
+		{
 			//Check if has a valid path
 			if (unit.path.m_nstraightPath > 0)
 			{
@@ -196,5 +197,7 @@ void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) c
 				window.draw(temp);
 			}
 		}
+		
+		
 	}
 }

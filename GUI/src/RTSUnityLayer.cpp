@@ -59,7 +59,9 @@ void RTSUnitLayer::update(SGA::RTSGameState& state)
 		sf::RectangleShape fill;
 		fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
 		fill.setFillColor(sf::Color::Red);
-		fill.setSize(fillSize);
+		//Compute fill percentage
+		float percentage = (float)unit.health / (float)unit.maxHealth;
+		fill.setSize(sf::Vector2f(fillSize.x*percentage,fillSize.y));
 		fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
 		healthBars.emplace_back(fill);
 

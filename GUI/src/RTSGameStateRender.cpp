@@ -199,10 +199,23 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 			// The user clicked somewhere
 			if (!selectedUnits.empty())
 			{
-				for (const auto& i : selectedUnits)
+				SGA::RTSUnit* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y),1);
+
+				if (unit)
 				{
-					game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, worldPos));
+					for (const auto& i : selectedUnits)
+					{
+						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
+					}
 				}
+				else
+				{
+					for (const auto& i : selectedUnits)
+					{
+						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, worldPos));
+					}
+				}
+				
 				selectedUnits.clear();
 			}
 			else
@@ -243,26 +256,39 @@ void RTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 		dragging = true;
 
 		sf::Vector2f pos = toGridFloat(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
-		//If selected unit we check if there is action in tile
-		if (selectedUnitID != -1)
+
+		//
+		/*if (selectedUnitID != -1)
 		{
 			game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), selectedUnitID, SGA::Vector2f(pos.x, pos.y)));
 			selectedUnitID = -1;
 			return;
-		}
+		}*/
 
 		SGA::RTSUnit* unit = gameStateCopy.getUnit(SGA::Vector2f(pos.x, pos.y));
 
 		if (unit)
 		{
-			//Assign selected unit
-			if (unit->playerID == getPlayerID())
-				selectedUnitID = unit->unitID;
+			////Assign selected unit
+			//if (unit->playerID == getPlayerID())
+			//	selectedUnitID = unit->unitID;
+			//else
+			//{
+			//	//Check if there is enemy units
+			//	game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), selectedUnitID, unit->position, unit->unitID));
+
+			//	//Attack units
+			//	for (const auto& i : selectedUnits)
+			//	{
+			//		game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
+			//	}
+			//}
+			
 		}
 		else
 		{
-			//Restart selected actions of unit and selected unit
-			selectedUnitID = -1;
+			////Restart selected actions of unit and selected unit
+			//selectedUnitID = -1;
 		}
 	}
 	

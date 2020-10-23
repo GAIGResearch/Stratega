@@ -24,6 +24,7 @@ namespace SGA
 			collisionRadius(0.5),
 			position(),
 			health(40),
+			maxHealth(40),
 			attackDamage(20),
 			healAmount(10),
 			state(state)
@@ -45,6 +46,7 @@ namespace SGA
 		
 		Vector2f position;
 		int health;
+		int maxHealth;
 		int attackDamage;
 		int healAmount;
 		std::reference_wrapper<RTSGameState> state;

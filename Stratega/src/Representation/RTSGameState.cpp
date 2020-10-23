@@ -96,6 +96,8 @@ namespace SGA
 		unit.attackDamage = type.attackDamage;
 		unit.healAmount = type.healAmount;
 		unit.health = type.maxHealth;
+		unit.maxHealth = type.maxHealth;
+		unit.actionRange = type.actionRange;
 		unit.position = Vector2f(position.x,position.y);
 		unit.collisionRadius = type.collisionRadius;
 		return lastUsedUnitID;

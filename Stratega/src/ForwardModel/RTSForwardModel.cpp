@@ -51,9 +51,7 @@ namespace SGA
 		for(auto& unit : state.units)
 		{
 			unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
-		}
-		
-		
+		}		
 	}
 	
 	ActionSpace<Vector2f>* RTSForwardModel::generateActions(RTSGameState& state) const
@@ -133,7 +131,9 @@ namespace SGA
 		if (attacker == nullptr || target == nullptr)
 			return false;
 
-		return attacker->unitID != target->unitID && attacker->actionCooldown <= 0 && attacker->position.distance(target->position) <= attacker->actionRange;
+		//We dont need to validate the distance because the unit will aprroach to the target
+		//return attacker->unitID != target->unitID && attacker->actionCooldown <= 0 && attacker->position.distance(target->position) <= attacker->actionRange;
+		return attacker->unitID != target->unitID &&attacker->playerID!=target->playerID/* && attacker->position.distance(target->position) <= attacker->actionRange*/;
 	}
 	
 	bool RTSForwardModel::validateHeal(RTSGameState& state, const Action<Vector2f>& action) const
@@ -153,13 +153,24 @@ namespace SGA
 			unit.executingAction = nullptr;
 			return;
 		}
+		if (unit.playerID == 0)
+		{
+			std::cout << "test";
+		}
 		
 		Vector2f targetPos=unit.executingAction->getTargetPosition();
 
-		if (unit.path.m_nstraightPath == 0) {
+		//Get end position of current path
+		Vector2f oldTargetPos(0, 0);
+		oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
+		oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3)+2];
+
+		//Check if path is empty or is a diferent path to the target pos
+		if (unit.path.m_nstraightPath == 0||targetPos!=oldTargetPos) {
 
 			Path path = findPath(state.target, unit.position, targetPos);
 			unit.path = path;
+			unit.path.currentPathIndex++;
 		}
 		
 		//Check if path has points to visit
@@ -190,8 +201,7 @@ namespace SGA
 					unit.path = Path();
 				}
 				
-			}
-			
+			}			
 		}
 		else
 		{
@@ -203,19 +213,96 @@ namespace SGA
 	{
 		if (!validateAttack(state.target, *unit.executingAction))
 		{
-			unit.executingAction = nullptr;
+			if(unit.actionCooldown > 0)
+			{
+				unit.executingAction = nullptr;
+			}
+			
+			
+			unit.path = Path();
 			return;
 		}
+		if (unit.actionCooldown > 0)
+			return;
 		
 		auto* targetUnit = unit.state.get().getUnit(unit.executingAction->getTargetUnitID());
-		targetUnit->health -= unit.attackDamage;
-		if (targetUnit->health <= 0)
+		
+		//Update position of the action
+		unit.executingAction->updateTargetPosition( targetUnit->position);
+		
+		//If is in range attack, if not, move to to a closer position
+		if(unit.position.distance(targetUnit->position) <= unit.actionRange)
 		{
-			state.deadUnitIDs.emplace_back(targetUnit->unitID);
-			unit.executingAction = nullptr;
+			targetUnit->health -= unit.attackDamage;
+			if (targetUnit->health <= 0)
+			{
+				state.deadUnitIDs.emplace_back(targetUnit->unitID);
+				unit.executingAction = nullptr;
+				unit.path = Path();
+			}			
+			unit.actionCooldown = unit.maxActionCooldown;
 		}
+		else
+		{
+			//Get end position of current path
+			Vector2f oldTargetPos(0,0);
+			
+			Vector2f targetPos = targetUnit->position;			
 
-		unit.actionCooldown = unit.maxActionCooldown;
+			//Check if path is empty
+			if (unit.path.m_nstraightPath > 0)
+			{
+				oldTargetPos.x=unit.path.m_straightPath[(unit.path.m_nstraightPath-1) * 3];
+				oldTargetPos.y=unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
+
+				//Compare the path end with the target position
+				if (oldTargetPos != targetPos)
+				{
+					//Update the path
+					Path path = findPath(state.target, unit.position, targetPos);
+					
+					unit.path = path;
+					unit.path.currentPathIndex++;
+				}				
+			}			
+			else
+			{
+				//Update the new path
+				Path path = findPath(state.target, unit.position, targetPos);
+				
+				unit.path = path;
+				unit.path.currentPathIndex++;
+			}
+
+			//Check if path has points to visit
+			
+			if (unit.path.m_nstraightPath > 0)
+			{
+				//Assign the current path index as target
+				targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
+
+				auto movementDir = targetPos - unit.position;
+				auto movementDistance = movementDir.magnitude();
+				auto movementSpeed = unit.movementSpeed * deltaTime;
+				if (movementDistance <= movementSpeed)
+				{
+					unit.path.currentPathIndex++;
+					if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
+					{
+						if (movementDistance <= movementSpeed)
+						{
+							unit.position = targetPos;
+							//unit.executingAction = nullptr;
+							unit.path = Path();
+						}						
+					}
+				}
+				else
+				{
+					unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
+				}
+			}			
+		}	
 	}
 	
 	void RTSForwardModel::executeHeal(RTSFMState& state, RTSUnit& unit) const

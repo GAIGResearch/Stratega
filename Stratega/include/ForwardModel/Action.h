@@ -27,6 +27,9 @@ namespace SGA
 		const T& getTargetPosition() const { return targetPosition; }
 		const int getPlayerID() const { return playerID; }
 
+		void updateTargetPosition(T& target) { targetPosition = target; }
+	
+
 	private:
 		ActionType type;
 

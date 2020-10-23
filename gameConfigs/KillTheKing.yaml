@@ -1,5 +1,5 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 1000
 
@@ -84,7 +84,7 @@ Units:
 
         MovementRange: 2
         ActionRange: 2
-        AttackDamage: 60
+        AttackDamage: 6
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]
@@ -97,7 +97,7 @@ Units:
         ActionRange: 5
         ActionsPerTurn: 2
         RepeatableActions: false
-        AttackDamage: 20
+        AttackDamage: 2
         Actions: [Attack, Move]
     Healer:
         Sprite: ../GUI/Assets/healer (2).png
@@ -116,8 +116,8 @@ Units:
         LineOfSightRange: 6
 
         MovementRange: 1
-        ActionRange: 1
-        AttackDamage: 100
+        ActionRange: 2
+        AttackDamage: 5
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]
