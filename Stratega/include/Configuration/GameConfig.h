@@ -19,7 +19,12 @@ namespace SGA
         BoardConfig boardConfig;
         ForwardModelConfig forwardModelConfig;
         int roundLimit = 100;
-        int numPlayers = 2;
+        int numPlayers = -1;
+
+        int getNumberOfPlayers() const
+        {
+            return numPlayers == -1 ? agentNames.size() : numPlayers;
+        }
 	};
 
     std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config);
