@@ -38,6 +38,19 @@ void TBSGameStateRender::onGameStateAdvanced()
 		std::cout << "Wait for GUI Action" << std::endl;
 		waitForHumanToPlay();
 	}
+
+	if (actionsStatsPerPlayerTurn.size() >= gameStateCopy.currentGameTurn) {
+		actionsStatsPerPlayerTurn.resize(actionsStatsPerPlayerTurn.size() + 100);
+	}
+
+	actionsStatsPerPlayerTurn[gameStateCopy.currentGameTurn].resize(gameStateCopy.getPlayers().size());
+	//Add profiling info
+	for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
+	{
+
+		actionsStatsPerPlayerTurn[gameStateCopy.currentGameTurn][i].add(game->getForwardModel().getActions(gameStateCopy, i)->count());
+
+	}
 }
 
 void TBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
@@ -368,6 +381,7 @@ void TBSGameStateRender::createHUD(sf::RenderWindow& window)
 	createWindowUnits();
 	createWindowActions();
 	createWindowMultipleActions(window);
+	createWindowProfiling();
 }
 void TBSGameStateRender::createWindowInfo() const
 {

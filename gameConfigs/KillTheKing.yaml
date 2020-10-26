@@ -6,6 +6,7 @@ GameConfig:
 Agents:
     - HumanAgent
     - RandomAgent
+    #- RHEAAgent
 
 Tiles:
     Plain:
@@ -84,7 +85,7 @@ Units:
 
         MovementRange: 2
         ActionRange: 2
-        AttackDamage: 6
+        AttackDamage: 10
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]
@@ -97,7 +98,7 @@ Units:
         ActionRange: 5
         ActionsPerTurn: 2
         RepeatableActions: false
-        AttackDamage: 2
+        AttackDamage: 10
         Actions: [Attack, Move]
     Healer:
         Sprite: ../GUI/Assets/healer (2).png
@@ -117,7 +118,7 @@ Units:
 
         MovementRange: 1
         ActionRange: 2
-        AttackDamage: 5
+        AttackDamage: 10
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]

@@ -17,7 +17,7 @@ void RTSGameStateRender::init()
 	//Initialization
 	initializeLayers();
 }
-	
+
 void RTSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
@@ -25,7 +25,25 @@ void RTSGameStateRender::onGameStateAdvanced()
 	
 	//Add state to buffer
 	gameStatesBuffer.add(gameStateCopy);
-	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();	
+	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
+
+	/*if (indexAdvancedGameState == 1000)
+		indexAdvancedGameState = 0;*/
+	if (actionsStatsPerPlayerTurn.size() >= indexAdvancedGameState) {
+		actionsStatsPerPlayerTurn.resize(actionsStatsPerPlayerTurn.size() + 100);
+	}
+
+	actionsStatsPerPlayerTurn[indexAdvancedGameState].resize(gameStateCopy.players.size());
+	//Add profiling info
+	for (size_t i = 0; i < gameStateCopy.players.size(); i++)
+	{
+		
+		actionsStatsPerPlayerTurn[indexAdvancedGameState][i].add(game->getForwardModel().getActions(gameStateCopy, i)->count());
+
+	}
+
+	indexAdvancedGameState++;
+	
 }
 	
 void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
@@ -384,9 +402,12 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 
 void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 {
+	ImGui::ShowDemoWindow();
 	createWindowInfo();
 	createWindowUnits();
 	createWindowNavMesh();
+	//createWindowProfiling();
+	
 }
 
 void RTSGameStateRender::createWindowInfo()
