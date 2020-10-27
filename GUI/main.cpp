@@ -23,7 +23,7 @@ int main()
 	auto agents = SGA::agentsFromConfig(gameConfig);
 	
 	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
-	for(size_t i = 0; i < gameConfig.numPlayers; i++)
+	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it

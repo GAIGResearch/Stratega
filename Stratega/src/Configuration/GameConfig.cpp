@@ -142,7 +142,7 @@ namespace SGA
 		auto state = std::make_unique<TBSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
 		state->roundLimit = config.roundLimit;
 		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.numPlayers; i++)
+		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
 		{
 			playerIDs.push_back(state->addPlayer());
 		}
@@ -194,7 +194,7 @@ namespace SGA
 		auto state = std::make_unique<RTSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
 		
 		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.numPlayers; i++)
+		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
 		{
 			playerIDs.push_back(state->addPlayer());
 		}
