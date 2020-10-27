@@ -21,7 +21,7 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 			SGA::RTSForwardModel fm;
 			auto state = SGA::generateRTSStateFromConfig(config, *rngEngine);
 			//Build Navmesh
-			fm.buildNavMesh(*state);
+			fm.buildNavMesh(*state, SGA::NavigationConfig());
 			
 			runGameRTS(*state, fm, *results);
 		}
