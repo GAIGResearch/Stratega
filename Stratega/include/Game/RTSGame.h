@@ -41,5 +41,9 @@ namespace SGA
 		std::unique_ptr<RTSGameState> gameState;
 		RTSForwardModel forwardModel;
 		std::mutex stateMutex;
+
+		//Navmesh Update
+		NavigationConfig navigationConfig;
+		bool shouldUpdateNavmesh;
 	};
 }

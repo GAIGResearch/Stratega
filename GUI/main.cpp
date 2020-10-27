@@ -60,10 +60,8 @@ int main()
 		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
 		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
 		SGA::RTSGameState& state = *gameRTS.gameState;
-		fm.buildNavMesh(state);
+		fm.buildNavMesh(state,SGA::NavigationConfig());
 	}
-	
-
 
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file

@@ -17,6 +17,13 @@ namespace SGA
 			//Execute
 			stateMutex.lock();
 			forwardModel.advanceGameState(*gameState, actionCache);
+
+			//Update navmesh if it needs to
+			if(shouldUpdateNavmesh)
+			{
+				forwardModel.buildNavMesh(*gameState, navigationConfig);
+				shouldUpdateNavmesh = false;
+			}
 			
 			stateMutex.unlock();
 

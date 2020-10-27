@@ -35,43 +35,29 @@ static float frand()
 }
 
 
+
 namespace SGA
 {
-	class Navigation
+	class NavigationConfig
 	{
 	public:
-		Navigation() :
-			m_solid(0),
-			m_chf(0),
-			m_cset(0),
-			m_pmesh(0),
-			m_dmesh(0),
-			m_navMesh(0),
-			m_navQuery(0)
+		NavigationConfig()
 		{
-			m_filter.setIncludeFlags(SAMPLE_POLYFLAGS_ALL ^ SAMPLE_POLYFLAGS_DISABLED);
-			m_filter.setExcludeFlags(0);
-
-			//Search radius 
-			m_polyPickExt[0] = 2;
-			m_polyPickExt[1] = 2;
-			m_polyPickExt[2] = 2;
-			
-			resetSettings();
+			m_cellSize = 1;
+			m_cellHeight = 0.2f;
+			m_agentHeight = 2.0f;
+			m_agentRadius = 0.6f;
+			m_agentMaxClimb = 0.9f;
+			m_agentMaxSlope = 45.0f;
+			m_regionMinSize = 8;
+			m_regionMergeSize = 20;
+			m_edgeMaxLen = 12.0f;
+			m_edgeMaxError = 1.3f;
+			m_vertsPerPoly = 6.0f;
+			m_detailSampleDist = 6.0f;
+			m_detailSampleMaxError = 1.0f;
+			m_partitionType = SAMPLE_PARTITION_WATERSHED;
 		}
-
-		BuildContext m_ctx;
-
-		//Recast Stuff
-		rcHeightfield* m_solid;
-		rcCompactHeightfield* m_chf;
-		rcContourSet* m_cset;
-		rcPolyMesh* m_pmesh;
-		rcConfig m_cfg;
-		rcPolyMeshDetail* m_dmesh;
-
-		dtNavMesh* m_navMesh;
-		dtNavMeshQuery* m_navQuery;
 
 		//Configuration
 		float m_cellSize;
@@ -97,6 +83,62 @@ namespace SGA
 		//Erode
 		bool m_erodeWalkableArea;
 
+		void resetSettings()
+		{
+			m_cellSize = 1;
+			m_cellHeight = 0.2f;
+			m_agentHeight = 2.0f;
+			m_agentRadius = 0.6f;
+			m_agentMaxClimb = 0.9f;
+			m_agentMaxSlope = 45.0f;
+			m_regionMinSize = 8;
+			m_regionMergeSize = 20;
+			m_edgeMaxLen = 12.0f;
+			m_edgeMaxError = 1.3f;
+			m_vertsPerPoly = 6.0f;
+			m_detailSampleDist = 6.0f;
+			m_detailSampleMaxError = 1.0f;
+			m_partitionType = SAMPLE_PARTITION_WATERSHED;
+		}
+	};
+	
+	class Navigation
+	{
+	public:
+		Navigation() :
+			m_solid(0),
+			m_chf(0),
+			m_cset(0),
+			m_pmesh(0),
+			m_dmesh(0),
+			m_navMesh(0),
+			m_navQuery(0)
+		{
+			m_filter.setIncludeFlags(SAMPLE_POLYFLAGS_ALL ^ SAMPLE_POLYFLAGS_DISABLED);
+			m_filter.setExcludeFlags(0);
+
+			//Search radius 
+			m_polyPickExt[0] = 2;
+			m_polyPickExt[1] = 2;
+			m_polyPickExt[2] = 2;
+			
+			config.resetSettings();
+		}
+
+		BuildContext m_ctx;
+
+		//Recast Stuff
+		rcHeightfield* m_solid;
+		rcCompactHeightfield* m_chf;
+		rcContourSet* m_cset;
+		rcPolyMesh* m_pmesh;
+		rcConfig m_cfg;
+		rcPolyMeshDetail* m_dmesh;
+
+		dtNavMesh* m_navMesh;
+		dtNavMeshQuery* m_navQuery;
+
+		NavigationConfig config;
 		void cleanup()
 		{
 			rcFreeHeightField(m_solid);
@@ -116,23 +158,5 @@ namespace SGA
 		//Detour Stuff
 		dtQueryFilter m_filter;
 		float m_polyPickExt[3];
-
-		void resetSettings()
-		{
-			m_cellSize = 1;
-			m_cellHeight = 0.2f;
-			m_agentHeight = 2.0f;
-			m_agentRadius = 0.6f;
-			m_agentMaxClimb = 0.9f;
-			m_agentMaxSlope = 45.0f;
-			m_regionMinSize = 8;
-			m_regionMergeSize = 20;
-			m_edgeMaxLen = 12.0f;
-			m_edgeMaxError = 1.3f;
-			m_vertsPerPoly = 6.0f;
-			m_detailSampleDist = 6.0f;
-			m_detailSampleMaxError = 1.0f;
-			m_partitionType = SAMPLE_PARTITION_WATERSHED;
-		}
 	};
 }

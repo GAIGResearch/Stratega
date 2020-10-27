@@ -8,8 +8,6 @@
 #include <RTSUnitLayer.h>
 #include <RTSOverlayLayer.h>
 
-#include <StatsSummary.h>
-
 class RTSGameStateRender : public GameStateRenderer<SGA::RTSGameState>
 {
 public:
@@ -51,148 +49,7 @@ private:
 
 	void createWindowInfo();
 	void createWindowUnits();
-	void createWindowNavMesh();
-	void createWindowProfiling()
-	{
-
-		float* arr;
-		int size = 1000;
-		arr = new float[size];
-		memset(arr, 0, size * sizeof(float));
-		ImGui::Begin("Profiling");
-		
-		if (ImGui::TreeNode("Graphs"))
-		{
-			ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-			if (ImGui::BeginTabBar("Graphs", tab_bar_flags))
-			{
-				if (ImGui::BeginTabItem("Sum"))
-				{
-
-					for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-
-
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getSum();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-
-				}
-
-				if (ImGui::BeginTabItem("Mean"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							actionsStatsPerPlayerTurn[j][i].computeStats();
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMean();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Max"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMax();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Min"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMin();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Multiplication"))
-				{
-					memset(arr, 0, size * sizeof(float));
-
-					for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMulti();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
-			}
-			ImGui::Separator();
-			ImGui::TreePop();
-		}
-		
-		ImGui::End();
-	}
-	
+	void createWindowNavMesh();	
 
 private:
 	//Game Data
@@ -231,6 +88,6 @@ private:
 	//Last call OnAdvancedGameGameState
 	int indexAdvancedGameState = 0;
 
-	std::vector<std::vector<StatSummary>> actionsStatsPerPlayerTurn;
+	SGA::NavigationConfig config;
 	
 };

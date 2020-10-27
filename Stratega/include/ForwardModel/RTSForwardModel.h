@@ -47,7 +47,7 @@ namespace SGA
 		void resolveUnitCollisions(RTSFMState& state) const;
 		void resolveEnvironmentCollisions(RTSFMState& state) const;
 		
-		bool buildNavMesh(RTSGameState& state) const;
+		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
 		Path findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
 
 	private:

@@ -25,25 +25,7 @@ void RTSGameStateRender::onGameStateAdvanced()
 	
 	//Add state to buffer
 	gameStatesBuffer.add(gameStateCopy);
-	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
-
-	/*if (indexAdvancedGameState == 1000)
-		indexAdvancedGameState = 0;*/
-	if (actionsStatsPerPlayerTurn.size() >= indexAdvancedGameState) {
-		actionsStatsPerPlayerTurn.resize(actionsStatsPerPlayerTurn.size() + 100);
-	}
-
-	actionsStatsPerPlayerTurn[indexAdvancedGameState].resize(gameStateCopy.players.size());
-	//Add profiling info
-	for (size_t i = 0; i < gameStateCopy.players.size(); i++)
-	{
-		
-		actionsStatsPerPlayerTurn[indexAdvancedGameState][i].add(game->getForwardModel().getActions(gameStateCopy, i)->count());
-
-	}
-
-	indexAdvancedGameState++;
-	
+	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();	
 }
 	
 void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
@@ -468,52 +450,53 @@ void RTSGameStateRender::createWindowNavMesh()
 	ImGui::Begin("Debug Navigation");
 	if (ImGui::Button("Generate NavMesh"))
 	{
-		game->forwardModel.buildNavMesh(*game->gameState);
+		game->navigationConfig = config;
+		game->shouldUpdateNavmesh = true;
 	}
 	
 	// TODO add more precision to the navmesh generation
 	/*ImGui::Text("Rasterization");
-	ImGui::SliderFloat("Cell Size", &game->gameState->navigation->m_cellSize, 0.1f, 1.0f);
-	ImGui::SliderFloat("Cell Height", &game->gameState->navigation->m_cellHeight, 0.1f, 1.0f);*/
+	ImGui::SliderFloat("Cell Size", &config.m_cellSize, 0.1f, 1.0f);
+	ImGui::SliderFloat("Cell Height", &config.m_cellHeight, 0.1f, 1.0f);*/
 
 	ImGui::Separator();
 	ImGui::Text("Agent");
-	//ImGui::SliderFloat("Height", &game->gameState->navigation->m_agentHeight, 0.1f, 5.0f);
-	ImGui::SliderFloat("Radius", &game->gameState->navigation->m_agentRadius, 0.0f, 5.0f);
-	/*ImGui::SliderFloat("Max Climb", &game->gameState->navigation->m_agentMaxClimb, 0.1f, 5.0f);
-	ImGui::SliderFloat("Max Slope", &game->gameState->navigation->m_agentMaxSlope, 0.0f, 90.0f);*/
+	//ImGui::SliderFloat("Height", &config.m_agentHeight, 0.1f, 5.0f);
+	ImGui::SliderFloat("Radius", &config.m_agentRadius, 0.0f, 5.0f);
+	/*ImGui::SliderFloat("Max Climb", &config.m_agentMaxClimb, 0.1f, 5.0f);
+	ImGui::SliderFloat("Max Slope", &config.m_agentMaxSlope, 0.0f, 90.0f);*/
 
 	ImGui::Separator();
 	ImGui::Text("Region");
-	ImGui::SliderFloat("Min Region Size", &game->gameState->navigation->m_regionMinSize, 0.0f, 150.0f);
-	ImGui::SliderFloat("Merged Region Size", &game->gameState->navigation->m_regionMergeSize, 0.0f, 150.0f);
+	ImGui::SliderFloat("Min Region Size", &config.m_regionMinSize, 0.0f, 150.0f);
+	ImGui::SliderFloat("Merged Region Size", &config.m_regionMergeSize, 0.0f, 150.0f);
 
 	ImGui::Separator();
 	ImGui::Text("Erode mesh");
-	ImGui::Checkbox("Erode Walkable Area", &game->gameState->navigation->m_erodeWalkableArea);
+	ImGui::Checkbox("Erode Walkable Area", &config.m_erodeWalkableArea);
 
 	ImGui::Separator();
 	ImGui::Text("Partitioning");
-	ImGui::RadioButton("Watershed", &game->gameState->navigation->m_partitionType, SAMPLE_PARTITION_WATERSHED);
-	ImGui::RadioButton("Monotone", &game->gameState->navigation->m_partitionType, SAMPLE_PARTITION_MONOTONE);
-	ImGui::RadioButton("Layers", &game->gameState->navigation->m_partitionType, SAMPLE_PARTITION_LAYERS);
+	ImGui::RadioButton("Watershed", &config.m_partitionType, SAMPLE_PARTITION_WATERSHED);
+	ImGui::RadioButton("Monotone", &config.m_partitionType, SAMPLE_PARTITION_MONOTONE);
+	ImGui::RadioButton("Layers", &config.m_partitionType, SAMPLE_PARTITION_LAYERS);
 	
 	ImGui::Separator();
 	ImGui::Text("Filtering");
-	ImGui::Checkbox("Low Hanging Obstacles", &game->gameState->navigation->m_filterLowHangingObstacles);	
-	ImGui::Checkbox("Ledge Spans", &game->gameState->navigation->m_filterLedgeSpans);	
-	ImGui::Checkbox("Walkable Low Height Spans", &game->gameState->navigation->m_filterWalkableLowHeightSpans);		
+	ImGui::Checkbox("Low Hanging Obstacles", &config.m_filterLowHangingObstacles);	
+	ImGui::Checkbox("Ledge Spans", &config.m_filterLedgeSpans);	
+	ImGui::Checkbox("Walkable Low Height Spans", &config.m_filterWalkableLowHeightSpans);		
 
 	ImGui::Separator();
 	ImGui::Text("Polygonization");
-	ImGui::SliderFloat("Max Edge Length", &game->gameState->navigation->m_edgeMaxLen, 0.0f, 50.0f);
-	ImGui::SliderFloat("Max Edge Error", &game->gameState->navigation->m_edgeMaxError, 0.1f, 3.0f);
-	ImGui::SliderFloat("Verts Per Poly", &game->gameState->navigation->m_vertsPerPoly, 3.0f, 12.0f);
+	ImGui::SliderFloat("Max Edge Length", &config.m_edgeMaxLen, 0.0f, 50.0f);
+	ImGui::SliderFloat("Max Edge Error", &config.m_edgeMaxError, 0.1f, 3.0f);
+	ImGui::SliderFloat("Verts Per Poly", &config.m_vertsPerPoly, 3.0f, 12.0f);
 
 	ImGui::Separator();
 	ImGui::Text("Detail Mesh");
-	ImGui::SliderFloat("Sample Distance", &game->gameState->navigation->m_detailSampleDist, 0.0f, 16.0f);
-	ImGui::SliderFloat("Max Sample Error", &game->gameState->navigation->m_detailSampleMaxError, 0.0f, 16.0f);
+	ImGui::SliderFloat("Sample Distance", &config.m_detailSampleDist, 0.0f, 16.0f);
+	ImGui::SliderFloat("Max Sample Error", &config.m_detailSampleMaxError, 0.0f, 16.0f);
 
 	ImGui::End();
 }

@@ -374,10 +374,14 @@ namespace SGA
 		}
 	}
 
-	bool RTSForwardModel::buildNavMesh(RTSGameState& state) const
+	bool RTSForwardModel::buildNavMesh(RTSGameState& state, NavigationConfig config) const
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
 
+		state.navigation = std::make_shared<Navigation>();
+		
+		state.navigation->config = config;
+		
 		//Get size from current board
 		Board& board = state.getBoard();
 		float width = board.getWidth();
@@ -398,19 +402,19 @@ namespace SGA
 		// Init build configuration from GUI
 		memset(&state.navigation->m_cfg, 0, sizeof(state.navigation->m_cfg));
 		
-		state.navigation->m_cfg.cs = state.navigation->m_cellSize;
-		state.navigation->m_cfg.ch = state.navigation->m_cellHeight;
-		state.navigation->m_cfg.walkableSlopeAngle = state.navigation->m_agentMaxSlope;
-		state.navigation->m_cfg.walkableHeight = (int)ceilf(state.navigation->m_agentHeight / state.navigation->m_cfg.ch);
-		state.navigation->m_cfg.walkableClimb = (int)floorf(state.navigation->m_agentMaxClimb / state.navigation->m_cfg.ch);
-		state.navigation->m_cfg.walkableRadius = (int)ceilf(state.navigation->m_agentRadius / state.navigation->m_cfg.cs);
-		state.navigation->m_cfg.maxEdgeLen = (int)(state.navigation->m_edgeMaxLen / state.navigation->m_cellSize);
-		state.navigation->m_cfg.maxSimplificationError = state.navigation->m_edgeMaxError;
-		state.navigation->m_cfg.minRegionArea = (int)rcSqr(state.navigation->m_regionMinSize);		// Note: area = size*size
-		state.navigation->m_cfg.mergeRegionArea = (int)rcSqr(state.navigation->m_regionMergeSize);	// Note: area = size*size
-		state.navigation->m_cfg.maxVertsPerPoly = (int)state.navigation->m_vertsPerPoly;
-		state.navigation->m_cfg.detailSampleDist = state.navigation->m_detailSampleDist < 0.9f ? 0 : state.navigation->m_cellSize * state.navigation->m_detailSampleDist;
-		state.navigation->m_cfg.detailSampleMaxError = state.navigation->m_cellHeight * state.navigation->m_detailSampleMaxError;
+		state.navigation->m_cfg.cs = state.navigation->config.m_cellSize;
+		state.navigation->m_cfg.ch = state.navigation->config.m_cellHeight;
+		state.navigation->m_cfg.walkableSlopeAngle = state.navigation->config.m_agentMaxSlope;
+		state.navigation->m_cfg.walkableHeight = (int)ceilf(state.navigation->config.m_agentHeight / state.navigation->m_cfg.ch);
+		state.navigation->m_cfg.walkableClimb = (int)floorf(state.navigation->config.m_agentMaxClimb / state.navigation->m_cfg.ch);
+		state.navigation->m_cfg.walkableRadius = (int)ceilf(state.navigation->config.m_agentRadius / state.navigation->m_cfg.cs);
+		state.navigation->m_cfg.maxEdgeLen = (int)(state.navigation->config.m_edgeMaxLen / state.navigation->config.m_cellSize);
+		state.navigation->m_cfg.maxSimplificationError = state.navigation->config.m_edgeMaxError;
+		state.navigation->m_cfg.minRegionArea = (int)rcSqr(state.navigation->config.m_regionMinSize);		// Note: area = size*size
+		state.navigation->m_cfg.mergeRegionArea = (int)rcSqr(state.navigation->config.m_regionMergeSize);	// Note: area = size*size
+		state.navigation->m_cfg.maxVertsPerPoly = (int)state.navigation->config.m_vertsPerPoly;
+		state.navigation->m_cfg.detailSampleDist = state.navigation->config.m_detailSampleDist < 0.9f ? 0 : state.navigation->config.m_cellSize * state.navigation->config.m_detailSampleDist;
+		state.navigation->m_cfg.detailSampleMaxError = state.navigation->config.m_cellHeight * state.navigation->config.m_detailSampleMaxError;
 
 		// Set the area where the navigation will be build.
 		// Here the bounds of the input mesh are used, but the
@@ -471,11 +475,11 @@ namespace SGA
 		// Once all geoemtry is rasterized, we do initial pass of filtering to
 		// remove unwanted overhangs caused by the conservative rasterization
 		// as well as filter spans where the character cannot possibly stand.
-		if (state.navigation->m_filterLowHangingObstacles)
+		if (state.navigation->config.m_filterLowHangingObstacles)
 		rcFilterLowHangingWalkableObstacles(&state.navigation->m_ctx, state.navigation->m_cfg.walkableClimb, *state.navigation->m_solid);
-		if (state.navigation->m_filterLedgeSpans)
+		if (state.navigation->config.m_filterLedgeSpans)
 		 rcFilterLedgeSpans(&state.navigation->m_ctx, state.navigation->m_cfg.walkableHeight, state.navigation->m_cfg.walkableClimb, *state.navigation->m_solid);
-		if (state.navigation->m_filterWalkableLowHeightSpans)
+		if (state.navigation->config.m_filterWalkableLowHeightSpans)
 		 rcFilterWalkableLowHeightSpans(&state.navigation->m_ctx, state.navigation->m_cfg.walkableHeight, *state.navigation->m_solid);
 				
 		//
@@ -498,7 +502,7 @@ namespace SGA
 		}
 
 		// Erode the walkable area by agent radius.
-		if (state.navigation->m_erodeWalkableArea)
+		if (state.navigation->config.m_erodeWalkableArea)
 		if (!rcErodeWalkableArea(&state.navigation->m_ctx, state.navigation->m_cfg.walkableRadius, *state.navigation->m_chf))
 		{
 			std::cout << "buildNavigation: Could not erode." << std::endl;
@@ -532,7 +536,7 @@ namespace SGA
 		//     if you have large open areas with small obstacles (not a problem if you use tiles)
 		//   * good choice to use for tiled navmesh with medium and small sized tiles
 
-		if (state.navigation->m_partitionType == SAMPLE_PARTITION_WATERSHED)
+		if (state.navigation->config.m_partitionType == SAMPLE_PARTITION_WATERSHED)
 		{
 			// Prepare for region partitioning, by calculating distance field along the walkable surface.
 			if (!rcBuildDistanceField(&state.navigation->m_ctx, *state.navigation->m_chf))
@@ -548,7 +552,7 @@ namespace SGA
 				return false;
 			}
 		}
-		else if (state.navigation->m_partitionType == SAMPLE_PARTITION_MONOTONE)
+		else if (state.navigation->config.m_partitionType == SAMPLE_PARTITION_MONOTONE)
 		{
 			// Partition the walkable surface into simple regions without holes.
 			// Monotone partitioning does not need distancefield.
@@ -654,10 +658,10 @@ namespace SGA
 			params.detailTris = state.navigation->m_dmesh->tris;
 			params.detailTriCount = state.navigation->m_dmesh->ntris;
 
-			params.walkableHeight = state.navigation->m_agentHeight;
+			params.walkableHeight = state.navigation->config.m_agentHeight;
 			params.walkableHeight = 2;
-			params.walkableRadius = state.navigation->m_agentRadius;
-			params.walkableClimb = state.navigation->m_agentMaxClimb;
+			params.walkableRadius = state.navigation->config.m_agentRadius;
+			params.walkableClimb = state.navigation->config.m_agentMaxClimb;
 			params.walkableClimb = 0.89f;
 			rcVcopy(params.bmin, state.navigation->m_pmesh->bmin);
 			rcVcopy(params.bmax, state.navigation->m_pmesh->bmax);

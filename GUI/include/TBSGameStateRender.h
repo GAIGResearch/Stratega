@@ -7,9 +7,6 @@
 #include <SFML/Graphics/View.hpp>
 #include <CircularBuffer.h>
 
-
-#include <StatsSummary.h>
-
 class TBSGameStateRender: public GameStateRenderer<SGA::TBSGameState>
 {
 public:
@@ -45,145 +42,8 @@ private:
 	void createWindowUnits();
 	void createWindowActions();
 	void createWindowMultipleActions(sf::RenderWindow& window);
-	void createWindowProfiling()
-	{
-		float* arr;
-		int size = 200;
-		arr = new float[size];
-		memset(arr, 0, size * sizeof(float));
-		ImGui::Begin("Action Space");
 
-		if (ImGui::TreeNode("Graphs"))
-		{
-			ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-			if (ImGui::BeginTabBar("Graphs", tab_bar_flags))
-			{
-				if (ImGui::BeginTabItem("Sum"))
-				{
-
-					for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-
-
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getSum();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-
-				}
-
-				if (ImGui::BeginTabItem("Mean"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					//for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
-					//{
-					//	for (size_t j = 0; j < size; j++)
-					//	{
-					//		actionsStatsPerPlayerTurn[j][i].computeStats();
-					//		if (!actionsStatsPerPlayerTurn[j].empty())
-					//			arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMean();
-					//		else
-					//			arr[j] = 0;
-					//	}
-
-					//	std::string infoText = "Player: " + std::to_string(i);
-					//	ImGui::Text(infoText.c_str());
-
-					//	ImGui::PlotLines("", arr, size);
-					//	//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					//}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Max"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMax();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Min"))
-				{
-
-					memset(arr, 0, size * sizeof(float));
-					for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMin();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Multiplication"))
-				{
-					memset(arr, 0, size * sizeof(float));
-
-					for (size_t i = 0; i < gameStateCopy.getPlayers().size(); i++)
-					{
-						for (size_t j = 0; j < size; j++)
-						{
-							if (!actionsStatsPerPlayerTurn[j].empty())
-								arr[j] = (float)actionsStatsPerPlayerTurn[j][i].getMulti();
-							else
-								arr[j] = 0;
-						}
-
-						std::string infoText = "Player: " + std::to_string(i);
-						ImGui::Text(infoText.c_str());
-
-						ImGui::PlotLines("", arr, size);
-						//ImGui::PlotHistogram("Histogram", arr, size, 0, NULL, 0.0f, 1.0f, ImVec2(0, 80.0f));
-					}
-
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
-			}
-			ImGui::Separator();
-			ImGui::TreePop();
-		}
-
-		ImGui::End();
-	}
+	
 	//Human player stuff
 	void waitForHumanToPlay()
 	{
@@ -243,7 +103,4 @@ private:
 	bool showMultipleActions = false;
 	SGA::Vector2i multipleActionsSourceTile;
 
-	//Profiling
-	//Last call OnAdvancedGameGameState
-	std::vector<std::vector<StatSummary>> actionsStatsPerPlayerTurn;
 };

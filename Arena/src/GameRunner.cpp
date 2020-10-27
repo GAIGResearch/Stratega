@@ -50,16 +50,16 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
 			game->addCommunicator(std::move(comm));
-		}
+		}		
+	}
 
-		//Build Navmesh
-		if (config->gameType == "RTS")
-		{
-			auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
-			const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
-			SGA::RTSGameState& state = *gameRTS.gameState;
-			fm.buildNavMesh(state);
-		}
+	//Build Navmesh
+	if (config->gameType == "RTS")
+	{
+		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
+		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
+		SGA::RTSGameState& state = *gameRTS.gameState;
+		fm.buildNavMesh(state, SGA::NavigationConfig());
 	}
 
 	// Add logger
