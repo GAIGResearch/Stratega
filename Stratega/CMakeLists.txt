@@ -10,6 +10,10 @@ add_library(Stratega STATIC ${sources})
 
 target_include_directories(Stratega PUBLIC include)
 target_link_libraries(Stratega PUBLIC yaml-cpp)
+target_link_libraries(Stratega PUBLIC Recast)
+target_link_libraries(Stratega PUBLIC Detour)
+target_link_libraries(Stratega PUBLIC DebugUtils)
+
 
 # ToDo disable yaml-cpp warnings so we can enable this
 #target_compile_options(Stratega PRIVATE

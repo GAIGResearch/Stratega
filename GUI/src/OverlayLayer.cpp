@@ -68,23 +68,3 @@ void TBSOverlayLayer::draw(SGA::TBSGameState& state, sf::RenderWindow& window) c
 		window.draw(sprite);
 	}
 }
-
-RTSOverlayLayer::RTSOverlayLayer(AssetCache& assetCache,  SGA::Vector2f& currentMousePos) :
-	RenderLayer(assetCache),  currentMousePos(currentMousePos)
-{
-
-}
-
-void RTSOverlayLayer::init(SGA::RTSGameState& state)
-{
-
-
-}
-
-void RTSOverlayLayer::update(SGA::RTSGameState& state)
-{
-}
-
-void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) const
-{
-}

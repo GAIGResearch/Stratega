@@ -37,9 +37,13 @@ namespace SGA
 		double accumulatedTimeUpdate = 0;
 		double accumulatedTimePrint = 0;
 		int executionCount = 0;
-		
+	public:
 		std::unique_ptr<RTSGameState> gameState;
 		RTSForwardModel forwardModel;
 		std::mutex stateMutex;
+
+		//Navmesh Update
+		NavigationConfig navigationConfig;
+		bool shouldUpdateNavmesh;
 	};
 }

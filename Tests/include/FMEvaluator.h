@@ -12,10 +12,11 @@ public:
 	FMEvaluator(std::mt19937& rngEngine);
 	
 	size_t StepCount = 100000;
-	std::unique_ptr<FMEvaluationResults> evaluate(const SGA::GameConfig& config, SGA::TBSForwardModel& fm);
+	std::unique_ptr<FMEvaluationResults> evaluate(const SGA::GameConfig& config);
 
 private:
-	void runGame(SGA::TBSGameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results);
+	void runGameTBS(SGA::TBSGameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results);
+	void runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results);
 	
 	std::mt19937* rngEngine;
 };

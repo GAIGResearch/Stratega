@@ -23,7 +23,7 @@ int main()
 	auto agents = SGA::agentsFromConfig(gameConfig);
 	
 	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
-	for(size_t i = 0; i < gameConfig.numPlayers; i++)
+	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it
@@ -48,12 +48,21 @@ int main()
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
-			game->addCommunicator(std::move(comm));
+			game->addCommunicator(std::move(comm));			
 		}
 		
 		playerID++;
 	}
 	
+	//Build Navmesh
+	if (gameConfig.gameType == "RTS")
+	{
+		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
+		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
+		SGA::RTSGameState& state = *gameRTS.gameState;
+		fm.buildNavMesh(state,SGA::NavigationConfig());
+	}
+
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();

@@ -6,8 +6,15 @@
 #include <ForwardModel/FMState.h>
 #include <Representation/RTSGameState.h>
 
+#include <chrono>
+
+#include "DetourCommon.h"
+#include "DetourNavMeshBuilder.h"
+
+
 namespace SGA
 {
+	
 	class RTSForwardModel : public ForwardModelBase<RTSGameState, Action<Vector2f>>
 	{
 	public:
@@ -40,8 +47,12 @@ namespace SGA
 		void resolveUnitCollisions(RTSFMState& state) const;
 		void resolveEnvironmentCollisions(RTSFMState& state) const;
 		
+		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
+		Path findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
+
 	private:
 		ActionSpace<Vector2f>* generateActions(RTSGameState& state) const override;
 		ActionSpace<Vector2f>* generateActions(RTSGameState& state, int playerID) const override;
 	};
+
 }

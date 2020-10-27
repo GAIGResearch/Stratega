@@ -17,6 +17,14 @@ namespace SGA
 			//Execute
 			stateMutex.lock();
 			forwardModel.advanceGameState(*gameState, actionCache);
+
+			//Update navmesh if it needs to
+			if(shouldUpdateNavmesh)
+			{
+				forwardModel.buildNavMesh(*gameState, navigationConfig);
+				shouldUpdateNavmesh = false;
+			}
+			
 			stateMutex.unlock();
 
 			for (auto& com : communicators)
@@ -38,6 +46,7 @@ namespace SGA
 			{
 				std::cout << "Unit " << unit.unitID << " at position (" << unit.position.x << ", " << unit.position.y << ")" << std::endl;
 			}
+			
 
 			executionCount = 0;
 			accumulatedTimePrint = 0;

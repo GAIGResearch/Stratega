@@ -1,8 +1,0 @@
-﻿  DetourCrowd.cpp
-  DetourLocalBoundary.cpp
-  DetourObstacleAvoidance.cpp
-  DetourPathCorridor.cpp
-  DetourPathQueue.cpp
-  DetourProximityGrid.cpp
-  Generating Code...
-  DetourCrowd.vcxproj -> D:\+++Work\recastnavigation-master\RecastDemo\Build\vs2019\lib\Debug\DetourCrowd.lib
