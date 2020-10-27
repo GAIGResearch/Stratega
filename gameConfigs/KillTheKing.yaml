@@ -1,5 +1,5 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 1000
 

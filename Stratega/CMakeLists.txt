@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.8)
 # Add library
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "*.cpp" "*.h")
 
-add_library(Stratega STATIC ${sources} "include/Representation/Path.h" "include/Representation/Navigation.h" "include/Representation/BuildContext.h" "src/Representation/BuildContext.cpp")
+add_library(Stratega STATIC ${sources})
 
 target_include_directories(Stratega PUBLIC include)
 target_link_libraries(Stratega PUBLIC yaml-cpp)

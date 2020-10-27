@@ -186,7 +186,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 		dragging = false;
 
 		sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		auto worldPos = toGridSGAFloat(pos);
+		auto worldPos = toGridFloat(pos);
 		auto movementDir = pos - oldPos;
 		auto movementDistance = std::sqrt(movementDir.x * movementDir.x + movementDir.y * movementDir.y);
 
@@ -208,7 +208,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 				{
 					for (const auto& i : selectedUnits)
 					{
-						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, worldPos));
+						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, SGA::Vector2f(worldPos.x,worldPos.y)));
 					}
 				}
 				
@@ -217,7 +217,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 			else
 			{
 				selectedUnits.clear();
-				auto* unit = gameStateCopy.getUnit(worldPos);
+				auto* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y));
 				if (unit != nullptr&& unit->playerID==getPlayerID())
 					selectedUnits.emplace(unit->unitID);
 			}
