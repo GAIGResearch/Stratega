@@ -23,47 +23,48 @@ void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) c
 
 	  if (mesh)
 	  {
-		  //Draw navmesh
+		  //Draw navmesh polygons
 		  for (int i = 0; i < state.navigation->m_navMesh->getMaxTiles(); ++i)
 		  {
 			  const dtMeshTile* tile = mesh->getTile(i);
 
-			  if (!tile->header) continue;
+			  if (!tile->header)
+				  continue;
+			 
+			  for (int i = 0; i < tile->header->polyCount; ++i)
 			  {
-				  for (int i = 0; i < tile->header->polyCount; ++i)
+				  const dtPoly* p = &tile->polys[i];
+				  if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
+					  continue;
+
+				  const dtPolyDetail* pd = &tile->detailMeshes[i];
+
+				  //Draw polygon
+				  for (int j = 0; j < pd->triCount; ++j)
 				  {
-					  const dtPoly* p = &tile->polys[i];
-					  if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
-						  continue;
+					  const unsigned char* t = &tile->detailTris[(pd->triBase + j) * 4];
 
-					  const dtPolyDetail* pd = &tile->detailMeshes[i];
+					  sf::ConvexShape polygon;
 
-					  //Draw polygon
-					  for (int j = 0; j < pd->triCount; ++j)
+					  //Adjust to offset from isometric
+					  polygon.move(TILE_WIDTH_HALF, 0);
+
+					  polygon.setOutlineColor(sf::Color::Black);
+					  polygon.setFillColor(sf::Color(20, 140, 240, 64));
+					  polygon.setOutlineThickness(1);
+					  polygon.setPointCount(3);
+					  for (int k = 0; k < 3; ++k)
 					  {
-						  const unsigned char* t = &tile->detailTris[(pd->triBase + j) * 4];
-
-						  sf::ConvexShape polygon;
-
-						  //Adjust to offset from isometric
-						  polygon.move(TILE_WIDTH_HALF, 0);
-
-						  polygon.setOutlineColor(sf::Color::Black);
-						  polygon.setFillColor(sf::Color(20, 140, 240, 64));
-						  polygon.setOutlineThickness(1);
-						  polygon.setPointCount(3);
-						  for (int k = 0; k < 3; ++k)
+						  if (t[k] < p->vertCount)
 						  {
-							  if (t[k] < p->vertCount)
-							  {
-								  float* pos = &tile->verts[p->verts[t[k]] * 3];
-								  polygon.setPoint(k, toISO(pos[0], pos[2]));
-							  }
+							  float* pos = &tile->verts[p->verts[t[k]] * 3];
+							  polygon.setPoint(k, toISO(pos[0], pos[2]));
 						  }
-						  window.draw(polygon);
 					  }
+					  window.draw(polygon);
 				  }
 			  }
+			  
 		  }
 	  }
 

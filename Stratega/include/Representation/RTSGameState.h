@@ -5,8 +5,7 @@
 #include <Representation/Vector2.h>
 #include <Representation/UnitType.h>
 #include <Representation/Player.h>
-
-#include "Navigation.h"
+#include <Representation/Navigation.h>
 
 namespace SGA
 {
@@ -41,7 +40,7 @@ namespace SGA
 			lastUsedUnitID(-1),
 			winnerPlayerID(-1),
 			tileScale(1),
-			navigation( std::make_shared<Navigation>())
+			navigation(nullptr)
 
 		{
 		
