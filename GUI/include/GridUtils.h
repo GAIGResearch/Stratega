@@ -43,14 +43,6 @@ static sf::Vector2f toGridFloat(sf::Vector2f vec)
 	return sf::Vector2f((x), (y));
 }
 
-//static SGA::Vector2f toGridSGAFloat(sf::Vector2f vec)
-//{
-//	auto x = ((vec.x - TILE_WIDTH_HALF) / TILE_WIDTH_HALF + vec.y / TILE_HEIGHT_HALF) / 2;
-//	auto y = (vec.y / TILE_HEIGHT_HALF - (vec.x - TILE_WIDTH_HALF) / TILE_WIDTH_HALF) / 2;
-//	
-//	return SGA::Vector2f((x), (y));
-//}
-
 static sf::Vector2i toGrid(sf::Vector2f vec)
 {
 	auto x = ((vec.x - TILE_WIDTH_HALF) / TILE_WIDTH_HALF + vec.y / TILE_HEIGHT_HALF) / 2;
