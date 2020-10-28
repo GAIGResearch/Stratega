@@ -30,7 +30,8 @@ namespace SGA
     std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config);
     std::unordered_map<std::string, TileType> tileTypesFromConfig(const GameConfig& config);
     std::unordered_map<std::string, UnitType> unitTypesFromConfig(const GameConfig& config);
-    TBSForwardModel forwardModelFromConfig(const GameConfig& config);
+    TBSForwardModel generateTBSforwardModelFromConfig(const GameConfig& config);
+    RTSForwardModel generateRTSforwardModelFromConfig(const GameConfig& config);
     std::unique_ptr<IBoardGenerator> boardGeneratorFromConfig(const GameConfig& config);
     std::unique_ptr<TBSGameState> generateTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
     std::unique_ptr<RTSGameState> generateRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);

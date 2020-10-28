@@ -16,7 +16,7 @@ namespace SGA
 
 		void update(double deltaTime) override;
 		bool isGameOver() override { return Game::isGameOver() || gameState->isGameOver; };
-
+		void close() override;
 		const RTSForwardModel& getForwardModel() const
 		{
 			return forwardModel;

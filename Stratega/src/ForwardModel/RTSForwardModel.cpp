@@ -60,6 +60,8 @@ namespace SGA
 			{
 				unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
 			}
+
+			state.isGameOver = checkGameIsFinished(state);
 		}
 	}
 	
@@ -784,4 +786,76 @@ namespace SGA
 
 		return path;
 	}
+
+	bool RTSForwardModel::checkGameIsFinished(RTSGameState& state) const
+	{
+		int numberPlayerCanPlay = 0;
+		int winnerID = -1;
+		for (auto& player : state.players)
+		{
+			if (player.canPlay && canPlayerPlay(player))
+			{
+				winnerID = player.playerID;
+				numberPlayerCanPlay++;
+			}
+			else
+			{
+				player.canPlay = false;
+			}
+		}
+
+		if (numberPlayerCanPlay <= 1)
+		{
+			state.setWinnerID(winnerID);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool RTSForwardModel::canPlayerPlay(RTSPlayer& player) const
+	{
+
+		if (player.state.get().fogOfWarId != -1 && player.playerID != player.state.get().fogOfWarId)
+			return true;
+
+		switch (winCondition)
+		{
+		case WinConditionType::UnitAlive:
+		{
+			bool hasKing = false;
+			std::vector<RTSUnit*> units = player.getUnits();
+
+			for (auto& unit : units)
+			{
+				//Check if player has units
+				if (unit->unitTypeID == unitTypeID)
+				{
+					hasKing = true;
+				}
+			}
+
+			if (!hasKing)
+			{
+				return false;
+			}
+
+			break;
+		}
+		case WinConditionType::LastManStanding:
+		{
+			std::vector<RTSUnit*> units = player.getUnits();
+
+			if (units.empty())
+			{
+				return false;
+			}
+			break;
+		}
+		}
+
+		return true;
+
+	}
+
 }

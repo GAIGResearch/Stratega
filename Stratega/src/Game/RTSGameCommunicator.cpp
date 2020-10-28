@@ -24,7 +24,9 @@ namespace SGA
 
 	RTSGameState RTSGameCommunicator::getGameState() const
 	{
-		return game->getStateCopy();
+		auto state = game->getStateCopy();
+		state.applyFogOfWar(getPlayerID());
+		return state;
 	}
 
 	bool RTSGameCommunicator::isGameOver() const

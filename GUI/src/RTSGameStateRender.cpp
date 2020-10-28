@@ -201,14 +201,14 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 				{
 					for (const auto& i : selectedUnits)
 					{
-						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
+						game->executeAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
 					}
 				}
 				else
 				{
 					for (const auto& i : selectedUnits)
 					{
-						game->addAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, SGA::Vector2f(worldPos.x,worldPos.y)));
+						game->executeAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, SGA::Vector2f(worldPos.x,worldPos.y)));
 					}
 				}
 				
@@ -384,12 +384,9 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 
 void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 {
-	ImGui::ShowDemoWindow();
 	createWindowInfo();
 	createWindowUnits();
 	createWindowNavMesh();
-	//createWindowProfiling();
-	
 }
 
 void RTSGameStateRender::createWindowInfo()

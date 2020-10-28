@@ -6,6 +6,7 @@
 #include <Representation/UnitType.h>
 #include <Representation/Player.h>
 #include <Representation/Navigation.h>
+#include <Configuration/WinConditionType.h>
 
 namespace SGA
 {
@@ -15,6 +16,11 @@ namespace SGA
 	class RTSGameState
 	{
 	public:
+
+		
+		Tile fogOfWarTile;
+		int fogOfWarId = -1;
+		
 		std::shared_ptr<std::unordered_map<int, UnitType>> unitTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 
@@ -32,6 +38,7 @@ namespace SGA
 
 		RTSGameState();
 		RTSGameState(Board board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes) :
+			fogOfWarTile(-1, 0, 0),
 			board(std::move(board)),
 			unitTypes(std::make_shared<std::unordered_map<int, UnitType>>(unitTypes)),
 			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
@@ -52,7 +59,8 @@ namespace SGA
 
 		friend void swap(RTSGameState& lhs, RTSGameState& rhs) noexcept
 		{
-			using std::swap;		
+			using std::swap;
+			swap(lhs.fogOfWarTile, rhs.fogOfWarTile);
 			swap(lhs.isGameOver, rhs.isGameOver);			
 			swap(lhs.board, rhs.board);
 			swap(lhs.units, rhs.units);
@@ -73,11 +81,12 @@ namespace SGA
 
 		RTSUnit* getUnit(int unitID);
 		RTSUnit* getUnit(Vector2f pos, float maxDistance = 1);
-		
+		RTSPlayer* getPlayer(int playerID);
 		[[nodiscard]] double getTileScale() const { return tileScale; }
 		[[nodiscard]] const Board& getBoard() const { return board; }
 		[[nodiscard]] Board& getBoard() { return board; }
 
+		void setWinnerID(int winner) { winnerPlayerID = winner; }
 		bool isInBounds(Vector2i pos) const
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
@@ -86,6 +95,8 @@ namespace SGA
 		int addPlayer();
 		int addUnit(int playerID, int typeID, const Vector2i& position);
 		void removeUnit(int id);
+
+		void applyFogOfWar(int playerID);
 
 	public:
 	

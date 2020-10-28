@@ -19,7 +19,10 @@ namespace SGA
 	{
 	public:
 		double deltaTime = 1. / 60.;
-		
+
+		WinConditionType winCondition;
+		int unitTypeID;
+
 		void advanceGameState(RTSGameState& state, const Action<Vector2f>& action) const override;
 
 		std::unique_ptr<ActionSpace<Vector2f>> getActions(RTSGameState& state) const
@@ -49,6 +52,9 @@ namespace SGA
 		
 		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
 		Path findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
+
+		bool checkGameIsFinished(RTSGameState& state) const;
+		bool canPlayerPlay(RTSPlayer& player) const;
 
 	private:
 		ActionSpace<Vector2f>* generateActions(RTSGameState& state) const override;
