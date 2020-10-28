@@ -24,7 +24,7 @@ namespace SGA
 			collisionRadius(0.5),
 			position(),
 			health(40),
-			maxHealth(40),
+			maxHealth(health),
 			attackDamage(20),
 			healAmount(10),
 			state(state)

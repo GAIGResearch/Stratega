@@ -216,6 +216,8 @@ namespace SGA
 				}
 			}
 		}
+
+		fogOfWarId = playerID;
 	}
 
 }

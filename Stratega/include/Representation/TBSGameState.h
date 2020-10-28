@@ -25,6 +25,8 @@ namespace SGA
 
 		int roundLimit=1;
 
+		int fogOfWarId = -1;
+
 		TBSGameState();
 		TBSGameState(Board&& board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes);
 		// Rule of Five - Needed to enable circular references
