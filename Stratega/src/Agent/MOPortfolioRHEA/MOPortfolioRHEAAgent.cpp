@@ -108,6 +108,7 @@ namespace SGA
             calculateCrowdingDistances(pop_);
             pop_ = nextGeneration(forwardModel, gameState, randomGenerator);
         }
+        calculateCrowdingDistances(pop_);
         sort(pop_.begin(), pop_.end(), sortByFitness);
     }
 
