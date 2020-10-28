@@ -16,7 +16,6 @@ namespace SGA
 			playerID(playerId),
 			unitID(unitId),
 			unitTypeID(0),
-			executingAction(nullptr),
 			actionRange(0),
 			actionCooldown(0),
 			maxActionCooldown(1),
@@ -27,17 +26,17 @@ namespace SGA
 			maxHealth(health),
 			attackDamage(20),
 			healAmount(10),
-			state(state)
+			state(state),
+			intendedAction(),
+			executingAction(),
+			path()
 		{
 		}
-
-		RTSUnit(const RTSUnit& unit) = default;
 
 		int playerID;
 		int unitID;
 		int unitTypeID;
 
-		std::shared_ptr<Action<Vector2f>> executingAction;
 		double actionRange;
 		double actionCooldown;
 		double maxActionCooldown;
@@ -51,7 +50,9 @@ namespace SGA
 		int healAmount;
 		std::reference_wrapper<RTSGameState> state;
 		
-		//Navigation path
+		// Actions
+		Action<Vector2f> intendedAction;
+		Action<Vector2f> executingAction;
 		Path path;
 	};
 }

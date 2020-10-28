@@ -56,31 +56,22 @@ void FMEvaluator::runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm,
 {
 	while (results.size() < StepCount && !state.isGameOver)
 	{
-		// Generate actions for every player
-		std::vector<SGA::Action<SGA::Vector2f>> actions;
-		std::chrono::duration<long long, std::ratio<1, 1000000>> actionSum{};
-		for(const auto& player : state.players)
-		{
-			// Measure getActions speed
-			auto getActionsStart = std::chrono::steady_clock::now();
-			auto actionSpace = fm.getActions(state, player.playerID);
-			auto getActionsEnd = std::chrono::steady_clock::now();
-			actionSum += std::chrono::duration_cast<std::chrono::microseconds>(getActionsEnd - getActionsStart);
-			
-			std::uniform_int_distribution<int> actionDist(0, actionSpace->count() - 1);
-			for (int i = 0; i < 10; i++)
-			{
-				actions.emplace_back(actionSpace->getAction(actionDist(*rngEngine)));
-			}
-		}
+		std::uniform_int_distribution<int> playerDist(0, state.players.size());
+		
+		// Measure getActions speed
+		auto getActionsStart = std::chrono::steady_clock::now();
+		auto actionSpace = fm.getActions(state, playerDist(*rngEngine));
+		auto getActionsEnd = std::chrono::steady_clock::now();
 
 		// Measure speed of action execution
+		std::uniform_int_distribution<int> actionDist(0, actionSpace->count() - 1);
+		const auto& action = *(actionDist(*rngEngine) + actionSpace->begin());
 		auto executeActionStart = std::chrono::steady_clock::now();
-		fm.advanceGameState(state, actions);
+		fm.advanceGameState(state, action);
 		auto executeActionEnd = std::chrono::steady_clock::now();
 
 		// Store results
-		results.getActionsDurations.emplace_back(actionSum / state.players.size()); // We just want the time it takes to generate actions for one player
+		results.getActionsDurations.emplace_back(std::chrono::duration_cast<std::chrono::microseconds>(getActionsEnd - getActionsStart));
 		results.executeActionDurations.emplace_back(std::chrono::duration_cast<std::chrono::microseconds>(executeActionEnd - executeActionStart));
 	}
 }

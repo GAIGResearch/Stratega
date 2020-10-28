@@ -4,54 +4,63 @@ namespace SGA
 {
 	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action<Vector2f>& action) const
 	{
-		std::vector<Action<Vector2f>> actions = { action };
-		advanceGameState(state, actions);
-	}
-
-	void RTSForwardModel::advanceGameState(RTSGameState& state, const std::vector<Action<Vector2f>>& actions) const
-	{
-		for(const auto& action : actions)
+		if(action.type != ActionType::EndTurn)
 		{
-			auto* unit = state.getUnit(action.getSourceUnitID());
-			unit->executingAction = std::make_shared<Action<Vector2f>>(action);
+			auto* sourceUnit = state.getUnit(action.sourceUnitID);
+			if (sourceUnit == nullptr)
+				return;
+
+			sourceUnit->intendedAction = action;
 		}
-
-		// Execute actions, note that we first execute one ActionType after the other
-		// This is to prevent disadvantages in chasing situations for example
-		RTSFMState fmState(state);
-		for(auto actionType : {ActionType::Move, ActionType::Heal, ActionType::Attack})
+		else // Advance game
 		{
+			// Update what the units are doing
 			for(auto& unit : state.units)
 			{
-				if (unit.executingAction == nullptr || unit.executingAction->getType() != actionType)
-					continue;
-
-				switch (actionType)
+				if (unit.intendedAction.type != ActionType::None)
 				{
-					case ActionType::Move: executeMove(fmState, unit); break;
-					case ActionType::Attack: executeAttack(fmState, unit); break;
-					case ActionType::Heal: executeHeal(fmState, unit); break;
+					unit.executingAction = unit.intendedAction;
+					unit.intendedAction.type = ActionType::None;
+				}
+			}
+			
+			// Execute actions, note that we first execute one ActionType after the other
+			// This is to prevent disadvantages in chasing situations for example
+			RTSFMState fmState(state);
+			for (auto actionType : { ActionType::Move, ActionType::Heal, ActionType::Attack })
+			{
+				for (auto& unit : state.units)
+				{
+					if (unit.executingAction.getType() != actionType)
+						continue;
+
+					switch (actionType)
+					{
+						case ActionType::Move: executeMove(fmState, unit); break;
+						case ActionType::Attack: executeAttack(fmState, unit); break;
+						case ActionType::Heal: executeHeal(fmState, unit); break;
+					}
+				}
+
+				if (actionType == ActionType::Move)
+				{
+					resolveUnitCollisions(fmState);
+					resolveEnvironmentCollisions(fmState);
 				}
 			}
 
-			if (actionType == ActionType::Move)
+			// Remove all units that were killed
+			for (auto id : fmState.deadUnitIDs)
 			{
-				resolveUnitCollisions(fmState);
-				resolveEnvironmentCollisions(fmState);
+				state.removeUnit(id);
+			}
+
+			// Update cooldown
+			for (auto& unit : state.units)
+			{
+				unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
 			}
 		}
-		
-		// Remove all units that were killed
-		for (auto id : fmState.deadUnitIDs)
-		{
-			state.removeUnit(id);
-		}
-		
-		// Update cooldown
-		for(auto& unit : state.units)
-		{
-			unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
-		}		
 	}
 	
 	ActionSpace<Vector2f>* RTSForwardModel::generateActions(RTSGameState& state) const
@@ -64,13 +73,14 @@ namespace SGA
 		auto* actionSpace = new ActionSpace<Vector2f>();
 		for (auto& unit : state.units)
 		{
-			if (unit.playerID != playerID)
+			if (unit.playerID != playerID || unit.intendedAction.getType() != ActionType::None)
 				continue;
 			
 			generateMoves(unit, *actionSpace);
 			generateAttacks(unit, *actionSpace);
 			generateHeals(unit, *actionSpace);
 		}
+		actionSpace->addAction(generateEndTickAction());
 
 		return actionSpace;
 	}
@@ -119,6 +129,11 @@ namespace SGA
 		}
 	}
 
+	Action<Vector2f> RTSForwardModel::generateEndTickAction() const
+	{
+		return Action<Vector2f>(ActionType::EndTurn, -1);
+	}
+
 	bool RTSForwardModel::validateMove(RTSGameState& state, const Action<Vector2f>& action) const
 	{
 		return state.getUnit(action.getSourceUnitID()) != nullptr;
@@ -148,13 +163,13 @@ namespace SGA
 
 	void RTSForwardModel::executeMove(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateMove(state.target, *unit.executingAction))
+		if (!validateMove(state.target, unit.executingAction))
 		{
-			unit.executingAction = nullptr;
+			unit.executingAction.type = ActionType::None;
 			return;
 		}
 		
-		Vector2f targetPos=unit.executingAction->getTargetPosition();
+		Vector2f targetPos= unit.executingAction.targetPosition;
 
 		//Get end position of current path
 		Vector2f oldTargetPos(0, 0);
@@ -186,7 +201,7 @@ namespace SGA
 			{
 				if (movementDistance <= movementSpeed) {
 					unit.position = targetPos;
-					unit.executingAction = nullptr;
+					unit.executingAction.type = ActionType::None;
 					unit.path = Path();
 				}				
 			}			
@@ -199,11 +214,11 @@ namespace SGA
 	
 	void RTSForwardModel::executeAttack(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateAttack(state.target, *unit.executingAction))
+		if (!validateAttack(state.target, unit.executingAction))
 		{
 			if(unit.actionCooldown > 0)
 			{
-				unit.executingAction = nullptr;
+				unit.executingAction.type = ActionType::None;
 			}
 			
 			unit.path = Path();
@@ -212,10 +227,10 @@ namespace SGA
 		if (unit.actionCooldown > 0)
 			return;
 		
-		auto* targetUnit = unit.state.get().getUnit(unit.executingAction->getTargetUnitID());
+		auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
 		
 		//Update position of the action
-		unit.executingAction->updateTargetPosition( targetUnit->position);
+		unit.executingAction.targetPosition = targetUnit->position;
 		
 		//If is in range attack, if not, move to to a closer position
 		if(unit.position.distance(targetUnit->position) <= unit.actionRange)
@@ -224,7 +239,7 @@ namespace SGA
 			if (targetUnit->health <= 0)
 			{
 				state.deadUnitIDs.emplace_back(targetUnit->unitID);
-				unit.executingAction = nullptr;
+				unit.executingAction.type = ActionType::None;
 				unit.path = Path();
 			}			
 			unit.actionCooldown = unit.maxActionCooldown;
@@ -294,13 +309,13 @@ namespace SGA
 	
 	void RTSForwardModel::executeHeal(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateHeal(state.target, *unit.executingAction))
+		if (!validateHeal(state.target, unit.executingAction))
 		{
-			unit.executingAction = nullptr;
+			unit.executingAction.type = ActionType::None;
 			return;
 		}
 		
-		auto* targetUnit = unit.state.get().getUnit(unit.executingAction->getTargetUnitID());
+		auto* targetUnit = unit.state.get().getUnit(unit.executingAction.getTargetUnitID());
 		targetUnit->health += unit.healAmount;
 		
 		if (targetUnit->health > targetUnit->maxHealth)
@@ -317,7 +332,7 @@ namespace SGA
 			for (auto& otherUnit : state.target.units)
 			{
 				// Units cant collide with themselves, also idle units do not push busy units
-				if (unit.unitID == otherUnit.unitID || (unit.executingAction != nullptr && otherUnit.executingAction == nullptr))
+				if (unit.unitID == otherUnit.unitID || (unit.executingAction.type != ActionType::None && otherUnit.executingAction.type == ActionType::None))
 					continue;
 
 				auto dir = otherUnit.position - unit.position;

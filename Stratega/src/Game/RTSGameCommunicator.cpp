@@ -19,7 +19,7 @@ namespace SGA
 
 	void RTSGameCommunicator::executeAction(Action<Vector2f> action) const
 	{
-		game->addAction(action);
+		game->executeAction(action);
 	}
 
 	RTSGameState RTSGameCommunicator::getGameState() const

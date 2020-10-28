@@ -16,7 +16,7 @@ namespace SGA
 		{
 			//Execute
 			stateMutex.lock();
-			forwardModel.advanceGameState(*gameState, actionCache);
+			forwardModel.advanceGameState(*gameState, forwardModel.generateEndTickAction());
 
 			//Update navmesh if it needs to
 			if(shouldUpdateNavmesh)
@@ -31,9 +31,6 @@ namespace SGA
 			{
 				com->onGameStateAdvanced();
 			}
-
-			// Clean up cache
-			actionCache.clear();
 
 			accumulatedTimeUpdate = 0;
 			executionCount++;
@@ -53,10 +50,13 @@ namespace SGA
 		}
 	}
 
-	void RTSGame::addAction(const Action<Vector2f>& action)
+	void RTSGame::executeAction(const Action<Vector2f>& action)
 	{
-		std::lock_guard<std::mutex> copyGuard(stateMutex);
-		actionCache.emplace_back(action);
+		if (action.type == ActionType::EndTurn)
+			return;
+		
+		std::lock_guard<std::mutex> stateGuard(stateMutex);
+		forwardModel.advanceGameState(*gameState, action);
 	}
 
 	const RTSGameState& RTSGame::getState()

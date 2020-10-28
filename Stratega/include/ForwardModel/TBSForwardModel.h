@@ -16,7 +16,6 @@ namespace SGA
 		int unitTypeID;
 		
 		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action) const override;
-		void advanceGameState(TBSGameState& state, const std::vector<Action<Vector2i>>& action) const override {};
 		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action, ActionSpace<Vector2i>& actionSpace) const;
 
 		std::unique_ptr<ActionSpace<Vector2i>> getActions(TBSGameState& state) const
