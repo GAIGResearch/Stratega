@@ -259,7 +259,7 @@ namespace SGA
 		if (healer == nullptr || target == nullptr)
 			return false;
 		
-		return target->getHealth() < target->getMaxHealth() && healer->getPosition().manhattanDistance(target->getPosition()) <= healer->getType().actionRange;
+		return target->getHealth() < target->getType().maxHealth && healer->getPosition().manhattanDistance(target->getPosition()) <= healer->getType().actionRange;
 	}
 
 	bool TBSForwardModel::validateEndOfTurn(TBSGameState& /*state*/, const Action<Vector2i>& /*action*/) const

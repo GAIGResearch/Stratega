@@ -22,7 +22,6 @@ namespace SGA
 			playerID(playerId),
 			position(),
 			health(40),
-			maxHealth(health),
 			attackDamage(20),
 			healAmount(10),
 			range(5),
@@ -37,7 +36,6 @@ namespace SGA
 		void setTypeID(int newTypeID) { unitTypeID = newTypeID; };
 		void setPosition(Vector2i pos) { position = pos; }
 		void setHealth(int newHealth) { health = newHealth; }
-		void setMaxHealth(int newHealth) { maxHealth = newHealth; }
 		void setAttackDamage(int newAttackDamage) { attackDamage = newAttackDamage; }
 		void setHealAmount(int newHealAmount) { healAmount = newHealAmount; }
 		void setRange(int newRange) { range = newRange; }
@@ -46,7 +44,6 @@ namespace SGA
 		const UnitType& getType() const;
 		int& getHealth();
 		int getHealthh()const  { return health; }
-		int getMaxHealth()const  { return maxHealth; }
 		int getAttackDamage() const;
 		int getHealAmount() const;
 		int getRange() const;
@@ -64,7 +61,6 @@ namespace SGA
 		Vector2i position;
 
 		int health;
-		int maxHealth;
 		int attackDamage;
 		int healAmount;
 		int range;
