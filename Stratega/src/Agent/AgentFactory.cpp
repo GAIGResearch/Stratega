@@ -24,6 +24,17 @@ namespace SGA
 		return false;
 	}
 
+	bool AgentFactory::registerAgentFn(const std::string& name, const AgentGeneratorParams& agentFn)
+	{
+		if (agentGeneratorParamsLookup.find(name) == agentGeneratorParamsLookup.end())
+		{
+			agentGeneratorParamsLookup.emplace(name, agentFn);
+			return true;
+		}
+
+		return false;
+	}
+
 	std::unique_ptr<Agent> AgentFactory::createAgent(const std::string& name)
 	{
 		auto it = agentGeneratorLookup.find(name);
@@ -33,6 +44,17 @@ namespace SGA
 		}
 
 		return std::unique_ptr<Agent>(it->second());
+	}
+
+	std::unique_ptr<Agent> AgentFactory::createAgent(const std::string& name, YAML::Node params)
+	{
+		auto it = agentGeneratorParamsLookup.find(name);
+		if (it == agentGeneratorParamsLookup.end())
+		{
+			return nullptr;
+		}
+
+		return std::unique_ptr<Agent>(it->second(params));
 	}
 
 	AgentFactory& AgentFactory::getDefaultFactory()
@@ -48,7 +70,7 @@ namespace SGA
 		factory.registerAgent<OSLAAgent>("OSLAAgent");
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
-		factory.registerAgent<MCTSAgent>("MCTSAgent");
+		factory.registerAgent<MCTSAgent, MCTSParams>("MCTSAgent");
 		factory.registerAgent<PortfolioRHEAAgent>("PortfolioRHEAAgent");
 		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
 		

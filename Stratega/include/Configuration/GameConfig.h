@@ -13,7 +13,7 @@ namespace SGA
 	struct GameConfig
 	{
         std::string gameType;
-        std::vector<std::string> agentNames;
+        std::unordered_map<std::string, YAML::Node> agentParams;
 		std::map<std::string, TileConfig> tileTypes;
         std::map<std::string, UnitConfig> unitTypes;
         BoardConfig boardConfig;
@@ -23,7 +23,7 @@ namespace SGA
 
         int getNumberOfPlayers() const
         {
-            return numPlayers == -1 ? agentNames.size() : numPlayers;
+            return numPlayers == -1 ? agentParams.size() : numPlayers;
         }
 	};
 
@@ -44,7 +44,11 @@ namespace YAML
     {
         static bool decode(const Node& node, SGA::GameConfig& rhs)
         {
-            rhs.agentNames = node["Agents"].as<std::vector<std::string>>();
+            auto agentsNode = node["Agents"];
+        	for(auto& entry : agentsNode)
+        	{
+        		
+        	}
             rhs.tileTypes = node["Tiles"].as<std::map<std::string, SGA::TileConfig>>();
             rhs.unitTypes = node["Units"].as<std::map<std::string, SGA::UnitConfig>>();
             rhs.boardConfig = node["Board"].as<SGA::BoardConfig>();
