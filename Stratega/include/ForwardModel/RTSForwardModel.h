@@ -21,7 +21,6 @@ namespace SGA
 		double deltaTime = 1. / 60.;
 		
 		void advanceGameState(RTSGameState& state, const Action<Vector2f>& action) const override;
-		void advanceGameState(RTSGameState& state, const std::vector<Action<Vector2f>>& action) const override;
 
 		std::unique_ptr<ActionSpace<Vector2f>> getActions(RTSGameState& state) const
 		{
@@ -35,6 +34,7 @@ namespace SGA
 		void generateMoves(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
 		void generateAttacks(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
 		void generateHeals(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
+		Action<Vector2f> generateEndTickAction() const;
 
 		bool validateMove(RTSGameState& state, const Action<Vector2f>& action) const;
 		bool validateAttack(RTSGameState& state, const Action<Vector2f>& action) const;

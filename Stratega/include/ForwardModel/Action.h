@@ -7,8 +7,16 @@ namespace SGA
 	class Action
 	{
 	public:
-		Action() = default;
-		Action(ActionType type,int playerID,int unitID=-1, T targetPos = T(0, 0), int targetID = -1)
+		Action():
+			type(ActionType::None),
+			targetUnitID(-1),
+			sourceUnitID(-1),
+			targetPosition(),
+			playerID(-1)
+		{
+		}
+
+		Action(ActionType type, int playerID,int unitID=-1, T targetPos = T(0, 0), int targetID = -1)
 		{
 			this->type = type;
 			this->playerID = playerID;
@@ -29,7 +37,6 @@ namespace SGA
 
 		void updateTargetPosition(T& target) { targetPosition = target; }	
 
-	private:
 		ActionType type;
 
 		//IDs

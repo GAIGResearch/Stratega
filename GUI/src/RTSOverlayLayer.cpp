@@ -73,8 +73,8 @@ void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) c
 	  //Draw paths of units
 	  for (auto& unit : units)
 	  {
-		  if (unit.executingAction)
-			  if (unit.executingAction->getType() == SGA::ActionType::Move || unit.executingAction->getType() == SGA::ActionType::Attack)
+		  if (unit.executingAction.type != SGA::ActionType::None)
+			  if (unit.executingAction.type == SGA::ActionType::Move || unit.executingAction.type == SGA::ActionType::Attack)
 			  {
 				  //Check if has a valid path
 				  if (unit.path.m_nstraightPath > 0)
@@ -123,7 +123,7 @@ void RTSOverlayLayer::draw(SGA::RTSGameState& state, sf::RenderWindow& window) c
 					  temp.setRadius(20);
 					  window.draw(temp);
 
-					  temp.setPosition(toISO(unit.executingAction->getTargetPosition().x, unit.executingAction->getTargetPosition().y));
+					  temp.setPosition(toISO(unit.executingAction.targetPosition.x, unit.executingAction.targetPosition.y));
 					  temp.move(TILE_WIDTH_HALF, 0);
 					  temp.setFillColor(sf::Color::Red);
 					  temp.setRadius(20);

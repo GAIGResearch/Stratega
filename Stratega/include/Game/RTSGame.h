@@ -22,7 +22,7 @@ namespace SGA
 			return forwardModel;
 		}
 
-		void addAction(const Action<Vector2f>& action);
+		void executeAction(const Action<Vector2f>& action);
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.
@@ -33,7 +33,6 @@ namespace SGA
 		[[nodiscard]] RTSGameState getStateCopy();
 
 	private:
-		std::vector<Action<Vector2f>> actionCache;
 		double accumulatedTimeUpdate = 0;
 		double accumulatedTimePrint = 0;
 		int executionCount = 0;
