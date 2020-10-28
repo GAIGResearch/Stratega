@@ -9,17 +9,12 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{				
 				TBSGameState gameState = gameCommunicator.getGameState();
-				if (gameState.isGameOver)
+				if (gameState.isGameOver)	//safety check against race conditions
 					break;
 				const auto actionSpace = forwardModel.getActions(gameState);
 
-				/*
-				if (rootNode == nullptr)
-				{
-					rootNode = std::make_unique<TreeNode>(forwardModel, gameState);
-				}*/
 
-				// if there is just one action and we don't spent the time on continuouing our search
+				// if there is just one action and we don't spent the time on continuing our search
 				// we just instantly return it
 				// todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
 				if (actionSpace->count() == 1 || !continuePreviousSearch)
@@ -132,9 +127,9 @@ namespace SGA
 					openNodes.push_back(node);
 				}
 
-				for (size_t i = 0; i < node->children.size(); i++)
+				for (auto& i : node->children)
 				{
-					candidateNodes.push_back(node->children.at(i).get());
+					candidateNodes.push_back(i.get());
 				}
 			}
 		}

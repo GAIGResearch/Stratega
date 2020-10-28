@@ -1,23 +1,24 @@
 #pragma once
 #include <ForwardModel/Action.h>
 #include <ForwardModel/ActionSpace.h>
-#include <Agent/Portfolios/BasePortfolio.h>
+#include <Agent/ActionScripts/BaseActionScript.h>
 #include <set>
 #include <map>
 
 
 namespace SGA {
-	class RunToFriends : public BasePortfolio
+	class AttackClosestOpponentScript : public BaseActionScript
 	{
 
 	public:
-		RunToFriends() : BasePortfolio() {};
-		~RunToFriends() override = default;
+		AttackClosestOpponentScript() : BaseActionScript(){};
 
 		Action<Vector2i> getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const override;
 		Action<Vector2i> getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const override;
-		static int minimalDistanceToFriends(const Vector2i position, std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits);
-		std::string toString() const override { return "RunToFriends"; };
+		[[nodiscard]] std::string toString() const override { return "AttackClosestOpponentScript";  };
+
+	private:
+		static int minimalDistanceToOpponents(const Vector2i position, std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits);
 
 	};
 

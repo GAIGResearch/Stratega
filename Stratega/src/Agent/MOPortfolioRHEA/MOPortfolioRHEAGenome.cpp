@@ -12,8 +12,8 @@ namespace SGA {
         size_t length = 0;
         while (!gameState.isGameOver && actionSpace->count() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose a random portfolio and sample action
-            const int portfolioIndex = rand() % params.portfolios.size();
-            BasePortfolio* portfolio = params.portfolios.at(portfolioIndex).get();
+            const int portfolioIndex = rand() % params.PORTFOLIO.size();
+            BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
             const Action action = portfolio->getAction(gameState, actionSpace);
         	
             //todo forward random generator to getRandomAction
@@ -72,8 +72,8 @@ namespace SGA {
             if (mutate || (actIdx < portfolioIndices.size()))
             {
                 //todo use random generator to get a randomAction
-                const int portfolioIndex = rand() % params.portfolios.size();
-                BasePortfolio* portfolio = params.portfolios.at(portfolioIndex).get();
+                const int portfolioIndex = rand() % params.PORTFOLIO.size();
+                BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
                 const Action action = portfolio->getAction(gameState, actionSpace);
 
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
@@ -93,12 +93,12 @@ namespace SGA {
                 // use previous portfolio but sample a new action
                 if (actIdx < portfolioIndices.size())
                 {
-                    actions[actIdx] = params.portfolios[portfolioIndices[actIdx]]->getAction(gameState, actionSpace);
+                    actions[actIdx] = params.PORTFOLIO[portfolioIndices[actIdx]]->getAction(gameState, actionSpace);
 				}
             	else
 				{
-                    portfolioIndices.emplace_back(rand() % params.portfolios.size());
-                    actions.emplace_back(params.portfolios[portfolioIndices[actIdx]]->getAction(gameState, actionSpace));
+                    portfolioIndices.emplace_back(rand() % params.PORTFOLIO.size());
+                    actions.emplace_back(params.PORTFOLIO[portfolioIndices[actIdx]]->getAction(gameState, actionSpace));
 				}
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
             }
@@ -133,8 +133,8 @@ namespace SGA {
             // mutation = randomly select a new action for gameStateCopy
             if (mutate)
             {
-                const int portfolioIndex = rand() % params.portfolios.size();
-                BasePortfolio* portfolio = params.portfolios.at(portfolioIndex).get();
+                const int portfolioIndex = rand() % params.PORTFOLIO.size();
+                BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
                 Action action = portfolio->getAction(gameState, actionSpace);
 
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
@@ -162,12 +162,12 @@ namespace SGA {
             		else
                     {
                         // use a random portfolio by default
-                        chosenPortfolio = rand() % params.portfolios.size();
+                        chosenPortfolio = rand() % params.PORTFOLIO.size();
                     }
                 }
                 
                 portfolioIndices.emplace_back(chosenPortfolio);
-                actions.emplace_back(params.portfolios[chosenPortfolio]->getAction(gameState, actionSpace));
+                actions.emplace_back(params.PORTFOLIO[chosenPortfolio]->getAction(gameState, actionSpace));
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
             }
 
@@ -189,7 +189,7 @@ namespace SGA {
         std::rotate(actions.begin(), actions.begin() + 1, actions.end());
     	
         // replace last portfolio with a random new one
-        portfolioIndices[portfolioIndices.size() - 1] = rand() % params.portfolios.size();
+        portfolioIndices[portfolioIndices.size() - 1] = rand() % params.PORTFOLIO.size();
     	
 		// check if actions are still applicable and if not sample a new one from portfolio
     	// always re-sample the last action since it is the rotated action from the previous solution
@@ -201,7 +201,7 @@ namespace SGA {
 
             if (!forwardModel.isValid(gameState, actions[i]))
             {
-                const Action newAction = params.portfolios[portfolioIndices[i]]->getAction(gameState, actionSpace);
+                const Action newAction = params.PORTFOLIO[portfolioIndices[i]]->getAction(gameState, actionSpace);
                 actions[i] = newAction;
             }
     		

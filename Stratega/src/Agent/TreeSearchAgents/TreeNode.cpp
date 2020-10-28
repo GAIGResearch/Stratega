@@ -24,7 +24,7 @@ namespace SGA
 	/// <param name="opponentModel"></param>
 	/// <param name="forwardModelCalls"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, BasePortfolio* opponentModel, int& forwardModelCalls)
+	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, BaseActionScript* opponentModel, int& forwardModelCalls)
 	{
 		//std::cout << "expand" << std::endl;
 		

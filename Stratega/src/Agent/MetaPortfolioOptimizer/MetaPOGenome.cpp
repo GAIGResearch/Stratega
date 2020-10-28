@@ -10,7 +10,7 @@ namespace SGA {
 
         size_t length = 0;
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
-        unitScript = std::map<int, BasePortfolio*>();
+        unitScript = std::map<int, BaseActionScript*>();
         scriptUpdates = std::vector<UnitScriptChange>();
     	
     	// assign a random script to each unit
@@ -19,7 +19,7 @@ namespace SGA {
     	{
     		if (unit->getPlayerID() == gameState.currentPlayer)
     		{
-				unitScript[unit->getUnitID()] = params.portfolios.at(rand() % params.portfolios.size()).get();
+				unitScript[unit->getUnitID()] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
                 playerUnits.emplace(unit->getUnitID());
             }
     	}
@@ -27,7 +27,7 @@ namespace SGA {
     	// create random UnitScriptChanges
     	for (int i = 0; i < params.NR_OF_SCRIPT_CHANGES; i++)
     	{
-            scriptUpdates.emplace_back(UnitScriptChange::createRandomScriptChange(params.HORIZON, playerUnits, params.portfolios.size()));
+            scriptUpdates.emplace_back(UnitScriptChange::createRandomScriptChange(params.HORIZON, playerUnits, params.PORTFOLIO.size()));
     	}
     	
         // rate newly created individual
@@ -40,7 +40,7 @@ namespace SGA {
         int lastKnownTurn = gameState.currentGameTurn;
         const int playerID = gameState.currentPlayer;
     	
-        std::map<int, BasePortfolio*> tmpMap(unitScript);
+        std::map<int, BaseActionScript*> tmpMap(unitScript);
     	
     	while (!gameState.isGameOver && gameState.currentGameTurn - startTurn < params.HORIZON)
     	{
@@ -82,7 +82,7 @@ namespace SGA {
     			{
     				if (scriptChange.tick == turnDifference)
     				{
-                        tmpMap[scriptChange.unitID] = params.portfolios[scriptChange.targetScript].get();
+                        tmpMap[scriptChange.unitID] = params.PORTFOLIO[scriptChange.targetScript].get();
     				}
     			}
                 lastKnownTurn = gameState.currentGameTurn;
@@ -91,7 +91,7 @@ namespace SGA {
         return params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 	
-    MetaPOGenome::MetaPOGenome(std::map<int, BasePortfolio*>& unitScript, std::vector<UnitScriptChange> scriptChanges, TBSForwardModel& forwardModel, TBSGameState& gameState, MetaPOParams& params) :
+    MetaPOGenome::MetaPOGenome(std::map<int, BaseActionScript*>& unitScript, std::vector<UnitScriptChange> scriptChanges, TBSForwardModel& forwardModel, TBSGameState& gameState, MetaPOParams& params) :
         unitScript(std::move(unitScript)), scriptUpdates(std::move(scriptChanges))
     {
         value = evaluateGenome(forwardModel, gameState, params);
@@ -122,7 +122,7 @@ namespace SGA {
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
     		if (mutate || !unitScript.contains(unitID))
     		{
-                unitScript[unitID] = params.portfolios.at(rand() % params.portfolios.size()).get();
+                unitScript[unitID] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
     		}
     	}
 
@@ -131,7 +131,7 @@ namespace SGA {
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
             if (mutate)
             {
-                unitScriptChange.mutate(params.HORIZON, unitIDs, params.portfolios.size(), randomGenerator);
+                unitScriptChange.mutate(params.HORIZON, unitIDs, params.PORTFOLIO.size(), randomGenerator);
             }
     	}
     	
@@ -142,7 +142,7 @@ namespace SGA {
     MetaPOGenome MetaPOGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params, std::mt19937& randomGenerator, MetaPOGenome& parent1, MetaPOGenome& parent2)
     {
         // initialize variables for the new genome to be created
-        std::map<int, BasePortfolio*> unitScript = std::map<int, BasePortfolio*>();
+        std::map<int, BaseActionScript*> unitScript = std::map<int, BaseActionScript*>();
 
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
 
@@ -156,7 +156,7 @@ namespace SGA {
         	
             if (mutate)
             {
-                unitScript[currentUnitID] = params.portfolios.at(rand() % params.portfolios.size()).get();
+                unitScript[currentUnitID] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
             }
 			else
             {
@@ -178,7 +178,7 @@ namespace SGA {
                     else
                     {
                         // use a random portfolio by default
-                        unitScript[currentUnitID] = params.portfolios.at(rand() % params.portfolios.size()).get();
+                        unitScript[currentUnitID] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
                     }
                 }
             }
@@ -203,8 +203,8 @@ namespace SGA {
             unitScriptChange.tick--;
     		if (unitScriptChange.tick == 0)
     		{
-                unitScript[unitScriptChange.unitID] = params.portfolios[unitScriptChange.targetScript].get();
-                unitScriptChange.mutateAll(params.HORIZON, unitIDs, params.portfolios.size(), randomGenerator);
+                unitScript[unitScriptChange.unitID] = params.PORTFOLIO[unitScriptChange.targetScript].get();
+                unitScriptChange.mutateAll(params.HORIZON, unitIDs, params.PORTFOLIO.size(), randomGenerator);
     		}
     	}
     	
@@ -214,8 +214,8 @@ namespace SGA {
     void MetaPOGenome::toString() const
     {
         std::cout << "PortfolioRHEAGenome" << "\n";
-        std::cout << "\Unit Script Assignments =" << "\n";
-        for (std::pair<const int, BasePortfolio*> unitAssignment : unitScript)
+        std::cout << "\tUnit Script Assignments =" << "\n";
+        for (std::pair<const int, BaseActionScript*> unitAssignment : unitScript)
         {
             std::cout << "\t\tUnit " <<  unitAssignment.first << ";" << unitAssignment.second << "\n";
         }

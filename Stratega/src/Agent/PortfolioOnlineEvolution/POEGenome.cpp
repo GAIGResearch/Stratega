@@ -18,11 +18,11 @@ namespace SGA {
         while (length < params.INDIVIDUAL_LENGTH) 
         {
             // choose a random portfolio for each unit
-            std::map<int, BasePortfolio*> turnScriptAssignment;
+            std::map<int, BaseActionScript*> turnScriptAssignment;
             for (int unitID : playerUnits)
             {
                 //todo forward random generator to getRandomPortfolio
-                turnScriptAssignment[unitID] = params.portfolios.at(rand() % params.portfolios.size()).get();
+                turnScriptAssignment[unitID] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
             }
         	
             scriptAssignment.emplace_back(turnScriptAssignment);
@@ -42,7 +42,7 @@ namespace SGA {
         {
             auto actionSpace = forwardModel.getActions(gameState);
             params.REMAINING_FM_CALLS--;
-            std::map<int, BasePortfolio*> playerMap = scriptAssignment[gameState.currentGameTurn - startTurn];
+            std::map<int, BaseActionScript*> playerMap = scriptAssignment[gameState.currentGameTurn - startTurn];
             if (gameState.currentPlayer == playerID)
             {
                 // choose action according to unitScript
@@ -76,7 +76,7 @@ namespace SGA {
         return params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 
-    POEGenome::POEGenome(std::vector<std::map<int, BasePortfolio*>> scriptAssignment, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params) :
+    POEGenome::POEGenome(std::vector<std::map<int, BaseActionScript*>> scriptAssignment, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params) :
         scriptAssignment(std::move(scriptAssignment))
     {
         value = evaluateGenome(forwardModel, gameState, params);
@@ -112,14 +112,14 @@ namespace SGA {
         const int playerID = gameState.currentPlayer;
 
         const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
-        for (std::map<int, BasePortfolio*>& assignmentPerTurn : scriptAssignment)
+        for (std::map<int, BaseActionScript*>& assignmentPerTurn : scriptAssignment)
         {
             for (auto& entry : assignmentPerTurn)
             {
                 const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
                 if (mutate)
                 {
-                    entry.second = params.portfolios.at(rand() % params.portfolios.size()).get();
+                    entry.second = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
                 }
 			}
         }
@@ -145,7 +145,7 @@ namespace SGA {
         const int playerID = gameState.currentPlayer;
 
         // initialize variables for the new genome to be created
-        std::vector<std::map<int, BasePortfolio*>> tmpScriptAssignment;
+        std::vector<std::map<int, BaseActionScript*>> tmpScriptAssignment;
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
@@ -161,7 +161,7 @@ namespace SGA {
         std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
     	for (size_t i = 0; i < params.INDIVIDUAL_LENGTH; i++)
     	{
-            std::map<int, BasePortfolio*> turnScriptAssignment;
+            std::map<int, BaseActionScript*> turnScriptAssignment;
             for (int unitID : playerUnits)
             {
                 const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
@@ -169,11 +169,11 @@ namespace SGA {
                 {
                     // choose a random portfolio
                     //todo forward random generator to getRandomPortfolio
-                    turnScriptAssignment[unitID] = params.portfolios.at(rand() % params.portfolios.size()).get();
+                    turnScriptAssignment[unitID] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
                 }
                 else 
                 {
-                    BasePortfolio* chosenPortfolio = nullptr;
+                    BaseActionScript* chosenPortfolio = nullptr;
                 	
                     // select a portfolio from its parents
                     const bool useParent1First = doubleDistribution_(randomGenerator) < 0.5;
@@ -195,7 +195,7 @@ namespace SGA {
                         else
                         {
                             // use a random portfolio by default
-                            chosenPortfolio = params.portfolios.at(rand() % params.portfolios.size()).get();
+                            chosenPortfolio = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
                         }
                     }
                     turnScriptAssignment[unitID] = chosenPortfolio;
@@ -222,7 +222,7 @@ namespace SGA {
         for (auto& entry : lastScriptAssignment)
         {
             //todo forward random generator to getRandomPortfolio
-            lastScriptAssignment[entry.first] = params.portfolios.at(rand() % params.portfolios.size()).get();
+            lastScriptAssignment[entry.first] = params.PORTFOLIO.at(rand() % params.PORTFOLIO.size()).get();
         }
     	
         // re-evaluate the shifted individual
@@ -234,7 +234,7 @@ namespace SGA {
         std::cout << "POEGenome" << "\n";
         std::cout << "\tscriptAssignment=" << "\n";
         int i = 0;
-        for (const std::map<int, BasePortfolio*>& assignmentPerTurn : scriptAssignment)
+        for (const std::map<int, BaseActionScript*>& assignmentPerTurn : scriptAssignment)
         {
             std::cout << "\tTurn: " << i++ << std::endl;
             for (const auto& entry : assignmentPerTurn)

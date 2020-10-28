@@ -21,7 +21,7 @@ namespace SGA {
 		std::cout << "\tREMAINING_FM_CALLS = " << REMAINING_FM_CALLS << std::endl;
 		std::cout << "\tPLAYER_ID = " << PLAYER_ID << std::endl;
 
-		std::cout << "\t#PORTFOLIOS = " << portfolios.size() << std::endl;
+		std::cout << "\t#PORTFOLIOS = " << PORTFOLIO.size() << std::endl;
 		std::cout << "\tOPPONENT_MODEL = " << opponentModel << std::endl;
 		std::cout << "\tHEURISTIC = " << HEURISTIC.getName() << std::endl;
 		std::cout << "\tEPSILON = " << EPSILON << std::endl;

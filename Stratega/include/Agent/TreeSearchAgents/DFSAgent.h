@@ -3,8 +3,7 @@
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 
 
-#include "Agent/Portfolios/AttackClosest.h"
-#include "Agent/Portfolios/BasePortfolio.h"
+#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
 
 namespace SGA
 {
@@ -16,7 +15,7 @@ namespace SGA
 		int maxDepth = 3;
 		int forwardModelCalls = 2000;
 		int remainingForwardModelCalls = forwardModelCalls;
-		std::unique_ptr<BasePortfolio> opponentModel = std::make_unique<AttackClosest>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
+		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<AttackClosestOpponentScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
 		DFSAgent() :
 			Agent{}, _stateHeuristic(LinearSumHeuristic())

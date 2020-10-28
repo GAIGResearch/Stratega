@@ -5,7 +5,7 @@
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 #include <Agent/Heuristic/StateHeuristic.h>
 
-#include "Agent/Portfolios/AttackClosest.h"
+#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
 
 namespace SGA
 {
@@ -18,8 +18,9 @@ namespace SGA
 		std::unique_ptr<TreeNode> rootNode = nullptr;
 		int previousActionIndex = -1;
 		int playerTurn = -1;
-		std::unique_ptr<BasePortfolio> opponentModel = std::make_unique<AttackClosest>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
-
+		
+		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<AttackClosestOpponentScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
+		
 	public:
 		BFSAgent() :
 			Agent{ }

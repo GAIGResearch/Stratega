@@ -12,7 +12,7 @@ namespace SGA {
 	class POEGenome
 	{
 	private:
-		std::vector<std::map<int, BasePortfolio*>> scriptAssignment;
+		std::vector<std::map<int, BaseActionScript*>> scriptAssignment;
 		double value = 0;
 
 	public:
@@ -25,7 +25,7 @@ namespace SGA {
 
 		void mutate(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator);
 
-		std::vector<std::map<int, BasePortfolio*>> getScriptAssignment() const { return scriptAssignment; };
+		std::vector<std::map<int, BaseActionScript*>> getScriptAssignment() const { return scriptAssignment; };
 		double getValue() const { return value; };
 		void setValue(const double value) { this->value = value; };
 
@@ -35,7 +35,7 @@ namespace SGA {
 		Action<Vector2i> POEGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace);
 
 	private:
-		POEGenome(std::vector<std::map<int, BasePortfolio*>>, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
+		POEGenome(std::vector<std::map<int, BaseActionScript*>>, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
 		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace,  const Action<Vector2i>& action, POEParams& params);
 		double evaluateGenome(TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
 

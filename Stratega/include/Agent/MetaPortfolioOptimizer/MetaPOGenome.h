@@ -16,7 +16,7 @@ namespace SGA {
 
 	private:
 		std::vector<UnitScriptChange> scriptUpdates;
-		std::map<int, BasePortfolio*> unitScript;
+		std::map<int, BaseActionScript*> unitScript;
 		
 		double value = 0;
 
@@ -27,7 +27,7 @@ namespace SGA {
 		// creates a copy of an existing Portfolio Genome
 		MetaPOGenome(const MetaPOGenome& other) = default;
 
-		std::map<int, BasePortfolio*>& getUnitScript() { return unitScript; };
+		std::map<int, BaseActionScript*>& getUnitScript() { return unitScript; };
 
 		void mutate(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params, std::mt19937& randomGenerator);
 		
@@ -42,7 +42,7 @@ namespace SGA {
 		Action<Vector2i> getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace);
 		
 	private:
-		MetaPOGenome(std::map<int, BasePortfolio*>& unitScript, std::vector<UnitScriptChange> scriptUpdates, TBSForwardModel& forwardModel, TBSGameState& gameState, MetaPOParams& params);
+		MetaPOGenome(std::map<int, BaseActionScript*>& unitScript, std::vector<UnitScriptChange> scriptUpdates, TBSForwardModel& forwardModel, TBSGameState& gameState, MetaPOParams& params);
 		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace,  const Action<Vector2i>& action, MetaPOParams& params);
 
 	};

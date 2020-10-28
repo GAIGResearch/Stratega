@@ -7,7 +7,7 @@
 #include <ForwardModel/TBSForwardModel.h>
 #include <Representation/TBSGameState.h>
 
-#include "Agent/Portfolios/BasePortfolio.h"
+#include "Agent/ActionScripts/BaseActionScript.h"
 
 
 namespace SGA {
@@ -20,7 +20,7 @@ namespace SGA {
 	public:
 		// Root Node Constructor
 		TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState);
-		TreeNode* expand(TBSForwardModel& forwardModel, BasePortfolio* opponentModel, int& forwardModelCalls);
+		TreeNode* expand(TBSForwardModel& forwardModel, BaseActionScript* opponentModel, int& forwardModelCalls);
 		
 		//std::string toString() const override;
 		void print() const override;

@@ -4,7 +4,7 @@
 #include <Agent/TreeSearchAgents/TreeNode.h>
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 
-#include "Agent/Portfolios/AttackClosest.h"
+#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
 
 namespace SGA
 {
@@ -14,7 +14,7 @@ namespace SGA
 		int playerBeamWith = 20;
 		int playerDepth = 5;
 		LinearSumHeuristic heuristic = LinearSumHeuristic();
-		std::unique_ptr<BasePortfolio> opponentModel = std::make_unique<AttackClosest>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
+		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<AttackClosestOpponentScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
 	public:
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
