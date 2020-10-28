@@ -259,7 +259,7 @@ namespace SGA
 		if (healer == nullptr || target == nullptr)
 			return false;
 		
-		return healer->getPosition().manhattanDistance(target->getPosition()) <= healer->getType().actionRange;
+		return target->getHealth() < target->getMaxHealth() && healer->getPosition().manhattanDistance(target->getPosition()) <= healer->getType().actionRange;
 	}
 
 	bool TBSForwardModel::validateEndOfTurn(TBSGameState& /*state*/, const Action<Vector2i>& /*action*/) const
@@ -362,6 +362,10 @@ namespace SGA
 
 	bool TBSForwardModel::canPlayerPlay(TBSPlayer& player) const
 	{
+
+		if (player.state.get().fogOfWarId != -1 && player.playerID != player.state.get().fogOfWarId)
+			return true;
+
 		switch (winCondition)
 		{
 			case WinConditionType::UnitAlive:

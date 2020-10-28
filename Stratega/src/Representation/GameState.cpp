@@ -91,6 +91,7 @@ namespace SGA
 		unit.setAttackDamage(type.attackDamage);
 		unit.setHealAmount(type.healAmount);
 		unit.setHealth(type.maxHealth);
+		unit.setMaxHealth(type.maxHealth);
 		unit.setLineOfSightRange(type.lineOfSightRange);
 		unit.setPosition(position);
 		unit.setRange(type.movementRange);
@@ -216,6 +217,8 @@ namespace SGA
 				}
 			}
 		}
+
+		fogOfWarId = playerID;
 	}
 
 }

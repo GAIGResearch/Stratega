@@ -23,7 +23,7 @@ namespace SGA
 
 		void stop() { isRunning = false; }
 		void resume() { isRunning = true; }
-		[[nodiscard]] bool running() const { return isRunning; }
+		[[nodiscard]] bool running() const { return isRunning && !endGame; }
 	protected:
 		bool endGame = false;
 		bool isRunning = true;

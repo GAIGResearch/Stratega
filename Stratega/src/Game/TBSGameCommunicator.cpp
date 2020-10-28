@@ -19,7 +19,7 @@ namespace SGA
 
 	bool TBSGameCommunicator::isMyTurn() const
 	{
-		return game->running() && game->getState().currentPlayer == getPlayerID();
+		return game->running() && game->getState().currentPlayer == getPlayerID()&& !game->isGameOver();
 	}
 
 	void TBSGameCommunicator::executeAction(Action<Vector2i> action) const
@@ -35,7 +35,7 @@ namespace SGA
 	{
 		auto state = game->getStateCopy();
 		// ToDo FogOfWar breaks winConditions
-		//state.applyFogOfWar(getPlayerID());
+		state.applyFogOfWar(getPlayerID());
 		return state;
 	}
 
