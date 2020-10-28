@@ -29,6 +29,7 @@ namespace SGA
 			state(state),
 			intendedAction(),
 			executingAction(),
+			lineOfSightRange(6),
 			path()
 		{
 		}
@@ -48,6 +49,7 @@ namespace SGA
 		int maxHealth;
 		int attackDamage;
 		int healAmount;
+		int lineOfSightRange;
 		std::reference_wrapper<RTSGameState> state;
 		
 		// Actions

@@ -1,5 +1,5 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 1000
 
@@ -32,17 +32,23 @@ Tiles:
 Board:
     GenerationType: Manual
     Layout: >
-          MMMMMMMMMMMMMMMMMMMMMMMMM
-          M.............M.........M
-          M..M...M.............M..M
-          M..M..MMMMMMMMMMMMM..M..M
-          M..M.......M.........M..M
-          M..M........M........MMMM
-          M..M....MMMMMMMMM....M..M
-          M..M...MMMMMMMMMM....M..M
-          MMMM..........M......M..M
-          M....MMMMMMMMMMMMMMM....M
-          MMMMMMMMMMMMMMMMMMMMMMMMM
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+          M.............M................M
+          M..............................M
+          M..............................M
+          M..............................M
+          M.....................MM.....MMM
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 Units:
     Warrior:
@@ -92,7 +98,7 @@ Units:
 
 ForwardModel:
     WinCondition:
-        Type: UnitAlive
+        Type: LastManStanding
         Unit: King
 
     Effects:

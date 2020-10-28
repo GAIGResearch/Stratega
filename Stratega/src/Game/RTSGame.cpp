@@ -50,6 +50,13 @@ namespace SGA
 		}
 	}
 
+	void RTSGame::close()
+	{
+		Game::close();
+		std::cout << "GAME IS FINISHED" << std::endl;
+		std::cout << "Winner ID: " << gameState->winnerPlayerID << std::endl;
+	}
+
 	void RTSGame::executeAction(const Action<Vector2f>& action)
 	{
 		if (action.type == ActionType::EndTurn)

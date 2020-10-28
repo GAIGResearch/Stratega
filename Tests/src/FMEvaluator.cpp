@@ -12,7 +12,7 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 	{
 		if(config.gameType == "TBS")
 		{
-			auto fm = forwardModelFromConfig(config);
+			auto fm = generateTBSforwardModelFromConfig(config);
 			auto state = generateTBSStateFromConfig(config, *rngEngine);
 			runGameTBS(*state, fm, *results);
 		}
