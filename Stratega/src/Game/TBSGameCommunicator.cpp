@@ -34,7 +34,6 @@ namespace SGA
 	TBSGameState TBSGameCommunicator::getGameState() const
 	{
 		auto state = game->getStateCopy();
-		// ToDo FogOfWar breaks winConditions
 		state.applyFogOfWar(getPlayerID());
 		return state;
 	}
