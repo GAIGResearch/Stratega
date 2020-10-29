@@ -7,15 +7,24 @@ namespace SGA
 	std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config)
 	{
 		std::vector<std::unique_ptr<Agent>> agents;
-		for(const auto& agentName : config.agentNames)
+		for(const auto& nameParamPair : config.agentParams)
 		{
-			auto agentPtr = AgentFactory::get().createAgent(agentName);
-			if(agentPtr == nullptr && agentName != "HumanAgent")
+			std::unique_ptr<Agent> agent;
+			if(nameParamPair.second.IsNull())
 			{
-				throw std::runtime_error("Unknown agent with name " + agentName);
+				agent = AgentFactory::get().createAgent(nameParamPair.first);
 			}
-			
-			agents.emplace_back(AgentFactory::get().createAgent(agentName));
+			else
+			{
+				agent = AgentFactory::get().createAgent(nameParamPair.first, nameParamPair.second);
+			}
+		
+			if(agent == nullptr && nameParamPair.first != "HumanAgent")
+			{
+				throw std::runtime_error("Unknown agent with name " + nameParamPair.first);
+			}
+		
+			agents.emplace_back(std::move(agent));
 		}
 
 		return agents;
