@@ -57,7 +57,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
 		int numIterations = 0;
 		bool stop = false;
 		int prevCallCount = params.REMAINING_FM_CALLS;
@@ -85,7 +85,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		MCTSNode* cur = this;
 
@@ -102,7 +102,7 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
@@ -130,9 +130,9 @@ namespace SGA
 		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
 	}
 
-	MCTSNode* MCTSNode::uct(MCTSParams& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
-		const bool iAmMoving = (gameState.currentPlayer == params.playerID);
+		const bool iAmMoving = (gameState.currentPlayer == params.PLAYER_ID);
 
 		std::vector<double> childValues(children.size(), 0);
 
@@ -191,7 +191,7 @@ namespace SGA
 		return children[which].get();
 	}
 
-	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator)
+	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
 			TBSGameState gsCopy = TBSGameState(gameState);
@@ -205,13 +205,13 @@ namespace SGA
 				applyActionToGameState(forwardModel, gsCopy, actions->getAction(randomDistribution(randomGenerator)), params);
 				thisDepth++;
 			}
-			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.playerID), 0, 1);
+			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
 		}
 
-		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.playerID), 0, 1);
+		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
 	}
 
-	bool MCTSNode::rolloutFinished(TBSGameState& rollerState, int depth, MCTSParams& params)
+	bool MCTSNode::rolloutFinished(TBSGameState& rollerState, int depth, MCTSParameters& params)
 	{
 		if (depth >= params.ROLLOUT_LENGTH)      //rollout end condition.
 			return true;
@@ -220,11 +220,11 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParams& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
-		while (gameState.currentPlayer != params.playerID && !gameState.isGameOver)
+		while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
 		{
 			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
@@ -259,7 +259,7 @@ namespace SGA
 		}
 	}
 
-	int MCTSNode::mostVisitedAction(MCTSParams& params, std::mt19937& randomGenerator)
+	int MCTSNode::mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();
@@ -314,7 +314,7 @@ namespace SGA
 		return selected;
 	}
 
-	int MCTSNode::bestAction(MCTSParams& params, std::mt19937& randomGenerator)
+	int MCTSNode::bestAction(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();

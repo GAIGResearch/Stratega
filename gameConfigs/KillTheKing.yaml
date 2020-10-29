@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - BeamSearchAgent
-    - CombatAgent
+    - MCTSAgent
+    - BFSAgent
 
 Tiles:
     Plain:

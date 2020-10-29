@@ -1,12 +1,12 @@
-#include <Agent/TreeSearchAgents/MCTSParams.h>
+#include <Agent/TreeSearchAgents/MCTSParameters.h>
 
 #include <iostream>
 
 
 namespace SGA {
-	void MCTSParams::printDetails() const
+	void MCTSParameters::printDetails() const
 	{
-		std::cout << "MCTSParams" << "\n";
+		std::cout << "MCTSParameters" << "\n";
 		std::cout << "\tK = " << K << "\n";
 		std::cout << "\tROLLOUT_LENGTH= " << ROLLOUT_LENGTH << "\n";
 		std::cout << "\tROLLOUTS_ENABLED= " << ROLLOUTS_ENABLED << "\n";
@@ -14,6 +14,6 @@ namespace SGA {
 		std::cout << "\tPRIORITIZE_ROOT= " << PRIORITIZE_ROOT << "\n";
 		std::cout << "\tMAX_FM_CALLS= " << MAX_FM_CALLS << "\n";
 		std::cout << "\tEPSILON = " << EPSILON << "\n";
-		std::cout << "\tplayerID = " << playerID << "\n";
+		std::cout << "\PLAYER_ID = " << PLAYER_ID << "\n";
 	}
 }
