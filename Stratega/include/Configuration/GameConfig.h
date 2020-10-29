@@ -7,13 +7,14 @@
 #include <Configuration/ForwardModelConfig.h>
 #include <ForwardModel/TBSForwardModel.h>
 #include <Agent/Agent.h>
+#include <yaml-cpp/yaml.h>
 
 namespace SGA
 {
 	struct GameConfig
 	{
         std::string gameType;
-        std::unordered_map<std::string, YAML::Node> agentParams;
+        std::vector<std::pair<std::string, YAML::Node>> agentParams;
 		std::map<std::string, TileConfig> tileTypes;
         std::map<std::string, UnitConfig> unitTypes;
         BoardConfig boardConfig;
@@ -44,11 +45,20 @@ namespace YAML
     {
         static bool decode(const Node& node, SGA::GameConfig& rhs)
         {
-            auto agentsNode = node["Agents"];
-        	for(auto& entry : agentsNode)
+        	for(auto agentNode : node["Agents"])
         	{
-        		
+        		if(agentNode.IsScalar())
+        		{
+                    rhs.agentParams.emplace_back(agentNode.as<std::string>(), YAML::Null);
+        		}
+                else
+                {
+                    auto map = agentNode.as<std::map<std::string, Node>>();
+                    const auto& firstEntry = *map.begin();
+                    rhs.agentParams.emplace_back(firstEntry);
+                }
         	}
+        	
             rhs.tileTypes = node["Tiles"].as<std::map<std::string, SGA::TileConfig>>();
             rhs.unitTypes = node["Units"].as<std::map<std::string, SGA::UnitConfig>>();
             rhs.boardConfig = node["Board"].as<SGA::BoardConfig>();
