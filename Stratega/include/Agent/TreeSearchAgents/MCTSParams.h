@@ -6,16 +6,14 @@
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 #include <Agent/Heuristic/SimpleHeuristic.h>
 
-#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
-
+#include <Agent/ActionScripts/AttackClosestOpponentScript.h>
+#include <Agent/AgentParameters.h>
 
 namespace SGA {
-    struct MCTSParams {
+    struct MCTSParams : AgentParameters {
         double K = sqrt(2);
         int ROLLOUT_LENGTH = 3;
         bool ROLLOUTS_ENABLED = true;
-        int MAX_FM_CALLS = 2000;
-        int REMAINING_FM_CALLS = MAX_FM_CALLS;
         bool FORCE_TURN_END = true;
         bool PRIORITIZE_ROOT = true;
         double EPSILON = 1e-2;

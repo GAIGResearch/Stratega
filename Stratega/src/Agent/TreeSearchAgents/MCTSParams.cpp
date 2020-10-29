@@ -4,7 +4,7 @@
 
 
 namespace SGA {
-	void SGA::MCTSParams::printDetails() const
+	void MCTSParams::printDetails() const
 	{
 		std::cout << "MCTSParams" << "\n";
 		std::cout << "\tK = " << K << "\n";

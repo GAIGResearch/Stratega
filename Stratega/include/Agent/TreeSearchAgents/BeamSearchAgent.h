@@ -1,26 +1,27 @@
 #pragma once
 #include <Agent/Agent.h>
-
 #include <Agent/TreeSearchAgents/TreeNode.h>
-#include <Agent/Heuristic/LinearSumHeuristic.h>
 
-#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
 
 namespace SGA
 {
+	struct BeamSearchParameters : AgentParameters
+	{
+		size_t PLAYER_BEAM_WIDTH = 20;
+		size_t PLAYER_BEAM_DEPTH = 5;
+	};
+	
 	class BeamSearchAgent : public Agent
 	{
 	private:
-		int playerBeamWith = 20;
-		int playerDepth = 5;
-		LinearSumHeuristic heuristic = LinearSumHeuristic();
-		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<AttackClosestOpponentScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
+		BeamSearchParameters parameters_ = BeamSearchParameters();
 
 	public:
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
-		Action<Vector2i> beamSearch(TBSForwardModel& forwardModel, TreeNode& root);
-		std::vector<TreeNode*> Simulate(TBSForwardModel& forwardModel, TreeNode& node, const int playerID);
-		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 
+	private:	
+		Action<Vector2i> beamSearch(TBSForwardModel* forwardModel, TreeNode& root);
+		std::vector<TreeNode*> simulate(TBSForwardModel* forwardModel, TreeNode& node);
+		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 	};
 }

@@ -3,16 +3,17 @@
 #include <vector>
 
 
+
 namespace SGA
 {
 
-	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
-		ITreeNode<SGA::TreeNode>(forwardModel, gameState)
+	TreeNode::TreeNode(TBSForwardModel* forwardModel, TBSGameState gameState) :
+		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
-		ITreeNode<SGA::TreeNode>(forwardModel, gameState, parent, childIndex)
+	TreeNode::TreeNode(TBSForwardModel* forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
+		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
 	
@@ -21,34 +22,24 @@ namespace SGA
 	/// Expanding the node with the next children. May fail in case the node is fully expanded.
 	/// </summary>
 	/// <param name="forwardModel"></param>
-	/// <param name="opponentModel"></param>
-	/// <param name="forwardModelCalls"></param>
+	/// <param name="agentParameters"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, BaseActionScript* opponentModel, int& forwardModelCalls)
-	{
-		//std::cout << "expand" << std::endl;
-		
+	TreeNode* TreeNode::expand(TBSForwardModel* forwardModel, AgentParameters& agentParameters)
+	{		
 		if (this->isFullyExpanded())
 			return nullptr;
 
 		// roll the state using a the next action that hasn't been expanded yet
 		TBSGameState gsCopy = TBSGameState(gameState);
-		forwardModel.advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
-		while (gsCopy.currentPlayer != gameState.currentPlayer && !gameState.isGameOver)
+		forwardModel->advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
+		agentParameters.REMAINING_FM_CALLS--;
+		
+		while (gsCopy.currentPlayer != agentParameters.PLAYER_ID && !gsCopy.isGameOver)
 		{
-			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
-			{
-				auto actionSpace = forwardModel.getActions(gameState);
-				auto opAction = opponentModel->getAction(gameState, actionSpace);
-				forwardModel.advanceGameState(gameState, opAction);
-			}
-			else // skip opponent turn
-			{
-				ActionSpace<Vector2i> endTurnActionSpace;
-				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
-			}
-			forwardModelCalls++;
+			auto actionSpace = forwardModel->getActions(gsCopy);
+			auto opAction = agentParameters.OPPONENT_MODEL->getAction(gsCopy, actionSpace);
+			forwardModel->advanceGameState(gsCopy, opAction);
+			agentParameters.REMAINING_FM_CALLS--;
 		}
 		
 		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, children.size())));
