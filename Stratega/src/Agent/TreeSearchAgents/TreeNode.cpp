@@ -7,12 +7,12 @@
 namespace SGA
 {
 
-	TreeNode::TreeNode(TBSForwardModel* forwardModel, TBSGameState gameState) :
+	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	TreeNode::TreeNode(TBSForwardModel* forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
+	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -24,21 +24,21 @@ namespace SGA
 	/// <param name="forwardModel"></param>
 	/// <param name="agentParameters"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSForwardModel* forwardModel, AgentParameters& agentParameters)
+	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, AgentParameters& agentParameters)
 	{		
 		if (this->isFullyExpanded())
 			return nullptr;
 
 		// roll the state using a the next action that hasn't been expanded yet
 		TBSGameState gsCopy = TBSGameState(gameState);
-		forwardModel->advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
+		forwardModel.advanceGameState(gsCopy, actionSpace->getAction(static_cast<int>(children.size())));
 		agentParameters.REMAINING_FM_CALLS--;
 		
 		while (gsCopy.currentPlayer != agentParameters.PLAYER_ID && !gsCopy.isGameOver)
 		{
-			auto actionSpace = forwardModel->getActions(gsCopy);
+			auto actionSpace = forwardModel.getActions(gsCopy);
 			auto opAction = agentParameters.OPPONENT_MODEL->getAction(gsCopy, actionSpace);
-			forwardModel->advanceGameState(gsCopy, opAction);
+			forwardModel.advanceGameState(gsCopy, opAction);
 			agentParameters.REMAINING_FM_CALLS--;
 		}
 		

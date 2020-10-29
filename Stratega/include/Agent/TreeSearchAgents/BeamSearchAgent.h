@@ -1,7 +1,7 @@
 #pragma once
 #include <Agent/Agent.h>
 #include <Agent/TreeSearchAgents/TreeNode.h>
-
+#include <Agent/AgentParameters.h>
 
 namespace SGA
 {
@@ -20,8 +20,8 @@ namespace SGA
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:	
-		Action<Vector2i> beamSearch(TBSForwardModel* forwardModel, TreeNode& root);
-		std::vector<TreeNode*> simulate(TBSForwardModel* forwardModel, TreeNode& node);
+		Action<Vector2i> beamSearch(TBSForwardModel& forwardModel, TreeNode& root);
+		std::vector<TreeNode*> simulate(TBSForwardModel& forwardModel, TreeNode& node);
 		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 	};
 }

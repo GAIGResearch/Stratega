@@ -30,13 +30,13 @@ namespace SGA
 				else // else we run a full search
 				{
 					// init rootNode and node lists
-					init(processedForwardModel.get(), gameState);
+					init(*processedForwardModel, gameState);
 
 					// perform BFS Search
-					search(processedForwardModel.get(), openNodes);
+					search(*processedForwardModel, openNodes);
 
 					// retrieve best action
-					const int bestActionIndex = getBestActionIdx(processedForwardModel.get());
+					const int bestActionIndex = getBestActionIdx(*processedForwardModel);
 					auto action = rootNode->actionSpace->getAction(bestActionIndex);
 					gameCommunicator.executeAction(action);
 					
@@ -55,7 +55,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="gameState">the current game-state</param>
-	void BFSAgent::init(TBSForwardModel* forwardModel, TBSGameState& gameState)
+	void BFSAgent::init(TBSForwardModel& forwardModel, TBSGameState& gameState)
 	{
 		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
@@ -85,7 +85,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="openNodes">list of known open nodes</param>
-	void BFSAgent::search(TBSForwardModel* forwardModel, std::list<TreeNode*>& openNodes)
+	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
 	{
 		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 		
@@ -164,7 +164,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same model as it has been used for the search</param>
 	/// <returns>index of the best child node</returns>
-	int BFSAgent::getBestActionIdx(TBSForwardModel* forwardModel)
+	int BFSAgent::getBestActionIdx(TBSForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
 		StateHeuristic* heuristic = parameters_.OBJECTIVE.get();

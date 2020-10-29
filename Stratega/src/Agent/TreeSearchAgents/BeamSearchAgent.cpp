@@ -15,21 +15,21 @@ namespace SGA
 				if (gameState.isGameOver)
 					break;
 				
-				TreeNode rootNode = TreeNode(processedForwardModel.get(), gameState);
+				TreeNode rootNode = TreeNode(*processedForwardModel, gameState);
 
 				if (rootNode.actionSpace->count() == 1)
 				{
 					gameCommunicator.executeAction(rootNode.actionSpace->getAction(0));
 				} else
 				{
-					Action<Vector2i> bestAction = beamSearch(processedForwardModel.get(), rootNode);
+					Action<Vector2i> bestAction = beamSearch(*processedForwardModel, rootNode);
 					gameCommunicator.executeAction(bestAction);
 				}
 			}
 		}
 	}
 
-	Action<Vector2i> BeamSearchAgent::beamSearch(TBSForwardModel* forwardModel, TreeNode& root)
+	Action<Vector2i> BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
 	{
 		parameters_.PLAYER_ID = root.gameState.currentPlayer;
 
@@ -71,7 +71,7 @@ namespace SGA
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel* forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel& forwardModel, TreeNode& node)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		

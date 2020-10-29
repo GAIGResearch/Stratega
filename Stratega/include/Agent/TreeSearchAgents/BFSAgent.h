@@ -5,6 +5,8 @@
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 #include <Agent/Heuristic/StateHeuristic.h>
 
+
+#include "Agent/AgentParameters.h"
 #include "Agent/ActionScripts/AttackClosestOpponentScript.h"
 
 namespace SGA
@@ -29,9 +31,9 @@ namespace SGA
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
-		void search(TBSForwardModel* forwardModel, std::list<TreeNode*>& openNodes);
-		int getBestActionIdx(TBSForwardModel* forwardModel);
+		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes);
+		int getBestActionIdx(TBSForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
-		void init(TBSForwardModel* forwardModel, TBSGameState& gameState);
+		void init(TBSForwardModel& forwardModel, TBSGameState& gameState);
 	};
 }
