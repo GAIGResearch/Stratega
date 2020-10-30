@@ -17,7 +17,7 @@ namespace SGA
 	public:
 		std::vector<std::unique_ptr<BaseActionScript>>& portfolio;
 		
-		PortfolioTBSForwardModel(std::vector<std::unique_ptr<BaseActionScript>>& portfolio) : TBSForwardModel(), portfolio(portfolio)
+		PortfolioTBSForwardModel(TBSForwardModel forwardModel, std::vector<std::unique_ptr<BaseActionScript>>& portfolio) : TBSForwardModel(std::move(forwardModel)), portfolio(portfolio)
 		{
 		}
 		

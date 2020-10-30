@@ -63,7 +63,7 @@ namespace SGA {
 			}
 			else
 			{
-				return std::make_unique<PortfolioTBSForwardModel>(PORTFOLIO);
+				return std::make_unique<PortfolioTBSForwardModel>(*forwardModel, PORTFOLIO);
 			}
 		}
 

@@ -18,7 +18,7 @@ namespace SGA
                 const auto actionSpace = forwardModel.getActions(gameState);
                 parameters_.PLAYER_ID = gameState.currentPlayer;
 				
-                // if there is just one action and we don't spent the time on continueing our search
+                // if there is just one action and we don't spent the time on continuing our search
                 // we just instantly return it
                 // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
                 if (actionSpace->count() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
@@ -40,32 +40,20 @@ namespace SGA
                     else
                     {
 						// start a new tree
-                        rootNode = std::make_unique<MCTSNode>(*processedForwardModel, gameState);
+						rootNode = std::make_unique<MCTSNode>(*processedForwardModel, gameState);
                     }
                 	
                     //params.printDetails();
                     parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
                     rootNode->searchMCTS(*processedForwardModel, parameters_, gameCommunicator.getRNGEngine());
-                    //std::cout << "Remaining ForwardModel Calls " <<  parameters_.REMAINING_FM_CALLS << std::endl;
-                    rootNode->printTree();
+                    //rootNode->printTree();
 
+                	// get and store best action
                     const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
                     auto bestAction = rootNode->actionSpace->getAction(bestActionIndex);
+                    gameCommunicator.executeAction(bestAction);
 
-                    if (i == 3)
-                    {
-                    	//rootNode has 8 units
-                        std::cout << "rootNode gameState: " << std::endl;
-                        rootNode->gameState.printGameStateStatus();
-
-                    	//predicted gamestate has 8 units
-                        std::cout << "child gameState: " << std::endl;
-                        rootNode->children[bestActionIndex]->gameState.printGameStateStatus();
-
-                    	//follow-up game-state has 7 units, because one of the player's units walked on a hole and died
-                    }
-                	
-                	gameCommunicator.executeAction(bestAction);
+                	// return best action
                     previousActionIndex = bestAction.getType() == ActionType::EndTurn ? (-1) : bestActionIndex;
                 }
 
