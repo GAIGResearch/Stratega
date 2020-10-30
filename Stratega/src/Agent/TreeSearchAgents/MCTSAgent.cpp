@@ -5,7 +5,6 @@ namespace SGA
 	void MCTSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
-        int i = 0;
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
@@ -13,7 +12,6 @@ namespace SGA
                 TBSGameState gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
-                i++;
 				
                 const auto actionSpace = forwardModel.getActions(gameState);
                 parameters_.PLAYER_ID = gameState.currentPlayer;
