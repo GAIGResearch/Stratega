@@ -11,7 +11,7 @@ namespace SGA
 	{
 	public:
 		explicit MCTSAgent(MCTSParameters&& params)
-			: params(std::move(params))
+			: parameters_(std::move(params))
 		{
 		}
 		
@@ -20,7 +20,7 @@ namespace SGA
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
 		int previousActionIndex = -1;
-		MCTSParameters parameters_ = MCTSParameters();
+		MCTSParameters parameters_;
 		bool continuePreviousSearch = true;
 		int playerTurn = -1;
 	};
