@@ -6,11 +6,14 @@ namespace SGA
 	
 	void RHEAAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
-        while (!gameCommunicator.getGameState().isGameOver)
+        while (!gameCommunicator.isGameOver())
         {
             if (gameCommunicator.isMyTurn())
             {
                 TBSGameState gameState = gameCommunicator.getGameState();
+                if (gameState.isGameOver)
+                    break;
+            	
                 auto actionSpace = forwardModel.getActions(gameState);
 
                 params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
@@ -84,7 +87,7 @@ namespace SGA
     void RHEAAgent::rheaLoop(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
-        while (params_.REMAINING_FM_CALLS > 0)
+        while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
         {
             pop_ = nextGeneration(forwardModel, gameState, randomGenerator);
         }

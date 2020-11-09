@@ -1,13 +1,13 @@
-#include <Agent/Portfolios/RandomPortfolio.h>
+#include <Agent/ActionScripts/RandomActionScript.h>
 
 namespace SGA
 {
-	Action<Vector2i> RandomPortfolio::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	Action<Vector2i> RandomActionScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
 	{
 		return actionSpace->getAction(rand() % actionSpace->count());
 	}
 	
-	Action<Vector2i> RandomPortfolio::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	Action<Vector2i> RandomActionScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
 	{
 		std::vector<Action<Vector2i>> suitableActions = std::vector<Action<Vector2i>>();
 		for (const auto& action : *actionSpace)

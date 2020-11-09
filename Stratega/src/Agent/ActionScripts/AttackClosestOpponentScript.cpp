@@ -1,8 +1,8 @@
-#include <Agent/Portfolios/AttackClosest.h>
+#include <Agent/ActionScripts/AttackClosestOpponentScript.h>
 
 namespace SGA
 {
-	Action<Vector2i> AttackClosest::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	Action<Vector2i> AttackClosestOpponentScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
 	{
 		if (actionSpace->count() > 1)
 		{
@@ -69,7 +69,7 @@ namespace SGA
 		return actionSpace->getAction(rand() % actionSpace->count());
 	}
 
-	Action<Vector2i> AttackClosest::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	Action<Vector2i> AttackClosestOpponentScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
 	{
 		std::vector<Action<Vector2i>> suitableActions;
 		for (const auto& action : *actionSpace)
@@ -139,7 +139,7 @@ namespace SGA
 		return actionSpace->getAction(rand() % actionSpace->count());
 	}
 
-	int AttackClosest::minimalDistanceToOpponents(const Vector2i position,  std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits)
+	int AttackClosestOpponentScript::minimalDistanceToOpponents(const Vector2i position,  std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits)
 	{
 		int minimalDistance = std::numeric_limits<int>::max();
 		for (int opponentUnitID : opponentUnits)

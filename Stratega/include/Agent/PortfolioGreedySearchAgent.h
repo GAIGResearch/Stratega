@@ -4,13 +4,14 @@
 #include <Agent/Heuristic/SimpleHeuristic.h>
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 
-#include <Agent/Portfolios/BasePortfolio.h>
-#include <Agent/Portfolios/AttackClosest.h>
-#include <Agent/Portfolios/AttackWeakest.h>
-#include <Agent/Portfolios/RunAway.h>
-#include <Agent/Portfolios/UseSpecialAbility.h>
-#include <Agent/Portfolios/RunToFriends.h>
-#include <Agent/Portfolios/RandomPortfolio.h>
+#include <Agent/ActionScripts/BaseActionScript.h>
+#include <Agent/ActionScripts/AttackClosestOpponentScript.h>
+#include <Agent/ActionScripts/AttackWeakestOpponentScript.h>
+#include <Agent/ActionScripts/RunAwayFromOpponentScript.h>
+#include <Agent/ActionScripts/UseSpecialAbilityScript.h>
+#include <Agent/ActionScripts/RunToFriendlyUnitsScript.h>
+#include <Agent/ActionScripts/RandomActionScript.h>
+
 
 namespace SGA
 {
@@ -22,23 +23,22 @@ namespace SGA
 		int NR_OF_TURNS_PLANNED = 2;			// the agents ID in the current game
 		int ITERATIONS_PER_IMPROVE = 5;			// the number of iterations for one call of the improve method
 		
-		std::vector<std::unique_ptr<BasePortfolio>> portfolios = std::vector<std::unique_ptr<BasePortfolio>>();	// the portfolios used to sample actions of a genome
+		std::vector<std::unique_ptr<BaseActionScript>> PORTFOLIO = std::vector<std::unique_ptr<BaseActionScript>>();	// the PORTFOLIO used to sample actions of a genome
 		LinearSumHeuristic HEURISTIC{ LinearSumHeuristic() };	// the heuristic used to evaluate a genome
 		PortfolioGreedySearchParams()
 		{
-			std::unique_ptr<BasePortfolio> attackClose = std::make_unique<AttackClosest>();
-			portfolios.emplace_back(std::move(attackClose));
-			std::unique_ptr<BasePortfolio> attackWeak = std::make_unique<AttackWeakest>();
-			portfolios.emplace_back(std::move(attackWeak));
-			std::unique_ptr<BasePortfolio> runAway = std::make_unique<RunAway>();
-			portfolios.emplace_back(std::move(runAway));
-			std::unique_ptr<BasePortfolio> useSpecialAbility = std::make_unique<UseSpecialAbility>();
-			portfolios.emplace_back(std::move(useSpecialAbility));
-			std::unique_ptr<BasePortfolio> runToFriends = std::make_unique<RunToFriends>();
-			portfolios.emplace_back(std::move(runToFriends));
-			
-			std::unique_ptr<BasePortfolio> random = std::make_unique<RandomPortfolio>();
-			portfolios.emplace_back(std::move(random));
+			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
+			PORTFOLIO.emplace_back(std::move(attackClose));
+			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
+			PORTFOLIO.emplace_back(std::move(attackWeak));
+			std::unique_ptr<BaseActionScript> runAway = std::make_unique<RunAwayFromOpponentScript>();
+			PORTFOLIO.emplace_back(std::move(runAway));
+			std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
+			PORTFOLIO.emplace_back(std::move(useSpecialAbility));
+			std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
+			PORTFOLIO.emplace_back(std::move(runToFriends));
+			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			PORTFOLIO.emplace_back(std::move(random));
 		}
 	};
 		
@@ -55,13 +55,13 @@ namespace SGA
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
-		void Improve(TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSUnit*>& playerUnits, std::map<int, BasePortfolio*>& playerPortfolios, std::map<int, BasePortfolio*>& opponentPortfolios);
+		void Improve(TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSUnit*>& playerUnits, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios);
 
-		double Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BasePortfolio*>& playerPortfolios, std::map<int, BasePortfolio*>& opponentPortfolios);
+		double Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios);
 
-		void InitializePortfolios(std::vector<TBSUnit*>& units, std::map<int, BasePortfolio*>& portfolioMap);
+		void InitializePortfolios(std::vector<TBSUnit*>& units, std::map<int, BaseActionScript*>& portfolioMap);
 		
-		static Action<Vector2i> GetPortfolioAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, std::map<int, BasePortfolio*>& portfolioMap1, std::map<int, BasePortfolio*>& portfolioMap2);
+		static Action<Vector2i> GetPortfolioAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2);
 
 		void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, const Action<Vector2i>& action);
 	};

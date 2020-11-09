@@ -2,8 +2,11 @@
 #include <Agent/Agent.h>
 #include <Agent/TreeSearchAgents/MCTSNode.h>
 
+#include "MCTSParameters.h"
+
 namespace SGA
 {
+	
 	class MCTSAgent : public Agent
 	{
 	public:
@@ -15,9 +18,9 @@ namespace SGA
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
-		MCTSParams params;
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
 		int previousActionIndex = -1;
+		MCTSParameters parameters_;
 		bool continuePreviousSearch = true;
 		int playerTurn = -1;
 	};

@@ -10,6 +10,8 @@ namespace SGA
             if (gameCommunicator.isMyTurn())
             {
                 TBSGameState gameState = gameCommunicator.getGameState();
+                if (gameState.isGameOver)
+                    break;
                 auto actionSpace = forwardModel.getActions(gameState);
 
                 params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls

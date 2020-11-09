@@ -1,8 +1,8 @@
-#include <Agent/Portfolios/AttackWeakest.h>
+#include <Agent/ActionScripts/RunAwayFromOpponentScript.h>
 
 namespace SGA
 {
-	Action<Vector2i> AttackWeakest::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	Action<Vector2i> RunAwayFromOpponentScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
 	{
 		if (actionSpace->count() > 1)
 		{
@@ -15,8 +15,6 @@ namespace SGA
 			std::vector<TBSUnit>& units = gameState.getUnits();
 			std::map<int, Vector2i> positions = std::map<int, Vector2i>();
 			std::set<int> opponentUnits = std::set<int>();
-			int minimalHealth = std::numeric_limits<int>::max();
-			int weakestUnitID = -1;
 
 			for (const TBSUnit& unit : units)
 			{
@@ -24,36 +22,19 @@ namespace SGA
 				if (unit.getPlayerID() != gameState.currentPlayer)
 				{
 					opponentUnits.insert(unit.getUnitID());
-					if (unit.getHealthh() < minimalHealth)
-					{
-						minimalHealth = unit.getHealthh();
-						weakestUnitID = unit.getUnitID();
-					}
 				}
 			}
 
+			//fleeing from opponents
+			int actionDistance = std::numeric_limits<int>::min();
 			int bestAction = -1;
-			//prioritize attacks against the weakest unit
-			for (auto& action : suitableActions)
-			{
-				if (action.getType() == ActionType::Attack && weakestUnitID == action.getTargetUnitID())
-				{
-					return action;
-				}
-			}
-
-			if (bestAction != -1)
-				return suitableActions.at(bestAction);
-
-			//moving closer to weakest unit
-			int actionDistance = std::numeric_limits<int>::max();
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
 				if (action.getType() == ActionType::Move)
 				{
-					const int dist = action.getTargetPosition().manhattanDistance(positions[weakestUnitID]);
-					if (dist < actionDistance)
+					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					if (dist > actionDistance)
 					{
 						actionDistance = dist;
 						bestAction = static_cast<int>(i);
@@ -70,9 +51,8 @@ namespace SGA
 		return actionSpace->getAction(rand() % actionSpace->count());
 	}
 
-	Action<Vector2i> AttackWeakest::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	Action<Vector2i> RunAwayFromOpponentScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
 	{
-		// todo
 		if (actionSpace->count() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions;
@@ -85,8 +65,6 @@ namespace SGA
 			std::vector<TBSUnit>& units = gameState.getUnits();
 			std::map<int, Vector2i> positions = std::map<int, Vector2i>();
 			std::set<int> opponentUnits = std::set<int>();
-			int minimalHealth = std::numeric_limits<int>::max();
-			int weakestUnitID = -1;
 
 			for (const TBSUnit& unit : units)
 			{
@@ -94,36 +72,19 @@ namespace SGA
 				if (unit.getPlayerID() != gameState.currentPlayer)
 				{
 					opponentUnits.insert(unit.getUnitID());
-					if (unit.getHealthh() < minimalHealth)
-					{
-						minimalHealth = unit.getHealthh();
-						weakestUnitID = unit.getUnitID();
-					}
 				}
 			}
 
+			//fleeing from opponents
+			int actionDistance = std::numeric_limits<int>::min();
 			int bestAction = -1;
-			//prioritize attacks against the weakest unit
-			for (auto& action : suitableActions)
-			{
-				if (action.getType() == ActionType::Attack && weakestUnitID == action.getTargetUnitID())
-				{
-					return action;
-				}
-			}
-
-			if (bestAction != -1)
-				return suitableActions.at(bestAction);
-
-			//moving closer to weakest unit
-			int actionDistance = std::numeric_limits<int>::max();
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
 				if (action.getType() == ActionType::Move)
 				{
-					const int dist = action.getTargetPosition().manhattanDistance(positions[weakestUnitID]);
-					if (dist < actionDistance)
+					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					if (dist > actionDistance)
 					{
 						actionDistance = dist;
 						bestAction = static_cast<int>(i);
@@ -138,5 +99,19 @@ namespace SGA
 		}
 		
 		return actionSpace->getAction(rand() % actionSpace->count());
+	}
+
+	int RunAwayFromOpponentScript::maximalDistanceToOpponents(const Vector2i position, std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits)
+	{
+		int maximalDistance = std::numeric_limits<int>::min();
+		for (int opponentUnitID : opponentUnits)
+		{
+			const int distance = position.manhattanDistance(unitPositions[opponentUnitID]);
+			if (distance > maximalDistance)
+			{
+				maximalDistance = distance;
+			}
+		}
+		return maximalDistance;
 	}
 }

@@ -1,11 +1,11 @@
 GameConfig:
     Type: RTS
     ActionTimer: 10s
-    RoundLimit: 1000
+    RoundLimit: 100
 
 Agents:
-    - HumanAgent
-    - RandomAgent
+    - MCTSAgent
+    - BFSAgent
 
 Tiles:
     Plain:

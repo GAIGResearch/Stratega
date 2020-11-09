@@ -26,7 +26,7 @@ namespace SGA {
 			const double healMultiplier, const double movementRangeMultiplier, const double actionRangeMultiplier, const double actionsPerTurnMultiplier);
 		~WeightedSumHeuristic();
 
-		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState) override;
+		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) override;
 
 		double getOwnScore(TBSGameState* gsOld, TBSGameState* gsNew);
 

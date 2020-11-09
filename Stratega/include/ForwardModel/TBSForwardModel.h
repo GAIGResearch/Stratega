@@ -68,7 +68,7 @@ namespace SGA
 		void executeEffect(FMState& state, const Effect& effect, TBSUnit& targetUnit) const;
 
 		
-	private:
+	protected:
 		std::vector<Effect> unitEndOfTurnEffects;
 		std::vector<Effect> onTileEnterEffects;
 
