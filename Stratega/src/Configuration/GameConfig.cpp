@@ -7,15 +7,24 @@ namespace SGA
 	std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config)
 	{
 		std::vector<std::unique_ptr<Agent>> agents;
-		for(const auto& agentName : config.agentNames)
+		for(const auto& nameParamPair : config.agentParams)
 		{
-			auto agentPtr = AgentFactory::get().createAgent(agentName);
-			if(agentPtr == nullptr && agentName != "HumanAgent")
+			std::unique_ptr<Agent> agent;
+			if(nameParamPair.second.IsNull())
 			{
-				throw std::runtime_error("Unknown agent with name " + agentName);
+				agent = AgentFactory::get().createAgent(nameParamPair.first);
 			}
-			
-			agents.emplace_back(AgentFactory::get().createAgent(agentName));
+			else
+			{
+				agent = AgentFactory::get().createAgent(nameParamPair.first, nameParamPair.second);
+			}
+		
+			if(agent == nullptr && nameParamPair.first != "HumanAgent")
+			{
+				throw std::runtime_error("Unknown agent with name " + nameParamPair.first);
+			}
+		
+			agents.emplace_back(std::move(agent));
 		}
 
 		return agents;
@@ -47,11 +56,10 @@ namespace SGA
 		return tileLookup;
 	}
 
-	TBSForwardModel forwardModelFromConfig(const GameConfig& config)
+	TBSForwardModel generateTBSforwardModelFromConfig(const GameConfig& config)
 	{
 		auto fmConfig = config.forwardModelConfig;
 		TBSForwardModel fm;
-		// TODO Implement WinCondition
 		fm.winCondition = fmConfig.WinCondition;
 
 		//Get unityTypeID for UnitAlive
@@ -86,6 +94,19 @@ namespace SGA
 			}
 		}
 
+		return fm;
+	}
+
+	RTSForwardModel generateRTSforwardModelFromConfig(const GameConfig& config)
+	{
+		auto fmConfig = config.forwardModelConfig;
+		RTSForwardModel fm;
+		fm.winCondition = fmConfig.WinCondition;
+
+		//Get unityTypeID for UnitAlive
+		auto units = unitTypesFromConfig(config);
+		fm.unitTypeID = units[fmConfig.unitType].id;
+		
 		return fm;
 	}
 	
@@ -142,7 +163,7 @@ namespace SGA
 		auto state = std::make_unique<TBSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
 		state->roundLimit = config.roundLimit;
 		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.numPlayers; i++)
+		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
 		{
 			playerIDs.push_back(state->addPlayer());
 		}
@@ -194,7 +215,7 @@ namespace SGA
 		auto state = std::make_unique<RTSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
 		
 		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.numPlayers; i++)
+		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
 		{
 			playerIDs.push_back(state->addPlayer());
 		}
@@ -231,7 +252,7 @@ namespace SGA
 		if(config.gameType == "TBS")
 		{
 			auto gameState = generateTBSStateFromConfig(config, rngEngine);
-			auto fm = forwardModelFromConfig(config);
+			auto fm = generateTBSforwardModelFromConfig(config);
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
 		else if(config.gameType == "RTS")
@@ -239,20 +260,8 @@ namespace SGA
 			auto generator = boardGeneratorFromConfig(config);
 			auto board = generator->generate(rngEngine);
 			auto gameState = generateRTSStateFromConfig(config, rngEngine);
-			
-			/*auto& unit1 = gameState->units.emplace_back();
-			unit1.position = { 10, 0 };
-			unit1.movementSpeed = 5;
-			unit1.playerID = 0;
-			unit1.unitID = 0;
-
-			auto& unit2 = gameState->units.emplace_back();
-			unit2.position = { 9, 5 };
-			unit2.movementSpeed = 2;
-			unit2.playerID = 1;
-			unit2.unitID = 1;
-			*/
-			game = std::make_unique<RTSGame>(std::move(gameState), RTSForwardModel(), rngEngine);
+			auto fm = generateRTSforwardModelFromConfig(config);
+			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else
 		{

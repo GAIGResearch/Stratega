@@ -19,12 +19,14 @@ namespace SGA
 
 	void RTSGameCommunicator::executeAction(Action<Vector2f> action) const
 	{
-		game->addAction(action);
+		game->executeAction(action);
 	}
 
 	RTSGameState RTSGameCommunicator::getGameState() const
 	{
-		return game->getStateCopy();
+		auto state = game->getStateCopy();
+		state.applyFogOfWar(getPlayerID());
+		return state;
 	}
 
 	bool RTSGameCommunicator::isGameOver() const

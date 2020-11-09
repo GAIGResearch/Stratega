@@ -3,16 +3,20 @@
 namespace SGA
 {
 	RTSGameState::RTSGameState()
-		: isGameOver(false),
+		: fogOfWarTile(-1, 0, 0),
+		isGameOver(false),
 		board(0, 0),
 		lastUsedPlayerID(0),
 		lastUsedUnitID(0),
 		winnerPlayerID(0),
-		tileScale(1)
+		tileScale(1),
+		navigation(std::make_shared<Navigation>())
 	{
-	}
-	
-	RTSGameState::RTSGameState(const RTSGameState& copy) noexcept :		
+		
+	}	
+
+	RTSGameState::RTSGameState(const RTSGameState& copy) noexcept :
+		fogOfWarTile(copy.fogOfWarTile),
 		unitTypes(copy.unitTypes),
 		tileTypes(copy.tileTypes),
 		isGameOver(copy.isGameOver),
@@ -21,9 +25,9 @@ namespace SGA
 		players(copy.players),
 		lastUsedPlayerID(copy.lastUsedPlayerID),
 		lastUsedUnitID(copy.lastUsedUnitID),
-		winnerPlayerID(copy.winnerPlayerID)
+		winnerPlayerID(copy.winnerPlayerID),
+		navigation(copy.navigation)
 	{
-		
  		setOwner();
 	}
 
@@ -77,6 +81,19 @@ namespace SGA
 		return nullptr;
 	}
 
+	RTSPlayer* RTSGameState::getPlayer(int playerID)
+	{
+		for (auto& player : players)
+		{
+			if (player.playerID == playerID)
+			{
+				return &player;
+			}
+		}
+
+		return nullptr;
+	}
+
 	int RTSGameState::addPlayer()
 	{
 		lastUsedPlayerID++;
@@ -94,8 +111,11 @@ namespace SGA
 		unit.attackDamage = type.attackDamage;
 		unit.healAmount = type.healAmount;
 		unit.health = type.maxHealth;
+		unit.maxHealth = type.maxHealth;
+		unit.actionRange = type.actionRange;
 		unit.position = Vector2f(position.x,position.y);
 		unit.collisionRadius = type.collisionRadius;
+		unit.lineOfSightRange = type.lineOfSightRange;
 		return lastUsedUnitID;
 	}
 
@@ -108,4 +128,52 @@ namespace SGA
 			units.erase(it);
 	}
 
+	void RTSGameState::applyFogOfWar(int playerID)
+	{
+		auto* targetPlayer = getPlayer(playerID);
+		auto playerUnits = targetPlayer->getUnits();
+
+		// Helper method
+		auto isVisible = [&](const Vector2f& pos)
+		{
+			for (auto* pu : playerUnits)
+			{
+				if (pu->position.distance(pos) <= pu->lineOfSightRange)
+					return true;
+			}
+			return false;
+		};
+
+		// Remove units that are not visible
+		auto it = units.begin();
+		while (it != units.end())
+		{
+			if (it->playerID != targetPlayer->playerID && !isVisible(it->position))
+			{
+				it = units.erase(it);
+			}
+			else
+			{
+				//Opponents should check other units intentions
+				it->intendedAction.type = ActionType::None;
+				++it;
+			}
+		}
+
+		// Hide tiles that are not visible
+		for (int y = 0; y < board.getHeight(); y++)
+		{
+			for (int x = 0; x < board.getWidth(); x++)
+			{
+				if (!isVisible(Vector2i(x, y)))
+				{
+					auto& tile = board.getTile(x, y);
+					tile = fogOfWarTile;
+					tile.position = Vector2i(x, y);
+				}
+			}
+		}
+
+		fogOfWarId = playerID;
+	}
 }

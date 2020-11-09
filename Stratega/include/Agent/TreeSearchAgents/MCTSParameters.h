@@ -27,3 +27,20 @@ namespace SGA {
         void printDetails() const;
     };
 }
+
+namespace YAML
+{
+    template<>
+    struct convert<SGA::MCTSParams>
+    {
+        static bool decode(const Node& node, SGA::MCTSParams& rhs)
+        {
+            rhs.K = node["K"].as<double>(rhs.K);
+            rhs.ROLLOUT_LENGTH= node["RolloutLength"].as<int>(rhs.ROLLOUT_LENGTH);
+            rhs.ROLLOUTS_ENABLED = node["EnableRollouts"].as<bool>(rhs.ROLLOUTS_ENABLED);
+        	rhs.MAX_FM_CALLS = node["FmCalls"].as<int>(rhs.MAX_FM_CALLS);
+            rhs.REMAINING_FM_CALLS = rhs.MAX_FM_CALLS;
+            return true;
+        }
+    };
+}

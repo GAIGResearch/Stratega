@@ -43,6 +43,7 @@ private:
 	void createWindowActions();
 	void createWindowMultipleActions(sf::RenderWindow& window);
 
+	
 	//Human player stuff
 	void waitForHumanToPlay()
 	{
@@ -101,4 +102,5 @@ private:
 	//to show all the action that can be played in that tile
 	bool showMultipleActions = false;
 	SGA::Vector2i multipleActionsSourceTile;
+
 };

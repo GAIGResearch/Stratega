@@ -3,12 +3,12 @@
 #include <Representation/RTSGameState.h>
 #include <ForwardModel/ActionType.h>
 #include <ForwardModel/Action.h>
-
+#include <Representation/Path.h>
 
 namespace SGA
 {
 	class RTSGameState;
-	
+
 	class RTSUnit
 	{
 	public:
@@ -16,7 +16,6 @@ namespace SGA
 			playerID(playerId),
 			unitID(unitId),
 			unitTypeID(0),
-			executingAction(nullptr),
 			actionRange(0),
 			actionCooldown(0),
 			maxActionCooldown(1),
@@ -24,19 +23,21 @@ namespace SGA
 			collisionRadius(0.5),
 			position(),
 			health(40),
+			maxHealth(health),
 			attackDamage(20),
 			healAmount(10),
-			state(state)
+			state(state),
+			intendedAction(),
+			executingAction(),
+			lineOfSightRange(6),
+			path()
 		{
 		}
-
-		RTSUnit(const RTSUnit& unit) = default;
 
 		int playerID;
 		int unitID;
 		int unitTypeID;
 
-		std::shared_ptr<Action<Vector2f>> executingAction;
 		double actionRange;
 		double actionCooldown;
 		double maxActionCooldown;
@@ -45,8 +46,15 @@ namespace SGA
 		
 		Vector2f position;
 		int health;
+		int maxHealth;
 		int attackDamage;
 		int healAmount;
+		int lineOfSightRange;
 		std::reference_wrapper<RTSGameState> state;
+		
+		// Actions
+		Action<Vector2f> intendedAction;
+		Action<Vector2f> executingAction;
+		Path path;
 	};
 }

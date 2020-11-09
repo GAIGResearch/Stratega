@@ -45,13 +45,13 @@ void main()
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
-	// Generate objects from the config
-	auto fm = SGA::forwardModelFromConfig(gameConfig);
-
+	std::cout << "Passed game is a " << gameConfig.gameType << " game" << std::endl;
+	
 	// Run "tests"
 	TestGameStateCopy(*SGA::generateTBSStateFromConfig(gameConfig, rngEngine));
 	
 	FMEvaluator evaluator(rngEngine);
-	auto results = evaluator.evaluate(gameConfig, fm);
+	auto results = evaluator.evaluate(gameConfig);
+	std::cout << "FPS: " << results->computeFPS() << std::endl;
 	std::cout << "FPS: " << results->computeFPS() << std::endl;
 }

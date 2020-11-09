@@ -9,13 +9,19 @@ namespace SGA
 	
 	class MCTSAgent : public Agent
 	{
+	public:
+		explicit MCTSAgent(MCTSParameters&& params)
+			: params(std::move(params))
+		{
+		}
+		
+		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
 		int previousActionIndex = -1;
-
 		MCTSParameters parameters_ = MCTSParameters();
-		
-	public:
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		bool continuePreviousSearch = true;
+		int playerTurn = -1;
 	};
 }

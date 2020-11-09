@@ -1,5 +1,5 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -32,29 +32,24 @@ Tiles:
 Board:
     GenerationType: Manual
     Layout: >
-        FFFFFFFFFFFFFFFFFFFFFFFFF
-        FFFFFFFF................F
-        FFFFF...................F
-        F.....MM................F
-        F.....MM................F
-        F.....MM................F
-        F.....MM................F
-        F.....MM.........MM..H..F
-        F.....MM......H..MMM....F
-        F.....MM........MMM..H..F
-        F.....MM....H....MMM....F
-        F.........W......MMM....F
-        F.........W......MMM....F
-        F.........W......MMM....F
-        F.........W......MMM....F
-        F.........W......MMM....F
-        F................MM..H..F
-        F.......................F
-        F.............FFFFFFF...F
-        F.............FFFFFFF...F
-        F.......................F
-        FFFFFFFFFFFFFFFFFFFFFFFFF
-        
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+          M.............M................M
+          M..............................M
+          M..............................M
+          M..............................M
+          M.....................MM.....MMM
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+
 Units:
     Warrior:
         Sprite: ../GUI/Assets/basicCloseRange (2).png
@@ -63,7 +58,7 @@ Units:
 
         MovementRange: 2
         ActionRange: 2
-        AttackDamage: 60
+        AttackDamage: 10
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]
@@ -76,7 +71,7 @@ Units:
         ActionRange: 5
         ActionsPerTurn: 2
         RepeatableActions: false
-        AttackDamage: 20
+        AttackDamage: 10
         Actions: [Attack, Move]
     Healer:
         Sprite: ../GUI/Assets/healer (2).png
@@ -95,15 +90,15 @@ Units:
         LineOfSightRange: 6
 
         MovementRange: 1
-        ActionRange: 1
-        AttackDamage: 100
+        ActionRange: 2
+        AttackDamage: 10
         ActionsPerTurn: 2
         RepeatableActions: false
         Actions: [Attack, Move]
 
 ForwardModel:
     WinCondition:
-        Type: UnitAlive
+        Type: LastManStanding
         Unit: King
 
     Effects:
