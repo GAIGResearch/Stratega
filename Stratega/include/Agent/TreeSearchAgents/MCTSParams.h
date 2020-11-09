@@ -29,9 +29,9 @@ namespace SGA {
 namespace YAML
 {
     template<>
-    struct convert<SGA::MCTSParams>
+    struct convert<SGA::MCTSParameters>
     {
-        static bool decode(const Node& node, SGA::MCTSParams& rhs)
+        static bool decode(const Node& node, SGA::MCTSParameters& rhs)
         {
             rhs.K = node["K"].as<double>(rhs.K);
             rhs.ROLLOUT_LENGTH= node["RolloutLength"].as<int>(rhs.ROLLOUT_LENGTH);

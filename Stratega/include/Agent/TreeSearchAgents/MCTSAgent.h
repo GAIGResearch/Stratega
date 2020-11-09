@@ -7,8 +7,8 @@ namespace SGA
 	class MCTSAgent : public Agent
 	{
 	public:
-		explicit MCTSAgent(MCTSParams&& params)
-			: params(std::move(params))
+		explicit MCTSAgent(MCTSParameters&& params)
+			: parameters_(std::move(params))
 		{
 		}
 		
