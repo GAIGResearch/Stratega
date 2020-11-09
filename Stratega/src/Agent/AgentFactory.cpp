@@ -10,6 +10,9 @@
 #include <Agent/TreeSearchAgents/MCTSAgent.h>
 #include <Agent/PortfolioRHEA/PortfolioRHEAAgent.h>
 #include <Agent/PortfolioGreedySearchAgent.h>
+#include <Agent/MetaPortfolioOptimizer/MetaPOAgent.h>
+#include <Agent/MOPortfolioRHEA/MOPortfolioRHEAAgent.h>
+#include <Agent/PortfolioOnlineEvolution/POEAgent.h>
 
 namespace SGA
 {
@@ -73,6 +76,9 @@ namespace SGA
 		factory.registerAgent<MCTSAgent, MCTSParams>("MCTSAgent");
 		factory.registerAgent<PortfolioRHEAAgent>("PortfolioRHEAAgent");
 		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
+		factory.registerAgent<MetaPOAgent>("MetaPOAgent");
+		factory.registerAgent<MOPortfolioRHEAAgent>("MOPRHEAAgent");
+		factory.registerAgent<POEAgent>("POEAgent");
 		
 		return factory;
 	}

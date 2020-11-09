@@ -10,6 +10,8 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
 				auto actionSpace = forwardModel.getActions(gameState);
 
 				if (actionSpace->count() == 1)
@@ -18,13 +20,13 @@ namespace SGA
 				}
 				else
 				{
-					// player portfolios
+					// player PORTFOLIO
 					auto playerUnits = gameState.getPlayer(gameCommunicator.getPlayerID())->getUnits();
-					std::map<int, BasePortfolio*> playerPortfolios = std::map<int, BasePortfolio*>();
+					std::map<int, BaseActionScript*> playerPortfolios = std::map<int, BaseActionScript*>();
 
-					// opponent portfolios
+					// opponent PORTFOLIO
 					auto opUnits = gameState.getPlayer(1 - gameCommunicator.getPlayerID() % 2)->getUnits();
-					std::map<int, BasePortfolio*> opponentPortfolios = std::map<int, BasePortfolio*>();
+					std::map<int, BaseActionScript*> opponentPortfolios = std::map<int, BaseActionScript*>();
 
 					// sets a random portfolio for each player
 					InitializePortfolios(playerUnits, playerPortfolios);
@@ -45,15 +47,15 @@ namespace SGA
 	}
 	
 	// initialize the player's portfolio map with random scripts
-	void PortfolioGreedySearchAgent::InitializePortfolios(std::vector<TBSUnit*>& units, std::map<int, BasePortfolio*>& portfolioMap)
+	void PortfolioGreedySearchAgent::InitializePortfolios(std::vector<TBSUnit*>& units, std::map<int, BaseActionScript*>& portfolioMap)
 	{
 		for (TBSUnit* u : units)
 		{
-			portfolioMap[u->getUnitID()] = params_.portfolios[rand() % params_.portfolios.size()].get();
+			portfolioMap[u->getUnitID()] = params_.PORTFOLIO[rand() % params_.PORTFOLIO.size()].get();
 		}
 	}
 
-	void PortfolioGreedySearchAgent::Improve(TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSUnit*>& playerUnits, std::map<int, BasePortfolio*>& playerPortfolios, std::map<int, BasePortfolio*>& opponentPortfolios)
+	void PortfolioGreedySearchAgent::Improve(TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSUnit*>& playerUnits, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios)
 	{		
 		double currentPortfolioValue = Playout(forwardModel, gameState, playerPortfolios, opponentPortfolios);
 
@@ -62,17 +64,17 @@ namespace SGA
 			for (auto unit : playerUnits)
 			{
 				int unitId = unit->getUnitID();
-				BasePortfolio* previousBestScript = playerPortfolios[unitId];
+				BaseActionScript* previousBestScript = playerPortfolios[unitId];
 				double bestNewScriptValue = -std::numeric_limits<double>::max();
 				int bestScriptIndex = -1;
 
 				// search for best script for the current unit
-				for (int i = 0; i < params_.portfolios.size(); i++)
+				for (int i = 0; i < params_.PORTFOLIO.size(); i++)
 				{
-					if (params_.portfolios[i].get() == previousBestScript) 
+					if (params_.PORTFOLIO[i].get() == previousBestScript) 
 						continue;	// skip the playout from the previousBestScript
 					
-					playerPortfolios[unitId] = params_.portfolios[i].get();
+					playerPortfolios[unitId] = params_.PORTFOLIO[i].get();
 					const double currentScriptValue = Playout(forwardModel, gameState, playerPortfolios, opponentPortfolios);
 					if (currentScriptValue > bestNewScriptValue)
 					{
@@ -85,7 +87,7 @@ namespace SGA
 				if (bestNewScriptValue > currentPortfolioValue)
 				{
 					// in case we found a better script, permanently replace the old one
-					playerPortfolios[unitId] = params_.portfolios[bestScriptIndex].get();
+					playerPortfolios[unitId] = params_.PORTFOLIO[bestScriptIndex].get();
 					currentPortfolioValue = bestNewScriptValue;
 				}
 				else
@@ -97,10 +99,11 @@ namespace SGA
 		}
 	}
 
-	// Simulated the players portfolios until a maximum number of turns has been simulated or the game has ended
+	// Simulated the players PORTFOLIO until a maximum number of turns has been simulated or the game has ended
 	// returns the heuristic value of the simulated game state
-	double PortfolioGreedySearchAgent::Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BasePortfolio*>& playerPortfolios, std::map<int, BasePortfolio*>& opponentPortfolios)
+	double PortfolioGreedySearchAgent::Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios)
 	{
+		const int playerID = gameState.currentPlayer;
 		auto actionSpace = forwardModel.getActions(gameState);
 		int simulatedTurns = 0;
 		while (simulatedTurns < params_.NR_OF_TURNS_PLANNED && !gameState.isGameOver && actionSpace->count()!=0)
@@ -116,11 +119,11 @@ namespace SGA
 			}
 		}
 		
-		return params_.HEURISTIC.evaluateGameState(forwardModel, gameState);
+		return params_.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
 	}
 
 	// returns the action defined by the player's portfolio
-	Action<Vector2i> PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, std::map<int, BasePortfolio*>& portfolioMap1, std::map<int, BasePortfolio*>& portfolioMap2)
+	Action<Vector2i> PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2)
 	{
 		const int nextUnit = actionSpace->getAction(0).getSourceUnitID();
 		if (portfolioMap1.contains(nextUnit))

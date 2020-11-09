@@ -23,7 +23,7 @@ namespace SGA {
 		SimpleHeuristic(int playerID, int numberOfPlayers);
 		~SimpleHeuristic();
 
-		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState) override;
+		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) override;
 	};
 
 }

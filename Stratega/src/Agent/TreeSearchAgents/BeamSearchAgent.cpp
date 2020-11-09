@@ -5,19 +5,24 @@ namespace SGA
 {
 	void BeamSearchAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
+		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
+
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
 			{				
 				TBSGameState gameState = gameCommunicator.getGameState();
-				TreeNode rootNode = TreeNode(forwardModel, gameState);
+				if (gameState.isGameOver)
+					break;
+				
+				TreeNode rootNode = TreeNode(*processedForwardModel, gameState);
 
 				if (rootNode.actionSpace->count() == 1)
 				{
 					gameCommunicator.executeAction(rootNode.actionSpace->getAction(0));
 				} else
 				{
-					Action<Vector2i> bestAction = beamSearch(forwardModel, rootNode);
+					Action<Vector2i> bestAction = beamSearch(*processedForwardModel, rootNode);
 					gameCommunicator.executeAction(bestAction);
 				}
 			}
@@ -26,17 +31,17 @@ namespace SGA
 
 	Action<Vector2i> BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
 	{
-		int me = root.gameState.currentPlayer;
+		parameters_.PLAYER_ID = root.gameState.currentPlayer;
 
-		std::vector<TreeNode*> bestSimulations = Simulate(forwardModel, root);
+		std::vector<TreeNode*> bestSimulations = simulate(forwardModel, root);
 
-		for (int i = 1; i < playerDepth; i++)
+		for (size_t i = 1; i < parameters_.PLAYER_BEAM_DEPTH; i++)
 		{
 			std::vector<TreeNode*> newBestSimulations = std::vector<TreeNode*>();
 			
 			for (TreeNode* child : bestSimulations)
 			{
-				std::vector<TreeNode*> childSims = Simulate(forwardModel, *child);
+				std::vector<TreeNode*> childSims = simulate(forwardModel, *child);
 				for (TreeNode* childSim : childSims)
 				{
 					newBestSimulations.push_back(childSim);
@@ -44,8 +49,8 @@ namespace SGA
 			}
 			
 			sort(newBestSimulations.begin(), newBestSimulations.end(), sortByValue);
-			if (newBestSimulations.size() > playerBeamWith)
-				newBestSimulations.erase(newBestSimulations.begin() + playerBeamWith, newBestSimulations.end());
+			if (newBestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
+				newBestSimulations.erase(newBestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, newBestSimulations.end());
 			bestSimulations = newBestSimulations;
 		}
 
@@ -66,26 +71,29 @@ namespace SGA
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::Simulate(TBSForwardModel& forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel& forwardModel, TreeNode& node)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
+		
 		// fully expand the whole node
-		while (node.expand(forwardModel) != nullptr) {};
+		while (node.expand(forwardModel, parameters_) != nullptr) {};
 		
 		// rate each child according to scoring function
-		for (size_t i = 0; i < node.children.size(); i++)
+		for (auto& i : node.children)
 		{
-			auto child = node.children.at(i).get();
-			child->value = heuristic.evaluateGameState(forwardModel, child->gameState);
+			auto* child = i.get();
+			child->value = parameters_.OBJECTIVE->evaluateGameState(forwardModel, child->gameState, parameters_.PLAYER_ID);
 			bestSimulations.push_back(child);
 		}
 
 		// determine the best children
 		sort(bestSimulations.begin(), bestSimulations.end(), sortByValue);
 
-		// delete all other children. !!!Note: the index of the child is no longer associated with the index of an action in the node's action space!!!
-		if (bestSimulations.size() > playerBeamWith)
-			bestSimulations.erase(bestSimulations.begin() + playerBeamWith, bestSimulations.end());
+		// delete all other children.
+		// !!!Note: the index of the child is no longer associated with the index of an action in the node's action space!!!
+		if (bestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
+			bestSimulations.erase(bestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, bestSimulations.end());
+			
 		return bestSimulations;
 	}
 }

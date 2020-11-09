@@ -22,7 +22,7 @@ namespace SGA
 			return std::unique_ptr<ActionSpaceBase<Action>>(generateActions(state, playerID));
 		}
 		
-	private:
+	protected:
 		virtual ActionSpaceBase<Action>* generateActions(State& state) const = 0;
 		virtual ActionSpaceBase<Action>* generateActions(State& state, int playerID) const = 0;
 	};

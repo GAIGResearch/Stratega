@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	auto seed = parser.getCmdOption<int>("-seed", 0);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
-	auto configPath = parser.getCmdOption("-configPath");
+	auto configPath = parser.getCmdOption<std::string>("-configPath", "C:/GithubRepositories/Stratega/gameConfigs/KillTheKing.yaml");
 	if(configPath.empty())
 	{
 		std::cout << "You have to provide the argument -configPath" << std::endl;

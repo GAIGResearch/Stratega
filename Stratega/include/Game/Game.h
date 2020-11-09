@@ -17,7 +17,7 @@ namespace SGA
 		virtual void run();
 		virtual void update(double deltaTime) = 0;
 		virtual void end() { endGame = true; };
-		virtual bool isGameOver() { return endGame; };
+		virtual bool isGameOver() const { return endGame; };
 
 		virtual void addCommunicator(std::unique_ptr<GameCommunicator> comm);
 

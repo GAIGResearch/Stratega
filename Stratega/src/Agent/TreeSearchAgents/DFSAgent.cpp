@@ -12,6 +12,8 @@ namespace SGA
 				remainingForwardModelCalls = forwardModelCalls;
 
 				TBSGameState gameState = gameCommunicator.getGameState();
+				if (gameState.isGameOver)
+					break;
 				auto actionSpace = forwardModel.getActions(gameState);
 				if (actionSpace->count() == 1)
 				{
@@ -22,12 +24,13 @@ namespace SGA
 
 					double bestHeuristicValue = -std::numeric_limits<double>::max();
 					int bestActionIndex = 0;
+					const int playerID = gameState.currentPlayer;
 
 					for (size_t i = 0; i < actionSpace->count(); i++)
 					{
 						TBSGameState gsCopy(gameState);
 						forwardModel.advanceGameState(gsCopy, actionSpace->getAction(i));
-						const double value = evaluateRollout(forwardModel, gameState, 1);
+						const double value = evaluateRollout(forwardModel, gameState, 1, playerID);
 						if (value > bestHeuristicValue)
 						{
 							bestHeuristicValue = value;
@@ -45,12 +48,12 @@ namespace SGA
 		}		
 	}
 
-	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth)
+	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
-		if (depth == maxDepth)
+		if (depth == maxDepth || gameState.isGameOver)
 		{
-			return _stateHeuristic.evaluateGameState(forwardModel, gameState);
+			return _stateHeuristic.evaluateGameState(forwardModel, gameState, playerID);
 		}
 		else
 		{
@@ -60,7 +63,7 @@ namespace SGA
 				TBSGameState gsCopy(gameState);
 				applyActionToGameState(forwardModel, gameState, action);
 
-				double value = evaluateRollout(forwardModel, gsCopy, depth + 1);
+				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
 				if (value > bestValue)
 				{
 					bestValue = value;
@@ -79,11 +82,21 @@ namespace SGA
 		const int playerID = gameState.currentPlayer;
 		forwardModel.advanceGameState(gameState, action);
 		
-		while (gameState.currentPlayer != playerID)
+		while (gameState.currentPlayer != playerID && !gameState.isGameOver)
 		{
-			ActionSpace<Vector2i> endTurnActionSpace;
-			forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-			forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
+			{
+				auto actionSpace = forwardModel.getActions(gameState);
+				auto opAction = opponentModel->getAction(gameState, actionSpace);
+				forwardModel.advanceGameState(gameState, opAction);
+			}
+			else // skip opponent turn
+			{
+				ActionSpace<Vector2i> endTurnActionSpace;
+				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+			}
+			remainingForwardModelCalls--;
 		}
 	}
 }

@@ -1,8 +1,8 @@
-#include <Agent/Portfolios/UseSpecialAbility.h>
+#include <Agent/ActionScripts/UseSpecialAbilityScript.h>
 
 namespace SGA
 {
-	Action<Vector2i> UseSpecialAbility::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	Action<Vector2i> UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
 	{
 		if (actionSpace->count() > 1)
 		{
@@ -21,7 +21,7 @@ namespace SGA
 		return actionSpace->getAction(rand() % actionSpace->count());
 	}
 
-	Action<Vector2i> UseSpecialAbility::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	Action<Vector2i> UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
 	{
 		if (actionSpace->count() > 1)
 		{

@@ -18,7 +18,7 @@ namespace SGA
 		void executeAction(Action<Vector2i> action);
 		void update(double deltaTime) override;
 		void close() override;
-		bool isGameOver() override { return Game::isGameOver() || gameState->isGameOver; }
+		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
 		void addActionToExecute(Action<Vector2i> action);
 
 		const TBSForwardModel& getForwardModel() const { return forwardModel; }
@@ -31,7 +31,7 @@ namespace SGA
 		const TBSGameState& getState() const;
 		TBSGameState getStateCopy();
 		
-		[[nodiscard]] bool isUpdatingState() const { return updatingState; }
+		[[nodiscard]] bool isUpdatingState() const { return updatingState && !isGameOver(); }
 
 	private:
 		bool updatingState = false;

@@ -1,6 +1,8 @@
 #pragma once
 #include <Agent/Heuristic/LinearSumHeuristic.h>
 
+#include "Agent/ActionScripts/AttackClosestOpponentScript.h"
+
 namespace SGA {
 	struct RHEAParams {
 		// basic parameters
@@ -23,6 +25,7 @@ namespace SGA {
 
 		LinearSumHeuristic HEURISTIC{ LinearSumHeuristic() };	// the heuristic used to evaluate a genome
 		double EPSILON = 1e-2;									// the amount of noise for randomly modifying an individuals value
+		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<AttackClosestOpponentScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
 		void printDetails() const;
 	};
