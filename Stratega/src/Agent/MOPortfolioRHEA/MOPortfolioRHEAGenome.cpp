@@ -32,7 +32,7 @@ namespace SGA {
     MOPortfolioRHEAGenome::MOPortfolioRHEAGenome(std::vector<Action<Vector2i>>& actions, std::vector<int>& portfolioIndices, double value1, double value2) :
         actions(std::move(actions)), portfolioIndices(std::move(portfolioIndices)), value1(value1), value2(value2){}
 
-    void MOPortfolioRHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, const Action<Vector2i>& action, MOPortfolioRHEAParams& params)
+    void MOPortfolioRHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action, MOPortfolioRHEAParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -47,7 +47,7 @@ namespace SGA {
             }
             else // skip opponent turn
             {
-                ActionSpace<Vector2i> endTurnActionSpace;
+                std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                 forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }

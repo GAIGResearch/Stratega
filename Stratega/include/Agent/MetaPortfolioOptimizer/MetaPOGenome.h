@@ -39,11 +39,11 @@ namespace SGA {
 		void toString() const;
 		static MetaPOGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params, std::mt19937& randomGenerator, MetaPOGenome& parent1, MetaPOGenome& parent2);
 
-		Action<Vector2i> getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace);
+		Action<Vector2i> getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace);
 		
 	private:
 		MetaPOGenome(std::map<int, BaseActionScript*>& unitScript, std::vector<UnitScriptChange> scriptUpdates, TBSForwardModel& forwardModel, TBSGameState& gameState, MetaPOParams& params);
-		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace,  const Action<Vector2i>& action, MetaPOParams& params);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace,  const Action<Vector2i>& action, MetaPOParams& params);
 
 	};
 }

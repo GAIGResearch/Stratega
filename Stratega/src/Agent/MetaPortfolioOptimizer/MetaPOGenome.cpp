@@ -69,7 +69,7 @@ namespace SGA {
             	}
             	else
             	{
-                    ActionSpace<Vector2i> endTurnActionSpace;
+                    std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
                     forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                     forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             	}
@@ -97,7 +97,7 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    Action<Vector2i> MetaPOGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace)
+    Action<Vector2i> MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace)
     {
         const int nextUnit = actionSpace->at(0).getSourceUnitID();
         if (unitScript.contains(nextUnit))

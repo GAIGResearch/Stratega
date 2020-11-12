@@ -32,7 +32,7 @@ namespace SGA
 		state.isGameOver = checkGameIsFinished(state);
 	}
 
-	void TBSForwardModel::advanceGameState(TBSGameState& state, const Action<Vector2i>& action, ActionSpace<Vector2i>& actionSpace) const
+	void TBSForwardModel::advanceGameState(TBSGameState& state, const Action<Vector2i>& action, std::vector<SGA::Action<Vector2i>>& actionSpace) const
 	{
 		//advance the gamestate
 		advanceGameState(state, action);
@@ -40,7 +40,7 @@ namespace SGA
 		//Fake update of actionSpace
 		//TODO update action space depending of the action played
 		actionSpace.clear();
-		actionSpace = *getActions(state);
+		actionSpace = getActions(state);
 	}
 
 	bool TBSForwardModel::isValid(TBSGameState& state, const Action<Vector2i>& action) const
@@ -56,14 +56,14 @@ namespace SGA
 		}
 	}
 
-	ActionSpace<Vector2i>* TBSForwardModel::generateActions(TBSGameState& state)const
+	std::vector<Action<Vector2i>> TBSForwardModel::getActions(TBSGameState& state) const
 	{
-		return generateActions(state, state.currentPlayer);
+		return getActions(state, state.currentPlayer);
 	}
 
-	ActionSpace<Vector2i>* TBSForwardModel::generateActions(TBSGameState& state, int playerID) const
+	std::vector<Action<Vector2i>> TBSForwardModel::getActions(TBSGameState& state, int playerID) const
 	{
-		auto* actionSpace = new ActionSpace<Vector2i>();
+		std::vector<Action<Vector2i>> actions;
 		for(auto* unit : state.getPlayer(playerID)->getUnits())
 		{
 			if(unit->numActionsExecuted >= unit->getType().actionsPerTurn)
@@ -80,20 +80,20 @@ namespace SGA
 
 				switch (actionType)
 				{
-					case ActionType::Attack: generateAttackActions(*unit, *actionSpace); break;
-					case ActionType::Move: generateMoveActions(*unit, *actionSpace); break;
-					case ActionType::Heal: generateHealActions(*unit, *actionSpace); break;
-					case ActionType::Push: generatePushActions(*unit, *actionSpace); break;
+					case ActionType::Attack: generateAttackActions(*unit, actions); break;
+					case ActionType::Move: generateMoveActions(*unit, actions); break;
+					case ActionType::Heal: generateHealActions(*unit, actions); break;
+					case ActionType::Push: generatePushActions(*unit, actions); break;
 					default: throw std::runtime_error("Unit can execute an invalid action-type");
 				}
 			}
 		}
 
-		generateEndOfTurnActions(state, playerID, *actionSpace);
-		return actionSpace;
+		generateEndOfTurnActions(state, playerID, actions);
+		return actions;
 	}
 
-	void TBSForwardModel::generateMoveActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const
+	void TBSForwardModel::generateMoveActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		auto moveRange = unit.getRange();
@@ -114,7 +114,7 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateAttackActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const
+	void TBSForwardModel::generateAttackActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
@@ -127,7 +127,7 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generatePushActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const
+	void TBSForwardModel::generatePushActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
@@ -140,7 +140,7 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateHealActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const
+	void TBSForwardModel::generateHealActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for(const auto& targetUnit : state.getUnits())
@@ -153,7 +153,7 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateEndOfTurnActions(TBSGameState& state, int playerID, ActionSpace<Vector2i>& actionBucket) const
+	void TBSForwardModel::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<SGA::Action<Vector2i>>& actionBucket) const
 	{
 		Action<Vector2i> endTurnAction{ ActionType::EndTurn, playerID, -1, {}, -1 };
 		if(validateEndOfTurn(state, endTurnAction))

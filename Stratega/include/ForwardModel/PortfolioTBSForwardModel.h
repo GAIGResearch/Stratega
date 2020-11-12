@@ -24,8 +24,8 @@ namespace SGA
 		
 	protected:
 
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state) const override;
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state, int playerID) const override;
+		std::vector<SGA::Action<Vector2i>>* generateActions(TBSGameState& state) const override;
+		std::vector<SGA::Action<Vector2i>>* generateActions(TBSGameState& state, int playerID) const override;
 
 	};
 }

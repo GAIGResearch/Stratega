@@ -37,7 +37,7 @@ namespace SGA {
 
 	private:
 		RHEAGenome(std::vector<Action<Vector2i>>& actions, double value);
-		static void applyActionToGameState(const TBSForwardModel & forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, const Action<Vector2i>& action, RHEAParams& params);
+		static void applyActionToGameState(const TBSForwardModel & forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action, RHEAParams& params);
 		
 	};
 }

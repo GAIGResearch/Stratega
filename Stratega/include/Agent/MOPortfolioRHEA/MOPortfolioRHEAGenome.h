@@ -40,7 +40,7 @@ namespace SGA {
 		
 	private:
 		MOPortfolioRHEAGenome(std::vector<Action<Vector2i>>& actions, std::vector<int>& portfolioIndices, double value1, double value2);
-		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace,  const Action<Vector2i>& action, MOPortfolioRHEAParams& params);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace,  const Action<Vector2i>& action, MOPortfolioRHEAParams& params);
 		
 
 	};

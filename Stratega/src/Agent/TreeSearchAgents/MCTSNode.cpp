@@ -235,7 +235,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				ActionSpace<Vector2i> endTurnActionSpace;
+				std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
 				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
 				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}

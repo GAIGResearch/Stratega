@@ -19,7 +19,7 @@ namespace SGA
 		/// <summary>
 		/// Filters out all moves that are not within the specified radius.
 		/// </summary>
-		std::vector<Action<Vector2i>> filterMovesInRange(const ActionSpace<Vector2i>& moves, Vector2i position, int range) const;
+		std::vector<Action<Vector2i>> filterMovesInRange(const std::vector<SGA::Action<Vector2i>>& moves, Vector2i position, int range) const;
 
 		/// <summary>
 		/// Filters out all units that can't reach the specified position within one turn.
@@ -52,7 +52,7 @@ namespace SGA
 		/// If the unit can't reach the target immediately, this function will return a move that gets close to the target.
 		/// The action will be stored in the bucket, the returned boolean indicates if a move was necessary to reach the target
 		/// </summary>
-		bool getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, ActionSpace<Vector2i>& moves, Action<Vector2i>& bucket) const;
+		bool getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, std::vector<SGA::Action<Vector2i>>& moves, Action<Vector2i>& bucket) const;
 		
 	};
 }

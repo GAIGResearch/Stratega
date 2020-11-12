@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	Action<Vector2i> RunToFriendlyUnitsScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	Action<Vector2i> RunToFriendlyUnitsScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
 	{
 		if (actionSpace->size() > 1)
 		{
@@ -51,7 +51,7 @@ namespace SGA
 		return actionSpace->at(rand() % actionSpace->size());
 	}
 
-	Action<Vector2i> RunToFriendlyUnitsScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	Action<Vector2i> RunToFriendlyUnitsScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
 	{
 		if (actionSpace->size() > 1)
 		{

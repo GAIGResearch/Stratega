@@ -65,29 +65,29 @@ namespace SGA
 		}
 	}
 	
-	ActionSpace<Vector2f>* RTSForwardModel::generateActions(RTSGameState& state) const
+	std::vector<Action<Vector2f>> RTSForwardModel::getActions(RTSGameState& state) const
 	{
 		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
 	}
 
-	ActionSpace<Vector2f>* RTSForwardModel::generateActions(RTSGameState& state, int playerID) const
+	std::vector<Action<Vector2f>> RTSForwardModel::getActions(RTSGameState& state, int playerID) const
 	{
-		auto* actionSpace = new ActionSpace<Vector2f>();
+		std::vector<Action<Vector2f>> actions;
 		for (auto& unit : state.units)
 		{
 			if (unit.playerID != playerID || unit.intendedAction.getType() != ActionType::None)
 				continue;
 			
-			generateMoves(unit, *actionSpace);
-			generateAttacks(unit, *actionSpace);
-			generateHeals(unit, *actionSpace);
+			generateMoves(unit, actions);
+			generateAttacks(unit, actions);
+			generateHeals(unit, actions);
 		}
-		actionSpace->emplace_back(generateEndTickAction());
+		actions.emplace_back(generateEndTickAction());
 
-		return actionSpace;
+		return actions;
 	}
 
-	void RTSForwardModel::generateMoves(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const
+	void RTSForwardModel::generateMoves(RTSUnit& unit, std::vector<SGA::Action<Vector2f>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		int xGrid = static_cast<int>(unit.position.x);
@@ -109,7 +109,7 @@ namespace SGA
 		}
 	}
 	
-	void RTSForwardModel::generateAttacks(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const
+	void RTSForwardModel::generateAttacks(RTSUnit& unit, std::vector<SGA::Action<Vector2f>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for(auto& targetUnit : state.units)
@@ -120,7 +120,7 @@ namespace SGA
 		}
 	}
 	
-	void RTSForwardModel::generateHeals(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const
+	void RTSForwardModel::generateHeals(RTSUnit& unit, std::vector<SGA::Action<Vector2f>>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for (auto& targetUnit : state.units)

@@ -16,25 +16,18 @@ namespace SGA
 		int unitTypeID;
 		
 		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action) const override;
-		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action, ActionSpace<Vector2i>& actionSpace) const;
+		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action, std::vector<SGA::Action<Vector2i>>& actionSpace) const;
 
-		std::unique_ptr<ActionSpace<Vector2i>> getActions(TBSGameState& state) const
-		{
-			return std::unique_ptr<ActionSpace<Vector2i>>(generateActions(state));
-		}
-
-		std::unique_ptr<ActionSpace<Vector2i>> getActions(TBSGameState& state, int playerID) const
-		{
-			return std::unique_ptr<ActionSpace<Vector2i>>(generateActions(state, playerID));
-		}
+		std::vector<Action<Vector2i>> getActions(TBSGameState& state) const override;
+		std::vector<Action<Vector2i>> getActions(TBSGameState& state, int playerID) const override;
 		
 		bool isValid(TBSGameState& state, const Action<Vector2i>& action) const;
 
-		void generateMoveActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateAttackActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generatePushActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateHealActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateEndOfTurnActions(TBSGameState& state, int playerID, ActionSpace<Vector2i>& actionBucket) const;
+		void generateMoveActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
+		void generateAttackActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
+		void generatePushActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
+		void generateHealActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
+		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<SGA::Action<Vector2i>>& actionBucket) const;
 		
 		bool executeMove(FMState& state, const Action<Vector2i>& action) const;
 		bool executeAttack(FMState& state, const Action<Vector2i>& action) const;
@@ -71,9 +64,6 @@ namespace SGA
 	protected:
 		std::vector<Effect> unitEndOfTurnEffects;
 		std::vector<Effect> onTileEnterEffects;
-
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state) const override;
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state, int playerID) const override;
 		
 	};
 }
