@@ -1,6 +1,5 @@
 #pragma once
 #include <RenderLayer.h>
-#include <ForwardModel/TBSActionSpace.h>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 

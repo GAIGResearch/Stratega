@@ -5,7 +5,6 @@
 #include <ForwardModel/FMState.h>
 #include <Configuration/WinConditionType.h>
 #include <ForwardModel/ForwardModelBase.h>
-#include <ForwardModel/TBSActionSpace.h>
 
 namespace SGA
 {

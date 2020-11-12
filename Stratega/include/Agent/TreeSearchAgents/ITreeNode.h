@@ -1,5 +1,4 @@
 #pragma once
-#include <ForwardModel/ActionSpace.h>
 #include <Representation/TBSGameState.h>
 #include <ForwardModel/TBSForwardModel.h>
 

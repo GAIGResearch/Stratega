@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <ForwardModel/ForwardModelBase.h>
-#include <ForwardModel/TBSActionSpace.h>
 #include <ForwardModel/Action.h>
 #include <ForwardModel/FMState.h>
 #include <Representation/RTSGameState.h>
