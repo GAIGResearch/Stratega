@@ -12,7 +12,7 @@ namespace SGA
 		for (std::unique_ptr<BaseActionScript>& actionScript : this->portfolio)
 		{
 			const auto action = actionScript->getAction(state, actionSpace);
-			portfolioActionSpace->addAction(action);
+			portfolioActionSpace->emplace_back(action);
 		}
 		
 		return portfolioActionSpace;

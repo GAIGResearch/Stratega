@@ -15,9 +15,9 @@ namespace SGA
 				if (gameState.isGameOver)
 					break;
 				auto actionSpace = forwardModel.getActions(gameState);
-				if (actionSpace->count() == 1)
+				if (actionSpace->size() == 1)
 				{
-					gameCommunicator.executeAction(actionSpace->getAction(0));
+					gameCommunicator.executeAction(actionSpace->at(0));
 				}
 				else
 				{
@@ -26,10 +26,10 @@ namespace SGA
 					int bestActionIndex = 0;
 					const int playerID = gameState.currentPlayer;
 
-					for (size_t i = 0; i < actionSpace->count(); i++)
+					for (size_t i = 0; i < actionSpace->size(); i++)
 					{
 						TBSGameState gsCopy(gameState);
-						forwardModel.advanceGameState(gsCopy, actionSpace->getAction(i));
+						forwardModel.advanceGameState(gsCopy, actionSpace->at(i));
 						const double value = evaluateRollout(forwardModel, gameState, 1, playerID);
 						if (value > bestHeuristicValue)
 						{
@@ -42,7 +42,7 @@ namespace SGA
 					}
 					//std::cout << "DFSAgent Number of FM calls: " << forwardModelCalls << std::endl;
 
-					gameCommunicator.executeAction(actionSpace->getAction(bestActionIndex));
+					gameCommunicator.executeAction(actionSpace->at(bestActionIndex));
 				}
 			}
 		}		
@@ -94,7 +94,7 @@ namespace SGA
 			{
 				ActionSpace<Vector2i> endTurnActionSpace;
 				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}
 			remainingForwardModelCalls--;
 		}

@@ -221,7 +221,7 @@ namespace SGA
 			// Go through all units and return the first action that we deem good
 			// Since this function is called multiple times, we will eventually use up all available actions
 			auto actions = fm.getActions(currentState);
-			Action nextAction = actions->filterActionTypes(ActionType::EndTurn).getAction(0); // Only one EndTurn action available
+			Action nextAction = actions->filterActionTypes(ActionType::EndTurn).at(0); // Only one EndTurn action available
 			bool foundAction = false;
 			for(auto* unit : myUnits)
 			{

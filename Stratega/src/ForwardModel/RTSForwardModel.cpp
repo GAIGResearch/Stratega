@@ -82,7 +82,7 @@ namespace SGA
 			generateAttacks(unit, *actionSpace);
 			generateHeals(unit, *actionSpace);
 		}
-		actionSpace->addAction(generateEndTickAction());
+		actionSpace->emplace_back(generateEndTickAction());
 
 		return actionSpace;
 	}
@@ -104,7 +104,7 @@ namespace SGA
 			{
 				Action<Vector2f> action{ SGA::ActionType::Move, unit.playerID, unit.unitID, SGA::Vector2i(x, y), -1 };
 				if(validateMove(state, action))
-					actionBucket.addAction(action);
+					actionBucket.emplace_back(action);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ namespace SGA
 		{
 			Action<Vector2f> action{ SGA::ActionType::Attack, unit.playerID, unit.unitID, targetUnit.position, targetUnit.unitID};
 			if (validateAttack(state, action))
-				actionBucket.addAction(action);
+				actionBucket.emplace_back(action);
 		}
 	}
 	
@@ -127,7 +127,7 @@ namespace SGA
 		{
 			Action<Vector2f> action{ SGA::ActionType::Heal, unit.playerID, unit.unitID, targetUnit.position, targetUnit.unitID };
 			if (validateHeal(state, action))
-				actionBucket.addAction(action);
+				actionBucket.emplace_back(action);
 		}
 	}
 

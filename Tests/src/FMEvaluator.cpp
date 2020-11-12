@@ -40,7 +40,7 @@ void FMEvaluator::runGameTBS(SGA::TBSGameState& state, SGA::TBSForwardModel& fm,
 		auto getActionsEnd = std::chrono::steady_clock::now();
 
 		// Measure speed of action execution
-		std::uniform_int_distribution<int> actionDist(0, actionSpace->count() - 1);
+		std::uniform_int_distribution<int> actionDist(0, actionSpace->size() - 1);
 		const auto& action = *(actionDist(*rngEngine) + actionSpace->begin());
 		auto executeActionStart = std::chrono::steady_clock::now();
 		fm.advanceGameState(state, action);
@@ -64,7 +64,7 @@ void FMEvaluator::runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm,
 		auto getActionsEnd = std::chrono::steady_clock::now();
 
 		// Measure speed of action execution
-		std::uniform_int_distribution<int> actionDist(0, actionSpace->count() - 1);
+		std::uniform_int_distribution<int> actionDist(0, actionSpace->size() - 1);
 		const auto& action = *(actionDist(*rngEngine) + actionSpace->begin());
 		auto executeActionStart = std::chrono::steady_clock::now();
 		fm.advanceGameState(state, action);

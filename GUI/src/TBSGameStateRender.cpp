@@ -239,7 +239,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 				{
 					//If is player unit action or globlal action(i.e End turn)
 					if (action.getSourceUnitID() == unit->getUnitID() || (action.getSourceUnitID() == -1 && unit->getPlayerID() == gameStateCopy.currentPlayer))
-						actionHumanUnitSelected.addAction(action);
+						actionHumanUnitSelected.emplace_back(action);
 				}
 			}
 		}

@@ -17,16 +17,16 @@ namespace SGA
 			return actions.end();
 		}
 
-		void addAction(Action<T> action)
+		void emplace_back(Action<T> action)
 		{
 			actions.emplace_back(action);
 		}
-		Action<T> getAction(int index)const
+		Action<T> at(int index)const
 		{
 			return	actions[index];
 		}
 
-		[[nodiscard]] size_t count() const { return actions.size(); }
+		[[nodiscard]] size_t size() const { return actions.size(); }
 		void clear() { actions.clear(); }
 
 		ActionSpace filterUnitActions(TBSUnit& unit)
@@ -36,7 +36,7 @@ namespace SGA
 			{
 				if (a.getSourceUnitID() == unit.getUnitID())
 				{
-					subSpace.addAction(a);
+					subSpace.emplace_back(a);
 				}
 			}
 
@@ -49,7 +49,7 @@ namespace SGA
 			{
 				if (a.getType() == type)
 				{
-					subSpace.addAction(a);
+					subSpace.emplace_back(a);
 				}
 			}
 

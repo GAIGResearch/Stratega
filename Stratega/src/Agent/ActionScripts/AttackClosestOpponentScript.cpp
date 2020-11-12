@@ -4,7 +4,7 @@ namespace SGA
 {
 	Action<Vector2i> AttackClosestOpponentScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace->size() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions;;
 			for (const auto& action : *actionSpace)
@@ -66,7 +66,7 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace->at(rand() % actionSpace->size());
 	}
 
 	Action<Vector2i> AttackClosestOpponentScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
@@ -136,7 +136,7 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace->at(rand() % actionSpace->size());
 	}
 
 	int AttackClosestOpponentScript::minimalDistanceToOpponents(const Vector2i position,  std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits)

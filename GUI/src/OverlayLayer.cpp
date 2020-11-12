@@ -19,7 +19,7 @@ void TBSOverlayLayer::update(SGA::TBSGameState& state)
 	sprites.clear();
 
 	//Add actions if we have actions to draw
-	if(actionSpace.count()>0)
+	if(actionSpace.size()>0)
 	{
 		for(const auto& action : actionSpace)
 		{

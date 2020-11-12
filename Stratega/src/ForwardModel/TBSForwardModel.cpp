@@ -108,7 +108,7 @@ namespace SGA
 				Action action{ SGA::ActionType::Move, unit.getPlayerID(), unit.getUnitID(), SGA::Vector2i(x, y), -1};
 				if(validateMove(state, action))
 				{
-					actionBucket.addAction(action);
+					actionBucket.emplace_back(action);
 				}
 			}
 		}
@@ -122,7 +122,7 @@ namespace SGA
 			Action attackAction{ ActionType::Attack, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (validateAttack(state, attackAction))
 			{
-				actionBucket.addAction(attackAction);
+				actionBucket.emplace_back(attackAction);
 			}
 		}
 	}
@@ -135,7 +135,7 @@ namespace SGA
 			Action pushAction{ ActionType::Push, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (validatePush(state, pushAction))
 			{
-				actionBucket.addAction(pushAction);
+				actionBucket.emplace_back(pushAction);
 			}
 		}
 	}
@@ -148,7 +148,7 @@ namespace SGA
 			Action healAction{ ActionType::Heal, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if(validateHeal(state, healAction))
 			{
-				actionBucket.addAction(healAction);
+				actionBucket.emplace_back(healAction);
 			}
 		}
 	}
@@ -158,7 +158,7 @@ namespace SGA
 		Action<Vector2i> endTurnAction{ ActionType::EndTurn, playerID, -1, {}, -1 };
 		if(validateEndOfTurn(state, endTurnAction))
 		{
-			actionBucket.addAction(endTurnAction);
+			actionBucket.emplace_back(endTurnAction);
 		}
 	}
 

@@ -10,7 +10,7 @@ namespace SGA {
         auto actionSpace = forwardModel.getActions(gameState);
 
         size_t length = 0;
-        while (!gameState.isGameOver && actionSpace->count() > 0 && length < params.INDIVIDUAL_LENGTH) {
+        while (!gameState.isGameOver && actionSpace->size() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose a random portfolio and sample action
             const int portfolioIndex = rand() % params.PORTFOLIO.size();
             BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
@@ -49,7 +49,7 @@ namespace SGA {
             {
                 ActionSpace<Vector2i> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
         }
     	
@@ -63,7 +63,7 @@ namespace SGA {
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
-        while (!gameState.isGameOver && actionSpace->count() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver && actionSpace->size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
@@ -124,7 +124,7 @@ namespace SGA {
     	
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
-        while (!gameState.isGameOver && actionSpace->count() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver && actionSpace->size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
             std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
@@ -196,7 +196,7 @@ namespace SGA {
         auto actionSpace = forwardModel.getActions(gameState);
     	for (size_t i = 0; i < actions.size(); i++)
     	{
-            if (actionSpace->count() == 0)
+            if (actionSpace->size() == 0)
                 break;
 
             if (!forwardModel.isValid(gameState, actions[i]))

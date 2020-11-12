@@ -11,8 +11,8 @@ namespace SGA
 			{
 				auto state = gameCommunicator.getGameState();
 				std::unique_ptr<ActionSpace<Vector2i>> actionSpace = ForwardModel.getActions(state);
-				std::uniform_int_distribution<int> actionDist(0, static_cast<int>(actionSpace->count()) - 1);
-				gameCommunicator.executeAction(actionSpace->getAction(actionDist(gameCommunicator.getRNGEngine())));
+				std::uniform_int_distribution<int> actionDist(0, static_cast<int>(actionSpace->size()) - 1);
+				gameCommunicator.executeAction(actionSpace->at(actionDist(gameCommunicator.getRNGEngine())));
 			}
 		}
 	}
@@ -28,9 +28,9 @@ namespace SGA
 			{
 				auto state = gameCommunicator.getGameState();
 				auto actions = forwardModel.getActions(state, gameCommunicator.getPlayerID());
-				std::uniform_int_distribution<int> actionDist(0, actions->count() - 1);
+				std::uniform_int_distribution<int> actionDist(0, actions->size() - 1);
 				int temp=actionDist(gameCommunicator.getRNGEngine());
- 				gameCommunicator.executeAction(actions->getAction(actionDist(gameCommunicator.getRNGEngine())));
+ 				gameCommunicator.executeAction(actions->at(actionDist(gameCommunicator.getRNGEngine())));
 				lastExecution = std::chrono::high_resolution_clock::now();
 			}
 		}

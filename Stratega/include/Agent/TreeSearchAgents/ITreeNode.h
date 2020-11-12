@@ -37,7 +37,7 @@ namespace SGA
 
 	protected:
 		[[nodiscard]] bool isFullyExpanded() const {
-			return children.size() >= actionSpace->count();
+			return children.size() >= actionSpace->size();
 		}
 		
 		void printTree(const std::string& prefix, const ITreeNode<NodeType>* node, bool isLast, const std::string& actionName) const

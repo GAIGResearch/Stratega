@@ -46,7 +46,7 @@ namespace SGA {
             if (gameState.currentPlayer == playerID)
             {
                 // choose action according to unitScript
-                int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+                int nextUnit = actionSpace->at(0).getSourceUnitID();
                 if (playerMap.contains(nextUnit))
                 {
                     auto action = playerMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
@@ -54,7 +54,7 @@ namespace SGA {
                 }
                 else
                 {
-                    forwardModel.advanceGameState(gameState, actionSpace->getAction(0));
+                    forwardModel.advanceGameState(gameState, actionSpace->at(0));
                 }
             }
             else
@@ -69,7 +69,7 @@ namespace SGA {
                 {
                     ActionSpace<Vector2i> endTurnActionSpace;
                     forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                    forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                    forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace SGA {
             {
                 ActionSpace<Vector2i> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
         }
 
@@ -130,12 +130,12 @@ namespace SGA {
 
     Action<Vector2i> POEGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace)
     {
-        const int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+        const int nextUnit = actionSpace->at(0).getSourceUnitID();
         if (scriptAssignment[0].contains(nextUnit))
         {
             return scriptAssignment[0][nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
-        return actionSpace->getAction(rand() % actionSpace->count());
+        return actionSpace->at(rand() % actionSpace->size());
     };
 	
     POEGenome POEGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator, POEGenome& parent1, POEGenome& parent2)

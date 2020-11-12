@@ -17,9 +17,9 @@ namespace SGA
 				
 				TreeNode rootNode = TreeNode(*processedForwardModel, gameState);
 
-				if (rootNode.actionSpace->count() == 1)
+				if (rootNode.actionSpace->size() == 1)
 				{
-					gameCommunicator.executeAction(rootNode.actionSpace->getAction(0));
+					gameCommunicator.executeAction(rootNode.actionSpace->at(0));
 				} else
 				{
 					Action<Vector2i> bestAction = beamSearch(*processedForwardModel, rootNode);
@@ -61,12 +61,12 @@ namespace SGA
 			TreeNode* parent = bestChild->parentNode;
 			if (parent->parentNode == nullptr)
 			{
-				return parent->actionSpace->getAction(bestChild->childIndex);
+				return parent->actionSpace->at(bestChild->childIndex);
 			}
 			bestChild = parent;
 		}
 
-		return root.actionSpace->getAction(0);
+		return root.actionSpace->at(0);
 	}
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
