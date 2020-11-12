@@ -1,6 +1,6 @@
 #include <OverlayLayer.h>
 
-TBSOverlayLayer::TBSOverlayLayer(AssetCache& assetCache, SGA::std::vector<SGA::Action<SGA::Vector2i>>& actionSpace, SGA::Vector2f& currentMousePos) :
+TBSOverlayLayer::TBSOverlayLayer(AssetCache& assetCache, std::vector<SGA::Action<SGA::Vector2i>>& actionSpace, SGA::Vector2f& currentMousePos) :
 	RenderLayer(assetCache), actionSpace(actionSpace), currentMousePos(currentMousePos)
 {
 

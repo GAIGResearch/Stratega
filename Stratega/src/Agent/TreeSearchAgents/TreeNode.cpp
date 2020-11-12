@@ -31,7 +31,7 @@ namespace SGA
 
 		// roll the state using a the next action that hasn't been expanded yet
 		TBSGameState gsCopy = TBSGameState(gameState);
-		forwardModel.advanceGameState(gsCopy, actionSpace->at(static_cast<int>(children.size())));
+		forwardModel.advanceGameState(gsCopy, actionSpace.at(static_cast<int>(children.size())));
 		agentParameters.REMAINING_FM_CALLS--;
 		
 		while (gsCopy.currentPlayer != agentParameters.PLAYER_ID && !gsCopy.isGameOver)

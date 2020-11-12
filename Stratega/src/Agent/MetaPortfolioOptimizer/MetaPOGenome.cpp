@@ -49,14 +49,14 @@ namespace SGA {
     		if (gameState.currentPlayer == playerID)
     		{
 				// choose action according to unitScript
-                int nextUnit = actionSpace->at(0).getSourceUnitID();
+                int nextUnit = actionSpace.at(0).getSourceUnitID();
                 if (tmpMap.contains(nextUnit))
                 {
                     auto action = tmpMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
                     forwardModel.advanceGameState(gameState, action);
                 } else
                 {
-                    forwardModel.advanceGameState(gameState, actionSpace->at(0));
+                    forwardModel.advanceGameState(gameState, actionSpace.at(0));
                 }
     		}
             else
@@ -99,12 +99,12 @@ namespace SGA {
 
     Action<Vector2i> MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace)
     {
-        const int nextUnit = actionSpace->at(0).getSourceUnitID();
+        const int nextUnit = actionSpace.at(0).getSourceUnitID();
         if (unitScript.contains(nextUnit))
         {
             return unitScript[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
-        return actionSpace->at(rand() % actionSpace->size());
+        return actionSpace.at(rand() % actionSpace.size());
     };
 	
     void MetaPOGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params, std::mt19937& randomGenerator)

@@ -11,12 +11,12 @@
 class TBSOverlayLayer : public RenderLayer<SGA::TBSGameState>
 {
 public:
-	TBSOverlayLayer(AssetCache& assetCache, SGA::std::vector<SGA::Action<SGA::Vector2i>>& actionSpace, SGA::Vector2f& currentMousePos);
+	TBSOverlayLayer(AssetCache& assetCache, std::vector<SGA::Action<SGA::Vector2i>>& actionSpace, SGA::Vector2f& currentMousePos);
 	void init(SGA::TBSGameState& state) override;
 	void update(SGA::TBSGameState& state) override;
 	void draw(SGA::TBSGameState& state, sf::RenderWindow& window)const override;
 private:
-	SGA::std::vector<SGA::Action<SGA::Vector2i>>& actionSpace;
+	std::vector<SGA::Action<SGA::Vector2i>>& actionSpace;
 	std::vector<sf::CircleShape> circleShapes;
 
 	SGA::Vector2f& currentMousePos;

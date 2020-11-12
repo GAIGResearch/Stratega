@@ -8,10 +8,10 @@ namespace SGA {
         const int playerID = gameState.currentPlayer;
 
         size_t length = 0;
-        while (!gameState.isGameOver && actionSpace->size() > 0 && length < params.INDIVIDUAL_LENGTH) {
+        while (!gameState.isGameOver && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose and apply random action
             //todo forward random generator to getRandomAction
-            const Action action = actionSpace->at(rand() % actionSpace->size());
+            const Action action = actionSpace.at(rand() % actionSpace.size());
             applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
             actions.emplace_back(action);
             length++;
@@ -24,7 +24,7 @@ namespace SGA {
     RHEAGenome::RHEAGenome(std::vector<Action<Vector2i>>& actions, double value) :
         actions(std::move(actions)), value(value) {}
 
-    void RHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, const Action<Vector2i>& action, RHEAParams& params)
+    void RHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<Action<Vector2i>>& actionSpace, const Action<Vector2i>& action, RHEAParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -39,7 +39,7 @@ namespace SGA {
             }
             else // skip opponent turn
             {
-                ActionSpace<Vector2i> endTurnActionSpace;
+                std::vector<Action<Vector2i>> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                 forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
@@ -55,7 +55,7 @@ namespace SGA {
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
-        while (!gameState.isGameOver && actionSpace->size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
@@ -63,7 +63,7 @@ namespace SGA {
             // replace with random portfolio in case of mutate or no portfolio available
             if (mutate || (actIdx < actions.size()))
             {
-                const Action action = actionSpace->at(rand() % actionSpace->size());
+                const Action action = actionSpace.at(rand() % actionSpace.size());
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 if (actIdx < actions.size())
                 {
@@ -79,7 +79,7 @@ namespace SGA {
                 // use previous action or sample a new random one in case the individual is too short
                 if (actIdx >= actions.size())
                 {
-                    actions.emplace_back(actionSpace->at(rand() % actionSpace->size()));
+                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
                 }
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
             }
@@ -102,7 +102,7 @@ namespace SGA {
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
-        while (!gameState.isGameOver && actionSpace->size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
             std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
@@ -111,7 +111,7 @@ namespace SGA {
             // mutation = randomly select a new action for gameStateCopy
             if (mutate)
             {
-                Action<Vector2i> action = actionSpace->at(rand() % actionSpace->size());
+                Action<Vector2i> action = actionSpace.at(rand() % actionSpace.size());
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 actions.emplace_back(action);
             }
@@ -136,7 +136,7 @@ namespace SGA {
                     else
                     {
                         // use a random portfolio by default
-                        actions.emplace_back(actionSpace->at(rand() % actionSpace->size()));
+                        actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
                     }
                 }
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
@@ -161,7 +161,7 @@ namespace SGA {
         auto actionSpace = forwardModel.getActions(gameState);
         for (size_t i = 0; i < actions.size(); i++)
         {
-            if (actionSpace->size() == 0)
+            if (actionSpace.size() == 0)
                 break;
 
             // test if a planned action is still valid. if not, replace with a random one
@@ -169,7 +169,7 @@ namespace SGA {
             // (since the vector has been rotated it does not have any meaning)
             if (i == actions.size() - 1 || !forwardModel.isValid(gameState, actions[i]))
             {
-                actions[i] = actionSpace->at(rand() % actionSpace->size());
+                actions[i] = actionSpace.at(rand() % actionSpace.size());
             }
     	
             applyActionToGameState(forwardModel, gameState, actionSpace, actions[i], params);

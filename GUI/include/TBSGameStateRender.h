@@ -56,7 +56,7 @@ private:
 	void playAction(SGA::Action<SGA::Vector2i> action)
 	{
 		waitForAction = false;
-		actionsHumanCanPlay->clear();
+		actionsHumanCanPlay.clear();
 		actionHumanUnitSelected.clear();
 		selectedUnit = nullptr;
 		showMultipleActions = false;
@@ -90,9 +90,9 @@ private:
 
 	//Human player
 	bool waitForAction = false;
-	std::unique_ptr<SGA::std::vector<SGA::Action<SGA::Vector2i>>> actionsHumanCanPlay;
+	std::vector<SGA::Action<SGA::Vector2i>> actionsHumanCanPlay;
 
-	SGA::std::vector<SGA::Action<SGA::Vector2i>> actionHumanUnitSelected;
+	std::vector<SGA::Action<SGA::Vector2i>> actionHumanUnitSelected;
 	SGA::TBSUnit* selectedUnit{};
 
 	//Imgui

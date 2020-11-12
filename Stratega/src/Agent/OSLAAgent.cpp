@@ -20,11 +20,11 @@ namespace SGA
 				int bestActionIndex = 0;
 				const int playerID = gameState.currentPlayer;
 
-				for (int i = 0; i < actionSpace->size(); i++)
+				for (int i = 0; i < actionSpace.size(); i++)
 				{
 					TBSGameState gsCopy(gameState);
 					
-					forwardModel.advanceGameState(gsCopy, actionSpace->at(i));
+					forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
 					const double value = heuristic.evaluateGameState(forwardModel, gsCopy, playerID);
 					if (value > bestHeuristicValue)
 					{
@@ -33,7 +33,7 @@ namespace SGA
 					}
 				}
 
-				gameCommunicator.executeAction(actionSpace->at(bestActionIndex));
+				gameCommunicator.executeAction(actionSpace.at(bestActionIndex));
 			}
 		}
 	}

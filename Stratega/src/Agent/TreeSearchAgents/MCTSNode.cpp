@@ -108,7 +108,7 @@ namespace SGA
 		//todo remove unnecessary copy of gameState
 		TBSGameState gsCopy = TBSGameState(gameState);
 		childIndex = children.size();
-		applyActionToGameState(forwardModel, gsCopy, actionSpace->at(childIndex), params);
+		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex)));
@@ -199,10 +199,10 @@ namespace SGA
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
 				auto actions = forwardModel.getActions(gsCopy);
-				if (actions->size() == 0)
+				if (actions.size() == 0)
 					break;
-				std::uniform_int_distribution<> randomDistribution(0, actions->size() - 1);
-				applyActionToGameState(forwardModel, gsCopy, actions->at(randomDistribution(randomGenerator)), params);
+				std::uniform_int_distribution<> randomDistribution(0, actions.size() - 1);
+				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
 				thisDepth++;
 			}
 			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);

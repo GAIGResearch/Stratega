@@ -4,10 +4,10 @@ namespace SGA
 {
 	Action<Vector2i> UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
 	{
-		if (actionSpace->size() > 1)
+		if (actionSpace.size() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			for (const auto& action : actionSpace)
 			{
 				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn)
 					suitableActions.push_back(action);
@@ -18,15 +18,15 @@ namespace SGA
 				return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->at(rand() % actionSpace->size());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
 	Action<Vector2i> UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
 	{
-		if (actionSpace->size() > 1)
+		if (actionSpace.size() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			for (const auto& action : actionSpace)
 			{
 				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn
 					&& action.getSourceUnitID() == unitID)
@@ -38,6 +38,6 @@ namespace SGA
 				return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->at(rand() % actionSpace->size());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 }

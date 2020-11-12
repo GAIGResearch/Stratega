@@ -4,10 +4,10 @@ namespace SGA
 {
 	Action<Vector2i> AttackWeakestOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
 	{
-		if (actionSpace->size() > 1)
+		if (actionSpace.size() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions = std::vector<Action<Vector2i>>();
-			for (const auto& action : *actionSpace)
+			for (const auto& action : actionSpace)
 			{
 				suitableActions.push_back(action);
 			}
@@ -67,16 +67,16 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->at(rand() % actionSpace->size());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
 	Action<Vector2i> AttackWeakestOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
 	{
 		// todo
-		if (actionSpace->size() > 1)
+		if (actionSpace.size() > 1)
 		{
 			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			for (const auto& action : actionSpace)
 			{
 				if (action.getSourceUnitID() == unitID)
 					suitableActions.push_back(action);
@@ -137,6 +137,6 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->at(rand() % actionSpace->size());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 }

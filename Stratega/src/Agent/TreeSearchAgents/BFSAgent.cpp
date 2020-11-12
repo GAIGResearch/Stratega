@@ -19,9 +19,9 @@ namespace SGA
 				
 				// if there is just one action and we don't spent the time on continuing our search
 				// instead we return it instantly
-				if (actionSpace->size() == 1)
+				if (actionSpace.size() == 1)
 				{
-					gameCommunicator.executeAction(actionSpace->at(0));
+					gameCommunicator.executeAction(actionSpace.at(0));
 					
 					// forget about your last action index, because the opponent will move in between
 					previousActionIndex = -1;
@@ -37,7 +37,7 @@ namespace SGA
 
 					// retrieve best action
 					const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-					auto action = rootNode->actionSpace->at(bestActionIndex);
+					auto action = rootNode->actionSpace.at(bestActionIndex);
 					gameCommunicator.executeAction(action);
 					
 					// remember latest action in case the search should be continued
@@ -145,7 +145,7 @@ namespace SGA
 				}
 				else
 				{
-					if (node->children.size() != node->actionSpace->size())
+					if (node->children.size() != node->actionSpace.size())
 					{
 						openNodes.push_back(node);
 					}

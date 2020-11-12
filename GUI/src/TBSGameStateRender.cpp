@@ -235,7 +235,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 			if (unit->getPlayerID() == gameStateCopy.currentPlayer)
 			{
 				actionHumanUnitSelected.clear();
-				for (const auto& action : *actionsHumanCanPlay)
+				for (const auto& action : actionsHumanCanPlay)
 				{
 					//If is player unit action or globlal action(i.e End turn)
 					if (action.getSourceUnitID() == unit->getUnitID() || (action.getSourceUnitID() == -1 && unit->getPlayerID() == gameStateCopy.currentPlayer))
@@ -454,7 +454,7 @@ void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
 		{
 			if (action.getTargetPosition() == multipleActionsSourceTile)
 			{
-				std::string actionInfo = std::to_string(index) + " " + SGA::getActionType(action.getType());
+				std::string actionInfo = std::to_string(index) + " " + getActionType(action.getType());
 				index++;
 
 				if (ImGui::Button(actionInfo.c_str()))
