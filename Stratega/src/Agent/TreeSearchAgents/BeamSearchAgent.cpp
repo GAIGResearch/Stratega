@@ -22,14 +22,14 @@ namespace SGA
 					gameCommunicator.executeAction(rootNode.actionSpace.at(0));
 				} else
 				{
-					Action<Vector2i> bestAction = beamSearch(*processedForwardModel, rootNode);
+					TBSAction bestAction = beamSearch(*processedForwardModel, rootNode);
 					gameCommunicator.executeAction(bestAction);
 				}
 			}
 		}
 	}
 
-	Action<Vector2i> BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
+	TBSAction BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
 	{
 		parameters_.PLAYER_ID = root.gameState.currentPlayer;
 

@@ -2,24 +2,24 @@
 
 namespace SGA
 {
-	void TBSForwardModel::advanceGameState(TBSGameState& state, const Action<Vector2i>& action) const
+	void TBSForwardModel::advanceGameState(TBSGameState& state, const TBSAction& action) const
 	{
 		FMState myState(state);
 		bool executedAction;
-		switch (action.getType())
+		switch (action.type)
 		{
-			case ActionType::Attack: executedAction = executeAttack(myState, action); break;
-			case ActionType::Move: executedAction = executeMove(myState, action); break;
-			case ActionType::Heal: executedAction = executeHeal(myState, action); break;
-			case ActionType::Push: executedAction = executePush(myState, action); break;
-			case ActionType::EndTurn: executedAction = executeEndOfTurn(myState, action); break;
+			case TBSActionType::Attack: executedAction = executeAttack(myState, action); break;
+			case TBSActionType::Move: executedAction = executeMove(myState, action); break;
+			case TBSActionType::Heal: executedAction = executeHeal(myState, action); break;
+			case TBSActionType::Push: executedAction = executePush(myState, action); break;
+			case TBSActionType::EndTurn: executedAction = executeEndOfTurn(myState, action); break;
 			default: throw std::runtime_error("Tried executing an action with an not supported action-type");
 		}
 
-		TBSUnit* sourceUnit = state.getUnit(action.getSourceUnitID());
+		TBSUnit* sourceUnit = state.getUnit(action.sourceUnitID);
 		if (executedAction && sourceUnit != nullptr)
 		{
-			sourceUnit->executedActionTypes.insert(action.getType());
+			sourceUnit->executedActionTypes.insert(action.type);
 			sourceUnit->numActionsExecuted++;
 		}
 
@@ -32,7 +32,7 @@ namespace SGA
 		state.isGameOver = checkGameIsFinished(state);
 	}
 
-	void TBSForwardModel::advanceGameState(TBSGameState& state, const Action<Vector2i>& action, std::vector<SGA::Action<Vector2i>>& actionSpace) const
+	void TBSForwardModel::advanceGameState(TBSGameState& state, const TBSAction& action, std::vector<SGA::TBSAction>& actionSpace) const
 	{
 		//advance the gamestate
 		advanceGameState(state, action);
@@ -43,27 +43,27 @@ namespace SGA
 		actionSpace = getActions(state);
 	}
 
-	bool TBSForwardModel::isValid(TBSGameState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::isValid(TBSGameState& state, const TBSAction& action) const
 	{
-		switch (action.getType())
+		switch (action.type)
 		{
-			case ActionType::Attack: return validateAttack(state, action);
-			case ActionType::Move: return validateMove(state, action);
-			case ActionType::Heal: return validateHeal(state, action);
-			case ActionType::Push: return validatePush(state, action);
-			case ActionType::EndTurn: return validateEndOfTurn(state, action);
+			case TBSActionType::Attack: return validateAttack(state, action);
+			case TBSActionType::Move: return validateMove(state, action);
+			case TBSActionType::Heal: return validateHeal(state, action);
+			case TBSActionType::Push: return validatePush(state, action);
+			case TBSActionType::EndTurn: return validateEndOfTurn(state, action);
 			default: throw std::runtime_error("Tried validating an action with an not supported action-type");
 		}
 	}
 
-	std::vector<Action<Vector2i>> TBSForwardModel::getActions(TBSGameState& state) const
+	std::vector<TBSAction> TBSForwardModel::getActions(TBSGameState& state) const
 	{
 		return getActions(state, state.currentPlayer);
 	}
 
-	std::vector<Action<Vector2i>> TBSForwardModel::getActions(TBSGameState& state, int playerID) const
+	std::vector<TBSAction> TBSForwardModel::getActions(TBSGameState& state, int playerID) const
 	{
-		std::vector<Action<Vector2i>> actions;
+		std::vector<TBSAction> actions;
 		for(auto* unit : state.getPlayer(playerID)->getUnits())
 		{
 			if(unit->numActionsExecuted >= unit->getType().actionsPerTurn)
@@ -71,7 +71,7 @@ namespace SGA
 				continue;
 			}
 			
-			for(auto actionType : unit->getType().actions)
+			for(auto actionType : unit->getType().tbsActions)
 			{
 				if(!unit->getType().canRepeatActions && unit->executedActionTypes.find(actionType) != unit->executedActionTypes.end())
 				{
@@ -80,10 +80,10 @@ namespace SGA
 
 				switch (actionType)
 				{
-					case ActionType::Attack: generateAttackActions(*unit, actions); break;
-					case ActionType::Move: generateMoveActions(*unit, actions); break;
-					case ActionType::Heal: generateHealActions(*unit, actions); break;
-					case ActionType::Push: generatePushActions(*unit, actions); break;
+					case TBSActionType::Attack: generateAttackActions(*unit, actions); break;
+					case TBSActionType::Move: generateMoveActions(*unit, actions); break;
+					case TBSActionType::Heal: generateHealActions(*unit, actions); break;
+					case TBSActionType::Push: generatePushActions(*unit, actions); break;
 					default: throw std::runtime_error("Unit can execute an invalid action-type");
 				}
 			}
@@ -93,7 +93,7 @@ namespace SGA
 		return actions;
 	}
 
-	void TBSForwardModel::generateMoveActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
+	void TBSForwardModel::generateMoveActions(TBSUnit& unit, std::vector<SGA::TBSAction>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		auto moveRange = unit.getRange();
@@ -105,7 +105,7 @@ namespace SGA
 		{
 			for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
 			{
-				Action action{ SGA::ActionType::Move, unit.getPlayerID(), unit.getUnitID(), SGA::Vector2i(x, y), -1};
+				TBSAction action{ TBSActionType::Move, unit.getPlayerID(), unit.getUnitID(), SGA::Vector2i(x, y), -1};
 				if(validateMove(state, action))
 				{
 					actionBucket.emplace_back(action);
@@ -114,12 +114,12 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateAttackActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
+	void TBSForwardModel::generateAttackActions(TBSUnit& unit, std::vector<SGA::TBSAction>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
-			Action attackAction{ ActionType::Attack, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
+			TBSAction attackAction{ TBSActionType::Attack, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (validateAttack(state, attackAction))
 			{
 				actionBucket.emplace_back(attackAction);
@@ -127,12 +127,12 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generatePushActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
+	void TBSForwardModel::generatePushActions(TBSUnit& unit, std::vector<SGA::TBSAction>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
-			Action pushAction{ ActionType::Push, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
+			TBSAction pushAction{ TBSActionType::Push, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (validatePush(state, pushAction))
 			{
 				actionBucket.emplace_back(pushAction);
@@ -140,12 +140,12 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateHealActions(TBSUnit& unit, std::vector<SGA::Action<Vector2i>>& actionBucket) const
+	void TBSForwardModel::generateHealActions(TBSUnit& unit, std::vector<SGA::TBSAction>& actionBucket) const
 	{
 		auto& state = unit.state.get();
 		for(const auto& targetUnit : state.getUnits())
 		{
-			Action healAction{ ActionType::Heal, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
+			TBSAction healAction{ TBSActionType::Heal, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if(validateHeal(state, healAction))
 			{
 				actionBucket.emplace_back(healAction);
@@ -153,58 +153,58 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<SGA::Action<Vector2i>>& actionBucket) const
+	void TBSForwardModel::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const
 	{
-		Action<Vector2i> endTurnAction{ ActionType::EndTurn, playerID, -1, {}, -1 };
+		TBSAction endTurnAction{ TBSActionType::EndTurn, playerID, -1, {}, -1 };
 		if(validateEndOfTurn(state, endTurnAction))
 		{
 			actionBucket.emplace_back(endTurnAction);
 		}
 	}
 
-	bool TBSForwardModel::executeMove(FMState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::executeMove(FMState& state, const TBSAction& action) const
 	{
 		if (!validateMove(state.target, action))
 			return false;
 
-		moveUnit(state, *state.target.getUnit(action.getSourceUnitID()), action.getTargetPosition());
+		moveUnit(state, *state.target.getUnit(action.sourceUnitID), action.targetPosition);
 		return true;
 	}
 
-	bool TBSForwardModel::executeAttack(FMState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::executeAttack(FMState& state, const TBSAction& action) const
 	{
 		if (!validateAttack(state.target, action))
 			return false;
 
-		auto* attacker = state.target.getUnit(action.getSourceUnitID());
-		auto* target = state.target.getUnit(action.getTargetUnitID());
+		auto* attacker = state.target.getUnit(action.sourceUnitID);
+		auto* target = state.target.getUnit(action.targetUnitID);
 		damageUnit(state, *target, attacker->getAttackDamage());
 		return true;
 	}
 
-	bool TBSForwardModel::executePush(FMState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::executePush(FMState& state, const TBSAction& action) const
 	{
 		if (!validatePush(state.target, action))
 			return false;
 
-		auto* pusher = state.target.getUnit(action.getSourceUnitID());
-		auto* target = state.target.getUnit(action.getTargetUnitID());
+		auto* pusher = state.target.getUnit(action.sourceUnitID);
+		auto* target = state.target.getUnit(action.targetUnitID);
 		auto pushDir = target->getPosition() - pusher->getPosition();
 		auto newTargetPos = target->getPosition() + pushDir;
-		if (state.target.isInBounds(newTargetPos) && isWalkable(state.target, newTargetPos))
+		if (state.target.isInBounds(newTargetPos) && state.target.isWalkable(newTargetPos))
 		{
 			moveUnit(state, *target, newTargetPos);
 		}
 		return true;
 	}
 
-	bool TBSForwardModel::executeHeal(FMState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::executeHeal(FMState& state, const TBSAction& action) const
 	{
 		if (!validateHeal(state.target, action))
 			return false;
 
-		auto* healer = state.target.getUnit(action.getSourceUnitID());
-		auto* target = state.target.getUnit(action.getTargetUnitID());
+		auto* healer = state.target.getUnit(action.sourceUnitID);
+		auto* target = state.target.getUnit(action.targetUnitID);
 
 		int& targetHealth = target->getHealth();
 		targetHealth += healer->getHealAmount();
@@ -212,7 +212,7 @@ namespace SGA
 		return true;
 	}
 
-	bool TBSForwardModel::executeEndOfTurn(FMState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::executeEndOfTurn(FMState& state, const TBSAction& action) const
 	{
 		if (!validateEndOfTurn(state.target, action))
 			return false;
@@ -220,19 +220,19 @@ namespace SGA
 		return true;
 	}
 
-	bool TBSForwardModel::validateMove(TBSGameState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::validateMove(TBSGameState& state, const TBSAction& action) const
 	{
-		TBSUnit* unit = state.getUnit(action.getSourceUnitID());
+		TBSUnit* unit = state.getUnit(action.sourceUnitID);
 		if (unit == nullptr)
 			return false;
 		
-		return isWalkable(state, action.getTargetPosition()) && unit->getPosition().manhattanDistance(action.getTargetPosition()) <= unit->getRange();
+		return state.isWalkable(action.targetPosition) && unit->getPosition().manhattanDistance(action.targetPosition) <= unit->getRange();
 	}
 
-	bool TBSForwardModel::validateAttack(TBSGameState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::validateAttack(TBSGameState& state, const TBSAction& action) const
 	{
-		auto* attacker = state.getUnit(action.getSourceUnitID());
-		auto* target = state.getUnit(action.getTargetUnitID());
+		auto* attacker = state.getUnit(action.sourceUnitID);
+		auto* target = state.getUnit(action.targetUnitID);
 		if (attacker == nullptr || target == nullptr)
 			return false;
 		
@@ -240,10 +240,10 @@ namespace SGA
 			attacker->getPosition().manhattanDistance(target->getPosition()) <= attacker->getType().actionRange;
 	}
 
-	bool TBSForwardModel::validatePush(TBSGameState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::validatePush(TBSGameState& state, const TBSAction& action) const
 	{
-		auto* pusher = state.getUnit(action.getSourceUnitID());
-		auto* target = state.getUnit(action.getTargetUnitID());
+		auto* pusher = state.getUnit(action.sourceUnitID);
+		auto* target = state.getUnit(action.targetUnitID);
 		if (pusher == nullptr || target == nullptr)
 			return false;
 		
@@ -252,30 +252,22 @@ namespace SGA
 			pusher->getPosition().manhattanDistance(target->getPosition()) == 1;
 	}
 
-	bool TBSForwardModel::validateHeal(TBSGameState& state, const Action<Vector2i>& action) const
+	bool TBSForwardModel::validateHeal(TBSGameState& state, const TBSAction& action) const
 	{
-		auto* healer = state.getUnit(action.getSourceUnitID());
-		auto* target = state.getUnit(action.getTargetUnitID());
+		auto* healer = state.getUnit(action.sourceUnitID);
+		auto* target = state.getUnit(action.targetUnitID);
 		if (healer == nullptr || target == nullptr)
 			return false;
 		
 		return target->getHealth() < target->getType().maxHealth && healer->getPosition().manhattanDistance(target->getPosition()) <= healer->getType().actionRange;
 	}
 
-	bool TBSForwardModel::validateEndOfTurn(TBSGameState& /*state*/, const Action<Vector2i>& /*action*/) const
+	bool TBSForwardModel::validateEndOfTurn(TBSGameState& /*state*/, const TBSAction& /*action*/) const
 	{
 		return true;
 	}
 
 	// --- Start: Utility methods for game logic ---
-	bool TBSForwardModel::isWalkable(TBSGameState& state, const Vector2i& position) const
-	{
-		Tile& targetTile = state.getBoard().getTile(position.x, position.y);
-		TBSUnit* targetUnit = state.getUnit(position);
-
-		return targetUnit == nullptr && targetTile.isWalkable;
-	}
-
 	void TBSForwardModel::endTurn(FMState& state) const
 	{
 		executeEndOfTurnTrigger(state);

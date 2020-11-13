@@ -22,7 +22,7 @@ namespace SGA
 		return game->running() && game->getState().currentPlayer == getPlayerID()&& !game->isGameOver();
 	}
 
-	void TBSGameCommunicator::executeAction(Action<Vector2i> action) const
+	void TBSGameCommunicator::executeAction(TBSAction action) const
 	{
 		game->addActionToExecute(action);
 		// The agent's thread only continues once the action has been executed

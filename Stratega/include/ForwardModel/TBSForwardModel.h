@@ -1,6 +1,6 @@
 #pragma once
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/Action.h>
+#include <ForwardModel/TBSAction.h>
 #include <ForwardModel/Effect.h>
 #include <ForwardModel/FMState.h>
 #include <Configuration/WinConditionType.h>
@@ -8,37 +8,37 @@
 
 namespace SGA
 {
-	class TBSForwardModel : public ForwardModelBase<TBSGameState, Action<Vector2i>>
+	class TBSForwardModel : public ForwardModelBase<TBSGameState, TBSAction>
 	{
 	public:
 		WinConditionType winCondition;
 		int unitTypeID;
 		
-		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action) const override;
-		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action, std::vector<SGA::Action<Vector2i>>& actionSpace) const;
+		void advanceGameState(TBSGameState& state, const TBSAction& action) const override;
+		void advanceGameState(TBSGameState& state, const TBSAction& action, std::vector<TBSAction>& actionSpace) const;
 
-		std::vector<Action<Vector2i>> getActions(TBSGameState& state) const override;
-		std::vector<Action<Vector2i>> getActions(TBSGameState& state, int playerID) const override;
+		std::vector<TBSAction> getActions(TBSGameState& state) const override;
+		std::vector<TBSAction> getActions(TBSGameState& state, int playerID) const override;
 		
-		bool isValid(TBSGameState& state, const Action<Vector2i>& action) const;
+		bool isValid(TBSGameState& state, const TBSAction& action) const;
 
-		void generateMoveActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
-		void generateAttackActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
-		void generatePushActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
-		void generateHealActions(TBSUnit& unit, std::vector<Action<Vector2i>>& actionBucket) const;
-		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<SGA::Action<Vector2i>>& actionBucket) const;
+		void generateMoveActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateAttackActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generatePushActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateHealActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<SGA::TBSAction>& actionBucket) const;
 		
-		bool executeMove(FMState& state, const Action<Vector2i>& action) const;
-		bool executeAttack(FMState& state, const Action<Vector2i>& action) const;
-		bool executePush(FMState& state, const Action<Vector2i>& action) const;
-		bool executeHeal(FMState& state, const Action<Vector2i>& action) const;
-		bool executeEndOfTurn(FMState& state, const Action<Vector2i>& action) const;
+		bool executeMove(FMState& state, const TBSAction& action) const;
+		bool executeAttack(FMState& state, const TBSAction& action) const;
+		bool executePush(FMState& state, const TBSAction& action) const;
+		bool executeHeal(FMState& state, const TBSAction& action) const;
+		bool executeEndOfTurn(FMState& state, const TBSAction& action) const;
 
-		bool validateMove(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateAttack(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validatePush(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateHeal(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateEndOfTurn(TBSGameState& state, const Action<Vector2i>& action) const;
+		bool validateMove(TBSGameState& state, const TBSAction& action) const;
+		bool validateAttack(TBSGameState& state, const TBSAction& action) const;
+		bool validatePush(TBSGameState& state, const TBSAction& action) const;
+		bool validateHeal(TBSGameState& state, const TBSAction& action) const;
+		bool validateEndOfTurn(TBSGameState& state, const TBSAction& action) const;
 
 		// Utility methods for game logic
 		bool isWalkable(TBSGameState& state, const Vector2i& position) const;

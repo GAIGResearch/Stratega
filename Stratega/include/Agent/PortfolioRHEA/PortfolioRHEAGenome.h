@@ -13,7 +13,7 @@ namespace SGA {
 	{
 
 	private:
-		std::vector<Action<Vector2i>> actions;
+		std::vector<TBSAction> actions;
 		std::vector<int> portfolioIndices;
 		double value = 0;
 
@@ -24,7 +24,7 @@ namespace SGA {
 		// creates a copy of an existing Portfolio Genome
 		PortfolioRHEAGenome(const PortfolioRHEAGenome& other) = default;
 
-		std::vector<Action<Vector2i>>& getActions() { return actions; };
+		std::vector<TBSAction>& getActions() { return actions; };
 		std::vector<int>& getPortfolioVector() { return portfolioIndices; };
 
 		void mutate(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params, std::mt19937& randomGenerator);
@@ -37,8 +37,8 @@ namespace SGA {
 		static PortfolioRHEAGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, PortfolioRHEAParams& params, std::mt19937& randomGenerator, PortfolioRHEAGenome& parent1, PortfolioRHEAGenome& parent2);
 		
 	private:
-		PortfolioRHEAGenome(std::vector<Action<Vector2i>>& actions, std::vector<int>& portfolioIndices, double value);
-		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace,  const Action<Vector2i>& action, PortfolioRHEAParams& params);
+		PortfolioRHEAGenome(std::vector<TBSAction>& actions, std::vector<int>& portfolioIndices, double value);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace,  const TBSAction& action, PortfolioRHEAParams& params);
 		
 
 	};

@@ -37,7 +37,7 @@ namespace SGA {
 		// helper functions
 		static double normalize(double aValue, double aMin, double aMax);
 		static double noise(double input, double epsilon, double random);
-		void applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParameters& params) const;
+		void applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, TBSAction& action, MCTSParameters& params) const;
 		void setDepth(int depth);
 
 	public:

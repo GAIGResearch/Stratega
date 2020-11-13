@@ -1,8 +1,8 @@
 #pragma once
 #include <Representation/Vector2.h>
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/ActionType.h>
 #include <Representation/UnitType.h>
+#include <ForwardModel/TBSActionType.h>
 
 namespace SGA
 {
@@ -11,7 +11,7 @@ namespace SGA
 	class  TBSUnit
 	{
 	public:
-		std::unordered_set<ActionType> executedActionTypes;
+		std::unordered_set<TBSActionType> executedActionTypes;
 		int numActionsExecuted;
 		
 		TBSUnit(TBSGameState& state, int unitId, int playerId):

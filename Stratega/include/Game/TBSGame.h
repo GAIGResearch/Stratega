@@ -10,16 +10,16 @@ namespace SGA
 	class TBSGame final : public Game
 	{
 	public:
-		Action<Vector2i> actionToExecute;
+		TBSAction actionToExecute;
 		bool hasActionToExecute = false;
 		
 		TBSGame(std::unique_ptr<TBSGameState> gameState, TBSForwardModel forwardModel, std::mt19937 engine);
 
-		void executeAction(Action<Vector2i> action);
+		void executeAction(TBSAction action);
 		void update(double deltaTime) override;
 		void close() override;
 		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
-		void addActionToExecute(Action<Vector2i> action);
+		void addActionToExecute(TBSAction action);
 
 		const TBSForwardModel& getForwardModel() const { return forwardModel; }
 

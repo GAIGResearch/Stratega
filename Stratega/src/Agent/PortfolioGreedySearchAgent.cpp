@@ -123,9 +123,9 @@ namespace SGA
 	}
 
 	// returns the action defined by the player's portfolio
-	Action<Vector2i> PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2)
+	TBSAction PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2)
 	{
-		const int nextUnit = actionSpace.at(0).getSourceUnitID();
+		const int nextUnit = actionSpace.at(0).sourceUnitID;
 		if (portfolioMap1.contains(nextUnit))
 		{
 			return portfolioMap1[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
@@ -134,7 +134,7 @@ namespace SGA
 	}
 
 	// applies an action to the current game state, reduces the number of remaining forward model calls and updates the action space
-	void PortfolioGreedySearchAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action)
+	void PortfolioGreedySearchAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action)
 	{
 		params_.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);

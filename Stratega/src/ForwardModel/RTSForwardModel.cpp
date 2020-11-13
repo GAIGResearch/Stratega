@@ -31,7 +31,7 @@ namespace SGA
 			{
 				for (auto& unit : state.units)
 				{
-					if (unit.executingAction.getType() != actionType)
+					if (unit.executingAction.type != actionType)
 						continue;
 
 					switch (actionType)
@@ -75,7 +75,7 @@ namespace SGA
 		std::vector<Action<Vector2f>> actions;
 		for (auto& unit : state.units)
 		{
-			if (unit.playerID != playerID || unit.intendedAction.getType() != ActionType::None)
+			if (unit.playerID != playerID || unit.intendedAction.type != ActionType::None)
 				continue;
 			
 			generateMoves(unit, actions);
@@ -138,13 +138,13 @@ namespace SGA
 
 	bool RTSForwardModel::validateMove(RTSGameState& state, const Action<Vector2f>& action) const
 	{
-		return state.getUnit(action.getSourceUnitID()) != nullptr;
+		return state.getUnit(action.sourceUnitID) != nullptr;
 	}
 	
 	bool RTSForwardModel::validateAttack(RTSGameState& state, const Action<Vector2f>& action) const
 	{
-		auto* attacker = state.getUnit(action.getSourceUnitID());
-		auto* target = state.getUnit(action.getTargetUnitID());
+		auto* attacker = state.getUnit(action.sourceUnitID);
+		auto* target = state.getUnit(action.targetUnitID);
 		if (attacker == nullptr || target == nullptr)
 			return false;
 
@@ -155,8 +155,8 @@ namespace SGA
 	
 	bool RTSForwardModel::validateHeal(RTSGameState& state, const Action<Vector2f>& action) const
 	{
-		auto* healer = state.getUnit(action.getSourceUnitID());
-		auto* target = state.getUnit(action.getTargetUnitID());
+		auto* healer = state.getUnit(action.sourceUnitID);
+		auto* target = state.getUnit(action.targetUnitID);
 		if (healer == nullptr || target == nullptr)
 			return false;
 
@@ -317,7 +317,7 @@ namespace SGA
 			return;
 		}
 		
-		auto* targetUnit = unit.state.get().getUnit(unit.executingAction.getTargetUnitID());
+		auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
 		targetUnit->health += unit.healAmount;
 		
 		if (targetUnit->health > targetUnit->maxHealth)

@@ -20,8 +20,8 @@ namespace SGA
 		{
 		}
 		
-		std::vector<SGA::Action<Vector2i>> getActions(TBSGameState& state) const override;
-		std::vector<SGA::Action<Vector2i>> getActions(TBSGameState& state, int playerID) const override;
+		std::vector<SGA::TBSAction> getActions(TBSGameState& state) const override;
+		std::vector<SGA::TBSAction> getActions(TBSGameState& state, int playerID) const override;
 
 	};
 }

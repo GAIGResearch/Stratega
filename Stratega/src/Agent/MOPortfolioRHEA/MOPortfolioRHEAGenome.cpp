@@ -14,7 +14,7 @@ namespace SGA {
             // choose a random portfolio and sample action
             const int portfolioIndex = rand() % params.PORTFOLIO.size();
             BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
-            const Action action = portfolio->getAction(gameState, actionSpace);
+            auto action = portfolio->getAction(gameState, actionSpace);
         	
             //todo forward random generator to getRandomAction
             applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
@@ -29,10 +29,10 @@ namespace SGA {
         value2 = params.HEURISTIC2.evaluateGameState(forwardModel, gameState, playerID);    	
     }
 
-    MOPortfolioRHEAGenome::MOPortfolioRHEAGenome(std::vector<Action<Vector2i>>& actions, std::vector<int>& portfolioIndices, double value1, double value2) :
+    MOPortfolioRHEAGenome::MOPortfolioRHEAGenome(std::vector<TBSAction>& actions, std::vector<int>& portfolioIndices, double value1, double value2) :
         actions(std::move(actions)), portfolioIndices(std::move(portfolioIndices)), value1(value1), value2(value2){}
 
-    void MOPortfolioRHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action, MOPortfolioRHEAParams& params)
+    void MOPortfolioRHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action, MOPortfolioRHEAParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -47,7 +47,7 @@ namespace SGA {
             }
             else // skip opponent turn
             {
-                std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+                std::vector<SGA::TBSAction> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                 forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
@@ -74,7 +74,7 @@ namespace SGA {
                 //todo use random generator to get a randomAction
                 const int portfolioIndex = rand() % params.PORTFOLIO.size();
                 BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
-                const Action action = portfolio->getAction(gameState, actionSpace);
+                auto action = portfolio->getAction(gameState, actionSpace);
 
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
             	if (actIdx < actions.size())
@@ -119,7 +119,7 @@ namespace SGA {
         const int playerID = gameState.currentPlayer;
 
         // initialize variables for the new genome to be created
-        std::vector<Action<Vector2i>> actions;
+        std::vector<TBSAction> actions;
         std::vector<int> portfolioIndices;
     	
         // step-wise add actions by mutation or crossover
@@ -135,7 +135,7 @@ namespace SGA {
             {
                 const int portfolioIndex = rand() % params.PORTFOLIO.size();
                 BaseActionScript* portfolio = params.PORTFOLIO.at(portfolioIndex).get();
-                Action action = portfolio->getAction(gameState, actionSpace);
+                auto action = portfolio->getAction(gameState, actionSpace);
 
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 actions.emplace_back(action);
@@ -201,7 +201,7 @@ namespace SGA {
 
             if (!forwardModel.isValid(gameState, actions[i]))
             {
-                const Action newAction = params.PORTFOLIO[portfolioIndices[i]]->getAction(gameState, actionSpace);
+                auto newAction = params.PORTFOLIO[portfolioIndices[i]]->getAction(gameState, actionSpace);
                 actions[i] = newAction;
             }
     		
@@ -218,9 +218,9 @@ namespace SGA {
     {
         std::cout << "MOPortfolioRHEAGenome" << "\n";
         std::cout << "\tactions=" << "\n";
-        for (Action<Vector2i> action : actions)
+        for (TBSAction action : actions)
         {
-            std::cout << "\t\t" << action.getPlayerID() << ";" << action.getSourceUnitID() << ";" << action.getTargetUnitID() << "\n";
+            std::cout << "\t\t" << action.playerID << ";" << action.sourceUnitID << ";" << action.targetUnitID << "\n";
         }
 
         std::cout << "\tvalue1=" << value1 << "\n;";

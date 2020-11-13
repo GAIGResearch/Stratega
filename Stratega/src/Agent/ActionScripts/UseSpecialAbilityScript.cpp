@@ -2,14 +2,14 @@
 
 namespace SGA
 {
-	Action<Vector2i> UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
+	TBSAction UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
 		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
+			std::vector<TBSAction> suitableActions;
 			for (const auto& action : actionSpace)
 			{
-				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn)
+				if (action.type != TBSActionType::Attack && action.type != TBSActionType::Move && action.type != TBSActionType::EndTurn)
 					suitableActions.push_back(action);
 			}
 
@@ -21,15 +21,15 @@ namespace SGA
 		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
+	TBSAction UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
 		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
+			std::vector<TBSAction> suitableActions;
 			for (const auto& action : actionSpace)
 			{
-				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn
-					&& action.getSourceUnitID() == unitID)
+				if (action.type != TBSActionType::Attack && action.type != TBSActionType::Move && action.type != TBSActionType::EndTurn
+					&& action.sourceUnitID == unitID)
 					suitableActions.push_back(action);
 			}
 

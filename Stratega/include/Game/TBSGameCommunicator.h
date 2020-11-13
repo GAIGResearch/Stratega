@@ -34,7 +34,7 @@ namespace SGA
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
-		void executeAction(Action<Vector2i> action) const;
+		void executeAction(TBSAction action) const;
 		bool isMyTurn() const;
 		TBSGameState getGameState() const;
 

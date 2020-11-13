@@ -12,8 +12,8 @@ namespace SGA {
 	public:
 		RunAwayFromOpponentScript() : BaseActionScript() {};
 
-		Action<Vector2i> getAction(TBSGameState& gameState, std::vector<Action<Vector2i>>& actionSpace) const override;
-		Action<Vector2i> getActionForUnit(TBSGameState& gameState, std::vector<Action<Vector2i>>& actionSpace, int unitID) const override;
+		TBSAction getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace) const override;
+		TBSAction getActionForUnit(TBSGameState& gameState, std::vector<TBSAction>& actionSpace, int unitID) const override;
 		[[nodiscard]] std::string toString() const override { return "RunAwayFromOpponentScript"; };
 
 	private:

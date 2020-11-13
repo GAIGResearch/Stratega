@@ -11,6 +11,7 @@ namespace SGA
 		type.lineOfSightRange = config.lineOfSightRange;
 		type.maxHealth = config.health;
 		type.actions = config.actions;
+		type.tbsActions = config.tbsActions;
 		type.movementRange = config.movementRange;
 		type.actionRange = config.actionRange;
 		type.canRepeatActions = config.canRepeatActions;

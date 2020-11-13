@@ -74,7 +74,15 @@ namespace SGA
 		int getPlayerNumber() const {return (int)players.size();}
 		const std::unordered_map<int, UnitType>& getUnitTypes() const { return *unitTypes; }
 		const std::unordered_map<int, TileType>& getTileTypes() const { return *tileTypes; }
+		
+		bool isWalkable(const Vector2i& position)
+		{
+			Tile& targetTile = board.getTile(position.x, position.y);
+			TBSUnit* targetUnit = getUnit(position);
 
+			return targetUnit == nullptr && targetTile.isWalkable;
+		}
+		
 		void printGameStateStatus();
 
 		bool isInBounds(Vector2i pos)

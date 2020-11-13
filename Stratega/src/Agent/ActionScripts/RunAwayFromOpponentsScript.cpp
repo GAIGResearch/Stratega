@@ -2,11 +2,11 @@
 
 namespace SGA
 {
-	Action<Vector2i> RunAwayFromOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
+	TBSAction RunAwayFromOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
 		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions = std::vector<Action<Vector2i>>();
+			std::vector<TBSAction> suitableActions = std::vector<TBSAction>();
 			for (const auto& action : actionSpace)
 			{
 				suitableActions.push_back(action);
@@ -31,9 +31,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = maximalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -51,14 +51,14 @@ namespace SGA
 		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> RunAwayFromOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
+	TBSAction RunAwayFromOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
 		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
+			std::vector<TBSAction> suitableActions;
 			for (const auto& action : actionSpace)
 			{
-				if (action.getSourceUnitID() == unitID)
+				if (action.sourceUnitID == unitID)
 					suitableActions.push_back(action);
 			}
 
@@ -81,9 +81,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = maximalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;

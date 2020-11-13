@@ -11,7 +11,7 @@ namespace SGA
 		TBSGameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::vector<Action<Vector2i>> actionSpace;
+		std::vector<TBSAction> actionSpace;
 		int childIndex = 0;
 		double value = 0;
 		

@@ -61,8 +61,8 @@ namespace SGA
 
 		void InitializePortfolios(std::vector<TBSUnit*>& units, std::map<int, BaseActionScript*>& portfolioMap);
 		
-		static Action<Vector2i> GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2);
+		static TBSAction GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2);
 
-		void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action);
+		void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action);
 	};
 }

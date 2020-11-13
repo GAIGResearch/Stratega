@@ -49,7 +49,7 @@ namespace SGA {
     		if (gameState.currentPlayer == playerID)
     		{
 				// choose action according to unitScript
-                int nextUnit = actionSpace.at(0).getSourceUnitID();
+                int nextUnit = actionSpace.at(0).sourceUnitID;
                 if (tmpMap.contains(nextUnit))
                 {
                     auto action = tmpMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
@@ -69,7 +69,7 @@ namespace SGA {
             	}
             	else
             	{
-                    std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+                    std::vector<SGA::TBSAction> endTurnActionSpace;
                     forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                     forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             	}
@@ -97,9 +97,9 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    Action<Vector2i> MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace)
+    TBSAction MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace)
     {
-        const int nextUnit = actionSpace.at(0).getSourceUnitID();
+        const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (unitScript.contains(nextUnit))
         {
             return unitScript[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);

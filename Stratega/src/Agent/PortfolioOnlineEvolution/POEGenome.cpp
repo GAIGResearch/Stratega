@@ -46,7 +46,7 @@ namespace SGA {
             if (gameState.currentPlayer == playerID)
             {
                 // choose action according to unitScript
-                int nextUnit = actionSpace.at(0).getSourceUnitID();
+                int nextUnit = actionSpace.at(0).sourceUnitID;
                 if (playerMap.contains(nextUnit))
                 {
                     auto action = playerMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
@@ -67,7 +67,7 @@ namespace SGA {
                 }
                 else
                 {
-                    std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+                    std::vector<SGA::TBSAction> endTurnActionSpace;
                     forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                     forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
                 }
@@ -82,7 +82,7 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    void POEGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, const Action<Vector2i>& action, POEParams& params)
+    void POEGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action, POEParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -97,7 +97,7 @@ namespace SGA {
             }
             else // skip opponent turn
             {
-                std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+                std::vector<SGA::TBSAction> endTurnActionSpace;
                 forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                 forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
@@ -128,9 +128,9 @@ namespace SGA {
         this->value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    Action<Vector2i> POEGenome::getAction(TBSGameState& gameState, std::vector<Action<Vector2i>>& actionSpace)
+    TBSAction POEGenome::getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace)
     {
-        const int nextUnit = actionSpace.at(0).getSourceUnitID();
+        const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (scriptAssignment[0].contains(nextUnit))
         {
             return scriptAssignment[0][nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);

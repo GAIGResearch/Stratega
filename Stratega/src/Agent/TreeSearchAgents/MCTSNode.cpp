@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, TBSAction& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
@@ -235,7 +235,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+				std::vector<SGA::TBSAction> endTurnActionSpace;
 				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
 				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}

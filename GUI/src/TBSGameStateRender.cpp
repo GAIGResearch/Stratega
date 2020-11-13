@@ -191,10 +191,10 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 		if (selectedUnit)
 		{
 			//Recollect each action in tile
-			std::vector<SGA::Action<SGA::Vector2i>> actionsInTile;
+			std::vector<SGA::TBSAction> actionsInTile;
 			for (const auto& action : actionHumanUnitSelected)
 			{
-				if (action.getTargetPosition() == SGA::Vector2i(pos.x, pos.y))
+				if (action.targetPosition == SGA::Vector2i(pos.x, pos.y))
 				{
 					actionsInTile.emplace_back(action);
 				}
@@ -238,7 +238,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 				for (const auto& action : actionsHumanCanPlay)
 				{
 					//If is player unit action or globlal action(i.e End turn)
-					if (action.getSourceUnitID() == unit->getUnitID() || (action.getSourceUnitID() == -1 && unit->getPlayerID() == gameStateCopy.currentPlayer))
+					if (action.sourceUnitID == unit->getUnitID() || (action.sourceUnitID == -1 && unit->getPlayerID() == gameStateCopy.currentPlayer))
 						actionHumanUnitSelected.emplace_back(action);
 				}
 			}
@@ -256,7 +256,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
 		if (waitForAction)
-			playAction(SGA::Action<SGA::Vector2i>(SGA::ActionType::EndTurn, gameStateCopy.currentPlayer));
+			playAction(SGA::TBSAction(SGA::TBSActionType::EndTurn, gameStateCopy.currentPlayer));
 	}
 }
 void TBSGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
@@ -423,7 +423,7 @@ void TBSGameStateRender::createWindowActions()
 	int index = 0;
 	for (auto action : actionHumanUnitSelected)
 	{
-		std::string actionInfo = std::to_string(index) + " " + SGA::getActionType(action.getType());
+		std::string actionInfo = std::to_string(index) + " " + SGA::getActionType(action.type);
 		index++;
 
 		if (ImGui::Button(actionInfo.c_str()))
@@ -452,9 +452,9 @@ void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
 		int index = 0;
 		for (auto action : actionHumanUnitSelected)
 		{
-			if (action.getTargetPosition() == multipleActionsSourceTile)
+			if (action.targetPosition == multipleActionsSourceTile)
 			{
-				std::string actionInfo = std::to_string(index) + " " + getActionType(action.getType());
+				std::string actionInfo = std::to_string(index) + " " + getActionType(action.type);
 				index++;
 
 				if (ImGui::Button(actionInfo.c_str()))

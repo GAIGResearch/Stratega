@@ -18,6 +18,7 @@ namespace SGA
         int lineOfSightRange;
         float collisionRadius;
         std::unordered_set<ActionType> actions;
+        std::unordered_set<TBSActionType> tbsActions;
 		
         UnitConfig():
 	        health(0),
@@ -71,6 +72,40 @@ namespace YAML
             return true;
 	    }
     };
+
+    template<>
+    struct convert<SGA::TBSActionType>
+    {
+        static bool decode(const Node& node, SGA::TBSActionType& rhs)
+        {
+            if (!node.IsScalar())
+                return false;
+
+            auto type = node.as<std::string>();
+            if (type == "Move")
+            {
+                rhs = SGA::TBSActionType::Move;
+            }
+            else if (type == "Attack")
+            {
+                rhs = SGA::TBSActionType::Attack;
+            }
+            else if (type == "Heal")
+            {
+                rhs = SGA::TBSActionType::Heal;
+            }
+            else if (type == "Push")
+            {
+                rhs = SGA::TBSActionType::Push;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+    };
 	
     template<>
     struct convert<SGA::UnitConfig>
@@ -88,7 +123,10 @@ namespace YAML
             rhs.collisionRadius = node["CollisionRadius"].as<float>(rhs.collisionRadius);
         	
         	auto actionVector = node["Actions"].as<std::vector<SGA::ActionType>>(std::vector<SGA::ActionType>());
+            auto tbsActions = node["Actions"].as<std::vector<SGA::TBSActionType>>(std::vector<SGA::TBSActionType>());
             rhs.actions.insert(actionVector.begin(), actionVector.end());
+            rhs.tbsActions.insert(tbsActions.begin(), tbsActions.end());
+        	
         	if(rhs.actions.find(SGA::ActionType::Move) != rhs.actions.end())
         	{
                 rhs.movementRange = node["MovementRange"].as<int>();

@@ -58,7 +58,7 @@ namespace SGA
 		else
 		{
 			auto actionSpace = forwardModel.getActions(gameState);
-			for (Action<Vector2i> action : actionSpace)
+			for (TBSAction action : actionSpace)
 			{
 				TBSGameState gsCopy(gameState);
 				applyActionToGameState(forwardModel, gameState, action);
@@ -76,7 +76,7 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const Action<Vector2i>& action)
+	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const TBSAction& action)
 	{
 		remainingForwardModelCalls--;
 		const int playerID = gameState.currentPlayer;
@@ -92,7 +92,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				std::vector<SGA::Action<Vector2i>> endTurnActionSpace;
+				std::vector<SGA::TBSAction> endTurnActionSpace;
 				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
 				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}

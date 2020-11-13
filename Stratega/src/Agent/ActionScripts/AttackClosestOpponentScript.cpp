@@ -2,11 +2,11 @@
 
 namespace SGA
 {
-	Action<Vector2i> AttackClosestOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace) const
+	TBSAction AttackClosestOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
 		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;;
+			std::vector<TBSAction> suitableActions;;
 			for (const auto& action : actionSpace)
 			{
 				suitableActions.push_back(action);
@@ -31,9 +31,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Attack && opponentUnits.contains(action.getTargetUnitID()))
+				if (action.type == TBSActionType::Attack && opponentUnits.contains(action.targetUnitID))
 				{
-					const int dist = positions[action.getSourceUnitID()].manhattanDistance(action.getTargetPosition());
+					const int dist = positions[action.sourceUnitID].manhattanDistance(action.targetPosition);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -49,9 +49,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = minimalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = minimalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -69,12 +69,12 @@ namespace SGA
 		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> AttackClosestOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action<Vector2i>>& actionSpace, int unitID) const
+	TBSAction AttackClosestOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
-		std::vector<Action<Vector2i>> suitableActions;
+		std::vector<TBSAction> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.getSourceUnitID() == unitID)
+			if (action.sourceUnitID == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -101,9 +101,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Attack)
+				if (action.type == TBSActionType::Attack)
 				{
-					const int dist = positions[action.getSourceUnitID()].manhattanDistance(action.getTargetPosition());
+					const int dist = positions[action.sourceUnitID].manhattanDistance(action.targetPosition);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -119,9 +119,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = minimalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = minimalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
