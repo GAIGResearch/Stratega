@@ -201,14 +201,14 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 				{
 					for (const auto& i : selectedUnits)
 					{
-						game->executeAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
+						game->executeAction(SGA::RTSAction(SGA::RTSActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
 					}
 				}
 				else
 				{
 					for (const auto& i : selectedUnits)
 					{
-						game->executeAction(SGA::Action<SGA::Vector2f>(SGA::ActionType::Move, getPlayerID(), i, SGA::Vector2f(worldPos.x,worldPos.y)));
+						game->executeAction(SGA::RTSAction(SGA::RTSActionType::Move, getPlayerID(), i, SGA::Vector2f(worldPos.x,worldPos.y)));
 					}
 				}
 				

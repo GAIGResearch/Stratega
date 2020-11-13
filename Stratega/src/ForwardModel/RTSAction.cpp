@@ -1,5 +1,5 @@
-#pragma once
 #include <ForwardModel/RTSAction.h>
+#include <Representation/RTSGameState.h>
 
 namespace SGA
 {

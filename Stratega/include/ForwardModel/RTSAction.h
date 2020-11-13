@@ -1,9 +1,10 @@
 #pragma once
 #include <Representation/Vector2.h>
-#include <Representation/RTSGameState.h>
 
 namespace SGA
 {
+	class RTSGameState;
+	
 	enum class RTSActionType
 	{
 		None,
@@ -16,6 +17,24 @@ namespace SGA
 	class RTSAction
 	{
 	public:
+		RTSAction() :
+			type(RTSActionType::None),
+			targetUnitID(-1),
+			sourceUnitID(-1),
+			targetPosition(),
+			playerID(-1)
+		{
+		}
+
+		RTSAction(RTSActionType type, int playerID, int unitID = -1, Vector2f targetPos = { 0, 0 }, int targetID = -1)
+		{
+			this->type = type;
+			this->playerID = playerID;
+			sourceUnitID = unitID;
+			targetPosition = targetPos;
+			targetUnitID = targetID;
+		}
+		
 		RTSActionType type;
 		int targetUnitID;
 		int sourceUnitID;

@@ -17,7 +17,7 @@ namespace SGA
 		this->agent = std::move(agent);
 	}
 
-	void RTSGameCommunicator::executeAction(Action<Vector2f> action) const
+	void RTSGameCommunicator::executeAction(RTSAction action) const
 	{
 		game->executeAction(action);
 	}

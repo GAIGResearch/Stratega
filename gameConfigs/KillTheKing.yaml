@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - MCTSAgent
     - HumanAgent
+    - RandomAgent
 
 Tiles:
     Plain:

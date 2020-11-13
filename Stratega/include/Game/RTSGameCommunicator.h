@@ -34,7 +34,7 @@ namespace SGA
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
-		void executeAction(Action<Vector2f> action) const;
+		void executeAction(RTSAction action) const;
 		RTSGameState getGameState() const;
 
 	private:

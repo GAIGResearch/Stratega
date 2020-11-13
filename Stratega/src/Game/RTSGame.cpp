@@ -57,9 +57,9 @@ namespace SGA
 		std::cout << "Winner ID: " << gameState->winnerPlayerID << std::endl;
 	}
 
-	void RTSGame::executeAction(const Action<Vector2f>& action)
+	void RTSGame::executeAction(const RTSAction& action)
 	{
-		if (action.type == ActionType::EndTurn)
+		if (action.type == RTSActionType::EndTick)
 			return;
 		
 		std::lock_guard<std::mutex> stateGuard(stateMutex);
