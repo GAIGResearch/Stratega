@@ -2,7 +2,6 @@
 #include <unordered_set>
 #include <yaml-cpp/node/node.h>
 #include <Representation/UnitType.h>
-#include <ForwardModel/ActionType.h>
 
 namespace SGA
 {
@@ -17,7 +16,6 @@ namespace SGA
         bool canRepeatActions;
         int lineOfSightRange;
         float collisionRadius;
-        std::unordered_set<ActionType> actions;
         std::unordered_set<TBSActionType> tbsActions;
 		
         UnitConfig():
@@ -39,40 +37,6 @@ namespace SGA
 
 namespace YAML
 {
-    template<>
-	struct convert<SGA::ActionType>
-    {
-	    static bool decode(const Node& node, SGA::ActionType& rhs)
-	    {
-            if (!node.IsScalar())
-                return false;
-
-            auto type = node.as<std::string>();
-            if (type == "Move")
-            {
-                rhs = SGA::ActionType::Move;
-            }
-            else if (type == "Attack")
-            {
-                rhs = SGA::ActionType::Attack;
-            }
-            else if (type == "Heal")
-            {
-                rhs = SGA::ActionType::Heal;
-            }
-            else if (type == "Push")
-            {
-                rhs = SGA::ActionType::Push;
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-	    }
-    };
-
     template<>
     struct convert<SGA::TBSActionType>
     {
@@ -122,20 +86,19 @@ namespace YAML
             rhs.canRepeatActions = node["RepeatableActions"].as<bool>(rhs.canRepeatActions);
             rhs.collisionRadius = node["CollisionRadius"].as<float>(rhs.collisionRadius);
         	
-        	auto actionVector = node["Actions"].as<std::vector<SGA::ActionType>>(std::vector<SGA::ActionType>());
             auto tbsActions = node["Actions"].as<std::vector<SGA::TBSActionType>>(std::vector<SGA::TBSActionType>());
-            rhs.actions.insert(actionVector.begin(), actionVector.end());
+            rhs.tbsActions.insert(tbsActions.begin(), tbsActions.end());
             rhs.tbsActions.insert(tbsActions.begin(), tbsActions.end());
         	
-        	if(rhs.actions.find(SGA::ActionType::Move) != rhs.actions.end())
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Move) != rhs.tbsActions.end())
         	{
                 rhs.movementRange = node["MovementRange"].as<int>();
         	}
-        	if(rhs.actions.find(SGA::ActionType::Attack) != rhs.actions.end())
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Attack) != rhs.tbsActions.end())
         	{
                 rhs.attackDamage = node["AttackDamage"].as<int>();
         	}
-        	if(rhs.actions.find(SGA::ActionType::Heal) != rhs.actions.end())
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Heal) != rhs.tbsActions.end())
         	{
                 rhs.healAmount = node["HealAmount"].as<int>();
         	}

@@ -1,7 +1,6 @@
 #pragma once
 #include <Agent/TreeSearchAgents/MCTSParameters.h>
 #include <Agent/TreeSearchAgents/TreeNode.h>
-#include <ForwardModel/Action.h>
 
 namespace SGA {
 

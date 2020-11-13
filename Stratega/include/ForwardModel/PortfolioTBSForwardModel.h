@@ -1,10 +1,7 @@
 #pragma once
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/Action.h>
-#include <ForwardModel/Effect.h>
 #include <ForwardModel/FMState.h>
 #include <Configuration/WinConditionType.h>
-#include <ForwardModel/ForwardModelBase.h>
 #include <ForwardModel/TBSForwardModel.h>
 
 #include "Agent/ActionScripts/BaseActionScript.h"

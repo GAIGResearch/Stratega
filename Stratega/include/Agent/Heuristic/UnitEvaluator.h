@@ -47,15 +47,15 @@ namespace SGA
 				double score = 0;
 				// The more different actions a unit can execute, the more its worth
 				auto actionRangePerc = entry.second.actionRange / static_cast<double>(maxActionRange);
-				for (const auto& action : entry.second.actions)
+				for (const auto& action : entry.second.tbsActions)
 				{
-					if (action == ActionType::Move)
+					if (action == TBSActionType::Move)
 						score += entry.second.movementRange / static_cast<double>(maxMovementRange);
-					else if (action == ActionType::Attack)
+					else if (action == TBSActionType::Attack)
 						score += (entry.second.attackDamage / static_cast<double>(maxDamage)) * actionRangePerc;
-					else if (action == ActionType::Heal)
+					else if (action == TBSActionType::Heal)
 						score += (entry.second.healAmount / static_cast<double>(maxHeal)) * actionRangePerc;
-					else if (action == ActionType::Push)
+					else if (action == TBSActionType::Push)
 						score += actionRangePerc;
 				}
 				// More health = Good

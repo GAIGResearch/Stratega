@@ -1,6 +1,5 @@
 #pragma once
 #include <Agent/ActionScripts/BaseActionScript.h>
-#include <ForwardModel/Action.h>
 
 
 namespace SGA {

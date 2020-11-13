@@ -10,7 +10,6 @@ namespace SGA
 		type.healAmount = config.healAmount;
 		type.lineOfSightRange = config.lineOfSightRange;
 		type.maxHealth = config.health;
-		type.actions = config.actions;
 		type.tbsActions = config.tbsActions;
 		type.movementRange = config.movementRange;
 		type.actionRange = config.actionRange;

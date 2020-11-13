@@ -26,10 +26,10 @@ namespace SGA
 
 				switch (actionType)
 				{
-				case ActionType::Attack: generateAttackActions(*unit, actionBucket); break;
-				case ActionType::Move: generateMoveActions(*unit, actionBucket); break;
-				case ActionType::Heal: generateHealActions(*unit, actionBucket); break;
-				case ActionType::Push: generatePushActions(*unit, actionBucket); break;
+				case TBSActionType::Attack: generateAttackActions(*unit, actionBucket); break;
+				case TBSActionType::Move: generateMoveActions(*unit, actionBucket); break;
+				case TBSActionType::Heal: generateHealActions(*unit, actionBucket); break;
+				case TBSActionType::Push: generatePushActions(*unit, actionBucket); break;
 				default: throw std::runtime_error("Unit can execute an invalid action-type");
 				}
 			}

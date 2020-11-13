@@ -1,5 +1,4 @@
 #pragma once
-#include <ForwardModel/Action.h>
 #include <Agent/RHEAAgent/RHEAParams.h>
 #include <Representation/TBSGameState.h>
 #include <ForwardModel/TBSForwardModel.h>

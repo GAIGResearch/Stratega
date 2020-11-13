@@ -1,4 +1,5 @@
 #include <Agent/ActionScripts/AttackWeakestOpponentScript.h>
+#include <set>
 
 namespace SGA
 {

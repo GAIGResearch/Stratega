@@ -35,7 +35,7 @@ namespace SGA
 		for (const auto* healer : healers)
 		{
 			// Check if the unit can heal
-			if(healer->getType().actions.find(ActionType::Heal) != healer->getType().actions.end())
+			if(healer->getType().tbsActions.find(TBSActionType::Heal) != healer->getType().tbsActions.end())
 				heal += healer->getHealAmount();
 		}
 
