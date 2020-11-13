@@ -51,7 +51,7 @@ namespace SGA
 		{
 			for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
 			{
-				TBSAction action{ TBSActionType::Move,-1, unit.getUnitID(), {x, y}, unit.getPlayerID() };
+				TBSAction action{ TBSActionType::Move, unit.getPlayerID(), unit.getUnitID(), SGA::Vector2i(x, y), -1 };
 				if (action.validate(state))
 				{
 					actionBucket.emplace_back(action);
@@ -65,7 +65,7 @@ namespace SGA
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
-			TBSAction attackAction{ TBSActionType::Attack, targetUnit.getUnitID(), unit.getUnitID(), targetUnit.getPosition(), unit.getPlayerID() };
+			TBSAction attackAction{ TBSActionType::Attack, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (attackAction.validate(state))
 			{
 				actionBucket.emplace_back(attackAction);
@@ -78,7 +78,7 @@ namespace SGA
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
-			TBSAction pushAction{ TBSActionType::Push, targetUnit.getUnitID(), unit.getUnitID(), targetUnit.getPosition(), unit.getPlayerID() };
+			TBSAction pushAction{ TBSActionType::Push, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if (pushAction.validate(state))
 			{
 				actionBucket.emplace_back(pushAction);
@@ -91,7 +91,7 @@ namespace SGA
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
-			TBSAction healAction{ TBSActionType::Heal, targetUnit.getUnitID(), unit.getUnitID(), targetUnit.getPosition(), unit.getPlayerID() };
+			TBSAction healAction{ TBSActionType::Heal, unit.getPlayerID(), unit.getUnitID(), targetUnit.getPosition(), targetUnit.getUnitID() };
 			if(healAction.validate(state))
 			{
 				actionBucket.emplace_back(healAction);
@@ -101,7 +101,7 @@ namespace SGA
 
 	void TBSActionSpace::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const
 	{
-		TBSAction endTurnAction{ TBSActionType::EndTurn, -1, -1, {}, playerID};
+		TBSAction endTurnAction{ TBSActionType::EndTurn, playerID, -1, {}, -1 };
 		if (endTurnAction.validate(state))
 		{
 			actionBucket.emplace_back(endTurnAction);

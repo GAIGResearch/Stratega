@@ -68,7 +68,7 @@ namespace SGA {
                 else
                 {
                     std::vector<SGA::TBSAction> endTurnActionSpace;
-                    forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+                    forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                     forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
                 }
             }
@@ -98,7 +98,7 @@ namespace SGA {
             else // skip opponent turn
             {
                 std::vector<SGA::TBSAction> endTurnActionSpace;
-                forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+                forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
                 forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
         }
