@@ -11,6 +11,9 @@ namespace SGA
 	private:
 		UnitTypeStrengthLookup unitScores;
 
+		std::vector<TBSAction> filterUnitActions(std::vector<TBSAction>& actions, TBSUnit& unit) const;
+		std::vector<TBSAction> filterActionTypes(std::vector<TBSAction>& actions, TBSActionType type) const;
+		
 		/// <summary>
 		/// Plays actions until the agent's turn is over
 		/// </summary>

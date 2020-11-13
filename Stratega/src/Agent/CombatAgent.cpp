@@ -2,6 +2,32 @@
 
 namespace SGA
 {
+	std::vector<TBSAction> CombatAgent::filterUnitActions(std::vector<TBSAction>& actions, TBSUnit& unit) const
+	{
+		std::vector<TBSAction> filteredActions;
+		for (const auto& a : actions)
+		{
+			if (a.sourceUnitID == unit.getUnitID())
+			{
+				filteredActions.emplace_back(a);
+			}
+		}
+		return filteredActions;
+	}
+	
+	std::vector<TBSAction> CombatAgent::filterActionTypes(std::vector<TBSAction>& actions, TBSActionType type) const
+	{
+		std::vector<TBSAction> filteredActions;
+		for (const auto& a : actions)
+		{
+			if (a.type == type)
+			{
+				filteredActions.emplace_back(a);
+			}
+		}
+		return filteredActions;
+	}
+	
 	std::vector<TBSUnit*> CombatAgent::filterUnitsByReach(const std::vector<TBSUnit*>& targetUnits, const Vector2i& pos) const
 	{
 		std::vector<TBSUnit*> units;
@@ -153,130 +179,130 @@ namespace SGA
 	{
 		while(communicator.isMyTurn() && !communicator.isGameOver())
 		{
-			//auto currentState = communicator.getGameState();
-			//
-			//// Get my units and opponent units
-			//auto myUnits = currentState.getPlayer(currentState.currentPlayer)->getUnits();
-			//std::vector<TBSUnit*> opponentUnits;
-			//for(auto& u : currentState.getUnits())
-			//{
-			//	if(u.playerID != communicator.playerID)
-			//	{
-			//		opponentUnits.emplace_back(&u);
-			//	}
-			//}
-			//
-			//// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
-			//TBSUnit* bestAttackTarget = nullptr;
-			//double highestScore = std::numeric_limits<double>::lowest();
-			//for (auto* opp : opponentUnits)
-			//{
-			//	// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
-			//	double avgSupportScore = 0;
-			//	for (auto* ally : opponentUnits)
-			//	{
-			//		if (ally->getUnitID() == opp->getUnitID())
-			//			continue;
-			//
-			//		int dist = opp->getPosition().manhattanDistance(ally->getPosition());
-			//		int movesToSupport = dist / static_cast<double>(ally->getRange());
-			//		avgSupportScore += unitScores.at(ally->getUnitTypeID()) / (1. + movesToSupport);
-			//	}
-			//	avgSupportScore /= opponentUnits.size();
-			//
-			//	// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
-			//	double avgAttackScore = 0;
-			//	for (auto* attacker : myUnits)
-			//	{
-			//		int dist = opp->getPosition().chebyshevDistance(attacker->getPosition());
-			//		int movesToAttack = std::max(0, dist - attacker->getRange()) / attacker->getRange();
-			//		avgAttackScore += unitScores.at(attacker->getUnitTypeID()) / (1. + movesToAttack);
-			//	}
-			//	avgAttackScore /= myUnits.size() + 1;
-			//
-			//	// Is this a better target than a previously found target?
-			//	double score = avgAttackScore - avgSupportScore;
-			//	if (score > highestScore)
-			//	{
-			//		highestScore = score;
-			//		bestAttackTarget = opp;
-			//	}
-			//}
-			//
-			//Vector2i moveTarget;
-			//// We found no enemy, so we move to a random position in order to find one
-			//if(bestAttackTarget == nullptr)
-			//{
-			//	auto& rngEngine = communicator.getRNGEngine();
-			//	std::uniform_int_distribution<int> widthDist(0, currentState.getBoard().getWidth() - 1);
-			//	std::uniform_int_distribution<int> heightDist(0, currentState.getBoard().getHeight() - 1);
-			//	moveTarget.x = widthDist(rngEngine);
-			//	moveTarget.y = heightDist(rngEngine);
-			//}
-			//else
-			//{
-			//	moveTarget = bestAttackTarget->getPosition();
-			//}
-			//
-			//// Go through all units and return the first action that we deem good
-			//// Since this function is called multiple times, we will eventually use up all available actions
-			//auto actions = fm.getActions(currentState);
-			//Action nextAction = actions->filterActionTypes(ActionType::EndTurn).at(0); // Only one EndTurn action available
-			//bool foundAction = false;
-			//for(auto* unit : myUnits)
-			//{
-			//	auto subActions = actions->filterUnitActions(*unit);
-			//	// First try attacking something
-			//	highestScore = std::numeric_limits<double>::lowest();
-			//	for (const auto& attack : subActions.filterActionTypes(ActionType::Attack))
-			//	{
-			//		TBSUnit& targetUnit = *currentState.getUnit(attack.targetPosition);
-			//		if (targetUnit.playerID == communicator.playerID)
-			//			continue; // No attackerino my own units
-			//
-			//		auto score = getAttackScore(targetUnit, attack, opponentUnits);
-			//		if (score > highestScore)
-			//		{
-			//			highestScore = score;
-			//			nextAction = attack;
-			//			foundAction = true;
-			//		}
-			//	}
-			//
-			//	if (foundAction)
-			//		break;
-			//
-			//	// Try healing something
-			//	highestScore = std::numeric_limits<double>::lowest();
-			//	for (const auto& heal : subActions.filterActionTypes(ActionType::Heal))
-			//	{
-			//		TBSUnit& targetUnit = *currentState.getUnit(heal.sourceUnitID);
-			//		if (targetUnit.playerID != communicator.playerID)
-			//			continue; // No healerino opponents units
-			//		if (targetUnit.getHealth() >= targetUnit.type.maxHealth)
-			//			continue; // Stop healing units that are already full, what is wrong with you
-			//
-			//		auto score = getHealScore(targetUnit, heal, opponentUnits);
-			//		if (score > highestScore)
-			//		{
-			//			highestScore = score;
-			//			nextAction = heal;
-			//			foundAction = true;
-			//		}
-			//	}
-			//
-			//	if (foundAction)
-			//		break;
-			//
-			//	// At last, try moving closer to the best attack target
-			//	auto moves = subActions.filterActionTypes(ActionType::Move);
-			//	if (getMoveInRange(*unit, moveTarget, unit->getType().actionRange, opponentUnits, moves, nextAction))
-			//	{
-			//		break;
-			//	}
-			//}
-			//
-			//communicator.executeAction(nextAction);
+			auto currentState = communicator.getGameState();
+			
+			// Get my units and opponent units
+			auto myUnits = currentState.getPlayer(currentState.currentPlayer)->getUnits();
+			std::vector<TBSUnit*> opponentUnits;
+			for(auto& u : currentState.getUnits())
+			{
+				if(u.getPlayerID() != communicator.getPlayerID())
+				{
+					opponentUnits.emplace_back(&u);
+				}
+			}
+			
+			// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
+			TBSUnit* bestAttackTarget = nullptr;
+			double highestScore = std::numeric_limits<double>::lowest();
+			for (auto* opp : opponentUnits)
+			{
+				// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
+				double avgSupportScore = 0;
+				for (auto* ally : opponentUnits)
+				{
+					if (ally->getUnitID() == opp->getUnitID())
+						continue;
+			
+					int dist = opp->getPosition().manhattanDistance(ally->getPosition());
+					int movesToSupport = dist / static_cast<double>(ally->getRange());
+					avgSupportScore += unitScores.at(ally->getUnitTypeID()) / (1. + movesToSupport);
+				}
+				avgSupportScore /= opponentUnits.size();
+			
+				// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
+				double avgAttackScore = 0;
+				for (auto* attacker : myUnits)
+				{
+					int dist = opp->getPosition().chebyshevDistance(attacker->getPosition());
+					int movesToAttack = std::max(0, dist - attacker->getRange()) / attacker->getRange();
+					avgAttackScore += unitScores.at(attacker->getUnitTypeID()) / (1. + movesToAttack);
+				}
+				avgAttackScore /= myUnits.size() + 1;
+			
+				// Is this a better target than a previously found target?
+				double score = avgAttackScore - avgSupportScore;
+				if (score > highestScore)
+				{
+					highestScore = score;
+					bestAttackTarget = opp;
+				}
+			}
+			
+			Vector2i moveTarget;
+			// We found no enemy, so we move to a random position in order to find one
+			if(bestAttackTarget == nullptr)
+			{
+				auto& rngEngine = communicator.getRNGEngine();
+				std::uniform_int_distribution<int> widthDist(0, currentState.getBoard().getWidth() - 1);
+				std::uniform_int_distribution<int> heightDist(0, currentState.getBoard().getHeight() - 1);
+				moveTarget.x = widthDist(rngEngine);
+				moveTarget.y = heightDist(rngEngine);
+			}
+			else
+			{
+				moveTarget = bestAttackTarget->getPosition();
+			}
+			
+			// Go through all units and return the first action that we deem good
+			// Since this function is called multiple times, we will eventually use up all available actions
+			auto actions = fm.generateActions(currentState);
+			TBSAction nextAction = filterActionTypes(actions, TBSActionType::EndTurn).at(0); // Only one EndTurn action available
+			bool foundAction = false;
+			for(auto* unit : myUnits)
+			{
+				auto subActions = filterUnitActions(actions, *unit);
+				// First try attacking something
+				highestScore = std::numeric_limits<double>::lowest();
+				for (const auto& attack : filterActionTypes(subActions, TBSActionType::Attack))
+				{
+					TBSUnit& targetUnit = *currentState.getUnit(attack.targetPosition);
+					if (targetUnit.getPlayerID() == communicator.getPlayerID())
+						continue; // No attackerino my own units
+			
+					auto score = getAttackScore(targetUnit, attack, opponentUnits);
+					if (score > highestScore)
+					{
+						highestScore = score;
+						nextAction = attack;
+						foundAction = true;
+					}
+				}
+			
+				if (foundAction)
+					break;
+			
+				// Try healing something
+				highestScore = std::numeric_limits<double>::lowest();
+				for (const auto& heal : filterActionTypes(subActions, TBSActionType::Heal))
+				{
+					TBSUnit& targetUnit = *currentState.getUnit(heal.sourceUnitID);
+					if (targetUnit.getPlayerID() != communicator.getPlayerID())
+						continue; // No healerino opponents units
+					if (targetUnit.getHealth() >= targetUnit.getType().maxHealth)
+						continue; // Stop healing units that are already full, what is wrong with you
+			
+					auto score = getHealScore(targetUnit, heal, opponentUnits);
+					if (score > highestScore)
+					{
+						highestScore = score;
+						nextAction = heal;
+						foundAction = true;
+					}
+				}
+			
+				if (foundAction)
+					break;
+			
+				// At last, try moving closer to the best attack target
+				auto moves = filterActionTypes(subActions, TBSActionType::Move);
+				if (getMoveInRange(*unit, moveTarget, unit->getType().actionRange, opponentUnits, moves, nextAction))
+				{
+					break;
+				}
+			}
+			
+			communicator.executeAction(nextAction);
 		}
 	}
 
