@@ -35,7 +35,7 @@ namespace SGA {
 
 	int SimpleHeuristic::score(const TBSForwardModel& forwardModel, TBSGameState& gameState, int playerToScore) const
 	{
-		auto actions = forwardModel.getActions(gameState);
+		auto actions = forwardModel.generateActions(gameState);
 		const int numAvailableActions = actions.size();
 
 		const int score = gameState.getPlayer(playerToScore)->score;

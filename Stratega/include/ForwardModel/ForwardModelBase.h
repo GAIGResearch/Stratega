@@ -11,7 +11,7 @@ namespace SGA
 		
 		virtual void advanceGameState(State& state, const Action& action) const = 0;
 		
-		virtual std::vector<Action> getActions(State& state) const = 0;
-		virtual std::vector<Action> getActions(State& state, int playerID) const = 0;
+		virtual std::vector<Action> generateActions(State& state) const = 0;
+		virtual std::vector<Action> generateActions(State& state, int playerID) const = 0;
 	};
 }

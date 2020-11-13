@@ -15,7 +15,7 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)	//safety check against race conditions
 					break;
-				const auto actionSpace = forwardModel.getActions(gameState);
+				const auto actionSpace = forwardModel.generateActions(gameState);
 				
 				// if there is just one action and we don't spent the time on continuing our search
 				// instead we return it instantly

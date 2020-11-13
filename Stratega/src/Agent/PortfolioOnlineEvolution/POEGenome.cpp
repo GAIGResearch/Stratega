@@ -5,7 +5,7 @@ namespace SGA {
     POEGenome::POEGenome(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params)
     {
         const int playerID = gameState.currentPlayer;
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
 
         size_t length = 0;
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
@@ -40,7 +40,7 @@ namespace SGA {
 
         while (!gameState.isGameOver && gameState.currentGameTurn-startTurn < params.INDIVIDUAL_LENGTH)
         {
-            auto actionSpace = forwardModel.getActions(gameState);
+            auto actionSpace = forwardModel.generateActions(gameState);
             params.REMAINING_FM_CALLS--;
             std::map<int, BaseActionScript*> playerMap = scriptAssignment[gameState.currentGameTurn - startTurn];
             if (gameState.currentPlayer == playerID)
@@ -91,7 +91,7 @@ namespace SGA {
             if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
             {
                 params.REMAINING_FM_CALLS--;
-                auto opActionSpace = forwardModel.getActions(gameState);
+                auto opActionSpace = forwardModel.generateActions(gameState);
                 auto opAction = params.opponentModel->getAction(gameState, opActionSpace);
                 forwardModel.advanceGameState(gameState, opAction);
             }
@@ -103,12 +103,12 @@ namespace SGA {
             }
         }
 
-        actionSpace = forwardModel.getActions(gameState);
+        actionSpace = forwardModel.generateActions(gameState);
     }
 
     void POEGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
@@ -141,7 +141,7 @@ namespace SGA {
     POEGenome POEGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator, POEGenome& parent1, POEGenome& parent2)
     {
         // create a new individual and its own gameState copy
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         // initialize variables for the new genome to be created

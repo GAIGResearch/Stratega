@@ -198,7 +198,7 @@ namespace SGA
 			int thisDepth = nodeDepth;
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
-				auto actions = forwardModel.getActions(gsCopy);
+				auto actions = forwardModel.generateActions(gsCopy);
 				if (actions.size() == 0)
 					break;
 				std::uniform_int_distribution<> randomDistribution(0, actions.size() - 1);
@@ -229,7 +229,7 @@ namespace SGA
 			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
 				params.REMAINING_FM_CALLS--;
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				auto opAction = params.opponentModel->getAction(gameState, actionSpace);
 				forwardModel.advanceGameState(gameState, opAction);
 			}

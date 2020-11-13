@@ -13,7 +13,7 @@ namespace SGA
                 if (gameState.isGameOver)
                     break;
 				
-                const auto actionSpace = forwardModel.getActions(gameState);
+                const auto actionSpace = forwardModel.generateActions(gameState);
                 parameters_.PLAYER_ID = gameState.currentPlayer;
 				
                 // if there is just one action and we don't spent the time on continuing our search

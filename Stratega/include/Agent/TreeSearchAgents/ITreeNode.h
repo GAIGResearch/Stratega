@@ -27,7 +27,7 @@ namespace SGA
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();
 			
-			actionSpace = forwardModel.getActions(this->gameState);
+			actionSpace = forwardModel.generateActions(this->gameState);
 		}
 		
 		virtual ~ITreeNode() = default;

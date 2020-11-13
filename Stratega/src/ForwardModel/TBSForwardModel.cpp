@@ -43,7 +43,7 @@ namespace SGA
 		//Fake update of actionSpace
 		//TODO update action space depending of the action played
 		actionSpace.clear();
-		actionSpace = getActions(state);
+		actionSpace = generateActions(state);
 	}
 
 	bool TBSForwardModel::isValid(TBSGameState& state, const TBSAction& action) const
@@ -51,12 +51,12 @@ namespace SGA
 		return action.validate(state);
 	}
 
-	std::vector<TBSAction> TBSForwardModel::getActions(TBSGameState& state) const
+	std::vector<TBSAction> TBSForwardModel::generateActions(TBSGameState& state) const
 	{
 		return actionSpace->generateActions(state);
 	}
 
-	std::vector<TBSAction> TBSForwardModel::getActions(TBSGameState& state, int playerID) const
+	std::vector<TBSAction> TBSForwardModel::generateActions(TBSGameState& state, int playerID) const
 	{
 		return actionSpace->generateActions(state, playerID);
 	}

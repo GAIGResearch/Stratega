@@ -12,7 +12,7 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 
 				if (actionSpace.size() == 1)
 				{
@@ -104,7 +104,7 @@ namespace SGA
 	double PortfolioGreedySearchAgent::Playout(TBSForwardModel& forwardModel, TBSGameState gameState, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios)
 	{
 		const int playerID = gameState.currentPlayer;
-		auto actionSpace = forwardModel.getActions(gameState);
+		auto actionSpace = forwardModel.generateActions(gameState);
 		int simulatedTurns = 0;
 		while (simulatedTurns < params_.NR_OF_TURNS_PLANNED && !gameState.isGameOver && actionSpace.size()!=0)
 		{
@@ -138,6 +138,6 @@ namespace SGA
 	{
 		params_.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
-		actionSpace = forwardModel.getActions(gameState);
+		actionSpace = forwardModel.generateActions(gameState);
 	}
 }

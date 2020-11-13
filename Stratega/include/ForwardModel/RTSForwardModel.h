@@ -34,8 +34,8 @@ namespace SGA
 
 		void advanceGameState(RTSGameState& state, const RTSAction& action) const override;
 		
-		std::vector<RTSAction> getActions(RTSGameState& state) const override;
-		std::vector<RTSAction> getActions(RTSGameState& state, int playerID) const override;
+		std::vector<RTSAction> generateActions(RTSGameState& state) const override;
+		std::vector<RTSAction> generateActions(RTSGameState& state, int playerID) const override;
 		
 		void executeMove(RTSFMState& state, RTSUnit& unit) const;
 		void executeAttack(RTSFMState& state, RTSUnit& unit) const;

@@ -10,7 +10,7 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{
 				auto state = gameCommunicator.getGameState();
-				auto actionSpace = ForwardModel.getActions(state);
+				auto actionSpace = ForwardModel.generateActions(state);
 				std::uniform_int_distribution<int> actionDist(0, static_cast<int>(actionSpace.size()) - 1);
 				gameCommunicator.executeAction(actionSpace.at(actionDist(gameCommunicator.getRNGEngine())));
 			}
@@ -27,7 +27,7 @@ namespace SGA
 			if(deltaTime.count() >= 1)
 			{
 				auto state = gameCommunicator.getGameState();
-				auto actions = forwardModel.getActions(state, gameCommunicator.getPlayerID());
+				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
 				std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
 				int temp=actionDist(gameCommunicator.getRNGEngine());
  				gameCommunicator.executeAction(actions.at(actionDist(gameCommunicator.getRNGEngine())));

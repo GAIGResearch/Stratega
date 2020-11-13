@@ -36,7 +36,7 @@ namespace SGA
 		
 		while (gsCopy.currentPlayer != agentParameters.PLAYER_ID && !gsCopy.isGameOver)
 		{
-			auto actionSpace = forwardModel.getActions(gsCopy);
+			auto actionSpace = forwardModel.generateActions(gsCopy);
 			auto opAction = agentParameters.OPPONENT_MODEL->getAction(gsCopy, actionSpace);
 			forwardModel.advanceGameState(gsCopy, opAction);
 			agentParameters.REMAINING_FM_CALLS--;

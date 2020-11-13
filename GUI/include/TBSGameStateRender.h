@@ -49,7 +49,7 @@ private:
 	{
 		waitForAction = true;
 
-		actionsHumanCanPlay = game->getForwardModel().getActions(gameStateCopy);
+		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy);
 		actionHumanUnitSelected.clear();
 	}
 

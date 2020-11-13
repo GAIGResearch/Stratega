@@ -65,12 +65,12 @@ namespace SGA
 		}
 	}
 	
-	std::vector<RTSAction> RTSForwardModel::getActions(RTSGameState& state) const
+	std::vector<RTSAction> RTSForwardModel::generateActions(RTSGameState& state) const
 	{
 		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
 	}
 
-	std::vector<RTSAction> RTSForwardModel::getActions(RTSGameState& state, int playerID) const
+	std::vector<RTSAction> RTSForwardModel::generateActions(RTSGameState& state, int playerID) const
 	{
 		return actionSpace->generateActions(state, playerID);
 	}

@@ -12,7 +12,7 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				//SimpleHeuristic heuristic = SimpleHeuristic(playerID, gameState.getPlayerNumber());
 				LinearSumHeuristic heuristic = LinearSumHeuristic();
 				double bestHeuristicValue = -std::numeric_limits<double>::max();

@@ -6,7 +6,7 @@ namespace SGA {
 	
     MetaPOGenome::MetaPOGenome(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
 
         size_t length = 0;
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
@@ -44,7 +44,7 @@ namespace SGA {
     	
     	while (!gameState.isGameOver && gameState.currentGameTurn - startTurn < params.HORIZON)
     	{
-            auto actionSpace = forwardModel.getActions(gameState);
+            auto actionSpace = forwardModel.generateActions(gameState);
             params.REMAINING_FM_CALLS--;
     		if (gameState.currentPlayer == playerID)
     		{

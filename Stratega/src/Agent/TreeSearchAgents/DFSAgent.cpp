@@ -14,7 +14,7 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				if (actionSpace.size() == 1)
 				{
 					gameCommunicator.executeAction(actionSpace.at(0));
@@ -57,7 +57,7 @@ namespace SGA
 		}
 		else
 		{
-			auto actionSpace = forwardModel.getActions(gameState);
+			auto actionSpace = forwardModel.generateActions(gameState);
 			for (TBSAction action : actionSpace)
 			{
 				TBSGameState gsCopy(gameState);
@@ -86,7 +86,7 @@ namespace SGA
 		{
 			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				auto opAction = opponentModel->getAction(gameState, actionSpace);
 				forwardModel.advanceGameState(gameState, opAction);
 			}

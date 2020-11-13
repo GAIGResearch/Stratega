@@ -4,7 +4,7 @@ namespace SGA {
 
     RHEAGenome::RHEAGenome(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         size_t length = 0;
@@ -33,7 +33,7 @@ namespace SGA {
             if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
             {
                 params.REMAINING_FM_CALLS--;
-                auto opActionSpace = forwardModel.getActions(gameState);
+                auto opActionSpace = forwardModel.generateActions(gameState);
                 auto opAction = params.opponentModel->getAction(gameState, opActionSpace);
                 forwardModel.advanceGameState(gameState, opAction);
             }
@@ -45,12 +45,12 @@ namespace SGA {
             }
         }
 
-        actionSpace = forwardModel.getActions(gameState);
+        actionSpace = forwardModel.generateActions(gameState);
     }
 
     void RHEAGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         // go through the actions and fill the actionVector of its child
@@ -94,7 +94,7 @@ namespace SGA {
     RHEAGenome RHEAGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
     	// initialize variables for the new genome to be created
@@ -158,7 +158,7 @@ namespace SGA {
 
         // check if actions are still applicable and if not sample a new one from portfolio
         // always re-sample the last action since it is the rotated action from the previous solution
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         for (size_t i = 0; i < actions.size(); i++)
         {
             if (actionSpace.size() == 0)

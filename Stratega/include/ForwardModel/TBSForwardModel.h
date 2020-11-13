@@ -27,8 +27,8 @@ namespace SGA
 		void advanceGameState(TBSGameState& state, const TBSAction& action) const override;
 		void advanceGameState(TBSGameState& state, const TBSAction& action, std::vector<TBSAction>& actionSpace) const;
 
-		std::vector<TBSAction> getActions(TBSGameState& state) const override;
-		std::vector<TBSAction> getActions(TBSGameState& state, int playerID) const override;
+		std::vector<TBSAction> generateActions(TBSGameState& state) const override;
+		std::vector<TBSAction> generateActions(TBSGameState& state, int playerID) const override;
 		
 		bool isValid(TBSGameState& state, const TBSAction& action) const;
 
