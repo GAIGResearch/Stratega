@@ -6,7 +6,7 @@ namespace SGA {
 	
     MetaPOGenome::MetaPOGenome(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
 
         size_t length = 0;
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
@@ -44,19 +44,19 @@ namespace SGA {
     	
     	while (!gameState.isGameOver && gameState.currentGameTurn - startTurn < params.HORIZON)
     	{
-            auto actionSpace = forwardModel.getActions(gameState);
+            auto actionSpace = forwardModel.generateActions(gameState);
             params.REMAINING_FM_CALLS--;
     		if (gameState.currentPlayer == playerID)
     		{
 				// choose action according to unitScript
-                int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+                int nextUnit = actionSpace.at(0).sourceUnitID;
                 if (tmpMap.contains(nextUnit))
                 {
                     auto action = tmpMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
                     forwardModel.advanceGameState(gameState, action);
                 } else
                 {
-                    forwardModel.advanceGameState(gameState, actionSpace->getAction(0));
+                    forwardModel.advanceGameState(gameState, actionSpace.at(0));
                 }
     		}
             else
@@ -69,9 +69,9 @@ namespace SGA {
             	}
             	else
             	{
-                    ActionSpace<Vector2i> endTurnActionSpace;
-                    forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                    forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                    std::vector<TBSAction> endTurnActionSpace;
+                    forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+                    forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             	}
             }
 
@@ -97,14 +97,14 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    Action<Vector2i> MetaPOGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace)
+    TBSAction MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace)
     {
-        const int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+        const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (unitScript.contains(nextUnit))
         {
             return unitScript[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
-        return actionSpace->getAction(rand() % actionSpace->count());
+        return actionSpace.at(rand() % actionSpace.size());
     };
 	
     void MetaPOGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, MetaPOParams& params, std::mt19937& randomGenerator)

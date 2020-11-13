@@ -1,9 +1,8 @@
 #pragma once
 #include <Representation/Vector2.h>
 #include <Representation/RTSGameState.h>
-#include <ForwardModel/ActionType.h>
-#include <ForwardModel/Action.h>
 #include <Representation/Path.h>
+#include <ForwardModel/RTSAction.h>
 
 namespace SGA
 {
@@ -53,8 +52,8 @@ namespace SGA
 		std::reference_wrapper<RTSGameState> state;
 		
 		// Actions
-		Action<Vector2f> intendedAction;
-		Action<Vector2f> executingAction;
+		RTSAction intendedAction;
+		RTSAction executingAction;
 		Path path;
 	};
 }

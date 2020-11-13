@@ -2,7 +2,6 @@
 #include <unordered_set>
 #include <yaml-cpp/node/node.h>
 #include <Representation/UnitType.h>
-#include <ForwardModel/ActionType.h>
 
 namespace SGA
 {
@@ -17,7 +16,7 @@ namespace SGA
         bool canRepeatActions;
         int lineOfSightRange;
         float collisionRadius;
-        std::unordered_set<ActionType> actions;
+        std::unordered_set<TBSActionType> tbsActions;
 		
         UnitConfig():
 	        health(0),
@@ -39,29 +38,29 @@ namespace SGA
 namespace YAML
 {
     template<>
-	struct convert<SGA::ActionType>
+    struct convert<SGA::TBSActionType>
     {
-	    static bool decode(const Node& node, SGA::ActionType& rhs)
-	    {
+        static bool decode(const Node& node, SGA::TBSActionType& rhs)
+        {
             if (!node.IsScalar())
                 return false;
 
             auto type = node.as<std::string>();
             if (type == "Move")
             {
-                rhs = SGA::ActionType::Move;
+                rhs = SGA::TBSActionType::Move;
             }
             else if (type == "Attack")
             {
-                rhs = SGA::ActionType::Attack;
+                rhs = SGA::TBSActionType::Attack;
             }
             else if (type == "Heal")
             {
-                rhs = SGA::ActionType::Heal;
+                rhs = SGA::TBSActionType::Heal;
             }
             else if (type == "Push")
             {
-                rhs = SGA::ActionType::Push;
+                rhs = SGA::TBSActionType::Push;
             }
             else
             {
@@ -69,7 +68,7 @@ namespace YAML
             }
 
             return true;
-	    }
+        }
     };
 	
     template<>
@@ -87,17 +86,19 @@ namespace YAML
             rhs.canRepeatActions = node["RepeatableActions"].as<bool>(rhs.canRepeatActions);
             rhs.collisionRadius = node["CollisionRadius"].as<float>(rhs.collisionRadius);
         	
-        	auto actionVector = node["Actions"].as<std::vector<SGA::ActionType>>(std::vector<SGA::ActionType>());
-            rhs.actions.insert(actionVector.begin(), actionVector.end());
-        	if(rhs.actions.find(SGA::ActionType::Move) != rhs.actions.end())
+            auto tbsActions = node["Actions"].as<std::vector<SGA::TBSActionType>>(std::vector<SGA::TBSActionType>());
+            rhs.tbsActions.insert(tbsActions.begin(), tbsActions.end());
+            rhs.tbsActions.insert(tbsActions.begin(), tbsActions.end());
+        	
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Move) != rhs.tbsActions.end())
         	{
                 rhs.movementRange = node["MovementRange"].as<int>();
         	}
-        	if(rhs.actions.find(SGA::ActionType::Attack) != rhs.actions.end())
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Attack) != rhs.tbsActions.end())
         	{
                 rhs.attackDamage = node["AttackDamage"].as<int>();
         	}
-        	if(rhs.actions.find(SGA::ActionType::Heal) != rhs.actions.end())
+        	if(rhs.tbsActions.find(SGA::TBSActionType::Heal) != rhs.tbsActions.end())
         	{
                 rhs.healAmount = node["HealAmount"].as<int>();
         	}

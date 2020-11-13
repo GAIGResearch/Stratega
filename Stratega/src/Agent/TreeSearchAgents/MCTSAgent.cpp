@@ -13,15 +13,15 @@ namespace SGA
                 if (gameState.isGameOver)
                     break;
 				
-                const auto actionSpace = forwardModel.getActions(gameState);
+                const auto actionSpace = forwardModel.generateActions(gameState);
                 parameters_.PLAYER_ID = gameState.currentPlayer;
 				
                 // if there is just one action and we don't spent the time on continuing our search
                 // we just instantly return it
                 // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-                if (actionSpace->count() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
+                if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
                 {
-                    gameCommunicator.executeAction(actionSpace->getAction(0));
+                    gameCommunicator.executeAction(actionSpace.at(0));
                     rootNode = nullptr;
                     previousActionIndex = -1;
                 }
@@ -48,11 +48,11 @@ namespace SGA
 
                 	// get and store best action
                     const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
-                    auto bestAction = rootNode->actionSpace->getAction(bestActionIndex);
+                    auto bestAction = rootNode->actionSpace.at(bestActionIndex);
                     gameCommunicator.executeAction(bestAction);
 
                 	// return best action
-                    previousActionIndex = bestAction.getType() == ActionType::EndTurn ? (-1) : bestActionIndex;
+                    previousActionIndex = bestAction.type == TBSActionType::EndTurn ? (-1) : bestActionIndex;
                 }
 
 			}

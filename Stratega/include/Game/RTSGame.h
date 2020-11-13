@@ -22,7 +22,7 @@ namespace SGA
 			return forwardModel;
 		}
 
-		void executeAction(const Action<Vector2f>& action);
+		void executeAction(const RTSAction& action);
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.

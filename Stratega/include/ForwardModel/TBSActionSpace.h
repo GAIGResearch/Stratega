@@ -1,63 +1,20 @@
 #pragma once
-#include <ForwardModel/ActionSpace.h>
+
+#include<ForwardModel/IActionSpace.h>
+#include<ForwardModel/TBSAction.h>
 
 namespace SGA
 {
-	class TBSUnit;
-	template <class T=Vector2f>
-	class ActionSpace : public ActionSpaceBase<Action<T>>
+	class TBSActionSpace : public IActionSpace<TBSGameState, TBSAction>
 	{
 	public:
-		typename std::vector<Action<T>>::const_iterator begin() const
-		{
-			return actions.begin();
-		}
-		typename std::vector<Action<T>>::const_iterator end() const
-		{
-			return actions.end();
-		}
+		std::vector<TBSAction> generateActions(TBSGameState& gameState) override;
+		std::vector<TBSAction> generateActions(TBSGameState& gameState, int playerID);
 
-		void addAction(Action<T> action)
-		{
-			actions.emplace_back(action);
-		}
-		Action<T> getAction(int index)const
-		{
-			return	actions[index];
-		}
-
-		[[nodiscard]] size_t count() const { return actions.size(); }
-		void clear() { actions.clear(); }
-
-		ActionSpace filterUnitActions(TBSUnit& unit)
-		{
-			ActionSpace subSpace;
-			for (const auto& a : actions)
-			{
-				if (a.getSourceUnitID() == unit.getUnitID())
-				{
-					subSpace.addAction(a);
-				}
-			}
-
-			return subSpace;
-		}
-		ActionSpace filterActionTypes(ActionType type)
-		{
-			ActionSpace subSpace;
-			for (const auto& a : actions)
-			{
-				if (a.getType() == type)
-				{
-					subSpace.addAction(a);
-				}
-			}
-
-			return subSpace;
-		}
-
-	private:
-		std::vector<Action<T>> actions;
-
+		void generateMoveActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateAttackActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generatePushActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateHealActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
+		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const;
 	};
 }

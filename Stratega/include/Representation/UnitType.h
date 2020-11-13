@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_set>
-#include <ForwardModel/ActionType.h>
+#include <ForwardModel/TBSActionType.h>
 
 namespace SGA
 {
@@ -18,7 +18,7 @@ namespace SGA
 
 		float collisionRadius;
 		
-		std::unordered_set<ActionType> actions;
+		std::unordered_set<TBSActionType> tbsActions;
 		bool canRepeatActions;
 		int actionsPerTurn;
 	};

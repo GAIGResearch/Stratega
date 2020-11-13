@@ -1,6 +1,4 @@
 #pragma once
-#include <ForwardModel/Action.h>
-
 #include <random>
 #include <vector>
 
@@ -32,11 +30,11 @@ namespace SGA {
 		void shift(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params);
 		void toString() const;
 		static POEGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator, POEGenome& parent1, POEGenome& parent2);
-		Action<Vector2i> POEGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace);
+		TBSAction POEGenome::getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace);
 
 	private:
 		POEGenome(std::vector<std::map<int, BaseActionScript*>>, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
-		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace,  const Action<Vector2i>& action, POEParams& params);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSAction>& actionSpace,  const TBSAction& action, POEParams& params);
 		double evaluateGenome(TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
 
 	};

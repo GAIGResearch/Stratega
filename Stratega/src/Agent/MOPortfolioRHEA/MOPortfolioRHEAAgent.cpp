@@ -12,16 +12,16 @@ namespace SGA
                 TBSGameState gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
-                auto actionSpace = forwardModel.getActions(gameState);
+                auto actionSpace = forwardModel.generateActions(gameState);
 
                 params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
                 params_.PLAYER_ID = gameState.currentPlayer;        // todo move into agent initialization
 
             	// in case only one action is available the player turn ends
             	// throw away previous solutions because we don't know what our opponent will do
-                if (actionSpace->count() == 1)
+                if (actionSpace.size() == 1)
                 {
-                    gameCommunicator.executeAction(actionSpace->getAction(0));
+                    gameCommunicator.executeAction(actionSpace.at(0));
                     pop_.clear();
                 }
             	else

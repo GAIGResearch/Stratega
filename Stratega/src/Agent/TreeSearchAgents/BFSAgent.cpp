@@ -15,13 +15,13 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)	//safety check against race conditions
 					break;
-				const auto actionSpace = forwardModel.getActions(gameState);
+				const auto actionSpace = forwardModel.generateActions(gameState);
 				
 				// if there is just one action and we don't spent the time on continuing our search
 				// instead we return it instantly
-				if (actionSpace->count() == 1)
+				if (actionSpace.size() == 1)
 				{
-					gameCommunicator.executeAction(actionSpace->getAction(0));
+					gameCommunicator.executeAction(actionSpace.at(0));
 					
 					// forget about your last action index, because the opponent will move in between
 					previousActionIndex = -1;
@@ -37,11 +37,11 @@ namespace SGA
 
 					// retrieve best action
 					const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-					auto action = rootNode->actionSpace->getAction(bestActionIndex);
+					auto action = rootNode->actionSpace.at(bestActionIndex);
 					gameCommunicator.executeAction(action);
 					
 					// remember latest action in case the search should be continued
-					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.getType() != ActionType::EndTurn ? bestActionIndex : -1;
+					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.type != TBSActionType::EndTurn ? bestActionIndex : -1;
 
 				}
 			}
@@ -145,7 +145,7 @@ namespace SGA
 				}
 				else
 				{
-					if (node->children.size() != node->actionSpace->count())
+					if (node->children.size() != node->actionSpace.size())
 					{
 						openNodes.push_back(node);
 					}

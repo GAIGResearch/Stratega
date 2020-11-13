@@ -1,13 +1,14 @@
 #include <Agent/ActionScripts/AttackWeakestOpponentScript.h>
+#include <set>
 
 namespace SGA
 {
-	Action<Vector2i> AttackWeakestOpponentScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	TBSAction AttackWeakestOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions = std::vector<Action<Vector2i>>();
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions = std::vector<TBSAction>();
+			for (const auto& action : actionSpace)
 			{
 				suitableActions.push_back(action);
 			}
@@ -36,7 +37,7 @@ namespace SGA
 			//prioritize attacks against the weakest unit
 			for (auto& action : suitableActions)
 			{
-				if (action.getType() == ActionType::Attack && weakestUnitID == action.getTargetUnitID())
+				if (action.type == TBSActionType::Attack && weakestUnitID == action.targetUnitID)
 				{
 					return action;
 				}
@@ -50,9 +51,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = action.getTargetPosition().manhattanDistance(positions[weakestUnitID]);
+					const int dist = action.targetPosition.manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -67,18 +68,18 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> AttackWeakestOpponentScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	TBSAction AttackWeakestOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
 		// todo
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions;
+			for (const auto& action : actionSpace)
 			{
-				if (action.getSourceUnitID() == unitID)
+				if (action.sourceUnitID == unitID)
 					suitableActions.push_back(action);
 			}
 
@@ -106,7 +107,7 @@ namespace SGA
 			//prioritize attacks against the weakest unit
 			for (auto& action : suitableActions)
 			{
-				if (action.getType() == ActionType::Attack && weakestUnitID == action.getTargetUnitID())
+				if (action.type == TBSActionType::Attack && weakestUnitID == action.targetUnitID)
 				{
 					return action;
 				}
@@ -120,9 +121,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = action.getTargetPosition().manhattanDistance(positions[weakestUnitID]);
+					const int dist = action.targetPosition.manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -137,6 +138,6 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 }

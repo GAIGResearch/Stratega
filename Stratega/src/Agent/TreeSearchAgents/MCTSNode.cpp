@@ -108,7 +108,7 @@ namespace SGA
 		//todo remove unnecessary copy of gameState
 		TBSGameState gsCopy = TBSGameState(gameState);
 		childIndex = children.size();
-		applyActionToGameState(forwardModel, gsCopy, actionSpace->getAction(childIndex), params);
+		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex)));
@@ -198,11 +198,11 @@ namespace SGA
 			int thisDepth = nodeDepth;
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
-				auto actions = forwardModel.getActions(gsCopy);
-				if (actions->count() == 0)
+				auto actions = forwardModel.generateActions(gsCopy);
+				if (actions.size() == 0)
 					break;
-				std::uniform_int_distribution<> randomDistribution(0, actions->count() - 1);
-				applyActionToGameState(forwardModel, gsCopy, actions->getAction(randomDistribution(randomGenerator)), params);
+				std::uniform_int_distribution<> randomDistribution(0, actions.size() - 1);
+				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
 				thisDepth++;
 			}
 			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, TBSAction& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
@@ -229,15 +229,15 @@ namespace SGA
 			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
 				params.REMAINING_FM_CALLS--;
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				auto opAction = params.opponentModel->getAction(gameState, actionSpace);
 				forwardModel.advanceGameState(gameState, opAction);
 			}
 			else // skip opponent turn
 			{
-				ActionSpace<Vector2i> endTurnActionSpace;
-				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+				std::vector<TBSAction> endTurnActionSpace;
+				forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}
 		}
 	}

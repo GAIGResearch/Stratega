@@ -4,7 +4,11 @@ namespace SGA
 {
 	void RTSGameCommunicator::init()
 	{
-		thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), game->getForwardModel());
+		// Copy the forwardModel but ensure that it contains a different actionSpace instance
+		RTSForwardModel copy(game->getForwardModel());
+		copy.setActionSpace(copy.generateDefaultActionSpace());
+		
+		thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), std::move(copy));
 	}
 
 	void RTSGameCommunicator::setGame(RTSGame& newGame)
@@ -17,7 +21,7 @@ namespace SGA
 		this->agent = std::move(agent);
 	}
 
-	void RTSGameCommunicator::executeAction(Action<Vector2f> action) const
+	void RTSGameCommunicator::executeAction(RTSAction action) const
 	{
 		game->executeAction(action);
 	}

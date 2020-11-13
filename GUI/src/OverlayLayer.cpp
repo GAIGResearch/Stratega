@@ -1,6 +1,6 @@
 #include <OverlayLayer.h>
 
-TBSOverlayLayer::TBSOverlayLayer(AssetCache& assetCache, SGA::ActionSpace<SGA::Vector2i>& actionSpace, SGA::Vector2f& currentMousePos) :
+TBSOverlayLayer::TBSOverlayLayer(AssetCache& assetCache, std::vector<SGA::TBSAction>& actionSpace, SGA::Vector2f& currentMousePos) :
 	RenderLayer(assetCache), actionSpace(actionSpace), currentMousePos(currentMousePos)
 {
 
@@ -19,21 +19,21 @@ void TBSOverlayLayer::update(SGA::TBSGameState& state)
 	sprites.clear();
 
 	//Add actions if we have actions to draw
-	if(actionSpace.count()>0)
+	if(actionSpace.size()>0)
 	{
 		for(const auto& action : actionSpace)
 		{
 			sf::CircleShape shape(15);
-			sf::Vector2f temp = toISO(action.getTargetPosition().x, action.getTargetPosition().y);
+			sf::Vector2f temp = toISO(action.targetPosition.x, action.targetPosition.y);
 		
 			shape.setPosition(temp+sf::Vector2f(TILE_OFFSET_ORIGIN_X,TILE_OFFSET_ORIGIN_Y));
-			switch (action.getType())
+			switch (action.type)
 			{
-				case SGA::ActionType::Attack: shape.setFillColor(sf::Color::Red); break;
-				case SGA::ActionType::Move:  break;
-				case SGA::ActionType::Heal: shape.setFillColor(sf::Color::Green);  break;
-				case SGA::ActionType::Push: shape.setFillColor(sf::Color::Black);  break;
-				case SGA::ActionType::EndTurn:  shape.setFillColor(sf::Color::Magenta); break;
+				case SGA::TBSActionType::Attack: shape.setFillColor(sf::Color::Red); break;
+				case SGA::TBSActionType::Move:  break;
+				case SGA::TBSActionType::Heal: shape.setFillColor(sf::Color::Green);  break;
+				case SGA::TBSActionType::Push: shape.setFillColor(sf::Color::Black);  break;
+				case SGA::TBSActionType::EndTurn:  shape.setFillColor(sf::Color::Magenta); break;
 				default: throw std::runtime_error("Tried adding an action with an not supported action-type");
 			}
 			circleShapes.emplace_back(shape);
