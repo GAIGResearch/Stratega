@@ -72,100 +72,12 @@ namespace SGA
 
 	std::vector<RTSAction> RTSForwardModel::getActions(RTSGameState& state, int playerID) const
 	{
-		std::vector<RTSAction> actions;
-		for (auto& unit : state.units)
-		{
-			if (unit.playerID != playerID || unit.intendedAction.type != RTSActionType::None)
-				continue;
-			
-			generateMoves(unit, actions);
-			generateAttacks(unit, actions);
-			generateHeals(unit, actions);
-		}
-		actions.emplace_back(generateEndTickAction());
-
-		return actions;
-	}
-
-	void RTSForwardModel::generateMoves(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const
-	{
-		auto& state = unit.state.get();
-		int xGrid = static_cast<int>(unit.position.x);
-		int yGrid = static_cast<int>(unit.position.y);
-
-		auto startCheckPositionX = std::max(0, xGrid - 1);
-		auto endCheckPositionX = std::min(state.board.getWidth() - 1, xGrid + 1);
-		auto startCheckPositionY = std::max(0, yGrid - 1);
-		auto endCheckPositionY = std::min(state.board.getHeight() - 1, yGrid + 1);
-
-		for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
-		{
-			for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
-			{
-				RTSAction action{ RTSActionType::Move, unit.playerID, unit.unitID, SGA::Vector2i(x, y), -1 };
-				if(validateMove(state, action))
-					actionBucket.emplace_back(action);
-			}
-		}
-	}
-	
-	void RTSForwardModel::generateAttacks(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const
-	{
-		auto& state = unit.state.get();
-		for(auto& targetUnit : state.units)
-		{
-			RTSAction action{ RTSActionType::Attack, unit.playerID, unit.unitID, targetUnit.position, targetUnit.unitID};
-			if (validateAttack(state, action))
-				actionBucket.emplace_back(action);
-		}
-	}
-	
-	void RTSForwardModel::generateHeals(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const
-	{
-		auto& state = unit.state.get();
-		for (auto& targetUnit : state.units)
-		{
-			RTSAction action{ RTSActionType::Heal, unit.playerID, unit.unitID, targetUnit.position, targetUnit.unitID };
-			if (validateHeal(state, action))
-				actionBucket.emplace_back(action);
-		}
-	}
-
-	RTSAction RTSForwardModel::generateEndTickAction() const
-	{
-		return RTSAction(RTSActionType::EndTick, -1);
-	}
-
-	bool RTSForwardModel::validateMove(RTSGameState& state, const RTSAction& action) const
-	{
-		return state.getUnit(action.sourceUnitID) != nullptr;
-	}
-	
-	bool RTSForwardModel::validateAttack(RTSGameState& state, const RTSAction& action) const
-	{
-		auto* attacker = state.getUnit(action.sourceUnitID);
-		auto* target = state.getUnit(action.targetUnitID);
-		if (attacker == nullptr || target == nullptr)
-			return false;
-
-		//We dont need to validate the distance because the unit will aprroach to the target
-		//return attacker->unitID != target->unitID && attacker->actionCooldown <= 0 && attacker->position.distance(target->position) <= attacker->actionRange;
-		return attacker->unitID != target->unitID &&attacker->playerID!=target->playerID/* && attacker->position.distance(target->position) <= attacker->actionRange*/;
-	}
-	
-	bool RTSForwardModel::validateHeal(RTSGameState& state, const RTSAction& action) const
-	{
-		auto* healer = state.getUnit(action.sourceUnitID);
-		auto* target = state.getUnit(action.targetUnitID);
-		if (healer == nullptr || target == nullptr)
-			return false;
-
-		return healer->actionCooldown <= 0 &&target->health<target->maxHealth&& healer->position.distance(target->position) <= healer->actionRange;
+		return actionSpace->generateActions(state, playerID);
 	}
 
 	void RTSForwardModel::executeMove(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateMove(state.target, unit.executingAction))
+		if (!unit.executingAction.validate(state.target))
 		{
 			unit.executingAction.type = RTSActionType::None;
 			return;
@@ -216,7 +128,7 @@ namespace SGA
 	
 	void RTSForwardModel::executeAttack(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateAttack(state.target, unit.executingAction))
+		if (!unit.executingAction.validate(state.target))
 		{
 			if(unit.actionCooldown > 0)
 			{
@@ -311,7 +223,7 @@ namespace SGA
 	
 	void RTSForwardModel::executeHeal(RTSFMState& state, RTSUnit& unit) const
 	{
-		if (!validateHeal(state.target, unit.executingAction))
+		if (!unit.executingAction.validate(state.target))
 		{
 			unit.executingAction.type = RTSActionType::None;
 			return;

@@ -4,6 +4,7 @@
 #include <ForwardModel/RTSAction.h>
 #include <ForwardModel/FMState.h>
 #include <Representation/RTSGameState.h>
+#include <ForwardModel/RTSActionSpace.h>
 
 #include <chrono>
 
@@ -17,24 +18,24 @@ namespace SGA
 	class RTSForwardModel : public ForwardModelBase<RTSGameState, RTSAction>
 	{
 	public:
-		double deltaTime = 1. / 60.;
+		double deltaTime;
 
 		WinConditionType winCondition;
 		int unitTypeID;
+
+
+		RTSForwardModel()
+			: deltaTime(1. / 60.),
+			  winCondition(),
+			  unitTypeID(),
+			  actionSpace(generateDefaultActionSpace())
+		{
+		}
 
 		void advanceGameState(RTSGameState& state, const RTSAction& action) const override;
 		
 		std::vector<RTSAction> getActions(RTSGameState& state) const override;
 		std::vector<RTSAction> getActions(RTSGameState& state, int playerID) const override;
-
-		void generateMoves(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const;
-		void generateAttacks(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const;
-		void generateHeals(RTSUnit& unit, std::vector<RTSAction>& actionBucket) const;
-		RTSAction generateEndTickAction() const;
-
-		bool validateMove(RTSGameState& state, const RTSAction& action) const;
-		bool validateAttack(RTSGameState& state, const RTSAction& action) const;
-		bool validateHeal(RTSGameState& state, const RTSAction& action) const;
 		
 		void executeMove(RTSFMState& state, RTSUnit& unit) const;
 		void executeAttack(RTSFMState& state, RTSUnit& unit) const;
@@ -48,6 +49,25 @@ namespace SGA
 
 		bool checkGameIsFinished(RTSGameState& state) const;
 		bool canPlayerPlay(RTSPlayer& player) const;
+
+		// ActionSpaces
+		void setActionSpace(std::unique_ptr<RTSActionSpace> as)
+		{
+			actionSpace = std::move(as);
+		}
+
+		RTSActionSpace& getActionSpace() const
+		{
+			return *actionSpace;
+		}
+
+		std::unique_ptr<RTSActionSpace> generateDefaultActionSpace() const
+		{
+			return std::make_unique<RTSActionSpace>();
+		}
+
+	private:
+		std::shared_ptr<RTSActionSpace> actionSpace;
 	};
 
 }
