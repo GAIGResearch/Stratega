@@ -1,6 +1,9 @@
 #include <Agent/AgentFactory.h>
 #include <Agent/RandomAgent.h>
-#include <Agent/CombatAgent.h>
+
+#include <Agent/RuleBased/CombatAgent.h>
+#include <Agent/RuleBased/PushAgent.h>
+
 #include <Agent/DoNothingAgent.h>
 #include <Agent/OSLAAgent.h>
 #include <Agent/TreeSearchAgents/BFSAgent.h>
@@ -68,6 +71,7 @@ namespace SGA
 		factory.registerAgent<DoNothingAgent>("DoNothingAgent");
 		factory.registerAgent<RandomAgent>("RandomAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
+		factory.registerAgent<PushAgent>("PushAgent");
 		factory.registerAgent<BFSAgent>("BFSAgent");
 		factory.registerAgent<RHEAAgent>("RHEAAgent");
 		factory.registerAgent<OSLAAgent>("OSLAAgent");

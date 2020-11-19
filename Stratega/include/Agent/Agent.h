@@ -11,10 +11,6 @@ namespace SGA
 	class Agent
 	{
 	public:
-		Agent()
-		{
-			
-		}
 		virtual ~Agent() = default;
 		
 		virtual void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)=0;

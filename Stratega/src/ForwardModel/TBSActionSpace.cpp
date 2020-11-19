@@ -35,7 +35,7 @@ namespace SGA
 			}
 		}
 
-		generateEndOfTurnActions(gameState, playerID, actionBucket);
+		actionBucket.emplace_back(generateEndOfTurnAction(gameState, playerID));
 		return actionBucket;
 	}
 	
@@ -99,12 +99,9 @@ namespace SGA
 		}
 	}
 
-	void TBSActionSpace::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const
+	TBSAction TBSActionSpace::generateEndOfTurnAction(TBSGameState& state, int playerID) const
 	{
 		TBSAction endTurnAction{ TBSActionType::EndTurn, playerID, -1, {}, -1 };
-		if (endTurnAction.validate(state))
-		{
-			actionBucket.emplace_back(endTurnAction);
-		}
+		return endTurnAction;
 	}
 }

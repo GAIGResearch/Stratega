@@ -15,6 +15,6 @@ namespace SGA
 		void generateAttackActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
 		void generatePushActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
 		void generateHealActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
-		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const;
+		TBSAction TBSActionSpace::generateEndOfTurnAction(TBSGameState& state, int playerID) const;
 	};
 }

@@ -170,6 +170,7 @@ namespace SGA
 
 		// Spawn units
 		// TODO Unit spawn configuration
+		auto forwardModel = generateTBSforwardModelFromConfig(config);
 		std::unordered_set<Vector2i> occupiedSet;
 		std::uniform_int_distribution<int> xDist(0, state->getBoard().getWidth() - 1);
 		std::uniform_int_distribution<int> yDist(0, state->getBoard().getHeight() - 1);
@@ -179,7 +180,7 @@ namespace SGA
 			{
 				// Generate random positions until a suitable was found
 				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-				while (!state->getBoard().getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
+				while (forwardModel.canKill(*state, pos) || occupiedSet.find(pos) != occupiedSet.end())
 				{
 					pos.x = xDist(rngEngine);
 					pos.y = yDist(rngEngine);

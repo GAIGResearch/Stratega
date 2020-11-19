@@ -100,6 +100,21 @@ namespace SGA
 	}
 
 	// --- Start: Utility methods for game logic ---
+	bool TBSForwardModel::canKill(const TBSGameState& state, Vector2i pos) const
+	{
+		auto targetTile = state.getBoard().getTile(pos.x, pos.y);
+		if (!targetTile.isWalkable)
+			return false;
+
+		for (auto& effect : onTileEnterEffects)
+		{
+			if (effect.type == EffectType::Death && effect.targetTileTypeID == targetTile.tileTypeID)
+				return true;
+		}
+
+		return false;
+	}
+	
 	void TBSForwardModel::endTurn(FMState& state) const
 	{
 		executeEndOfTurnTrigger(state);

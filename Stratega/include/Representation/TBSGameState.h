@@ -5,7 +5,6 @@
 #include <Representation/UnitType.h>
 #include <Representation/TileType.h>
 
-#include <iostream>
 #include <string>
 #include <algorithm>
 #include <unordered_map>
@@ -63,6 +62,7 @@ namespace SGA
 
 		TBSUnit* getUnit(int unitID);
 		TBSUnit* getUnit(Vector2i pos);
+		const TBSUnit* getUnit(Vector2i pos) const;
 		void setWinnerID(int winner) { winnerPlayerID = winner; }
 
 		Board& getBoard() { return board; }
