@@ -49,7 +49,7 @@ namespace SGA
 						for (auto& attack : attacks)
 						{
 							auto target = MoveTo(opponent.getPosition(), attack.first);
-							if (state.isInBounds(target) && state.isWalkable(target))
+							if (state.isWalkable(target))
 							{
 								possibleTargets.emplace_back(target);
 								pushCount.emplace_back(attack.second);
@@ -166,7 +166,7 @@ namespace SGA
 		// BFS
 		while (openList.size() > 0 && foundCounter < targets.size())
 		{
-			for (Direction moveDir : ALL_DIRECTIONS)
+			for (Direction moveDir : CARDINAL_DIRECTIONS)
 			{
 				// Move from the current tile to the next tile, given by the direction
 				Vector2i curr = openList.front();
@@ -197,7 +197,7 @@ namespace SGA
 				}
 
 				// Only explore the new found tile if it's safe to move to, is not occupied by an opponent, and is walkable
-				if (forwardModel.canKill(state, targetPos) && (state.getUnit(targetPos) == nullptr || state.getUnit(targetPos)->getPlayerID() == state.currentPlayer))
+				if (!forwardModel.canKill(state, targetPos) && (state.getUnit(targetPos) == nullptr || state.getUnit(targetPos)->getPlayerID() == state.currentPlayer))
 				{
 					openList.push(targetPos);
 					previous[targetPos] = openList.front();
@@ -220,8 +220,7 @@ namespace SGA
 		for (Direction dir : CARDINAL_DIRECTIONS)
 		{
 			auto pushPos = MoveTo(pos, dir);
-			auto pushTile = state.getBoard().getTile(pushPos.x, pushPos.y);
-			if (pushTile.isWalkable && !forwardModel.canKill(state, pushPos))
+			if (!forwardModel.canKill(state, pushPos))
 			{
 				auto resultPos = MoveTo(pos, ReverseDir(dir));
 				if (forwardModel.canKill(state, resultPos))
@@ -251,11 +250,11 @@ namespace SGA
 
 			// Count how many pushes are necessary to kill the unit
 			int counter = 1;
-			for (; !forwardModel.canKill(state, currPos); counter++)
+			for (; state.isInBounds(currPos) && !forwardModel.canKill(state, currPos); counter++)
 			{
 				currPos = MoveTo(currPos, pushDir);
 			}
-
+			
 			pushCount[dir] = counter;
 		}
 
@@ -277,7 +276,7 @@ namespace SGA
 				// Is there an opponent that could kill us?
 				for (const auto& opp : opponentUnits)
 				{
-					auto dist = opp.getPosition().chebyshevDistance(attackPosition);
+					auto dist = opp.getPosition().manhattanDistance(attackPosition);
 					// The opponent can kill us if an opponent is standing next to/on an dangerous tile
 					// But if it's the unit we want to attack then it's fine to still move there
 					if (dist <= 1 && opp.getUnitID() != target.getUnitID())
