@@ -2,6 +2,32 @@
 
 namespace SGA
 {
+	std::vector<TBSAction> CombatAgent::filterUnitActions(std::vector<TBSAction>& actions, TBSUnit& unit) const
+	{
+		std::vector<TBSAction> filteredActions;
+		for (const auto& a : actions)
+		{
+			if (a.sourceUnitID == unit.getUnitID())
+			{
+				filteredActions.emplace_back(a);
+			}
+		}
+		return filteredActions;
+	}
+	
+	std::vector<TBSAction> CombatAgent::filterActionTypes(std::vector<TBSAction>& actions, TBSActionType type) const
+	{
+		std::vector<TBSAction> filteredActions;
+		for (const auto& a : actions)
+		{
+			if (a.type == type)
+			{
+				filteredActions.emplace_back(a);
+			}
+		}
+		return filteredActions;
+	}
+	
 	std::vector<TBSUnit*> CombatAgent::filterUnitsByReach(const std::vector<TBSUnit*>& targetUnits, const Vector2i& pos) const
 	{
 		std::vector<TBSUnit*> units;
@@ -16,12 +42,12 @@ namespace SGA
 		return units;
 	}
 	
-	std::vector<Action<Vector2i>> CombatAgent::filterMovesInRange(const ActionSpace<Vector2i>& moves, Vector2i position, int range) const
+	std::vector<TBSAction> CombatAgent::filterMovesInRange(const std::vector<SGA::TBSAction>& moves, Vector2i position, int range) const
 	{
-		std::vector<Action<Vector2i>> filteredMoves;
+		std::vector<TBSAction> filteredMoves;
 		for (const auto& move : moves)
 		{
-			if (move.getTargetPosition().manhattanDistance(position) <= range)
+			if (move.targetPosition.manhattanDistance(position) <= range)
 				filteredMoves.emplace_back(move);
 		}
 
@@ -35,14 +61,14 @@ namespace SGA
 		for (const auto* healer : healers)
 		{
 			// Check if the unit can heal
-			if(healer->getType().actions.find(ActionType::Heal) != healer->getType().actions.end())
+			if(healer->getType().tbsActions.find(TBSActionType::Heal) != healer->getType().tbsActions.end())
 				heal += healer->getHealAmount();
 		}
 
 		return heal;
 	}
 
-	bool CombatAgent::getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, ActionSpace<Vector2i>& moves, Action<Vector2i>& bucket) const
+	bool CombatAgent::getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, std::vector<SGA::TBSAction>& moves, TBSAction& bucket) const
 	{
 		if (u.getPosition().manhattanDistance(pos) <= range)
 			return false;
@@ -56,7 +82,7 @@ namespace SGA
 			// Choose the best strategic position
 			for (const auto& move : moves)
 			{
-				auto dist = pos.manhattanDistance( move.getTargetPosition());
+				auto dist = pos.manhattanDistance( move.targetPosition);
 				auto score = -dist;
 				if (score > bestScore)
 				{
@@ -72,7 +98,7 @@ namespace SGA
 			// Choose the best strategic position
 			for (const auto& move : inRangeMoves)
 			{
-				auto score = -getPotentialDamage(move.getTargetPosition(), opponentUnits);
+				auto score = -getPotentialDamage(move.targetPosition, opponentUnits);
 				if (score > bestScore)
 				{
 					bestScore = score;
@@ -98,10 +124,10 @@ namespace SGA
 		return damage;
 	}
 	
-	double CombatAgent::getAttackScore(const TBSUnit& target, const Action<Vector2i>& attack, const std::vector<TBSUnit*>& opponentUnits) const
+	double CombatAgent::getAttackScore(const TBSUnit& target, const TBSAction& attack, const std::vector<TBSUnit*>& opponentUnits) const
 	{
 		auto& state = target.state.get();
-		auto attackAmount = state.getUnit(attack.getSourceUnitID())->getAttackDamage();
+		auto attackAmount = state.getUnit(attack.sourceUnitID)->getAttackDamage();
 		auto healAmount = getPotentialHealing(target.getPosition(), opponentUnits);
 
 		if (attackAmount >= target.getHealthh())
@@ -120,9 +146,9 @@ namespace SGA
 		return unitScores.at(target.getUnitTypeID()) * 0.5;
 	}
 
-	double CombatAgent::getHealScore(const TBSUnit& target, const Action<Vector2i>& heal, const std::vector<TBSUnit*>& opponentUnits) const
+	double CombatAgent::getHealScore(const TBSUnit& target, const TBSAction& heal, const std::vector<TBSUnit*>& opponentUnits) const
 	{
-		auto healAmount = target.state.get().getUnit(heal.getSourceUnitID())->getHealAmount();
+		auto healAmount = target.state.get().getUnit(heal.sourceUnitID)->getHealAmount();
 		auto resultingHealth = std::min(target.getType().maxHealth, target.getHealthh() + healAmount);
 		auto potentialDamage = getPotentialDamage(target.getPosition(), opponentUnits);
 
@@ -154,7 +180,7 @@ namespace SGA
 		while(communicator.isMyTurn() && !communicator.isGameOver())
 		{
 			auto currentState = communicator.getGameState();
-
+			
 			// Get my units and opponent units
 			auto myUnits = currentState.getPlayer(currentState.currentPlayer)->getUnits();
 			std::vector<TBSUnit*> opponentUnits;
@@ -165,7 +191,7 @@ namespace SGA
 					opponentUnits.emplace_back(&u);
 				}
 			}
-
+			
 			// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
 			TBSUnit* bestAttackTarget = nullptr;
 			double highestScore = std::numeric_limits<double>::lowest();
@@ -177,13 +203,13 @@ namespace SGA
 				{
 					if (ally->getUnitID() == opp->getUnitID())
 						continue;
-
+			
 					int dist = opp->getPosition().manhattanDistance(ally->getPosition());
 					int movesToSupport = dist / static_cast<double>(ally->getRange());
 					avgSupportScore += unitScores.at(ally->getUnitTypeID()) / (1. + movesToSupport);
 				}
 				avgSupportScore /= opponentUnits.size();
-
+			
 				// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
 				double avgAttackScore = 0;
 				for (auto* attacker : myUnits)
@@ -193,7 +219,7 @@ namespace SGA
 					avgAttackScore += unitScores.at(attacker->getUnitTypeID()) / (1. + movesToAttack);
 				}
 				avgAttackScore /= myUnits.size() + 1;
-
+			
 				// Is this a better target than a previously found target?
 				double score = avgAttackScore - avgSupportScore;
 				if (score > highestScore)
@@ -202,7 +228,7 @@ namespace SGA
 					bestAttackTarget = opp;
 				}
 			}
-
+			
 			Vector2i moveTarget;
 			// We found no enemy, so we move to a random position in order to find one
 			if(bestAttackTarget == nullptr)
@@ -217,23 +243,23 @@ namespace SGA
 			{
 				moveTarget = bestAttackTarget->getPosition();
 			}
-
+			
 			// Go through all units and return the first action that we deem good
 			// Since this function is called multiple times, we will eventually use up all available actions
-			auto actions = fm.getActions(currentState);
-			Action nextAction = actions->filterActionTypes(ActionType::EndTurn).getAction(0); // Only one EndTurn action available
+			auto actions = fm.generateActions(currentState);
+			TBSAction nextAction = filterActionTypes(actions, TBSActionType::EndTurn).at(0); // Only one EndTurn action available
 			bool foundAction = false;
 			for(auto* unit : myUnits)
 			{
-				auto subActions = actions->filterUnitActions(*unit);
+				auto subActions = filterUnitActions(actions, *unit);
 				// First try attacking something
 				highestScore = std::numeric_limits<double>::lowest();
-				for (const auto& attack : subActions.filterActionTypes(ActionType::Attack))
+				for (const auto& attack : filterActionTypes(subActions, TBSActionType::Attack))
 				{
-					TBSUnit& targetUnit = *currentState.getUnit(attack.getTargetPosition());
+					TBSUnit& targetUnit = *currentState.getUnit(attack.targetPosition);
 					if (targetUnit.getPlayerID() == communicator.getPlayerID())
 						continue; // No attackerino my own units
-
+			
 					auto score = getAttackScore(targetUnit, attack, opponentUnits);
 					if (score > highestScore)
 					{
@@ -242,20 +268,20 @@ namespace SGA
 						foundAction = true;
 					}
 				}
-
+			
 				if (foundAction)
 					break;
-
+			
 				// Try healing something
 				highestScore = std::numeric_limits<double>::lowest();
-				for (const auto& heal : subActions.filterActionTypes(ActionType::Heal))
+				for (const auto& heal : filterActionTypes(subActions, TBSActionType::Heal))
 				{
-					TBSUnit& targetUnit = *currentState.getUnit(heal.getSourceUnitID());
+					TBSUnit& targetUnit = *currentState.getUnit(heal.sourceUnitID);
 					if (targetUnit.getPlayerID() != communicator.getPlayerID())
 						continue; // No healerino opponents units
 					if (targetUnit.getHealth() >= targetUnit.getType().maxHealth)
 						continue; // Stop healing units that are already full, what is wrong with you
-
+			
 					auto score = getHealScore(targetUnit, heal, opponentUnits);
 					if (score > highestScore)
 					{
@@ -264,18 +290,18 @@ namespace SGA
 						foundAction = true;
 					}
 				}
-
+			
 				if (foundAction)
 					break;
-
+			
 				// At last, try moving closer to the best attack target
-				auto moves = subActions.filterActionTypes(ActionType::Move);
+				auto moves = filterActionTypes(subActions, TBSActionType::Move);
 				if (getMoveInRange(*unit, moveTarget, unit->getType().actionRange, opponentUnits, moves, nextAction))
 				{
 					break;
 				}
 			}
-
+			
 			communicator.executeAction(nextAction);
 		}
 	}

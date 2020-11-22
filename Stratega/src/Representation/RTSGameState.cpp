@@ -155,7 +155,7 @@ namespace SGA
 			else
 			{
 				//Opponents should check other units intentions
-				it->intendedAction.type = ActionType::None;
+				it->intendedAction.type = RTSActionType::None;
 				++it;
 			}
 		}

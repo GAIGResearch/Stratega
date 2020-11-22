@@ -5,7 +5,7 @@ namespace SGA {
     POEGenome::POEGenome(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params)
     {
         const int playerID = gameState.currentPlayer;
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
 
         size_t length = 0;
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
@@ -40,13 +40,13 @@ namespace SGA {
 
         while (!gameState.isGameOver && gameState.currentGameTurn-startTurn < params.INDIVIDUAL_LENGTH)
         {
-            auto actionSpace = forwardModel.getActions(gameState);
+            auto actionSpace = forwardModel.generateActions(gameState);
             params.REMAINING_FM_CALLS--;
             std::map<int, BaseActionScript*> playerMap = scriptAssignment[gameState.currentGameTurn - startTurn];
             if (gameState.currentPlayer == playerID)
             {
                 // choose action according to unitScript
-                int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+                int nextUnit = actionSpace.at(0).sourceUnitID;
                 if (playerMap.contains(nextUnit))
                 {
                     auto action = playerMap[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
@@ -54,7 +54,7 @@ namespace SGA {
                 }
                 else
                 {
-                    forwardModel.advanceGameState(gameState, actionSpace->getAction(0));
+                    forwardModel.advanceGameState(gameState, actionSpace.at(0));
                 }
             }
             else
@@ -67,9 +67,9 @@ namespace SGA {
                 }
                 else
                 {
-                    ActionSpace<Vector2i> endTurnActionSpace;
-                    forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                    forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                    std::vector<SGA::TBSAction> endTurnActionSpace;
+                    forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+                    forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    void POEGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, const Action<Vector2i>& action, POEParams& params)
+    void POEGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action, POEParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -91,24 +91,24 @@ namespace SGA {
             if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
             {
                 params.REMAINING_FM_CALLS--;
-                auto opActionSpace = forwardModel.getActions(gameState);
+                auto opActionSpace = forwardModel.generateActions(gameState);
                 auto opAction = params.opponentModel->getAction(gameState, opActionSpace);
                 forwardModel.advanceGameState(gameState, opAction);
             }
             else // skip opponent turn
             {
-                ActionSpace<Vector2i> endTurnActionSpace;
-                forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+                std::vector<SGA::TBSAction> endTurnActionSpace;
+                forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+                forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
             }
         }
 
-        actionSpace = forwardModel.getActions(gameState);
+        actionSpace = forwardModel.generateActions(gameState);
     }
 
     void POEGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator)
     {
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
@@ -128,20 +128,20 @@ namespace SGA {
         this->value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    Action<Vector2i> POEGenome::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace)
+    TBSAction POEGenome::getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace)
     {
-        const int nextUnit = actionSpace->getAction(0).getSourceUnitID();
+        const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (scriptAssignment[0].contains(nextUnit))
         {
             return scriptAssignment[0][nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
-        return actionSpace->getAction(rand() % actionSpace->count());
+        return actionSpace.at(rand() % actionSpace.size());
     };
 	
     POEGenome POEGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator, POEGenome& parent1, POEGenome& parent2)
     {
         // create a new individual and its own gameState copy
-        auto actionSpace = forwardModel.getActions(gameState);
+        auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
         // initialize variables for the new genome to be created

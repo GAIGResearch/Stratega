@@ -1,7 +1,6 @@
 #pragma once
 #include <Agent/Heuristic/StateHeuristic.h>
 #include <Agent/Heuristic/StatSummary.h>
-#include <ForwardModel/TBSActionSpace.h>
 
 namespace SGA {
 

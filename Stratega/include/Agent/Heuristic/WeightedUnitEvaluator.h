@@ -38,15 +38,15 @@ namespace SGA
 				double score = 0;
 				// The more different actions a unit can execute, the more its worth
 				auto actionRangePerc = entry.second.actionRange * actionRangeMultiplier;
-				for (const auto& action : entry.second.actions)
+				for (const auto& action : entry.second.tbsActions)
 				{
-					if (action == ActionType::Move)
+					if (action == TBSActionType::Move)
 						score += entry.second.movementRange * movementRangeMultiplier;
-					else if (action == ActionType::Attack)
+					else if (action == TBSActionType::Attack)
 						score += entry.second.attackDamage * damageMultiplier;
-					else if (action == ActionType::Heal)
+					else if (action == TBSActionType::Heal)
 						score += entry.second.healAmount * healMultiplier;
-					else if (action == ActionType::Push)
+					else if (action == TBSActionType::Push)
 						score += actionRangePerc;
 				}
 				// More health = Good

@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <ForwardModel/ForwardModelBase.h>
-#include <ForwardModel/TBSActionSpace.h>
-#include <ForwardModel/Action.h>
+#include <ForwardModel/RTSAction.h>
 #include <ForwardModel/FMState.h>
 #include <Representation/RTSGameState.h>
+#include <ForwardModel/RTSActionSpace.h>
 
 #include <chrono>
 
@@ -15,33 +15,27 @@
 namespace SGA
 {
 	
-	class RTSForwardModel : public ForwardModelBase<RTSGameState, Action<Vector2f>>
+	class RTSForwardModel : public ForwardModelBase<RTSGameState, RTSAction>
 	{
 	public:
-		double deltaTime = 1. / 60.;
+		double deltaTime;
 
 		WinConditionType winCondition;
 		int unitTypeID;
 
-		void advanceGameState(RTSGameState& state, const Action<Vector2f>& action) const override;
 
-		std::unique_ptr<ActionSpace<Vector2f>> getActions(RTSGameState& state) const
+		RTSForwardModel()
+			: deltaTime(1. / 60.),
+			  winCondition(),
+			  unitTypeID(),
+			  actionSpace(generateDefaultActionSpace())
 		{
-			return std::unique_ptr<ActionSpace<Vector2f>>(generateActions(state));
-		}
-		std::unique_ptr<ActionSpace<Vector2f>> getActions(RTSGameState& state, int playerID) const
-		{
-			return std::unique_ptr<ActionSpace<Vector2f>>(generateActions(state, playerID));
 		}
 
-		void generateMoves(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
-		void generateAttacks(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
-		void generateHeals(RTSUnit& unit, ActionSpace<Vector2f>& actionBucket) const;
-		Action<Vector2f> generateEndTickAction() const;
-
-		bool validateMove(RTSGameState& state, const Action<Vector2f>& action) const;
-		bool validateAttack(RTSGameState& state, const Action<Vector2f>& action) const;
-		bool validateHeal(RTSGameState& state, const Action<Vector2f>& action) const;
+		void advanceGameState(RTSGameState& state, const RTSAction& action) const override;
+		
+		std::vector<RTSAction> generateActions(RTSGameState& state) const override;
+		std::vector<RTSAction> generateActions(RTSGameState& state, int playerID) const override;
 		
 		void executeMove(RTSFMState& state, RTSUnit& unit) const;
 		void executeAttack(RTSFMState& state, RTSUnit& unit) const;
@@ -56,9 +50,24 @@ namespace SGA
 		bool checkGameIsFinished(RTSGameState& state) const;
 		bool canPlayerPlay(RTSPlayer& player) const;
 
+		// ActionSpaces
+		void setActionSpace(std::unique_ptr<RTSActionSpace> as)
+		{
+			actionSpace = std::move(as);
+		}
+
+		RTSActionSpace& getActionSpace() const
+		{
+			return *actionSpace;
+		}
+
+		std::unique_ptr<RTSActionSpace> generateDefaultActionSpace() const
+		{
+			return std::make_unique<RTSActionSpace>();
+		}
+
 	private:
-		ActionSpace<Vector2f>* generateActions(RTSGameState& state) const override;
-		ActionSpace<Vector2f>* generateActions(RTSGameState& state, int playerID) const override;
+		std::shared_ptr<RTSActionSpace> actionSpace;
 	};
 
 }

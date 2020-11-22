@@ -14,10 +14,10 @@ namespace SGA
 				TBSGameState gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
-				auto actionSpace = forwardModel.getActions(gameState);
-				if (actionSpace->count() == 1)
+				auto actionSpace = forwardModel.generateActions(gameState);
+				if (actionSpace.size() == 1)
 				{
-					gameCommunicator.executeAction(actionSpace->getAction(0));
+					gameCommunicator.executeAction(actionSpace.at(0));
 				}
 				else
 				{
@@ -26,10 +26,10 @@ namespace SGA
 					int bestActionIndex = 0;
 					const int playerID = gameState.currentPlayer;
 
-					for (size_t i = 0; i < actionSpace->count(); i++)
+					for (size_t i = 0; i < actionSpace.size(); i++)
 					{
 						TBSGameState gsCopy(gameState);
-						forwardModel.advanceGameState(gsCopy, actionSpace->getAction(i));
+						forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
 						const double value = evaluateRollout(forwardModel, gameState, 1, playerID);
 						if (value > bestHeuristicValue)
 						{
@@ -42,7 +42,7 @@ namespace SGA
 					}
 					//std::cout << "DFSAgent Number of FM calls: " << forwardModelCalls << std::endl;
 
-					gameCommunicator.executeAction(actionSpace->getAction(bestActionIndex));
+					gameCommunicator.executeAction(actionSpace.at(bestActionIndex));
 				}
 			}
 		}		
@@ -57,8 +57,8 @@ namespace SGA
 		}
 		else
 		{
-			auto actionSpace = forwardModel.getActions(gameState);
-			for (Action<Vector2i> action : *actionSpace)
+			auto actionSpace = forwardModel.generateActions(gameState);
+			for (TBSAction action : actionSpace)
 			{
 				TBSGameState gsCopy(gameState);
 				applyActionToGameState(forwardModel, gameState, action);
@@ -76,7 +76,7 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const Action<Vector2i>& action)
+	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const TBSAction& action)
 	{
 		remainingForwardModelCalls--;
 		const int playerID = gameState.currentPlayer;
@@ -86,15 +86,15 @@ namespace SGA
 		{
 			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
-				auto actionSpace = forwardModel.getActions(gameState);
+				auto actionSpace = forwardModel.generateActions(gameState);
 				auto opAction = opponentModel->getAction(gameState, actionSpace);
 				forwardModel.advanceGameState(gameState, opAction);
 			}
 			else // skip opponent turn
 			{
-				ActionSpace<Vector2i> endTurnActionSpace;
-				forwardModel.generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.getAction(0));
+				std::vector<TBSAction> endTurnActionSpace;
+				forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
+				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
 			}
 			remainingForwardModelCalls--;
 		}

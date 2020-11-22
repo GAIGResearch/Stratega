@@ -15,14 +15,14 @@ namespace SGA
 		RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
 
 		void update(double deltaTime) override;
-		bool isGameOver() override { return Game::isGameOver() || gameState->isGameOver; };
+		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; };
 		void close() override;
 		const RTSForwardModel& getForwardModel() const
 		{
 			return forwardModel;
 		}
 
-		void executeAction(const Action<Vector2f>& action);
+		void executeAction(const RTSAction& action);
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.

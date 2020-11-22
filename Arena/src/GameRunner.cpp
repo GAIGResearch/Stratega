@@ -16,7 +16,7 @@ void GameRunner::runGames(int playerCount, int seed)
 	gameCount = 0;
 	std::mt19937 rngEngine(seed);
 	CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine);};
-	generateCombinations(config->agentNames.size(), playerCount, callback);
+	generateCombinations(config->agentParams.size(), playerCount, callback);
 }
 
 void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
@@ -24,11 +24,12 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 	std::cout << "Initializing new game" << std::endl;
 	auto game = SGA::generateGameFromConfig(*config, rngEngine);
 	const std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	auto agents = agentsFromConfig(*config);
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << config->agentNames[agentAssignment[i]] << std::endl;
-		
-		auto agent = SGA::AgentFactory::get().createAgent(config->agentNames[agentAssignment[i]]);
+		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
+
+		auto agent = std::move(agents[agentAssignment[i]]);
 		if(agent == nullptr)
 		{
 			throw std::runtime_error("Human-agents are not allowed in arena mode.");
@@ -76,7 +77,7 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::Log::logValue("PlayerAssignment", config->agentNames[agentAssignment[i]]);
+		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
 
 	// Run the game

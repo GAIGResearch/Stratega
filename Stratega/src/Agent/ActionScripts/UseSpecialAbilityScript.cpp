@@ -2,14 +2,14 @@
 
 namespace SGA
 {
-	Action<Vector2i> UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	TBSAction UseSpecialAbilityScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions;
+			for (const auto& action : actionSpace)
 			{
-				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn)
+				if (action.type != TBSActionType::Attack && action.type != TBSActionType::Move && action.type != TBSActionType::EndTurn)
 					suitableActions.push_back(action);
 			}
 
@@ -18,18 +18,18 @@ namespace SGA
 				return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	TBSAction UseSpecialAbilityScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions;
+			for (const auto& action : actionSpace)
 			{
-				if (action.getType() != ActionType::Attack && action.getType() != ActionType::Move && action.getType() != ActionType::EndTurn
-					&& action.getSourceUnitID() == unitID)
+				if (action.type != TBSActionType::Attack && action.type != TBSActionType::Move && action.type != TBSActionType::EndTurn
+					&& action.sourceUnitID == unitID)
 					suitableActions.push_back(action);
 			}
 
@@ -38,6 +38,6 @@ namespace SGA
 				return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 }

@@ -11,6 +11,9 @@ namespace SGA
 	private:
 		UnitTypeStrengthLookup unitScores;
 
+		std::vector<TBSAction> filterUnitActions(std::vector<TBSAction>& actions, TBSUnit& unit) const;
+		std::vector<TBSAction> filterActionTypes(std::vector<TBSAction>& actions, TBSActionType type) const;
+		
 		/// <summary>
 		/// Plays actions until the agent's turn is over
 		/// </summary>
@@ -19,7 +22,7 @@ namespace SGA
 		/// <summary>
 		/// Filters out all moves that are not within the specified radius.
 		/// </summary>
-		std::vector<Action<Vector2i>> filterMovesInRange(const ActionSpace<Vector2i>& moves, Vector2i position, int range) const;
+		std::vector<TBSAction> filterMovesInRange(const std::vector<SGA::TBSAction>& moves, Vector2i position, int range) const;
 
 		/// <summary>
 		/// Filters out all units that can't reach the specified position within one turn.
@@ -40,19 +43,19 @@ namespace SGA
 		/// <summary>
 		/// A heuristic to estimate how good an attack action is.
 		/// </summary>
-		double getAttackScore(const TBSUnit& target, const Action<Vector2i>& attack, const std::vector<TBSUnit*>& opponentUnits) const;
+		double getAttackScore(const TBSUnit& target, const TBSAction& attack, const std::vector<TBSUnit*>& opponentUnits) const;
 
 		/// <summary>
 		/// A heuristic to estimate how good an healing action is.
 		/// </summary>
-		double getHealScore(const TBSUnit& target, const Action<Vector2i>& heal, const std::vector<TBSUnit*>& opponentUnits) const;
+		double getHealScore(const TBSUnit& target, const TBSAction& heal, const std::vector<TBSUnit*>& opponentUnits) const;
 		
 		/// <summary>
 		/// Returns the best move for a unit to reach an target within an specified radius.
 		/// If the unit can't reach the target immediately, this function will return a move that gets close to the target.
 		/// The action will be stored in the bucket, the returned boolean indicates if a move was necessary to reach the target
 		/// </summary>
-		bool getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, ActionSpace<Vector2i>& moves, Action<Vector2i>& bucket) const;
+		bool getMoveInRange(TBSUnit& u, const Vector2i& pos, int range, const std::vector<TBSUnit*>& opponentUnits, std::vector<SGA::TBSAction>& moves, TBSAction& bucket) const;
 		
 	};
 }

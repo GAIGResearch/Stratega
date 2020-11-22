@@ -49,14 +49,14 @@ private:
 	{
 		waitForAction = true;
 
-		actionsHumanCanPlay = game->getForwardModel().getActions(gameStateCopy);
+		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy);
 		actionHumanUnitSelected.clear();
 	}
 
-	void playAction(SGA::Action<SGA::Vector2i> action)
+	void playAction(SGA::TBSAction action)
 	{
 		waitForAction = false;
-		actionsHumanCanPlay->clear();
+		actionsHumanCanPlay.clear();
 		actionHumanUnitSelected.clear();
 		selectedUnit = nullptr;
 		showMultipleActions = false;
@@ -90,9 +90,9 @@ private:
 
 	//Human player
 	bool waitForAction = false;
-	std::unique_ptr<SGA::ActionSpace<SGA::Vector2i>> actionsHumanCanPlay;
+	std::vector<SGA::TBSAction> actionsHumanCanPlay;
 
-	SGA::ActionSpace<SGA::Vector2i> actionHumanUnitSelected;
+	std::vector<SGA::TBSAction> actionHumanUnitSelected;
 	SGA::TBSUnit* selectedUnit{};
 
 	//Imgui

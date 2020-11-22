@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	Action<Vector2i> RunAwayFromOpponentScript::getAction(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace) const
+	TBSAction RunAwayFromOpponentScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions = std::vector<Action<Vector2i>>();
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions = std::vector<TBSAction>();
+			for (const auto& action : actionSpace)
 			{
 				suitableActions.push_back(action);
 			}
@@ -31,9 +31,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = maximalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -48,17 +48,17 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
-	Action<Vector2i> RunAwayFromOpponentScript::getActionForUnit(TBSGameState& gameState, std::unique_ptr<ActionSpace<Vector2i>>& actionSpace, int unitID) const
+	TBSAction RunAwayFromOpponentScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
 	{
-		if (actionSpace->count() > 1)
+		if (actionSpace.size() > 1)
 		{
-			std::vector<Action<Vector2i>> suitableActions;
-			for (const auto& action : *actionSpace)
+			std::vector<TBSAction> suitableActions;
+			for (const auto& action : actionSpace)
 			{
-				if (action.getSourceUnitID() == unitID)
+				if (action.sourceUnitID == unitID)
 					suitableActions.push_back(action);
 			}
 
@@ -81,9 +81,9 @@ namespace SGA
 			for (size_t i = 0; i < suitableActions.size(); i++)
 			{
 				auto& action = suitableActions.at(i);
-				if (action.getType() == ActionType::Move)
+				if (action.type == TBSActionType::Move)
 				{
-					const int dist = maximalDistanceToOpponents(action.getTargetPosition(), positions, opponentUnits);
+					const int dist = maximalDistanceToOpponents(action.targetPosition, positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -98,7 +98,7 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());
 		}
 		
-		return actionSpace->getAction(rand() % actionSpace->count());
+		return actionSpace.at(rand() % actionSpace.size());
 	}
 
 	int RunAwayFromOpponentScript::maximalDistanceToOpponents(const Vector2i position, std::map<int, Vector2i>& unitPositions, const std::set<int>& opponentUnits)

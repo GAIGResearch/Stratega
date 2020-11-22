@@ -35,7 +35,7 @@ namespace SGA
 		std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
 	
-	void TBSGame::executeAction(Action<Vector2i> action)
+	void TBSGame::executeAction(TBSAction action)
 	{
 		//Lock mutex while we are advancing the gameState
 		mutexGameState.lock();
@@ -50,9 +50,9 @@ namespace SGA
 		}
 	}
 
-	void TBSGame::addActionToExecute(Action<Vector2i> action)
+	void TBSGame::addActionToExecute(TBSAction action)
 	{
-		if (gameState->currentPlayer == action.getPlayerID())
+		if (gameState->currentPlayer == action.playerID)
 		{
 			actionToExecute = action;
 			hasActionToExecute = true;

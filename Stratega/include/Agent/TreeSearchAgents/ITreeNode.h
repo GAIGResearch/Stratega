@@ -1,5 +1,4 @@
 #pragma once
-#include <ForwardModel/ActionSpace.h>
 #include <Representation/TBSGameState.h>
 #include <ForwardModel/TBSForwardModel.h>
 
@@ -12,7 +11,7 @@ namespace SGA
 		TBSGameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::unique_ptr<ActionSpace<Vector2i>> actionSpace;
+		std::vector<TBSAction> actionSpace;
 		int childIndex = 0;
 		double value = 0;
 		
@@ -28,7 +27,7 @@ namespace SGA
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();
 			
-			actionSpace = forwardModel.getActions(this->gameState);
+			actionSpace = forwardModel.generateActions(this->gameState);
 		}
 		
 		virtual ~ITreeNode() = default;
@@ -37,7 +36,7 @@ namespace SGA
 
 	protected:
 		[[nodiscard]] bool isFullyExpanded() const {
-			return children.size() >= actionSpace->count();
+			return children.size() >= actionSpace.size();
 		}
 		
 		void printTree(const std::string& prefix, const ITreeNode<NodeType>* node, bool isLast, const std::string& actionName) const
