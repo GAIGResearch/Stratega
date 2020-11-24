@@ -4,9 +4,12 @@
 #include <Configuration/GameConfig.h>
 #include <Game/TBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
+#include <ForwardModel/AbstractFM/ActionTarget.h>
 
 int main()
 {
+	SGA::ActionTarget mahTarget;
+	
 	std::mt19937 rngEngine(0ll);
 
 	// Read Config

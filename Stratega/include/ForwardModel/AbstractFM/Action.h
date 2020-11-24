@@ -1,17 +1,12 @@
 #pragma once
-#include <variant>
-#include <Representation/Vector2.h>
+#include <vector>
+#include <ForwardModel/AbstractFM/ActionTarget.h>
 
 namespace SGA
 {
-	class Action
+	struct Action
 	{
-		typedef std::variant <int, Vector2f> target;
-
 		int actionTypeID;
-
-		int sourceID;
-		
-		std::vector<target> targets;		
+		std::vector<ActionTarget> targets;		
 	};
 }

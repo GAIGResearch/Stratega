@@ -2,13 +2,14 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <ForwardModel/AbstractFM/Effect.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
 #include <ForwardModel/AbstractFM/TargetType.h>
 
 
 namespace SGA
 {
+	class Precondition;
+	class Effect;
+	
 	struct ActionType
 	{
 		std::string name;
