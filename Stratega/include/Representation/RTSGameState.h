@@ -15,9 +15,7 @@ namespace SGA
 
 	class RTSGameState
 	{
-	public:
-
-		
+	public:		
 		Tile fogOfWarTile;
 		int fogOfWarId = -1;
 		

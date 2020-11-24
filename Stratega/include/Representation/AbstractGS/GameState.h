@@ -1,5 +1,6 @@
 #pragma once
 #include <Representation/AbstractGS/EntityType.h>
+#include <ForwardModel/AbstractFM/ActionType.h>
 #include <Representation/AbstractGS/Entity.h>
 #include <Representation/AbstractGS/Player.h>
 #include <Representation/Board.h>
@@ -18,6 +19,7 @@ namespace SGA
 
 		// Type information
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
+		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 
 		// Game information
