@@ -11,7 +11,7 @@ int main()
 {
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	SGA::GameState test;
-	temp.generateActions(test);
+	temp.generateActions(test, 2);
 	//SGA::FuckOff yeahTellHimBoss;
 	
 	//std::mt19937 rngEngine(0ll);

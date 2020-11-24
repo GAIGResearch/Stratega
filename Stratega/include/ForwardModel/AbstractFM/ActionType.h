@@ -1,21 +1,22 @@
 #pragma once
+#include <ForwardModel/AbstractFM/TargetType.h>
+#include <ForwardModel/AbstractFM/Effect.h>
+#include <ForwardModel/AbstractFM/Precondition.h>
+
 #include <string>
 #include <vector>
 #include <memory>
-#include <ForwardModel/AbstractFM/TargetType.h>
-#include <ForwardModel/AbstractFM/Effect.h>
+#include <unordered_set>
 
 namespace SGA
 {
-	class Precondition;
-	
 	struct ActionType
 	{
 		std::string name;
 		int id;
-		TargetType type;
+		TargetType targetType;
 
-		std::vector<int> groupEntityTypes;
+		std::unordered_set<int> groupEntityTypes;
 
 		std::vector<std::unique_ptr<Precondition>> preconditions;
 		std::vector<std::unique_ptr<Effect>> effects;
