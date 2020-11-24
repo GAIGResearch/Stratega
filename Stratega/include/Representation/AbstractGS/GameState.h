@@ -5,7 +5,6 @@
 #include <Representation/AbstractGS/Player.h>
 #include <Representation/Board.h>
 
-
 namespace SGA
 {
 	struct GameState

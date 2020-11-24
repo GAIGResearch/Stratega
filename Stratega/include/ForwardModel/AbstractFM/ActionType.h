@@ -3,12 +3,11 @@
 #include <vector>
 #include <memory>
 #include <ForwardModel/AbstractFM/TargetType.h>
-
+#include <ForwardModel/AbstractFM/Effect.h>
 
 namespace SGA
 {
 	class Precondition;
-	class Effect;
 	
 	struct ActionType
 	{

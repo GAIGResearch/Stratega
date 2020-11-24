@@ -7,6 +7,8 @@ namespace SGA
 	struct Action
 	{
 		int actionTypeID;
-		std::vector<ActionTarget> targets;		
+		std::vector<ActionTarget> targets;
+
+		void execute(GameState& state) const;
 	};
 }

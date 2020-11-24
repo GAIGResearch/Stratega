@@ -1,6 +1,5 @@
 #pragma once
-#include <Representation/AbstractGS/GameState.h>
-#include <ForwardModel/AbstractFM/Action.h>
+#include <ForwardModel/AbstractFM/ActionTarget.h>
 
 namespace SGA
 {
@@ -13,6 +12,6 @@ namespace SGA
 		Effect& operator=(const Effect& other) = delete;
 		Effect& operator=(Effect&& other) noexcept = delete;
 		
-		virtual void execute(GameState& state, std::vector<ActionTarget>& targets) const = 0;
+		virtual void execute(GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
 }
