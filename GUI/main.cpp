@@ -5,10 +5,14 @@
 //#include <Game/TBSGameCommunicator.h>
 //#include <yaml-cpp/node/parse.h>
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
+#include <Representation/AbstractGS/GameState.h>
 
 int main()
 {
-	SGA::FuckOff yeahTellHimBoss;
+	SGA::ActionSpaceBase<SGA::GameState> temp;
+	SGA::GameState test;
+	temp.generateActions(test);
+	//SGA::FuckOff yeahTellHimBoss;
 	
 	//std::mt19937 rngEngine(0ll);
 

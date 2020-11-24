@@ -9,7 +9,15 @@ namespace SGA
 {
 	struct GameState
 	{
-		// Rule of five because fuck you compiler
+		// Rule of five
+
+		GameState():
+			board(0,0),
+			fogOfWarTile(0,0,0)
+
+		{
+
+		}
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;
 		GameState(GameState&& other) noexcept = default;
