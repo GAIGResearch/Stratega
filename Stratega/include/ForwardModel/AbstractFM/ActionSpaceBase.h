@@ -16,14 +16,14 @@ namespace SGA
 		std::vector<Action> generateActions(GameState& gameState, int player)
 		{
 			std::vector<Action> bucket;
-			for(auto& entity : gameState.entities)
+			for(auto& sourceEntity : gameState.entities)
 			{
-				if (entity.owner != player)
+				if (sourceEntity.owner != player)
 					continue;				
 				
-				for(auto actionTypeID : entity.actionTypeIds)
+				for(auto actionTypeID : sourceEntity.actionTypeIds)
 				{
-					if(!gameState.canExecuteAction(entity, actionTypeID))
+					if(!gameState.canExecuteAction(sourceEntity, actionTypeID))
 					{
 						continue;
 					}
@@ -34,7 +34,7 @@ namespace SGA
 					//Check preconditions
 					for (const auto& precondition : actionType.preconditions)
 					{
-						if (!precondition->isFullfilled(gameState, {entity.id}))
+						if (!precondition->isFullfilled(gameState, {sourceEntity.id}))
 						{
 							continue;
 						}
@@ -46,24 +46,22 @@ namespace SGA
 					{
 						case TargetType::Entity:
 						{					
-							generateGroupTargets(gameState, entity, actionType, targets);
+							generateGroupTargets(gameState, actionType, targets);
+							generateActions(targets, bucket, actionTypeID, sourceEntity);
 							break;
 						}							
 						case TargetType::Position:
 						{
-							
-							generatePositionTargets(gameState, entity, actionType, targets);
-
-							generateActions(targets, bucket, actionTypeID);
+							generatePositionTargets(gameState, actionType, targets);
+							generateActions(targets, bucket, actionTypeID, sourceEntity);
 							
 							break;
 						}
 						case TargetType::None:
 						{
-							generateSelfAction(gameState, entity, actionType, targets);
+							generateSelfAction(gameState, sourceEntity, actionType, targets);
 							break;
-						}						
-							
+						}	
 						default:
 							std::runtime_error("Type not recognised");
 							break;
@@ -81,37 +79,35 @@ namespace SGA
 		{
 	
 			Action selfAction;
-			selfAction.actionTypeID = actionType;
-
+			selfAction.actionTypeID = actionType.id;
 			selfAction.targets.emplace_back(sourceEntity.id);
-			
+			bucket.emplace_back(selfAction);
 		}
 
-		virtual void generateGroupTargets(const GameState& gameState, const Entity& sourceEntity, const ActionType& actionType, std::vector<ActionTarget>& bucket)
+		virtual void generateGroupTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket)
 		{
-			bucket.emplace_back(sourceEntity.id);
 			for (auto& entityTarget : gameState.entities)
 			{
-
-				if (actionType.actionTargets.groupEntityTypes.find(sourceEntity.typeID) != actionType.actionTargets.groupEntityTypes.end())
+				if (actionType.actionTargets.groupEntityTypes.find(entityTarget.typeID) != actionType.actionTargets.groupEntityTypes.end())
 				{					
 					bucket.emplace_back(entityTarget.id);
 				}
 			}
 		}
 
-		virtual void generatePositionTargets(const GameState& gameState, const Entity& sourceEntity, const ActionType& actionType, std::vector<ActionTarget>& bucket) {};
+		virtual void generatePositionTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket) {};
 
 
-		virtual void generateActions(std::vector<ActionTarget>& targetbucket, std::vector<Action>& actionBucket, int actionTypeID,Action action)
+		virtual void generateActions(std::vector<ActionTarget>& targetbucket, std::vector<Action>& actionBucket, int actionTypeID, Entity& sourceEntity)
 		{
-			for (size_t i = 0; i < targetbucket.size; i++)
+			for(auto& target : targetbucket)
 			{
 				//Generate the action
 				Action newAction;
 				newAction.actionTypeID = actionTypeID;
+				newAction.targets.emplace_back(sourceEntity.id);
 				newAction.targets.emplace_back(target);
-
+				
 				actionBucket.emplace_back(std::move(newAction));
 			}
 		}

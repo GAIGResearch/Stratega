@@ -7,8 +7,9 @@ namespace SGA
 	struct Action
 	{
 		int actionTypeID;
-		int sourceID;
-		
+		// Contains all targets involved in an actin
+		// UnitAction: Index 0 contains the source and Index 1 the target of the action
+		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
 
 		void execute(GameState& state) const;
