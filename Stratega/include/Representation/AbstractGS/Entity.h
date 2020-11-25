@@ -10,6 +10,7 @@ namespace SGA
 		int id;
 		int owner;
 		Vector2f position;
+		std::vector<int> actionTypeIds;
 
 		std::vector<double> parameters;
 	};

@@ -16,6 +16,16 @@ namespace SGA
 		std::vector<Action> generateActions(GameState& gameState, int player)
 		{
 			std::vector<Action> bucket;
+			for(auto& entity : gameState.entities)
+			{
+				for(auto actionType : entity.actionTypeIds)
+				{
+					if(!gameState.canExecuteAction(entity, actionType))
+					{
+						continue;
+					}
+				}
+			}
 			for(auto& idTypePair : *gameState.actionTypes)
 			{
 				for(auto& sourceEntity : gameState.entities)
