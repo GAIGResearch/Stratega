@@ -14,5 +14,6 @@ namespace SGA
 		Precondition& operator=(Precondition&& other) noexcept = delete;
 		
 		virtual bool isFullfilled(const GameState& state, const Action& action) const = 0;
+		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
 }
