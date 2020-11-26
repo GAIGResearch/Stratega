@@ -9,15 +9,21 @@ namespace SGA
 {
 	struct GameState
 	{
-		// Rule of five
-
-		GameState():
-			board(0,0),
-			fogOfWarTile(0,0,0)
-
+		GameState()
+			: entityTypes(std::make_unique<std::unordered_map<int, EntityType>>()),
+			  actionTypes(std::make_unique<std::unordered_map<int, ActionType>>()),
+			  tileTypes(std::make_unique<std::unordered_map<int, TileType>>()),
+			  isGameOver(false),
+			  winnerPlayerID(0),
+			  fogOfWarTile(0,0,0),
+			  fogOfWarId(0),
+			  board(10,10),
+			  lastUsedEntityID(0),
+			  lastUsedPlayerID(0)
 		{
-
 		}
+
+		//Rule of six
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;
 		GameState(GameState&& other) noexcept = default;
@@ -43,5 +49,10 @@ namespace SGA
 		std::vector<Player> players;
 		int lastUsedEntityID;
 		int lastUsedPlayerID;
+
+		bool canExecuteAction(Entity& entity, int actionTypeID)
+		{
+			return true;
+		}
 	};
 }

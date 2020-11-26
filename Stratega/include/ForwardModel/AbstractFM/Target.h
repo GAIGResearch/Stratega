@@ -2,6 +2,7 @@
 #include <ForwardModel/AbstractFM/ActionTarget.h>
 #include <ForwardModel/AbstractFM/TargetType.h>
 #include <ForwardModel/AbstractFM/ShapeType.h>
+#include <Representation/Vector2.h>
 
 #include <unordered_set>
 #include <vector>
@@ -14,6 +15,7 @@ namespace SGA
 		// Specific variables for targetType=Position
 		ShapeType shapeType;
 		int shapeSize;
+		
 		// Specific variables for targetType=Unit
 		std::unordered_set<int> groupEntityTypes;
 	};

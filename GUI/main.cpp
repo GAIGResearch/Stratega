@@ -7,11 +7,65 @@
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
 
+#include <Representation/AbstractGS/Player.h>
+
 int main()
 {
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	SGA::GameState test;
-	temp.generateActions(test, 2);
+
+	//Add actionType
+	SGA::ActionType actionType;
+	actionType.id = 0;
+	actionType.name = "test";
+	actionType.sourceType = SGA::ActionSourceType::Unit;
+	SGA::Target target;
+	target.targetType = SGA::TargetType::Position;
+	target.shapeSize = 5;
+	target.shapeType = SGA::ShapeType::Circle;
+	//target.groupEntityTypes.insert(0);
+	actionType.actionTargets = target;
+
+	test.actionTypes->emplace(0, std::move(actionType));
+	
+	//Add players
+	SGA::Player player1;
+	player1.canPlay = true;
+	player1.id = 0;
+	player1.score = 0;
+	SGA::Player player2;
+	player2.canPlay = true;
+	player2.id = 0;
+	player2.score = 0;
+	
+	test.players.emplace_back(player1);
+	test.players.emplace_back(player2);
+
+	//Add entity
+	SGA::Entity entity;
+	entity.id = 0;
+	entity.owner = 0;
+	entity.actionTypeIds.emplace_back(0);
+	entity.position = SGA::Vector2f(0, 0);
+	entity.typeID = 0;
+	entity.parameters.emplace_back(0);
+	
+	test.entities.emplace_back(entity);
+
+	SGA::Entity entity2;
+	entity2.id = 1;
+	entity2.owner = 1;
+	entity2.actionTypeIds.emplace_back(0);
+	entity2.position = SGA::Vector2f(1, 1);
+	entity2.typeID = 0;
+	entity2.parameters.emplace_back(1);
+
+	test.entities.emplace_back(entity2);
+
+	//Generte actions for player 0
+	temp.generateActions(test, 0);
+
+	
 	//SGA::FuckOff yeahTellHimBoss;
 	
 	//std::mt19937 rngEngine(0ll);

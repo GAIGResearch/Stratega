@@ -52,14 +52,14 @@ namespace SGA
 						}							
 						case TargetType::Position:
 						{
-							generatePositionTargets(gameState, actionType, targets);
+							generatePositionTargets(gameState, actionType, targets, sourceEntity);
 							generateActions(targets, bucket, actionTypeID, sourceEntity);
 							
 							break;
 						}
 						case TargetType::None:
 						{
-							generateSelfAction(gameState, sourceEntity, actionType, targets);
+							generateSelfAction(gameState, sourceEntity, actionType, bucket);
 							break;
 						}	
 						default:
@@ -89,13 +89,48 @@ namespace SGA
 			for (auto& entityTarget : gameState.entities)
 			{
 				if (actionType.actionTargets.groupEntityTypes.find(entityTarget.typeID) != actionType.actionTargets.groupEntityTypes.end())
-				{					
+				{
+					//Add precondition for group targets
 					bucket.emplace_back(entityTarget.id);
 				}
 			}
 		}
 
-		virtual void generatePositionTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket) {};
+		virtual void generatePositionTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket, Entity& sourceEntity)
+		{
+			const Board& board = gameState.board;
+
+			auto moveRange = actionType.actionTargets.shapeSize;
+			auto startCheckPositionX = std::max<int>(0, sourceEntity.position.x - moveRange);
+			auto endCheckPositionX = std::min<int>(board.getWidth() - 1, sourceEntity.position.x + moveRange);
+			auto startCheckPositionY = std::max<int>(0, sourceEntity.position.y - moveRange);
+			auto endCheckPositionY = std::min<int>(board.getHeight() - 1, sourceEntity.position.y + moveRange);
+		
+			switch (actionType.actionTargets.shapeType)
+			{
+			case ShapeType::Square:
+								
+				for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
+				{
+					for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
+					{
+						bucket.emplace_back(Vector2f(x,y));
+					}
+				}
+				
+				break;
+			case ShapeType::Circle:
+				for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
+				{
+					for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
+					{
+						if(Vector2f(x,y).manhattanDistance(sourceEntity.position)<actionType.actionTargets.shapeSize)
+							bucket.emplace_back(Vector2f(x, y));
+					}
+				}
+				break;
+			}
+		};
 
 
 		virtual void generateActions(std::vector<ActionTarget>& targetbucket, std::vector<Action>& actionBucket, int actionTypeID, Entity& sourceEntity)

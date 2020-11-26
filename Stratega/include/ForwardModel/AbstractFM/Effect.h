@@ -6,6 +6,10 @@ namespace SGA
 	class Effect
 	{
 	public:
+		Effect()
+		{
+			
+		}
 		virtual ~Effect() = default;
 		Effect(const Effect& other) = delete;
 		Effect(Effect&& other) noexcept = delete;
