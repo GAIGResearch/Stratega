@@ -1,12 +1,15 @@
-#include <Optimization/RHEAEvaluator.h>
+#include <RHEAEvaluator.h>
 
 namespace SGA
 {
+    
     RHEAEvaluator::RHEAEvaluator(std::string name) : Evaluator(std::move(name)) {};
 
+	
     std::vector<float> RHEAEvaluator::evaluate(std::vector<int> point, int nSamples)
     {
-		// todo: evaluate the agent   
+		// todo: evaluate the agent
+        return { 1 };
     }
 
 	void RHEAEvaluator::printPoint(const std::vector<int>& point)
@@ -14,4 +17,5 @@ namespace SGA
         for (const int i : point)
 	        std::cout << i;
     }
+    
 }

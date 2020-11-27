@@ -2,13 +2,12 @@
 #include <string>
 #include <iostream>
 
-#include <Optimization/Mutator.h>
-#include <Optimization/SearchSpace.h>
-#include <Optimization/Evaluator.h>
-#include <Optimization/NTupleLandscapeModel.h>
+#include <vector>
 
 namespace SGA
 {
+	
+
     /// <summary>
     /// Base class to be inherited by other evaluator objects
     /// </summary>
@@ -24,6 +23,8 @@ namespace SGA
         virtual std::vector<float> evaluate(std::vector<int> point, int nSamples);
         virtual void printPoint(const std::vector<int>& point);
     };
+    
+
 }
 
     

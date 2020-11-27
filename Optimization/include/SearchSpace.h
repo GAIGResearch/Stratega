@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
+#include <vector>
 
 namespace SGA
 {
+    
     class SearchSpace
     {
     private:
@@ -11,7 +13,8 @@ namespace SGA
 
     public:
         SearchSpace(std::string name, const size_t nDims) :_name(std::move(name)), _nDims(nDims) {};
-        virtual ~SearchSpace();
+        virtual ~SearchSpace() = default;
+
     	
         [[nodiscard]] std::string getName() const { return _name; };
         [[nodiscard]] int getNumDims() const { return _nDims; };
@@ -20,6 +23,8 @@ namespace SGA
         virtual int getSize();
         virtual int getDimSize(int j);
         virtual int getRandomValueInDim(int dim);
+        
     };
+    
 }
 

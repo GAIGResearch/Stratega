@@ -3,11 +3,14 @@
 #include <set>
 #include <string>
 #include <vector>
-#include <Optimization/BanditLandscapeModel.h>
-#include "Optimization/SearchSpace.h"
+#include <iostream>
+
+#include <BanditLandscapeModel.h>
+#include <SearchSpace.h>
 
 namespace SGA
 {
+	
 	struct TupleStats
 	{
         int n = 0;
@@ -30,19 +33,22 @@ namespace SGA
         std::set<std::vector<int>> _sampledPoints;
 			
     public:
-        NTupleLandscapeModel(SearchSpace searchSpace, std::vector<int> tuple_config = { 1, searchSpace.getNumDims() }, float ucbEpsilon = 0.5);
+        NTupleLandscapeModel(SearchSpace* searchSpace, std::vector<int> tuple_config = {}, float ucbEpsilon = 0.5);
         ~NTupleLandscapeModel() = default;
 
+    	
         void reset() override;
         void init() override;
-        void addEvaluatedPoint(std::vector<int> point, double fitness) override;
-        double getMeanEstimate(std::vector<int> point) override;
-        double getExplorationEstimate(std::vector<int> point) override;
+        void addEvaluatedPoint(std::vector<int>& point, const double fitness) override;
+        double getMeanEstimate(const std::vector<int>& point) override;
+        double getExplorationEstimate(std::vector<int>& point) override;
 
-        std::vector<std::vector<int>> getTupleCombinations(int r, int nDims);
-        std::vector<std::vector<int>> getUniqueCombinations(int idx, int r, std::vector<int> sourceArray);
-        std::pair<std::vector<int>, double> getBestSampled();
+        static std::vector<std::vector<int>> getTupleCombinations(const int r, const int nDims);
+        static std::vector<std::vector<int>> getUniqueCombinations(const size_t idx, const int r, std::vector<int> sourceArray);
+        std::pair<std::vector<int>, double> getBestSampled() override;
+        
     };
+	
 }
 
 

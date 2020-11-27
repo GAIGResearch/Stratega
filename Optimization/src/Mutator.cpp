@@ -1,11 +1,9 @@
-#include <random>
-#include <Optimization/Mutator.h>
+#include <Mutator.h>
 
 namespace SGA
 {
-
-
-    Mutator::Mutator(SearchSpace searchSpace, bool swapMutate, bool randomChaosMutate, float mutationPointProbability, bool flipAtLeastOne) :
+    
+    Mutator::Mutator(SearchSpace* searchSpace, bool swapMutate, bool randomChaosMutate, float mutationPointProbability, bool flipAtLeastOne) :
         _searchSpace(searchSpace),
         _swapMutate(swapMutate),
         _randomChaosMutate(randomChaosMutate),
@@ -14,8 +12,9 @@ namespace SGA
 	{
        
     }
-
-    std::vector<int> Mutator::swapMutation(std::vector<int> point, std::mt19937& randomGenerator)
+	
+    
+    std::vector<int> Mutator::swapMutation(std::vector<int>& point, std::mt19937& randomGenerator)
     {
         size_t length = point.size();
 
@@ -31,16 +30,15 @@ namespace SGA
         return point;
     }
         
-
     /// <summary>
     /// mutate the value of x at the given dimension 'dim'
     /// </summary>
-    void Mutator::mutateValue(std::vector<int> point, int dim, std::mt19937& randomGenerator)
+    void Mutator::mutateValue(std::vector<int>& point, const int dim, std::mt19937& randomGenerator) const
     {
-        point[dim] = _searchSpace.getRandomValueInDim(dim);
+        point[dim] = _searchSpace->getRandomValueInDim(dim);
     }
 	
-    std::vector<int> Mutator::mutate(std::vector<int> point, std::mt19937& randomGenerator)
+    std::vector<int> Mutator::mutate(std::vector<int>& point, std::mt19937& randomGenerator) const
     {
         std::vector<int> new_point = point;
         const size_t length = point.size();
@@ -51,12 +49,12 @@ namespace SGA
 
         // Random mutation i.e just return a random search point
         if (_randomChaosMutate)
-            return _searchSpace.getRandomPoint();
+            return _searchSpace->getRandomPoint();
 
         const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
 
         // For each of the dimensions, we mutate it based on mutation_probability
-        for (int dim = 0; dim < length; dim++) {
+        for (size_t dim = 0; dim < length; dim++) {
             if (_mutationPointProbability > doubleDistribution_(randomGenerator))
                 mutateValue(new_point, dim, randomGenerator);
         }
@@ -67,4 +65,5 @@ namespace SGA
 
         return new_point;
     }
+	
 }

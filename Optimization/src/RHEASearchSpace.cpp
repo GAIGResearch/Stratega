@@ -1,15 +1,8 @@
-#include <iostream>
-#include <Optimization/RHEASearchSpace.h>
+#include <RHEASearchSpace.h>
 
 namespace SGA
 {
-	size_t POP_SIZE = 10;				// population size
-	size_t INDIVIDUAL_LENGTH = 10;		// planning horizon of an individual
-
-	// evolution and selection
-	double MUTATION_RATE = 0.1;			// mutation rate when transferring one individual to the next generation
-	int TOURNAMENT_SIZE = 3;			// number of individuals per tournament selection
-
+	
 	RHEASearchSpace::RHEASearchSpace(
 		int popSizeNrOfOptions,
 		int individualLengthNrOfOptions, 
@@ -19,10 +12,12 @@ namespace SGA
 	_popSizeNrOfOptions(popSizeNrOfOptions), _individualLengthNrOfOptions(individualLengthNrOfOptions),
 	_mutationRateNrOfOptions(mutationRateNrOfOptions), _tournamentSizeNrOfOptions(tournamentSizeNrOfOptions)
 	{
-		_searchSpaceSize = _popSizeNrOfOptions * _individualLengthNrOfOptions *
-			_mutationRateNrOfOptions * _tournamentSizeNrOfOptions;
+	//	_searchSpaceSize = _popSizeNrOfOptions * _individualLengthNrOfOptions *
+		//	_mutationRateNrOfOptions * _tournamentSizeNrOfOptions;
+		_searchSpaceSize = 1;
 	}
 
+	
 	std::vector<int> RHEASearchSpace::getRandomPoint()
 	{
 		return std::vector{ rand() % _popSizeNrOfOptions, rand() % _individualLengthNrOfOptions,
