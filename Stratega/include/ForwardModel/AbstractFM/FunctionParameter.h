@@ -2,10 +2,12 @@
 #include <string>
 #include <vector>
 #include <ForwardModel/AbstractFM/ActionTarget.h>
-#include <Representation/AbstractGS/GameState.h>
+#include <Representation/AbstractGS/EntityType.h>
 
 namespace SGA
 {
+	class GameState;
+	
 	class FunctionParameter
 	{
 		enum class Type

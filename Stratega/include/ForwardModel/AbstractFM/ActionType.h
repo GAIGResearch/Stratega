@@ -2,7 +2,7 @@
 #include <ForwardModel/AbstractFM/Effect.h>
 #include <ForwardModel/AbstractFM/Precondition.h>
 #include <ForwardModel/AbstractFM/ActionSourceType.h>
-#include <ForwardModel/AbstractFM/Target.h>
+#include <ForwardModel/AbstractFM/TargetType.h>
 
 #include <string>
 #include <vector>
@@ -18,7 +18,7 @@ namespace SGA
 		int id;
 		ActionSourceType sourceType;
 
-		Target actionTargets;
+		TargetType actionTargets;
 		std::vector<std::unique_ptr<Precondition>> preconditions;
 		std::vector<std::unique_ptr<Effect>> effects;
 	};

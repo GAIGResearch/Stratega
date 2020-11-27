@@ -1,5 +1,4 @@
 #pragma once
-#include <Representation/AbstractGS/GameState.h>
 #include <ForwardModel/AbstractFM/Action.h>
 #include <ForwardModel/AbstractFM/FunctionParameter.h>
 
@@ -16,5 +15,15 @@ namespace SGA
 		Precondition& operator=(Precondition&& other) noexcept = delete;
 	
 		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
+	};
+
+	class HasResource : public Precondition
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter lowerBound;
+	public:
+		HasResource(FunctionParameter resourceReference, FunctionParameter lowerBound);
+
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 }

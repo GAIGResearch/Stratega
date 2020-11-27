@@ -1,5 +1,6 @@
 #include <ForwardModel/AbstractFM/FunctionParameter.h>
 
+#include <Representation/AbstractGS/GameState.h>
 namespace SGA
 {
 	FunctionParameter::FunctionParameter(double constValue):

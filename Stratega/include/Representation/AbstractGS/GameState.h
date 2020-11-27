@@ -4,7 +4,7 @@
 #include <Representation/AbstractGS/Entity.h>
 #include <Representation/AbstractGS/Player.h>
 #include <Representation/Board.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
+//#include <ForwardModel/AbstractFM/Precondition.h>
 
 namespace SGA
 {

@@ -6,7 +6,8 @@
 //#include <yaml-cpp/node/parse.h>
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
-#include <ForwardModel/AbstractFM/Preconditions.h>
+//#include <ForwardModel/AbstractFM/Preconditions.h>
+#include <ForwardModel/AbstractFM/Precondition.h>
 #include <Representation/AbstractGS/Player.h>
 
 int main()
@@ -25,8 +26,8 @@ int main()
 	actionType.name = "test";
 	actionType.sourceType = SGA::ActionSourceType::Unit;
 	actionType.preconditions.emplace_back(std::make_unique<SGA::HasResource>(precondition));
-	SGA::Target target;
-	target.targetType = SGA::TargetType::Position;
+	SGA::TargetType target;
+	target.type = SGA::TargetType::Position;
 	target.shapeSize = 5;
 	target.shapeType = SGA::ShapeType::Circle;
 	//target.groupEntityTypes.insert(0);

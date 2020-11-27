@@ -29,7 +29,7 @@ namespace SGA
 					
 					//Generate the targets for this action
 					std::vector<ActionTarget> targets;
-					switch (actionType.actionTargets.targetType)
+					switch (actionType.actionTargets)
 					{
 						case TargetType::Entity:
 						{					
