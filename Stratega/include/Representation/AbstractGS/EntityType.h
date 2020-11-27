@@ -19,7 +19,7 @@ namespace SGA
 		const Parameter& getParameter(ParameterID id) const
 		{
 			auto it = parameters.find(id);
-			if (it == parameters.end())
+			if (it != parameters.end())
 			{
 				return it->second;
 			}

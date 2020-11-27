@@ -9,8 +9,6 @@ namespace SGA
 	class ActionSpaceBase : public IActionSpace<GameState, Action>
 	{
 	public:
-
-
 		std::vector<Action> generateActions(GameState& gameState) override { return {}; }
 
 		std::vector<Action> generateActions(GameState& gameState, int player)
@@ -23,21 +21,10 @@ namespace SGA
 				
 				for(auto actionTypeID : sourceEntity.actionTypeIds)
 				{
-					if(!gameState.canExecuteAction(sourceEntity, actionTypeID))
+					auto& actionType = gameState.actionTypes->find(actionTypeID)->second;
+					if(!gameState.canExecuteAction(sourceEntity, actionType))
 					{
 						continue;
-					}
-					
-					//Find actionType
-					auto& actionType = gameState.actionTypes->find(actionTypeID)->second;
-
-					//Check preconditions
-					for (const auto& precondition : actionType.preconditions)
-					{
-						if (!precondition->isFullfilled(gameState, {sourceEntity.id}))
-						{
-							continue;
-						}
 					}
 					
 					//Generate the targets for this action

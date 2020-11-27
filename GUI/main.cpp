@@ -15,14 +15,16 @@ int main()
 	SGA::GameState test;
 
 	////Add precondition
-	//SGA::FunctionParameter targetResource();
-	//targetResource.
-	//SGA::HasResource()
+	SGA::FunctionParameter targetResource(0, 0);
+	SGA::FunctionParameter lowerBound(50.);
+	SGA::HasResource precondition(targetResource, lowerBound);
+	
 	//Add actionType
 	SGA::ActionType actionType;
 	actionType.id = 0;
 	actionType.name = "test";
 	actionType.sourceType = SGA::ActionSourceType::Unit;
+	actionType.preconditions.emplace_back(std::make_unique<SGA::HasResource>(precondition));
 	SGA::Target target;
 	target.targetType = SGA::TargetType::Position;
 	target.shapeSize = 5;
@@ -45,6 +47,14 @@ int main()
 	test.players.emplace_back(player1);
 	test.players.emplace_back(player2);
 
+	// Add EntityType
+	SGA::EntityType type;
+	type.id = 0;
+	type.name = "Fuck";
+	type.parameterNameIndexLookup.emplace("Health", 0);
+	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
+	test.entityTypes->emplace(0, std::move(type));
+	
 	//Add entity
 	SGA::Entity entity;
 	entity.id = 0;
@@ -52,7 +62,7 @@ int main()
 	entity.actionTypeIds.emplace_back(0);
 	entity.position = SGA::Vector2f(0, 0);
 	entity.typeID = 0;
-	entity.parameters.emplace_back(0);
+	entity.parameters.emplace_back(10);
 	
 	test.entities.emplace_back(entity);
 
@@ -67,7 +77,12 @@ int main()
 	test.entities.emplace_back(entity2);
 
 	//Generte actions for player 0
-	temp.generateActions(test, 0);
+	auto actions = temp.generateActions(test, 0);
+
+	// Test precondition
+	std::vector<SGA::ActionTarget> targetList;
+	targetList.emplace_back(SGA::ActionTarget{ 0 });
+	auto isFullfilled = precondition.isFullfilled(test, targetList);
 
 	
 	//SGA::FuckOff yeahTellHimBoss;

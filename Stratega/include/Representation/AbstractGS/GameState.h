@@ -4,6 +4,7 @@
 #include <Representation/AbstractGS/Entity.h>
 #include <Representation/AbstractGS/Player.h>
 #include <Representation/Board.h>
+#include <ForwardModel/AbstractFM/Precondition.h>
 
 namespace SGA
 {
@@ -50,10 +51,7 @@ namespace SGA
 		int lastUsedEntityID;
 		int lastUsedPlayerID;
 
-		bool canExecuteAction(Entity& entity, int actionTypeID)
-		{
-			return true;
-		}
+		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
 
 		Entity& getEntity(int entityID)
 		{
@@ -70,7 +68,7 @@ namespace SGA
 		const EntityType& getEntityType(int entityTypeID) const
 		{
 			auto it = entityTypes->find(entityTypeID);
-			if (it == entityTypes->end())
+			if (it != entityTypes->end())
 			{
 				return it->second;
 			}
