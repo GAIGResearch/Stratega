@@ -6,7 +6,7 @@
 //#include <yaml-cpp/node/parse.h>
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
-
+#include <ForwardModel/AbstractFM/Preconditions.h>
 #include <Representation/AbstractGS/Player.h>
 
 int main()
@@ -14,6 +14,10 @@ int main()
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	SGA::GameState test;
 
+	////Add precondition
+	//SGA::FunctionParameter targetResource();
+	//targetResource.
+	//SGA::HasResource()
 	//Add actionType
 	SGA::ActionType actionType;
 	actionType.id = 0;

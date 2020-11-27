@@ -54,5 +54,17 @@ namespace SGA
 		{
 			return true;
 		}
+
+		Entity& getEntity(int entityID)
+		{
+			auto& entity = entities[entityID];
+			return entity;
+		}
+
+		const Entity& getEntityConst(int entityID) const 
+		{
+			const auto& entity = entities[entityID];
+			return entity;
+		}
 	};
 }

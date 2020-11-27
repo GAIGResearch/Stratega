@@ -1,6 +1,7 @@
 #pragma once
 #include <Representation/AbstractGS/GameState.h>
 #include <ForwardModel/AbstractFM/Action.h>
+#include <ForwardModel/AbstractFM/FunctionParameter.h>
 
 namespace SGA
 {

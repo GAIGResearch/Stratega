@@ -19,6 +19,13 @@ namespace SGA
 		{
 			std::string resourceName;
 			int targetIndex;
+
+			ResourceReferenceData(int targetIndex, std::string resourceName):
+			resourceName(resourceName),
+			targetIndex(targetIndex)
+			{
+				
+			}
 		};
 
 		union
@@ -30,19 +37,34 @@ namespace SGA
 		
 		Type parameterType;
 
-	public:
-		double toValue(GameState& state, std::vector<ActionTarget>& actionTargets)
+		FunctionParameter(double constValue):
+		parameterType(Type::Constant),
+			data{.constValue= constValue }
 		{
-			switch(parameterType)
-			{
-				case Type::Constant: return data.constValue; break;
-				case Type::ResourceReference:
-					auto entityID = std::get<int>(actionTargets[data.resourceData.targetIndex]);
-					auto& entity = state.entities[entityID];
-					return entity.parameters.find(data.resourceData.resourceName); break;
-				default:
-					throw std::runtime_error();
-			}
+			
 		}
+
+		FunctionParameter(int targetIndex) :
+			parameterType(Type::TargetReference),
+			data{.targetIndex = targetIndex }
+		{
+
+		}
+
+		FunctionParameter(int targetIndex,std::string resourceName) :
+			parameterType(Type::TargetReference),
+			data{ .resourceData = ResourceReferenceData(targetIndex,resourceName) }
+		{
+			data.targetIndex = targetIndex;
+		}
+		
+	public:
+		double toValue(const GameState& state, const std::vector<ActionTarget>& actionTargets)const;		
+
+		double& getResourceReference(GameState& state, std::vector<ActionTarget>& actionTargets);
+		
+		Entity& getEntity(GameState& state, std::vector<ActionTarget>& actionTargets);
+		const Entity& getEntity(GameState& state, std::vector<ActionTarget>& actionTargets) const;
+		
 	};
 }

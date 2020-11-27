@@ -5,17 +5,16 @@ namespace SGA
 {
 	class HasResource : public Precondition
 	{
-		std::string resource;
+		FunctionParameter resourceReference;
+		FunctionParameter lowerBound;
 	public:
-		HasResource(std::string resourceName):
-		resource(resourceName)
+		HasResource(FunctionParameter resourceReference, FunctionParameter lowerBound):
+			resourceReference(resourceReference),
+			lowerBound(lowerBound)
 		{
 			
 		}
 		
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override
-		{
-			
-		}
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 }
