@@ -19,10 +19,10 @@ namespace SGA
         [[nodiscard]] std::string getName() const { return _name; };
         [[nodiscard]] int getNumDims() const { return _nDims; };
 
-        virtual std::vector<int> getRandomPoint();
-        virtual int getSize();
-        virtual int getDimSize(int j);
-        virtual int getRandomValueInDim(int dim);
+        virtual std::vector<int> getRandomPoint() = 0;
+        virtual int getSize() = 0;
+        virtual int getDimSize(int j) = 0;
+        virtual int getRandomValueInDim(int dim) = 0;
         
     };
     
