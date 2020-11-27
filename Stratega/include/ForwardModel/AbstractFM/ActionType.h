@@ -10,6 +10,8 @@
 
 namespace SGA
 {
+	class Precondition;
+	
 	struct ActionType
 	{
 		std::string name;

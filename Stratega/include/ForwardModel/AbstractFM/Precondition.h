@@ -8,10 +8,7 @@ namespace SGA
 	class Precondition
 	{
 	public:
-		Precondition()
-		{
-			
-		}
+		Precondition() = default;
 		virtual ~Precondition() = default;
 		Precondition(const Precondition& other) = default;
 		Precondition(Precondition&& other) noexcept = delete;

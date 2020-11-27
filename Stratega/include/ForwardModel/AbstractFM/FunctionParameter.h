@@ -11,60 +11,41 @@ namespace SGA
 		enum class Type
 		{
 			Constant,
-			ResourceReference,
-			TargetReference
+			ParameterReference,
+			ArgumentReference
 		};
 
-		struct ResourceReferenceData
+		struct ParameterReference
 		{
-			std::string resourceName;
-			int targetIndex;
+			ParameterID parameterID;
+			int argumentIndex;
 
-			ResourceReferenceData(int targetIndex, std::string resourceName):
-			resourceName(resourceName),
-			targetIndex(targetIndex)
+			ParameterReference(ParameterID parameterID, int argumentIndex):
+				parameterID(parameterID),
+				argumentIndex(argumentIndex)
 			{
-				
 			}
 		};
 
 		union
 		{
 			double constValue;
-			ResourceReferenceData resourceData;
-			int targetIndex;
+			ParameterReference resourceData;
+			int argumentIndex;
 		} data;
 		
 		Type parameterType;
 
-		FunctionParameter(double constValue):
-		parameterType(Type::Constant),
-			data{.constValue= constValue }
-		{
-			
-		}
-
-		FunctionParameter(int targetIndex) :
-			parameterType(Type::TargetReference),
-			data{.targetIndex = targetIndex }
-		{
-
-		}
-
-		FunctionParameter(int targetIndex,std::string resourceName) :
-			parameterType(Type::TargetReference),
-			data{ .resourceData = ResourceReferenceData(targetIndex,resourceName) }
-		{
-			data.targetIndex = targetIndex;
-		}
-		
 	public:
-		double toValue(const GameState& state, const std::vector<ActionTarget>& actionTargets)const;		
+		FunctionParameter(double constValue);
+		FunctionParameter(int argumentIndex);
+		FunctionParameter(ParameterID parameterID, int argumentIndex);
 
-		double& getResourceReference(GameState& state, std::vector<ActionTarget>& actionTargets);
-		
-		Entity& getEntity(GameState& state, std::vector<ActionTarget>& actionTargets);
-		const Entity& getEntity(GameState& state, std::vector<ActionTarget>& actionTargets) const;
+		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double getParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 	};
 }

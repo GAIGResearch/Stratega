@@ -66,5 +66,21 @@ namespace SGA
 			const auto& entity = entities[entityID];
 			return entity;
 		}
+
+		const EntityType& getEntityType(int entityTypeID) const
+		{
+			auto it = entityTypes->find(entityTypeID);
+			if (it == entityTypes->end())
+			{
+				return it->second;
+			}
+			else
+			{
+				std::string s;
+				s.append("Tried accessing unknown entity type with ID=");
+				s.append(std::to_string(entityTypeID));
+				throw std::runtime_error(s);
+			}
+		}
 	};
 }
