@@ -19,6 +19,13 @@ int main()
 	SGA::FunctionParameter targetResource(0, 0);
 	SGA::FunctionParameter lowerBound(50.);
 	SGA::HasResource precondition(targetResource, lowerBound);
+
+	//Add effect
+	SGA::FunctionParameter targetResourceEffect(0, 0);
+	SGA::FunctionParameter amountToAddEffect(10.);
+	SGA::AddToResource effect(targetResourceEffect, amountToAddEffect);
+
+	
 	
 	//Add actionType
 	SGA::ActionType actionType;
@@ -85,7 +92,8 @@ int main()
 	targetList.emplace_back(SGA::ActionTarget{ 0 });
 	auto isFullfilled = precondition.isFullfilled(test, targetList);
 
-	
+	effect.execute(test, targetList);
+
 	//SGA::FuckOff yeahTellHimBoss;
 	
 	//std::mt19937 rngEngine(0ll);
