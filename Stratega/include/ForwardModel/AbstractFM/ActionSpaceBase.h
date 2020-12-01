@@ -33,7 +33,7 @@ namespace SGA
 					{
 						case TargetType::Entity:
 						{					
-							generateGroupTargets(gameState, actionType, targets);
+							generateGroupTargets(gameState, actionType, targets, sourceEntity);
 							generateActions(targets, bucket, actionTypeID, sourceEntity);
 							break;
 						}							
@@ -58,7 +58,12 @@ namespace SGA
 				}
 			}
 			
+			//Generate EndTurnAction
+			Action endTurnAction;
+			endTurnAction.actionTypeID = 0;
+			endTurnAction.owner = player;
 			
+			bucket.emplace_back(endTurnAction);
 			return bucket;
 		}
 
@@ -71,13 +76,14 @@ namespace SGA
 			bucket.emplace_back(selfAction);
 		}
 
-		virtual void generateGroupTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket)
+		virtual void generateGroupTargets(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget>& bucket, Entity& sourceEntity)
 		{
 			for (auto& entityTarget : gameState.entities)
 			{
 				if (actionType.actionTargets.groupEntityTypes.find(entityTarget.typeID) != actionType.actionTargets.groupEntityTypes.end())
 				{
 					//Add precondition for group targets
+					if(entityTarget.id!=sourceEntity.id)
 					bucket.emplace_back(entityTarget.id);
 				}
 			}
@@ -129,6 +135,7 @@ namespace SGA
 				newAction.actionTypeID = actionTypeID;
 				newAction.targets.emplace_back(sourceEntity.id);
 				newAction.targets.emplace_back(target);
+				newAction.owner = sourceEntity.owner;
 				
 				actionBucket.emplace_back(std::move(newAction));
 			}

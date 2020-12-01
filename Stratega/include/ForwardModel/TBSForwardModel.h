@@ -50,12 +50,12 @@ namespace SGA
 		bool canPlayerPlay(TBSPlayer& player) const;
 
 		// Effect handling
-		void addOnTileEnterEffect(Effect&& effect);
-		void addUnitEndOfTurnEffect(Effect&& effect);
+		void addOnTileEnterEffect(EffectOld&& effect);
+		void addUnitEndOfTurnEffect(EffectOld&& effect);
 		void executeEndOfTurnTrigger(FMState& state) const;
 		void executeOnEnterTileTrigger(FMState& state, TBSUnit& targetUnit) const;
-		bool isConditionFulfilled(const Effect& effect, TBSUnit& targetUnit) const;
-		void executeEffect(FMState& state, const Effect& effect, TBSUnit& targetUnit) const;
+		bool isConditionFulfilled(const EffectOld& effect, TBSUnit& targetUnit) const;
+		void executeEffect(FMState& state, const EffectOld& effect, TBSUnit& targetUnit) const;
 
 		// ActionSpaces
 		void setActionSpace(std::unique_ptr<TBSActionSpace> as)
@@ -74,8 +74,8 @@ namespace SGA
 		}
 		
 	protected:
-		std::vector<Effect> unitEndOfTurnEffects;
-		std::vector<Effect> onTileEnterEffects;
+		std::vector<EffectOld> unitEndOfTurnEffects;
+		std::vector<EffectOld> onTileEnterEffects;
 		std::shared_ptr<TBSActionSpace> actionSpace;
 		
 	};

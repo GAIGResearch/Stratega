@@ -16,4 +16,9 @@ namespace SGA
 		
 		targetResource += amount;
 	}
+
+	void EndTurn::execute(GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		std::cout << "Execute end turn" << std::endl;
+	}
 }

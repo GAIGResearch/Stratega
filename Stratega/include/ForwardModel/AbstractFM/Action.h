@@ -11,7 +11,7 @@ namespace SGA
 		// UnitAction: Index 0 contains the source and Index 1 the target of the action
 		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
-
+		int owner;
 		void execute(GameState& state) const;
 	};
 }

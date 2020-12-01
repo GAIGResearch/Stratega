@@ -17,6 +17,20 @@ namespace SGA
 		}
 	}
 
+	void RandomAgent::runAbstract(AbstractGameCommunicator& gameCommunicator, ForwardModel<TBSGameState2> ForwardModel)
+	{
+		while (!gameCommunicator.isGameOver())
+		{
+			if (gameCommunicator.isMyTurn())
+			{
+				auto state = gameCommunicator.getGameState();
+				auto actionSpace = ForwardModel.generateActions(state);
+				std::uniform_int_distribution<int> actionDist(0, static_cast<int>(actionSpace.size()) - 1);
+				gameCommunicator.executeAction(actionSpace.at(actionDist(gameCommunicator.getRNGEngine())));
+			}
+		}
+	}
+	
 	void RandomAgent::runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
 	{
 		auto lastExecution = std::chrono::high_resolution_clock::now();
