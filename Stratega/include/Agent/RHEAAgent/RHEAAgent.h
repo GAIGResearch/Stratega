@@ -12,17 +12,18 @@ namespace SGA
 {
 	class RHEAAgent : public Agent
 	{
+	public:
+		RHEAParams params_;
 
 	private:
 		std::vector<RHEAGenome> pop_;
 		std::unique_ptr<StateHeuristic>  heuristic_;
-		RHEAParams params_;
 
 		std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
 
 	public:
-		RHEAAgent() :
-			Agent{}, params_(RHEAParams())
+		RHEAAgent(RHEAParams&& params) :
+			Agent{}, params_(std::move(params))
 		{
 		}
 

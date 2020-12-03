@@ -6,24 +6,21 @@ namespace SGA
     
     NTupleLandscapeModel::NTupleLandscapeModel(SearchSpace* searchSpace, std::vector<int> tupleConfig, float ucbEpsilon) :
         BanditLandscapeModel("NTupleLandscapeModel"),
-		//_tupleConfig(std::move(tupleConfig)),
+		_tupleConfig(std::move(tupleConfig)),
         _ucbEpsilon(ucbEpsilon)
     {
-    	
     	if (_tupleConfig.empty())
     	{
             _tupleConfig = { 1, searchSpace->getNumDims() };
     	}
         _tuples = std::vector<std::vector<int>>();
         _nDims = searchSpace->getNumDims();
-        
-        //reset();
     }
 	
 
     void NTupleLandscapeModel::reset()
     {
-        //_tupleStats.clear();
+        _tupleStats.clear();
     }
 
     /// <summary>
@@ -52,13 +49,17 @@ namespace SGA
                 for (auto x : next_level)
                 {
                     std::vector<int> value = {sourceArray[i]};
-                    //value.emplace_back(x);
+                	// append vector x to value
+                    value.reserve(value.size() + distance(x.begin(), x.end()));
+                    value.insert(value.end(), x.begin(), x.end());
+                   
                     result.emplace_back(value);
             	}
             }
             else
             {
-                result.emplace_back(sourceArray[i]);
+                std::vector<int> value = { sourceArray[i] };
+                result.emplace_back(value);
             }
         }
         
@@ -73,16 +74,18 @@ namespace SGA
         for (const int n : _tupleConfig) 
         {
             std::vector<std::vector<int>> n_tuples = getTupleCombinations(n, _nDims);
-            _tuples.insert(n_tuples.end(), n_tuples.begin(), n_tuples.end());
+            for (std::vector<int> tup : n_tuples)
+                _tuples.emplace_back(tup);
+            //_tuples.insert(_tuples.end(), n_tuples.begin(), n_tuples.end());
 
             std::cout << "Added " << n << "-tuples: " << std::endl;
 
-            for (auto i = n_tuples.begin(); i != n_tuples.end(); ++i)
+            for (std::vector<int> i : n_tuples)
             {
                 std::cout << "\t";
-                for (auto j = (*i).begin(); j != (*i).end(); ++i)
+                for (int j : i)
                 {
-                    std::cout << *j << ", ";
+                    std::cout << j << ", ";
                 }
                 std::cout << std::endl;
             }
@@ -152,8 +155,6 @@ namespace SGA
             return 0;
             
         return sum / tuple_count;
-        
-        return 0;
     }
 
     /// Calculate the average of the exploration across all tuples of the exploration
@@ -188,7 +189,6 @@ namespace SGA
 
         return sum / tuple_count;
         
-        return 0;
     }
 
     std::pair<std::vector<int>, double> NTupleLandscapeModel::getBestSampled()
@@ -207,9 +207,7 @@ namespace SGA
             }
         }
         return std::pair<std::vector<int>, double> {currentBestPoint, currentBestMean};
-        
-    	return std::pair<std::vector<int>, double> {{}, 1};
-    }
+     }
     
 }
 

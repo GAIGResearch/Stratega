@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <random>
 
 namespace SGA
 {
@@ -19,10 +20,11 @@ namespace SGA
         [[nodiscard]] std::string getName() const { return _name; };
         [[nodiscard]] int getNumDims() const { return _nDims; };
 
-        virtual std::vector<int> getRandomPoint() = 0;
-        virtual int getSize() = 0;
+        virtual long long getSize() = 0;
         virtual int getDimSize(int j) = 0;
-        virtual int getRandomValueInDim(int dim) = 0;
+
+        virtual std::vector<int> getRandomPoint(std::mt19937& randomGenerator) = 0;
+        virtual int getRandomValueInDim(int dim, std::mt19937& randomGenerator) = 0;
         
     };
     

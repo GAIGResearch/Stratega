@@ -10,16 +10,17 @@ namespace SGA
         _mutationPointProbability(mutationPointProbability),
         _flipAtLeastOne(flipAtLeastOne)
 	{
-       
+        for (int i = 0; i < _searchSpace->getNumDims(); i++)
+            _indexVector.emplace_back(i);
     }
 	
     
-    std::vector<int> Mutator::swapMutation(std::vector<int>& point, std::mt19937& randomGenerator)
+    std::vector<int> Mutator::swapMutation(std::vector<int>& point, std::mt19937& randomGenerator) const
     {
         size_t length = point.size();
 
         std::vector<int> samples;
-        std::sample(point.begin(), point.end(), std::back_inserter(samples), 2, randomGenerator);
+        std::sample(_indexVector.begin(), _indexVector.end(), std::back_inserter(samples), 2, randomGenerator);
 
         const float a = point[samples[0]];
         const float b = point[samples[1]];
@@ -35,10 +36,10 @@ namespace SGA
     /// </summary>
     void Mutator::mutateValue(std::vector<int>& point, const int dim, std::mt19937& randomGenerator) const
     {
-        point[dim] = _searchSpace->getRandomValueInDim(dim);
+        point[dim] = _searchSpace->getRandomValueInDim(dim, randomGenerator);
     }
 	
-    std::vector<int> Mutator::mutate(std::vector<int>& point, std::mt19937& randomGenerator) const
+    std::vector<int> Mutator::mutate(std::vector<int> point, std::mt19937& randomGenerator) const
     {
         std::vector<int> new_point = point;
         const size_t length = point.size();
@@ -49,7 +50,7 @@ namespace SGA
 
         // Random mutation i.e just return a random search point
         if (_randomChaosMutate)
-            return _searchSpace->getRandomPoint();
+            return _searchSpace->getRandomPoint(randomGenerator);
 
         const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
 
@@ -61,7 +62,10 @@ namespace SGA
 
         // If we want to force flip at least one of the points then we do this here
         if (_flipAtLeastOne)
-            mutateValue(new_point, floor(rand() * length), randomGenerator);
+        {
+            std::uniform_int_distribution<> distrib(0, _searchSpace->getNumDims()-1);
+            mutateValue(new_point, distrib(randomGenerator), randomGenerator);
+        }
 
         return new_point;
     }

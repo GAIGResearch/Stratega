@@ -69,7 +69,7 @@ namespace SGA
 		factory.registerAgent<RandomAgent>("RandomAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
 		factory.registerAgent<BFSAgent>("BFSAgent");
-		factory.registerAgent<RHEAAgent>("RHEAAgent");
+		factory.registerAgent<RHEAAgent, RHEAParams>("RHEAAgent");
 		factory.registerAgent<OSLAAgent>("OSLAAgent");
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");

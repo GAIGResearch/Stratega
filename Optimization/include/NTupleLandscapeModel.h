@@ -20,7 +20,7 @@ namespace SGA
         double sum_squared = 0.0f;
 	};
 	
-    class NTupleLandscapeModel : BanditLandscapeModel
+    class NTupleLandscapeModel : public BanditLandscapeModel
 	{
     private:
         int _nDims;

@@ -10,22 +10,21 @@ namespace SGA
         _mutator(mutator), _kExplore(kExplore), _nSamples(nSamples)
     {
     	
-        std::cout << "NTupleEvolutionaryAlgorithm";
+        std::cout << "NTupleEvolutionaryAlgorithm" << std::endl;
 
-        //this->_evalNeighbors = std::min(evalNeighbors, _searchSpace->getSize());
-        //randomGenerator = std::mt19937(seed);
-        //std::cout << "Search Space: " << _searchSpace->getName() << std::endl;
-        //std::cout << "Evaluator: " << _evaluator->getName() << std::endl;
-        //std::cout << "Mutator: " << _mutator->getName() << std::endl;
-        
+        this->_evalNeighbors = std::min(static_cast<long long>(evalNeighbors), _searchSpace->getSize());
+        std::cout << "Search Space: " << _searchSpace->getName() << std::endl;
+        std::cout << "Evaluator: " << _evaluator->getName() << std::endl;
+        std::cout << "Mutator: " << _mutator->getName() << std::endl;
     }
 
 	
     std::vector<int> NTBEA::evaluateLandscape(std::vector<int>& point, std::mt19937& randomGenerator)
     {
     	
-        std::cout << "Estimating landscape around: " << std::endl;
-        _evaluator->printPoint(point);
+        //std::cout << "Estimating landscape around: ";
+        //_evaluator->printPoint(point);
+        //std::cout << std::endl;
     	
         auto evaluated_neighbors = std::set<std::vector<int>>();
 
@@ -51,16 +50,16 @@ namespace SGA
 
             evaluated_neighbors.emplace(potential_neighbor);
 
-            std::cout << "Neighbor UCB " << ucb_with_noise << " at ";
-            _evaluator->printPoint(potential_neighbor);
-            std::cout << std::endl;
+            //std::cout << "Neighbor UCB " << ucb_with_noise << " at ";
+            //_evaluator->printPoint(potential_neighbor);
+            //std::cout << std::endl;
 
             // Track the best neighbor that we have seen so far
             if (current_best_ucb < ucb_with_noise)
             {
-                std::cout << "Found best UCB " << ucb_with_noise << " at ";
-                _evaluator->printPoint(potential_neighbor);
-            	std::cout << std::endl;
+                //std::cout << "Found best UCB " << ucb_with_noise << " at ";
+                //_evaluator->printPoint(potential_neighbor);
+            	//std::cout << std::endl;
                 current_best_ucb = ucb_with_noise;
                 current_best_neighbor = potential_neighbor;
             }
@@ -74,11 +73,13 @@ namespace SGA
         _tupleLandscape->init();
 
         // Get a random point to start
-        auto point = _searchSpace->getRandomPoint();
+        auto point = _searchSpace->getRandomPoint(randomGenerator);
 
         // Repeat many times
         for (int eval = 0; eval < n_evaluations; eval++)
         {
+            //std::cout << "Evaluation: " << eval << std::endl;
+        	
             // Explore the neighborhood in the tuple landscape and find a strong next candidate point
             // Skip this if this is the first iteration of the algorithm because it will be a random point
             if (eval > 0)
@@ -94,8 +95,9 @@ namespace SGA
                 fitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0) / n;
             }
         	
-            std::cout << "Evaluated fitness: " << fitness << " at [" ;
-            _evaluator->printPoint(point);
+            //std::cout << "Evaluated fitness: " << fitness << " at " ;
+            //_evaluator->printPoint(point);
+            //std::cout << std::endl;
         	
             // Add the new point to the tuple landscape
             _tupleLandscape->addEvaluatedPoint(point, fitness);
@@ -116,7 +118,6 @@ namespace SGA
         std::cout << "Best solution: ";
         _evaluator->printPoint(solution.first);
     	std::cout << std::endl;
-    	
 	}
     
 }
