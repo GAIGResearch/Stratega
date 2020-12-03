@@ -194,7 +194,7 @@ namespace SGA
     std::pair<std::vector<int>, double> NTupleLandscapeModel::getBestSampled()
     {
     	
-        double currentBestMean = 0;
+        double currentBestMean = -std::numeric_limits<double>::max();
         std::vector<int> currentBestPoint;
         for (const std::vector<int>& point : _sampledPoints)
         {

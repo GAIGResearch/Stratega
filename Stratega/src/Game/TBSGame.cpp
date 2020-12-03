@@ -31,8 +31,8 @@ namespace SGA
 	{
 		Game::close();
 		
-		std::cout << "GAME IS FINISHED" << std::endl;
-		std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
+		//std::cout << "GAME IS FINISHED" << std::endl;
+		//std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
 	
 	void TBSGame::executeAction(TBSAction action)

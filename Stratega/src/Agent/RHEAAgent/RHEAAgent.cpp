@@ -13,6 +13,7 @@ namespace SGA
                 TBSGameState gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
+                std::cout << gameState.currentGameTurn << std::endl;
             	
                 auto actionSpace = forwardModel.generateActions(gameState);
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <set>
 #include <numeric>
+#include <vector>
 
 #include <Mutator.h>
 #include <SearchSpace.h>

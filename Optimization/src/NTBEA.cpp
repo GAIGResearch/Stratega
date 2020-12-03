@@ -22,9 +22,9 @@ namespace SGA
     std::vector<int> NTBEA::evaluateLandscape(std::vector<int>& point, std::mt19937& randomGenerator)
     {
     	
-        //std::cout << "Estimating landscape around: ";
-        //_evaluator->printPoint(point);
-        //std::cout << std::endl;
+        std::cout << "Estimating landscape around: ";
+        _evaluator->printPoint(point);
+        std::cout << std::endl;
     	
         auto evaluated_neighbors = std::set<std::vector<int>>();
 
@@ -95,9 +95,9 @@ namespace SGA
                 fitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0) / n;
             }
         	
-            //std::cout << "Evaluated fitness: " << fitness << " at " ;
-            //_evaluator->printPoint(point);
-            //std::cout << std::endl;
+            std::cout << "Evaluated fitness: " << fitness << " at " ;
+            _evaluator->printPoint(point);
+            std::cout << std::endl;
         	
             // Add the new point to the tuple landscape
             _tupleLandscape->addEvaluatedPoint(point, fitness);

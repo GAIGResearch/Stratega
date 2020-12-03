@@ -3,6 +3,7 @@
 #include <RHEAEvaluator.h>
 #include <NTupleLandscapeModel.h>
 #include <random>
+#include <Mutator.h>
 
 
 #include <Configuration/GameConfig.h>
@@ -47,7 +48,7 @@ int main(int argc, char** argv)
 	SGA::SearchSpace* searchSpace = evaluator->getSearchSpace();
 	SGA::Mutator mutator(searchSpace, false, false, 0.1f, true);
 	SGA::NTupleLandscapeModel landscapeModel(searchSpace, std::vector<int> {1, 2});
-	SGA::NTBEA ntbea(&landscapeModel, evaluator.get(), searchSpace, &mutator, 2, 5, 50);
+	SGA::NTBEA ntbea(&landscapeModel, evaluator.get(), searchSpace, &mutator, 2, 20, 10);
 	std::mt19937 randomGenerator(1);
 
 	ntbea.run(100, randomGenerator);
