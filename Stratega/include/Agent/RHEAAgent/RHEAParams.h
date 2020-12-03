@@ -30,3 +30,17 @@ namespace SGA {
 		void printDetails() const;
 	};
 }
+
+namespace YAML
+{
+	template<>
+	struct convert<SGA::RHEAParams>
+	{
+		static bool decode(const Node& node, SGA::RHEAParams& rhs)
+		{
+			rhs.MAX_FM_CALLS = node["FmCalls"].as<int>(rhs.MAX_FM_CALLS);
+			rhs.REMAINING_FM_CALLS = rhs.MAX_FM_CALLS;
+			return true;
+		}
+	};
+}

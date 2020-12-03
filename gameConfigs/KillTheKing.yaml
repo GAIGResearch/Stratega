@@ -5,7 +5,6 @@ GameConfig:
 
 Agents:
     - CombatAgent
-    - CombatAgent
 
 Tiles:
     Plain:
