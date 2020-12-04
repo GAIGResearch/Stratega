@@ -78,7 +78,7 @@ Units:
         Health: 40
         LineOfSightRange: 4
 
-        MovementRange: 5
+        MovementRange: 4
         ActionRange: 2
         HealAmount: 10
         ActionsPerTurn: 2
