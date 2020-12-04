@@ -124,7 +124,7 @@ namespace SGA
 		
 
 		// run game
-		game->addCommunicator(std::make_unique<TBSLogger>(dynamic_cast<SGA::TBSGame&>(*game)));
+		//game->addCommunicator(std::make_unique<TBSLogger>(dynamic_cast<SGA::TBSGame&>(*game)));
 		game->run();
 
 		// return result

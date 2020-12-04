@@ -180,6 +180,7 @@ namespace SGA
 		while(communicator.isMyTurn() && !communicator.isGameOver())
 		{
 			auto currentState = communicator.getGameState();
+			std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
 			
 			// Get my units and opponent units
 			auto myUnits = currentState.getPlayer(currentState.currentPlayer)->getUnits();
