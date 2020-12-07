@@ -11,13 +11,13 @@
 #include <ForwardModel/AbstractFM/Precondition.h>
 #include <ForwardModel/AbstractFM/Effect.h>
 #include <Representation/AbstractGS/Player.h>
-#include <ForwardModel/AbstractFM/ForwardModel.h>
+#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <Game/AbstractGame.h>
 int main()
 {
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	std::unique_ptr<SGA::TBSGameState2> test= std::make_unique<SGA::TBSGameState2>();
-	SGA::ForwardModel<SGA::TBSGameState2> fm;
+	SGA::TBSAbstractForwardModel fm;
 	
 	////Add precondition
 	SGA::FunctionParameter targetResource(0, 0);

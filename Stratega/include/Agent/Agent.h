@@ -1,7 +1,7 @@
 #pragma once
 #include <ForwardModel/TBSForwardModel.h>
 #include <ForwardModel/RTSForwardModel.h>
-#include <ForwardModel/AbstractFM/ForwardModel.h>
+#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <Game/TBSGameCommunicator.h>
 #include <Game/RTSGameCommunicator.h>
 #include <Game/AbstractGameCommunicator.h>
@@ -27,7 +27,7 @@ namespace SGA
 		{
 			
 		}
-		virtual void runAbstract(AbstractGameCommunicator& gameCommunicator, ForwardModel<TBSGameState2> forwardModel)
+		virtual void runAbstract(AbstractGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
 		{
 			
 		}

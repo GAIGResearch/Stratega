@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	AbstractGame::AbstractGame(std::unique_ptr<TBSGameState2> gameState, SGA::ForwardModel<TBSGameState2> forwardModel, std::mt19937 rngEngine)
+	AbstractGame::AbstractGame(std::unique_ptr<TBSGameState2> gameState, TBSAbstractForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}

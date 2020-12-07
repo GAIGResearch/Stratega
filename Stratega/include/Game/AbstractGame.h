@@ -2,7 +2,7 @@
 #include <mutex>
 #include <Game/Game.h>
 #include <Representation/AbstractGS/TBSGameState2.h>
-#include <ForwardModel/AbstractFM/ForwardModel.h>
+#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <random>
 
 namespace SGA
@@ -13,7 +13,7 @@ namespace SGA
 		Action actionToExecute;
 		bool hasActionToExecute = false;
 
-		AbstractGame(std::unique_ptr<TBSGameState2> gameState, ForwardModel<TBSGameState2> forwardModel, std::mt19937 engine);
+		AbstractGame(std::unique_ptr<TBSGameState2> gameState, TBSAbstractForwardModel forwardModel, std::mt19937 engine);
 
 		void executeAction(Action action);
 		void update(double deltaTime) override;
@@ -21,7 +21,7 @@ namespace SGA
 		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
 		void addActionToExecute(Action action);
 
-		const ForwardModel<TBSGameState2>& getForwardModel() const { return forwardModel; }
+		const TBSAbstractForwardModel& getForwardModel() const { return forwardModel; }
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.
@@ -37,7 +37,7 @@ namespace SGA
 		bool updatingState = false;
 
 		std::unique_ptr<TBSGameState2> gameState;
-		ForwardModel<TBSGameState2> forwardModel;
+		TBSAbstractForwardModel forwardModel;
 
 		std::mt19937 rngEngine;
 

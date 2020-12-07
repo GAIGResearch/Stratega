@@ -8,6 +8,6 @@ namespace SGA
 	public:
 		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel ForwardModel) override;
 		void runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel) override;
-		void runAbstract(AbstractGameCommunicator& gameCommunicator, ForwardModel<TBSGameState2> forwardModel) override;
+		void runAbstract(AbstractGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel) override;
 	};
 }

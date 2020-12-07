@@ -5,7 +5,7 @@ namespace SGA
 	void AbstractGameCommunicator::init()
 	{
 		// Copy the forwardModel but ensure that it contains a different actionSpace instance
-		ForwardModel<TBSGameState2> copy(game->getForwardModel());
+		TBSAbstractForwardModel copy(game->getForwardModel());
 		copy.setActionSpace(copy.generateDefaultActionSpace());
 
 		thread = std::thread(&Agent::runAbstract, std::ref(*agent), std::ref(*this), std::move(copy));
