@@ -4,6 +4,8 @@
 
 namespace SGA
 {
+	class TBSAbstractForwardModel;
+	
 	struct Action
 	{
 		int actionTypeID;
@@ -13,5 +15,6 @@ namespace SGA
 		std::vector<ActionTarget> targets;
 		int owner;
 		void execute(GameState& state) const;
+		void execute(GameState& state, const TBSAbstractForwardModel& fm) const;
 	};
 }

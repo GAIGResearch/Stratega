@@ -19,7 +19,7 @@ namespace SGA
 		Effect& operator=(Effect&& other) noexcept = delete;
 		
 		virtual void execute(GameState& state, const std::vector<ActionTarget>& targets) const = 0;
-		virtual void executeTBS(GameState& state,TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		virtual void executeTBS(GameState& state,const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
 	};
 
 	class AddToResource: public Effect
@@ -29,13 +29,13 @@ namespace SGA
 	public:
 		AddToResource(FunctionParameter resourceReference, FunctionParameter amount);
 		void execute(GameState& state, const std::vector<ActionTarget>& targets) const override;
-		void executeTBS(GameState& state, TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class EndTurn : public Effect
 	{
 	public:
 		void execute(GameState& state, const std::vector<ActionTarget>& targets) const override;
-		void executeTBS(GameState& state, TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 }

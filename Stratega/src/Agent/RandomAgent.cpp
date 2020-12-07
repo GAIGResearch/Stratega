@@ -24,7 +24,7 @@ namespace SGA
 			if (gameCommunicator.isMyTurn())
 			{
 				auto state = gameCommunicator.getGameState();
-				auto actionSpace = ForwardModel.generateActions(state);
+				auto actionSpace = ForwardModel.generateActions(state, gameCommunicator.getPlayerID());
 				std::uniform_int_distribution<int> actionDist(0, static_cast<int>(actionSpace.size()) - 1);
 				gameCommunicator.executeAction(actionSpace.at(actionDist(gameCommunicator.getRNGEngine())));
 			}

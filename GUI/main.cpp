@@ -54,12 +54,12 @@ int main()
 	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(effect));
 	//actionType2.effects.emplace_back(std::make_unique<SGA::HasResource>(effect));
 	SGA::TargetType target;
-	target.type = SGA::TargetType::None;
+	target.type = SGA::TargetType::Entity;
 	target.groupEntityTypes.insert(0);
 
 	actionType2.actionTargets = target;
 	
-	//test->actionTypes->emplace(1, std::move(actionType2));
+	test->actionTypes->emplace(1, std::move(actionType2));
 	
 	//Add players
 	SGA::Player player1;
@@ -87,6 +87,7 @@ int main()
 	entity.id = 0;
 	entity.owner = 0;
 	entity.actionTypeIds.emplace_back(0);
+	entity.actionTypeIds.emplace_back(1);
 	entity.position = SGA::Vector2f(0, 0);
 	entity.typeID = 0;
 	entity.parameters.emplace_back(60);
@@ -97,6 +98,7 @@ int main()
 	entity2.id = 1;
 	entity2.owner = 1;
 	entity2.actionTypeIds.emplace_back(0);
+	entity2.actionTypeIds.emplace_back(1);
 	entity2.position = SGA::Vector2f(1, 1);
 	entity2.typeID = 0;
 	entity2.parameters.emplace_back(1);
@@ -104,7 +106,7 @@ int main()
 	test->entities.emplace_back(entity2);
 
 
-	auto actions=fm.generateActions(*test,0);
+	//auto actions=fm.generateActions(*test,0);
 	std::mt19937 engine(0ll);
 	//GenerateGame
 	std::unique_ptr<SGA::AbstractGame>game= std::make_unique<SGA::AbstractGame>(std::move(test),fm,engine);
@@ -143,7 +145,7 @@ int main()
 		playerID++;
 	}
 
-	game->addActionToExecute(actions[0]);
+	//game->addActionToExecute(actions[0]);
 	game->run();
 	
 	//std::mt19937 rngEngine(0ll);
