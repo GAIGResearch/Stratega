@@ -131,15 +131,15 @@ namespace SGA
 	void RTSGameState::applyFogOfWar(int playerID)
 	{
 		auto* targetPlayer = getPlayer(playerID);
-		auto playerUnits = targetPlayer->getUnits();
-
 		// Helper method
 		auto isVisible = [&](const Vector2f& pos)
 		{
-			for (auto* pu : playerUnits)
+			for (const auto& unit : units)
 			{
-				if (pu->position.distance(pos) <= pu->lineOfSightRange)
+				if (unit.playerID == playerID && unit.position.distance(pos) <= unit.lineOfSightRange)
+				{
 					return true;
+				}
 			}
 			return false;
 		};
@@ -154,7 +154,7 @@ namespace SGA
 			}
 			else
 			{
-				//Opponents should check other units intentions
+				//Opponents should not see other units intentions
 				it->intendedAction.type = RTSActionType::None;
 				++it;
 			}

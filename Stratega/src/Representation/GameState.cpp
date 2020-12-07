@@ -176,15 +176,15 @@ namespace SGA
 	void TBSGameState::applyFogOfWar(int playerID)
 	{
 		auto* targetPlayer = getPlayer(playerID);
-		auto playerUnits = targetPlayer->getUnits();
-
 		// Helper method
 		auto isVisible = [&](const Vector2i& pos)
 		{
-			for (auto* pu : playerUnits)
+			for (const auto& unit : units)
 			{
-				if (pu->getPosition().distance(pos) <= pu->getLineOfSightRange())
+				if (unit.getPlayerID() == playerID && unit.getPosition().distance(pos) <= unit.getLineOfSightRange())
+				{
 					return true;
+				}
 			}
 			return false;
 		};
@@ -204,9 +204,9 @@ namespace SGA
 		}
 
 		// Hide tiles that are not visible
-		for(int y = 0; y < board.getHeight(); y++)
+		for(auto y = 0; y < board.getHeight(); y++)
 		{
-			for (int x = 0; x < board.getWidth(); x++)
+			for (auto x = 0; x < board.getWidth(); x++)
 			{
 				if(!isVisible(Vector2i(x, y)))
 				{
