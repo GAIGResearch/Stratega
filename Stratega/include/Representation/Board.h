@@ -13,9 +13,10 @@ namespace SGA
 		Board(int width, int height)
 			:width(width), height(height)
 		{
-			for (auto x = 0; x < width; ++x)
+			tiles.reserve(width * height);
+			for (auto y = 0; y < width; ++y)
 			{
-				for (auto y = 0; y < height; ++y)
+				for (auto x = 0; x < height; ++x)
 				{
 					tiles.push_back((Tile(0, x, y)));
 				}	
