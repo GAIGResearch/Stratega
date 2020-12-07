@@ -5,14 +5,7 @@
 
 namespace SGA
 {
-	void Action::execute(GameState& state) const
-	{
-		auto& type = state.actionTypes->at(actionTypeID);
-		for(auto& effect : type.effects)
-		{
-			effect->execute(state, targets);
-		}
-	}
+	
 
 	void Action::execute(GameState& state, const TBSAbstractForwardModel& fm) const
 	{
@@ -22,5 +15,15 @@ namespace SGA
 			effect->executeTBS(state,fm, targets);
 		}
 	}
+
+	void Action::execute(GameState& state, const RTSAbstractForwardModel& fm) const
+	{
+		auto& type = state.actionTypes->at(actionTypeID);
+		for (auto& effect : type.effects)
+		{
+			effect->executeRTS(state, fm, targets);
+		}
+	}
+
 
 }

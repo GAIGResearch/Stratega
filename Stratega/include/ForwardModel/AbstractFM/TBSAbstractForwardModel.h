@@ -48,6 +48,7 @@ namespace  SGA
 
 			initTurn(state);
 		}
+		
 		void initTurn(TBSGameState2& state) const
 		{
 			

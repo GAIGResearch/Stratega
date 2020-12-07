@@ -9,15 +9,6 @@ namespace SGA
 	{
 
 	}
-	
-	void AddToResource::execute(GameState& state, const std::vector<ActionTarget>& targets) const
-	{
-		auto& targetResource = resourceReference.getParameter(state, targets);
-		double amount = this->amount.getConstant(state, targets);
-		
-		targetResource += amount;
-	}
-
 	void AddToResource::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Add to resource" << std::endl;
@@ -26,17 +17,27 @@ namespace SGA
 
 		targetResource += amount;
 	}
-
-	void EndTurn::execute(GameState& state, const std::vector<ActionTarget>& targets) const
+	void AddToResource::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		std::cout << "Execute end turn" << std::endl;
+		std::cout << "Execute RTS Add to resource" << std::endl;
+		auto& targetResource = resourceReference.getParameter(state, targets);
+		double amount = this->amount.getConstant(state, targets);
+
+		targetResource += amount;
 	}
-	
+
+
 	void EndTurn::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS end turn" << std::endl;
 		auto& casted=dynamic_cast<TBSGameState2&>(state);
 		fm.endTurn(casted);
 	}
+
+	void EndTurn::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//NOT NEEDED
+	}
+
 
 }
