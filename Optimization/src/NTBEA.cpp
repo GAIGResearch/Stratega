@@ -50,16 +50,16 @@ namespace SGA
 
             evaluated_neighbors.emplace(potential_neighbor);
 
-            //std::cout << "Neighbor UCB " << ucb_with_noise << " at ";
-            //_evaluator->printPoint(potential_neighbor);
-            //std::cout << std::endl;
+            std::cout << "Neighbor UCB " << ucb_with_noise << " at ";
+            _evaluator->printPoint(potential_neighbor);
+            std::cout << std::endl;
 
             // Track the best neighbor that we have seen so far
             if (current_best_ucb < ucb_with_noise)
             {
-                //std::cout << "Found best UCB " << ucb_with_noise << " at ";
-                //_evaluator->printPoint(potential_neighbor);
-            	//std::cout << std::endl;
+                std::cout << "Found best UCB " << ucb_with_noise << " at ";
+                _evaluator->printPoint(potential_neighbor);
+            	std::cout << std::endl;
                 current_best_ucb = ucb_with_noise;
                 current_best_neighbor = potential_neighbor;
             }
