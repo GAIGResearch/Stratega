@@ -34,7 +34,7 @@ namespace SGA
 		[[nodiscard]] bool isUpdatingState() const { return updatingState && !isGameOver(); }
 
 	private:
-		bool updatingState = false;
+		volatile bool updatingState = false;
 		
 		std::unique_ptr<TBSGameState> gameState;
 		TBSForwardModel forwardModel;
