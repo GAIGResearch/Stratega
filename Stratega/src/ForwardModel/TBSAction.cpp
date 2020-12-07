@@ -21,7 +21,7 @@ namespace SGA
 		if (unit == nullptr)
 			return false;
 
-		return state.isWalkable(targetPosition) && unit->getPosition().manhattanDistance(targetPosition) <= unit->getRange();
+		return state.isWalkable(targetPosition) && unit->getPosition().distance(targetPosition) <= unit->getRange();
 	}
 	
 	bool TBSAction::validateAttack(TBSGameState& state) const
