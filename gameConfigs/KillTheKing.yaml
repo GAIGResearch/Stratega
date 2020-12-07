@@ -76,7 +76,7 @@ Units:
     Healer:
         Sprite: ../GUI/Assets/healer (2).png
         Health: 40
-        LineOfSightRange: 4
+        LineOfSightRange: 6
 
         MovementRange: 4
         ActionRange: 2
