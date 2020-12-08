@@ -11,9 +11,10 @@ namespace SGA
 	struct GameState
 	{
 		GameState()
-			: entityTypes(std::make_unique<std::unordered_map<int, EntityType>>()),
-			  actionTypes(std::make_unique<std::unordered_map<int, ActionType>>()),
-			  tileTypes(std::make_unique<std::unordered_map<int, TileType>>()),
+			: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
+			  entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
+			  actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
+			  tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
 			  isGameOver(false),
 			  winnerPlayerID(0),
 			  fogOfWarTile(0,0,0),
@@ -32,6 +33,7 @@ namespace SGA
 		GameState& operator=(GameState&& other) noexcept = default;
 
 		// Type information
+		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;

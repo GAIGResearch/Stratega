@@ -12,8 +12,6 @@ namespace SGA
 	{
 		int id;
 		std::string name;
-		// ToDo This forces us to do string-lookups which can be quite slow when done often, replace with integer
-		std::unordered_map<std::string, ParameterID> parameterNameIndexLookup;
 		std::unordered_map<ParameterID, Parameter> parameters;
 
 		const Parameter& getParameter(ParameterID id) const

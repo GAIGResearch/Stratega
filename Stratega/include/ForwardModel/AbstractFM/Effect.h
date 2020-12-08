@@ -8,15 +8,7 @@ namespace SGA
 	class Effect
 	{
 	public:
-		Effect(std::vector<FunctionParameter> parameter)
-		{
-			
-		}
 		virtual ~Effect() = default;
-		Effect(const Effect& other) = delete;
-		Effect(Effect&& other) noexcept = delete;
-		Effect& operator=(const Effect& other) = delete;
-		Effect& operator=(Effect&& other) noexcept = delete;
 		
 		virtual void execute(GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
