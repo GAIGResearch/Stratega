@@ -1,6 +1,6 @@
 #include <filesystem>
 //#include <GameStateRenderer.h>
-//#include <Configuration/RenderConfig.h>
+#include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 //#include <Game/TBSGameCommunicator.h>
 #include <Game/AbstractTBSGameCommunicator.h>
@@ -18,7 +18,7 @@ int main()
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	std::unique_ptr<SGA::TBSGameState2> test= std::make_unique<SGA::TBSGameState2>();
 	SGA::TBSAbstractForwardModel fm;
-	
+	test->turnLimit = 100000000000;
 	////Add precondition
 	SGA::FunctionParameter targetResource(0, 0);
 	SGA::FunctionParameter lowerBound(50.);
@@ -117,7 +117,8 @@ int main()
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
-
+	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
+	
 	int playerID = 0;
 	int humanPlayerID=-1;
 	auto agents = SGA::agentsFromConfig(gameConfig);
@@ -145,7 +146,20 @@ int main()
 		playerID++;
 	}
 
-	//game->addActionToExecute(actions[0]);
+
+
+	// Initialize the gameRenderer
+	// We change the current_path to load sprites relative to the folder containing the configuration file
+	auto tmp = std::filesystem::current_path();
+	current_path(absolute(configPath.parent_path()));
+	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
+	current_path(tmp);
+
+	game->addCommunicator(std::move(stateRenderer));
+	
+	// Run the game
+	
+	
 	game->run();
 	
 	//std::mt19937 rngEngine(0ll);

@@ -19,7 +19,7 @@ namespace SGA
 			unitPaths.emplace(units[namePathPair.first].id, namePathPair.second);
 		}
 		if(gameConfig.gameType=="TBS")
-			return std::make_unique<TBSGameStateRender>(dynamic_cast<TBSGame&>(game), tilePaths, unitPaths,playerID);
+			return std::make_unique<AbstractGameStateRender>(dynamic_cast<AbstractTBSGame&>(game), tilePaths, unitPaths,playerID);
 		else if(gameConfig.gameType == "RTS")
 			return std::make_unique<RTSGameStateRender>(dynamic_cast<RTSGame&>(game), tilePaths, unitPaths,playerID);
 		else
