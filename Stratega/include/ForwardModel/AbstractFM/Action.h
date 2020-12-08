@@ -4,6 +4,9 @@
 
 namespace SGA
 {
+	class TBSAbstractForwardModel;
+	class RTSAbstractForwardModel;
+	
 	struct Action
 	{
 		int actionTypeID;
@@ -11,7 +14,9 @@ namespace SGA
 		// UnitAction: Index 0 contains the source and Index 1 the target of the action
 		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
-
-		void execute(GameState& state) const;
+		int owner;
+		//void execute(GameState& state) const;
+		void execute(GameState& state, const TBSAbstractForwardModel& fm) const;
+		void execute(GameState& state, const RTSAbstractForwardModel& fm) const;
 	};
 }

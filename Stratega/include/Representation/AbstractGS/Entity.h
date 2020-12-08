@@ -13,5 +13,7 @@ namespace SGA
 		std::vector<int> actionTypeIds;
 
 		std::vector<double> parameters;
+
+		bool shouldRemove;//Death?
 	};
 }

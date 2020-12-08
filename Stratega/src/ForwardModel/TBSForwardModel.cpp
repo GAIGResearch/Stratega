@@ -251,7 +251,7 @@ namespace SGA
 		}
 	}
 
-	bool TBSForwardModel::isConditionFulfilled(const Effect& effect, TBSUnit& targetUnit) const
+	bool TBSForwardModel::isConditionFulfilled(const EffectOld& effect, TBSUnit& targetUnit) const
 	{
 		switch (effect.conditionType)
 		{
@@ -261,7 +261,7 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::executeEffect(FMState& state, const Effect& effect, TBSUnit& targetUnit) const
+	void TBSForwardModel::executeEffect(FMState& state, const EffectOld& effect, TBSUnit& targetUnit) const
 	{
 		if (!isConditionFulfilled(effect, targetUnit))
 			return;
@@ -274,12 +274,12 @@ namespace SGA
 		}
 	}
 	
-	void TBSForwardModel::addOnTileEnterEffect(Effect&& effect)
+	void TBSForwardModel::addOnTileEnterEffect(EffectOld&& effect)
 	{
 		onTileEnterEffects.emplace_back(effect);
 	}
 	
-	void TBSForwardModel::addUnitEndOfTurnEffect(Effect&& effect)
+	void TBSForwardModel::addUnitEndOfTurnEffect(EffectOld&& effect)
 	{
 		unitEndOfTurnEffects.emplace_back(effect);
 	}

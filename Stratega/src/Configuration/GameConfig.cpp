@@ -72,7 +72,7 @@ namespace SGA
 		
 		for(auto& effectConfig : fmConfig.effects)
 		{
-			Effect effect{};
+			EffectOld effect{};
 			effect.type = effectConfig.second.type;
 			effect.conditionType = effectConfig.second.condition;
 			if(effect.type == EffectType::Death)

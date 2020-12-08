@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	struct Effect
+	struct EffectOld
 	{
 		// Condition variables
 		ConditionType conditionType;

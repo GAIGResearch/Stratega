@@ -26,4 +26,5 @@ namespace SGA
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+	
 }
