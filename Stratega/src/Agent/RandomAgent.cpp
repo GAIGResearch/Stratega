@@ -17,7 +17,7 @@ namespace SGA
 		}
 	}
 
-	void RandomAgent::runAbstractTBS(AbstractGameCommunicator& gameCommunicator, TBSAbstractForwardModel ForwardModel)
+	void RandomAgent::runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel ForwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

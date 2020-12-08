@@ -3,7 +3,7 @@
 //#include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 //#include <Game/TBSGameCommunicator.h>
-#include <Game/AbstractGameCommunicator.h>
+#include <Game/AbstractTBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
@@ -109,7 +109,7 @@ int main()
 	//auto actions=fm.generateActions(*test,0);
 	std::mt19937 engine(0ll);
 	//GenerateGame
-	std::unique_ptr<SGA::AbstractGame>game= std::make_unique<SGA::AbstractGame>(std::move(test),fm,engine);
+	std::unique_ptr<SGA::AbstractTBSGame>game= std::make_unique<SGA::AbstractTBSGame>(std::move(test),fm,engine);
 	
 
 	// Read Config
@@ -135,9 +135,9 @@ int main()
 		}
 		if (gameConfig.gameType == "TBS")
 		{
-			std::unique_ptr<SGA::AbstractGameCommunicator> comm = std::make_unique<SGA::AbstractGameCommunicator>(playerID);
+			std::unique_ptr<SGA::AbstractTBSGameCommunicator> comm = std::make_unique<SGA::AbstractTBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::AbstractGame&>(*game));
+			comm->setGame(dynamic_cast<SGA::AbstractTBSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));
 		}

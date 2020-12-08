@@ -33,10 +33,7 @@ namespace SGA
 			
 		}
 	
-		bool checkGameIsFinished(Gamestate& state) const
-		{
-			return false;
-		}
+		virtual bool checkGameIsFinished(Gamestate& state) const = 0;
 
 		// ActionSpaces
 		void setActionSpace(std::unique_ptr<ActionSpaceBase<Gamestate>> as)

@@ -53,6 +53,79 @@ namespace  SGA
 		{
 			
 		}
+
+
+		bool canPlayerPlay(Player& player) const
+		{
+			//if (player.state.get().fogOfWarId != -1 && player.id != player.state.get().fogOfWarId)
+			//	return true;
+
+			//switch (winCondition)
+			//{
+			//case WinConditionType::UnitAlive:
+			//{
+			//	bool hasKing = false;
+			//	std::vector<TBSUnit*> units = player.getUnits();
+
+			//	for (auto& unit : units)
+			//	{
+			//		//Check if player has units
+			//		if (unit->getUnitTypeID() == unitTypeID)
+			//		{
+			//			hasKing = true;
+			//		}
+			//	}
+
+			//	if (!hasKing)
+			//	{
+			//		return false;
+			//	}
+
+			//	break;
+			//}
+			//case WinConditionType::LastManStanding:
+			//{
+			//	std::vector<TBSUnit*> units = player.getUnits();
+
+			//	if (units.empty())
+			//	{
+			//		return false;
+			//	}
+			//	break;
+			//}
+			//}
+
+			return true;
+		}
+		
+		bool checkGameIsFinished(TBSGameState2& state) const override
+		{
+			if (state.currentGameTurn >= state.turnLimit)
+				return true;
+
+			int numberPlayerCanPlay = 0;
+			int winnerID = -1;
+			for (Player& player : state.players)
+			{
+				if (player.canPlay && canPlayerPlay(player))
+				{
+					winnerID = player.id;
+					numberPlayerCanPlay++;
+				}
+				else
+				{
+					player.canPlay = false;
+				}
+			}
+
+			if (numberPlayerCanPlay <= 1)
+			{
+				state.winnerPlayerID=(winnerID);
+				return true;
+			}
+
+			return false;
+		}
 		
 	};
 }

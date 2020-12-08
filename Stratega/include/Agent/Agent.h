@@ -5,14 +5,15 @@
 #include <ForwardModel/AbstractFM/RTSAbstractForwardModel.h>
 #include <Game/TBSGameCommunicator.h>
 #include <Game/RTSGameCommunicator.h>
-#include <Game/AbstractGameCommunicator.h>
+#include <Game/AbstractTBSGameCommunicator.h>
+#include <Game/AbstractRTSGameCommunicator.h>
 #include <Representation/AbstractGS/TBSGameState2.h>
 
 namespace SGA
 {
 	class TBSGameCommunicator;
 	class RTSGameCommunicator;
-	class AbstractGameCommunicator;
+	class AbstractTBSGameCommunicator;
 	class AbstractRTSGameCommunicator;
 	
 	class Agent
@@ -29,7 +30,7 @@ namespace SGA
 		{
 			
 		}
-		virtual void runAbstractTBS(AbstractGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
+		virtual void runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
 		{
 			
 		}

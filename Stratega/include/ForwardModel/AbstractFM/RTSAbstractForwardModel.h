@@ -26,6 +26,10 @@ namespace  SGA
 			state.isGameOver = checkGameIsFinished(state);
 		}
 
+		bool checkGameIsFinished(RTSGameState2& state) const override
+		{
+			return false;
+		}
 		
 	};
 }
