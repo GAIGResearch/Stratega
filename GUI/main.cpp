@@ -78,7 +78,7 @@ int main()
 	SGA::EntityType type;
 	type.id = 0;
 	type.name = "Fuck";
-	type.parameterNameIndexLookup.emplace("Health", 0);
+ 	test->parameterIDLookup->emplace("Health", 0);
 	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
 	test->entityTypes->emplace(0, std::move(type));
 	
