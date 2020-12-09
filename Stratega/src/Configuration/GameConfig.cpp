@@ -270,4 +270,57 @@ namespace SGA
 
 		return game;
 	}
+
+	std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+	{
+		auto boardGenerator = boardGeneratorFromConfig(config);
+		auto unitTypes = unitTypesFromConfig(config);
+		auto tileTypes = tileTypesFromConfig(config);
+		// Convert the unordered maps
+		std::unordered_map<int, UnitType> unitTypesMap;
+		std::unordered_map<int, TileType> tileTypesMap;
+		for (const auto& nameTypePair : unitTypes)
+		{
+			unitTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
+		}
+		for (const auto& nameTypePair : tileTypes)
+		{
+			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
+		}
+
+		// Initialize state
+		auto board = boardGenerator->generate(rngEngine);
+		auto state = std::make_unique<TBSGameState2>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
+		state->turnLimit = config.roundLimit;
+		std::vector<int> playerIDs;
+		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
+		{
+			playerIDs.push_back(state->addPlayer());
+		}
+
+		// Spawn units
+		// TODO Unit spawn configuration
+		//std::unordered_set<Vector2i> occupiedSet;
+		//std::uniform_int_distribution<int> xDist(0, state->board.getWidth() - 1);
+		//std::uniform_int_distribution<int> yDist(0, state->board.getHeight() - 1);
+		//for (auto i = 0; i < state->players.size(); i++)
+		//{
+		//	for (const auto& nameTypePair : unitTypes)
+		//	{
+		//		// Generate random positions until a suitable was found
+		//		Vector2i pos(xDist(rngEngine), yDist(rngEngine));
+		//		while (!state->board.getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
+		//		{
+		//			pos.x = xDist(rngEngine);
+		//			pos.y = yDist(rngEngine);
+		//		}
+		//		occupiedSet.insert(pos);
+
+		//		state->addUnit(playerIDs[i], nameTypePair.second.id, pos);
+		//	}
+		//}
+
+		return std::move(state);
+	}
+
 }

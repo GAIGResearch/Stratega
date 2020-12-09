@@ -8,6 +8,7 @@
 #include <ForwardModel/TBSForwardModel.h>
 #include <Agent/Agent.h>
 #include <yaml-cpp/yaml.h>
+#include <Representation/AbstractGS/TBSGameState2.h>
 
 namespace SGA
 {
@@ -37,6 +38,10 @@ namespace SGA
     std::unique_ptr<TBSGameState> generateTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
     std::unique_ptr<RTSGameState> generateRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
     std::unique_ptr<Game> generateGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
+
+	//Abstract
+
+    std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }
 
 namespace YAML

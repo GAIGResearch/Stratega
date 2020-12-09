@@ -7,7 +7,7 @@ Agents:
 #    - MCTSAgent
 #    - BFSAgent
     - RandomAgent
-    - RandomAgent
+    - HumanAgent
 
 Tiles:
     Plain:

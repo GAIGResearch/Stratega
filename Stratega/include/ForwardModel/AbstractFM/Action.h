@@ -11,7 +11,7 @@ namespace SGA
 	{
 		int actionTypeID;
 		// Contains all targets involved in an action
-		// UnitAction: Index 0 contains the source and Index 1 the target of the action
+		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
 		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
 		int owner;

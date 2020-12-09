@@ -188,75 +188,83 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 		sf::Vector2i pos = toGrid(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 
 		//If selected unit we check if there is action in tile
-		if (selectedUnit)
+		if (selectedEntity)
 		{
-			////Recollect each action in tile
-			//std::vector<SGA::TBSAction> actionsInTile;
-			//for (const auto& action : actionHumanUnitSelected)
-			//{
-			//	if (action.targetPosition == SGA::Vector2i(pos.x, pos.y))
-			//	{
-			//		actionsInTile.emplace_back(action);
-			//	}
-			//}
+			//Recollect each action in tile
+			std::vector<SGA::Action> actionsInTile;
+			for (const auto& action : actionHumanUnitSelected)
+			{
+				SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				if (actionType.sourceType == SGA::ActionSourceType::Unit)
+				{
+					
+					if (SGA::targetToEntity(gameStateCopy, action.targets[1]).position == SGA::Vector2i(pos.x, pos.y))
+					{
+						actionsInTile.emplace_back(action);
+					}
+				}
+			}
 
 			//Check number of actions in tile
-			//if (actionsInTile.size() > 1)
-			//{
-			//	//Open window to show actions
-			//	showMultipleActions = true;
-			//	multipleActionsSourceTile = SGA::Vector2i(pos.x, pos.y);
-			//}
-			//else if (!actionsInTile.empty())
-			//{
-			//	//Play action directly
-			//	playAction(actionsInTile[0]);
-			//}
-			//else
-			//{
-			//	//If there is no action, hide window
-			//	showMultipleActions = false;
-			//}
+			if (actionsInTile.size() > 1)
+			{
+				//Open window to show actions
+				showMultipleActions = true;
+				multipleActionsSourceTile = SGA::Vector2i(pos.x, pos.y);
+			}
+			else if (!actionsInTile.empty())
+			{
+				//Play action directly
+				playAction(actionsInTile[0]);
+			}
+			else
+			{
+				//If there is no action, hide window
+				showMultipleActions = false;
+			}
 
 		}
 		else
 		{
 			showMultipleActions = false;
-			selectedUnit = nullptr;
+			selectedEntity = nullptr;
 		}
 
-		//SGA::TBSUnit* unit = gameStateCopy.getUnit(SGA::Vector2i(pos.x, pos.y));
+		SGA::Entity* unit = gameStateCopy.getEntity(SGA::Vector2f(pos.x, pos.y));
 
-		//if (unit)
-		//{
+		if (unit)
+		{
 
-		//	//Assign selected unit			
-		//	selectedUnit = unit;
-		//	if (unit->getPlayerID() == gameStateCopy.currentPlayer)
-		//	{
-		//		actionHumanUnitSelected.clear();
-		//		for (const auto& action : actionsHumanCanPlay)
-		//		{
-		//			//If is player unit action or globlal action(i.e End turn)
-		//			if (action.sourceUnitID == unit->getUnitID() || (action.sourceUnitID == -1 && unit->getPlayerID() == gameStateCopy.currentPlayer))
-		//				actionHumanUnitSelected.emplace_back(action);
-		//		}
-		//	}
-		//}
-		//else
-		//{
-		//	//Restart selected actions of unit and selected unit
-		//	actionHumanUnitSelected.clear();
-		//	selectedUnit = nullptr;
+			//Assign selected unit			
+			selectedEntity = unit;
+			if (unit->owner == gameStateCopy.currentPlayer)
+			{
+				actionHumanUnitSelected.clear();
+				for (const auto& action : actionsHumanCanPlay)
+				{
+					////If is player unit action or globlal action(i.e End turn)
+					if (/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ unit->owner == gameStateCopy.currentPlayer/*)*/)
+						actionHumanUnitSelected.emplace_back(action);
+				}
+			}
+		}
+		else
+		{
+			//Restart selected actions of unit and selected unit
+			actionHumanUnitSelected.clear();
+		selectedEntity = nullptr;
 
-		//	moving = true;
-		//	oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-		//}
+			moving = true;
+			oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+		}
 	}
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
-		/*if (waitForAction)
-			playAction(SGA::TBSAction(SGA::TBSActionType::EndTurn, gameStateCopy.currentPlayer));*/
+		if (waitForAction)
+		{
+			playAction(actionsHumanCanPlay[actionsHumanCanPlay.size()-1]);
+		}
+			
 	}
 }
 void AbstractGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
@@ -363,7 +371,12 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 
 
 	//Draw Board
-	sprites.clear();
+	mapSprites.clear();
+	entitySprites.clear();
+	entityInfo.clear();
+	overlaySprites.clear();
+	actionsSelectedEntity.clear();
+	
 	SGA::Board& board = gameStateCopy.board;
 
 	for (int y = 0; y < board.getHeight(); ++y)
@@ -377,15 +390,109 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 
 			newTile.setPosition(toISO(x, y));
 			newTile.setOrigin(origin);
-			sprites.emplace_back(newTile);
+			mapSprites.emplace_back(newTile);
 		}
 
 	}
 
-	for (const auto& sprite : sprites)
+	for (const auto& sprite : mapSprites)
 	{
 		window.draw(sprite);
 	}
+
+	//Draw selectedtile
+	//Add actions if we have actions to draw
+	if (actionHumanUnitSelected.size() > 0)
+	{
+		for (const auto& action : actionHumanUnitSelected)
+		{
+			SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+			if(actionType.sourceType==SGA::ActionSourceType::Unit)
+			{
+				
+				
+				//Get source
+				const SGA::Entity& sourceEntity = SGA::targetToEntity(gameStateCopy, action.targets[0]);
+				const SGA::Entity& targetEntity = SGA::targetToEntity(gameStateCopy, action.targets[1]);
+				sf::CircleShape shape(15);
+				sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+
+				shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+				/*switch (action.type)
+				{
+				case SGA::TBSActionType::Attack: shape.setFillColor(sf::Color::Red); break;
+				case SGA::TBSActionType::Move:  break;
+				case SGA::TBSActionType::Heal: shape.setFillColor(sf::Color::Green);  break;
+				case SGA::TBSActionType::Push: shape.setFillColor(sf::Color::Black);  break;
+				case SGA::TBSActionType::EndTurn:  shape.setFillColor(sf::Color::Magenta); break;
+				default: throw std::runtime_error("Tried adding an action with an not supported action-type");
+				}*/
+				actionsSelectedEntity.emplace_back(shape);
+			}
+			
+		}
+	}
+
+	for (const auto& sprite : actionsSelectedEntity)
+	{
+		window.draw(sprite);
+	}
+	
+	//Add selected tile
+	sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
+
+	if (gameStateCopy.isInBounds(SGA::Vector2i(mouseGridPos.x, mouseGridPos.y)))
+	{
+		sf::Texture& texture = assetCache.getTexture("selected");
+		sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+		sf::Sprite selectedTile(texture);
+
+		selectedTile.setPosition(toISO(mouseGridPos.x, mouseGridPos.y));
+		selectedTile.setOrigin(origin);
+		overlaySprites.emplace_back(selectedTile);
+	}
+	for (const auto& sprite : overlaySprites)
+	{
+		window.draw(sprite);
+	}
+
+	//Draw entities
+	for (auto& entity : gameStateCopy.entities)
+	{
+		//Check if entity have sprite
+		auto searchedEntity = entitySpriteTypes->find(entity.typeID);
+		if(searchedEntity!=entitySpriteTypes->end())
+		{
+			//Add units
+			sf::Texture& texture = assetCache.getTexture(searchedEntity->second);
+			sf::Vector2f origin(0, texture.getSize().y / 1.4);
+			sf::Sprite newUnit(texture);
+
+			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
+			newUnit.setPosition(pos.x + TILE_WIDTH_HALF / 2, pos.y + TILE_HEIGHT_HALF / 2);
+
+			newUnit.setOrigin(origin);
+			entitySprites.emplace_back(newUnit);
+
+			//Add units text info
+			sf::Text unitInfo;
+			unitInfo.setFont(assetCache.getFont("font"));
+
+			unitInfo.setString("PlayerID: " + std::to_string(entity.owner) + "ID: " + std::to_string(entity.typeID));
+			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
+			entityInfo.emplace_back(unitInfo);
+		}
+	}
+
+	for (const auto& sprite : entitySprites)
+	{
+		window.draw(sprite);
+	}
+	for (const auto& info : entityInfo)
+	{
+		window.draw(info);
+	}
+	
 }
 
 void AbstractGameStateRender::createHUD(sf::RenderWindow& window)

@@ -10,6 +10,20 @@ namespace SGA
 {
 	struct GameState
 	{
+		GameState::GameState(Board&& board/*, const std::unordered_map<int, UnitType>& unitTypes*/, const std::unordered_map<int, TileType>& tileTypes) :
+			fogOfWarTile(-1, 0, 0),
+			isGameOver(false),
+			board(std::move(board)),
+			players(),
+			lastUsedPlayerID(-1),
+			winnerPlayerID(-1),
+			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
+			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
+			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
+			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>())
+		{
+			
+		}
 		GameState()
 			: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			  entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
@@ -81,6 +95,43 @@ namespace SGA
 				s.append(std::to_string(entityTypeID));
 				throw std::runtime_error(s);
 			}
+		}
+
+		int addPlayer()
+		{
+			lastUsedPlayerID++;
+			players.emplace_back(/**this*/lastUsedPlayerID);
+			return lastUsedPlayerID;
+		}
+
+		Entity* getEntity(SGA::Vector2f pos)
+		{
+			for (auto& entity : entities)
+			{
+				if (entity.position == pos)
+					return &entity;
+			}
+
+			return nullptr;
+		}
+
+		bool isWalkable(const Vector2i& position)
+		{
+			Tile& targetTile = board.getTile(position.x, position.y);
+			Entity* targetUnit = getEntity(position);
+
+			return targetUnit == nullptr && targetTile.isWalkable;
+		}
+
+		
+		bool isInBounds(Vector2i pos)
+		{
+			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+		}
+
+		ActionType& getActionType(int typeID)
+		{
+			return actionTypes->find(typeID)->second;
 		}
 	};
 }

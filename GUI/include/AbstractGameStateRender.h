@@ -52,7 +52,7 @@ private:
 	{
 		waitForAction = true;
 
-		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy);
+		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy,getPlayerID());
 		actionHumanUnitSelected.clear();
 	}
 
@@ -61,7 +61,7 @@ private:
 		waitForAction = false;
 		actionsHumanCanPlay.clear();
 		actionHumanUnitSelected.clear();
-		selectedUnit = nullptr;
+		selectedEntity = nullptr;
 		showMultipleActions = false;
 		game->addActionToExecute(action);
 	}
@@ -96,7 +96,7 @@ private:
 	std::vector<SGA::Action> actionsHumanCanPlay;
 
 	std::vector<SGA::Action> actionHumanUnitSelected;
-	SGA::TBSUnit* selectedUnit{};
+	SGA::Entity* selectedEntity{};
 
 	//Imgui
 	sf::Clock deltaClock;
@@ -107,6 +107,5 @@ private:
 	SGA::Vector2i multipleActionsSourceTile;
 
 
-	//TEMP
-	std::vector<sf::Sprite> sprites;
+
 };

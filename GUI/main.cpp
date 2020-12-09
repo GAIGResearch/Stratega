@@ -14,9 +14,20 @@
 #include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <Game/AbstractGame.h>
 int main()
-{
+{	// Read Config
+	std::mt19937 engine(0ll);
+	
+	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
+	auto yamlConfig = YAML::LoadFile(configPath.string());
+	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
+
+	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
+	std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine);
+
+	
+	
 	SGA::ActionSpaceBase<SGA::GameState> temp;
-	std::unique_ptr<SGA::TBSGameState2> test= std::make_unique<SGA::TBSGameState2>();
+	
 	SGA::TBSAbstractForwardModel fm;
 	test->turnLimit = 100000000000;
 	////Add precondition
@@ -29,8 +40,7 @@ int main()
 	SGA::FunctionParameter amountToAddEffect(10.);
 	SGA::AddToResource effect(targetResourceEffect, amountToAddEffect);
 
-	//std::unique_ptr<SGA::AddToResource> effect3 = std::make_unique<SGA::AddToResource>(targetResourceEffect, amountToAddEffect);
-
+	
 	//Add effect
 	
 	SGA::EndTurn effect2;
@@ -61,23 +71,23 @@ int main()
 	
 	test->actionTypes->emplace(1, std::move(actionType2));
 	
-	//Add players
-	SGA::Player player1;
-	player1.canPlay = true;
-	player1.id = 0;
-	player1.score = 0;
-	SGA::Player player2;
-	player2.canPlay = true;
-	player2.id = 0;
-	player2.score = 0;
-	
-	test->players.emplace_back(player1);
-	test->players.emplace_back(player2);
+	////Add players
+	//SGA::Player player1;
+	//player1.canPlay = true;
+	//player1.id = 0;
+	//player1.score = 0;
+	//SGA::Player player2;
+	//player2.canPlay = true;
+	//player2.id = 0;
+	//player2.score = 0;
+	//
+	//test->players.emplace_back(player1);
+	//test->players.emplace_back(player2);
 
 	// Add EntityType
 	SGA::EntityType type;
 	type.id = 0;
-	type.name = "Fuck";
+	type.name = "Unit";
  	test->parameterIDLookup->emplace("Health", 0);
 	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
 	test->entityTypes->emplace(0, std::move(type));
@@ -88,7 +98,7 @@ int main()
 	entity.owner = 0;
 	entity.actionTypeIds.emplace_back(0);
 	entity.actionTypeIds.emplace_back(1);
-	entity.position = SGA::Vector2f(0, 0);
+	entity.position = SGA::Vector2f(10, 10);
 	entity.typeID = 0;
 	entity.parameters.emplace_back(60);
 	
@@ -99,25 +109,17 @@ int main()
 	entity2.owner = 1;
 	entity2.actionTypeIds.emplace_back(0);
 	entity2.actionTypeIds.emplace_back(1);
-	entity2.position = SGA::Vector2f(1, 1);
+	entity2.position = SGA::Vector2f(3, 3);
 	entity2.typeID = 0;
-	entity2.parameters.emplace_back(1);
+	entity2.parameters.emplace_back(60);
 
 	test->entities.emplace_back(entity2);
 
-
-	//auto actions=fm.generateActions(*test,0);
-	std::mt19937 engine(0ll);
 	//GenerateGame
 	std::unique_ptr<SGA::AbstractTBSGame>game= std::make_unique<SGA::AbstractTBSGame>(std::move(test),fm,engine);
 	
 
-	// Read Config
-	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
-	auto yamlConfig = YAML::LoadFile(configPath.string());
-	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
-	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
 	
 	int playerID = 0;
 	int humanPlayerID=-1;
@@ -146,14 +148,17 @@ int main()
 		playerID++;
 	}
 
-
-
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath.parent_path()));
 	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
 	current_path(tmp);
+
+	AbstractGameStateRender* render = dynamic_cast<AbstractGameStateRender*>(stateRenderer.get());
+	//Register entitytypes
+	
+	render->entitySpriteTypes->emplace(0, "unit_0");
 
 	game->addCommunicator(std::move(stateRenderer));
 	
