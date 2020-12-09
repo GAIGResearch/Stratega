@@ -5,7 +5,7 @@ class MapLayer : public RenderLayer<GameState>
 {
 public:
 	MapLayer(AssetCache& assetCache) :
-		RenderLayer(assetCache)
+		RenderLayer<GameState>(assetCache)
 	{
 
 	}
@@ -19,13 +19,13 @@ public:
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				auto& targetTile = board.getTile(x, y);
-				sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
+				sf::Texture& texture = RenderLayer<GameState>::assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
 				sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 				sf::Sprite newTile(texture);
 
 				newTile.setPosition(toISO(x, y));
 				newTile.setOrigin(origin);
-				sprites.emplace_back(newTile);
+                RenderLayer<GameState>::sprites.emplace_back(newTile);
 			}
 
 		}
@@ -38,7 +38,7 @@ public:
 
 	void draw(GameState& state, sf::RenderWindow& window)const
 	{
-		for (const auto& sprite : sprites)
+		for (const auto& sprite : RenderLayer<GameState>::sprites)
 		{
 			window.draw(sprite);
 		}
