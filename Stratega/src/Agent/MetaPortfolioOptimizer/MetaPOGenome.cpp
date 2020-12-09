@@ -112,7 +112,7 @@ namespace SGA {
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
 
         // go through the units and mutate some of their script assignments
-        const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
         std::set<int> unitIDs = std::set<int>();
     	for (TBSUnit* unit : units)
@@ -147,7 +147,7 @@ namespace SGA {
         std::vector<TBSUnit*> units = gameState.getPlayer(gameState.currentPlayer)->getUnits();
 
         // go through the units and mutate some of their script assignments
-        const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
         for (TBSUnit* unit : units)
         {

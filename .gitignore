@@ -10,5 +10,8 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 .vs/
+.idea/
+.DS_Store
+cmake-build-debug/
 out/
 experiments/

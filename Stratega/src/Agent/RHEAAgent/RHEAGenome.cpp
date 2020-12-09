@@ -57,7 +57,7 @@ namespace SGA {
         unsigned long long actIdx = 0;
         while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
-            std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+            std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
 
             // replace with random portfolio in case of mutate or no portfolio available
@@ -105,7 +105,7 @@ namespace SGA {
         while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
-            std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+            std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
 
             // mutation = randomly select a new action for gameStateCopy

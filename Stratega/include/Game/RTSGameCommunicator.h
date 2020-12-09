@@ -27,7 +27,7 @@ namespace SGA
 		bool isRunning = false;
 
 		std::mt19937& getRNGEngine() { return rngEngine; }
-		bool RTSGameCommunicator::isGameOver() const;
+		bool isGameOver() const;
 
 		//TODO private
 		void setGame(RTSGame& newGame);

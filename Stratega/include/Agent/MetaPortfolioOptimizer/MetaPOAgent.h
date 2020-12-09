@@ -19,7 +19,7 @@ namespace SGA
 		MetaPOParams params_;
 		int lastKnownTick = -1;
 
-		std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
 	public:
 		MetaPOAgent() :
