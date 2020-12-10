@@ -36,7 +36,7 @@ void TestGameStateCopy(const SGA::TBSGameState& state)
 	}
 }
 
-void main()
+int main()
 {
 	std::mt19937 rngEngine(0ll);
 
