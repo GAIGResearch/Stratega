@@ -36,12 +36,18 @@ void TestGameStateCopy(const SGA::TBSGameState& state)
 	}
 }
 
-int main()
+int main(int argc, char **argv)
 {
+    std::string filename = "../../../gameConfigs/KillTheKing.yaml";
+    if(argc > 1)
+        filename = argv[1];
+    else
+        std::cout << "Loading default config " << filename << std::endl;
+
+    std::filesystem::path configPath(filename);
 	std::mt19937 rngEngine(0ll);
 
 	// Read Config
-	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
