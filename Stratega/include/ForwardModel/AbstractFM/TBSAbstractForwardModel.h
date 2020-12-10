@@ -126,6 +126,9 @@ namespace  SGA
 
 			return false;
 		}
-		
+		void moveEntity(TBSGameState2& state, Entity& entity, Vector2f newPosition) const
+		{
+			entity.position = newPosition;
+		}
 	};
 }

@@ -11,4 +11,5 @@ namespace SGA
 	
 	Vector2f targetToPosition(const GameState& state, const ActionTarget& target);
 	const Entity& targetToEntity(const GameState& state, const ActionTarget& target);
+	 Entity& targetToEntity( GameState& state,  const ActionTarget& target);
 }

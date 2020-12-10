@@ -1,7 +1,8 @@
 #include <AbstractGameStateRender.h>
 #include <imgui-SFML.h>
 #include <imgui.h>
-
+#include <iomanip>
+#include <sstream>
 AbstractGameStateRender::AbstractGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),
@@ -59,6 +60,9 @@ void AbstractGameStateRender::init(const std::unordered_map<int, std::string>& t
 	// TODO Depends on location of configuration file, how to prevent that?
 	assetCache.loadTexture("selected", "../GUI/Assets/selected.png");
 	assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
+
+	
+	assetCache.loadTexture("building", "../GUI/Assets/building.png");
 
 
 }
@@ -197,11 +201,22 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 				SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 				if (actionType.sourceType == SGA::ActionSourceType::Unit)
 				{
-					
-					if (SGA::targetToEntity(gameStateCopy, action.targets[1]).position == SGA::Vector2i(pos.x, pos.y))
+					if(actionType.actionTargets.type==SGA::TargetType::Entity)
 					{
-						actionsInTile.emplace_back(action);
+						if (SGA::targetToEntity(gameStateCopy, action.targets[1]).position == SGA::Vector2i(pos.x, pos.y))
+						{
+							actionsInTile.emplace_back(action);
+						}
 					}
+					else
+					{
+						if (SGA::targetToPosition(gameStateCopy, action.targets[1]) == SGA::Vector2i(pos.x, pos.y))
+						{
+							actionsInTile.emplace_back(action);
+						}
+					}
+						
+						
 				}
 			}
 
@@ -242,9 +257,22 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 				actionHumanUnitSelected.clear();
 				for (const auto& action : actionsHumanCanPlay)
 				{
-					////If is player unit action or globlal action(i.e End turn)
-					if (/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ unit->owner == gameStateCopy.currentPlayer/*)*/)
-						actionHumanUnitSelected.emplace_back(action);
+					//If is player unit action or globlal action(i.e End turn)
+					
+					auto& actionType=gameStateCopy.getActionType(action.actionTypeID);
+					
+					if(actionType.actionTargets== SGA::TargetType::Entity)
+					{
+						auto& entity = SGA::targetToEntity(gameStateCopy, action.targets[0]);
+						if (entity.id==unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
+							actionHumanUnitSelected.emplace_back(action);
+					}
+					else if(actionType.actionTargets == SGA::TargetType::Position)
+					{
+						if (SGA::targetToEntity(gameStateCopy, action.targets[0]).id==unit->id)
+							actionHumanUnitSelected.emplace_back(action);
+					}
+					
 				}
 			}
 		}
@@ -412,12 +440,29 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 				
 				
 				//Get source
-				const SGA::Entity& sourceEntity = SGA::targetToEntity(gameStateCopy, action.targets[0]);
-				const SGA::Entity& targetEntity = SGA::targetToEntity(gameStateCopy, action.targets[1]);
-				sf::CircleShape shape(15);
-				sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+				if(actionType.actionTargets.type==SGA::TargetType::Entity)
+				{
+					const SGA::Entity& targetEntity = SGA::targetToEntity(gameStateCopy, action.targets[1]);
 
-				shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+					sf::CircleShape shape(15);
+					sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+
+					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+					actionsSelectedEntity.emplace_back(shape);
+				}
+				else
+				{
+					const SGA::Vector2f& targetPos = SGA::targetToPosition(gameStateCopy, action.targets[1]);
+
+					sf::CircleShape shape(15);
+					sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
+
+					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+					actionsSelectedEntity.emplace_back(shape);
+					shape.setFillColor(sf::Color::Green);
+				}
+				
+				
 				/*switch (action.type)
 				{
 				case SGA::TBSActionType::Attack: shape.setFillColor(sf::Color::Red); break;
@@ -427,7 +472,7 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 				case SGA::TBSActionType::EndTurn:  shape.setFillColor(sf::Color::Magenta); break;
 				default: throw std::runtime_error("Tried adding an action with an not supported action-type");
 				}*/
-				actionsSelectedEntity.emplace_back(shape);
+				
 			}
 			
 		}
@@ -465,11 +510,12 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 		{
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(searchedEntity->second);
-			sf::Vector2f origin(0, texture.getSize().y / 1.4);
+			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
+			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 			sf::Sprite newUnit(texture);
 
 			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x + TILE_WIDTH_HALF / 2, pos.y + TILE_HEIGHT_HALF / 2);
+			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
 
 			newUnit.setOrigin(origin);
 			entitySprites.emplace_back(newUnit);
@@ -477,8 +523,22 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 			//Add units text info
 			sf::Text unitInfo;
 			unitInfo.setFont(assetCache.getFont("font"));
-
-			unitInfo.setString("PlayerID: " + std::to_string(entity.owner) + "ID: " + std::to_string(entity.typeID));
+			std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
+			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
+			for (size_t i = 0; i < entity.parameters.size(); i++)
+			{
+				
+				// Create an output string stream
+				std::ostringstream streamObj3;
+				// Set Fixed -Point Notation
+				streamObj3 << std::fixed;
+				// Set precision to 2 digits
+				streamObj3 << std::setprecision(2);
+				streamObj3 << entity.parameters[i];
+				
+				info += "/" + streamObj3.str();
+			}
+			unitInfo.setString(info);
 			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
 			entityInfo.emplace_back(unitInfo);
 		}

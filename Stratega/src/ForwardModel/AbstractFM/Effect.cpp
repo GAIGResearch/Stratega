@@ -39,5 +39,18 @@ namespace SGA
 		//NOT NEEDED
 	}
 
+	void Move::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		std::cout << "Execute Move TBS" << std::endl;
+		auto& casted = dynamic_cast<TBSGameState2&>(state);
 
+		Entity& entity = targetToEntity(state, targets[0]);
+		Vector2f& newPos = targetToPosition(state, targets[1]);
+		fm.moveEntity(casted,entity,newPos);
+	}
+
+	void Move::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//NOT NEEDED
+	}
 }

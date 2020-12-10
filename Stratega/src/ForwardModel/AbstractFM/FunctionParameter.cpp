@@ -42,7 +42,8 @@ namespace SGA
 		if(parameterType == Type::ParameterReference)
 		{
 			auto entityID = std::get<int>(actionTargets[data.resourceData.argumentIndex]);
-			auto& entity = state.entities[entityID];
+			//auto& entity = state.entities[entityID];
+			auto& entity = state.getEntity(entityID);
 			const auto& entityType = state.getEntityType(entity.typeID);
 			auto iterator = state.entityTypes->find(entity.typeID);
 

@@ -30,13 +30,14 @@ int main()
 	
 	SGA::TBSAbstractForwardModel fm;
 	test->turnLimit = 100000000000;
+	
 	////Add precondition
 	SGA::FunctionParameter targetResource(0, 0);
 	SGA::FunctionParameter lowerBound(50.);
 	SGA::HasResource precondition(targetResource, lowerBound);
 
 	//Add effect
-	SGA::FunctionParameter targetResourceEffect(0, 0);
+	SGA::FunctionParameter targetResourceEffect(0, 1);
 	SGA::FunctionParameter amountToAddEffect(10.);
 	SGA::AddToResource effect(targetResourceEffect, amountToAddEffect);
 
@@ -44,6 +45,10 @@ int main()
 	//Add effect
 	
 	SGA::EndTurn effect2;
+
+	//Add effect
+	SGA::Move moveEffect;
+
 	
 	
 	//Add actionType
@@ -58,7 +63,7 @@ int main()
 	//Add actionType
 	SGA::ActionType actionType2;
 	actionType2.id = 1;
-	actionType2.name = "Test";
+	actionType2.name = "AddHealth";
 	actionType2.sourceType = SGA::ActionSourceType::Unit;
 	actionType2.preconditions.emplace_back(std::make_unique<SGA::HasResource>(precondition));
 	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(effect));
@@ -70,6 +75,22 @@ int main()
 	actionType2.actionTargets = target;
 	
 	test->actionTypes->emplace(1, std::move(actionType2));
+
+	//Add actionType Move
+	SGA::ActionType actionType3;
+	actionType3.id = 2;
+	actionType3.name = "Move";
+	actionType3.sourceType = SGA::ActionSourceType::Unit;
+	actionType3.effects.emplace_back(std::make_unique<SGA::Move>(moveEffect));
+	SGA::TargetType targetMove;
+	targetMove.type = SGA::TargetType::Position;
+	targetMove.shapeType = SGA::ShapeType::Square;
+	targetMove.shapeSize = 5;
+	targetMove.groupEntityTypes.insert(0);
+
+	actionType3.actionTargets = targetMove;
+
+	test->actionTypes->emplace(2, std::move(actionType3));
 	
 	////Add players
 	//SGA::Player player1;
@@ -91,6 +112,36 @@ int main()
  	test->parameterIDLookup->emplace("Health", 0);
 	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
 	test->entityTypes->emplace(0, std::move(type));
+
+	SGA::EntityType buildingType;
+	buildingType.id = 1;
+	buildingType.name = "Building";
+	test->parameterIDLookup->emplace("Health", 0);
+	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
+	test->entityTypes->emplace(1, std::move(buildingType));
+
+	//Add entity
+	SGA::Entity building1;
+	building1.id = 3;
+	building1.owner = 0;
+	building1.actionTypeIds.emplace_back(1);
+	building1.position = SGA::Vector2f(15, 10);
+	building1.typeID = 1;
+	building1.parameters.emplace_back(200);
+
+	test->entities.emplace_back(building1);
+
+
+	//Add entity
+	SGA::Entity building2;
+	building2.id = 2;
+	building2.owner = 1;
+	building2.actionTypeIds.emplace_back(1);
+	building2.position = SGA::Vector2f(20, 10);
+	building2.typeID = 1;
+	building2.parameters.emplace_back(200);
+
+	test->entities.emplace_back(building2);
 	
 	//Add entity
 	SGA::Entity entity;
@@ -98,6 +149,7 @@ int main()
 	entity.owner = 0;
 	entity.actionTypeIds.emplace_back(0);
 	entity.actionTypeIds.emplace_back(1);
+	entity.actionTypeIds.emplace_back(2);
 	entity.position = SGA::Vector2f(10, 10);
 	entity.typeID = 0;
 	entity.parameters.emplace_back(60);
@@ -109,6 +161,7 @@ int main()
 	entity2.owner = 1;
 	entity2.actionTypeIds.emplace_back(0);
 	entity2.actionTypeIds.emplace_back(1);
+	entity2.actionTypeIds.emplace_back(2);
 	entity2.position = SGA::Vector2f(3, 3);
 	entity2.typeID = 0;
 	entity2.parameters.emplace_back(60);
@@ -147,7 +200,7 @@ int main()
 		
 		playerID++;
 	}
-
+	
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
@@ -157,9 +210,11 @@ int main()
 
 	AbstractGameStateRender* render = dynamic_cast<AbstractGameStateRender*>(stateRenderer.get());
 	//Register entitytypes
+
+
 	
 	render->entitySpriteTypes->emplace(0, "unit_0");
-
+	render->entitySpriteTypes->emplace(1, "building");
 	game->addCommunicator(std::move(stateRenderer));
 	
 	// Run the game
