@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	typedef __int64_t TimeVal;
+	typedef int64_t TimeVal;
 
 	/// Recast build context.
 	class BuildContext : public rcContext
