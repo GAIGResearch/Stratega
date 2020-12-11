@@ -14,7 +14,7 @@ public:
     bool empty() { return count == 0; }
     bool full() { return count == size; }
 	bool hasElement(int index) const { return front > index; }
-	T getElement(int index) const { return data[index]; }
+	T& getElement(int index) { return data[index]; }
     int getFront() const { return ((front + (count-1)) % size); }
     int getCount() const { return count; }
     int getSize() const { return size; }

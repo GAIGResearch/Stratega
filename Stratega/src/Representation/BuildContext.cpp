@@ -1,4 +1,7 @@
 #include <cstdio>
+#include <cstring>
+#include <cstdarg>
+
 #include <Representation/BuildContext.h>
 
 namespace SGA

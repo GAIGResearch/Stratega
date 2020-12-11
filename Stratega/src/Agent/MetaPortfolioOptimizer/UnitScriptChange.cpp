@@ -30,7 +30,7 @@ namespace SGA
 
 	void UnitScriptChange::mutate(int horizon, std::set<int> unitIDs, int portfolioSize, std::mt19937& randomGenerator)
 	{
-		const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+	    std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 		const bool randomValue = doubleDistribution_(randomGenerator);
 
 		// mutate time point

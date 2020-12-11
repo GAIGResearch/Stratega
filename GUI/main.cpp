@@ -5,12 +5,18 @@
 #include <Game/TBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
 
-int main()
+int main(int argc, char **argv)
 {
+    std::string filename = "../../../gameConfigs/KillTheKing.yaml";
+    if(argc > 1)
+        filename = argv[1];
+    else
+        std::cout << "Loading default config " << filename << std::endl;
+
+    std::filesystem::path configPath(filename);
 	std::mt19937 rngEngine(0ll);
 
 	// Read Config
-	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
@@ -22,7 +28,7 @@ int main()
 	int humanPlayerID=-1;
 	auto agents = SGA::agentsFromConfig(gameConfig);
 	
-	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
+	std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
 	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);

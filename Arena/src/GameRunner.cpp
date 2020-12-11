@@ -23,7 +23,7 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 {
 	std::cout << "Initializing new game" << std::endl;
 	auto game = SGA::generateGameFromConfig(*config, rngEngine);
-	const std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto agents = agentsFromConfig(*config);
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{

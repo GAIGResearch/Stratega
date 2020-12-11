@@ -1,9 +1,10 @@
 #pragma once
 #include "Recast.h"
+#include <cstdint>
 
 namespace SGA
 {
-	typedef __int64 TimeVal;
+	typedef int64_t TimeVal;
 
 	/// Recast build context.
 	class BuildContext : public rcContext

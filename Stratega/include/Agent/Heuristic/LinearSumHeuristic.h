@@ -8,7 +8,7 @@ namespace SGA
 	{
 	public:
 		LinearSumHeuristic() {};
-		LinearSumHeuristic::~LinearSumHeuristic() {};
+		~LinearSumHeuristic() {};
 		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) override;
 		static std::string getName() { return "LinearSumHeuristic"; }
 	};

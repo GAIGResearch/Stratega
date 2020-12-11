@@ -111,7 +111,7 @@ namespace SGA {
         auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
 
-        const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
         for (std::map<int, BaseActionScript*>& assignmentPerTurn : scriptAssignment)
         {
             for (auto& entry : assignmentPerTurn)
@@ -158,7 +158,7 @@ namespace SGA {
             playerUnits.emplace(unit->getUnitID());
         }
 
-        std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
     	for (size_t i = 0; i < params.INDIVIDUAL_LENGTH; i++)
     	{
             std::map<int, BaseActionScript*> turnScriptAssignment;
