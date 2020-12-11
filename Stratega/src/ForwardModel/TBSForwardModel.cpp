@@ -18,6 +18,11 @@ namespace SGA
 				default: throw std::runtime_error("Tried executing an action with an not supported action-type");
 			}
 		}
+		else
+		{
+			std::cout << "else hilfe was ist hier los" << std::endl;
+		}
+		
 
 		TBSUnit* sourceUnit = state.getUnit(action.sourceUnitID);
 		if (canExecuteAction && sourceUnit != nullptr)
@@ -164,7 +169,7 @@ namespace SGA
 	}
 
 	void TBSForwardModel::moveUnit(FMState& state, TBSUnit& u, Vector2i newPosition) const
-	{;
+	{
 		u.setPosition(newPosition);
 		executeOnEnterTileTrigger(state, u);
 	}

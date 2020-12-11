@@ -1,6 +1,7 @@
 #include <NTBEA.h>
 #include <examples/NMaxEvaluator.h>
 #include <RHEAEvaluator.h>
+#include <PortfolioRHEAEvaluator.h>
 #include <NTupleLandscapeModel.h>
 #include <random>
 #include <Mutator.h>
@@ -33,8 +34,8 @@ int main(int argc, char** argv)
 	// Read Config
 	auto yamlConfig = YAML::LoadFile(configPath);
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
-	
-	
+
+	/*
 	const std::unique_ptr<SGA::Evaluator> evaluator = std::make_unique<SGA::RHEAEvaluator>(
 		std::vector<int> {1, 10, 100},
 		std::vector<int> {1, 3, 5, 10},
@@ -44,6 +45,17 @@ int main(int argc, char** argv)
 		std::vector<bool> {false, true},
 		gameConfig
 		);
+	*/
+	const std::unique_ptr<SGA::Evaluator> evaluator = std::make_unique<SGA::PortfolioRHEAEvaluator>(
+		std::vector<int> {1, 10, 100},
+		std::vector<int> {1, 3, 5, 10},
+		std::vector<float> {0.1, 0.5, 0.9},
+		std::vector<int> {3, 5, 10},
+		std::vector<bool> {false, true},
+		std::vector<bool> {false, true},
+		gameConfig
+		);
+	
 	//std::unique_ptr<SGA::Evaluator> evaluator = std::make_unique<SGA::NMaxEvaluator>(3, 5);
 	SGA::SearchSpace* searchSpace = evaluator->getSearchSpace();
 	SGA::Mutator mutator(searchSpace, false, false, 0.1f, true);

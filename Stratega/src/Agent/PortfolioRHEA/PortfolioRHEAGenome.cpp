@@ -188,7 +188,7 @@ namespace SGA {
         auto actionSpace = forwardModel.generateActions(gameState);
     	for (size_t i = 0; i < actions.size(); i++)
     	{
-            if (actionSpace.size() == 0)
+            if (actionSpace.size() == 0 || gameState.isGameOver)
                 break;
 
             if (!forwardModel.isValid(gameState, actions[i]))

@@ -55,4 +55,17 @@ namespace SGA
 		default: return "Undefined";
 		}
 	}
+
+	static std::string toString(const TBSAction& action)
+	{
+		switch (action.type)
+		{
+			case TBSActionType::Attack: return "Attack";
+			case TBSActionType::Move: return "Move";
+			case TBSActionType::Heal: return "Heal";
+			case TBSActionType::Push: return "Push";
+			case TBSActionType::EndTurn: return "EndTurn";
+			default: return "Undefined";
+		}
+	}
 }

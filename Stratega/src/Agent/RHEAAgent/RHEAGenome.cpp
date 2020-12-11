@@ -12,6 +12,11 @@ namespace SGA {
             // choose and apply random action
             //todo forward random generator to getRandomAction
             auto action = actionSpace.at(rand() % actionSpace.size());
+            if (action.playerID != params.PLAYER_ID)
+            {
+                std::cout << "here it is";
+            }
+        	
             applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
             actions.emplace_back(action);
             length++;
@@ -64,6 +69,11 @@ namespace SGA {
             if (mutate || (actIdx < actions.size()))
             {
                 auto action = actionSpace.at(rand() % actionSpace.size());
+                if (action.playerID != params.PLAYER_ID)
+                {
+                    std::cout << "here it is";
+                }
+            	
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 if (actIdx < actions.size())
                 {
@@ -79,7 +89,13 @@ namespace SGA {
                 // use previous action or sample a new random one in case the individual is too short
                 if (actIdx >= actions.size())
                 {
-                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                    auto action = actionSpace.at(rand() % actionSpace.size());
+                    if (action.playerID != params.PLAYER_ID)
+                    {
+                        std::cout << "here it is";
+                    }
+                	
+                    actions.emplace_back(action);
                 }
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
             }
@@ -112,6 +128,11 @@ namespace SGA {
             if (mutate)
             {
                 TBSAction action = actionSpace.at(rand() % actionSpace.size());
+                if (action.playerID != params.PLAYER_ID)
+                {
+                    std::cout << "here it is";
+                }
+            	
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 actions.emplace_back(action);
             }
@@ -123,6 +144,11 @@ namespace SGA {
                 // check the first parent and choose portfolio if available
                 if (actIdx < from.actions.size())
                 {
+                    if (from.actions[actIdx].playerID != params.PLAYER_ID)
+                    {
+                        std::cout << "here it is";
+                    }
+                	
                     actions.emplace_back(from.actions[actIdx]);
                 }
                 else
@@ -131,12 +157,22 @@ namespace SGA {
                     from = useParent1First ? parent2 : parent1;
                     if (actIdx < from.actions.size())
                     {
+                        if (from.actions[actIdx].playerID != params.PLAYER_ID)
+                        {
+                            std::cout << "here it is";
+                        }
+                    	
                         actions.emplace_back(from.actions[actIdx]);
                     }
                     else
                     {
+                        auto action = actionSpace.at(rand() % actionSpace.size());
+                        if (action.playerID != params.PLAYER_ID)
+                        {
+                            std::cout << "here it is";
+                        }
                         // use a random portfolio by default
-                        actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                        actions.emplace_back(action);
                     }
                 }
                 applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
@@ -161,7 +197,7 @@ namespace SGA {
         auto actionSpace = forwardModel.generateActions(gameState);
         for (size_t i = 0; i < actions.size(); i++)
         {
-            if (actionSpace.size() == 0)
+            if (actionSpace.size() == 0 || gameState.isGameOver)
                 break;
 
             // test if a planned action is still valid. if not, replace with a random one
@@ -169,7 +205,12 @@ namespace SGA {
             // (since the vector has been rotated it does not have any meaning)
             if (i == actions.size() - 1 || !forwardModel.isValid(gameState, actions[i]))
             {
-                actions[i] = actionSpace.at(rand() % actionSpace.size());
+                auto action = actionSpace.at(rand() % actionSpace.size());
+            	if (action.playerID != params.PLAYER_ID)
+            	{
+                    std::cout << "here it is";
+            	}
+                actions[i] = action;
             }
     	
             applyActionToGameState(forwardModel, gameState, actionSpace, actions[i], params);

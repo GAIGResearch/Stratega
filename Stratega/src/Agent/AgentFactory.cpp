@@ -74,7 +74,7 @@ namespace SGA
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
-		factory.registerAgent<PortfolioRHEAAgent>("PortfolioRHEAAgent");
+		factory.registerAgent<PortfolioRHEAAgent, PortfolioRHEAParams>("PortfolioRHEAAgent");
 		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
 		factory.registerAgent<MetaPOAgent>("MetaPOAgent");
 		factory.registerAgent<MOPortfolioRHEAAgent>("MOPRHEAAgent");

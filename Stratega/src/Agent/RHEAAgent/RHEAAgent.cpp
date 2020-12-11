@@ -13,7 +13,8 @@ namespace SGA
                 TBSGameState gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
-            	
+                std::cout << "RheaAgent " << gameState.currentGameTurn << std::endl;
+
                 auto actionSpace = forwardModel.generateActions(gameState);
 
                 params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
