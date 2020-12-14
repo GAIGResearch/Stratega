@@ -3,9 +3,9 @@
 
 namespace SGA
 {
-	AddToResource::AddToResource(FunctionParameter resourceReference, FunctionParameter amount) :
-		resourceReference(resourceReference),
-		amount(amount)
+	AddToResource::AddToResource(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		amount(parameters.at(1))
 	{
 
 	}
@@ -17,6 +17,7 @@ namespace SGA
 
 		targetResource += amount;
 	}
+	
 	void AddToResource::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute RTS Add to resource" << std::endl;
@@ -25,7 +26,6 @@ namespace SGA
 
 		targetResource += amount;
 	}
-
 
 	void EndTurn::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{

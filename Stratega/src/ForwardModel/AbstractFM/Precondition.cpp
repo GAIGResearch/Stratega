@@ -2,11 +2,10 @@
 #include <Representation/AbstractGS/Entity.h>
 namespace  SGA
 {
-	HasResource::HasResource(FunctionParameter resourceReference, FunctionParameter lowerBound) :
-		resourceReference(resourceReference),
-		lowerBound(lowerBound)
+	HasResource::HasResource(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		lowerBound(parameters.at(1))
 	{
-
 	}
 
 	bool HasResource::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
