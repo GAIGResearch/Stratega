@@ -10,7 +10,7 @@
 
 namespace SGA
 {
-	class Precondition;
+	class Condition;
 	
 	struct ActionType
 	{
@@ -19,7 +19,8 @@ namespace SGA
 		ActionSourceType sourceType;
 
 		TargetType actionTargets;
-		std::vector<std::unique_ptr<Precondition>> preconditions;
+		std::vector<std::unique_ptr<Condition>> preconditions;
+		std::vector<std::unique_ptr<Condition>> condition;
 		std::vector<std::unique_ptr<Effect>> effects;
 	};
 }

@@ -72,8 +72,7 @@ namespace SGA
 		Entity& getEntity(int entityID)
 		{
 			return* std::find_if(std::begin(entities), std::end(entities),
-				[&](Entity const& p) { return p.id == entityID; });
-			
+				[&](Entity const& p) { return p.id == entityID; });			
 		}
 
 		const Entity& getEntityConst(int entityID) const 

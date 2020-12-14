@@ -22,6 +22,18 @@ namespace  SGA
 				}
 			}*/
 
+			auto& actionType = state.getActionType(action.actionTypeID);
+			if (actionType.sourceType == ActionSourceType::Unit)
+			{
+				auto& entity = targetToEntity(state, action.targets[0]);
+				entity.canExecuteAction = false;
+			}
+			//else
+			//{
+			//	std::cout << "test";
+			//}
+				
+
 			//Check game is finished
 			state.isGameOver = checkGameIsFinished(state);
 		}
@@ -51,7 +63,10 @@ namespace  SGA
 		
 		void initTurn(TBSGameState2& state) const
 		{
-			
+			for (Entity& entity : state.entities)
+			{
+				entity.canExecuteAction = true;
+			}
 		}
 
 
@@ -130,5 +145,7 @@ namespace  SGA
 		{
 			entity.position = newPosition;
 		}
+
+		
 	};
 }

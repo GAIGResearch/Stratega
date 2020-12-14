@@ -14,7 +14,8 @@
 #include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <Game/AbstractGame.h>
 int main()
-{	// Read Config
+{
+	// Read Config
 	std::mt19937 engine(0ll);
 	
 	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
@@ -35,6 +36,7 @@ int main()
 	SGA::FunctionParameter targetResource(0, 0);
 	SGA::FunctionParameter lowerBound(50.);
 	SGA::HasResource precondition(targetResource, lowerBound);
+	SGA::SamePlayer precondition1;
 
 	//Add effect
 	SGA::FunctionParameter targetResourceEffect(0, 1);
@@ -48,6 +50,9 @@ int main()
 
 	//Add effect
 	SGA::Move moveEffect;
+
+	//Add effect
+	SGA::SpawnUnit spawnUnitEffect;
 
 	
 	
@@ -66,6 +71,7 @@ int main()
 	actionType2.name = "AddHealth";
 	actionType2.sourceType = SGA::ActionSourceType::Unit;
 	actionType2.preconditions.emplace_back(std::make_unique<SGA::HasResource>(precondition));
+	actionType2.condition.emplace_back(std::make_unique<SGA::SamePlayer>(precondition1));
 	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(effect));
 	//actionType2.effects.emplace_back(std::make_unique<SGA::HasResource>(effect));
 	SGA::TargetType target;
@@ -91,19 +97,22 @@ int main()
 	actionType3.actionTargets = targetMove;
 
 	test->actionTypes->emplace(2, std::move(actionType3));
-	
-	////Add players
-	//SGA::Player player1;
-	//player1.canPlay = true;
-	//player1.id = 0;
-	//player1.score = 0;
-	//SGA::Player player2;
-	//player2.canPlay = true;
-	//player2.id = 0;
-	//player2.score = 0;
-	//
-	//test->players.emplace_back(player1);
-	//test->players.emplace_back(player2);
+
+	//Add actionType Spawn
+	SGA::ActionType actionType4;
+	actionType4.id = 3;
+	actionType4.name = "SpawnUnit";
+	actionType4.sourceType = SGA::ActionSourceType::Unit;
+	actionType4.effects.emplace_back(std::make_unique<SGA::SpawnUnit>(spawnUnitEffect));
+	SGA::TargetType targetSpawn;
+	targetSpawn.type = SGA::TargetType::Position;
+	targetSpawn.shapeType = SGA::ShapeType::Circle;
+	targetSpawn.shapeSize = 3;
+	targetSpawn.groupEntityTypes.insert(1);
+
+	actionType4.actionTargets = targetSpawn;
+
+	test->actionTypes->emplace(3, std::move(actionType4));
 
 	// Add EntityType
 	SGA::EntityType type;
@@ -125,6 +134,7 @@ int main()
 	building1.id = 3;
 	building1.owner = 0;
 	building1.actionTypeIds.emplace_back(1);
+	building1.actionTypeIds.emplace_back(3);
 	building1.position = SGA::Vector2f(15, 10);
 	building1.typeID = 1;
 	building1.parameters.emplace_back(200);
@@ -137,6 +147,7 @@ int main()
 	building2.id = 2;
 	building2.owner = 1;
 	building2.actionTypeIds.emplace_back(1);
+	building2.actionTypeIds.emplace_back(3);
 	building2.position = SGA::Vector2f(20, 10);
 	building2.typeID = 1;
 	building2.parameters.emplace_back(200);

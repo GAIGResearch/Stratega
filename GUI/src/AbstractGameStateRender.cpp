@@ -140,7 +140,7 @@ void AbstractGameStateRender::handleInput(sf::RenderWindow& window)
 	{
 		ImGui::SFML::ProcessEvent(event);
 
-		if (ImGui::IsAnyWindowHovered())
+		if (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
 			return;
 
 		switch (event.type)
@@ -226,6 +226,7 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 				//Open window to show actions
 				showMultipleActions = true;
 				multipleActionsSourceTile = SGA::Vector2i(pos.x, pos.y);
+				return;
 			}
 			else if (!actionsInTile.empty())
 			{
@@ -236,8 +237,8 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 			{
 				//If there is no action, hide window
 				showMultipleActions = false;
+				
 			}
-
 		}
 		else
 		{
@@ -593,14 +594,15 @@ void AbstractGameStateRender::createWindowUnits()
 
 	ImGui::BeginChild("Scrolling");
 
-	/*auto units = gameStateCopy.getUnits();
-
+	auto &units = gameStateCopy.entities;
+	
 	for (auto& unit : units)
 	{
+		auto& type=gameStateCopy.getEntityType(unit.typeID);
 		std::string unitInfo;
-		unitInfo = "" + std::to_string(unit.getUnitID()) + " PID: " + std::to_string(unit.getPlayerID()) + " - Health: " + std::to_string(unit.getHealth());
+		unitInfo = type.name+" " + std::to_string(unit.id) + " PID: " + std::to_string(unit.owner);
 		ImGui::Text(unitInfo.c_str());
-	}*/
+	}
 
 	ImGui::EndChild();
 	ImGui::End();
@@ -616,7 +618,8 @@ void AbstractGameStateRender::createWindowActions()
 	int index = 0;
 	for (auto action : actionHumanUnitSelected)
 	{
-		std::string actionInfo = std::to_string(index) + " " /*+ SGA::getActionType(action.type)*/;
+		SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+		std::string actionInfo = std::to_string(index) + " "+actionType.name;
 		index++;
 
 		if (ImGui::Button(actionInfo.c_str()))
@@ -642,21 +645,47 @@ void AbstractGameStateRender::createWindowMultipleActions(sf::RenderWindow& wind
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
-		/*int index = 0;
+		int index = 0;
 		for (auto action : actionHumanUnitSelected)
 		{
-			if (action.targetPosition == multipleActionsSourceTile)
+			SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+			if (actionType.sourceType == SGA::ActionSourceType::Unit)
 			{
-				std::string actionInfo = std::to_string(index) + " " + getActionType(action.type);
-				index++;
-
-				if (ImGui::Button(actionInfo.c_str()))
+				if (actionType.actionTargets.type == SGA::TargetType::Entity)
 				{
-					playAction(action);
-					break;
+					auto& entity = SGA::targetToEntity(gameStateCopy, action.targets[1]);
+					
+					if (entity.position==multipleActionsSourceTile)
+					{
+						std::string actionInfo = std::to_string(index) + " " + actionType.name;
+						index++;
+
+						if (ImGui::Button(actionInfo.c_str()))
+						{
+							playAction(action);
+							break;
+						}
+					}
 				}
+				else
+				{
+					if (SGA::targetToPosition(gameStateCopy, action.targets[1]) == multipleActionsSourceTile)
+					{
+						std::string actionInfo = std::to_string(index) + " " + actionType.name;
+						index++;
+
+						if (ImGui::Button(actionInfo.c_str()))
+						{
+							playAction(action);
+							break;
+						}
+					}
+				}
+
+
 			}
-		}*/
+			
+		}
 
 		ImGui::EndGroup();
 		ImGui::EndChild();

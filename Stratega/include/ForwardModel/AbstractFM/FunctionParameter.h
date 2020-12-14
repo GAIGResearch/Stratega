@@ -14,7 +14,7 @@ namespace SGA
 		{
 			Constant,
 			ParameterReference,
-			ArgumentReference
+			ArgumentReference//Entity o position
 		};
 
 		struct ParameterReference

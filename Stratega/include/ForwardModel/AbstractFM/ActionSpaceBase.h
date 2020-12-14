@@ -18,6 +18,8 @@ namespace SGA
 			{
 				if (sourceEntity.owner != player)
 					continue;				
+				if (!sourceEntity.canExecuteAction)
+					continue;
 				
 				for(auto actionTypeID : sourceEntity.actionTypeIds)
 				{
@@ -84,7 +86,12 @@ namespace SGA
 				{
 					//Add precondition for group targets
 					if(entityTarget.id!=sourceEntity.id)
-					bucket.emplace_back(entityTarget.id);
+					{
+						//Check all the conditions
+						if(canExecuteAction(gameState ,actionType,{sourceEntity.id,entityTarget.id}))
+						bucket.emplace_back(entityTarget.id);
+					}
+					
 				}
 			}
 		}
@@ -139,6 +146,21 @@ namespace SGA
 				
 				actionBucket.emplace_back(std::move(newAction));
 			}
+		}
+
+		bool canExecuteAction(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget> targets)
+		{
+			
+			//Check preconditions
+			for (const auto& condition : actionType.condition)
+			{
+				if (!condition->isFullfilled(gameState, targets))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	};
 }

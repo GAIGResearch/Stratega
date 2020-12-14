@@ -4,25 +4,34 @@
 
 namespace SGA
 {
-	class Precondition
+	class Condition
 	{
 	public:
-		Precondition() = default;
-		virtual ~Precondition() = default;
-		Precondition(const Precondition& other) = default;
-		Precondition(Precondition&& other) noexcept = delete;
-		Precondition& operator=(const Precondition& other) = delete;
-		Precondition& operator=(Precondition&& other) noexcept = delete;
+		Condition() = default;
+		virtual ~Condition() = default;
+		Condition(const Condition& other) = default;
+		Condition(Condition&& other) noexcept = delete;
+		Condition& operator=(const Condition& other) = delete;
+		Condition& operator=(Condition&& other) noexcept = delete;
 	
 		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
 
-	class HasResource : public Precondition
+	class HasResource : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBound;
 	public:
 		HasResource(FunctionParameter resourceReference, FunctionParameter lowerBound);
+
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class SamePlayer : public Condition
+	{
+		
+	public:
+		SamePlayer();
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};

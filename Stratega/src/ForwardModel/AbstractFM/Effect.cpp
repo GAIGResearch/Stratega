@@ -53,4 +53,30 @@ namespace SGA
 	{
 		//NOT NEEDED
 	}
+
+	void SpawnUnit::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		std::cout << "Execute Spawn Unit TBS" << std::endl;
+		auto& casted = dynamic_cast<TBSGameState2&>(state);
+
+		Entity& sourceEntity = targetToEntity(state, targets[0]);
+		Vector2f& newPos = targetToPosition(state, targets[1]);
+
+		SGA::Entity entity;
+		entity.id = state.entities.size();
+		entity.owner = sourceEntity.owner;
+		entity.actionTypeIds.emplace_back(0);
+		entity.actionTypeIds.emplace_back(1);
+		entity.actionTypeIds.emplace_back(2);
+		entity.position = newPos;
+		entity.typeID = 0;
+		entity.parameters.emplace_back(60);
+
+		state.entities.emplace_back(entity);
+	}
+
+	void SpawnUnit::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//NOT NEEDED
+	}
 }
