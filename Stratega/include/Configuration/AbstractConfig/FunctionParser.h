@@ -5,6 +5,7 @@
 #include <optional>
 
 #include <ForwardModel/AbstractFM/FunctionParameter.h>
+#include <ForwardModel/AbstractFM/FunctionFactory.h>
 
 namespace SGA
 {
@@ -19,15 +20,33 @@ namespace SGA
 	class FunctionParser
 	{
 	public:
+		template<typename Function>
+		void parseFunctions(const std::vector<std::string>& functionCalls, std::vector<std::unique_ptr<Function>>& bucket, const IDMap& targetIDs, const IDMap& parameterIDs) const
+		{
+			for(const auto& code : functionCalls)
+			{
+				auto abstractFn = parseAbstractFunction(code, targetIDs, parameterIDs);
+				if(!abstractFn.has_value())
+				{
+					throw std::runtime_error("Could not parse '" + code + "'");
+				}
+
+				auto instance = FunctionFactory<Function>::get().createFunction(abstractFn->functionName, abstractFn->parameters);
+				if (instance == nullptr)
+				{
+					throw std::runtime_error("Tried calling unknown function " + abstractFn->functionName + ": '" + code + "'");
+				}
+				bucket.emplace_back(std::move(instance));
+			}
+		}
+		
 		// Parses: functionName(param1, param2)
-		std::optional<AbstractFunctionCall> parseFunction(const std::string& code, const IDMap& targetIDs, const IDMap& parameterIDs) const
+		std::optional<AbstractFunctionCall> parseAbstractFunction(const std::string& code, const IDMap& targetIDs, const IDMap& parameterIDs) const
 		{
 			// Remove whitespace
 			auto copy = code;
-			//str2.erase(std::remove_if(str2.begin(),
-			//	str2.end(),
-			//	[](unsigned char x) {return std::isspace(x); });
-			std::istringstream ss(code);
+			copy.erase(std::remove_if(copy.begin(),copy.end(), [](char x) {return std::isspace(x); }), copy.end());
+			std::istringstream ss(copy);
 			
 			// Parse name
 			AbstractFunctionCall call;
@@ -38,22 +57,17 @@ namespace SGA
 			{
 				return {};
 			}
-
+			ss.get(); // Remove '('
+			
 			// Parse function parameters
-			while(!ss.eof() && ss.peek() != ')')
+			while(ss.peek() != ')' && !ss.eof())
 			{
-				ss.get(); // remove character either ) or ,
-				
 				std::optional<FunctionParameter> param;
 				if(((param = parseConstant(ss))) ||
 				   ((param = parseParameterReference(ss, targetIDs, parameterIDs))) ||
 				   ((param = parseTargetReference(ss, targetIDs))))
 				{
 					call.parameters.emplace_back(param.value());
-					if(ss.peek() != ',')
-					{
-						return {};
-					}
 				}
 				else
 				{
@@ -61,6 +75,8 @@ namespace SGA
 					// ToDo Output error message
 					return {};
 				}
+
+				ss.get(); // remove either ) or ,
 			}
 
 			return call;

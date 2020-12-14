@@ -31,6 +31,9 @@ namespace SGA
 
 		std::unique_ptr<Function> createFunction(const std::string& name, const std::vector<FunctionParameter>& params)
 		{
+			if (registeredFunctions.find(name) == registeredFunctions.end())
+				return nullptr;
+			
 			return std::unique_ptr<Function>(registeredFunctions.at(name)(params));
 		}
 

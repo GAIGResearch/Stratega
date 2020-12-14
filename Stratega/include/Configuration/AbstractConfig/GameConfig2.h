@@ -12,6 +12,7 @@
 #include <Configuration/AbstractConfig/EntityTypeConfig.h>
 
 #include "FunctionParser.h"
+#include "ForwardModel/AbstractFM/FunctionFactory.h"
 
 namespace SGA
 {
@@ -116,7 +117,7 @@ namespace YAML
         	
             return true;
         }
-
+    	
     	static bool parseActions(const Node& node, SGA::GameConfig2& rhs)
         {
             SGA::FunctionParser parser;
@@ -124,25 +125,20 @@ namespace YAML
             for(const auto& nameTypePair : types)
             {
                 SGA::ActionType type;
+                type.id = rhs.actionTypes.size();
+                type.name = nameTypePair.first;
+            	type.
 
             	// Parse preconditions
                 std::unordered_map<std::string, int> actionTargetIds;
                 actionTargetIds.emplace("Source", 0);
-            	for(const auto& precondition : nameTypePair.second.preconditions)
-            	{
-                    auto functionCall = parser.parseFunction(precondition, actionTargetIds, rhs.parameters);
-
-            		// ToDo Construct precondition
-            	}
+                parser.parseFunctions(nameTypePair.second.preconditions, type.preconditions, actionTargetIds, rhs.parameters);
 
             	// Parse effects
                 actionTargetIds.emplace("Target", 1);
-                for (const auto& effect : nameTypePair.second.effects)
-                {
-                    auto functionCall = parser.parseFunction(effect, actionTargetIds, rhs.parameters);
+                parser.parseFunctions(nameTypePair.second.effects, type.effects, actionTargetIds, rhs.parameters);
 
-                    // ToDo Construct effect
-                }
+                rhs.actionTypes.emplace(rhs.actionTypes.size(), std::move(type));
             }
         	
             return true;
