@@ -8,8 +8,10 @@
 #include <ForwardModel/TBSForwardModel.h>
 #include <Agent/Agent.h>
 #include <yaml-cpp/yaml.h>
+#include <Configuration/AbstractConfig/ActionTypeConfig.h>
+#include <Configuration/AbstractConfig/EntityTypeConfig.h>
 
-#include "EntityTypeConfig.h"
+#include "FunctionParser.h"
 
 namespace SGA
 {
@@ -21,6 +23,7 @@ namespace SGA
         std::map<std::string, UnitConfig> unitTypes;
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<int, EntityType> entityTypes;
+        std::unordered_map<int, ActionType> actionTypes;
         BoardConfig boardConfig;
         ForwardModelConfig forwardModelConfig;
         int roundLimit = 100;
@@ -50,7 +53,7 @@ namespace YAML
     {
         static bool decode(const Node& node, SGA::GameConfig2& rhs)
         {
-            if (!parseEntities(node, rhs))
+            if (!parseEntities(node, rhs) || !parseActions(node, rhs))
                 return false;
         	
             for (auto agentNode : node["Agents"])
@@ -110,6 +113,37 @@ namespace YAML
 
                 rhs.entityTypes.emplace(type.id, std::move(type));
         	}
+        	
+            return true;
+        }
+
+    	static bool parseActions(const Node& node, SGA::GameConfig2& rhs)
+        {
+            SGA::FunctionParser parser;
+            auto types = node["Actions"].as<std::map<std::string, SGA::ActionTypeConfig>>();
+            for(const auto& nameTypePair : types)
+            {
+                SGA::ActionType type;
+
+            	// Parse preconditions
+                std::unordered_map<std::string, int> actionTargetIds;
+                actionTargetIds.emplace("Source", 0);
+            	for(const auto& precondition : nameTypePair.second.preconditions)
+            	{
+                    auto functionCall = parser.parseFunction(precondition, actionTargetIds, rhs.parameters);
+
+            		// ToDo Construct precondition
+            	}
+
+            	// Parse effects
+                actionTargetIds.emplace("Target", 1);
+                for (const auto& effect : nameTypePair.second.effects)
+                {
+                    auto functionCall = parser.parseFunction(effect, actionTargetIds, rhs.parameters);
+
+                    // ToDo Construct effect
+                }
+            }
         	
             return true;
         }

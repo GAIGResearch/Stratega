@@ -23,7 +23,7 @@ namespace SGA
 		FunctionParameter resourceReference;
 		FunctionParameter amount;
 	public:
-		AddToResource(FunctionParameter resourceReference, FunctionParameter amount);
+		AddToResource(const std::vector<FunctionParameter>& parameters);
 
 		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
@@ -32,6 +32,7 @@ namespace SGA
 	class EndTurn : public Effect
 	{
 	public:
+		EndTurn(const std::vector<FunctionParameter>& parameters) {};
 
 		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
@@ -40,6 +41,7 @@ namespace SGA
 	class Move : public Effect
 	{
 	public:
+		Move(const std::vector<FunctionParameter>& parameters) {};
 
 		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;

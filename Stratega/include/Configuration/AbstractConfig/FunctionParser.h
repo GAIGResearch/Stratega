@@ -8,6 +8,8 @@
 
 namespace SGA
 {
+	typedef std::unordered_map<std::string, int> IDMap;
+	
 	struct AbstractFunctionCall
 	{
 		std::string functionName;
@@ -18,8 +20,15 @@ namespace SGA
 	{
 	public:
 		// Parses: functionName(param1, param2)
-		std::optional<AbstractFunctionCall> parseFunction(std::istringstream& ss) const
+		std::optional<AbstractFunctionCall> parseFunction(const std::string& code, const IDMap& targetIDs, const IDMap& parameterIDs) const
 		{
+			// Remove whitespace
+			auto copy = code;
+			//str2.erase(std::remove_if(str2.begin(),
+			//	str2.end(),
+			//	[](unsigned char x) {return std::isspace(x); });
+			std::istringstream ss(code);
+			
 			// Parse name
 			AbstractFunctionCall call;
 			call.functionName = parseText(ss);
@@ -37,8 +46,8 @@ namespace SGA
 				
 				std::optional<FunctionParameter> param;
 				if(((param = parseConstant(ss))) ||
-				   ((param = parseParameterReference(ss))) ||
-				   ((param = parseTargetReference(ss))))
+				   ((param = parseParameterReference(ss, targetIDs, parameterIDs))) ||
+				   ((param = parseTargetReference(ss, targetIDs))))
 				{
 					call.parameters.emplace_back(param.value());
 					if(ss.peek() != ',')
@@ -72,7 +81,7 @@ namespace SGA
 		}
 
 		// targetName.parameterName
-		std::optional<FunctionParameter> parseParameterReference(std::istringstream& ss) const
+		std::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const IDMap& targetIDs, const IDMap& parameterIDs) const
 		{
 			auto begin = ss.tellg();
 			auto targetName = parseText(ss);
@@ -84,13 +93,29 @@ namespace SGA
 
 			ss.get();
 			auto parameterName = parseText(ss);
-			return FunctionParameter(0);
+			auto targetIt = targetIDs.find(targetName);
+			auto parameterIt = parameterIDs.find(parameterName);
+			if(targetIt == targetIDs.end() || parameterIt == parameterIDs.end())
+			{
+				throw std::runtime_error("Unknown parameter/action-target: " + targetName + "." + parameterName);
+			}
+			
+			return FunctionParameter(parameterIt->second, targetIt->second);
 		}
 
-		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss) const
+		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const IDMap& targetIDs) const
 		{
 			std::string targetName = parseText(ss);
-			return FunctionParameter(0);
+			if (targetName.empty() || ss.peek() != ',')
+				return {};
+			
+			auto targetIt = targetIDs.find(targetName);
+			if(targetIt == targetIDs.end())
+			{
+				throw std::runtime_error("Unknown action target " + targetName);
+			}
+
+			return FunctionParameter(targetIt->second);
 		}
 
 		std::string parseText(std::istringstream& ss) const

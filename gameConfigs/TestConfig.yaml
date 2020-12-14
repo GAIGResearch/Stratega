@@ -54,13 +54,13 @@ Actions:
     Attack:
         Type: EntityAction
         Preconditions:
-            HasResource(Source.Mana, 50)
-            HasResource(Source.Mana, 25)
+            - HasResource(Source.Mana, 50)
+            - HasResource(Source.Mana, 25)
         Target:
             Type: Position
             Shape: Circle
         Effects:
-            AddResource(Target.Health, Source.AttackDamage)
+            - AddResource(Target.Health, Source.AttackDamage)
 
 Entities:
     Warrior:
