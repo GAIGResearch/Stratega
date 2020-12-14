@@ -1,49 +1,24 @@
 #pragma once
 #include <map>
 #include <string>
-#include <Configuration/TileConfig.h>
-#include <Configuration/BoardConfig.h>
-#include <Configuration/UnitConfig.h>
-#include <Configuration/ForwardModelConfig.h>
-#include <ForwardModel/TBSForwardModel.h>
-#include <Agent/Agent.h>
-#include <yaml-cpp/yaml.h>
-#include <Configuration/AbstractConfig/ActionTypeConfig.h>
-#include <Configuration/AbstractConfig/EntityTypeConfig.h>
+#include <unordered_map>
 
-#include "FunctionParser.h"
-#include "ForwardModel/AbstractFM/FunctionFactory.h"
+#include <Configuration/AbstractConfig/EntityTypeConfig.h>
+#include <Configuration/AbstractConfig/ActionTypeConfig.h>
+#include <Configuration/AbstractConfig/FunctionParser.h>
+#include <Configuration/AbstractConfig/TargetTypeConfig.h>
 
 namespace SGA
 {
     struct GameConfig2
     {
-        std::string gameType;
-        std::vector<std::pair<std::string, YAML::Node>> agentParams;
-        std::map<std::string, TileConfig> tileTypes;
-        std::map<std::string, UnitConfig> unitTypes;
         std::unordered_map<std::string, ParameterID> parameters;
+        std::unordered_map<std::string, std::vector<int>> entityGroups;
+    	
         std::unordered_map<int, EntityType> entityTypes;
         std::unordered_map<int, ActionType> actionTypes;
-        BoardConfig boardConfig;
-        ForwardModelConfig forwardModelConfig;
-        int roundLimit = 100;
-        int numPlayers = -1;
 
-        std::vector<std::unique_ptr<Agent>> generateAgents();
-        std::unordered_map<std::string, TileType> generateTileTypes();
-        std::unordered_map<std::string, UnitType> generateUnitTypes();
-        TBSForwardModel generateTBSforwardModel();
-        RTSForwardModel generateRTSforwardModel();
-        std::unique_ptr<IBoardGenerator> generateBoardGenerator();
-        std::unique_ptr<TBSGameState> generateTBSState(std::mt19937& rngEngine);
-        std::unique_ptr<RTSGameState> generateRTSState(std::mt19937& rngEngine);
-        std::unique_ptr<Game> generateGame(std::mt19937& rngEngine);
-
-        int getNumberOfPlayers() const
-        {
-            return numPlayers == -1 ? agentParams.size() : numPlayers;
-        }
+        int getEntityID(const std::string& name);
     };
 }
 
@@ -54,34 +29,8 @@ namespace YAML
     {
         static bool decode(const Node& node, SGA::GameConfig2& rhs)
         {
-            if (!parseEntities(node, rhs) || !parseActions(node, rhs))
+            if (!parseEntities(node, rhs) || !parseEntityGroups(node, rhs) || !parseActions(node, rhs))
                 return false;
-        	
-            for (auto agentNode : node["Agents"])
-            {
-                if (agentNode.IsScalar())
-                {
-                    rhs.agentParams.emplace_back(agentNode.as<std::string>(), YAML::Null);
-                }
-                else
-                {
-                    auto map = agentNode.as<std::map<std::string, Node>>();
-                    const auto& firstEntry = *map.begin();
-                    rhs.agentParams.emplace_back(firstEntry);
-                }
-            }
-
-            rhs.tileTypes = node["Tiles"].as<std::map<std::string, SGA::TileConfig>>();
-            rhs.unitTypes = node["Units"].as<std::map<std::string, SGA::UnitConfig>>();
-            rhs.boardConfig = node["Board"].as<SGA::BoardConfig>();
-            rhs.forwardModelConfig = node["ForwardModel"].as<SGA::ForwardModelConfig>();
-            rhs.gameType = node["GameConfig"]["Type"].as<std::string>();
-
-            if (node["GameConfig"].IsDefined())
-            {
-                rhs.roundLimit = node["GameConfig"]["RoundLimit"].as<int>(100);
-                rhs.numPlayers = node["GameConfig"]["PlayerCount"].as<int>(rhs.numPlayers);
-            }
 
             return true;
         }
@@ -117,6 +66,31 @@ namespace YAML
         	
             return true;
         }
+
+    	static bool parseEntityGroups(const Node& node, SGA::GameConfig2& rhs)
+        {
+            if (!node["EntityGroups"])
+                return true;
+
+            auto groups = node["EntityGroups"].as<std::map<std::string, std::vector<std::string>>>();
+        	for(const auto& nameGroupPair : groups)
+        	{
+                rhs.entityGroups.emplace(nameGroupPair.first, std::vector<int>());
+        		for(const auto& entityName : nameGroupPair.second)
+        		{
+                    rhs.entityGroups[nameGroupPair.first].emplace_back(rhs.getEntityID(entityName));
+        		}
+        	}
+
+        	// Group that contains all entities
+            rhs.entityGroups.emplace("All", std::vector<int>());
+        	for(const auto& idEntityPair: rhs.entityTypes)
+        	{
+                rhs.entityGroups.at("All").emplace_back(idEntityPair.first);
+        	}
+
+            return true;
+        }
     	
     	static bool parseActions(const Node& node, SGA::GameConfig2& rhs)
         {
@@ -125,9 +99,9 @@ namespace YAML
             for(const auto& nameTypePair : types)
             {
                 SGA::ActionType type;
-                type.id = rhs.actionTypes.size();
+            	type.id = rhs.actionTypes.size();
                 type.name = nameTypePair.first;
-            	type.
+                type.actionTargets = parseTargetType(nameTypePair.second.targetNode, rhs);
 
             	// Parse preconditions
                 std::unordered_map<std::string, int> actionTargetIds;
@@ -142,6 +116,25 @@ namespace YAML
             }
         	
             return true;
+        }
+
+    	static SGA::TargetType parseTargetType(const Node& node, const SGA::GameConfig2& rhs)
+        {
+            SGA::TargetType targetType;
+            targetType.type = node["Type"].as<SGA::TargetType::Type>();
+            if (targetType.type == SGA::TargetType::Position)
+            {
+                targetType.shapeType = node["Shape"].as<SGA::ShapeType>();
+                targetType.shapeSize = node["Size"].as<int>();
+            }
+            else if(targetType.type == SGA::TargetType::Entity)
+            {
+                auto groupName = node["ValidTargets"].as<std::string>("All");
+                const auto& group = rhs.entityGroups.at(groupName);
+                targetType.groupEntityTypes.insert(group.begin(), group.end());
+            }
+        	
+            return targetType;
         }
     };
 }

@@ -9,6 +9,7 @@ namespace SGA
 		ActionSourceType sourceType;
 		std::vector<std::string> preconditions;
 		std::vector<std::string> effects;
+        YAML::Node targetNode;
 	};
 }
 
@@ -22,6 +23,7 @@ namespace YAML
             rhs.sourceType = node["Type"].as<SGA::ActionSourceType>();
             rhs.preconditions = node["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
             rhs.effects = node["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            rhs.targetNode = node["Target"];
             return true;
         }
     };
