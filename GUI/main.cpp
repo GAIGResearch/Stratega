@@ -8,7 +8,7 @@
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
 //#include <ForwardModel/AbstractFM/Preconditions.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
+#include <ForwardModel/AbstractFM/Condition.h>
 #include <ForwardModel/AbstractFM/Effect.h>
 #include <Representation/AbstractGS/Player.h>
 #include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
@@ -35,21 +35,27 @@ int main()
 	////Add precondition
 	SGA::FunctionParameter targetResource(0, 0);
 	SGA::FunctionParameter lowerBound(50.);
-	SGA::HasResource precondition(targetResource, lowerBound);
+	std::vector<SGA::FunctionParameter> parameters;
+	parameters.emplace_back(targetResource);
+	parameters.emplace_back(lowerBound);
+	SGA::HasResource precondition(parameters);
 	SGA::SamePlayer precondition1;
 
 	//Add effect
 	SGA::FunctionParameter targetResourceEffect(0, 1);
 	SGA::FunctionParameter amountToAddEffect(10.);
-	SGA::AddToResource effect(targetResourceEffect, amountToAddEffect);
+	std::vector<SGA::FunctionParameter> parametersEffect;
+	parametersEffect.emplace_back(targetResourceEffect);
+	parametersEffect.emplace_back(amountToAddEffect);
+	SGA::AddToResource effect(parametersEffect);
 
 	
 	//Add effect
 	
-	SGA::EndTurn effect2;
+	SGA::EndTurn effect2({});
 
 	//Add effect
-	SGA::Move moveEffect;
+	SGA::Move moveEffect({});
 
 	//Add effect
 	SGA::SpawnUnit spawnUnitEffect;

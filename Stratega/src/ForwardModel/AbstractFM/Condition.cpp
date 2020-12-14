@@ -1,4 +1,4 @@
-#include <ForwardModel/AbstractFM/Precondition.h>
+#include <ForwardModel/AbstractFM/Condition.h>
 #include <Representation/AbstractGS/Entity.h>
 namespace  SGA
 {

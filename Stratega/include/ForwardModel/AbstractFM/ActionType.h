@@ -1,6 +1,6 @@
 #pragma once
 #include <ForwardModel/AbstractFM/Effect.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
+#include <ForwardModel/AbstractFM/Condition.h>
 #include <ForwardModel/AbstractFM/ActionSourceType.h>
 #include <ForwardModel/AbstractFM/TargetType.h>
 

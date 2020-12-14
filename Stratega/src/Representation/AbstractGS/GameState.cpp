@@ -1,5 +1,5 @@
 #include <Representation/AbstractGS/GameState.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
+#include <ForwardModel/AbstractFM/Condition.h>
 
 namespace SGA
 {

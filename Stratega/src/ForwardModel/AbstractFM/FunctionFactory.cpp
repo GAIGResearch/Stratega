@@ -1,12 +1,12 @@
 #include <ForwardModel/AbstractFM/FunctionFactory.h>
-#include <ForwardModel/AbstractFM/Precondition.h>
+#include <ForwardModel/AbstractFM/Condition.h>
 #include <ForwardModel/AbstractFM/Effect.h>
 
 namespace SGA
 {
-	FunctionFactory<Precondition>& FunctionFactory<Precondition>::getDefaultFactory()
+	FunctionFactory<Condition>& FunctionFactory<Condition>::getDefaultFactory()
 	{
-		static FunctionFactory<Precondition> factory;
+		static FunctionFactory<Condition> factory;
 		factory.registerFunction<HasResource>("HasResource");
 		
 		return factory;
