@@ -63,7 +63,7 @@ void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
 	window.setFramerateLimit(fpsLimit);
 }
 	
-void RTSGameStateRender::run(bool& isRunning)
+void RTSGameStateRender::render()
 {
 	sf::RenderWindow window(sf::VideoMode(1200, 800), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 	window.setActive(true);

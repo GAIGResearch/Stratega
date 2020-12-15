@@ -19,7 +19,7 @@ namespace SGA
 		virtual void end() { endGame = true; };
 		virtual bool isGameOver() const { return endGame; };
 
-		virtual void addCommunicator(std::unique_ptr<GameCommunicator> comm);
+		virtual void addCommunicator(std::shared_ptr<GameCommunicator> comm);
 
 		void stop() { isRunning = false; }
 		void resume() { isRunning = true; }
@@ -30,6 +30,6 @@ namespace SGA
 
 		std::mt19937 rngEngine;
 		
-		std::vector<std::unique_ptr<GameCommunicator>> communicators;
+		std::vector<std::shared_ptr<GameCommunicator>> communicators;
 	};
 }

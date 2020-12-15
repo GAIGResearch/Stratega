@@ -15,7 +15,7 @@ public:
 	bool drawDebug = false;
 	
 	RTSGameStateRender(SGA::RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
-	void run(bool& isRunning) override;
+	void render() override;
 
 	// GameCommunicator functions
 	void onGameStateAdvanced() override;
