@@ -51,7 +51,7 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
-
+		std::unordered_map<std::string, std::vector<int>> entityGroups;
 		// Game information
 		bool isGameOver;
 		int winnerPlayerID;
@@ -100,7 +100,7 @@ namespace SGA
 		int addPlayer()
 		{
 			lastUsedPlayerID++;
-			players.emplace_back(/**this*/lastUsedPlayerID);
+			players.emplace_back(lastUsedPlayerID,*this);
 			return lastUsedPlayerID;
 		}
 

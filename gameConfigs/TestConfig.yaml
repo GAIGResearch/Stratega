@@ -54,7 +54,7 @@ Actions:
     Attack:
         Type: EntityAction
         Preconditions:
-            - HasResource( Source.Mana, 50  )
+            - HasResource( Source.Mana, 50)
             - HasResource(Source.Mana, 25)
         Target:
             Type: Entity

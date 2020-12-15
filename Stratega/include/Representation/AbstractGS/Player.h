@@ -1,18 +1,22 @@
 #pragma once
+#include <functional>
 
 namespace SGA
 {
-	struct Player
+	struct GameState;
+	struct Entity;
+	
+	class Player
 	{
-		Player(int id):
-		id(id),
-		score(0),
-		canPlay(true)
-		{
-			
-		}
+	public:
+		Player(int id, GameState& state);
 		int id;
 		double score;
 		bool canPlay;
+
+		//State reference
+		std::reference_wrapper<GameState> state;
+
+		std::vector<Entity*> getEntities() const;
 	};
 }

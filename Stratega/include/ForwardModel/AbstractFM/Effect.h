@@ -29,6 +29,28 @@ namespace SGA
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class Attack : public Effect
+	{
+		FunctionParameter entityTarget;
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+	public:
+		Attack(const std::vector<FunctionParameter>& parameters);
+
+		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+	class RemoveFromResource : public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+	public:
+		RemoveFromResource(const std::vector<FunctionParameter>& parameters);
+
+		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class EndTurn : public Effect
 	{
 	public:

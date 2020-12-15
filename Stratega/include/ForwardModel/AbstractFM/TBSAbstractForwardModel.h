@@ -13,14 +13,14 @@ namespace  SGA
 			action.execute(state,*this);
 
 			//Update removed entities
-			/*for (size_t i = 0; i < state.entities.size(); i++)
+			for (size_t i = 0; i < state.entities.size(); i++)
 			{
 				if (state.entities[i].shouldRemove)
 				{
 					state.entities.erase(state.entities.begin() + i);
 					i -= 1;
 				}
-			}*/
+			}
 
 			auto& actionType = state.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)
@@ -70,48 +70,7 @@ namespace  SGA
 		}
 
 
-		bool canPlayerPlay(Player& player) const
-		{
-			//if (player.state.get().fogOfWarId != -1 && player.id != player.state.get().fogOfWarId)
-			//	return true;
-
-			//switch (winCondition)
-			//{
-			//case WinConditionType::UnitAlive:
-			//{
-			//	bool hasKing = false;
-			//	std::vector<TBSUnit*> units = player.getUnits();
-
-			//	for (auto& unit : units)
-			//	{
-			//		//Check if player has units
-			//		if (unit->getUnitTypeID() == unitTypeID)
-			//		{
-			//			hasKing = true;
-			//		}
-			//	}
-
-			//	if (!hasKing)
-			//	{
-			//		return false;
-			//	}
-
-			//	break;
-			//}
-			//case WinConditionType::LastManStanding:
-			//{
-			//	std::vector<TBSUnit*> units = player.getUnits();
-
-			//	if (units.empty())
-			//	{
-			//		return false;
-			//	}
-			//	break;
-			//}
-			//}
-
-			return true;
-		}
+		bool canPlayerPlay(Player& player) const;
 		
 		bool checkGameIsFinished(TBSGameState2& state) const override
 		{

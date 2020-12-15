@@ -62,7 +62,7 @@ namespace SGA
 		{
 			case Type::ArgumentReference:
 			{
-				auto entityID = std::get<int>(actionTargets[data.resourceData.argumentIndex]);
+				auto entityID = std::get<int>(actionTargets[data.argumentIndex]);
 				return state.getEntity(entityID);
 			}
 			default:

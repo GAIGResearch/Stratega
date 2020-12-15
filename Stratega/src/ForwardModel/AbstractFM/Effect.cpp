@@ -27,6 +27,57 @@ namespace SGA
 		targetResource += amount;
 	}
 
+	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
+		entityTarget(parameters.at(0)),
+		resourceReference(parameters.at(1)),
+		amount(parameters.at(2))
+	{
+
+	}
+	void Attack::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		std::cout << "Execute TBS Attack" << std::endl;
+
+				
+		auto& entity = entityTarget.getEntity(state, targets);
+		
+		auto& targetResource = resourceReference.getParameter(state, targets);
+		double amount = this->amount.getConstant(state, targets);
+
+		targetResource -= amount;
+		if (targetResource <= 0)
+			entity.shouldRemove = true;
+	}
+
+	void Attack::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		
+	}
+	
+	RemoveFromResource::RemoveFromResource(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		amount(parameters.at(1))
+	{
+
+	}
+	void RemoveFromResource::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		std::cout << "Execute TBS Remove from resource" << std::endl;
+		auto& targetResource = resourceReference.getParameter(state, targets);
+		double amount = this->amount.getConstant(state, targets);
+
+		targetResource -= amount;
+	}
+
+	void RemoveFromResource::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		/*std::cout << "Execute RTS Add to resource" << std::endl;
+		auto& targetResource = resourceReference.getParameter(state, targets);
+		double amount = this->amount.getConstant(state, targets);
+
+		targetResource += amount;*/
+	}
+
 	void EndTurn::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS end turn" << std::endl;
@@ -66,11 +117,13 @@ namespace SGA
 		entity.id = state.entities.size();
 		entity.owner = sourceEntity.owner;
 		entity.actionTypeIds.emplace_back(0);
-		entity.actionTypeIds.emplace_back(1);
+		//entity.actionTypeIds.emplace_back(1);
 		entity.actionTypeIds.emplace_back(2);
+		entity.actionTypeIds.emplace_back(4);
 		entity.position = newPos;
 		entity.typeID = 0;
 		entity.parameters.emplace_back(60);
+		entity.parameters.emplace_back(0);
 
 		state.entities.emplace_back(entity);
 	}

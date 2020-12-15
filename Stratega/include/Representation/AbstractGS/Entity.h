@@ -14,7 +14,7 @@ namespace SGA
 
 		std::vector<double> parameters;
 
-		bool shouldRemove;//Death?
+		bool shouldRemove=false;//Death?
 
 		//TODO depends on the type...
 		bool canExecuteAction;

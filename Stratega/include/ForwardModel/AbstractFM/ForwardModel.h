@@ -3,13 +3,18 @@
 #include <ForwardModel/AbstractFM/Action.h>
 #include <ForwardModel/AbstractFM/ActionSpaceBase.h>
 #include <Representation/AbstractGS/GameState.h>
-
+#include <Configuration/WinConditionType.h>
 namespace SGA
 {	template <typename Gamestate=GameState>
 	class ForwardModel : public ForwardModelBase<Gamestate, Action>
 	{
 	std::shared_ptr<ActionSpaceBase<Gamestate>> actionSpace;
+	protected:
+		
 	public:
+		WinConditionType winCondition;
+		int unitTypeID;
+	
 		ForwardModel():
 		actionSpace(std::make_unique<ActionSpaceBase<Gamestate>>())
 		{

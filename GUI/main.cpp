@@ -31,14 +31,25 @@ int main()
 	
 	SGA::TBSAbstractForwardModel fm;
 	test->turnLimit = 100000000000;
+	fm.winCondition = SGA::WinConditionType::UnitAlive;
+	fm.unitTypeID = 1;
+	
 	
 	////Add precondition
-	SGA::FunctionParameter targetResource(0, 0);
-	SGA::FunctionParameter lowerBound(50.);
+	SGA::FunctionParameter targetLifeResource(0, 0);
+	SGA::FunctionParameter lowerBound(0.);
 	std::vector<SGA::FunctionParameter> parameters;
-	parameters.emplace_back(targetResource);
+	parameters.emplace_back(targetLifeResource);
 	parameters.emplace_back(lowerBound);
-	SGA::HasResource precondition(parameters);
+	SGA::HasResource hasLifePrecondition(parameters);
+
+	SGA::FunctionParameter targetGoldResource(1, 0);
+	SGA::FunctionParameter lowerGoldBound(10.);
+	std::vector<SGA::FunctionParameter> parametersGold;
+	parametersGold.emplace_back(targetGoldResource);
+	parametersGold.emplace_back(lowerGoldBound);
+	SGA::HasResource hasGoldPrecondition(parametersGold);
+	
 	SGA::SamePlayer precondition1;
 
 	//Add effect
@@ -47,7 +58,28 @@ int main()
 	std::vector<SGA::FunctionParameter> parametersEffect;
 	parametersEffect.emplace_back(targetResourceEffect);
 	parametersEffect.emplace_back(amountToAddEffect);
-	SGA::AddToResource effect(parametersEffect);
+	SGA::AddToResource addHealth(parametersEffect);
+
+	//Remove gold effect
+	SGA::FunctionParameter targetGoldResourceEffect(1, 0);
+	SGA::FunctionParameter amountToRemoveGoldEffect(10.);
+	std::vector<SGA::FunctionParameter> parametersGoldEffect;
+	parametersGoldEffect.emplace_back(targetGoldResourceEffect);
+	parametersGoldEffect.emplace_back(amountToRemoveGoldEffect);
+	SGA::RemoveFromResource removeGoldEffect(parametersGoldEffect);
+
+	//Remove Health effect
+	SGA::FunctionParameter targetHealthResourceEffect(0, 1);
+	SGA::FunctionParameter targetHealthEffect(1);
+	SGA::FunctionParameter amountToRemoveHealthEffect(20.);
+	std::vector<SGA::FunctionParameter> parametersHealthEffect;
+	parametersHealthEffect.emplace_back(targetHealthEffect);
+	parametersHealthEffect.emplace_back(targetHealthResourceEffect);
+	parametersHealthEffect.emplace_back(amountToRemoveHealthEffect);
+	//SGA::RemoveFromResource removeHealthEffect(parametersHealthEffect);
+
+	//Attack effect	
+	SGA::Attack attackEffect(parametersHealthEffect);
 
 	
 	//Add effect
@@ -76,9 +108,9 @@ int main()
 	actionType2.id = 1;
 	actionType2.name = "AddHealth";
 	actionType2.sourceType = SGA::ActionSourceType::Unit;
-	actionType2.preconditions.emplace_back(std::make_unique<SGA::HasResource>(precondition));
+	actionType2.preconditions.emplace_back(std::make_unique<SGA::HasResource>(hasLifePrecondition));
 	actionType2.condition.emplace_back(std::make_unique<SGA::SamePlayer>(precondition1));
-	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(effect));
+	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(addHealth));
 	//actionType2.effects.emplace_back(std::make_unique<SGA::HasResource>(effect));
 	SGA::TargetType target;
 	target.type = SGA::TargetType::Entity;
@@ -110,6 +142,8 @@ int main()
 	actionType4.name = "SpawnUnit";
 	actionType4.sourceType = SGA::ActionSourceType::Unit;
 	actionType4.effects.emplace_back(std::make_unique<SGA::SpawnUnit>(spawnUnitEffect));
+	actionType4.effects.emplace_back(std::make_unique<SGA::RemoveFromResource>(removeGoldEffect));
+	actionType4.preconditions.emplace_back(std::make_unique<SGA::HasResource>(hasGoldPrecondition));
 	SGA::TargetType targetSpawn;
 	targetSpawn.type = SGA::TargetType::Position;
 	targetSpawn.shapeType = SGA::ShapeType::Circle;
@@ -120,30 +154,51 @@ int main()
 
 	test->actionTypes->emplace(3, std::move(actionType4));
 
+	SGA::ActionType actionType5;
+	actionType5.id = 4;
+	actionType5.name = "Attack";
+	actionType5.sourceType = SGA::ActionSourceType::Unit;
+	actionType5.preconditions.emplace_back(std::make_unique<SGA::HasResource>(hasLifePrecondition));
+	actionType5.effects.emplace_back(std::make_unique<SGA::Attack>(attackEffect));
+	//actionType2.effects.emplace_back(std::make_unique<SGA::HasResource>(effect));
+	SGA::TargetType targetHealth;
+	targetHealth.type = SGA::TargetType::Entity;
+	targetHealth.groupEntityTypes.insert(0);
+	targetHealth.groupEntityTypes.insert(1);
+
+	actionType5.actionTargets = targetHealth;
+
+	test->actionTypes->emplace(4, std::move(actionType5));
+
 	// Add EntityType
 	SGA::EntityType type;
 	type.id = 0;
 	type.name = "Unit";
- 	test->parameterIDLookup->emplace("Health", 0);
 	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
+	type.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 0, 0, 100 });
 	test->entityTypes->emplace(0, std::move(type));
 
 	SGA::EntityType buildingType;
 	buildingType.id = 1;
 	buildingType.name = "Building";
-	test->parameterIDLookup->emplace("Health", 0);
-	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
+	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 50, -20, 20 });
+	buildingType.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 50, 0, 100 });
 	test->entityTypes->emplace(1, std::move(buildingType));
 
+
+
+	test->parameterIDLookup->emplace("Health", 0);
+	test->parameterIDLookup->emplace("Gold", 1);
 	//Add entity
 	SGA::Entity building1;
 	building1.id = 3;
 	building1.owner = 0;
-	building1.actionTypeIds.emplace_back(1);
+	/*building1.actionTypeIds.emplace_back(1);*/
 	building1.actionTypeIds.emplace_back(3);
 	building1.position = SGA::Vector2f(15, 10);
 	building1.typeID = 1;
 	building1.parameters.emplace_back(200);
+	building1.parameters.emplace_back(10);
 
 	test->entities.emplace_back(building1);
 
@@ -152,11 +207,12 @@ int main()
 	SGA::Entity building2;
 	building2.id = 2;
 	building2.owner = 1;
-	building2.actionTypeIds.emplace_back(1);
+	/*building2.actionTypeIds.emplace_back(1);*/
 	building2.actionTypeIds.emplace_back(3);
 	building2.position = SGA::Vector2f(20, 10);
 	building2.typeID = 1;
 	building2.parameters.emplace_back(200);
+	building2.parameters.emplace_back(10);
 
 	test->entities.emplace_back(building2);
 	
@@ -165,11 +221,13 @@ int main()
 	entity.id = 0;
 	entity.owner = 0;
 	entity.actionTypeIds.emplace_back(0);
-	entity.actionTypeIds.emplace_back(1);
+	//entity.actionTypeIds.emplace_back(1);
 	entity.actionTypeIds.emplace_back(2);
+	entity.actionTypeIds.emplace_back(4);
 	entity.position = SGA::Vector2f(10, 10);
 	entity.typeID = 0;
 	entity.parameters.emplace_back(60);
+	entity.parameters.emplace_back(0);
 	
 	test->entities.emplace_back(entity);
 
@@ -177,11 +235,13 @@ int main()
 	entity2.id = 1;
 	entity2.owner = 1;
 	entity2.actionTypeIds.emplace_back(0);
-	entity2.actionTypeIds.emplace_back(1);
+	//entity2.actionTypeIds.emplace_back(1);
 	entity2.actionTypeIds.emplace_back(2);
+	entity2.actionTypeIds.emplace_back(4);
 	entity2.position = SGA::Vector2f(3, 3);
 	entity2.typeID = 0;
 	entity2.parameters.emplace_back(60);
+	entity2.parameters.emplace_back(0);
 
 	test->entities.emplace_back(entity2);
 
