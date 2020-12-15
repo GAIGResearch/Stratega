@@ -26,6 +26,7 @@ public:
 	{
 	}
 	virtual ~GameStateRenderBase() = default;
+	virtual void render() = 0;
 };
 
 template<typename GameState>
@@ -37,20 +38,18 @@ public:
 	{
 	}
 	virtual ~GameStateRenderer()=default;
-	virtual void run(bool& isRunning) = 0;
+	void render() override = 0;
 	
 	// GameCommunicator functions
 	void init() override
 	{
 		//Initialization
-		isRenderThreadRunning = true;
-		renderThread = std::thread(&GameStateRenderer::run, this, std::ref(isRenderThreadRunning));
+		isRunning = true;
 	}
 	
 	void close() override
 	{
-		isRenderThreadRunning = false;
-		renderThread.join();
+		isRunning = false;
 	}
 	
 	void onGameStateAdvanced() override = 0;
@@ -66,6 +65,6 @@ public:
 
 	std::vector<std::unique_ptr<RenderLayer<GameState>>> renderLayers;
 
-private:
-	bool isRenderThreadRunning = false;
+protected:
+	bool isRunning = false;
 };

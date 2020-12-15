@@ -73,13 +73,15 @@ int main(int argc, char **argv)
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath.parent_path()));
-	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
+	auto stateRenderer = std::shared_ptr(stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID));
 	current_path(tmp);
 
-	game->addCommunicator(std::move(stateRenderer));
+	game->addCommunicator(stateRenderer);
 	
 	// Run the game
-	game->run();
+	std::thread gameThread(&SGA::Game::run, std::ref(*game));
+	stateRenderer->render();
+	gameThread.join();
 	
     return 0;
 }

@@ -76,7 +76,7 @@ void TBSGameStateRender::initializeView(sf::RenderWindow& window) const
 	window.setFramerateLimit(fpsLimit);
 }
 
-void TBSGameStateRender::run(bool& isRunning)
+void TBSGameStateRender::render()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 	window.setActive(true);

@@ -11,7 +11,7 @@ class TBSGameStateRender: public GameStateRenderer<SGA::TBSGameState>
 {
 public:
 	TBSGameStateRender(SGA::TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
-	void run(bool& isRunning) override;
+	void render() override;
 
 	// GameCommunicator functions
 	void onGameStateAdvanced() override;
