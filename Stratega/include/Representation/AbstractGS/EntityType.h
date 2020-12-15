@@ -13,6 +13,7 @@ namespace SGA
 		int id;
 		std::string name;
 		std::unordered_map<ParameterID, Parameter> parameters;
+		std::vector<int> actionIds;
 
 		const Parameter& getParameter(ParameterID id) const
 		{

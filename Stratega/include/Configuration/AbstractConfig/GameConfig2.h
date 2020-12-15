@@ -19,6 +19,7 @@ namespace SGA
         std::unordered_map<int, ActionType> actionTypes;
 
         int getEntityID(const std::string& name);
+        int getActionID(const std::string& name);
     };
 }
 
@@ -32,6 +33,16 @@ namespace YAML
             if (!parseEntities(node, rhs) || !parseEntityGroups(node, rhs) || !parseActions(node, rhs))
                 return false;
 
+        	// Assign actions
+            auto types = node["Entities"].as<std::map<std::string, SGA::EntityTypeConfig>>();
+        	for(auto& type : rhs.entityTypes)
+        	{
+        		for(const auto& actionName : types[type.second.name].actions)
+        		{
+                    type.second.actionIds.emplace_back(rhs.getActionID(actionName));
+        		}
+        	}
+        	
             return true;
         }
 
