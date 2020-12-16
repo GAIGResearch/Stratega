@@ -27,11 +27,8 @@ namespace SGA
 
 	void AbstractRTSGameCommunicator::executeAction(Action action) const
 	{
-		game->addActionToExecute(action);
-		// The agent's thread only continues once the action has been executed
-		// This ensures that an agent is deterministic, otherwise it can happen that an agent works with an old gameState
-		// TODO Should this be done here?
-		while (game->isUpdatingState());
+		game->executeAction(action);
+		
 	}
 
 	RTSGameState2 AbstractRTSGameCommunicator::getGameState() const

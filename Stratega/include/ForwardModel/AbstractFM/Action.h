@@ -9,6 +9,15 @@ namespace SGA
 	
 	struct Action
 	{
+		Action():
+		isEndAction(false),
+		actionTypeID(-1)
+		{
+			
+		}
+		//RTS Endtick && TBS Endturn
+		bool isEndAction;
+		
 		int actionTypeID;
 		// Contains all targets involved in an action
 		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite

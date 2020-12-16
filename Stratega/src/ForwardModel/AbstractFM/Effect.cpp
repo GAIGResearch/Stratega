@@ -78,18 +78,6 @@ namespace SGA
 		targetResource += amount;*/
 	}
 
-	void EndTurn::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		std::cout << "Execute TBS end turn" << std::endl;
-		auto& casted=dynamic_cast<TBSGameState2&>(state);
-		fm.endTurn(casted);
-	}
-
-	void EndTurn::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		//NOT NEEDED
-	}
-
 	void Move::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute Move TBS" << std::endl;

@@ -8,6 +8,7 @@ namespace SGA
 {	template <typename Gamestate=GameState>
 	class ForwardModel : public ForwardModelBase<Gamestate, Action>
 	{
+	public:
 	std::shared_ptr<ActionSpaceBase<Gamestate>> actionSpace;
 	protected:
 		

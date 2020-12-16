@@ -51,15 +51,6 @@ namespace SGA
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class EndTurn : public Effect
-	{
-	public:
-		EndTurn(const std::vector<FunctionParameter>& parameters) {};
-
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-	};
-
 	class Move : public Effect
 	{
 	public:

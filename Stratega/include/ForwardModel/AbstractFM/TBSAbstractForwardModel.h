@@ -9,6 +9,10 @@ namespace  SGA
 	public:
 		void advanceGameState(TBSGameState2& state, const Action& action) const override
 		{
+			if(action.isEndAction)
+			{
+				endTurn(state);
+			}
 			//Execute the action
 			action.execute(state,*this);
 

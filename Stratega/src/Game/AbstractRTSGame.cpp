@@ -13,16 +13,50 @@ namespace SGA
 
 	RTSGameState2 AbstractRTSGame::getStateCopy()
 	{
-		std::lock_guard<std::mutex> copyGuard(mutexGameState);
+		std::lock_guard<std::mutex> copyGuard(stateMutex);
 		return *gameState;
 	}
 
 	void AbstractRTSGame::update(double deltaTime)
 	{
-		std::this_thread::sleep_for(std::chrono::microseconds(1));
-		if (hasActionToExecute)
+		accumulatedTimeUpdate += deltaTime;
+		accumulatedTimePrint += deltaTime;
+
+		if (accumulatedTimeUpdate > forwardModel.deltaTime)
 		{
-			executeAction(actionToExecute);
+			//Execute
+			stateMutex.lock();
+			forwardModel.advanceGameState(*gameState, forwardModel.getActionSpace().generateEndAction());
+
+			//Update navmesh if it needs to
+			if (shouldUpdateNavmesh)
+			{
+				forwardModel.buildNavMesh(*gameState, navigationConfig);
+				shouldUpdateNavmesh = false;
+			}
+
+			stateMutex.unlock();
+
+			for (auto& com : communicators)
+			{
+				com->onGameStateAdvanced();
+			}
+
+			accumulatedTimeUpdate = 0;
+			executionCount++;
+		}
+
+		if (accumulatedTimePrint >= 1)
+		{
+			std::cout << "Advanced " << executionCount << " times the forwardModel in " << accumulatedTimePrint << "s." << std::endl;
+			for (const auto& unit : gameState->entities)
+			{
+				std::cout << "Unit " << unit.id << " at position (" << unit.position.x << ", " << unit.position.y << ")" << std::endl;
+			}
+
+
+			executionCount = 0;
+			accumulatedTimePrint = 0;
 		}
 	}
 
@@ -36,26 +70,12 @@ namespace SGA
 
 	void AbstractRTSGame::executeAction(Action action)
 	{
-		//Lock mutex while we are advancing the gameState
-		mutexGameState.lock();
+		if (action.isEndAction)
+			return;
+
+		std::lock_guard<std::mutex> stateGuard(stateMutex);
 		forwardModel.advanceGameState(*gameState, action);
-		mutexGameState.unlock();
-		hasActionToExecute = false;
-		updatingState = false;
-
-		for (auto& com : communicators)
-		{
-			com->onGameStateAdvanced();
-		}
 	}
 
-	void AbstractRTSGame::addActionToExecute(Action action)
-	{
-		/*if (gameState->currentPlayer == action.owner)
-		{
-			actionToExecute = action;
-			hasActionToExecute = true;
-			updatingState = true;
-		}*/
-	}
+	
 }

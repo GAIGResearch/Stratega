@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <Representation/Vector2.h>
+#include "Representation/Path.h"
 
 namespace SGA
 {
@@ -18,5 +19,14 @@ namespace SGA
 
 		//TODO depends on the type...
 		bool canExecuteAction;
+
+		//RTS Stuff
+		Action intendedAction;
+		Action executingAction;
+		Path path;
+		double actionCooldown;
+		double maxActionCooldown;
+		double movementSpeed;
+		float collisionRadius;
 	};
 }

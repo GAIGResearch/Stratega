@@ -42,6 +42,7 @@ namespace SGA
 	//Abstract
 
     std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
+    std::unique_ptr<RTSGameState2> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }
 
 namespace YAML

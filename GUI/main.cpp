@@ -22,14 +22,16 @@ int main()
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
-	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
+	//auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
 	std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine);
+	std::unique_ptr<SGA::RTSGameState2> RTSGameState = SGA::generateAbstractRTSStateFromConfig(gameConfig,engine);
 
 	
 	
 	SGA::ActionSpaceBase<SGA::GameState> temp;
 	
-	SGA::TBSAbstractForwardModel fm;
+	//SGA::TBSAbstractForwardModel fm;
+	SGA::RTSAbstractForwardModel fm;
 	test->turnLimit = 100000000000;
 	fm.winCondition = SGA::WinConditionType::UnitAlive;
 	fm.unitTypeID = 1;
@@ -83,8 +85,8 @@ int main()
 
 	
 	//Add effect
-	
-	SGA::EndTurn effect2({});
+	/*
+	SGA::EndTurn effect2({});*/
 
 	//Add effect
 	SGA::Move moveEffect({});
@@ -99,9 +101,8 @@ int main()
 	actionType.id = 0;
 	actionType.name = "EndTurn";
 	actionType.sourceType = SGA::ActionSourceType::Player;
-	actionType.effects.emplace_back(std::make_unique<SGA::EndTurn>(effect2));
 
-	test->actionTypes->emplace(0, std::move(actionType));
+	RTSGameState->actionTypes->emplace(0, std::move(actionType));
 
 	//Add actionType
 	SGA::ActionType actionType2;
@@ -111,14 +112,14 @@ int main()
 	actionType2.preconditions.emplace_back(std::make_unique<SGA::HasResource>(hasLifePrecondition));
 	actionType2.condition.emplace_back(std::make_unique<SGA::SamePlayer>(precondition1));
 	actionType2.effects.emplace_back(std::make_unique<SGA::AddToResource>(addHealth));
-	//actionType2.effects.emplace_back(std::make_unique<SGA::HasResource>(effect));
+	
 	SGA::TargetType target;
 	target.type = SGA::TargetType::Entity;
 	target.groupEntityTypes.insert(0);
 
 	actionType2.actionTargets = target;
 	
-	test->actionTypes->emplace(1, std::move(actionType2));
+	RTSGameState->actionTypes->emplace(1, std::move(actionType2));
 
 	//Add actionType Move
 	SGA::ActionType actionType3;
@@ -134,7 +135,7 @@ int main()
 
 	actionType3.actionTargets = targetMove;
 
-	test->actionTypes->emplace(2, std::move(actionType3));
+	RTSGameState->actionTypes->emplace(2, std::move(actionType3));
 
 	//Add actionType Spawn
 	SGA::ActionType actionType4;
@@ -152,7 +153,7 @@ int main()
 
 	actionType4.actionTargets = targetSpawn;
 
-	test->actionTypes->emplace(3, std::move(actionType4));
+	RTSGameState->actionTypes->emplace(3, std::move(actionType4));
 
 	SGA::ActionType actionType5;
 	actionType5.id = 4;
@@ -168,7 +169,7 @@ int main()
 
 	actionType5.actionTargets = targetHealth;
 
-	test->actionTypes->emplace(4, std::move(actionType5));
+	RTSGameState->actionTypes->emplace(4, std::move(actionType5));
 
 	// Add EntityType
 	SGA::EntityType type;
@@ -176,19 +177,19 @@ int main()
 	type.name = "Unit";
 	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
 	type.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 0, 0, 100 });
-	test->entityTypes->emplace(0, std::move(type));
+	RTSGameState->entityTypes->emplace(0, std::move(type));
 
 	SGA::EntityType buildingType;
 	buildingType.id = 1;
 	buildingType.name = "Building";
 	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 50, -20, 20 });
 	buildingType.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 50, 0, 100 });
-	test->entityTypes->emplace(1, std::move(buildingType));
+	RTSGameState->entityTypes->emplace(1, std::move(buildingType));
 
 
 
-	test->parameterIDLookup->emplace("Health", 0);
-	test->parameterIDLookup->emplace("Gold", 1);
+	RTSGameState->parameterIDLookup->emplace("Health", 0);
+	RTSGameState->parameterIDLookup->emplace("Gold", 1);
 	//Add entity
 	SGA::Entity building1;
 	building1.id = 3;
@@ -200,7 +201,7 @@ int main()
 	building1.parameters.emplace_back(200);
 	building1.parameters.emplace_back(10);
 
-	test->entities.emplace_back(building1);
+	RTSGameState->entities.emplace_back(building1);
 
 
 	//Add entity
@@ -214,7 +215,7 @@ int main()
 	building2.parameters.emplace_back(200);
 	building2.parameters.emplace_back(10);
 
-	test->entities.emplace_back(building2);
+	RTSGameState->entities.emplace_back(building2);
 	
 	//Add entity
 	SGA::Entity entity;
@@ -229,7 +230,7 @@ int main()
 	entity.parameters.emplace_back(60);
 	entity.parameters.emplace_back(0);
 	
-	test->entities.emplace_back(entity);
+	RTSGameState->entities.emplace_back(entity);
 
 	SGA::Entity entity2;
 	entity2.id = 1;
@@ -243,10 +244,10 @@ int main()
 	entity2.parameters.emplace_back(60);
 	entity2.parameters.emplace_back(0);
 
-	test->entities.emplace_back(entity2);
+	RTSGameState->entities.emplace_back(entity2);
 
 	//GenerateGame
-	std::unique_ptr<SGA::AbstractTBSGame>game= std::make_unique<SGA::AbstractTBSGame>(std::move(test),fm,engine);
+	std::unique_ptr<SGA::AbstractRTSGame>game= std::make_unique<SGA::AbstractRTSGame>(std::move(RTSGameState),fm,engine);
 	
 
 
@@ -274,6 +275,15 @@ int main()
 			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));
 		}
+		else
+		{
+			std::unique_ptr<SGA::AbstractRTSGameCommunicator> comm = std::make_unique<SGA::AbstractRTSGameCommunicator>(playerID);
+			comm->setAgent(std::move(agent));
+			comm->setGame(dynamic_cast<SGA::AbstractRTSGame&>(*game));
+			comm->setRNGEngine(std::mt19937(distribution(engine)));
+			game->addCommunicator(std::move(comm));			
+		}
+		
 		
 		playerID++;
 	}
@@ -282,17 +292,14 @@ int main()
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath.parent_path()));
-	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
+	//auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
 	current_path(tmp);
 
-	AbstractGameStateRender* render = dynamic_cast<AbstractGameStateRender*>(stateRenderer.get());
+	//AbstractGameStateRender* render = dynamic_cast<AbstractGameStateRender*>(stateRenderer.get());
 	//Register entitytypes
-
-
-	
-	render->entitySpriteTypes->emplace(0, "unit_0");
+	/*render->entitySpriteTypes->emplace(0, "unit_0");
 	render->entitySpriteTypes->emplace(1, "building");
-	game->addCommunicator(std::move(stateRenderer));
+	game->addCommunicator(std::move(stateRenderer));*/
 	
 	// Run the game
 	

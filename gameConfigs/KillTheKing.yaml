@@ -1,5 +1,5 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -7,7 +7,7 @@ Agents:
 #    - MCTSAgent
 #    - BFSAgent
     - RandomAgent
-    - HumanAgent
+    - RandomAgent
 
 Tiles:
     Plain:

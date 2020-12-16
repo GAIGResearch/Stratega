@@ -18,6 +18,8 @@ namespace SGA
 
 	void Action::execute(GameState& state, const RTSAbstractForwardModel& fm) const
 	{
+		if (actionTypeID == -1)
+			return;
 		auto& type = state.actionTypes->at(actionTypeID);
 		for (auto& effect : type.effects)
 		{

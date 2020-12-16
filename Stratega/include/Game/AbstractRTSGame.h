@@ -8,6 +8,11 @@ namespace SGA
 {
 	class AbstractRTSGame final : public Game
 	{
+	private:
+		double accumulatedTimeUpdate = 0;
+		double accumulatedTimePrint = 0;
+		int executionCount = 0;
+		
 	public:
 		Action actionToExecute;
 		bool hasActionToExecute = false;
@@ -18,8 +23,7 @@ namespace SGA
 		void update(double deltaTime) override;
 		void close() override;
 		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
-		void addActionToExecute(Action action);
-
+		
 		const RTSAbstractForwardModel& getForwardModel() const { return forwardModel; }
 
 		/// <summary>
@@ -40,6 +44,10 @@ namespace SGA
 
 		std::mt19937 rngEngine;
 
-		std::mutex mutexGameState;
+		std::mutex stateMutex;
+
+		//Navmesh Update
+		NavigationConfig navigationConfig;
+		bool shouldUpdateNavmesh;
 	};
 }

@@ -64,7 +64,7 @@ namespace SGA
 			Action endTurnAction;
 			endTurnAction.actionTypeID = 0;
 			endTurnAction.owner = player;
-			
+			endTurnAction.isEndAction = true;
 			bucket.emplace_back(endTurnAction);
 			return bucket;
 		}
@@ -161,6 +161,13 @@ namespace SGA
 			}
 
 			return true;
+		}
+
+		Action generateEndAction()
+		{
+			Action endAction;
+			endAction.isEndAction = true;
+			return endAction;
 		}
 	};
 }
