@@ -48,6 +48,8 @@ namespace SGA
 			m_detailSampleDist = 6.0f;
 			m_detailSampleMaxError = 1.0f;
 			m_partitionType = SAMPLE_PARTITION_WATERSHED;
+
+			m_erodeWalkableArea = false;
 		}
 
 		//Configuration
@@ -90,6 +92,7 @@ namespace SGA
 			m_detailSampleDist = 6.0f;
 			m_detailSampleMaxError = 1.0f;
 			m_partitionType = SAMPLE_PARTITION_WATERSHED;
+			m_erodeWalkableArea = false;
 		}
 	};
 	

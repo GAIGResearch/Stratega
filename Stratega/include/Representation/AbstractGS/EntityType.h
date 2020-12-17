@@ -32,5 +32,15 @@ namespace SGA
 				throw std::runtime_error(s);
 			}
 		}
+
+		bool haveActionType(int actionID) const
+		{
+			for (int id : actionIds)
+			{
+				if (actionID == actionID)
+					return true;
+			}
+			return false;
+		}
 	};
 }

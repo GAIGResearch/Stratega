@@ -1,5 +1,5 @@
 #include <filesystem>
-//#include <GameStateRenderer.h>
+#include <AbstractRTSGameStateRender.h>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 //#include <Game/TBSGameCommunicator.h>
@@ -22,8 +22,8 @@ int main()
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
-	//auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
-	std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine);
+	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
+	//std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine);
 	std::unique_ptr<SGA::RTSGameState2> RTSGameState = SGA::generateAbstractRTSStateFromConfig(gameConfig,engine);
 
 	
@@ -32,7 +32,7 @@ int main()
 	
 	//SGA::TBSAbstractForwardModel fm;
 	SGA::RTSAbstractForwardModel fm;
-	test->turnLimit = 100000000000;
+	//test->turnLimit = 100000000000;
 	fm.winCondition = SGA::WinConditionType::UnitAlive;
 	fm.unitTypeID = 1;
 	
@@ -175,14 +175,18 @@ int main()
 	SGA::EntityType type;
 	type.id = 0;
 	type.name = "Unit";
-	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 20 });
+	type.parameters.emplace(0, SGA::Parameter{ "Health", 0, 0, -20, 200 });
 	type.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 0, 0, 100 });
+	type.actionIds.emplace_back(0);
+	type.actionIds.emplace_back(2);
+	type.actionIds.emplace_back(4);
+	
 	RTSGameState->entityTypes->emplace(0, std::move(type));
 
 	SGA::EntityType buildingType;
 	buildingType.id = 1;
 	buildingType.name = "Building";
-	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 50, -20, 20 });
+	buildingType.parameters.emplace(0, SGA::Parameter{ "Health", 0, 50, -20, 200 });
 	buildingType.parameters.emplace(1, SGA::Parameter{ "Gold", 1, 50, 0, 100 });
 	RTSGameState->entityTypes->emplace(1, std::move(buildingType));
 
@@ -196,7 +200,7 @@ int main()
 	building1.owner = 0;
 	/*building1.actionTypeIds.emplace_back(1);*/
 	building1.actionTypeIds.emplace_back(3);
-	building1.position = SGA::Vector2f(15, 10);
+	building1.position = SGA::Vector2f(4, 12);
 	building1.typeID = 1;
 	building1.parameters.emplace_back(200);
 	building1.parameters.emplace_back(10);
@@ -210,7 +214,7 @@ int main()
 	building2.owner = 1;
 	/*building2.actionTypeIds.emplace_back(1);*/
 	building2.actionTypeIds.emplace_back(3);
-	building2.position = SGA::Vector2f(20, 10);
+	building2.position = SGA::Vector2f(6, 12);
 	building2.typeID = 1;
 	building2.parameters.emplace_back(200);
 	building2.parameters.emplace_back(10);
@@ -225,7 +229,7 @@ int main()
 	//entity.actionTypeIds.emplace_back(1);
 	entity.actionTypeIds.emplace_back(2);
 	entity.actionTypeIds.emplace_back(4);
-	entity.position = SGA::Vector2f(10, 10);
+	entity.position = SGA::Vector2f(5, 3);
 	entity.typeID = 0;
 	entity.parameters.emplace_back(60);
 	entity.parameters.emplace_back(0);
@@ -248,10 +252,7 @@ int main()
 
 	//GenerateGame
 	std::unique_ptr<SGA::AbstractRTSGame>game= std::make_unique<SGA::AbstractRTSGame>(std::move(RTSGameState),fm,engine);
-	
-
-
-	
+		
 	int playerID = 0;
 	int humanPlayerID=-1;
 	auto agents = SGA::agentsFromConfig(gameConfig);
@@ -292,14 +293,14 @@ int main()
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath.parent_path()));
-	//auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
+	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
 	current_path(tmp);
 
-	//AbstractGameStateRender* render = dynamic_cast<AbstractGameStateRender*>(stateRenderer.get());
+	AbstractRTSGameStateRender* render = dynamic_cast<AbstractRTSGameStateRender*>(stateRenderer.get());
 	//Register entitytypes
-	/*render->entitySpriteTypes->emplace(0, "unit_0");
+	render->entitySpriteTypes->emplace(0, "unit_0");
 	render->entitySpriteTypes->emplace(1, "building");
-	game->addCommunicator(std::move(stateRenderer));*/
+	game->addCommunicator(std::move(stateRenderer));
 	
 	// Run the game
 	

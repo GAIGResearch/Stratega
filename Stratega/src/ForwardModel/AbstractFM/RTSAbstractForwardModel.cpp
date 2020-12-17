@@ -254,67 +254,73 @@ namespace SGA
 
 	void RTSAbstractForwardModel::resolveUnitCollisions(RTSGameState2& state) const
 	{
-		//for (auto& unit : state.target.units)
-		//{
-		//	Vector2f pushDir;
-		//	for (auto& otherUnit : state.target.units)
-		//	{
-		//		// Units cant collide with themselves, also idle units do not push busy units
-		//		if (unit.unitID == otherUnit.unitID || (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None))
-		//			continue;
+		for (auto& unit : state.entities)
+		{
+			Vector2f pushDir;
+			for (auto& otherUnit : state.entities)
+			{
+				// Units cant collide with themselves, also idle units do not push busy units
+				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
+					continue;
 
-		//		auto dir = otherUnit.position - unit.position;
-		//		if (dir.magnitude() <= unit.collisionRadius + otherUnit.collisionRadius)
-		//		{
-		//			auto penetrationDepth = unit.collisionRadius + otherUnit.collisionRadius - dir.magnitude();
-		//			pushDir = pushDir + dir.normalized() * 2 / (1 + penetrationDepth);
-		//		}
-		//	}
+				auto entityType = state.getEntityType(unit.typeID);
 
-		//	unit.position = unit.position - pushDir * deltaTime;
-		//}
+				//Move action
+				if (!entityType.haveActionType(2))
+					continue;
+
+				auto dir = otherUnit.position - unit.position;
+				if (dir.magnitude() <= unit.collisionRadius + otherUnit.collisionRadius)
+				{
+					auto penetrationDepth = unit.collisionRadius + otherUnit.collisionRadius - dir.magnitude();
+					pushDir = pushDir + dir.normalized() * 2 / (1 + penetrationDepth);
+				}
+			}
+
+			unit.position = unit.position - pushDir * deltaTime;
+		}
 	}
 
 	void RTSAbstractForwardModel::resolveEnvironmentCollisions(RTSGameState2& state) const
 	{
 		static float RECT_SIZE = 1;
 
-		//// Collision
-		//for (auto& unit : state.target.units)
-		//{
-		//	int startCheckPositionX = std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE);
-		//	int endCheckPositionX = std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE);
-		//	int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
-		//	int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
+		// Collision
+		for (auto& unit : state.entities)
+		{
+			int startCheckPositionX = std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE);
+			int endCheckPositionX = std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE);
+			int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
+			int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
 
-		//	Vector2f pushDir;
-		//	for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
-		//	{
-		//		for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
-		//		{
-		//			// Everything outside bounds is considered as un-walkable tiles
-		//			if (state.target.isInBounds({ x, y }) && state.target.board.getTile(x, y).isWalkable)
-		//				continue;
+			Vector2f pushDir;
+			for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
+			{
+				for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
+				{
+					// Everything outside bounds is considered as un-walkable tiles
+					if (state.isInBounds({ x, y }) && state.board.getTile(x, y).isWalkable)
+						continue;
 
-		//			// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
-		//			auto fx = static_cast<float>(x);
-		//			auto fy = static_cast<float>(y);
-		//			auto nearestX = std::max(fx, std::min(unit.position.x, fx + RECT_SIZE));
-		//			auto nearestY = std::max(fy, std::min(unit.position.y, fy + RECT_SIZE));
-		//			auto dist = unit.position - Vector2f(nearestX, nearestY);
+					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
+					auto fx = static_cast<float>(x);
+					auto fy = static_cast<float>(y);
+					auto nearestX = std::max(fx, std::min(unit.position.x, fx + RECT_SIZE));
+					auto nearestY = std::max(fy, std::min(unit.position.y, fy + RECT_SIZE));
+					auto dist = unit.position - Vector2f(nearestX, nearestY);
 
-		//			auto penetrationDepth = unit.collisionRadius - dist.magnitude();
-		//			// No collision detected
-		//			if (penetrationDepth <= 0)
-		//				continue;
+					auto penetrationDepth = unit.collisionRadius - dist.magnitude();
+					// No collision detected
+					if (penetrationDepth <= 0)
+						continue;
 
-		//			auto dir = dist.normalized() * penetrationDepth;
-		//			pushDir = pushDir + dir;
-		//		}
-		//	}
+					auto dir = dist.normalized() * penetrationDepth;
+					pushDir = pushDir + dir;
+				}
+			}
 
-		//	unit.position = unit.position + pushDir;
-		//}
+			unit.position = unit.position + pushDir;
+		}
 	}
 
 	bool RTSAbstractForwardModel::buildNavMesh(RTSGameState2& state, NavigationConfig config) const

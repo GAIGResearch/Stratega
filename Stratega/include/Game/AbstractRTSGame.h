@@ -45,9 +45,10 @@ namespace SGA
 		std::mt19937 rngEngine;
 
 		std::mutex stateMutex;
-
+	public:
 		//Navmesh Update
 		NavigationConfig navigationConfig;
 		bool shouldUpdateNavmesh;
+
 	};
 }

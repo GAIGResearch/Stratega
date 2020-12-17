@@ -437,8 +437,7 @@ void AbstractTBSGameStateRender::drawLayers(sf::RenderWindow& window)
 		{
 			SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 			if(actionType.sourceType==SGA::ActionSourceType::Unit)
-			{
-				
+			{			
 				
 				//Get source
 				if(actionType.actionTargets.type==SGA::TargetType::Entity)
@@ -474,8 +473,7 @@ void AbstractTBSGameStateRender::drawLayers(sf::RenderWindow& window)
 				default: throw std::runtime_error("Tried adding an action with an not supported action-type");
 				}*/
 				
-			}
-			
+			}			
 		}
 	}
 
@@ -563,6 +561,7 @@ void AbstractTBSGameStateRender::createHUD(sf::RenderWindow& window)
 	createWindowActions();
 	createWindowMultipleActions(window);
 }
+
 void AbstractTBSGameStateRender::createWindowInfo() const
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
@@ -586,11 +585,12 @@ void AbstractTBSGameStateRender::createWindowInfo() const
 
 	ImGui::End();
 }
+
 void AbstractTBSGameStateRender::createWindowUnits()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
-	ImGui::Begin("Units");
+	ImGui::Begin("Entities");
 
 	ImGui::BeginChild("Scrolling");
 
@@ -607,6 +607,7 @@ void AbstractTBSGameStateRender::createWindowUnits()
 	ImGui::EndChild();
 	ImGui::End();
 }
+
 void AbstractTBSGameStateRender::createWindowActions()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
@@ -634,6 +635,7 @@ void AbstractTBSGameStateRender::createWindowActions()
 	ImGui::EndChild();
 	ImGui::End();
 }
+
 void AbstractTBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
 {
 

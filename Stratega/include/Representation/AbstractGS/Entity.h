@@ -7,6 +7,20 @@ namespace SGA
 {
 	struct Entity
 	{
+		Entity():
+
+			actionCooldown(0),
+			maxActionCooldown(1),
+			movementSpeed(2),
+			collisionRadius(0.5),
+			position(),
+
+			intendedAction(),
+			executingAction(),
+
+			path()
+		{
+		}
 		int typeID;
 		int id;
 		int owner;

@@ -9,8 +9,12 @@ namespace SGA
 	{
 		std::shared_ptr<Navigation> navigation;
 
-		RTSGameState2();
-		RTSGameState2(Board board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes) :
+		RTSGameState2():
+			GameState()
+		{
+			
+		}
+		RTSGameState2(Board&& board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes) :
 			GameState(std::move(board), std::move(tileTypes)),
 			navigation(nullptr)
 		{

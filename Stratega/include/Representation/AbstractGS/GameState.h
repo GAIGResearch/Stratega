@@ -96,7 +96,59 @@ namespace SGA
 				throw std::runtime_error(s);
 			}
 		}
+		
+		int getParameterGlobalID(std::string parameterName)
+		{
+			int foundId = -1;
+			auto  iterator=parameterIDLookup->find(parameterName);
+			
+			if (iterator != parameterIDLookup->end())
+				foundId = iterator->second;
+			
+			return foundId;
+		}
+		
+		Entity* getEntity(Vector2f pos, float maxDistance)
+		{
+			for (auto& unit : entities)
+			{
+				if (unit.position.distance(pos) <= maxDistance)
+				{
+					return &unit;
+				}
+			}
+			return nullptr;
+		}
+		
+		Parameter getParameterType(int entityTypeID, int globalParameterID) const
+		{
+			auto& entityType = getEntityType(entityTypeID);
 
+			return entityType.parameters.find(globalParameterID)->second;
+		}
+		
+		double& getParameterReference(int entityID,int globalParameterID)
+		{
+			auto& entity = getEntity(entityID);
+			auto& entityType = getEntityType(entity.typeID);
+
+			int parameterIndex=entityType.parameters.find(globalParameterID)->second.index;
+			
+			return entity.parameters[parameterIndex];
+		}
+		
+		bool checkEntityHaveParameter(int entityTypeID,std::string parameterName)
+		{
+			auto& entityType=getEntityType(entityTypeID);
+			for (auto& parameter : entityType.parameters)
+			{
+				if (parameter.second.name == parameterName)
+					return true;
+			}
+			
+			return false;
+		}
+		
 		int addPlayer()
 		{
 			lastUsedPlayerID++;
@@ -132,6 +184,11 @@ namespace SGA
 		ActionType& getActionType(int typeID)
 		{
 			return actionTypes->find(typeID)->second;
+		}
+
+		bool isInBounds(Vector2f pos) const
+		{
+			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}
 	};
 }
