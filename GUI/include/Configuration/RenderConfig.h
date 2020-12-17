@@ -5,7 +5,7 @@
 
 //#include "TBSGameStateRender.h"
 #include "RTSGameStateRender.h"
-#include "AbstractGameStateRender.h"
+#include "AbstractTBSGameStateRender.h"
 
 namespace SGA
 {

@@ -10,10 +10,10 @@
 
 #include <ForwardModel/AbstractFM/Action.h>
 
-class AbstractGameStateRender : public GameStateRenderer<SGA::TBSGameState2>
+class AbstractTBSGameStateRender : public GameStateRenderer<SGA::TBSGameState2>
 {
 public:
-	AbstractGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
+	AbstractTBSGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
 	void run(bool& isRunning) override;
 
 	// GameCommunicator functions
@@ -105,7 +105,4 @@ private:
 	//to show all the action that can be played in that tile
 	bool showMultipleActions = false;
 	SGA::Vector2i multipleActionsSourceTile;
-
-
-
 };

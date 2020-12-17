@@ -1,9 +1,9 @@
-#include <AbstractGameStateRender.h>
+#include <AbstractTBSGameStateRender.h>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <iomanip>
 #include <sstream>
-AbstractGameStateRender::AbstractGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID) :
+AbstractTBSGameStateRender::AbstractTBSGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),
 	gameStateCopy(game.getState()),
@@ -18,7 +18,7 @@ AbstractGameStateRender::AbstractGameStateRender(SGA::AbstractTBSGame& game, con
 	}
 }
 
-void AbstractGameStateRender::init()
+void AbstractTBSGameStateRender::init()
 {
 	GameStateRenderer::init();
 
@@ -26,7 +26,7 @@ void AbstractGameStateRender::init()
 	initializeLayers();
 }
 
-void AbstractGameStateRender::onGameStateAdvanced()
+void AbstractTBSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
 	gameStateCopy = game->getStateCopy();
@@ -41,7 +41,7 @@ void AbstractGameStateRender::onGameStateAdvanced()
 	}
 }
 
-void AbstractGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
+void AbstractTBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
 {
 	//Need to activate the context before adding new textures
 	ctx.setActive(true);
@@ -67,7 +67,7 @@ void AbstractGameStateRender::init(const std::unordered_map<int, std::string>& t
 
 }
 
-void AbstractGameStateRender::initializeView(sf::RenderWindow& window) const
+void AbstractTBSGameStateRender::initializeView(sf::RenderWindow& window) const
 {
 	//Apply zoom and center the view
 	sf::View view = window.getView();
@@ -80,7 +80,7 @@ void AbstractGameStateRender::initializeView(sf::RenderWindow& window) const
 	window.setFramerateLimit(fpsLimit);
 }
 
-void AbstractGameStateRender::run(bool& isRunning)
+void AbstractTBSGameStateRender::run(bool& isRunning)
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 	window.setActive(true);
@@ -130,7 +130,7 @@ void AbstractGameStateRender::run(bool& isRunning)
 	window.close();
 }
 
-void AbstractGameStateRender::handleInput(sf::RenderWindow& window)
+void AbstractTBSGameStateRender::handleInput(sf::RenderWindow& window)
 {
 	//Get current View to edit it and apply changes
 	sf::View view = window.getView();
@@ -157,12 +157,12 @@ void AbstractGameStateRender::handleInput(sf::RenderWindow& window)
 	}
 }
 
-void AbstractGameStateRender::windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const
+void AbstractTBSGameStateRender::windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const
 {
 	window.close();
 	game->end();
 }
-void AbstractGameStateRender::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void AbstractTBSGameStateRender::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Determine the scroll direction and adjust the zoom level
 	if (event.mouseWheelScroll.delta <= -1)
@@ -176,14 +176,14 @@ void AbstractGameStateRender::mouseScrolled(const sf::Event& event, sf::View& vi
 
 	window.setView(view);
 }
-void AbstractGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void AbstractTBSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Mouse button is released, no longer move
 	if (event.mouseButton.button == sf::Mouse::Left) {
 		moving = false;
 	}
 }
-void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void AbstractTBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Mouse button is pressed, get the position and set moving as active
 	if (event.mouseButton.button == sf::Mouse::Left)
@@ -296,7 +296,7 @@ void AbstractGameStateRender::mouseButtonPressed(const sf::Event& event, sf::Vie
 			
 	}
 }
-void AbstractGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void AbstractTBSGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 
 	// Determine the new position in world coordinates
@@ -320,7 +320,7 @@ void AbstractGameStateRender::mouseMoved(const sf::Event& event, sf::View& view,
 	// We're recalculating this, since we've changed the view
 	oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 }
-void AbstractGameStateRender::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void AbstractTBSGameStateRender::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	if (event.key.code == sf::Keyboard::Left && drawGameStateBuffer)
 	{
@@ -362,7 +362,7 @@ void AbstractGameStateRender::keyPressed(const sf::Event& event, sf::View& view,
 	}
 }
 
-void AbstractGameStateRender::initializeLayers()
+void AbstractTBSGameStateRender::initializeLayers()
 {
 	////Init Map Layer
 	//renderLayers.emplace_back(std::make_unique<MapLayer<SGA::TBSGameState>>(assetCache));
@@ -377,7 +377,7 @@ void AbstractGameStateRender::initializeLayers()
 	//renderLayers.back()->init(gameStateCopy);
 }
 
-void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
+void AbstractTBSGameStateRender::drawLayers(sf::RenderWindow& window)
 {
 	//Update and Draw each layer by order	
 	//if (!renderLayers.empty())
@@ -556,14 +556,14 @@ void AbstractGameStateRender::drawLayers(sf::RenderWindow& window)
 	
 }
 
-void AbstractGameStateRender::createHUD(sf::RenderWindow& window)
+void AbstractTBSGameStateRender::createHUD(sf::RenderWindow& window)
 {
 	createWindowInfo();
 	createWindowUnits();
 	createWindowActions();
 	createWindowMultipleActions(window);
 }
-void AbstractGameStateRender::createWindowInfo() const
+void AbstractTBSGameStateRender::createWindowInfo() const
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
@@ -586,7 +586,7 @@ void AbstractGameStateRender::createWindowInfo() const
 
 	ImGui::End();
 }
-void AbstractGameStateRender::createWindowUnits()
+void AbstractTBSGameStateRender::createWindowUnits()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
@@ -607,7 +607,7 @@ void AbstractGameStateRender::createWindowUnits()
 	ImGui::EndChild();
 	ImGui::End();
 }
-void AbstractGameStateRender::createWindowActions()
+void AbstractTBSGameStateRender::createWindowActions()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
@@ -634,7 +634,7 @@ void AbstractGameStateRender::createWindowActions()
 	ImGui::EndChild();
 	ImGui::End();
 }
-void AbstractGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
+void AbstractTBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
 {
 
 	if (showMultipleActions)
