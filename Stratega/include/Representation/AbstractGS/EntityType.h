@@ -37,7 +37,7 @@ namespace SGA
 		{
 			for (int id : actionIds)
 			{
-				if (actionID == actionID)
+				if (id == actionID)
 					return true;
 			}
 			return false;

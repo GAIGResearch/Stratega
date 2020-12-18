@@ -30,7 +30,7 @@ namespace YAML
             if (!node.IsMap())
                 return false;
             
-        	for(const auto& unitNode : node["Units"])
+        	for(const auto& unitNode : node["Entities"])
         	{
                 auto unitName = unitNode.first.as<std::string>();
                 auto unitConfig = unitNode.second;

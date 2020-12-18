@@ -476,30 +476,30 @@ void AbstractRTSGameStateRender::drawLayers(sf::RenderWindow& window)
 			{
 				int globalHealthID = gameStateCopy.getParameterGlobalID("Health");
 
-				double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
+				/*double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
 				double maxHealth = gameStateCopy.getParameterType(entity.typeID, globalHealthID).maxValue;
-				
+				*/
 				//Add temporal Health bar
-				sf::RectangleShape background;
-				sf::Vector2f backgroundSize(140, 35);
-				sf::Vector2f fillSize(130, 25);
+				//sf::RectangleShape background;
+				//sf::Vector2f backgroundSize(140, 35);
+				//sf::Vector2f fillSize(130, 25);
 
-				int yOffset = -220;
+				//int yOffset = -220;
 
-				background.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				background.setFillColor(sf::Color::Black);
-				background.setSize(backgroundSize);
-				background.setOrigin(backgroundSize.x / 2, backgroundSize.y / 2);
-				healthBars.emplace_back(background);
+				//background.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
+				//background.setFillColor(sf::Color::Black);
+				//background.setSize(backgroundSize);
+				//background.setOrigin(backgroundSize.x / 2, backgroundSize.y / 2);
+				//healthBars.emplace_back(background);
 
-				sf::RectangleShape fill;
-				fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				fill.setFillColor(sf::Color::Red);
-				//Compute fill percentage
-				float percentage = (float)health / (float)maxHealth;
-				fill.setSize(sf::Vector2f(fillSize.x * percentage, fillSize.y));
-				fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
-				healthBars.emplace_back(fill);
+				//sf::RectangleShape fill;
+				//fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
+				//fill.setFillColor(sf::Color::Red);
+				////Compute fill percentage
+				//float percentage = (float)health / (float)maxHealth;
+				//fill.setSize(sf::Vector2f(fillSize.x * percentage, fillSize.y));
+				//fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
+				//healthBars.emplace_back(fill);
 			}
 			
 		}

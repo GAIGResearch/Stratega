@@ -34,16 +34,16 @@ Board:
     Layout: >
           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
           M.............M................M
-          M..............................M
-          M..............................M
-          M..............................M
-          M.....................MM.....MMM
-          M..............................M
-          M..............................M
-          MMM............................M
-          M..............................M
-          M..............................M
-          MMM............................M
+          M........W.....................M
+          M........W.....................M
+          M........WW....................M
+          M........WW...........MM.....MMM
+          M.........WWWW........WWWWWWWWWW
+          M.........WWWW........WWWWWWWWWW
+          MMM.........WWWWWWWWWWWWWWWWWWWW
+          M............WWWWWWWWWWWWWWWWWWW
+          M......MMMMMMMMMMMMMMMMMMM.WWWWW
+          MMM........................WWWWW
           M..............................M
           M..............................M
           MMM............................M
@@ -122,7 +122,7 @@ EntityGroups:
 ForwardModel:
     WinCondition:
         Type: LastManStanding
-        Unit: King
+        Unit: Warrior
 
     Effects:
         DeadlyHole:

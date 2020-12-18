@@ -18,4 +18,5 @@ namespace SGA
 		type.collisionRadius = config.collisionRadius;
 		return type;
 	}
+
 }

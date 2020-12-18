@@ -19,8 +19,8 @@ namespace SGA
 		ActionSourceType sourceType;
 
 		TargetType actionTargets;
-		std::vector<std::unique_ptr<Condition>> preconditions;
-		std::vector<std::unique_ptr<Condition>> condition;
-		std::vector<std::unique_ptr<Effect>> effects;
+		std::vector<std::shared_ptr<Condition>> preconditions;
+		std::vector<std::shared_ptr<Condition>> condition;
+		std::vector<std::shared_ptr<Effect>> effects;
 	};
 }

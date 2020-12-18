@@ -21,7 +21,7 @@ namespace SGA
 	{
 	public:
 		template<typename Function>
-		void parseFunctions(const std::vector<std::string>& functionCalls, std::vector<std::unique_ptr<Function>>& bucket, const IDMap& targetIDs, const IDMap& parameterIDs) const
+		void parseFunctions(const std::vector<std::string>& functionCalls, std::vector<std::shared_ptr<Function>>& bucket, const IDMap& targetIDs, const IDMap& parameterIDs) const
 		{
 			for(const auto& code : functionCalls)
 			{

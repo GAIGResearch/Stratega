@@ -154,10 +154,8 @@ namespace SGA
 		SGA::Entity entity;
 		entity.id = state.entities.size();
 		entity.owner = sourceEntity.owner;
-		entity.actionTypeIds.emplace_back(0);
 		//entity.actionTypeIds.emplace_back(1);
 		entity.actionTypeIds.emplace_back(2);
-		entity.actionTypeIds.emplace_back(4);
 		entity.position = newPos;
 		entity.typeID = 0;
 		entity.parameters.emplace_back(60);

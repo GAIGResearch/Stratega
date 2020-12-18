@@ -721,7 +721,7 @@ namespace SGA
 
 	bool RTSAbstractForwardModel::checkGameIsFinished(RTSGameState2& state) const
 	{
-		int numberPlayerCanPlay = 0;
+		/*int numberPlayerCanPlay = 0;
 		int winnerID = -1;
 		for (Player& player : state.players)
 		{
@@ -740,7 +740,7 @@ namespace SGA
 		{
 			state.winnerPlayerID = (winnerID);
 			return true;
-		}
+		}*/
 
 		return false;
 	}
