@@ -2,6 +2,7 @@
 #include <AbstractRTSGameStateRender.h>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
+#include <Configuration/AbstractConfig/GameConfig2.h>
 //#include <Game/TBSGameCommunicator.h>
 #include <Game/AbstractTBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
@@ -18,12 +19,17 @@ int main()
 	// Read Config
 	std::mt19937 engine(0ll);
 	
+	std::filesystem::path configPath2("../../../gameConfigs/TestConfig.yaml");
+	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
+	auto gameConfig2 = yamlConfig2.as<SGA::GameConfig2>();
+	
 	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
-	//std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine);
+	//std::unique_ptr<SGA::TBSGameState2> test = SGA::generateAbstractTBSStateFromConfig(gameConfig,engine
+	std::unique_ptr<SGA::RTSGameState2> RTSGameState2 = SGA::generateAbstractRTSStateFromConfig(gameConfig2, engine);
 	std::unique_ptr<SGA::RTSGameState2> RTSGameState = SGA::generateAbstractRTSStateFromConfig(gameConfig,engine);
 
 	
@@ -52,7 +58,7 @@ int main()
 	parametersGold.emplace_back(lowerGoldBound);
 	SGA::HasResource hasGoldPrecondition(parametersGold);
 	
-	SGA::SamePlayer precondition1;
+	SGA::SamePlayer precondition1({});
 
 	//Add effect
 	SGA::FunctionParameter targetResourceEffect(0, 1);
@@ -92,7 +98,7 @@ int main()
 	SGA::Move moveEffect({});
 
 	//Add effect
-	SGA::SpawnUnit spawnUnitEffect;
+	SGA::SpawnUnit spawnUnitEffect({});
 
 	
 	

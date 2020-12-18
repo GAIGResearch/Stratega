@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - MCTSAgent
-    - BFSAgent
+    - RandomAgent
+    - HumanAgent
 
 Tiles:
     Plain:
@@ -51,16 +51,46 @@ Board:
           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 Actions:
+#    OldAttack:
+#        Type: EntityAction
+#        Preconditions:
+#            - HasResource( Source.Mana, 50)
+#            - HasResource(Source.Mana, 25)
+#        Target:
+#            Type: Entity
+#            ValidTargets: All
+#        Effects:
+#            - AddResource(Target.Health, Source.Health)
+
     Attack:
         Type: EntityAction
         Preconditions:
-            - HasResource( Source.Mana, 50)
-            - HasResource(Source.Mana, 25)
+            - HasResource(Target.Health, 0)
         Target:
             Type: Entity
             ValidTargets: All
         Effects:
-            - AddResource(Target.Health, Source.Health)
+            - Attack(Target.Health, 20)
+
+    Move:
+        Type: EntityAction
+        Preconditions:
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 5
+        Effects:
+            - Move()
+
+    SpawnUnit:
+        Type: EntityAction
+        Preconditions:
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 5
+        Effects:
+            - SpawnUnit()
 
 Entities:
     Warrior:
@@ -68,20 +98,21 @@ Entities:
         LineOfSightRange: 6
         Parameters:
             Health: 200
-            Mana: 50
-        Actions: [Attack]
+            Gold: 50
+        Actions: [Attack, Move]
     Archer:
-        Sprite: ../GUI/Assets/basicCloseRange (2).png
+        Sprite: ../GUI/Assets/advanceCloseRange (2).png
         LineOfSightRange: 2
         Parameters:
             Health: 200
             AttackRange: 10
-            Mana: 50
-        Actions: [Attack]
+            Gold: 50
+        Actions: [Attack, Move]
     Farm:
-        Sprite: ../GUI/Assets/basicCloseRange (2).png
-        Actions: []
+        Sprite: ../GUI/Assets/building.png
+        Actions: [SpawnUnit]
         Parameters:
+            Health: 200
             Gold: 50
 
 EntityGroups:

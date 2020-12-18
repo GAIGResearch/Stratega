@@ -16,7 +16,7 @@ namespace  SGA
 		return targetResource >= lowerBound;
 	}
 
-	SamePlayer::SamePlayer()
+	SamePlayer::SamePlayer(const std::vector<FunctionParameter>& parameters)
 	{
 		
 	}

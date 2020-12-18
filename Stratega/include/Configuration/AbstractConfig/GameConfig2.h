@@ -114,13 +114,14 @@ namespace YAML
                 type.name = nameTypePair.first;
                 type.actionTargets = parseTargetType(nameTypePair.second.targetNode, rhs);
 
-            	// Parse preconditions
                 std::unordered_map<std::string, int> actionTargetIds;
                 actionTargetIds.emplace("Source", 0);
+                actionTargetIds.emplace("Target", 1);
+            	
+            	// Parse preconditions
                 parser.parseFunctions(nameTypePair.second.preconditions, type.preconditions, actionTargetIds, rhs.parameters);
 
-            	// Parse effects
-                actionTargetIds.emplace("Target", 1);
+            	// Parse effects                
                 parser.parseFunctions(nameTypePair.second.effects, type.effects, actionTargetIds, rhs.parameters);
 
                 rhs.actionTypes.emplace(rhs.actionTypes.size(), std::move(type));

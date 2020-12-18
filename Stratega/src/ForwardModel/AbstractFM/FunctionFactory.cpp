@@ -8,6 +8,7 @@ namespace SGA
 	{
 		static FunctionFactory<Condition> factory;
 		factory.registerFunction<HasResource>("HasResource");
+		factory.registerFunction<SamePlayer>("SamePlayer");
 		
 		return factory;
 	}
@@ -16,6 +17,10 @@ namespace SGA
 	{
 		static FunctionFactory<Effect> factory;
 		factory.registerFunction<AddToResource>("AddResource");
+		factory.registerFunction<Attack>("Attack");
+		factory.registerFunction<RemoveFromResource>("RemoveFromResource");
+		factory.registerFunction<Move>("Move");
+		factory.registerFunction<SpawnUnit>("SpawnUnit");
 
 		return factory;
 	}

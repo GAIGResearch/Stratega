@@ -29,9 +29,9 @@ namespace SGA
 	}
 
 	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
-		entityTarget(parameters.at(0)),
-		resourceReference(parameters.at(1)),
-		amount(parameters.at(2))
+		/*entityTarget(parameters.at(0)),*/
+		resourceReference(parameters.at(0)),
+		amount(parameters.at(1))
 	{
 
 	}
@@ -40,7 +40,7 @@ namespace SGA
 		std::cout << "Execute TBS Attack" << std::endl;
 
 				
-		auto& entity = entityTarget.getEntity(state, targets);
+		auto& entity = resourceReference.getEntity(state, targets);
 		
 		auto& targetResource = resourceReference.getParameter(state, targets);
 		double amount = this->amount.getConstant(state, targets);
@@ -78,6 +78,7 @@ namespace SGA
 
 		targetResource += amount;*/
 	}
+	
 
 	void Move::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
@@ -136,6 +137,11 @@ namespace SGA
 		{
 			unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
 		}
+	}
+
+	SpawnUnit::SpawnUnit(const std::vector<FunctionParameter>& parameters)
+	{
+		
 	}
 
 	void SpawnUnit::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const

@@ -31,7 +31,7 @@ namespace SGA
 	{
 		
 	public:
-		SamePlayer();
+		SamePlayer(const std::vector<FunctionParameter>& parameters);
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};

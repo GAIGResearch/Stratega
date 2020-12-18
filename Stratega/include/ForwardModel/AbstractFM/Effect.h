@@ -31,7 +31,7 @@ namespace SGA
 
 	class Attack : public Effect
 	{
-		FunctionParameter entityTarget;
+		/*FunctionParameter entityTarget;*/
 		FunctionParameter resourceReference;
 		FunctionParameter amount;
 	public:
@@ -63,7 +63,7 @@ namespace SGA
 	class SpawnUnit : public Effect
 	{
 	public:
-
+		SpawnUnit(const std::vector<FunctionParameter>& parameters);
 		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
