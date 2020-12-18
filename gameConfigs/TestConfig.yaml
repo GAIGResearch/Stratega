@@ -1,5 +1,5 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -51,16 +51,6 @@ Board:
           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 Actions:
-#    OldAttack:
-#        Type: EntityAction
-#        Preconditions:
-#            - HasResource( Source.Mana, 50)
-#            - HasResource(Source.Mana, 25)
-#        Target:
-#            Type: Entity
-#            ValidTargets: All
-#        Effects:
-#            - AddResource(Target.Health, Source.Health)
 
     Attack:
         Type: EntityAction
@@ -88,20 +78,20 @@ Actions:
         Target:
             Type: Position
             Shape: Square
-            Size: 5
+            Size: 2
         Effects:
             - SpawnUnit()
 
 Entities:
     Warrior:
-        Sprite: ../GUI/Assets/basicCloseRange (2).png
+        Sprite: ../GUI/Assets/unit1New.png
         LineOfSightRange: 6
         Parameters:
             Health: 200
             Gold: 50
         Actions: [Attack, Move]
     Archer:
-        Sprite: ../GUI/Assets/advanceCloseRange (2).png
+        Sprite: ../GUI/Assets/unit5New.png
         LineOfSightRange: 2
         Parameters:
             Health: 200
@@ -109,7 +99,7 @@ Entities:
             Gold: 50
         Actions: [Attack, Move]
     Farm:
-        Sprite: ../GUI/Assets/building.png
+        Sprite: ../GUI/Assets/buildingNEW.png
         Actions: [SpawnUnit]
         Parameters:
             Health: 200
@@ -122,7 +112,7 @@ EntityGroups:
 ForwardModel:
     WinCondition:
         Type: LastManStanding
-        Unit: Warrior
+#        Unit: Warrior
 
     Effects:
         DeadlyHole:

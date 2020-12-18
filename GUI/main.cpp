@@ -254,6 +254,9 @@ int main()
 		AbstractTBSGameStateRender* render = dynamic_cast<AbstractTBSGameStateRender*>(stateRenderer.get());
 		//Register entitytypes
 		render->entitySpriteTypes->emplace(0, "unit_0");
+
+		render->entitySpriteTypes->emplace(2, "unit_1");
+		render->entitySpriteTypes->emplace(3, "unit_2");
 		render->entitySpriteTypes->emplace(1, "building");
 	}
 	else
@@ -262,6 +265,9 @@ int main()
 		//Register entitytypes
 		render->entitySpriteTypes->emplace(0, "unit_0");
 		render->entitySpriteTypes->emplace(1, "building");
+
+		render->entitySpriteTypes->emplace(2, "unit_1");
+		render->entitySpriteTypes->emplace(3, "unit_2");
 	}
 	game->addCommunicator(std::move(stateRenderer));
 	

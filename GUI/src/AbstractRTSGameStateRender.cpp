@@ -54,7 +54,9 @@ void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>
 	assetCache.loadTexture("boxCollider", "../GUI/Assets/boxColliderFixed.png");
 	assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
 
-	assetCache.loadTexture("building", "../GUI/Assets/building.png");;
+
+	//TODO add new sprites
+	assetCache.loadTexture("building", "../GUI/Assets/buildingNew.png");;
 }
 
 void AbstractRTSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -439,8 +441,8 @@ void AbstractRTSGameStateRender::drawLayers(sf::RenderWindow& window)
 		{
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(searchedEntity->second);
-			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
-			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
+			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 			sf::Sprite newUnit(texture);
 
 			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
