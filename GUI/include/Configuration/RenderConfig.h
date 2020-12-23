@@ -13,7 +13,7 @@ namespace SGA
 
 	struct RenderConfig
 	{
-		std::map<std::string, std::string> unitSpritePaths;
+		std::map<std::string, std::string> entitySpritePaths;
 		std::map<std::string, std::string> tileSpritePaths;
 	};
 
@@ -30,11 +30,11 @@ namespace YAML
             if (!node.IsMap())
                 return false;
             
-        	for(const auto& unitNode : node["Entities"])
+        	for(const auto& entityNode : node["Entities"])
         	{
-                auto unitName = unitNode.first.as<std::string>();
-                auto unitConfig = unitNode.second;
-                rhs.unitSpritePaths.emplace(unitName, unitConfig["Sprite"].as<std::string>());
+                auto entityName = entityNode.first.as<std::string>();
+                auto entityConfig = entityNode.second;
+                rhs.entitySpritePaths.emplace(entityName, entityConfig["Sprite"].as<std::string>());
         	}
 
             for (const auto& tileNode : node["Tiles"])

@@ -3,41 +3,22 @@
 #include <string>
 #include <Configuration/TileConfig.h>
 #include <Configuration/BoardConfig.h>
-#include <Configuration/UnitConfig.h>
 #include <Configuration/ForwardModelConfig.h>
 #include <ForwardModel/TBSForwardModel.h>
 #include <Agent/Agent.h>
 #include <yaml-cpp/yaml.h>
 #include <Representation/AbstractGS/TBSGameState2.h>
-#include <Configuration/AbstractConfig/EntityTypeConfig.h>
-#include <Configuration/AbstractConfig/ActionTypeConfig.h>
-#include <Configuration/AbstractConfig/FunctionParser.h>
-#include <Configuration/AbstractConfig/TargetTypeConfig.h>
+#include <Configuration/EntityTypeConfig.h>
+#include <Configuration/ActionTypeConfig.h>
+#include <Configuration/FunctionParser.h>
+#include <Configuration/TargetTypeConfig.h>
 namespace SGA
 {
-	/*struct GameConfig
-	{
-        std::string gameType;
-        std::vector<std::pair<std::string, YAML::Node>> agentParams;
-		std::map<std::string, TileConfig> tileTypes;
-        std::map<std::string, UnitConfig> unitTypes;
-        BoardConfig boardConfig;
-        ForwardModelConfig forwardModelConfig;
-        int roundLimit = 100;
-        int numPlayers = -1;
-
-        int getNumberOfPlayers() const
-        {
-            return numPlayers == -1 ? agentParams.size() : numPlayers;
-        }
-	};*/
-
     struct GameConfig
     {
         std::string gameType;
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::map<std::string, TileConfig> tileTypes;
-        std::map<std::string, UnitConfig> unitTypes;
         BoardConfig boardConfig;
         ForwardModelConfig forwardModelConfig;
         int roundLimit = 100;
@@ -54,19 +35,13 @@ namespace SGA
         std::unordered_map<int, EntityType> entityTypes;
         std::unordered_map<int, ActionType> actionTypes;
 
-        int getEntityID(const std::string& name);
-        int getActionID(const std::string& name);
+        int getEntityID(const std::string& name) const;
+        int getActionID(const std::string& name) const;
     };
 	
     std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config);
     std::unordered_map<std::string, TileType> tileTypesFromConfig(const GameConfig& config);
-    std::unordered_map<std::string, UnitType> unitTypesFromConfig(const GameConfig& config);
-    TBSForwardModel generateTBSforwardModelFromConfig(const GameConfig& config);
-    RTSForwardModel generateRTSforwardModelFromConfig(const GameConfig& config);
     std::unique_ptr<IBoardGenerator> boardGeneratorFromConfig(const GameConfig& config);
-    std::unique_ptr<TBSGameState> generateTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
-    std::unique_ptr<RTSGameState> generateRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
-    std::unique_ptr<Game> generateGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
     std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 
 	//Abstract
@@ -97,8 +72,6 @@ namespace YAML
         	}
         	
             rhs.tileTypes = node["Tiles"].as<std::map<std::string, SGA::TileConfig>>();
-           // rhs.unitTypes = node["Units"].as<std::map<std::string, SGA::UnitConfig>>();
-           
             rhs.boardConfig = node["Board"].as<SGA::BoardConfig>();
             rhs.forwardModelConfig = node["ForwardModel"].as<SGA::ForwardModelConfig>();
             rhs.gameType = node["GameConfig"]["Type"].as<std::string>();

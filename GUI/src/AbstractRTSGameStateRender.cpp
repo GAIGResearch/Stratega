@@ -6,13 +6,13 @@
 #include <iomanip>
 #include <sstream>
 
-AbstractRTSGameStateRender::AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID) :
+AbstractRTSGameStateRender::AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),
 	gameStateCopy(game.getStateCopy()),
 	gameStatesBuffer(50)
 {
-	init(tileSprites, unitSprites);
+	init(tileSprites, entitySpritePaths);
 }
 
 void AbstractRTSGameStateRender::init()
@@ -33,7 +33,7 @@ void AbstractRTSGameStateRender::onGameStateAdvanced()
 	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
 }
 
-void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
+void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
 {
 	//Need to activate the context before adding new textures
 	ctx.setActive(true);
@@ -44,9 +44,9 @@ void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>
 		assetCache.loadTexture("tile_" + std::to_string(idPathPair.first), idPathPair.second);
 	}
 
-	for (const auto& idPathPair : unitSprites)
+	for (const auto& namePathPair : entitySpritePaths)
 	{
-		assetCache.loadTexture("unit_" + std::to_string(idPathPair.first), idPathPair.second);
+		assetCache.loadTexture(namePathPair.first, namePathPair.second);
 	}
 
 	// TODO Depends on location of configuration file, how to prevent that?
@@ -436,77 +436,71 @@ void AbstractRTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	for (auto& entity : gameStateCopy.entities)
 	{
 		//Check if entity have sprite
-		auto searchedEntity = entitySpriteTypes->find(entity.typeID);
-		if (searchedEntity != entitySpriteTypes->end())
+		auto entityType = gameStateCopy.getEntityType(entity.typeID);
+		//Add units
+		sf::Texture& texture = assetCache.getTexture(entityType.name);
+		sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
+		//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+		sf::Sprite newUnit(texture);
+
+		sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
+		newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
+
+		newUnit.setOrigin(origin);
+		entitySprites.emplace_back(newUnit);
+
+		//Add units text info
+		sf::Text unitInfo;
+		unitInfo.setFont(assetCache.getFont("font"));
+		std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
+		/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
+		for (size_t i = 0; i < entity.parameters.size(); i++)
 		{
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(searchedEntity->second);
-			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
-			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Sprite newUnit(texture);
 
-			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
+			// Create an output string stream
+			std::ostringstream streamObj3;
+			// Set Fixed -Point Notation
+			streamObj3 << std::fixed;
+			// Set precision to 2 digits
+			streamObj3 << std::setprecision(2);
+			streamObj3 << entity.parameters[i];
 
-			newUnit.setOrigin(origin);
-			entitySprites.emplace_back(newUnit);
-
-			//Add units text info
-			sf::Text unitInfo;
-			unitInfo.setFont(assetCache.getFont("font"));
-			std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
-			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
-			for (size_t i = 0; i < entity.parameters.size(); i++)
-			{
-
-				// Create an output string stream
-				std::ostringstream streamObj3;
-				// Set Fixed -Point Notation
-				streamObj3 << std::fixed;
-				// Set precision to 2 digits
-				streamObj3 << std::setprecision(2);
-				streamObj3 << entity.parameters[i];
-
-				info += "/" + streamObj3.str();
-			}
-			unitInfo.setString(info);
-			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
-
-			//Check if entity have health
-			if(gameStateCopy.checkEntityHaveParameter(entity.typeID, "Health"))
-			{
-				int globalHealthID = gameStateCopy.getParameterGlobalID("Health");
-
-				/*double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
-				double maxHealth = gameStateCopy.getParameterType(entity.typeID, globalHealthID).maxValue;
-				*/
-				//Add temporal Health bar
-				//sf::RectangleShape background;
-				//sf::Vector2f backgroundSize(140, 35);
-				//sf::Vector2f fillSize(130, 25);
-
-				//int yOffset = -220;
-
-				//background.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				//background.setFillColor(sf::Color::Black);
-				//background.setSize(backgroundSize);
-				//background.setOrigin(backgroundSize.x / 2, backgroundSize.y / 2);
-				//healthBars.emplace_back(background);
-
-				//sf::RectangleShape fill;
-				//fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				//fill.setFillColor(sf::Color::Red);
-				////Compute fill percentage
-				//float percentage = (float)health / (float)maxHealth;
-				//fill.setSize(sf::Vector2f(fillSize.x * percentage, fillSize.y));
-				//fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
-				//healthBars.emplace_back(fill);
-			}
-			
+			info += "/" + streamObj3.str();
 		}
+		unitInfo.setString(info);
+		unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
+		entityInfo.emplace_back(unitInfo);
 
-		
+		//Check if entity have health
+		if(gameStateCopy.checkEntityHaveParameter(entity.typeID, "Health"))
+		{
+			int globalHealthID = gameStateCopy.getParameterGlobalID("Health");
+
+			/*double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
+			double maxHealth = gameStateCopy.getParameterType(entity.typeID, globalHealthID).maxValue;
+			*/
+			//Add temporal Health bar
+			//sf::RectangleShape background;
+			//sf::Vector2f backgroundSize(140, 35);
+			//sf::Vector2f fillSize(130, 25);
+
+			//int yOffset = -220;
+
+			//background.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
+			//background.setFillColor(sf::Color::Black);
+			//background.setSize(backgroundSize);
+			//background.setOrigin(backgroundSize.x / 2, backgroundSize.y / 2);
+			//healthBars.emplace_back(background);
+
+			//sf::RectangleShape fill;
+			//fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
+			//fill.setFillColor(sf::Color::Red);
+			////Compute fill percentage
+			//float percentage = (float)health / (float)maxHealth;
+			//fill.setSize(sf::Vector2f(fillSize.x * percentage, fillSize.y));
+			//fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
+			//healthBars.emplace_back(fill);
+		}
 	}	
 
 	for (const auto& sprite : entitySprites)

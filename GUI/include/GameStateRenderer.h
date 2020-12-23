@@ -33,8 +33,7 @@ class GameStateRenderer : public GameStateRenderBase
 {
 public:
 	GameStateRenderer(int playerID) :
-		GameStateRenderBase{ playerID },
-		entitySpriteTypes(std::make_shared<std::unordered_map<int, std::string>>())
+		GameStateRenderBase{ playerID }
 	{
 	}
 	virtual ~GameStateRenderer()=default;
@@ -77,8 +76,4 @@ protected:
 	std::vector<sf::Text> entityInfo;
 	std::vector<sf::Sprite> overlaySprites;
 	std::vector<sf::CircleShape> actionsSelectedEntity;
-
-public:
-	// Sprites by Type information
-	std::shared_ptr<std::unordered_map<int, std::string>> entitySpriteTypes;
 };

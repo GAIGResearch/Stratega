@@ -12,7 +12,7 @@ public:
 	//Debug mode
 	bool drawDebug = false;
 
-	AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID);
+	AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 	void run(bool& isRunning) override;
 
 	// GameCommunicator functions
@@ -25,7 +25,7 @@ public:
 
 private:
 	void init() override;
-	void init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites);
+	void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
 	void initializeView(sf::RenderWindow& window) const;
 	void initializeLayers();
 

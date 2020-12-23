@@ -1,6 +1,5 @@
 #pragma once
 #include <Representation/AbstractGS/GameState.h>
-#include <Configuration/UnitConfig.h>
 #include <Representation/Navigation.h>
 
 namespace SGA
@@ -14,7 +13,7 @@ namespace SGA
 		{
 			
 		}
-		RTSGameState2(Board&& board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes) :
+		RTSGameState2(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			GameState(std::move(board), std::move(tileTypes)),
 			navigation(nullptr)
 		{

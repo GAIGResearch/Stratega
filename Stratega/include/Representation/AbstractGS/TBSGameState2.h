@@ -1,6 +1,5 @@
 #pragma once
 #include <Representation/AbstractGS/GameState.h>
-#include <Configuration/UnitConfig.h>
 
 namespace SGA
 {
@@ -12,7 +11,7 @@ namespace SGA
 		{
 			
 		}
-		TBSGameState2(Board&& board, const std::unordered_map<int, UnitType>& unitTypes, const std::unordered_map<int, TileType>& tileTypes)
+		TBSGameState2(Board&& board, const std::unordered_map<int, TileType>& tileTypes)
 			:GameState(std::move(board),std::move(tileTypes)),
 			currentGameTurn(0),
 			currentPlayer(0),

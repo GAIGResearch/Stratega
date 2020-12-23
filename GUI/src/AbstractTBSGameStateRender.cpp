@@ -3,13 +3,13 @@
 #include <imgui.h>
 #include <iomanip>
 #include <sstream>
-AbstractTBSGameStateRender::AbstractTBSGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites, int playerID) :
+AbstractTBSGameStateRender::AbstractTBSGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),
 	gameStateCopy(game.getState()),
 	gameStatesBuffer(50)
 {
-	init(tileSprites, unitSprites);
+	init(tileSprites, entitySpritePaths);
 
 	if (gameStateCopy.currentPlayer == getPlayerID())
 	{
@@ -41,20 +41,20 @@ void AbstractTBSGameStateRender::onGameStateAdvanced()
 	}
 }
 
-void AbstractTBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::unordered_map<int, std::string>& unitSprites)
+void AbstractTBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
 {
 	//Need to activate the context before adding new textures
 	ctx.setActive(true);
 
 	//Load textures
-	for (auto idPathPair : tileSprites)
+	for (const auto& idPathPair : tileSprites)
 	{
 		assetCache.loadTexture("tile_" + std::to_string(idPathPair.first), idPathPair.second);
 	}
 
-	for (const auto& idPathPair : unitSprites)
+	for (const auto& namePathPair : entitySpritePaths)
 	{
-		assetCache.loadTexture("unit_" + std::to_string(idPathPair.first), idPathPair.second);
+		assetCache.loadTexture(namePathPair.first, namePathPair.second);
 	}
 
 	// TODO Depends on location of configuration file, how to prevent that?
@@ -502,44 +502,41 @@ void AbstractTBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	for (auto& entity : gameStateCopy.entities)
 	{
 		//Check if entity have sprite
-		auto searchedEntity = entitySpriteTypes->find(entity.typeID);
-		if(searchedEntity!=entitySpriteTypes->end())
+		auto& entityType = gameStateCopy.getEntityType(entity.typeID);
+		//Add units
+		sf::Texture& texture = assetCache.getTexture(entityType.name);
+		//sf::Vector2f origin(0, texture.getSize().y / 1.4);
+		//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+		sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
+		sf::Sprite newUnit(texture);
+
+		sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
+		newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
+
+		newUnit.setOrigin(origin);
+		entitySprites.emplace_back(newUnit);
+
+		//Add units text info
+		sf::Text unitInfo;
+		unitInfo.setFont(assetCache.getFont("font"));
+		std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
+		/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
+		for (size_t i = 0; i < entity.parameters.size(); i++)
 		{
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(searchedEntity->second);
-			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
-			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
-			sf::Sprite newUnit(texture);
-
-			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
-
-			newUnit.setOrigin(origin);
-			entitySprites.emplace_back(newUnit);
-
-			//Add units text info
-			sf::Text unitInfo;
-			unitInfo.setFont(assetCache.getFont("font"));
-			std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
-			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
-			for (size_t i = 0; i < entity.parameters.size(); i++)
-			{
-				
-				// Create an output string stream
-				std::ostringstream streamObj3;
-				// Set Fixed -Point Notation
-				streamObj3 << std::fixed;
-				// Set precision to 2 digits
-				streamObj3 << std::setprecision(2);
-				streamObj3 << entity.parameters[i];
-				
-				info += "/" + streamObj3.str();
-			}
-			unitInfo.setString(info);
-			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
+			
+			// Create an output string stream
+			std::ostringstream streamObj3;
+			// Set Fixed -Point Notation
+			streamObj3 << std::fixed;
+			// Set precision to 2 digits
+			streamObj3 << std::setprecision(2);
+			streamObj3 << entity.parameters[i];
+			
+			info += "/" + streamObj3.str();
 		}
+		unitInfo.setString(info);
+		unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
+		entityInfo.emplace_back(unitInfo);
 	}
 
 	for (const auto& sprite : entitySprites)

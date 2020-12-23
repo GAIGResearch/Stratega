@@ -1,5 +1,4 @@
 #include <Configuration/GameConfig.h>
-#include <Configuration/AbstractConfig/GameConfig2.h>
 #include <Configuration/BoardGenerator.h>
 #include <Agent/AgentFactory.h>
 
@@ -30,32 +29,6 @@ namespace SGA
 
 		return agents;
 	}
-
-	/*std::unordered_map<std::string, EntityType> entitytTypesFromConfig(const GameConfig& config)
-	{
-		std::unordered_map<std::string, EntityType> entityLookup;
-		int nextID = 0;
-		for (const auto& nameConfigPair : config.entityTypes)
-		{
-			entityLookup.emplace(nameConfigPair.first, unitTypeFromConfig(nameConfigPair.second, nextID));
-			nextID++;
-		}
-
-		return config.entityTypes;
-	}*/
-	
-	std::unordered_map<std::string, UnitType> unitTypesFromConfig(const GameConfig& config)
-	{
-		std::unordered_map<std::string, UnitType> unitLookup;
-		int nextID = 0;
-		for (const auto& nameConfigPair : config.unitTypes)
-		{
-			unitLookup.emplace(nameConfigPair.first, unitTypeFromConfig(nameConfigPair.second, nextID));
-			nextID++;
-		}
-
-		return unitLookup;
-	}
 	
 	std::unordered_map<std::string, TileType> tileTypesFromConfig(const GameConfig& config)
 	{
@@ -68,60 +41,6 @@ namespace SGA
 		}
 
 		return tileLookup;
-	}
-
-	TBSForwardModel generateTBSforwardModelFromConfig(const GameConfig& config)
-	{
-		auto fmConfig = config.forwardModelConfig;
-		TBSForwardModel fm;
-		fm.winCondition = fmConfig.WinCondition;
-
-		//Get unityTypeID for UnitAlive
-		auto units = unitTypesFromConfig(config);		
-		fm.unitTypeID = units[fmConfig.unitType].id;
-
-
-		// Add effects
-		auto tiles = tileTypesFromConfig(config);
-		
-		for(auto& effectConfig : fmConfig.effects)
-		{
-			EffectOld effect{};
-			effect.type = effectConfig.second.type;
-			effect.conditionType = effectConfig.second.condition;
-			if(effect.type == EffectType::Death)
-			{
-				effect.targetTileTypeID = tiles.at(effectConfig.second.targetTileName).id;
-			}
-			else if(effect.type == EffectType::Damage)
-			{
-				effect.damage = effectConfig.second.amount;
-			}
-
-			if(effectConfig.second.trigger == TriggerType::EndOfTurn)
-			{
-				fm.addUnitEndOfTurnEffect(std::move(effect));
-			}
-			else if(effectConfig.second.trigger == TriggerType::EnterTile)
-			{
-				fm.addOnTileEnterEffect(std::move(effect));
-			}
-		}
-
-		return fm;
-	}
-
-	RTSForwardModel generateRTSforwardModelFromConfig(const GameConfig& config)
-	{
-		auto fmConfig = config.forwardModelConfig;
-		RTSForwardModel fm;
-		fm.winCondition = fmConfig.WinCondition;
-
-		//Get unityTypeID for UnitAlive
-		auto units = unitTypesFromConfig(config);
-		fm.unitTypeID = units[fmConfig.unitType].id;
-		
-		return fm;
 	}
 	
 	std::unique_ptr<IBoardGenerator> boardGeneratorFromConfig(const GameConfig& config)
@@ -153,110 +72,6 @@ namespace SGA
 		}
 
 		throw std::runtime_error("Tried initiating a unknown board generation type");
-	}
-
-	std::unique_ptr<TBSGameState> generateTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
-	{
-		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto unitTypes = unitTypesFromConfig(config);
-		auto tileTypes = tileTypesFromConfig(config);
-		// Convert the unordered maps
-		std::unordered_map<int, UnitType> unitTypesMap;
-		std::unordered_map<int, TileType> tileTypesMap;
-		for(const auto& nameTypePair : unitTypes)
-		{
-			unitTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-		for (const auto& nameTypePair : tileTypes)
-		{
-			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-
-		// Initialize state
-		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<TBSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
-		state->roundLimit = config.roundLimit;
-		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
-		{
-			playerIDs.push_back(state->addPlayer());
-		}
-
-		// Spawn units
-		// TODO Unit spawn configuration
-		std::unordered_set<Vector2i> occupiedSet;
-		std::uniform_int_distribution<int> xDist(0, state->getBoard().getWidth() - 1);
-		std::uniform_int_distribution<int> yDist(0, state->getBoard().getHeight() - 1);
-		for (auto i = 0; i < state->getPlayers().size(); i++)
-		{
-			for (const auto& nameTypePair : unitTypes)
-			{
-				// Generate random positions until a suitable was found
-				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-				while (!state->getBoard().getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
-				{
-					pos.x = xDist(rngEngine);
-					pos.y = yDist(rngEngine);
-				}
-				occupiedSet.insert(pos);
-
-				state->addUnit(playerIDs[i], nameTypePair.second.id, pos);
-			}
-		}
-
-		return std::move(state);
-	}
-
-	std::unique_ptr<RTSGameState> generateRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
-	{
-		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto unitTypes = unitTypesFromConfig(config);
-		auto tileTypes = tileTypesFromConfig(config);
-		// Convert the unordered maps
-		std::unordered_map<int, UnitType> unitTypesMap;
-		std::unordered_map<int, TileType> tileTypesMap;
-		for (const auto& nameTypePair : unitTypes)
-		{
-			unitTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-		for (const auto& nameTypePair : tileTypes)
-		{
-			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-
-		// Initialize state
-		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<RTSGameState>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
-		
-		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
-		{
-			playerIDs.push_back(state->addPlayer());
-		}
-
-		// Spawn units
-		// TODO Unit spawn configuration
-		std::unordered_set<Vector2i> occupiedSet;
-		std::uniform_int_distribution<int> xDist(0, state->getBoard().getWidth() - 1);
-		std::uniform_int_distribution<int> yDist(0, state->getBoard().getHeight() - 1);
-		for (auto i = 0; i < state->players.size(); i++)
-		{
-			for (const auto& nameTypePair : unitTypes)
-			{
-				// Generate random positions until a suitable was found
-				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-				while (!state->getBoard().getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
-				{
-					pos.x = xDist(rngEngine);
-					pos.y = yDist(rngEngine);
-				}
-				occupiedSet.insert(pos);
-
-				state->addUnit(playerIDs[i], nameTypePair.second.id, pos);
-			}
-		}
-
-		return std::move(state);
 	}
 
 	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
@@ -296,49 +111,14 @@ namespace SGA
 
 		return game;
 	}
-
-
-	std::unique_ptr<Game> generateGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
-	{
-		// Generate game
-		std::unique_ptr<Game> game;
-		if(config.gameType == "TBS")
-		{
-			auto gameState = generateTBSStateFromConfig(config, rngEngine);
-			auto fm = generateTBSforwardModelFromConfig(config);
-			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
-		}
-		else if(config.gameType == "RTS")
-		{
-			auto generator = boardGeneratorFromConfig(config);
-			auto board = generator->generate(rngEngine);
-			auto gameState = generateRTSStateFromConfig(config, rngEngine);
-			auto fm = generateRTSforwardModelFromConfig(config);
-			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
-		}
-		else
-		{
-			throw std::runtime_error("Tried generating a game with unknown game-type " + config.gameType);
-		}
-
-		return game;
-	}
 	
 	std::unique_ptr<RTSGameState2> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
 		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto unitTypes = unitTypesFromConfig(config);
 		auto tileTypes = tileTypesFromConfig(config);
 
-
-		
 		// Convert the unordered maps
-		std::unordered_map<int, UnitType> unitTypesMap;
 		std::unordered_map<int, TileType> tileTypesMap;
-		for (const auto& nameTypePair : unitTypes)
-		{
-			unitTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
 		for (const auto& nameTypePair : tileTypes)
 		{
 			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
@@ -346,7 +126,7 @@ namespace SGA
 
 		// Initialize state
 		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<RTSGameState2>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
+		auto state = std::make_unique<RTSGameState2>(std::move(board), std::move(tileTypesMap));
 
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
@@ -439,15 +219,10 @@ namespace SGA
 	std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
 		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto unitTypes = unitTypesFromConfig(config);
 		auto tileTypes = tileTypesFromConfig(config);
+		
 		// Convert the unordered maps
-		std::unordered_map<int, UnitType> unitTypesMap;
 		std::unordered_map<int, TileType> tileTypesMap;
-		for (const auto& nameTypePair : unitTypes)
-		{
-			unitTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
 		for (const auto& nameTypePair : tileTypes)
 		{
 			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
@@ -455,10 +230,9 @@ namespace SGA
 
 		// Initialize state
 		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<TBSGameState2>(std::move(board), std::move(unitTypesMap), std::move(tileTypesMap));
+		auto state = std::make_unique<TBSGameState2>(std::move(board), std::move(tileTypesMap));
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
-		//std::unordered_map<int, ActionType> copy = std::move(config.actionTypes);
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(config.parameters);
 		
@@ -549,7 +323,7 @@ namespace SGA
 
 }
 
-int SGA::GameConfig::getEntityID(const std::string& name)
+int SGA::GameConfig::getEntityID(const std::string& name) const
 {
 	for (const auto& idTypePair : entityTypes)
 	{
@@ -560,7 +334,7 @@ int SGA::GameConfig::getEntityID(const std::string& name)
 	throw std::runtime_error("Unknown entity with name " + name);
 }
 
-int SGA::GameConfig::getActionID(const std::string& name)
+int SGA::GameConfig::getActionID(const std::string& name) const
 {
 	for (const auto& idTypePair : actionTypes)
 	{
