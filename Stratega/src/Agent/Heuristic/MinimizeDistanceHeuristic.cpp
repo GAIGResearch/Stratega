@@ -5,50 +5,48 @@
 namespace SGA
 {
 
-	double MinimizeDistanceHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, int playerID)
+	double MinimizeDistanceHeuristic::evaluateGameState(const TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState, int playerID)
 	{
 		double score = 0.0;
 
 		if (gameState.isGameOver)
 		{
-			if (gameState.getWinnerID() == playerID)
+			if (gameState.winnerPlayerID == playerID)
 				score -= 1000;	// since this score should be minimized we need to deduct points for winning
 			else
 				score += 1000;
 		}
 
-		std::vector<TBSUnit>& units = gameState.getUnits();
-		std::map<int, Vector2i> positions = std::map<int, Vector2i>();
-		std::set<int> opponentUnits = std::set<int>();
-		std::set<int> playerUnits = std::set<int>();
+		std::map<int, Vector2f> positions;
+		std::set<int> opponentEntites = std::set<int>();
+		std::set<int> playerEntities = std::set<int>();
 
-		for (const TBSUnit& unit : units)
+		for (const auto& entity : gameState.entities)
 		{
-			positions.insert(std::pair<int, Vector2i>(unit.getUnitID(), unit.getPosition()));
-			if (unit.getPlayerID() != gameState.currentPlayer)
+			positions.emplace(entity.id, entity.position);
+			if (entity.owner != gameState.currentPlayer)
 			{
-				opponentUnits.insert(unit.getUnitID());
+				opponentEntites.insert(entity.id);
 			}
 			else
 			{
-				playerUnits.insert(unit.getUnitID());
+				playerEntities.insert(entity.id);
 			}
-			
 		}
 
 		double sumOfAverageDistances = 0;
-		for (int playerUnit : playerUnits)
+		for (const auto& playerUnit : playerEntities)
 		{
 			double sumOfDistances = 0;
-			Vector2i a = positions[playerUnit];
-			for (int opponentUnit : opponentUnits)
+			auto a = positions[playerUnit];
+			for (int opponentUnit : opponentEntites)
 			{
-				Vector2i b = positions[opponentUnit];
+				auto b = positions[opponentUnit];
 				sumOfDistances += abs(a.x - b.x) + abs(a.y - b.y);
 			}
-			sumOfAverageDistances = sumOfDistances / opponentUnits.size();
+			sumOfAverageDistances = sumOfDistances / opponentEntites.size();
 		}
-		score += sumOfAverageDistances / playerUnits.size();
+		score += sumOfAverageDistances / playerEntities.size();
 
 		return score;
 	}

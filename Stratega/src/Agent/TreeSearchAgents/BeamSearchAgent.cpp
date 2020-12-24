@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void BeamSearchAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BeamSearchAgent::runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
@@ -11,7 +11,7 @@ namespace SGA
 		{
 			if (gameCommunicator.isMyTurn())
 			{				
-				TBSGameState gameState = gameCommunicator.getGameState();
+				auto gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
 				
@@ -22,14 +22,14 @@ namespace SGA
 					gameCommunicator.executeAction(rootNode.actionSpace.at(0));
 				} else
 				{
-					TBSAction bestAction = beamSearch(*processedForwardModel, rootNode);
+					auto bestAction = beamSearch(*processedForwardModel, rootNode);
 					gameCommunicator.executeAction(bestAction);
 				}
 			}
 		}
 	}
 
-	TBSAction BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
+	Action BeamSearchAgent::beamSearch(TBSAbstractForwardModel& forwardModel, TreeNode& root)
 	{
 		parameters_.PLAYER_ID = root.gameState.currentPlayer;
 
@@ -71,7 +71,7 @@ namespace SGA
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel& forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSAbstractForwardModel& forwardModel, TreeNode& node)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		

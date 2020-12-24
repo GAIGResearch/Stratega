@@ -1,10 +1,8 @@
 #include <Agent/TreeSearchAgents/BFSAgent.h>
 
-#include "ForwardModel/PortfolioTBSForwardModel.h"
-
 namespace SGA
 {
-	void BFSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BFSAgent::runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
@@ -12,7 +10,7 @@ namespace SGA
 		{
 			if (gameCommunicator.isMyTurn())
 			{
-				TBSGameState gameState = gameCommunicator.getGameState();
+				auto gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)	//safety check against race conditions
 					break;
 				const auto actionSpace = forwardModel.generateActions(gameState);
@@ -41,7 +39,7 @@ namespace SGA
 					gameCommunicator.executeAction(action);
 					
 					// remember latest action in case the search should be continued
-					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.type != TBSActionType::EndTurn ? bestActionIndex : -1;
+					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.isEndAction ? bestActionIndex : -1;
 
 				}
 			}
@@ -55,7 +53,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="gameState">the current game-state</param>
-	void BFSAgent::init(TBSForwardModel& forwardModel, TBSGameState& gameState)
+	void BFSAgent::init(TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState)
 	{
 		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
@@ -85,7 +83,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="openNodes">list of known open nodes</param>
-	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
+	void BFSAgent::search(TBSAbstractForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
 	{
 		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 		
@@ -164,7 +162,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same model as it has been used for the search</param>
 	/// <returns>index of the best child node</returns>
-	int BFSAgent::getBestActionIdx(TBSForwardModel& forwardModel)
+	int BFSAgent::getBestActionIdx(TBSAbstractForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
 		StateHeuristic* heuristic = parameters_.OBJECTIVE.get();

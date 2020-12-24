@@ -2,17 +2,15 @@
 #include <iostream>
 #include <vector>
 
-
-
 namespace SGA
 {
 
-	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
+	TreeNode::TreeNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
+	TreeNode::TreeNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, TreeNode* parent, const int childIndex) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -24,13 +22,13 @@ namespace SGA
 	/// <param name="forwardModel"></param>
 	/// <param name="agentParameters"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, AgentParameters& agentParameters)
+	TreeNode* TreeNode::expand(TBSAbstractForwardModel& forwardModel, AgentParameters& agentParameters)
 	{		
 		if (this->isFullyExpanded())
 			return nullptr;
 
 		// roll the state using a the next action that hasn't been expanded yet
-		TBSGameState gsCopy = TBSGameState(gameState);
+		auto gsCopy(gameState);
 		forwardModel.advanceGameState(gsCopy, actionSpace.at(static_cast<int>(children.size())));
 		agentParameters.REMAINING_FM_CALLS--;
 		

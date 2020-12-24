@@ -17,11 +17,11 @@ namespace SGA
 		BeamSearchParameters parameters_ = BeamSearchParameters();
 
 	public:
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel) override;
 
 	private:	
-		TBSAction beamSearch(TBSForwardModel& forwardModel, TreeNode& root);
-		std::vector<TreeNode*> simulate(TBSForwardModel& forwardModel, TreeNode& node);
+		Action beamSearch(TBSAbstractForwardModel& forwardModel, TreeNode& root);
+		std::vector<TreeNode*> simulate(TBSAbstractForwardModel& forwardModel, TreeNode& node);
 		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 	};
 }

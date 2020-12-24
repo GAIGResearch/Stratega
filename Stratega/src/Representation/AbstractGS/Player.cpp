@@ -12,21 +12,6 @@ namespace SGA
 
 	}
 
-	/*Player& Player::operator=(const Player& other) 
-	{
-		
-		return *this;
-	}*/
-	//Player::Player(const Player& copy) noexcept:		
-	//	id(copy.id),
-	//	score(copy.score),
-	//	canPlay(copy.canPlay),
-	//	state(copy.state)
-	//{
-	//	
-	//}
-
-
 	std::vector<Entity*> Player::getEntities() const
 	{
 		std::vector<Entity*> entitiesOfPlayer;

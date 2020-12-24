@@ -1,17 +1,8 @@
 #pragma once
 #include <vector>
-
-#include <Agent/Heuristic/LinearSumHeuristic.h>
-
 #include <Agent/ActionScripts/BaseActionScript.h>
-#include <Agent/ActionScripts/AttackClosestOpponentScript.h>
-
-
-#include "ActionScripts/AttackWeakestOpponentScript.h"
 #include "ActionScripts/RandomActionScript.h"
-#include "ActionScripts/RunAwayFromOpponentScript.h"
-#include "ActionScripts/RunToFriendlyUnitsScript.h"
-#include "ActionScripts/UseSpecialAbilityScript.h"
+#include <Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include "ForwardModel/PortfolioTBSForwardModel.h"
 
 
@@ -25,8 +16,8 @@ namespace SGA {
 
 		// the script the opponent is simulated with
 		// never set this to be a nullptr, use SkipTurnScript instead
-		std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<AttackClosestOpponentScript>();	
-		std::unique_ptr<StateHeuristic> OBJECTIVE = std::make_unique<LinearSumHeuristic>();
+		std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();	
+		std::unique_ptr<StateHeuristic> OBJECTIVE = std::make_unique<MinimizeDistanceHeuristic>();
 
 		// the portfolio used to sample actions of a genome
 		// if empty the original forwardModel will be used to generate actions
@@ -34,16 +25,6 @@ namespace SGA {
 
 		AgentParameters()
 		{
-			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
-			PORTFOLIO.emplace_back(std::move(attackClose));
-			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
-			PORTFOLIO.emplace_back(std::move(attackWeak));
-			std::unique_ptr<BaseActionScript> runAway = std::make_unique<RunAwayFromOpponentScript>();
-			PORTFOLIO.emplace_back(std::move(runAway));
-			std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
-			PORTFOLIO.emplace_back(std::move(useSpecialAbility));
-			std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
-			PORTFOLIO.emplace_back(std::move(runToFriends));
 			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
 			PORTFOLIO.emplace_back(std::move(random));
 		};
@@ -55,11 +36,11 @@ namespace SGA {
 		/// </summary>
 		/// <param name="forwardModel"></param>
 		/// <returns></returns>
-		std::unique_ptr<TBSForwardModel> preprocessForwardModel(TBSForwardModel* forwardModel)
+		std::unique_ptr<TBSAbstractForwardModel> preprocessForwardModel(TBSAbstractForwardModel* forwardModel)
 		{
 			if (PORTFOLIO.empty())
 			{
-				return std::unique_ptr<TBSForwardModel>(forwardModel);
+				return std::unique_ptr<TBSAbstractForwardModel>(forwardModel);
 			}
 			else
 			{

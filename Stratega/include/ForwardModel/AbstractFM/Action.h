@@ -10,11 +10,12 @@ namespace SGA
 	struct Action
 	{
 		Action():
-		isEndAction(false),
-		actionTypeID(-1)
+			isEndAction(false),
+			actionTypeID(-1),
+			owner(0)
 		{
-			
 		}
+
 		//RTS Endtick && TBS Endturn
 		bool isEndAction;
 		
@@ -27,5 +28,13 @@ namespace SGA
 		//void execute(GameState& state) const;
 		void execute(GameState& state, const TBSAbstractForwardModel& fm) const;
 		void execute(GameState& state, const RTSAbstractForwardModel& fm) const;
+
+		static Action createEndAction(int playerID)
+		{
+			Action a;
+			a.owner = playerID;
+			a.isEndAction = true;
+			return a;
+		}
 	};
 }

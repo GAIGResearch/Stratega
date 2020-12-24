@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
+	MCTSNode::MCTSNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState, MCTSNode* parent, const int childIndex) :
+	MCTSNode::MCTSNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, MCTSNode* parent, const int childIndex) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -57,7 +57,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTS(TBSAbstractForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
 		int numIterations = 0;
 		bool stop = false;
 		int prevCallCount = params.REMAINING_FM_CALLS;
@@ -85,7 +85,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(TBSAbstractForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		MCTSNode* cur = this;
 
@@ -102,11 +102,11 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::expand(TBSAbstractForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
-		TBSGameState gsCopy = TBSGameState(gameState);
+		auto gsCopy(gameState);
 		childIndex = children.size();
 		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
 
@@ -191,10 +191,10 @@ namespace SGA
 		return children[which].get();
 	}
 
-	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	double MCTSNode::rollOut(TBSAbstractForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
-			TBSGameState gsCopy = TBSGameState(gameState);
+			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
@@ -211,7 +211,7 @@ namespace SGA
 		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
 	}
 
-	bool MCTSNode::rolloutFinished(TBSGameState& rollerState, int depth, MCTSParameters& params)
+	bool MCTSNode::rolloutFinished(TBSGameState2& rollerState, int depth, MCTSParameters& params)
 	{
 		if (depth >= params.ROLLOUT_LENGTH)      //rollout end condition.
 			return true;
@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, TBSAction& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState, Action& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
@@ -235,9 +235,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				std::vector<TBSAction> endTurnActionSpace;
-				forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
+				forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
 			}
 		}
 	}

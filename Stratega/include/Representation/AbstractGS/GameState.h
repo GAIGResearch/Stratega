@@ -10,20 +10,21 @@ namespace SGA
 {
 	struct GameState
 	{
-		GameState::GameState(Board&& board/*, const std::unordered_map<int, UnitType>& unitTypes*/, const std::unordered_map<int, TileType>& tileTypes) :
-			fogOfWarTile(-1, 0, 0),
-			isGameOver(false),
-			board(std::move(board)),
-			players(),
-			lastUsedPlayerID(-1),
-			winnerPlayerID(-1),
-			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
+		GameState::GameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
-			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>())
+			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
+			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
+			isGameOver(false),
+			winnerPlayerID(-1),
+			fogOfWarTile(-1, 0, 0),
+			board(std::move(board)),
+			players(),
+			lastUsedEntityID(0),
+			lastUsedPlayerID(-1)
 		{
-			
 		}
+
 		GameState()
 			: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			  entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
@@ -189,6 +190,17 @@ namespace SGA
 		bool isInBounds(Vector2f pos) const
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+		}
+
+		const Player* getPlayer(int playerID) const
+		{
+			for(const auto& p : players)
+			{
+				if (p.id == playerID)
+					return &p;
+			}
+
+			return nullptr;
 		}
 	};
 }

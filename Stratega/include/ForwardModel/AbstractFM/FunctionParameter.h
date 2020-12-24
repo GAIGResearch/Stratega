@@ -6,7 +6,7 @@
 
 namespace SGA
 {
-	class GameState;
+	struct GameState;
 	
 	class FunctionParameter
 	{

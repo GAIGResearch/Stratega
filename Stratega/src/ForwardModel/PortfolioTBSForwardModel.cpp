@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	std::vector<TBSAction> PortfolioTBSForwardModel::generateActions(TBSGameState& state) const
+	std::vector<Action> PortfolioTBSForwardModel::generateActions(TBSGameState2& state) const
 	{
-		auto actionSpace = TBSForwardModel::generateActions(state, state.currentPlayer);
+		auto actionSpace = TBSAbstractForwardModel::generateActions(state, state.currentPlayer);
 
 		// filter all the actions according to the portfolio
-		std::vector<TBSAction> portfolioActionSpace;
+		std::vector<Action> portfolioActionSpace;
 
 		for (std::unique_ptr<BaseActionScript>& actionScript : this->portfolio)
 		{
@@ -18,9 +18,9 @@ namespace SGA
 		return portfolioActionSpace;
 	}
 
-	std::vector<TBSAction> PortfolioTBSForwardModel::generateActions(TBSGameState& state, int playerID) const
+	std::vector<Action> PortfolioTBSForwardModel::generateActions(TBSGameState2& state, int playerID) const
 	{
-		return TBSForwardModel::generateActions(state, playerID);
+		return TBSAbstractForwardModel::generateActions(state, playerID);
 	}
 
 }

@@ -34,9 +34,9 @@ namespace SGA
 			return actionSpace->generateActions(state,playerID);
 		}
 
-		void executeMove(Gamestate& state)
+		bool isValid(const Gamestate& state, const Action& action)
 		{
-			
+			return true;
 		}
 	
 		virtual bool checkGameIsFinished(Gamestate& state) const = 0;

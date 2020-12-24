@@ -25,7 +25,10 @@ namespace SGA
 		}
 		virtual ~Agent() = default;
 		
-		virtual void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)=0;
+		virtual void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+		{
+			
+		}
 		virtual void runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
 		{
 			
