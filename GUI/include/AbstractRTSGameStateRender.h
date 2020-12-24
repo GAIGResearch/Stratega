@@ -1,7 +1,7 @@
 #pragma once
 #include <GameStateRenderer.h>
 #include <Game/AbstractRTSGame.h>
-#include <Representation/AbstractGS/RTSGameState2.h>
+#include <Representation/RTSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>

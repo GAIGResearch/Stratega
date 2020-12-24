@@ -1,13 +1,13 @@
 #pragma once
 #include <Game/GameCommunicator.h>
 #include <Game/AbstractRTSGame.h>
-#include <Agent/Agent.h>
-
 #include <random>
 #include <thread>
 
 namespace SGA
 {
+	class Agent;
+	
 	class AbstractRTSGameCommunicator : public GameCommunicator
 	{
 	public:

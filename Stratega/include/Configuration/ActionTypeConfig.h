@@ -1,5 +1,5 @@
 #pragma once
-#include <ForwardModel/AbstractFM/ActionType.h>
+#include <ForwardModel/ActionType.h>
 #include <yaml-cpp/yaml.h>
 
 namespace SGA

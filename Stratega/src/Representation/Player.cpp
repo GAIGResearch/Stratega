@@ -1,42 +1,28 @@
 #include <Representation/Player.h>
-
+#include <Representation/GameState.h>
+#include <Representation/Entity.h>
 namespace SGA
 {
-	TBSPlayer::TBSPlayer(TBSGameState& state, int playerID)
-		: state(state), playerID(playerID), score(0)
+	Player::Player(int id, GameState& state) :
+		id(id),
+		score(0),
+		canPlay(true),
+		state(state)
 	{
+
 	}
 
-	
-	std::vector<TBSUnit*> TBSPlayer::getUnits() const
+	std::vector<Entity*> Player::getEntities() const
 	{
-		std::vector<TBSUnit*> unitsOfPlayer;
-		for (TBSUnit& unit : state.get().getUnits())
+		std::vector<Entity*> entitiesOfPlayer;
+		for (auto& entity : state.get().entities)
 		{
-			if (unit.getPlayerID() == this->playerID)
+			if (entity.owner == id)
 			{
-				unitsOfPlayer.emplace_back(&unit);
+				entitiesOfPlayer.emplace_back(&entity);
 			}
 		}
-		return unitsOfPlayer;
+		return entitiesOfPlayer;
 	}
 
-	RTSPlayer::RTSPlayer(RTSGameState& state, int playerID)
-		: state(state), playerID(playerID), score(0)
-	{
-	}
-
-
-	std::vector<RTSUnit*> RTSPlayer::getUnits() const
-	{
-		std::vector<RTSUnit*> unitsOfPlayer;
-		for (RTSUnit& unit : state.get().units)
-		{
-			if (unit.playerID == this->playerID)
-			{
-				unitsOfPlayer.emplace_back(&unit);
-			}
-		}
-		return unitsOfPlayer;
-	}
 }

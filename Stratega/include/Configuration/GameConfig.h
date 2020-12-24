@@ -4,10 +4,9 @@
 #include <Configuration/TileConfig.h>
 #include <Configuration/BoardConfig.h>
 #include <Configuration/ForwardModelConfig.h>
-#include <ForwardModel/TBSForwardModel.h>
 #include <Agent/Agent.h>
 #include <yaml-cpp/yaml.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
+#include <Representation/TBSGameState.h>
 #include <Configuration/EntityTypeConfig.h>
 #include <Configuration/ActionTypeConfig.h>
 #include <Configuration/FunctionParser.h>

@@ -3,7 +3,6 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
-#include "RTSGameStateRender.h"
 #include "AbstractTBSGameStateRender.h"
 #include "AbstractRTSGameStateRender.h"
 

@@ -4,8 +4,8 @@
 #include <sstream>
 #include <optional>
 
-#include <ForwardModel/AbstractFM/FunctionParameter.h>
-#include <ForwardModel/AbstractFM/FunctionFactory.h>
+#include <ForwardModel/FunctionParameter.h>
+#include <ForwardModel/FunctionFactory.h>
 
 namespace SGA
 {

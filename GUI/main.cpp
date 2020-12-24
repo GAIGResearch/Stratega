@@ -1,17 +1,8 @@
 #include <filesystem>
-#include <AbstractRTSGameStateRender.h>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
-//#include <Game/TBSGameCommunicator.h>
 #include <Game/AbstractTBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
-#include <ForwardModel/AbstractFM/ActionSpaceBase.h>
-#include <Representation/AbstractGS/GameState.h>
-//#include <ForwardModel/AbstractFM/Preconditions.h>
-#include <ForwardModel/AbstractFM/Condition.h>
-#include <ForwardModel/AbstractFM/Effect.h>
-#include <Representation/AbstractGS/Player.h>
-#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
 #include <Game/AbstractGame.h>
 int main()
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include <ForwardModel/AbstractFM/TargetType.h>
+#include <ForwardModel/TargetType.h>
 #include <yaml-cpp/yaml.h>
 
 namespace YAML

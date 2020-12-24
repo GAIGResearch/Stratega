@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <iomanip>
 #include <sstream>
+#include <GridUtils.h>
+
 AbstractTBSGameStateRender::AbstractTBSGameStateRender(SGA::AbstractTBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),

@@ -1,10 +1,11 @@
 #include <AbstractRTSGameStateRender.h>
-#include <ForwardModel/AbstractFM/Action.h>
+#include <ForwardModel/Action.h>
 #include <CircularBuffer.h>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <iomanip>
 #include <sstream>
+#include <GridUtils.h>
 
 AbstractRTSGameStateRender::AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
 	GameStateRenderer{ playerID },

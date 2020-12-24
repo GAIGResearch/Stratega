@@ -1,8 +1,8 @@
 #pragma once
 #include <mutex>
 #include <Game/Game.h>
-#include <Representation/AbstractGS/RTSGameState2.h>
-#include <ForwardModel/AbstractFM/RTSAbstractForwardModel.h>
+#include <Representation/RTSGameState.h>
+#include <ForwardModel/RTSAbstractForwardModel.h>
 #include <random>
 namespace SGA
 {

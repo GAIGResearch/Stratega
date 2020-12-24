@@ -1,14 +1,14 @@
 #pragma once
 #include <GameStateRenderer.h>
 #include <Game/AbstractGame.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
+#include <Representation/TBSGameState.h>
 #include <Representation/TBSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <CircularBuffer.h>
 
-#include <ForwardModel/AbstractFM/Action.h>
+#include <ForwardModel/Action.h>
 
 class AbstractTBSGameStateRender : public GameStateRenderer<SGA::TBSGameState2>
 {

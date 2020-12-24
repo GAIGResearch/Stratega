@@ -2,8 +2,8 @@
 #include <random>
 #include <Agent/Agent.h>
 #include <Agent/Heuristic/StateHeuristic.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
-#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
+#include <Representation/TBSGameState.h>
+#include <ForwardModel/TBSAbstractForwardModel.h>
 
 #include <Agent/RHEAAgent/RHEAGenome.h>
 #include <Agent/RHEAAgent/RHEAParams.h>

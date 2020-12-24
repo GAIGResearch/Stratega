@@ -1,4 +1,5 @@
 #include <Game/AbstractTBSGameCommunicator.h>
+#include <Agent/Agent.h>
 
 namespace SGA
 {

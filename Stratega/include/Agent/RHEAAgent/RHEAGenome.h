@@ -1,7 +1,7 @@
 #pragma once
 #include <Agent/RHEAAgent/RHEAParams.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
-#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
+#include <Representation/TBSGameState.h>
+#include <ForwardModel/TBSAbstractForwardModel.h>
 
 #include <iostream>
 #include <random>

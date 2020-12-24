@@ -1,4 +1,6 @@
 #include <Game/AbstractRTSGameCommunicator.h>
+#include <Agent/Agent.h>
+
 namespace SGA
 {
 	void AbstractRTSGameCommunicator::init()

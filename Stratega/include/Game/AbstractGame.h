@@ -1,10 +1,10 @@
 #pragma once
 #include <mutex>
 #include <Game/Game.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
-#include <Representation/AbstractGS/RTSGameState2.h>
-#include <ForwardModel/AbstractFM/TBSAbstractForwardModel.h>
-#include <ForwardModel/AbstractFM/RTSAbstractForwardModel.h>
+#include <Representation/TBSGameState.h>
+#include <Representation/RTSGameState.h>
+#include <ForwardModel/TBSAbstractForwardModel.h>
+#include <ForwardModel/RTSAbstractForwardModel.h>
 #include <random>
 
 namespace SGA

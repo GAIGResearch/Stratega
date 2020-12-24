@@ -1,8 +1,7 @@
 #pragma once
 #include <Game/GameCommunicator.h>
-#include <Representation/AbstractGS/TBSGameState2.h>
+#include <Representation/TBSGameState.h>
 #include <Game/AbstractGame.h>
-#include <Agent/Agent.h>
 
 #include <random>
 #include <thread>

@@ -8,10 +8,6 @@
 #include <SFML/Graphics.hpp>
 
 
-#include <MapLayer.h>
-#include <UnitLayer.h>
-#include <OverlayLayer.h>
-
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <iomanip>
@@ -63,8 +59,6 @@ public:
 	sf::Context ctx;
 
 	AssetCache assetCache;
-
-	std::vector<std::unique_ptr<RenderLayer<GameState>>> renderLayers;
 
 private:
 	bool isRenderThreadRunning = false;

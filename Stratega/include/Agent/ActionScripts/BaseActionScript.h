@@ -1,6 +1,6 @@
 #pragma once
-#include <Representation/AbstractGS/TBSGameState2.h>
-#include <ForwardModel/AbstractFM/Action.h>
+#include <Representation/TBSGameState.h>
+#include <ForwardModel/Action.h>
 
 namespace SGA {
 	class BaseActionScript
