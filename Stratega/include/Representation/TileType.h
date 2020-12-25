@@ -5,8 +5,10 @@ namespace SGA
 {
 	struct TileType
 	{
+		std::string name;
+		char symbol;
 		int id;
-		bool isWalkable;
+		bool isWalkable = true;
 
 		Tile toTile() const
 		{

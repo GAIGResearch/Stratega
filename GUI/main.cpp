@@ -4,21 +4,24 @@
 #include <Game/AbstractTBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
 #include <Game/AbstractGame.h>
+
+#include "Configuration/GameConfigParser.h"
+
 int main()
 {
 	// Read Config
 	std::mt19937 engine(0ll);
-	
+	SGA::GameConfigParser parser;
 	std::filesystem::path configPath2("../../../gameConfigs/TestConfig.yaml");
 	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
-	auto gameConfig2 = yamlConfig2.as<SGA::GameConfig>();
+	auto gameConfig2 = parser.parseFromFile(configPath2.string());
 	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();
 	
 	//// Initialize the game
 	auto game = SGA::generateAbstractGameFromConfig(gameConfig2, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
-	auto agents = SGA::agentsFromConfig(gameConfig2);
+	auto agents = gameConfig2.generateAgents();
 	
 	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
 	for(size_t i = 0; i < gameConfig2.getNumberOfPlayers(); i++)

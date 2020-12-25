@@ -4,76 +4,23 @@
 
 namespace SGA
 {
-	std::vector<std::unique_ptr<Agent>> agentsFromConfig(const GameConfig& config)
+	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
 	{
 		std::vector<std::unique_ptr<Agent>> agents;
-		for(const auto& nameParamPair : config.agentParams)
+		for (const auto& agentNode : agentParams)
 		{
-			std::unique_ptr<Agent> agent;
-			if(nameParamPair.second.IsNull())
+			if (agentNode.second.IsNull())
 			{
-				agent = AgentFactory::get().createAgent(nameParamPair.first);
+				agents.emplace_back(AgentFactory::get().createAgent(agentNode.first));
 			}
 			else
 			{
-				agent = AgentFactory::get().createAgent(nameParamPair.first, nameParamPair.second);
+				agents.emplace_back(AgentFactory::get().createAgent(agentNode.first, agentNode.second));
 			}
-		
-			if(agent == nullptr && nameParamPair.first != "HumanAgent")
-			{
-				throw std::runtime_error("Unknown agent with name " + nameParamPair.first);
-			}
-		
-			agents.emplace_back(std::move(agent));
 		}
-
 		return agents;
 	}
 	
-	std::unordered_map<std::string, TileType> tileTypesFromConfig(const GameConfig& config)
-	{
-		std::unordered_map<std::string, TileType> tileLookup;
-		int nextID = 0;
-		for(const auto& nameConfigPair : config.tileTypes)
-		{
-			tileLookup.emplace(nameConfigPair.first, tileTypeFromConfig(nameConfigPair.second, nextID));
-			nextID++;
-		}
-
-		return tileLookup;
-	}
-	
-	std::unique_ptr<IBoardGenerator> boardGeneratorFromConfig(const GameConfig& config)
-	{
-		const auto& boardConfig = config.boardConfig;
-		if (boardConfig.generationType == BoardGenerationType::Manual)
-		{
-			// Extract rows
-			std::vector<std::string> rows;
-			size_t last = 0, next;
-			while ((next = boardConfig.layout.find(' ', last)) != std::string::npos)
-			{
-				rows.emplace_back(boardConfig.layout.substr(last, next - last));
-				last = next + 1;
-			}
-			rows.push_back(boardConfig.layout.substr(last, boardConfig.layout.size() - last));
-
-			// Initialize the generator
-			std::unique_ptr<BoardGenerator> generator = std::make_unique<BoardGenerator>();
-			generator->setDefaultRowPatterns(std::move(rows));
-			auto tiles = tileTypesFromConfig(config);
-			for (const auto& pair : tiles)
-			{
-				const auto& tileConfig = config.tileTypes.at(pair.first);
-				generator->addTile(tileConfig.symbol, pair.second);
-			}
-
-			return std::move(generator);
-		}
-
-		throw std::runtime_error("Tried initiating a unknown board generation type");
-	}
-
 	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
 		//TODO ADD FM AbstractGeneration
@@ -94,8 +41,7 @@ namespace SGA
 		}
 		else if (config.gameType == "RTS")
 		{
-			auto generator = boardGeneratorFromConfig(config);
-			auto board = generator->generate(rngEngine);
+			auto board = config.boardGenerator->generate(rngEngine);
 			auto gameState = generateAbstractRTSStateFromConfig(config, rngEngine);
 			SGA::RTSAbstractForwardModel fm;
 			//SGA::RTSAbstractForwardModel fm;
@@ -114,19 +60,9 @@ namespace SGA
 	
 	std::unique_ptr<RTSGameState2> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
-		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto tileTypes = tileTypesFromConfig(config);
-
-		// Convert the unordered maps
-		std::unordered_map<int, TileType> tileTypesMap;
-		for (const auto& nameTypePair : tileTypes)
-		{
-			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-
 		// Initialize state
-		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<RTSGameState2>(std::move(board), std::move(tileTypesMap));
+		auto board = config.boardGenerator->generate(rngEngine);
+		auto state = std::make_unique<RTSGameState2>(std::move(board), config.tileTypes);
 
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
@@ -218,19 +154,9 @@ namespace SGA
 	
 	std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
-		auto boardGenerator = boardGeneratorFromConfig(config);
-		auto tileTypes = tileTypesFromConfig(config);
-		
-		// Convert the unordered maps
-		std::unordered_map<int, TileType> tileTypesMap;
-		for (const auto& nameTypePair : tileTypes)
-		{
-			tileTypesMap.emplace(nameTypePair.second.id, nameTypePair.second);
-		}
-
 		// Initialize state
-		auto board = boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<TBSGameState2>(std::move(board), std::move(tileTypesMap));
+		auto board = config.boardGenerator->generate(rngEngine);
+		auto state = std::make_unique<TBSGameState2>(std::move(board), config.tileTypes);
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);
@@ -342,5 +268,16 @@ int SGA::GameConfig::getActionID(const std::string& name) const
 			return idTypePair.first;
 	}
 
-	throw std::runtime_error("Unknown entity with name " + name);
+	throw std::runtime_error("Unknown action with name " + name);
+}
+
+int SGA::GameConfig::getTileID(const std::string& name) const
+{
+	for (const auto& idTypePair : tileTypes)
+	{
+		if (idTypePair.second.name == name)
+			return idTypePair.first;
+	}
+
+	throw std::runtime_error("Unknown tile with name " + name);
 }

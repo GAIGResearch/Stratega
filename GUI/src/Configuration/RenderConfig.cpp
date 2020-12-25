@@ -6,10 +6,10 @@ namespace SGA
 	std::unique_ptr<GameStateRenderBase> stateRendererFromConfig(Game& game, const RenderConfig& config, const GameConfig& gameConfig, int playerID)
 	{
 		std::unordered_map<int, std::string> tilePaths;
-		auto tiles = tileTypesFromConfig(gameConfig);
 		for(const auto& namePathPair : config.tileSpritePaths)
 		{
-			tilePaths.emplace(tiles[namePathPair.first].id, namePathPair.second);
+			int tileID = gameConfig.getTileID(namePathPair.first);
+			tilePaths.emplace(tileID, namePathPair.second);
 		}
 		
 		if(gameConfig.gameType=="TBS")

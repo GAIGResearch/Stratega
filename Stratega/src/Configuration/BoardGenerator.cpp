@@ -8,7 +8,7 @@ namespace SGA
 		return generate(defaultRowPatterns, rngEngine);
 	}
 
-	Board BoardGenerator::generate(const std::vector<std::string>& rowPatterns, std::mt19937&) const
+	Board BoardGenerator::generate(const std::vector<std::string>& rowPatterns, std::mt19937& rngEngine) const
 	{
 		auto height = static_cast<int>(rowPatterns.size());
 		auto width = static_cast<int>(rowPatterns[0].size());
