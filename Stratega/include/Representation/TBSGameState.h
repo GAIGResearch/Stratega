@@ -3,13 +3,13 @@
 
 namespace SGA
 {
-	struct TBSGameState2 : public GameState
+	struct TBSGameState : public GameState
 	{
-		TBSGameState2() : GameState(), currentGameTurn(0), turnLimit(0), currentPlayer(0)
+		TBSGameState() : GameState(), currentGameTurn(0), turnLimit(0), currentPlayer(0)
 		{
 		}
 
-		TBSGameState2(Board&& board, const std::unordered_map<int, TileType>& tileTypes)
+		TBSGameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes)
 			: GameState(std::move(board), tileTypes),
 			currentGameTurn(0),
 			turnLimit(1000000),

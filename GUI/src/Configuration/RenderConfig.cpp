@@ -13,9 +13,9 @@ namespace SGA
 		}
 		
 		if(gameConfig.gameType=="TBS")
-			return std::make_unique<AbstractTBSGameStateRender>(dynamic_cast<AbstractTBSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
+			return std::make_unique<TBSGameStateRender>(dynamic_cast<TBSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
 		else if(gameConfig.gameType == "RTS")
-			return std::make_unique<AbstractRTSGameStateRender>(dynamic_cast<AbstractRTSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
+			return std::make_unique<RTSGameStateRender>(dynamic_cast<RTSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
 		else
 			throw std::runtime_error("Tried generating a GameStateRender with unknown game-type " + gameConfig.gameType);
 	}

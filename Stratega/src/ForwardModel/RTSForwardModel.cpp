@@ -1,8 +1,8 @@
-#include <ForwardModel/RTSAbstractForwardModel.h>
+#include <ForwardModel/RTSForwardModel.h>
 
 namespace SGA
 {
-	void RTSAbstractForwardModel::advanceGameState(RTSGameState2& state, const Action& action) const
+	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action& action) const
 	{
 		if (!action.isEndAction)
 		{
@@ -79,17 +79,17 @@ namespace SGA
 		}
 	}
 
-	std::vector<Action> RTSAbstractForwardModel::generateActions(RTSGameState2& state) const
+	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state) const
 	{
 		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
 	}
 
-	std::vector<Action> RTSAbstractForwardModel::generateActions(RTSGameState2& state, int playerID) const
+	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state, int playerID) const
 	{
 		return actionSpace->generateActions(state, playerID);
 	}
 
-	//void RTSAbstractForwardModel::executeMove(RTSGameState2& state, RTSUnit& unit) const
+	//void RTSForwardModel::executeMove(RTSGameState2& state, RTSUnit& unit) const
 	//{
 	//	if (!unit.executingAction.validate(state.target))
 	//	{
@@ -140,7 +140,7 @@ namespace SGA
 	//	}
 	//}
 
-	//void RTSAbstractForwardModel::executeAttack(RTSGameState2& state, RTSUnit& unit) const
+	//void RTSForwardModel::executeAttack(RTSGameState2& state, RTSUnit& unit) const
 	//{
 	//	if (!unit.executingAction.validate(state.target))
 	//	{
@@ -235,7 +235,7 @@ namespace SGA
 	//	}
 	//}
 
-	//void RTSAbstractForwardModel::executeHeal(RTSGameState2& state, RTSUnit& unit) const
+	//void RTSForwardModel::executeHeal(RTSGameState2& state, RTSUnit& unit) const
 	//{
 	//	if (!unit.executingAction.validate(state.target))
 	//	{
@@ -252,7 +252,7 @@ namespace SGA
 	//	unit.actionCooldown = unit.maxActionCooldown;
 	//}
 
-	void RTSAbstractForwardModel::resolveUnitCollisions(RTSGameState2& state) const
+	void RTSForwardModel::resolveUnitCollisions(RTSGameState& state) const
 	{
 		for (auto& unit : state.entities)
 		{
@@ -281,7 +281,7 @@ namespace SGA
 		}
 	}
 
-	void RTSAbstractForwardModel::resolveEnvironmentCollisions(RTSGameState2& state) const
+	void RTSForwardModel::resolveEnvironmentCollisions(RTSGameState& state) const
 	{
 		static float RECT_SIZE = 1;
 
@@ -323,7 +323,7 @@ namespace SGA
 		}
 	}
 
-	bool RTSAbstractForwardModel::buildNavMesh(RTSGameState2& state, NavigationConfig config) const
+	bool RTSForwardModel::buildNavMesh(RTSGameState& state, NavigationConfig config) const
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -667,7 +667,7 @@ namespace SGA
 		return true;
 	}
 
-	Path RTSAbstractForwardModel::findPath(RTSGameState2& state, Vector2f startPos, Vector2f endPos) const
+	Path RTSForwardModel::findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const
 	{
 		//Convert grid pos to 3D pos
 		float startPosV3[3];
@@ -719,7 +719,7 @@ namespace SGA
 		return path;
 	}
 
-	bool RTSAbstractForwardModel::checkGameIsFinished(RTSGameState2& state) const
+	bool RTSForwardModel::checkGameIsFinished(RTSGameState& state) const
 	{
 		/*int numberPlayerCanPlay = 0;
 		int winnerID = -1;
@@ -745,7 +745,7 @@ namespace SGA
 		return false;
 	}
 
-	bool RTSAbstractForwardModel::canPlayerPlay(Player& player) const
+	bool RTSForwardModel::canPlayerPlay(Player& player) const
 	{
 		if (player.state.get().fogOfWarId != -1 && player.id != player.state.get().fogOfWarId)
 			return true;

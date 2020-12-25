@@ -1,4 +1,4 @@
-#include <AbstractRTSGameStateRender.h>
+#include <RTSGameStateRender.h>
 #include <ForwardModel/Action.h>
 #include <CircularBuffer.h>
 #include <imgui-SFML.h>
@@ -7,7 +7,7 @@
 #include <sstream>
 #include <GridUtils.h>
 
-AbstractRTSGameStateRender::AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
+RTSGameStateRender::RTSGameStateRender(SGA::RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
 	GameStateRenderer{ playerID },
 	game(&game),
 	gameStateCopy(game.getStateCopy()),
@@ -16,7 +16,7 @@ AbstractRTSGameStateRender::AbstractRTSGameStateRender(SGA::AbstractRTSGame& gam
 	init(tileSprites, entitySpritePaths);
 }
 
-void AbstractRTSGameStateRender::init()
+void RTSGameStateRender::init()
 {
 	GameStateRenderer::init();
 
@@ -24,7 +24,7 @@ void AbstractRTSGameStateRender::init()
 	initializeLayers();
 }
 
-void AbstractRTSGameStateRender::onGameStateAdvanced()
+void RTSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
 	gameStateCopy = game->getStateCopy();
@@ -34,7 +34,7 @@ void AbstractRTSGameStateRender::onGameStateAdvanced()
 	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
 }
 
-void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
+void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
 {
 	//Need to activate the context before adding new textures
 	ctx.setActive(true);
@@ -60,7 +60,7 @@ void AbstractRTSGameStateRender::init(const std::unordered_map<int, std::string>
 	assetCache.loadTexture("building", "../GUI/Assets/buildingNew.png");;
 }
 
-void AbstractRTSGameStateRender::initializeView(sf::RenderWindow& window) const
+void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
 {
 	//Apply zoom and center the view
 	sf::View view = window.getView();
@@ -73,7 +73,7 @@ void AbstractRTSGameStateRender::initializeView(sf::RenderWindow& window) const
 	window.setFramerateLimit(fpsLimit);
 }
 
-void AbstractRTSGameStateRender::run(bool& isRunning)
+void RTSGameStateRender::run(bool& isRunning)
 {
 	sf::RenderWindow window(sf::VideoMode(1200, 800), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 	window.setActive(true);
@@ -138,7 +138,7 @@ void AbstractRTSGameStateRender::run(bool& isRunning)
 	window.close();
 }
 
-void AbstractRTSGameStateRender::handleInput(sf::RenderWindow& window)
+void RTSGameStateRender::handleInput(sf::RenderWindow& window)
 {
 	//Get current View to edit it and apply changes
 	sf::View view = window.getView();
@@ -165,12 +165,12 @@ void AbstractRTSGameStateRender::handleInput(sf::RenderWindow& window)
 	}
 }
 
-void AbstractRTSGameStateRender::windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const
+void RTSGameStateRender::windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const
 {
 	window.close();
 	game->end();
 }
-void AbstractRTSGameStateRender::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void RTSGameStateRender::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Determine the scroll direction and adjust the zoom level
 	if (event.mouseWheelScroll.delta <= -1)
@@ -184,7 +184,7 @@ void AbstractRTSGameStateRender::mouseScrolled(const sf::Event& event, sf::View&
 
 	window.setView(view);
 }
-void AbstractRTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Mouse button is released, no longer move
 	if (event.mouseButton.button == sf::Mouse::Middle) {
@@ -267,7 +267,7 @@ void AbstractRTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf:
 		}
 	}
 }
-void AbstractRTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void RTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Mouse button is pressed, get the position and set moving as active
 	if (event.mouseButton.button == sf::Mouse::Left)
@@ -282,7 +282,7 @@ void AbstractRTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::
 		oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 	}
 }
-void AbstractRTSGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void RTSGameStateRender::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 
 	// Determine the new position in world coordinates
@@ -306,7 +306,7 @@ void AbstractRTSGameStateRender::mouseMoved(const sf::Event& event, sf::View& vi
 	// We're recalculating this, since we've changed the view
 	oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 }
-void AbstractRTSGameStateRender::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+void RTSGameStateRender::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Camera movement
 	sf::Vector2f movementDir;
@@ -370,7 +370,7 @@ void AbstractRTSGameStateRender::keyPressed(const sf::Event& event, sf::View& vi
 	}
 }
 
-void AbstractRTSGameStateRender::initializeLayers()
+void RTSGameStateRender::initializeLayers()
 {
 	////Init Map Layer
 	//renderLayers.emplace_back(std::make_unique<MapLayer<SGA::RTSGameState>>(assetCache));
@@ -385,7 +385,7 @@ void AbstractRTSGameStateRender::initializeLayers()
 	//renderLayers.back()->init(gameStateCopy);
 }
 
-void AbstractRTSGameStateRender::drawLayers(sf::RenderWindow& window)
+void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 {
 	////Update and Draw each layer by order	
 	//if (!renderLayers.empty())
@@ -644,14 +644,14 @@ void AbstractRTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	}
 }
 
-void AbstractRTSGameStateRender::createHUD(sf::RenderWindow& window)
+void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 {
 	createWindowInfo();
 	createWindowUnits();
 	createWindowNavMesh();
 }
 
-void AbstractRTSGameStateRender::createWindowInfo()
+void RTSGameStateRender::createWindowInfo()
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
@@ -684,7 +684,7 @@ void AbstractRTSGameStateRender::createWindowInfo()
 	ImGui::End();
 }
 
-void AbstractRTSGameStateRender::createWindowUnits()
+void RTSGameStateRender::createWindowUnits()
 {
 	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
@@ -706,7 +706,7 @@ void AbstractRTSGameStateRender::createWindowUnits()
 	ImGui::End();
 }
 
-void AbstractRTSGameStateRender::createWindowNavMesh()
+void RTSGameStateRender::createWindowNavMesh()
 {
 	ImGui::Begin("Debug Navigation");
 	if (ImGui::Button("Generate NavMesh"))

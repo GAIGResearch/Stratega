@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	void MCTSAgent::runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel)
+	void MCTSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 		while (!gameCommunicator.isGameOver())

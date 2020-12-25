@@ -1,9 +1,9 @@
 #include <filesystem>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
-#include <Game/AbstractTBSGameCommunicator.h>
+#include <Game/TBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
-#include <Game/AbstractGame.h>
+#include <Game/TBSGame.h>
 
 #include "Configuration/GameConfigParser.h"
 
@@ -36,17 +36,17 @@ int main()
 		}
 		if (gameConfig2.gameType == "TBS")
 		{
-			std::unique_ptr<SGA::AbstractTBSGameCommunicator> comm = std::make_unique<SGA::AbstractTBSGameCommunicator>(playerID);
+			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::AbstractTBSGame&>(*game));
+			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));
 		}
 		else
 		{
-			std::unique_ptr<SGA::AbstractRTSGameCommunicator> comm = std::make_unique<SGA::AbstractRTSGameCommunicator>(playerID);
+			std::unique_ptr<SGA::RTSGameCommunicator> comm = std::make_unique<SGA::RTSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::AbstractRTSGame&>(*game));
+			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));			
 		}

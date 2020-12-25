@@ -1,23 +1,23 @@
-#include <Game/AbstractRTSGame.h>
+#include <Game/RTSGame.h>
 namespace SGA
 {
-	AbstractRTSGame::AbstractRTSGame(std::unique_ptr<RTSGameState2> gameState, RTSAbstractForwardModel forwardModel, std::mt19937 rngEngine)
+	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
-	const RTSGameState2& AbstractRTSGame::getState() const
+	const RTSGameState& RTSGame::getState() const
 	{
 		return *gameState;
 	}
 
-	RTSGameState2 AbstractRTSGame::getStateCopy()
+	RTSGameState RTSGame::getStateCopy()
 	{
 		std::lock_guard<std::mutex> copyGuard(stateMutex);
 		return *gameState;
 	}
 
-	void AbstractRTSGame::update(double deltaTime)
+	void RTSGame::update(double deltaTime)
 	{
 		accumulatedTimeUpdate += deltaTime;
 		accumulatedTimePrint += deltaTime;
@@ -60,7 +60,7 @@ namespace SGA
 		}
 	}
 
-	void AbstractRTSGame::close()
+	void RTSGame::close()
 	{
 		Game::close();
 
@@ -68,7 +68,7 @@ namespace SGA
 		//std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
 
-	void AbstractRTSGame::executeAction(Action action)
+	void RTSGame::executeAction(Action action)
 	{
 		if (action.isEndAction)
 			return;

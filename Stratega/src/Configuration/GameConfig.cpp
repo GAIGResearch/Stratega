@@ -31,24 +31,24 @@ namespace SGA
 			auto gameState = generateAbstractTBSStateFromConfig(config, rngEngine);
 			/*auto fm = generateTBSforwardModelFromConfig(config);*/
 
-			SGA::TBSAbstractForwardModel fm;
-			//SGA::RTSAbstractForwardModel fm;
+			SGA::TBSForwardModel fm;
+			//SGA::RTSForwardModel fm;
 			gameState->turnLimit = 100000000000;
 			fm.winCondition = SGA::WinConditionType::UnitAlive;
 			fm.unitTypeID = 1;
 			
-			game = std::make_unique<AbstractTBSGame>(std::move(gameState), std::move(fm), rngEngine);
+			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
 		else if (config.gameType == "RTS")
 		{
 			auto board = config.boardGenerator->generate(rngEngine);
 			auto gameState = generateAbstractRTSStateFromConfig(config, rngEngine);
-			SGA::RTSAbstractForwardModel fm;
-			//SGA::RTSAbstractForwardModel fm;
+			SGA::RTSForwardModel fm;
+			//SGA::RTSForwardModel fm;
 			
 			fm.winCondition = SGA::WinConditionType::UnitAlive;
 			fm.unitTypeID = 1;
-			game = std::make_unique<AbstractRTSGame>(std::move(gameState), fm, rngEngine);
+			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else
 		{
@@ -58,11 +58,11 @@ namespace SGA
 		return game;
 	}
 	
-	std::unique_ptr<RTSGameState2> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+	std::unique_ptr<RTSGameState> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
 		// Initialize state
 		auto board = config.boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<RTSGameState2>(std::move(board), config.tileTypes);
+		auto state = std::make_unique<RTSGameState>(std::move(board), config.tileTypes);
 
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
@@ -152,11 +152,11 @@ namespace SGA
 		return std::move(state);
 	}
 	
-	std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+	std::unique_ptr<TBSGameState> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
 		// Initialize state
 		auto board = config.boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<TBSGameState2>(std::move(board), config.tileTypes);
+		auto state = std::make_unique<TBSGameState>(std::move(board), config.tileTypes);
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
 		state->entityGroups = config.entityGroups;
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);

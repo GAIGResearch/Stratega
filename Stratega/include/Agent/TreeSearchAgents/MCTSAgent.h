@@ -15,7 +15,7 @@ namespace SGA
 		{
 		}
 		
-		void runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel) override;
+		void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;

@@ -1,6 +1,6 @@
 #pragma once
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/TBSAbstractForwardModel.h>
+#include <ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {
@@ -9,7 +9,7 @@ namespace SGA
 	public:
 		virtual ~StateHeuristic() = 0;
 
-		virtual double evaluateGameState(const TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState, const int playerID) { return 0; };
+		virtual double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) { return 0; };
 	};
 
 

@@ -1,24 +1,24 @@
-#include <Game/AbstractGame.h>
+#include <Game/TBSGame.h>
 
 namespace SGA
 {
-	AbstractTBSGame::AbstractTBSGame(std::unique_ptr<TBSGameState2> gameState, TBSAbstractForwardModel forwardModel, std::mt19937 rngEngine)
+	TBSGame::TBSGame(std::unique_ptr<TBSGameState> gameState, TBSForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
-	const TBSGameState2& AbstractTBSGame::getState() const
+	const TBSGameState& TBSGame::getState() const
 	{
 		return *gameState;
 	}
 
-	TBSGameState2 AbstractTBSGame::getStateCopy()
+	TBSGameState TBSGame::getStateCopy()
 	{
 		std::lock_guard<std::mutex> copyGuard(mutexGameState);
 		return *gameState;
 	}
 
-	void AbstractTBSGame::update(double deltaTime)
+	void TBSGame::update(double deltaTime)
 	{
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 		if (hasActionToExecute)
@@ -27,7 +27,7 @@ namespace SGA
 		}
 	}
 
-	void AbstractTBSGame::close()
+	void TBSGame::close()
 	{
 		Game::close();
 
@@ -35,7 +35,7 @@ namespace SGA
 		//std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
 
-	void AbstractTBSGame::executeAction(Action action)
+	void TBSGame::executeAction(Action action)
 	{
 		//Lock mutex while we are advancing the gameState
 		mutexGameState.lock();
@@ -50,7 +50,7 @@ namespace SGA
 		}
 	}
 
-	void AbstractTBSGame::addActionToExecute(Action action)
+	void TBSGame::addActionToExecute(Action action)
 	{
 		if (gameState->currentPlayer == action.owner)
 		{

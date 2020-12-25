@@ -41,6 +41,6 @@ namespace SGA
 	
     std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 
-    std::unique_ptr<TBSGameState2> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
-    std::unique_ptr<RTSGameState2> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
+    std::unique_ptr<TBSGameState> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
+    std::unique_ptr<RTSGameState> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }

@@ -5,12 +5,12 @@
 namespace SGA
 {
 
-	TreeNode::TreeNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState) :
+	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	TreeNode::TreeNode(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, TreeNode* parent, const int childIndex) :
+	TreeNode::TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, TreeNode* parent, const int childIndex) :
 		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -22,7 +22,7 @@ namespace SGA
 	/// <param name="forwardModel"></param>
 	/// <param name="agentParameters"></param>
 	/// <returns></returns>
-	TreeNode* TreeNode::expand(TBSAbstractForwardModel& forwardModel, AgentParameters& agentParameters)
+	TreeNode* TreeNode::expand(TBSForwardModel& forwardModel, AgentParameters& agentParameters)
 	{		
 		if (this->isFullyExpanded())
 			return nullptr;

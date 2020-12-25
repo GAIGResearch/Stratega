@@ -1,13 +1,13 @@
 #include <ForwardModel/Action.h>
 #include <Representation/GameState.h>
-#include <ForwardModel/TBSAbstractForwardModel.h>
+#include <ForwardModel/TBSForwardModel.h>
 
 
 namespace SGA
 {
 	
 
-	void Action::execute(GameState& state, const TBSAbstractForwardModel& fm) const
+	void Action::execute(GameState& state, const TBSForwardModel& fm) const
 	{
 		auto& type = state.actionTypes->at(actionTypeID);
 		for (auto& effect : type.effects)
@@ -16,7 +16,7 @@ namespace SGA
 		}
 	}
 
-	void Action::execute(GameState& state, const RTSAbstractForwardModel& fm) const
+	void Action::execute(GameState& state, const RTSForwardModel& fm) const
 	{
 		if (actionTypeID == -1)
 			return;

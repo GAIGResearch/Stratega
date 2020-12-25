@@ -2,7 +2,7 @@
 
 namespace SGA {
 
-    RHEAGenome::RHEAGenome(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params)
+    RHEAGenome::RHEAGenome(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params)
     {
         auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
@@ -24,7 +24,7 @@ namespace SGA {
     RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
         actions(std::move(actions)), value(value) {}
 
-    void RHEAGenome::applyActionToGameState(const TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState, std::vector<Action>& actionSpace, const Action& action, RHEAParams& params)
+    void RHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<Action>& actionSpace, const Action& action, RHEAParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -46,7 +46,7 @@ namespace SGA {
         actionSpace = forwardModel.generateActions(gameState);
     }
 
-    void RHEAGenome::mutate(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params, std::mt19937& randomGenerator)
+    void RHEAGenome::mutate(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
     {
         auto actionSpace = forwardModel.generateActions(gameState);
         const int playerID = gameState.currentPlayer;
@@ -89,7 +89,7 @@ namespace SGA {
         this->value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 
-    RHEAGenome RHEAGenome::crossover(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
+    RHEAGenome RHEAGenome::crossover(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
         auto actionSpace = forwardModel.generateActions(gameState);
@@ -147,7 +147,7 @@ namespace SGA {
         return RHEAGenome(actions, value);
     }
 
-    void RHEAGenome::shift(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params)
+    void RHEAGenome::shift(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params)
     {
         const int playerID = gameState.currentPlayer;
 

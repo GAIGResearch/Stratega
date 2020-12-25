@@ -1,6 +1,6 @@
 #include <ForwardModel/Effect.h>
-#include <ForwardModel/TBSAbstractForwardModel.h>
-#include <ForwardModel/RTSAbstractForwardModel.h>
+#include <ForwardModel/TBSForwardModel.h>
+#include <ForwardModel/RTSForwardModel.h>
 
 namespace SGA
 {
@@ -10,7 +10,7 @@ namespace SGA
 	{
 
 	}
-	void AddToResource::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void AddToResource::executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Add to resource" << std::endl;
 		auto& targetResource = resourceReference.getParameter(state, targets);
@@ -19,7 +19,7 @@ namespace SGA
 		targetResource += amount;
 	}
 	
-	void AddToResource::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void AddToResource::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute RTS Add to resource" << std::endl;
 		auto& targetResource = resourceReference.getParameter(state, targets);
@@ -35,7 +35,7 @@ namespace SGA
 	{
 
 	}
-	void Attack::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Attack::executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Attack" << std::endl;
 
@@ -50,7 +50,7 @@ namespace SGA
 			entity.shouldRemove = true;
 	}
 
-	void Attack::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Attack::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		
 	}
@@ -61,7 +61,7 @@ namespace SGA
 	{
 
 	}
-	void RemoveFromResource::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void RemoveFromResource::executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Remove from resource" << std::endl;
 		auto& targetResource = resourceReference.getParameter(state, targets);
@@ -70,7 +70,7 @@ namespace SGA
 		targetResource -= amount;
 	}
 
-	void RemoveFromResource::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void RemoveFromResource::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		/*std::cout << "Execute RTS Add to resource" << std::endl;
 		auto& targetResource = resourceReference.getParameter(state, targets);
@@ -80,17 +80,17 @@ namespace SGA
 	}
 	
 
-	void Move::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Move::executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute Move TBS" << std::endl;
-		auto& casted = dynamic_cast<TBSGameState2&>(state);
+		auto& casted = dynamic_cast<TBSGameState&>(state);
 
 		Entity& entity = targetToEntity(state, targets[0]);
 		Vector2f& newPos = targetToPosition(state, targets[1]);
 		fm.moveEntity(casted,entity,newPos);
 	}
 
-	void Move::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Move::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 
 		Entity& unit = targetToEntity(state, targets[0]);
@@ -104,7 +104,7 @@ namespace SGA
 
 		//Check if path is empty or is a diferent path to the target pos
 		if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos) {
-			auto& casted = dynamic_cast<RTSGameState2&>(state);
+			auto& casted = dynamic_cast<RTSGameState&>(state);
 			Path path = fm.findPath(casted, unit.position, targetPos);
 			unit.path = path;
 			unit.path.currentPathIndex++;
@@ -144,7 +144,7 @@ namespace SGA
 		
 	}
 
-	void SpawnUnit::executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnUnit::executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute Spawn Unit TBS" << std::endl;
 		
@@ -164,7 +164,7 @@ namespace SGA
 		state.entities.emplace_back(entity);
 	}
 
-	void SpawnUnit::executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnUnit::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		//NOT NEEDED
 	}

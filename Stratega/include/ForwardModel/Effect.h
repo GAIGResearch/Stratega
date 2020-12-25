@@ -2,20 +2,20 @@
 #include <vector>
 #include <ForwardModel/FunctionParameter.h>
 #include <ForwardModel/ActionTarget.h>
-//#include <ForwardModel/TBSAbstractForwardModel.h>
+//#include <ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {
-	class TBSAbstractForwardModel;
-	class RTSAbstractForwardModel;
+	class TBSForwardModel;
+	class RTSForwardModel;
 	
 	class Effect
 	{
 	public:
 		virtual ~Effect() = default;
 		
-		virtual void executeTBS(GameState& state,const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
-		virtual void executeRTS(GameState& state,const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		virtual void executeTBS(GameState& state,const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		virtual void executeRTS(GameState& state,const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
 	};
 
 	class AddToResource: public Effect
@@ -25,8 +25,8 @@ namespace SGA
 	public:
 		AddToResource(const std::vector<FunctionParameter>& parameters);
 
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class Attack : public Effect
@@ -37,8 +37,8 @@ namespace SGA
 	public:
 		Attack(const std::vector<FunctionParameter>& parameters);
 
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 	class RemoveFromResource : public Effect
 	{
@@ -47,8 +47,8 @@ namespace SGA
 	public:
 		RemoveFromResource(const std::vector<FunctionParameter>& parameters);
 
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class Move : public Effect
@@ -56,15 +56,15 @@ namespace SGA
 	public:
 		Move(const std::vector<FunctionParameter>& parameters) {};
 
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class SpawnUnit : public Effect
 	{
 	public:
 		SpawnUnit(const std::vector<FunctionParameter>& parameters);
-		void executeTBS(GameState& state, const TBSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-		void executeRTS(GameState& state, const RTSAbstractForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 }

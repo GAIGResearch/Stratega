@@ -12,12 +12,12 @@
 
 namespace  SGA
 {
-	class RTSAbstractForwardModel : public ForwardModel<RTSGameState2>
+	class RTSForwardModel : public ForwardModel<RTSGameState>
 	{
 	public:
 		float deltaTime;
 		
-		RTSAbstractForwardModel()
+		RTSForwardModel()
 			: deltaTime(1. / 60.)
 			/*winCondition(),
 			unitTypeID(),
@@ -25,22 +25,22 @@ namespace  SGA
 		{
 		}
 
-		void advanceGameState(RTSGameState2& state, const Action& action) const override;
+		void advanceGameState(RTSGameState& state, const Action& action) const override;
 
-		std::vector<Action> generateActions(RTSGameState2& state) const override;
-		std::vector<Action> generateActions(RTSGameState2& state, int playerID) const override;
+		std::vector<Action> generateActions(RTSGameState& state) const override;
+		std::vector<Action> generateActions(RTSGameState& state, int playerID) const override;
 
 		/*void executeMove(RTSFMState& state, RTSUnit& unit) const;
 		void executeAttack(RTSFMState& state, RTSUnit& unit) const;
 		void executeHeal(RTSFMState& state, RTSUnit& unit) const;*/
 
-		void resolveUnitCollisions(RTSGameState2& state) const;
-		void resolveEnvironmentCollisions(RTSGameState2& state) const;
+		void resolveUnitCollisions(RTSGameState& state) const;
+		void resolveEnvironmentCollisions(RTSGameState& state) const;
 
-		bool buildNavMesh(RTSGameState2& state, NavigationConfig config) const;
-		Path findPath(RTSGameState2& state, Vector2f startPos, Vector2f endPos) const;
+		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
+		Path findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
 
-		bool checkGameIsFinished(RTSGameState2& state) const;
+		bool checkGameIsFinished(RTSGameState& state) const;
 		bool canPlayerPlay(Player& player) const;
 
 		//// ActionSpaces

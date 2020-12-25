@@ -6,7 +6,7 @@ namespace SGA
 	class OSLAAgent : public Agent
 	{
 	public:
-		void runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel) override;
+		void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 		
 	private:
 

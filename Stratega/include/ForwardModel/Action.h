@@ -4,8 +4,8 @@
 
 namespace SGA
 {
-	class TBSAbstractForwardModel;
-	class RTSAbstractForwardModel;
+	class TBSForwardModel;
+	class RTSForwardModel;
 	
 	struct Action
 	{
@@ -26,8 +26,8 @@ namespace SGA
 		std::vector<ActionTarget> targets;
 		int owner;
 		//void execute(GameState& state) const;
-		void execute(GameState& state, const TBSAbstractForwardModel& fm) const;
-		void execute(GameState& state, const RTSAbstractForwardModel& fm) const;
+		void execute(GameState& state, const TBSForwardModel& fm) const;
+		void execute(GameState& state, const RTSForwardModel& fm) const;
 
 		static Action createEndAction(int playerID)
 		{

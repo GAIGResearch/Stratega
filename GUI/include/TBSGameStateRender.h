@@ -1,27 +1,22 @@
 #pragma once
 #include <GameStateRenderer.h>
-#include <Game/AbstractRTSGame.h>
-#include <Representation/RTSGameState.h>
+#include <Game/TBSGame.h>
+#include <Representation/TBSGameState.h>
 #include <SFML/Window/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/View.hpp>
 #include <CircularBuffer.h>
 
-class AbstractRTSGameStateRender : public GameStateRenderer<SGA::RTSGameState2>
+#include <ForwardModel/Action.h>
+
+class TBSGameStateRender : public GameStateRenderer<SGA::TBSGameState>
 {
 public:
-	//Debug mode
-	bool drawDebug = false;
-
-	AbstractRTSGameStateRender(SGA::AbstractRTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+	TBSGameStateRender(SGA::TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 	void run(bool& isRunning) override;
 
 	// GameCommunicator functions
 	void onGameStateAdvanced() override;
-
-	bool isSelected(int unitID)
-	{
-		return selectedUnits.find(unitID) != selectedUnits.end();
-	}
 
 private:
 	void init() override;
@@ -45,16 +40,38 @@ private:
 	//HUD
 	void createHUD(sf::RenderWindow& window);
 
-	void createWindowInfo();
+	void createWindowInfo()const;
 	void createWindowUnits();
-	void createWindowNavMesh();
+	void createWindowActions();
+	void createWindowMultipleActions(sf::RenderWindow& window);
+
+
+	//Human player stuff
+	void waitForHumanToPlay()
+	{
+		waitForAction = true;
+
+		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy,getPlayerID());
+		actionHumanUnitSelected.clear();
+	}
+
+	void playAction(SGA::Action action)
+	{
+		waitForAction = false;
+		actionsHumanCanPlay.clear();
+		actionHumanUnitSelected.clear();
+		selectedEntity = nullptr;
+		showMultipleActions = false;
+		game->addActionToExecute(action);
+	}
 
 private:
+
 	//Game Data
-	SGA::AbstractRTSGame* game;
+	SGA::TBSGame* game;
 
 	//Current gamestate used to render
-	SGA::RTSGameState2 gameStateCopy;
+	SGA::TBSGameState gameStateCopy;
 
 	//Zoom
 	float zoomValue = 5;
@@ -63,7 +80,6 @@ private:
 	SGA::Vector2f currentMousePos;
 	sf::Vector2f oldPos;
 	bool moving = false;
-	bool dragging = false;
 
 	//FPS
 	int fpsLimit = 60;
@@ -71,24 +87,21 @@ private:
 
 	//Drawing gameState Buffer
 	bool drawGameStateBuffer = false;
-	CircularBuffer<SGA::RTSGameState2> gameStatesBuffer;
+	CircularBuffer<SGA::TBSGameState> gameStatesBuffer;
 	int gameStatesBufferRCurrentIndex = 0;
 
 	//Human player
-	std::unordered_set<int> selectedUnits;
+	bool waitForAction = false;
+	std::vector<SGA::Action> actionsHumanCanPlay;
+
+	std::vector<SGA::Action> actionHumanUnitSelected;
+	SGA::Entity* selectedEntity{};
 
 	//Imgui
 	sf::Clock deltaClock;
 
-	std::mutex advanceMutex;
-
-	//Profiling
-	//Last call OnAdvancedGameGameState
-	int indexAdvancedGameState = 0;
-
-	SGA::NavigationConfig config;
-
-	std::vector<sf::Text> unitsInfo;
-	std::vector<sf::RectangleShape> healthBars;
-
+	//If a tile has more than one action, we render a window
+	//to show all the action that can be played in that tile
+	bool showMultipleActions = false;
+	SGA::Vector2i multipleActionsSourceTile;
 };

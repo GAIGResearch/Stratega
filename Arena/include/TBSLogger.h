@@ -1,6 +1,6 @@
 #pragma once
 #include <Game/GameCommunicator.h>
-#include <Game/TBSGame.h>
+#include <Game/Game.h>
 
 class TBSLogger : public SGA::GameCommunicator
 {

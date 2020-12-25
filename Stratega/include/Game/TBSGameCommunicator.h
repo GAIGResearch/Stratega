@@ -1,17 +1,19 @@
 #pragma once
 #include <Game/GameCommunicator.h>
-#include <Game/AbstractRTSGame.h>
+#include <Representation/TBSGameState.h>
+#include <Game/TBSGame.h>
+
 #include <random>
 #include <thread>
 
 namespace SGA
 {
 	class Agent;
-	
-	class AbstractRTSGameCommunicator : public GameCommunicator
+
+	class TBSGameCommunicator : public GameCommunicator
 	{
 	public:
-		AbstractRTSGameCommunicator(int playerID) :
+		TBSGameCommunicator(int playerID) :
 			GameCommunicator{ playerID }
 		{
 		}
@@ -27,18 +29,19 @@ namespace SGA
 		bool isGameOver() const;
 
 		//TODO private
-		void setGame(AbstractRTSGame& newGame);
+		void setGame(TBSGame& newGame);
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
 		void executeAction(Action action) const;
 		bool isMyTurn() const;
-		RTSGameState2 getGameState() const;
+		TBSGameState getGameState() const;
 
 	private:
-		AbstractRTSGame* game;
+		TBSGame* game;
 		std::unique_ptr<Agent> agent;
 		std::mt19937 rngEngine;
 		std::thread thread;
 	};
+
 }

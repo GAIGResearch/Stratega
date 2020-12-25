@@ -36,11 +36,11 @@ namespace SGA {
 		/// </summary>
 		/// <param name="forwardModel"></param>
 		/// <returns></returns>
-		std::unique_ptr<TBSAbstractForwardModel> preprocessForwardModel(TBSAbstractForwardModel* forwardModel)
+		std::unique_ptr<TBSForwardModel> preprocessForwardModel(TBSForwardModel* forwardModel)
 		{
 			if (PORTFOLIO.empty())
 			{
-				return std::unique_ptr<TBSAbstractForwardModel>(forwardModel);
+				return std::unique_ptr<TBSForwardModel>(forwardModel);
 			}
 			else
 			{

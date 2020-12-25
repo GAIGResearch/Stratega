@@ -6,6 +6,6 @@ namespace SGA
 	class DoNothingAgent : public Agent
 	{
 	public:
-		void runAbstractTBS(AbstractTBSGameCommunicator& gameCommunicator, TBSAbstractForwardModel forwardModel) override;
+		void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 	};
 }

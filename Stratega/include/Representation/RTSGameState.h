@@ -4,16 +4,16 @@
 
 namespace SGA
 {
-	struct RTSGameState2 : public GameState
+	struct RTSGameState : public GameState
 	{
 		std::shared_ptr<Navigation> navigation;
 
-		RTSGameState2():
+		RTSGameState():
 			GameState()
 		{
 			
 		}
-		RTSGameState2(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
+		RTSGameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			GameState(std::move(board), std::move(tileTypes)),
 			navigation(nullptr)
 		{

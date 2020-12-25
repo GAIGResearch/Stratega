@@ -1,7 +1,7 @@
 #pragma once
 #include <Agent/RHEAAgent/RHEAParams.h>
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/TBSAbstractForwardModel.h>
+#include <ForwardModel/TBSForwardModel.h>
 
 #include <iostream>
 #include <random>
@@ -18,25 +18,25 @@ namespace SGA {
 
 	public:
 		// creates a random PortfolioGenome
-		RHEAGenome(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params);
+		RHEAGenome(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params);
 
 		// creates a copy of an existing Portfolio Genome
 		RHEAGenome(const RHEAGenome& other) = default;
 
 		std::vector<Action>& getActions() { return actions; };
 
-		void mutate(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params, std::mt19937 & randomGenerator);
+		void mutate(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937 & randomGenerator);
 
 		double getValue() const { return value; };
 		void setValue(const double value) { this->value = value; };
 
-		void shift(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params);
+		void shift(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params);
 		void toString() const;
-		static RHEAGenome crossover(TBSAbstractForwardModel& forwardModel, TBSGameState2 gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
+		static RHEAGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
 
 	private:
 		RHEAGenome(std::vector<Action>& actions, double value);
-		static void applyActionToGameState(const TBSAbstractForwardModel& forwardModel, TBSGameState2& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, RHEAParams& params);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, RHEAParams& params);
 		
 	};
 }

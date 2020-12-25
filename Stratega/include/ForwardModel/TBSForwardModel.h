@@ -4,10 +4,10 @@
 #include <Representation/Player.h>
 namespace  SGA
 {
-	class TBSAbstractForwardModel: public ForwardModel<TBSGameState2>
+	class TBSForwardModel: public ForwardModel<TBSGameState>
 	{
 	public:
-		void advanceGameState(TBSGameState2& state, const Action& action) const override
+		void advanceGameState(TBSGameState& state, const Action& action) const override
 		{
 			if(action.isEndAction)
 			{
@@ -42,7 +42,7 @@ namespace  SGA
 			state.isGameOver = checkGameIsFinished(state);
 		}
 
-		void endTurn(TBSGameState2& state) const
+		void endTurn(TBSGameState& state) const
 		{
 			// Find the next player who's still able to play
 			for (auto i = 1; i <= state.players.size(); i++)
@@ -65,7 +65,7 @@ namespace  SGA
 			initTurn(state);
 		}
 		
-		void initTurn(TBSGameState2& state) const
+		void initTurn(TBSGameState& state) const
 		{
 			for (Entity& entity : state.entities)
 			{
@@ -76,7 +76,7 @@ namespace  SGA
 
 		bool canPlayerPlay(Player& player) const;
 		
-		bool checkGameIsFinished(TBSGameState2& state) const override
+		bool checkGameIsFinished(TBSGameState& state) const override
 		{
 			if (state.currentGameTurn >= state.turnLimit)
 				return true;
@@ -104,7 +104,7 @@ namespace  SGA
 
 			return false;
 		}
-		void moveEntity(TBSGameState2& state, Entity& entity, Vector2f newPosition) const
+		void moveEntity(TBSGameState& state, Entity& entity, Vector2f newPosition) const
 		{
 			entity.position = newPosition;
 		}

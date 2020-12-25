@@ -1,8 +1,8 @@
-#include <ForwardModel/TBSAbstractForwardModel.h>
+#include <ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {
-	bool TBSAbstractForwardModel::canPlayerPlay(Player& player) const
+	bool TBSForwardModel::canPlayerPlay(Player& player) const
 	{
 		if (player.state.get().fogOfWarId != -1 && player.id != player.state.get().fogOfWarId)
 			return true;

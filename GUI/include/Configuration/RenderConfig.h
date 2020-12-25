@@ -3,8 +3,8 @@
 #include <string>
 #include <yaml-cpp/yaml.h>
 
-#include "AbstractTBSGameStateRender.h"
-#include "AbstractRTSGameStateRender.h"
+#include "TBSGameStateRender.h"
+#include "RTSGameStateRender.h"
 
 namespace SGA
 {
