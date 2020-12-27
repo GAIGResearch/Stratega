@@ -29,5 +29,19 @@ namespace  SGA
 		return sourceEntity.owner == targetEntity.owner;
 	}
 
+	InRange::InRange(const std::vector<FunctionParameter>& parameters)
+		: sourceEntity(parameters.at(0)),
+		targetEntity(parameters.at(1)),
+		distance(parameters.at(2))
+	{
+	}
 
+	bool InRange::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& source = sourceEntity.getEntity(state, targets);
+		const auto& target = targetEntity.getEntity(state, targets);
+		auto dist = distance.getConstant(state, targets);
+
+		return source.position.distance(target.position) <= dist;
+	}
 }

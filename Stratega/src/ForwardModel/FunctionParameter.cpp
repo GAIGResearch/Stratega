@@ -41,12 +41,8 @@ namespace SGA
 	{
 		if(parameterType == Type::ParameterReference)
 		{
-			auto entityID = std::get<int>(actionTargets[data.resourceData.argumentIndex]);
-			//auto& entity = state.entities[entityID];
-			auto& entity = state.getEntity(entityID);
+			auto& entity = getEntity(state, actionTargets);
 			const auto& entityType = state.getEntityType(entity.typeID);
-			auto iterator = state.entityTypes->find(entity.typeID);
-
 			const auto& param = entityType.getParameter(data.resourceData.parameterID);
 			return entity.parameters[param.index];
 		}
@@ -64,6 +60,12 @@ namespace SGA
 			{
 				auto entityID = std::get<int>(actionTargets[data.argumentIndex]);
 				return state.getEntity(entityID);
+			}
+			case Type::ParameterReference:
+			{
+				auto entityID = std::get<int>(actionTargets[data.resourceData.argumentIndex]);
+				auto& entity = state.getEntity(entityID);
+				return entity;
 			}
 			default:
 				throw std::runtime_error("Type not recognised");

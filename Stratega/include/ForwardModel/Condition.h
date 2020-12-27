@@ -35,5 +35,16 @@ namespace SGA
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class InRange : public Condition
+	{
+		FunctionParameter sourceEntity;
+		FunctionParameter targetEntity;
+		FunctionParameter distance;
+
+	public:
+		InRange(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 }

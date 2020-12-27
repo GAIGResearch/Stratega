@@ -23,7 +23,7 @@ namespace SGA
 				
 				for(auto actionTypeID : sourceEntity.actionTypeIds)
 				{
-					auto& actionType = gameState.actionTypes->find(actionTypeID)->second;
+					auto& actionType = gameState.getActionType(actionTypeID);
 					if(!gameState.canExecuteAction(sourceEntity, actionType))
 					{
 						continue;
@@ -52,11 +52,8 @@ namespace SGA
 							break;
 						}	
 						default:
-							std::runtime_error("Type not recognised");
-							break;
+							throw std::runtime_error("Type not recognised");
 					}
-
-					
 				}
 			}
 			
@@ -148,11 +145,10 @@ namespace SGA
 			}
 		}
 
-		bool canExecuteAction(const GameState& gameState, const ActionType& actionType, std::vector<ActionTarget> targets)
+		bool canExecuteAction(const GameState& gameState, const ActionType& actionType, const std::vector<ActionTarget>& targets)
 		{
-			
 			//Check preconditions
-			for (const auto& condition : actionType.condition)
+			for (const auto& condition : actionType.targetConditions)
 			{
 				if (!condition->isFullfilled(gameState, targets))
 				{

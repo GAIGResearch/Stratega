@@ -20,7 +20,7 @@ namespace SGA
 
 		TargetType actionTargets;
 		std::vector<std::shared_ptr<Condition>> preconditions;
-		std::vector<std::shared_ptr<Condition>> condition;
+		std::vector<std::shared_ptr<Condition>> targetConditions;
 		std::vector<std::shared_ptr<Effect>> effects;
 	};
 }

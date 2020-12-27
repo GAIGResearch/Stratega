@@ -9,6 +9,7 @@ namespace SGA
 		static FunctionFactory<Condition> factory;
 		factory.registerFunction<HasResource>("HasResource");
 		factory.registerFunction<SamePlayer>("SamePlayer");
+		factory.registerFunction<InRange>("InRange");
 		
 		return factory;
 	}

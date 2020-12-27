@@ -213,6 +213,10 @@ namespace SGA
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(preconditions, type.preconditions, actionTargetIds, config.parameters);
 
+            // Parse target conditions
+            auto targetConditions = nameTypePair.second["Target"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions(targetConditions, type.targetConditions, actionTargetIds, config.parameters);
+        	
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, actionTargetIds, config.parameters);
