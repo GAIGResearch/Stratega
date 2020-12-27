@@ -222,7 +222,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 						auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i).typeID);
 						
 						//Move action
-						if(entityType.haveActionType(2))
+						if(entityType.canExecuteAction(2))
 						{
 							SGA::Action newAction;
 							newAction.actionTypeID = 2;

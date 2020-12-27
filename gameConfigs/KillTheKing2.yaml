@@ -1,0 +1,124 @@
+GameConfig:
+    Type: TBS
+    ActionTimer: 10s
+    RoundLimit: 100
+
+Agents:
+    - RandomAgent
+    - HumanAgent
+
+Tiles:
+    Plain:
+        Sprite: ../GUI/Assets/plain.png
+        Symbol: .
+        IsWalkable: true
+    Water:
+        Sprite: ../GUI/Assets/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../GUI/Assets/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../GUI/Assets/forest.png
+        Symbol: F
+        IsWalkable: true
+    Hole:
+        Sprite: ../GUI/Assets/hole.png
+        Symbol: H
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: >
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+          M.............M................M
+          M........W.....................M
+          M........W.....................M
+          M........WW....................M
+          M........WW...........MM.....MMM
+          M.........WWWW........WWWWWWWWWW
+          M.........WWWW........WWWWWWWWWW
+          MMM.........WWWWWWWWWWWWWWWWWWWW
+          M............WWWWWWWWWWWWWWWWWWW
+          M......MMMMMMMMMMMMMMMMMMM.WWWWW
+          MMM........................WWWWW
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+
+Actions:
+    Attack:
+        Type: EntityAction
+        Target:
+            Type: Entity
+            ValidTargets: All
+        Effects:
+            - Attack(Target.Health, Source.AttackDamage)
+
+    Move:
+        Type: EntityAction
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 5
+        Effects:
+            - Move()
+
+    Heal:
+        Type: EntityAction
+        Target:
+            Type: Entity
+            ValidTargets: All
+        Effects:
+            - AddResource(Target.Health, Source.HealAmount)
+
+
+Entities:
+    Warrior:
+        Sprite: ../GUI/Assets/unit1New.png
+        LineOfSightRange: 6
+        Actions: [Attack, Move]
+        Parameters:
+            Health: 200
+            MovementRange: 2
+            AttackRange: 2
+            AttackDamage: 100
+
+    Archer:
+        Sprite: ../GUI/Assets/unit5New.png
+        LineOfSightRange: 10
+        Parameters:
+            Health: 100
+            MovementRange: 2
+            AttackRange: 5
+            AttackDamage: 10
+        Actions: [Attack, Move]
+
+    Healer:
+        Sprite: ../GUI/Assets/unit5New.png
+        LineOfSightRange: 4
+        Parameters:
+            Health: 40
+            MovementRange: 5
+            HealRange: 2
+            HealAmount: 10
+        Actions: [Heal, Move]
+
+    King:
+        Sprite: ../GUI/Assets/unit5New.png
+        LineOfSightRange: 6
+        Parameters:
+            Health: 400
+            MovementRange: 1
+            AttackRange: 2
+            AttackDamage: 100
+        Actions: [Attack, Move]
+
+ForwardModel:
+    WinCondition:
+        Type: LastManStanding
+        Unit: King

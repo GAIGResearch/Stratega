@@ -1,26 +1,29 @@
 #pragma once
 #include <vector>
 #include <Representation/Vector2.h>
-#include "Representation/Path.h"
+#include <Representation/Path.h>
+#include <ForwardModel/Action.h>
 
 namespace SGA
 {
 	struct Entity
 	{
 		Entity():
-
-			actionCooldown(0),
-			maxActionCooldown(1),
-			movementSpeed(2),
-			collisionRadius(0.5),
+			typeID(0),
+			id(0),
+			owner(0),
 			position(),
-
-			intendedAction(),
-			executingAction(),
-
-			path()
+			canExecuteAction(true),
+		    intendedAction(),
+		    executingAction(),
+		    path(),
+		    actionCooldown(0),
+		    maxActionCooldown(1),
+		    movementSpeed(2),
+		    collisionRadius(0.5)
 		{
 		}
+
 		int typeID;
 		int id;
 		int owner;

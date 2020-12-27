@@ -6,7 +6,6 @@ namespace SGA
 	{
 		if (!action.isEndAction)
 		{
-			
 			auto& actionType = state.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)
 			{
@@ -266,7 +265,7 @@ namespace SGA
 				auto entityType = state.getEntityType(unit.typeID);
 
 				//Move action
-				if (!entityType.haveActionType(2))
+				if (!entityType.canExecuteAction(2))
 					continue;
 
 				auto dir = otherUnit.position - unit.position;

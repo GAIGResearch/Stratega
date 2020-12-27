@@ -169,80 +169,27 @@ namespace SGA
 			playerIDs.push_back(state->addPlayer());
 		}
 
-
-
-
-
-		//Add entity
-		SGA::Entity building1;
-		building1.id = 3;
-		building1.owner = 0;
-		building1.actionTypeIds.emplace_back(3);
-		building1.position = SGA::Vector2f(3, 11);
-		building1.typeID = 1;
-		building1.parameters.emplace_back(200);
-		building1.parameters.emplace_back(10);
-
-		state->entities.emplace_back(building1);
-
-		SGA::Entity building2;
-		building2.id = 2;
-		building2.owner = 1;
-		building2.actionTypeIds.emplace_back(3);
-		building2.position = SGA::Vector2f(6, 12);
-		building2.typeID = 1;
-		building2.parameters.emplace_back(200);
-		building2.parameters.emplace_back(10);
-
-		state->entities.emplace_back(building2);
-
-		//Add entity
-		SGA::Entity entity;
-		entity.id = 0;
-		entity.owner = 0;
-		//entity.actionTypeIds.emplace_back(1);
-		entity.actionTypeIds.emplace_back(2);
-		entity.position = SGA::Vector2f(5, 3);
-		entity.typeID = 0;
-		entity.parameters.emplace_back(60);
-		entity.parameters.emplace_back(0);
-
-		state->entities.emplace_back(entity);
-
-		SGA::Entity entity2;
-		entity2.id = 1;
-		entity2.owner = 1;
-		//entity2.actionTypeIds.emplace_back(1);
-		entity2.actionTypeIds.emplace_back(2);
-		entity2.position = SGA::Vector2f(3, 3);
-		entity2.typeID = 0;
-		entity2.parameters.emplace_back(60);
-		entity2.parameters.emplace_back(0);
-
-		state->entities.emplace_back(entity2);
-
-		
 		// Spawn units
 		// TODO Unit spawn configuration
-		//std::unordered_set<Vector2i> occupiedSet;
-		//std::uniform_int_distribution<int> xDist(0, state->board.getWidth() - 1);
-		//std::uniform_int_distribution<int> yDist(0, state->board.getHeight() - 1);
-		//for (auto i = 0; i < state->players.size(); i++)
-		//{
-		//	for (const auto& nameTypePair : unitTypes)
-		//	{
-		//		// Generate random positions until a suitable was found
-		//		Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-		//		while (!state->board.getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
-		//		{
-		//			pos.x = xDist(rngEngine);
-		//			pos.y = yDist(rngEngine);
-		//		}
-		//		occupiedSet.insert(pos);
+		std::unordered_set<Vector2i> occupiedSet;
+		std::uniform_int_distribution<int> xDist(0, state->board.getWidth() - 1);
+		std::uniform_int_distribution<int> yDist(0, state->board.getHeight() - 1);
+		for(const auto& player : state->players)
+		{
+			for (const auto& nameTypePair : config.entityTypes)
+			{
+				// Generate random positions until a suitable was found
+				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
+				while (!state->board.getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
+				{
+					pos.x = xDist(rngEngine);
+					pos.y = yDist(rngEngine);
+				}
+				occupiedSet.insert(pos);
 
-		//		state->addUnit(playerIDs[i], nameTypePair.second.id, pos);
-		//	}
-		//}
+				state->addEntity(nameTypePair.second, player.id, pos);
+			}
+		}
 
 		return std::move(state);
 	}

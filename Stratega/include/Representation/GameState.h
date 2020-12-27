@@ -9,7 +9,7 @@ namespace SGA
 {
 	struct GameState
 	{
-		GameState::GameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
+		GameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
@@ -130,17 +130,17 @@ namespace SGA
 		double& getParameterReference(int entityID,int globalParameterID)
 		{
 			auto& entity = getEntity(entityID);
-			auto& entityType = getEntityType(entity.typeID);
+			const auto& entityType = getEntityType(entity.typeID);
 
 			int parameterIndex=entityType.parameters.find(globalParameterID)->second.index;
 			
 			return entity.parameters[parameterIndex];
 		}
 		
-		bool checkEntityHaveParameter(int entityTypeID,std::string parameterName)
+		bool checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
 		{
-			auto& entityType=getEntityType(entityTypeID);
-			for (auto& parameter : entityType.parameters)
+			const auto& entityType = getEntityType(entityTypeID);
+			for (const auto& parameter : entityType.parameters)
 			{
 				if (parameter.second.name == parameterName)
 					return true;
@@ -154,6 +154,15 @@ namespace SGA
 			lastUsedPlayerID++;
 			players.emplace_back(lastUsedPlayerID,*this);
 			return lastUsedPlayerID;
+		}
+
+		void addEntity(const EntityType& type, int playerID, const Vector2f& position)
+		{
+			lastUsedEntityID++;
+			auto instance = type.instantiateEntity(lastUsedEntityID);
+			instance.owner = playerID;
+			instance.position = position;
+			entities.emplace_back(std::move(instance));
 		}
 
 		Entity* getEntity(SGA::Vector2f pos)
