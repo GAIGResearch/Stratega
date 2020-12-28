@@ -52,9 +52,11 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 		std::unordered_map<std::string, std::vector<int>> entityGroups;
+		
 		// Game information
 		bool isGameOver;
 		int winnerPlayerID;
+		int currentTick;
 		
 		// Board information
 		Tile fogOfWarTile;
@@ -160,7 +162,7 @@ namespace SGA
 		{
 			lastUsedEntityID++;
 			auto instance = type.instantiateEntity(lastUsedEntityID);
-			instance.owner = playerID;
+			instance.ownerID = playerID;
 			instance.position = position;
 			entities.emplace_back(std::move(instance));
 		}

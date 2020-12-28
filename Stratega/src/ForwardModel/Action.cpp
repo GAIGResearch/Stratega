@@ -2,11 +2,8 @@
 #include <Representation/GameState.h>
 #include <ForwardModel/TBSForwardModel.h>
 
-
 namespace SGA
 {
-	
-
 	void Action::execute(GameState& state, const TBSForwardModel& fm) const
 	{
 		auto& type = state.actionTypes->at(actionTypeID);

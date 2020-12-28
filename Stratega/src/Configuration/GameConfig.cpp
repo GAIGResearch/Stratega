@@ -81,7 +81,7 @@ namespace SGA
 		//Add entity
 		SGA::Entity building1;
 		building1.id = 3;
-		building1.owner = 0;
+		building1.ownerID = 0;
 		building1.actionTypeIds.emplace_back(3);
 		building1.position = SGA::Vector2f(4, 11);
 		building1.typeID = 1;
@@ -92,7 +92,7 @@ namespace SGA
 		
 		SGA::Entity building2;
 		building2.id = 2;
-		building2.owner = 1;
+		building2.ownerID = 1;
 		building2.actionTypeIds.emplace_back(3);
 		building2.position = SGA::Vector2f(6, 12);
 		building2.typeID = 1;
@@ -104,7 +104,7 @@ namespace SGA
 		//Add entity
 		SGA::Entity entity;
 		entity.id = 0;
-		entity.owner = 0;
+		entity.ownerID = 0;
 		//entity.actionTypeIds.emplace_back(1);
 		entity.actionTypeIds.emplace_back(2);
 		entity.position = SGA::Vector2f(5, 3);
@@ -116,7 +116,7 @@ namespace SGA
 
 		SGA::Entity entity2;
 		entity2.id = 1;
-		entity2.owner = 1;
+		entity2.ownerID = 1;
 		//entity2.actionTypeIds.emplace_back(1);
 		entity2.actionTypeIds.emplace_back(2);
 		entity2.position = SGA::Vector2f(3, 3);

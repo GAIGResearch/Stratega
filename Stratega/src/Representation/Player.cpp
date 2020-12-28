@@ -17,7 +17,7 @@ namespace SGA
 		std::vector<Entity*> entitiesOfPlayer;
 		for (auto& entity : state.get().entities)
 		{
-			if (entity.owner == id)
+			if (entity.ownerID == id)
 			{
 				entitiesOfPlayer.emplace_back(&entity);
 			}

@@ -253,7 +253,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 
 			//Assign selected unit			
 			selectedEntity = unit;
-			if (unit->owner == gameStateCopy.currentPlayer)
+			if (unit->ownerID == gameStateCopy.currentPlayer)
 			{
 				actionHumanUnitSelected.clear();
 				for (const auto& action : actionsHumanCanPlay)
@@ -521,7 +521,7 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 		//Add units text info
 		sf::Text unitInfo;
 		unitInfo.setFont(assetCache.getFont("font"));
-		std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
+		std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
 		/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
 		for (size_t i = 0; i < entity.parameters.size(); i++)
 		{
@@ -598,7 +598,7 @@ void TBSGameStateRender::createWindowUnits()
 	{
 		auto& type=gameStateCopy.getEntityType(unit.typeID);
 		std::string unitInfo;
-		unitInfo = type.name+" " + std::to_string(unit.id) + " PID: " + std::to_string(unit.owner);
+		unitInfo = type.name+" " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 		ImGui::Text(unitInfo.c_str());
 	}
 

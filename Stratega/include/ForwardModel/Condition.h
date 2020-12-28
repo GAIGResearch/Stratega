@@ -29,7 +29,6 @@ namespace SGA
 
 	class SamePlayer : public Condition
 	{
-		
 	public:
 		SamePlayer(const std::vector<FunctionParameter>& parameters);
 

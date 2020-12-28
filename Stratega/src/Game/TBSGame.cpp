@@ -52,7 +52,7 @@ namespace SGA
 
 	void TBSGame::addActionToExecute(Action action)
 	{
-		if (gameState->currentPlayer == action.owner)
+		if (gameState->currentPlayer == action.ownerID)
 		{
 			actionToExecute = action;
 			hasActionToExecute = true;

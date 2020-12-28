@@ -14,8 +14,8 @@ namespace SGA
 	public:
 		virtual ~Effect() = default;
 		
-		virtual void executeTBS(GameState& state,const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
-		virtual void executeRTS(GameState& state,const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		virtual void executeTBS(GameState& state, const TBSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		virtual void executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
 	};
 
 	class AddToResource: public Effect

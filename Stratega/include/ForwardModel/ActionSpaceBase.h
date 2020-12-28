@@ -16,7 +16,7 @@ namespace SGA
 			std::vector<Action> bucket;
 			for(auto& sourceEntity : gameState.entities)
 			{
-				if (sourceEntity.owner != player)
+				if (sourceEntity.ownerID != player)
 					continue;				
 				if (!sourceEntity.canExecuteAction)
 					continue;
@@ -60,7 +60,7 @@ namespace SGA
 			//Generate EndTurnAction
 			Action endTurnAction;
 			endTurnAction.actionTypeID = 0;
-			endTurnAction.owner = player;
+			endTurnAction.ownerID = player;
 			endTurnAction.isEndAction = true;
 			bucket.emplace_back(endTurnAction);
 			return bucket;
@@ -139,7 +139,7 @@ namespace SGA
 				newAction.actionTypeID = actionTypeID;
 				newAction.targets.emplace_back(sourceEntity.id);
 				newAction.targets.emplace_back(target);
-				newAction.owner = sourceEntity.owner;
+				newAction.ownerID = sourceEntity.ownerID;
 				
 				actionBucket.emplace_back(std::move(newAction));
 			}

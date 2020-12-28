@@ -30,10 +30,6 @@ namespace  SGA
 		std::vector<Action> generateActions(RTSGameState& state) const override;
 		std::vector<Action> generateActions(RTSGameState& state, int playerID) const override;
 
-		/*void executeMove(RTSFMState& state, RTSUnit& unit) const;
-		void executeAttack(RTSFMState& state, RTSUnit& unit) const;
-		void executeHeal(RTSFMState& state, RTSUnit& unit) const;*/
-
 		void resolveUnitCollisions(RTSGameState& state) const;
 		void resolveEnvironmentCollisions(RTSGameState& state) const;
 
@@ -42,24 +38,5 @@ namespace  SGA
 
 		bool checkGameIsFinished(RTSGameState& state) const;
 		bool canPlayerPlay(Player& player) const;
-
-		//// ActionSpaces
-		//void setActionSpace(std::unique_ptr<RTSActionSpace> as)
-		//{
-		//	actionSpace = std::move(as);
-		//}
-
-		//RTSActionSpace& getActionSpace() const
-		//{
-		//	return *actionSpace;
-		//}
-
-		/*std::unique_ptr<RTSActionSpace> generateDefaultActionSpace() const
-		{
-			return std::make_unique<RTSActionSpace>();
-		}*/
-
-	/*private:
-		std::shared_ptr<RTSActionSpace> actionSpace;*/
 	};
 }

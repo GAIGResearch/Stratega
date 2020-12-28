@@ -229,7 +229,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 							newAction.targets.emplace_back(i);
 							//SGA::ActionTarget targetPos=SGA::ActionTarget(SGA::Vector2f(worldPos.x, worldPos.y));
 							newAction.targets.emplace_back(SGA::Vector2f(worldPos.x, worldPos.y));
-							newAction.owner = getPlayerID();
+							newAction.ownerID = getPlayerID();
 							game->executeAction(newAction);
 							
 						}
@@ -260,7 +260,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 				sf::Vector2f screenPos = toISO(unit.position.x, unit.position.y);
 				if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 				{
-					if (unit.owner == getPlayerID())
+					if (unit.ownerID == getPlayerID())
 						selectedUnits.emplace(unit.id);
 				}
 			}
@@ -453,7 +453,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 		//Add units text info
 		sf::Text unitInfo;
 		unitInfo.setFont(assetCache.getFont("font"));
-		std::string info = "PlayerID: " + std::to_string(entity.owner) + " ID: " + std::to_string(entity.id);
+		std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
 		/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
 		for (size_t i = 0; i < entity.parameters.size(); i++)
 		{
@@ -698,7 +698,7 @@ void RTSGameStateRender::createWindowUnits()
 	{
 		auto& type = gameStateCopy.getEntityType(unit.typeID);
 		std::string unitInfo;
-		unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.owner);
+		unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 		ImGui::Text(unitInfo.c_str());
 	}
 

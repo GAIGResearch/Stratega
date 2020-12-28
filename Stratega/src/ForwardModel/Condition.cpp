@@ -26,7 +26,7 @@ namespace  SGA
 		auto& sourceEntity = targetToEntity(state,targets[0]);
 		auto& targetEntity = targetToEntity(state,targets[1]);
 
-		return sourceEntity.owner == targetEntity.owner;
+		return sourceEntity.ownerID == targetEntity.ownerID;
 	}
 
 	InRange::InRange(const std::vector<FunctionParameter>& parameters)

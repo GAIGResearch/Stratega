@@ -11,7 +11,7 @@ namespace SGA
 		Entity():
 			typeID(0),
 			id(0),
-			owner(0),
+			ownerID(0),
 			position(),
 			canExecuteAction(true),
 		    intendedAction(),
@@ -26,7 +26,7 @@ namespace SGA
 
 		int typeID;
 		int id;
-		int owner;
+		int ownerID;
 		Vector2f position;
 		std::vector<int> actionTypeIds;
 

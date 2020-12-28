@@ -86,16 +86,14 @@ namespace SGA
 		auto& casted = dynamic_cast<TBSGameState&>(state);
 
 		Entity& entity = targetToEntity(state, targets[0]);
-		Vector2f& newPos = targetToPosition(state, targets[1]);
+		Vector2f newPos = targetToPosition(state, targets[1]);
 		fm.moveEntity(casted,entity,newPos);
 	}
 
 	void Move::executeRTS(GameState& state, const RTSForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-
 		Entity& unit = targetToEntity(state, targets[0]);
-		Vector2f& targetPos = targetToPosition(state, targets[1]);
-		
+		Vector2f targetPos = targetToPosition(state, targets[1]);
 		
 		//Get end position of current path
 		Vector2f oldTargetPos(0, 0);
@@ -103,7 +101,8 @@ namespace SGA
 		oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
 
 		//Check if path is empty or is a diferent path to the target pos
-		if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos) {
+		if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos)
+		{
 			auto& casted = dynamic_cast<RTSGameState&>(state);
 			Path path = fm.findPath(casted, unit.position, targetPos);
 			unit.path = path;
@@ -149,11 +148,11 @@ namespace SGA
 		std::cout << "Execute Spawn Unit TBS" << std::endl;
 		
 		Entity& sourceEntity = targetToEntity(state, targets[0]);
-		Vector2f& newPos = targetToPosition(state, targets[1]);
+		auto newPos = targetToPosition(state, targets[1]);
 
 		SGA::Entity entity;
 		entity.id = state.entities.size();
-		entity.owner = sourceEntity.owner;
+		entity.ownerID = sourceEntity.ownerID;
 		//entity.actionTypeIds.emplace_back(1);
 		entity.actionTypeIds.emplace_back(2);
 		entity.position = newPos;

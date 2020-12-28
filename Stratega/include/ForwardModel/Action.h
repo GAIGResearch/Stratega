@@ -12,7 +12,7 @@ namespace SGA
 		Action():
 			isEndAction(false),
 			actionTypeID(-1),
-			owner(0)
+			ownerID(0)
 		{
 		}
 
@@ -24,15 +24,15 @@ namespace SGA
 		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
 		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
-		int owner;
-		//void execute(GameState& state) const;
+		int ownerID;
+		
 		void execute(GameState& state, const TBSForwardModel& fm) const;
 		void execute(GameState& state, const RTSForwardModel& fm) const;
 
 		static Action createEndAction(int playerID)
 		{
 			Action a;
-			a.owner = playerID;
+			a.ownerID = playerID;
 			a.isEndAction = true;
 			return a;
 		}

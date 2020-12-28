@@ -13,16 +13,17 @@ namespace  SGA
 			{
 				endTurn(state);
 			}
+			
 			//Execute the action
 			action.execute(state,*this);
 
-			//Update removed entities
+			//Remove entities
 			for (size_t i = 0; i < state.entities.size(); i++)
 			{
 				if (state.entities[i].shouldRemove)
 				{
 					state.entities.erase(state.entities.begin() + i);
-					i -= 1;
+					i--;
 				}
 			}
 
@@ -32,11 +33,6 @@ namespace  SGA
 				auto& entity = targetToEntity(state, action.targets[0]);
 				entity.canExecuteAction = false;
 			}
-			//else
-			//{
-			//	std::cout << "test";
-			//}
-				
 
 			//Check game is finished
 			state.isGameOver = checkGameIsFinished(state);

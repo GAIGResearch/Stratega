@@ -59,7 +59,7 @@ Actions:
             Conditions:
                 - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - Attack(Target.Health, Source.AttackDamage)
+            - "Attack(Target.Health, Source.AttackDamage)"
 
     Move:
         Type: EntityAction
