@@ -5,14 +5,14 @@
 
 namespace SGA
 {
-	AddToResource::AddToResource(const std::vector<FunctionParameter>& parameters) :
+	ModifyResource::ModifyResource(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		amount(parameters.at(1))
 	{
 
 	}
 	
-	void AddToResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void ModifyResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Add to resource" << std::endl;
 		auto& targetResource = resourceReference.getParameter(state, targets);
@@ -41,19 +41,6 @@ namespace SGA
 			if (targetResource <= 0)
 				entity.shouldRemove = true;
 		}
-	}
-	
-	RemoveFromResource::RemoveFromResource(const std::vector<FunctionParameter>& parameters) :
-		resourceReference(parameters.at(0)),
-		amount(parameters.at(1))
-	{
-	}
-	
-	void RemoveFromResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		auto& targetResource = resourceReference.getParameter(state, targets);
-		auto amount = this->amount.getConstant(state, targets);
-		targetResource -= amount;
 	}
 	
 	void Move::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const

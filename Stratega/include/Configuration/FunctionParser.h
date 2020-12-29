@@ -86,11 +86,17 @@ namespace SGA
 		
 		std::optional<FunctionParameter> parseConstant(std::istringstream& ss) const
 		{
+			char prefix = '+';
+			if(ss.peek() == '+' || ss.peek() == '-')
+			{
+				prefix = ss.get();
+			}
+			
 			if(std::isdigit(ss.peek()))
 			{
 				int value;
 				ss >> value;
-				return FunctionParameter(static_cast<double>(value));
+				return FunctionParameter(static_cast<double>(prefix == '-' ? -value : value));
 			}
 
 			return {};
@@ -136,7 +142,6 @@ namespace SGA
 
 		std::string parseText(std::istringstream& ss) const
 		{
-			auto test = ss.peek();
 			std::string text;
 			while(std::isalpha(ss.peek()))
 			{

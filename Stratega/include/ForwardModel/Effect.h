@@ -15,12 +15,12 @@ namespace SGA
 		virtual void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
 	};
 
-	class AddToResource: public Effect
+	class ModifyResource: public Effect
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter amount;
 	public:
-		AddToResource(const std::vector<FunctionParameter>& parameters);
+		ModifyResource(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
@@ -31,14 +31,6 @@ namespace SGA
 		FunctionParameter amount;
 	public:
 		Attack(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-	};
-	class RemoveFromResource : public Effect
-	{
-		FunctionParameter resourceReference;
-		FunctionParameter amount;
-	public:
-		RemoveFromResource(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 

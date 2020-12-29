@@ -17,9 +17,8 @@ namespace SGA
 	FunctionFactory<Effect>& FunctionFactory<Effect>::getDefaultFactory()
 	{
 		static FunctionFactory<Effect> factory;
-		factory.registerFunction<AddToResource>("AddResource");
+		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
-		factory.registerFunction<RemoveFromResource>("RemoveFromResource");
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnUnit>("SpawnUnit");
 
