@@ -17,7 +17,7 @@ namespace  SGA
 			}
 			
 			//Execute the action
-			action.execute(state,*this);
+			executeAction(state, action);
 
 			//Remove entities
 			for (size_t i = 0; i < state.entities.size(); i++)
@@ -27,13 +27,6 @@ namespace  SGA
 					state.entities.erase(state.entities.begin() + i);
 					i--;
 				}
-			}
-
-			auto& actionType = state.getActionType(action.actionTypeID);
-			if (actionType.sourceType == ActionSourceType::Unit)
-			{
-				auto& entity = targetToEntity(state, action.targets[0]);
-				entity.canExecuteAction = false;
 			}
 
 			//Check game is finished
@@ -48,9 +41,10 @@ namespace  SGA
 				int nextPlayerID = (state.currentPlayer + i) % state.players.size();
 				auto& targetPlayer = state.players[nextPlayerID];
 
+				// All players did play, we consider this as a tick
 				if (nextPlayerID == 0)
 				{
-					state.currentGameTurn++;
+					endTick(state);
 				}
 
 				if (targetPlayer.canPlay)
@@ -59,21 +53,11 @@ namespace  SGA
 					break;
 				}
 			}
-
-			initTurn(state);
-		}
-		
-		void initTurn(TBSGameState& state) const
-		{
-			for (Entity& entity : state.entities)
-			{
-				entity.canExecuteAction = true;
-			}
 		}
 
 		virtual std::vector<Action> generateActions(TBSGameState& state) const
 		{
-			return (ActionSpaceBase<TBSGameState>().generateActions(state));
+			return (ActionSpaceBase<TBSGameState>().generateActions(state, state.currentPlayer));
 		}
 
 		virtual std::vector<Action> generateActions(TBSGameState& state, int playerID) const
@@ -85,7 +69,7 @@ namespace  SGA
 		
 		bool checkGameIsFinished(TBSGameState& state) const
 		{
-			if (state.currentGameTurn >= state.turnLimit)
+			if (state.currentTick >= state.turnLimit)
 				return true;
 
 			int numberPlayerCanPlay = 0;

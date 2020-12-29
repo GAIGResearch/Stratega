@@ -33,7 +33,13 @@ SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 	Entity instance;
 	instance.id = entityID;
 	instance.typeID = this->id;
-	instance.actionTypeIds = actionIds;
+
+	// Add actions
+	instance.attachedActions.reserve(actionIds.size());
+	for(auto actionTypeID : actionIds)
+	{
+		instance.attachedActions.emplace_back(Entity::ActionInfo{ actionTypeID, 0 });
+	}
 
 	// Set parameter values
 	instance.parameters.reserve(parameters.size());

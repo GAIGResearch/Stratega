@@ -17,17 +17,15 @@ namespace SGA
 			for(auto& sourceEntity : gameState.entities)
 			{
 				if (sourceEntity.ownerID != player)
-					continue;				
-				if (!sourceEntity.canExecuteAction)
 					continue;
 				
-				for(auto actionTypeID : sourceEntity.actionTypeIds)
+				for(const auto& actionInfo : sourceEntity.attachedActions)
 				{
-					auto& actionType = gameState.getActionType(actionTypeID);
-					if(!gameState.canExecuteAction(sourceEntity, actionType))
-					{
+					auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
+					if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
 						continue;
-					}
+					if(!gameState.canExecuteAction(sourceEntity, actionType))
+						continue;
 					
 					//Generate the targets for this action
 					std::vector<ActionTarget> targets;
@@ -36,13 +34,13 @@ namespace SGA
 						case TargetType::Entity:
 						{					
 							generateGroupTargets(gameState, actionType, targets, sourceEntity);
-							generateActions(targets, bucket, actionTypeID, sourceEntity);
+							generateActions(targets, bucket, actionInfo.actionTypeID, sourceEntity);
 							break;
 						}							
 						case TargetType::Position:
 						{
 							generatePositionTargets(gameState, actionType, targets, sourceEntity);
-							generateActions(targets, bucket, actionTypeID, sourceEntity);
+							generateActions(targets, bucket, actionInfo.actionTypeID, sourceEntity);
 							
 							break;
 						}

@@ -194,6 +194,7 @@ namespace SGA
         actionType.id = 0;
         actionType.name = "EndTurn";
         actionType.sourceType = ActionSourceType::Player;
+        actionType.cooldownTicks = 0;
         config.actionTypes.emplace(0, std::move(actionType));
 
         FunctionParser parser;
@@ -205,6 +206,7 @@ namespace SGA
             type.name = nameTypePair.first;
             type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
             type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
+            type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
             std::unordered_map<std::string, int> actionTargetIds;
             actionTargetIds.emplace("Source", 0);
             actionTargetIds.emplace("Target", 1);

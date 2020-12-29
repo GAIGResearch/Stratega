@@ -53,6 +53,7 @@ Board:
 Actions:
     Attack:
         Type: EntityAction
+        Cooldown: 1
         Target:
             Type: Entity
             ValidTargets: All
@@ -63,6 +64,7 @@ Actions:
 
     Move:
         Type: EntityAction
+        Cooldown: 1
         Target:
             Type: Position
             Shape: Square
@@ -72,6 +74,7 @@ Actions:
 
     Heal:
         Type: EntityAction
+        Cooldown: 1
         Target:
             Type: Entity
             ValidTargets: All

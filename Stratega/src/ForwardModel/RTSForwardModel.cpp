@@ -29,36 +29,15 @@ namespace SGA
 				}
 			}
 
-			// Execute actions, note that we first execute one ActionType after the other
-			// This is to prevent disadvantages in chasing situations for example
-			/*RTSFMState fmState(state);*/
-			/*for (auto actionType : { RTSActionType::Move, RTSActionType::Heal, RTSActionType::Attack })
-			{*/
-				for (auto& unit : state.entities)
-				{
-					/*if (unit.executingAction.type != actionType)
-						continue;*/
-					unit.executingAction.execute(state,*this);
-					//switch (actionType)
-					//{
-					///*case RTSActionType::Move: executeMove(fmState, unit); break;
-					//case RTSActionType::Attack: executeAttack(fmState, unit); break;
-					//case RTSActionType::Heal: executeHeal(fmState, unit); break;*/
-					//}
-				}
-
-				/*if (actionType == RTSActionType::Move)
-				{*/
-					resolveUnitCollisions(state);
-					resolveEnvironmentCollisions(state);
-				//}
-			/*}*/
-
-			// Remove all units that were killed
-			/*for (auto id : fmState.deadUnitIDs)
+			for (auto& unit : state.entities)
 			{
-				state.removeUnit(id);
-			}*/
+				executeAction(state, unit.executingAction);
+			}
+			
+			resolveUnitCollisions(state);
+			resolveEnvironmentCollisions(state);
+
+			// Remove Entities
 			for (size_t i = 0; i < state.entities.size(); i++)
 			{
 				if (state.entities[i].shouldRemove)
@@ -74,6 +53,7 @@ namespace SGA
 				unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
 			}
 
+			endTick(state);
 			state.isGameOver = checkGameIsFinished(state);
 		}
 	}

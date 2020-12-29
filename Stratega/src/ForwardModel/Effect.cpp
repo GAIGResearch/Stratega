@@ -127,10 +127,10 @@ namespace SGA
 		auto newPos = targetToPosition(state, targets[1]);
 
 		// ToDo Remove hardcoded stuff
-		SGA::Entity entity;
+		Entity entity;
 		entity.id = state.entities.size();
 		entity.ownerID = sourceEntity.ownerID;
-		entity.actionTypeIds.emplace_back(2);
+		entity.attachedActions.emplace_back(Entity::ActionInfo{ 2, 0 });
 		entity.position = newPos;
 		entity.typeID = 0;
 		entity.parameters.emplace_back(60);

@@ -18,6 +18,8 @@ namespace SGA
 		int id;
 		ActionSourceType sourceType;
 
+		int cooldownTicks;
+		
 		TargetType actionTargets;
 		std::vector<std::shared_ptr<Condition>> preconditions;
 		std::vector<std::shared_ptr<Condition>> targetConditions;

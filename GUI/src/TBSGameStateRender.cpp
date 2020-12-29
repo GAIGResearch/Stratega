@@ -566,7 +566,7 @@ void TBSGameStateRender::createWindowInfo() const
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Info window");
 
-	std::string gameTurns = "Turn:" + std::to_string(gameStateCopy.currentGameTurn) + " Player Turn: " + std::to_string(gameStateCopy.currentPlayer) + " FPS: " + std::to_string(m_fps);
+	std::string gameTurns = "Tick:" + std::to_string(gameStateCopy.currentTick) + " Player Turn: " + std::to_string(gameStateCopy.currentPlayer) + " FPS: " + std::to_string(m_fps);
 	ImGui::Text(gameTurns.c_str());
 
 	std::string fpsInfo = "FPS: " + std::to_string(0);

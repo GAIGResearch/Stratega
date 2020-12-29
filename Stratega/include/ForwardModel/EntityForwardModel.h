@@ -22,6 +22,8 @@ namespace SGA
 		}
 		
 		bool canPlayerPlay(Player& player) const;
+		void executeAction(GameState& state, const Action& action) const;
+		void endTick(GameState& state) const;
 
 		std::unique_ptr<ActionSpaceBase<GameState>> generateDefaultActionSpace()
 		{

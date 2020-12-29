@@ -8,12 +8,17 @@ namespace SGA
 {
 	struct Entity
 	{
+		struct ActionInfo
+		{
+			int actionTypeID;
+			int lastExecutedTick;
+		};
+		
 		Entity():
 			typeID(0),
 			id(0),
 			ownerID(0),
 			position(),
-			canExecuteAction(true),
 		    intendedAction(),
 		    executingAction(),
 		    path(),
@@ -28,14 +33,9 @@ namespace SGA
 		int id;
 		int ownerID;
 		Vector2f position;
-		std::vector<int> actionTypeIds;
-
+		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
-
-		bool shouldRemove=false;//Death?
-
-		//TODO depends on the type...
-		bool canExecuteAction;
+		bool shouldRemove=false;
 
 		//RTS Stuff
 		Action intendedAction;
