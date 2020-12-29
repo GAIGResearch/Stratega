@@ -35,7 +35,7 @@ namespace SGA
 			//SGA::RTSForwardModel fm;
 			gameState->turnLimit = 100000000000;
 			fm.winCondition = SGA::WinConditionType::UnitAlive;
-			fm.unitTypeID = 1;
+			fm.targetUnitTypeID = 1;
 			
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
@@ -47,7 +47,7 @@ namespace SGA
 			//SGA::RTSForwardModel fm;
 			
 			fm.winCondition = SGA::WinConditionType::UnitAlive;
-			fm.unitTypeID = 1;
+			fm.targetUnitTypeID = 1;
 			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else

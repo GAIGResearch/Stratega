@@ -1,5 +1,5 @@
 #pragma once
-#include <ForwardModel/ForwardModel.h>
+#include <ForwardModel/EntityForwardModel.h>
 #include <Representation/RTSGameState.h>
 #include <Representation/Player.h>
 
@@ -12,7 +12,7 @@
 
 namespace  SGA
 {
-	class RTSForwardModel : public ForwardModel<RTSGameState>
+	class RTSForwardModel : public EntityForwardModel
 	{
 	public:
 		float deltaTime;
@@ -25,18 +25,17 @@ namespace  SGA
 		{
 		}
 
-		void advanceGameState(RTSGameState& state, const Action& action) const override;
+		void advanceGameState(RTSGameState& state, const Action& action) const;
 
-		std::vector<Action> generateActions(RTSGameState& state) const override;
-		std::vector<Action> generateActions(RTSGameState& state, int playerID) const override;
+		std::vector<Action> generateActions(RTSGameState& state) const;
+		std::vector<Action> generateActions(RTSGameState& state, int playerID) const;
 
 		void resolveUnitCollisions(RTSGameState& state) const;
 		void resolveEnvironmentCollisions(RTSGameState& state) const;
 
 		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
-		Path findPath(RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
+		Path findPath(const RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
 
 		bool checkGameIsFinished(RTSGameState& state) const;
-		bool canPlayerPlay(Player& player) const;
 	};
 }

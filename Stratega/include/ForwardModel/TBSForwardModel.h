@@ -1,13 +1,15 @@
 #pragma once
-#include <ForwardModel/ForwardModel.h>
+#include <ForwardModel/EntityForwardModel.h>
 #include <Representation/TBSGameState.h>
 #include <Representation/Player.h>
+#include <ForwardModel/ActionSpaceBase.h>
+
 namespace  SGA
 {
-	class TBSForwardModel: public ForwardModel<TBSGameState>
+	class TBSForwardModel : public EntityForwardModel
 	{
 	public:
-		void advanceGameState(TBSGameState& state, const Action& action) const override
+		void advanceGameState(TBSGameState& state, const Action& action) const
 		{
 			if(action.isEndAction)
 			{
@@ -69,10 +71,19 @@ namespace  SGA
 			}
 		}
 
+		virtual std::vector<Action> generateActions(TBSGameState& state) const
+		{
+			return (ActionSpaceBase<TBSGameState>().generateActions(state));
+		}
 
-		bool canPlayerPlay(Player& player) const;
+		virtual std::vector<Action> generateActions(TBSGameState& state, int playerID) const
+		{
+			return (ActionSpaceBase<TBSGameState>().generateActions(state, playerID));
+		}
+
+		virtual bool isValid(const TBSGameState& state, const Action& action) const { return true; }
 		
-		bool checkGameIsFinished(TBSGameState& state) const override
+		bool checkGameIsFinished(TBSGameState& state) const
 		{
 			if (state.currentGameTurn >= state.turnLimit)
 				return true;

@@ -26,7 +26,7 @@ namespace SGA
 		{
 			//Execute
 			stateMutex.lock();
-			forwardModel.advanceGameState(*gameState, forwardModel.getActionSpace().generateEndAction());
+			forwardModel.advanceGameState(*gameState, forwardModel.actionSpace->generateEndAction());
 
 			//Update navmesh if it needs to
 			if (shouldUpdateNavmesh)

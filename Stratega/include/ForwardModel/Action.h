@@ -4,8 +4,7 @@
 
 namespace SGA
 {
-	class TBSForwardModel;
-	class RTSForwardModel;
+	class EntityForwardModel;
 	
 	struct Action
 	{
@@ -26,8 +25,7 @@ namespace SGA
 		std::vector<ActionTarget> targets;
 		int ownerID;
 		
-		void execute(GameState& state, const TBSForwardModel& fm) const;
-		void execute(GameState& state, const RTSForwardModel& fm) const;
+		void execute(GameState& state, const EntityForwardModel& fm) const;
 
 		static Action createEndAction(int playerID)
 		{
