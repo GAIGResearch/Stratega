@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <vector>
 #include <Representation/Vector2.h>
 #include <Representation/Path.h>
@@ -38,8 +39,8 @@ namespace SGA
 		bool shouldRemove=false;
 
 		//RTS Stuff
-		Action intendedAction;
-		Action executingAction;
+		std::optional<Action> intendedAction;
+		std::optional<Action> executingAction;
 		Path path;
 		double actionCooldown;
 		double maxActionCooldown;

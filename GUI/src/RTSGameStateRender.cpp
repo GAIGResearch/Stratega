@@ -584,7 +584,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	//Draw paths of units
 	for (auto& unit : gameStateCopy.entities)
 	{
-		if (unit.executingAction.targets.size()>0)
+		if (unit.executingAction.has_value())
 			if (true/*unit.executingAction.type == SGA::RTSActionType::Move || unit.executingAction.type == SGA::RTSActionType::Attack*/)
 			{
 				//Check if has a valid path

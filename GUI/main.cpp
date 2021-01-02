@@ -11,7 +11,7 @@ int main()
 	// Read Config
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
-	std::filesystem::path configPath2("../../../gameConfigs/KillTheKing2.yaml");
+	std::filesystem::path configPath2("../../../gameConfigs/KillTheKing.yaml");
 	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
 	auto gameConfig2 = parser.parseFromFile(configPath2.string());
 	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();

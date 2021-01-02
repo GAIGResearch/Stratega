@@ -22,16 +22,17 @@ namespace SGA
 			// Update what the units are doing
 			for (auto& unit : state.entities)
 			{
-				if (unit.intendedAction.targets.size()>0)
+				if (!unit.intendedAction.has_value())
 				{
 					unit.executingAction = unit.intendedAction;
-					unit.intendedAction = Action();
+					unit.intendedAction = {};
 				}
 			}
 
 			for (auto& unit : state.entities)
 			{
-				executeAction(state, unit.executingAction);
+				if(unit.executingAction.has_value())
+					executeAction(state, unit.executingAction.value());
 			}
 			
 			resolveUnitCollisions(state);

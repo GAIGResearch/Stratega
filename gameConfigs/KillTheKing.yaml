@@ -1,11 +1,9 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
 
 Agents:
-#    - MCTSAgent
-#    - BFSAgent
     - RandomAgent
     - HumanAgent
 
@@ -25,10 +23,6 @@ Tiles:
     Forest:
         Sprite: ../GUI/Assets/forest.png
         Symbol: F
-        IsWalkable: true
-    Hole:
-        Sprite: ../GUI/Assets/hole.png
-        Symbol: H
         IsWalkable: true
         
 Board:
@@ -52,60 +46,87 @@ Board:
           M..............................M
           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
-Units:
+Actions:
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Entity
+            ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
+
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "HasResource(Source.MovementPoints, 1)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+        Effects:
+            - "Move()"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    Heal:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Entity
+            ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+
+
+Entities:
     Warrior:
-        Sprite: ../GUI/Assets/basicCloseRange (2).png
-        Health: 200
+        Sprite: ../GUI/Assets/unit1New.png
         LineOfSightRange: 6
-
-        MovementRange: 2
-        ActionRange: 2
-        AttackDamage: 10
-        ActionsPerTurn: 2
-        RepeatableActions: false
         Actions: [Attack, Move]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
+
     Archer:
-        Sprite: ../GUI/Assets/basicLongRange (2).png
-        Health: 100
+        Sprite: ../GUI/Assets/unit5New.png
         LineOfSightRange: 10
-
-        MovementRange: 2
-        ActionRange: 5
-        ActionsPerTurn: 2
-        RepeatableActions: false
-        AttackDamage: 10
+        Parameters:
+            Health: 100
+            AttackRange: 5
+            AttackDamage: 10
+            MovementPoints: 2
         Actions: [Attack, Move]
+
     Healer:
-        Sprite: ../GUI/Assets/healer (2).png
-        Health: 40
+        Sprite: ../GUI/Assets/unit5New.png
         LineOfSightRange: 4
-
-        MovementRange: 5
-        ActionRange: 2
-        HealAmount: 10
-        ActionsPerTurn: 2
-        RepeatableActions: false
+        Parameters:
+            Health: 40
+            HealRange: 2
+            HealAmount: 10
+            MovementPoints: 5
         Actions: [Heal, Move]
-    King:
-        Sprite: ../GUI/Assets/advanceCloseRange (2).png
-        Health: 400
-        LineOfSightRange: 6
 
-        MovementRange: 1
-        ActionRange: 2
-        AttackDamage: 10
-        ActionsPerTurn: 2
-        RepeatableActions: false
+    King:
+        Sprite: ../GUI/Assets/unit5New.png
+        LineOfSightRange: 6
+        Parameters:
+            Health: 400
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 1
         Actions: [Attack, Move]
 
 ForwardModel:
     WinCondition:
         Type: LastManStanding
         Unit: King
-
-    Effects:
-        DeadlyHole:
-            Type: Death
-            Trigger: EnterTile
-            Condition: StandingOnTile
-            TargetTile: Hole
+    Trigger:
+        OnTick:
+            - "SetToMaximum(Source.MovementPoints)"
