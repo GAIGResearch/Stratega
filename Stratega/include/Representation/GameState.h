@@ -33,6 +33,7 @@ namespace SGA
 			  isGameOver(false),
 			  winnerPlayerID(0),
 			  currentTick(0),
+			  tickLimit(-1),
 			  fogOfWarTile(0,0,0),
 			  fogOfWarId(0),
 			  board(10,10),
@@ -59,6 +60,7 @@ namespace SGA
 		bool isGameOver;
 		int winnerPlayerID;
 		int currentTick;
+		int tickLimit;
 		
 		// Board information
 		Tile fogOfWarTile;

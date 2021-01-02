@@ -26,24 +26,38 @@ namespace SGA
 		switch (parameterType)
 		{
 			case Type::Constant: return data.constValue;
-			case Type::ParameterReference: return getParameter(state, actionTargets);
+			case Type::ParameterReference: return getParameterValue(state, actionTargets);
 			default:
 				throw std::runtime_error("Type not recognised");
 		}
 	}
-		
-	double FunctionParameter::getParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+
+	const Parameter& FunctionParameter::getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
-		return getParameter(const_cast<GameState&>(state), actionTargets);
-	}
-	
-	double& FunctionParameter::getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
-	{
-		if(parameterType == Type::ParameterReference)
+		if (parameterType == Type::ParameterReference)
 		{
 			auto& entity = getEntity(state, actionTargets);
 			const auto& entityType = state.getEntityType(entity.typeID);
 			const auto& param = entityType.getParameter(data.resourceData.parameterID);
+			return param;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognized");
+		}
+	}
+	
+	double FunctionParameter::getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		return getParameterValue(const_cast<GameState&>(state), actionTargets);
+	}
+	
+	double& FunctionParameter::getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if(parameterType == Type::ParameterReference)
+		{
+			const auto& param = getParameter(state, actionTargets);
+			auto& entity = getEntity(state, actionTargets);
 			return entity.parameters[param.index];
 		}
 		else

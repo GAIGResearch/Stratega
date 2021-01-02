@@ -131,3 +131,6 @@ ForwardModel:
     WinCondition:
         Type: LastManStanding
         Unit: King
+    Trigger:
+        OnTick:
+            - "SetToMaximum(Source.MovementPoints)"

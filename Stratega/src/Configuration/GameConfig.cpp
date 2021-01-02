@@ -26,33 +26,23 @@ namespace SGA
 		//TODO ADD FM AbstractGeneration
 		// Generate game
 		std::unique_ptr<Game> game;
-		if (config.gameType == "TBS")
+		if (config.gameType == ForwardModelType::TBS)
 		{
 			auto gameState = generateAbstractTBSStateFromConfig(config, rngEngine);
-			/*auto fm = generateTBSforwardModelFromConfig(config);*/
-
-			SGA::TBSForwardModel fm;
-			//SGA::RTSForwardModel fm;
-			gameState->turnLimit = 100000000000;
-			fm.winCondition = SGA::WinConditionType::UnitAlive;
-			fm.targetUnitTypeID = 1;
-			
+			TBSForwardModel fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
-		else if (config.gameType == "RTS")
+		else if (config.gameType == ForwardModelType::RTS)
 		{
 			auto board = config.boardGenerator->generate(rngEngine);
 			auto gameState = generateAbstractRTSStateFromConfig(config, rngEngine);
-			SGA::RTSForwardModel fm;
-			//SGA::RTSForwardModel fm;
-			
-			fm.winCondition = SGA::WinConditionType::UnitAlive;
-			fm.targetUnitTypeID = 1;
+
+			RTSForwardModel fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else
 		{
-			throw std::runtime_error("Tried generating a game with unknown game-type " + config.gameType);
+			throw std::runtime_error("Tried generating a game with unknown game-type ");
 		}
 
 		return game;
@@ -110,7 +100,7 @@ namespace SGA
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(config.parameters);
 		
-		state->turnLimit = config.roundLimit;
+		state->tickLimit = config.tickLimit;
 		std::vector<int> playerIDs;
 		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
 		{
@@ -142,37 +132,41 @@ namespace SGA
 		return std::move(state);
 	}
 
-}
-
-int SGA::GameConfig::getEntityID(const std::string& name) const
-{
-	for (const auto& idTypePair : entityTypes)
+	int GameConfig::getNumberOfPlayers() const
 	{
-		if (idTypePair.second.name == name)
-			return idTypePair.first;
+		return numPlayers == -1 ? agentParams.size() : numPlayers;
 	}
 
-	throw std::runtime_error("Unknown entity with name " + name);
-}
-
-int SGA::GameConfig::getActionID(const std::string& name) const
-{
-	for (const auto& idTypePair : actionTypes)
+	int GameConfig::getEntityID(const std::string& name) const
 	{
-		if (idTypePair.second.name == name)
-			return idTypePair.first;
+		for (const auto& idTypePair : entityTypes)
+		{
+			if (idTypePair.second.name == name)
+				return idTypePair.first;
+		}
+
+		throw std::runtime_error("Unknown entity with name " + name);
 	}
 
-	throw std::runtime_error("Unknown action with name " + name);
-}
-
-int SGA::GameConfig::getTileID(const std::string& name) const
-{
-	for (const auto& idTypePair : tileTypes)
+	int GameConfig::getActionID(const std::string& name) const
 	{
-		if (idTypePair.second.name == name)
-			return idTypePair.first;
+		for (const auto& idTypePair : actionTypes)
+		{
+			if (idTypePair.second.name == name)
+				return idTypePair.first;
+		}
+
+		throw std::runtime_error("Unknown action with name " + name);
 	}
 
-	throw std::runtime_error("Unknown tile with name " + name);
+	int GameConfig::getTileID(const std::string& name) const
+	{
+		for (const auto& idTypePair : tileTypes)
+		{
+			if (idTypePair.second.name == name)
+				return idTypePair.first;
+		}
+
+		throw std::runtime_error("Unknown tile with name " + name);
+	}
 }

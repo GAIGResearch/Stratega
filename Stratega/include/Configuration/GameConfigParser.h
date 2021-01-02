@@ -12,8 +12,9 @@ namespace SGA
 		void parseTileTypes(const YAML::Node& tilesNode, GameConfig& config) const;
 		void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const;
 		void parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const;
-        void parseEntityGroups(const YAML::Node& entityGroupsNode, SGA::GameConfig& config) const;
+        void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;
+        void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
 		
 	private:
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
@@ -23,6 +24,25 @@ namespace SGA
 
 namespace YAML
 {
+    template<>
+    struct convert<SGA::ForwardModelType>
+    {
+        static bool decode(const Node& node, SGA::ForwardModelType& rhs)
+        {
+            if (!node.IsScalar())
+                return false;
+            auto value = node.as<std::string>();
+            if (value == "RTS")
+                rhs = SGA::ForwardModelType::RTS;
+            else if (value == "TBS")
+                rhs = SGA::ForwardModelType::TBS;
+            else
+                return false;
+
+            return true;
+        }
+    };
+	
     template<>
     struct convert<SGA::ActionSourceType>
     {

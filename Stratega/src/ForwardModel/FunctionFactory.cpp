@@ -21,6 +21,7 @@ namespace SGA
 		factory.registerFunction<Attack>("Attack");
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnUnit>("SpawnUnit");
+		factory.registerFunction<SetToMaximum>("SetToMaximum");
 
 		return factory;
 	}

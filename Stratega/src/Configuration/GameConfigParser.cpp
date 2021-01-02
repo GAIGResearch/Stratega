@@ -11,8 +11,8 @@ namespace SGA
 	{
 		auto configNode = YAML::LoadFile(filePath);
         GameConfig config;
-        config.gameType = configNode["GameConfig"]["Type"].as<std::string>();
-        config.roundLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.roundLimit);
+        config.gameType = configNode["GameConfig"]["Type"].as<ForwardModelType>();
+        config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
         config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
 
 		// Parse complex structures
@@ -23,15 +23,7 @@ namespace SGA
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
         parseActions(configNode["Actions"], config);
-		// ToDo Parse ForwardModelConfig in an seperate function
-		if(configNode["ForwardModel"].IsDefined())
-		{
-            config.forwardModelConfig = configNode["ForwardModel"].as<ForwardModelConfig>();
-		}
-        else
-        {
-            throw std::runtime_error("Cannot find a definition for the ForwardModel");
-        }
+        parseForwardModel(configNode["ForwardModel"], config);
 
 		// Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -244,4 +236,53 @@ namespace SGA
         }
         return targetType;
     }
+
+	void GameConfigParser::parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const
+	{
+        if (!fmNode.IsDefined())
+        {
+            throw std::runtime_error("Cannot find a definition for the ForwardModel");
+        }
+		
+        std::unique_ptr<EntityForwardModel> fm;
+		if(config.gameType == ForwardModelType::TBS)
+		{
+            fm = std::make_unique<TBSForwardModel>();
+		}
+        else if(config.gameType == ForwardModelType::RTS)
+        {
+            fm = std::make_unique<RTSForwardModel>();
+        }
+
+		// Parse WinCondition
+        auto winConditionNode = fmNode["WinCondition"];
+        fm->winCondition = winConditionNode["Type"].as<WinConditionType>(fm->winCondition);
+		if(fm->winCondition == WinConditionType::UnitAlive)
+		{
+            auto targetUnitName = winConditionNode["Unit"].as<std::string>();
+            fm->targetUnitTypeID = config.getEntityID(targetUnitName);
+		}
+
+		// Parse Trigger
+        FunctionParser parser;
+        auto triggers = fmNode["Trigger"].as<std::map<std::string, std::vector<std::string>>>(std::map<std::string, std::vector<std::string>>());
+		for(const auto& nameEffectsPair : triggers)
+		{
+			if(nameEffectsPair.first == "OnTick")
+			{
+                std::unordered_map<std::string, int> targetMap =
+                {
+                    {"Source", 0}
+                };
+				
+                parser.parseFunctions<Effect>(nameEffectsPair.second, fm->onTickEffects, targetMap, config.parameters);
+			}
+            else
+            {
+                std::cerr << "Unknown trigger with name " << nameEffectsPair.first << " will be ignored." << std::endl;
+            }
+		}
+		
+        config.forwardModel = std::move(fm);
+	}
 }

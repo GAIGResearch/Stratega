@@ -1,25 +1,25 @@
 #pragma once
 #include <map>
 #include <string>
-#include <Configuration/ForwardModelConfig.h>
 #include <Agent/Agent.h>
-#include <yaml-cpp/yaml.h>
 #include <Representation/TBSGameState.h>
 #include <Configuration/FunctionParser.h>
 #include <Configuration/IBoardGenerator.h>
+#include <ForwardModel/ForwardModel.h>
+
 namespace SGA
 {
     struct GameConfig
     {
     	// Game information
-        std::string gameType;
-        int roundLimit = 100;
+        ForwardModelType gameType;
+        int tickLimit = 100;
         int numPlayers = -1;
     	// Other stuff
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::unordered_map<int, TileType> tileTypes;
         std::unique_ptr<IBoardGenerator> boardGenerator;
-        ForwardModelConfig forwardModelConfig;
+        std::unique_ptr<EntityForwardModel> forwardModel;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<std::string, std::vector<int>> entityGroups;
@@ -29,11 +29,7 @@ namespace SGA
 
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
     	
-        int getNumberOfPlayers() const
-        {
-            return numPlayers == -1 ? agentParams.size() : numPlayers;
-        }
-
+        int getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;

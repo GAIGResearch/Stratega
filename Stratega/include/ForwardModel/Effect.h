@@ -47,4 +47,13 @@ namespace SGA
 		SpawnUnit(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class SetToMaximum : public Effect
+	{
+		FunctionParameter targetResource;
+		
+	public:
+		SetToMaximum(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
 }

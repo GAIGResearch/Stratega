@@ -11,13 +11,14 @@ namespace SGA
 	{
 	public:
 		std::shared_ptr<ActionSpaceBase<GameState>> actionSpace;
+		std::vector<std::shared_ptr<Effect>> onTickEffects;
 		WinConditionType winCondition;
 		int targetUnitTypeID;
 
 		virtual ~EntityForwardModel() = default;
 		EntityForwardModel()
 			: winCondition(WinConditionType::LastManStanding),
-			targetUnitTypeID(-1)
+			  targetUnitTypeID(-1)
 		{
 		}
 		

@@ -19,9 +19,6 @@ namespace  SGA
 		
 		RTSForwardModel()
 			: deltaTime(1. / 60.)
-			/*winCondition(),
-			unitTypeID(),
-			actionSpace(generateDefaultActionSpace())*/
 		{
 		}
 

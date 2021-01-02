@@ -15,7 +15,7 @@ namespace SGA
 	void ModifyResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		std::cout << "Execute TBS Add to resource" << std::endl;
-		auto& targetResource = resourceReference.getParameter(state, targets);
+		auto& targetResource = resourceReference.getParameterValue(state, targets);
 		double amount = this->amount.getConstant(state, targets);
 
 		targetResource += amount;
@@ -34,7 +34,7 @@ namespace SGA
 		if(const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
-			auto& targetResource = resourceReference.getParameter(state, targets);
+			auto& targetResource = resourceReference.getParameterValue(state, targets);
 			auto amount = this->amount.getConstant(state, targets);
 
 			targetResource -= amount;
@@ -124,5 +124,18 @@ namespace SGA
 		entity.parameters.emplace_back(0);
 
 		state.entities.emplace_back(entity);
+	}
+
+	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
+		: targetResource(parameters[0])
+	{
+	}
+
+	void SetToMaximum::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& param = targetResource.getParameter(state, targets);
+		auto& paramValue = targetResource.getParameterValue(state, targets);
+
+		paramValue = param.maxValue;
 	}
 }

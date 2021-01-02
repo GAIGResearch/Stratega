@@ -12,11 +12,11 @@ namespace SGA
 			tilePaths.emplace(tileID, namePathPair.second);
 		}
 		
-		if(gameConfig.gameType=="TBS")
+		if(gameConfig.gameType == ForwardModelType::TBS)
 			return std::make_unique<TBSGameStateRender>(dynamic_cast<TBSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
-		else if(gameConfig.gameType == "RTS")
+		else if(gameConfig.gameType == ForwardModelType::RTS)
 			return std::make_unique<RTSGameStateRender>(dynamic_cast<RTSGame&>(game), tilePaths, config.entitySpritePaths, playerID);
 		else
-			throw std::runtime_error("Tried generating a GameStateRender with unknown game-type " + gameConfig.gameType);
+			throw std::runtime_error("Tried generating a GameStateRender with unknown game-type");
 	}
 }

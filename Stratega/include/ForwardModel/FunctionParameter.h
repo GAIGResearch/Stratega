@@ -44,8 +44,9 @@ namespace SGA
 		FunctionParameter(ParameterID parameterID, int argumentIndex);
 
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		double getParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		double& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double& getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		

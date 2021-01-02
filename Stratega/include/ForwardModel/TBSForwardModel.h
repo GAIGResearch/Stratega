@@ -69,7 +69,7 @@ namespace  SGA
 		
 		bool checkGameIsFinished(TBSGameState& state) const
 		{
-			if (state.currentTick >= state.turnLimit)
+			if (state.currentTick >= state.tickLimit)
 				return true;
 
 			int numberPlayerCanPlay = 0;
@@ -95,11 +95,10 @@ namespace  SGA
 
 			return false;
 		}
+		
 		void moveEntity(TBSGameState& state, Entity& entity, Vector2f newPosition) const
 		{
 			entity.position = newPosition;
 		}
-
-		
 	};
 }

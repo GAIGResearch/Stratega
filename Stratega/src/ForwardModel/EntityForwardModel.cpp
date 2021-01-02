@@ -70,5 +70,17 @@ namespace SGA
 	void EntityForwardModel::endTick(GameState& state) const
 	{
 		state.currentTick++;
+
+		// Execute OnTick-trigger
+		std::vector<ActionTarget> targets;
+		targets.resize(1);
+		for(const auto& effect : onTickEffects)
+		{
+			for (const auto& entity : state.entities)
+			{
+				targets[0] = entity.id;
+				effect->execute(state, *this, targets);
+			}
+		}
 	}
 }

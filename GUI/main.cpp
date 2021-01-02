@@ -4,7 +4,6 @@
 #include <Game/TBSGameCommunicator.h>
 #include <yaml-cpp/node/parse.h>
 #include <Game/TBSGame.h>
-
 #include "Configuration/GameConfigParser.h"
 
 int main()
@@ -18,7 +17,7 @@ int main()
 	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();
 	
 	//// Initialize the game
-	auto game = SGA::generateAbstractGameFromConfig(gameConfig2, engine);
+	auto game = generateAbstractGameFromConfig(gameConfig2, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
 	auto agents = gameConfig2.generateAgents();
@@ -34,7 +33,7 @@ int main()
 			playerID++;
 			continue;
 		}
-		if (gameConfig2.gameType == "TBS")
+		if (gameConfig2.gameType == SGA::ForwardModelType::TBS)
 		{
 			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
