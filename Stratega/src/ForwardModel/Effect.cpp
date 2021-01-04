@@ -103,27 +103,22 @@ namespace SGA
 	}
 
 	SpawnUnit::SpawnUnit(const std::vector<FunctionParameter>& parameters)
+		: entityTypeParam(parameters[0]), targetPositionParam(parameters[1])
 	{	
 	}
 
 	void SpawnUnit::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		std::cout << "Execute Spawn Unit TBS" << std::endl;
-
-		Entity& sourceEntity = targetToEntity(state, targets[0]);
-		auto newPos = targetToPosition(state, targets[1]);
-
-		// ToDo Remove hardcoded stuff
-		Entity entity;
-		entity.id = state.entities.size();
-		entity.ownerID = sourceEntity.ownerID;
-		entity.attachedActions.emplace_back(Entity::ActionInfo{ 2, 0 });
-		entity.position = newPos;
-		entity.typeID = 0;
-		entity.parameters.emplace_back(60);
-		entity.parameters.emplace_back(0);
-
-		state.entities.emplace_back(entity);
+		// ToDo Is there a better way to do this?
+		int playerID = -1;
+		if(std::holds_alternative<int>(targets[0]))
+		{
+			auto& executingEntity = targetToEntity(state, targets[0]);
+			playerID = executingEntity.ownerID;
+		}
+		
+		const auto& entityType = entityTypeParam.getEntityType(state, targets);
+		state.addEntity(entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)

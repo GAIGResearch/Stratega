@@ -58,6 +58,16 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
 
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 4
+        Effects:
+            - "Spawn(Warrior, Target)"
+
     Move:
         Type: EntityAction
         Preconditions:
@@ -88,7 +98,7 @@ Entities:
     Warrior:
         Sprite: ../GUI/Assets/unit2New.png
         LineOfSightRange: 6
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Spawn]
         Parameters:
             Health: 200
             AttackRange: 2
