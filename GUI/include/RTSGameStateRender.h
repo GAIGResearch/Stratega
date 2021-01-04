@@ -9,6 +9,8 @@
 class RTSGameStateRender : public GameStateRenderer<SGA::RTSGameState>
 {
 public:
+	sf::View view2;
+
 	//Debug mode
 	bool drawDebug = false;
 
@@ -45,6 +47,8 @@ private:
 	//HUD
 	void createHUD(sf::RenderWindow& window);
 
+	void createTopBar();
+	void createBottomBar(sf::RenderWindow& window);
 	void createWindowInfo();
 	void createWindowUnits();
 	void createWindowNavMesh();

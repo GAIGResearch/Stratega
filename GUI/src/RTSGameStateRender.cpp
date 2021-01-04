@@ -13,7 +13,7 @@ RTSGameStateRender::RTSGameStateRender(SGA::RTSGame& game, const std::unordered_
 	gameStateCopy(game.getStateCopy()),
 	gameStatesBuffer(50)
 {
-	init(tileSprites, entitySpritePaths);
+	init(tileSprites, entitySpritePaths);	
 }
 
 void RTSGameStateRender::init()
@@ -71,6 +71,8 @@ void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
 
 	//Limit FPS window
 	window.setFramerateLimit(fpsLimit);
+
+	
 }
 
 void RTSGameStateRender::run(bool& isRunning)
@@ -86,6 +88,13 @@ void RTSGameStateRender::run(bool& isRunning)
 	m_fps = 0;
 	int m_fpscount = 0;
 	sf::Clock clock;
+
+	//Set Minimap View
+	view2.setViewport(sf::FloatRect(0.75f, 0.75f, 0.25f, 0.25f));
+	view2.setCenter((float)(window.getSize().x / 2), (float)(window.getSize().y / 2));
+	view2.setSize(window.getDefaultView().getSize()); // Reset the size	
+	view2.zoom(8);
+	
 
 	while (window.isOpen() && isRunning)
 	{
@@ -108,9 +117,18 @@ void RTSGameStateRender::run(bool& isRunning)
 			std::lock_guard<std::mutex> lockGuard(mutexRender);
 			handleInput(window);
 
-			window.clear();
+			window.clear(sf::Color::Red);
+			sf::View gameView = window.getView();
 
+			//Render Game view
 			drawLayers(window);
+
+			//Render Minimap
+			window.setView(view2);
+			drawLayers(window);
+			
+			window.setView(gameView);
+			
 
 			if (dragging)
 			{
@@ -387,25 +405,6 @@ void RTSGameStateRender::initializeLayers()
 
 void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 {
-	////Update and Draw each layer by order	
-	//if (!renderLayers.empty())
-	//	for (auto& layer : renderLayers)
-	//	{
-	//		if (!drawGameStateBuffer)
-	//		{
-	//			//Draw current gameState
-	//			layer->update(gameStateCopy);
-	//			layer->draw(gameStateCopy, window);
-	//		}
-	//		else
-	//		{
-	//			layer->update(gameStatesBuffer.getElement(gameStatesBufferRCurrentIndex));
-	//			layer->draw(gameStatesBuffer.getElement(gameStatesBufferRCurrentIndex), window);
-
-	//		}
-
-	//	}
-
 	mapSprites.clear();
 	entitySprites.clear();
 	unitsInfo.clear();
@@ -646,11 +645,103 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 
 void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 {
+	/*ImGui::ShowDemoWindow();*/
+
+	createTopBar();
 	createWindowInfo();
 	createWindowUnits();
 	createWindowNavMesh();
+	createBottomBar(window);
 }
 
+void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
+{
+	ImGuiWindowFlags window_flags = 0;
+	window_flags+= ImGuiWindowFlags_NoTitleBar;
+	window_flags+= ImGuiWindowFlags_NoScrollbar;
+	window_flags+= ImGuiWindowFlags_MenuBar;
+	//window_flags+= ImGuiWindowFlags_NoMove;
+	window_flags+= ImGuiWindowFlags_NoResize;
+	window_flags+= ImGuiWindowFlags_NoCollapse;
+	window_flags+= ImGuiWindowFlags_NoNav;
+	//window_flags+= ImGuiWindowFlags_NoBackground;
+	window_flags+= ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+	// We specify a default position/size in case there's no data in the .ini file.
+	// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
+	ImGui::SetNextWindowPos(ImVec2(0, 600));
+	ImGui::SetNextWindowSize(ImVec2(window.getSize().x, 200));
+
+	//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
+	ImGui::Begin("Bottom Bar",NULL,window_flags);
+	
+	ImGui::Columns(3, "mixed");
+	ImGui::SetColumnWidth(0, 250.0f);
+	ImGui::SetColumnWidth(1, 600.0f);
+	ImGui::SetColumnWidth(2, 100.0f);
+	ImGui::Separator();
+
+	ImGui::Text("Actions");
+	
+	for (int i = 0; i < 4 * 3; i++)
+	{
+		ImGui::PushID(i);
+		if (ImGui::Button("Action",ImVec2(50, 50)))
+		{
+			
+		}
+		if ((i % 4) < 3) ImGui::SameLine();
+		ImGui::PopID();
+	}
+
+	ImGui::NextColumn();
+	ImGui::Text("Entities");
+	
+	int numberOfEntities = selectedUnits.size();
+	static int entities[10] = {0};
+	for (int i = 0; i < numberOfEntities; i++)
+	{
+		if ((i % 8) != 0) ImGui::SameLine();
+		ImGui::PushID(i);
+		
+		if (ImGui::Button("Action", ImVec2(50, 50)))
+		{
+			// Toggle
+			entities[i] = !entities[i];
+		}
+		
+		ImGui::PopID();
+	}
+	
+	ImGui::NextColumn();
+
+	ImGui::Text("Minimap");
+	
+	ImGui::NextColumn();
+	
+	ImGui::Columns(1);
+	ImGui::Separator();
+	ImGui::End();
+}
+
+void RTSGameStateRender::createTopBar()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("Resources"))
+		{
+			if (ImGui::MenuItem("Test1", "text")) {}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Resources2"))
+		{
+			if (ImGui::MenuItem("Test1", "text")) {}
+			ImGui::EndMenu();
+		}
+		
+		ImGui::EndMainMenuBar();
+	}
+}
 void RTSGameStateRender::createWindowInfo()
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
