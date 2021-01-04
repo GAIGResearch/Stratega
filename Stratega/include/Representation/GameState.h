@@ -75,6 +75,8 @@ namespace SGA
 
 		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
 
+		const Entity* getEntityAt(const Vector2f& pos) const;
+		
 		Entity& getEntity(int entityID)
 		{
 			return* std::find_if(std::begin(entities), std::end(entities),

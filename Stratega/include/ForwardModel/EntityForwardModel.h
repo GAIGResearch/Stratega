@@ -3,14 +3,14 @@
 // ToDo Why is this in configuration?
 #include <Configuration/WinConditionType.h>
 
-#include <ForwardModel/ActionSpaceBase.h>
+#include <ForwardModel/EntityActionSpace.h>
 
 namespace SGA
 {
 	class EntityForwardModel
 	{
 	public:
-		std::shared_ptr<ActionSpaceBase<GameState>> actionSpace;
+		std::shared_ptr<EntityActionSpace> actionSpace;
 		std::vector<std::shared_ptr<Effect>> onTickEffects;
 		WinConditionType winCondition;
 		int targetUnitTypeID;
@@ -26,12 +26,12 @@ namespace SGA
 		void executeAction(GameState& state, const Action& action) const;
 		void endTick(GameState& state) const;
 
-		std::unique_ptr<ActionSpaceBase<GameState>> generateDefaultActionSpace()
+		std::unique_ptr<EntityActionSpace> generateDefaultActionSpace()
 		{
-			return std::make_unique<ActionSpaceBase<GameState>>();
+			return std::make_unique<EntityActionSpace>();
 		}
 		
-		void setActionSpace(std::unique_ptr<ActionSpaceBase<GameState>> actionSpace)
+		void setActionSpace(std::unique_ptr<EntityActionSpace> actionSpace)
 		{
 			this->actionSpace = std::move(actionSpace);
 		}

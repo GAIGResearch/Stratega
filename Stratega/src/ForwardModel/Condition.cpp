@@ -1,5 +1,7 @@
 #include <ForwardModel/Condition.h>
 #include <Representation/Entity.h>
+#include <Representation/GameState.h>
+
 namespace  SGA
 {
 	HasResource::HasResource(const std::vector<FunctionParameter>& parameters) :
@@ -43,5 +45,16 @@ namespace  SGA
 		auto dist = distance.getConstant(state, targets);
 
 		return source.position.distance(target.position) <= dist;
+	}
+
+	IsWalkable::IsWalkable(const std::vector<FunctionParameter>& parameters)
+		: targetPosition(parameters[0])
+	{
+	}
+	
+	bool IsWalkable::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
 	}
 }

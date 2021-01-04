@@ -10,6 +10,7 @@ namespace SGA
 		factory.registerFunction<HasResource>("HasResource");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<IsWalkable>("IsWalkable");
 		
 		return factory;
 	}

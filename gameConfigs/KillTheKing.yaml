@@ -66,6 +66,8 @@ Actions:
             Type: Position
             Shape: Square
             Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
         Effects:
             - "Move()"
             - "ModifyResource(Source.MovementPoints, -1)"
@@ -84,7 +86,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../GUI/Assets/unit1New.png
+        Sprite: ../GUI/Assets/unit2New.png
         LineOfSightRange: 6
         Actions: [Attack, Move]
         Parameters:
@@ -94,7 +96,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../GUI/Assets/unit5New.png
+        Sprite: ../GUI/Assets/unit4New.png
         LineOfSightRange: 10
         Parameters:
             Health: 100
@@ -104,7 +106,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../GUI/Assets/unit5New.png
+        Sprite: ../GUI/Assets/unit3New.png
         LineOfSightRange: 4
         Parameters:
             Health: 40
@@ -114,7 +116,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../GUI/Assets/unit5New.png
+        Sprite: ../GUI/Assets/unit1New.png
         LineOfSightRange: 6
         Parameters:
             Health: 400

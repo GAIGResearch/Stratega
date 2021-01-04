@@ -45,5 +45,14 @@ namespace SGA
 		InRange(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class IsWalkable : public Condition
+	{
+		FunctionParameter targetPosition;
+
+	public:
+		IsWalkable(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 }

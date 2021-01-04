@@ -96,7 +96,7 @@ namespace SGA
 			{
 				int value;
 				ss >> value;
-				return FunctionParameter(static_cast<double>(prefix == '-' ? -value : value));
+				return FunctionParameter::createConstParameter(static_cast<double>(prefix == '-' ? -value : value));
 			}
 
 			return {};
@@ -122,13 +122,13 @@ namespace SGA
 				throw std::runtime_error("Unknown parameter/action-target: " + targetName + "." + parameterName);
 			}
 			
-			return FunctionParameter(parameterIt->second, targetIt->second);
+			return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
 		}
 
 		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const IDMap& targetIDs) const
 		{
 			std::string targetName = parseText(ss);
-			if (targetName.empty() || ss.peek() != ',')
+			if (targetName.empty())
 				return {};
 			
 			auto targetIt = targetIDs.find(targetName);
@@ -137,7 +137,7 @@ namespace SGA
 				throw std::runtime_error("Unknown action target " + targetName);
 			}
 
-			return FunctionParameter(targetIt->second);
+			return FunctionParameter::createArgumentReference(targetIt->second);
 		}
 
 		std::string parseText(std::istringstream& ss) const
