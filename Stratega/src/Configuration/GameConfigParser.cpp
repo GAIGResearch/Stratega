@@ -129,7 +129,7 @@ namespace SGA
             EntityType type;
             type.name = nameTypePair.first;
             type.id = config.entityTypes.size();
-            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>())
+            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>(std::map<std::string, double>()))
             {
                 // Assign IDs to parameters that do not exist yet
                 if (config.parameters.find(nameParamPair.first) == config.parameters.end())
