@@ -58,6 +58,12 @@ void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSp
 
 	//TODO add new sprites
 	assetCache.loadTexture("building", "../GUI/Assets/buildingNew.png");;
+
+	//Create new renderTexture
+	if (!renderMinimapTexture.create(2000, 2000))
+	{
+		// error...
+	}
 }
 
 void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -90,11 +96,11 @@ void RTSGameStateRender::run(bool& isRunning)
 	sf::Clock clock;
 
 	//Set Minimap View
-	view2.setViewport(sf::FloatRect(0.75f, 0.75f, 0.25f, 0.25f));
-	view2.setCenter((float)(window.getSize().x / 2), (float)(window.getSize().y / 2));
-	view2.setSize(window.getDefaultView().getSize()); // Reset the size	
-	view2.zoom(8);
-	
+	//view2.setViewport(sf::FloatRect(0.75f, 0.75f, 0.25f, 0.25f));
+	//view2.setCenter((float)(window.getSize().x / 2), (float)(window.getSize().y / 2));
+	//view2.setSize(window.getDefaultView().getSize()); // Reset the size	
+	//view2.zoom(8);
+	//
 
 	while (window.isOpen() && isRunning)
 	{
@@ -118,17 +124,10 @@ void RTSGameStateRender::run(bool& isRunning)
 			handleInput(window);
 
 			window.clear(sf::Color::Red);
-			sf::View gameView = window.getView();
-
+			
 			//Render Game view
 			drawLayers(window);
 
-			//Render Minimap
-			window.setView(view2);
-			drawLayers(window);
-			
-			window.setView(gameView);
-			
 
 			if (dragging)
 			{
@@ -410,6 +409,8 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	unitsInfo.clear();
 	healthBars.clear();
 	
+	renderMinimapTexture.clear();
+
 	SGA::Board& board = gameStateCopy.board;
 
 	for (int y = 0; y < board.getHeight(); ++y)
@@ -430,6 +431,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	for (const auto& sprite : mapSprites)
 	{
 		window.draw(sprite);
+		renderMinimapTexture.draw(sprite);
 	}
 
 	//Draw entities
@@ -506,11 +508,13 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	for (const auto& sprite : entitySprites)
 	{
 		window.draw(sprite);
+		renderMinimapTexture.draw(sprite);
 	}
 
 	for (const auto& sprite : healthBars)
 	{
 		window.draw(sprite);
+		renderMinimapTexture.draw(sprite);
 	}
 
 	//Check if units are selected
@@ -641,6 +645,8 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 				}
 			}
 	}
+
+	renderMinimapTexture.display();
 }
 
 void RTSGameStateRender::createHUD(sf::RenderWindow& window)
@@ -648,7 +654,7 @@ void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	/*ImGui::ShowDemoWindow();*/
 
 	createTopBar();
-	createWindowInfo();
+	createWindowInfo(window);
 	createWindowUnits();
 	createWindowNavMesh();
 	createBottomBar(window);
@@ -669,8 +675,8 @@ void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
 
 	// We specify a default position/size in case there's no data in the .ini file.
 	// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-	ImGui::SetNextWindowPos(ImVec2(0, 600));
-	ImGui::SetNextWindowSize(ImVec2(window.getSize().x, 200));
+	ImGui::SetNextWindowPos(ImVec2(0, 590));
+	ImGui::SetNextWindowSize(ImVec2(window.getSize().x, 300));
 
 	//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
 	ImGui::Begin("Bottom Bar",NULL,window_flags);
@@ -678,45 +684,77 @@ void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
 	ImGui::Columns(3, "mixed");
 	ImGui::SetColumnWidth(0, 250.0f);
 	ImGui::SetColumnWidth(1, 600.0f);
-	ImGui::SetColumnWidth(2, 100.0f);
+	ImGui::SetColumnWidth(2, 250);
 	ImGui::Separator();
 
 	ImGui::Text("Actions");
+	int numberOfEntities= selectedUnits.size();
 	
-	for (int i = 0; i < 4 * 3; i++)
+	std::unordered_set<int> actionTypes;
+	for each (auto& entity in selectedUnits)
 	{
-		ImGui::PushID(i);
-		if (ImGui::Button("Action",ImVec2(50, 50)))
+		int entityTypeID = gameStateCopy.getEntity(entity).typeID;
+		
+
+		for each (auto& actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
 		{
-			
+			actionTypes.insert(actionID);
+		}		
+	}
+
+
+	int elementNumber = 0;
+	for each (auto& actionType in actionTypes)
+	{
+		ImGui::PushID(elementNumber);
+		if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
+		{
+
 		}
-		if ((i % 4) < 3) ImGui::SameLine();
+		if ((elementNumber++ % 4) < 3) ImGui::SameLine();
 		ImGui::PopID();
+	}
+	for (int i = 0; i < actionTypes.size(); i++)
+	{
+		
 	}
 
 	ImGui::NextColumn();
-	ImGui::Text("Entities");
-	
-	int numberOfEntities = selectedUnits.size();
-	static int entities[10] = {0};
-	for (int i = 0; i < numberOfEntities; i++)
+	ImGui::Text("Entities");	
+	elementNumber = 0;
+	for each (auto& entity in selectedUnits)
 	{
-		if ((i % 8) != 0) ImGui::SameLine();
-		ImGui::PushID(i);
+		ImGui::PushID(elementNumber);
+		if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 		
-		if (ImGui::Button("Action", ImVec2(50, 50)))
+		//Check if entity have sprite
+		auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(entity).typeID);
+		//Add units
+		sf::Texture& texture = assetCache.getTexture(entityType.name);
+
+		if (ImGui::ImageButton(texture,ImVec2(50, 50),-10))
 		{
-			// Toggle
-			entities[i] = !entities[i];
 		}
-		
+
 		ImGui::PopID();
 	}
 	
+
 	ImGui::NextColumn();
 
 	ImGui::Text("Minimap");
 	
+	/*renderMinimapTexture.get.create(window.getSize().x, window.getSize().y);
+	texture.update(window);*/
+	
+	sf::Sprite sprite;
+	
+	sprite.setTexture(renderMinimapTexture.getTexture());
+	
+	sprite.scale(0.1, -0.1);
+	sprite.rotate(20);
+	ImGui::Image(renderMinimapTexture.getTexture(),sf::Vector2f(250,250));
+
 	ImGui::NextColumn();
 	
 	ImGui::Columns(1);
@@ -742,7 +780,7 @@ void RTSGameStateRender::createTopBar()
 		ImGui::EndMainMenuBar();
 	}
 }
-void RTSGameStateRender::createWindowInfo()
+void RTSGameStateRender::createWindowInfo(sf::RenderWindow& window)
 {
 	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
@@ -770,6 +808,25 @@ void RTSGameStateRender::createWindowInfo()
 	if (ImGui::Button("Draw Debug"))
 	{
 		drawDebug = !drawDebug;
+	}
+
+	ImGui::Separator();
+	if (ImGui::Button("Screenshot"))
+	{
+		sf::Texture texture;
+		texture.create(window.getSize().x, window.getSize().y);
+		texture.update(window);
+		std::time_t rawtime;
+		std::time(&rawtime);
+		const std::tm* timeinfo = std::localtime(&rawtime);
+
+		char yyyymmdd[16];
+		std::strftime(yyyymmdd, sizeof(yyyymmdd), "%Y%m%d", timeinfo);
+		std::string fileName = "screenshot" + std::string(yyyymmdd) + ".png";
+		if (texture.copyToImage().saveToFile(fileName))
+		{			
+			std::cout << "screenshot saved to " << fileName << std::endl;
+		}
 	}
 
 	ImGui::End();

@@ -49,7 +49,7 @@ private:
 
 	void createTopBar();
 	void createBottomBar(sf::RenderWindow& window);
-	void createWindowInfo();
+	void createWindowInfo(sf::RenderWindow& window);
 	void createWindowUnits();
 	void createWindowNavMesh();
 
@@ -94,5 +94,7 @@ private:
 
 	std::vector<sf::Text> unitsInfo;
 	std::vector<sf::RectangleShape> healthBars;
+
+	sf::RenderTexture renderMinimapTexture;
 
 };
