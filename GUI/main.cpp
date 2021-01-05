@@ -2,7 +2,8 @@
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 #include <Game/TBSGameCommunicator.h>
-#include <yaml-cpp/node/parse.h>
+//#include <yaml-cpp/node/parse.h>
+#include <Configuration/YamlHeaders.h>
 #include <Game/TBSGame.h>
 #include "Configuration/GameConfigParser.h"
 

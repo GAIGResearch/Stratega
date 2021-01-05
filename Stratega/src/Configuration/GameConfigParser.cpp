@@ -2,8 +2,9 @@
 #include <Configuration/BoardGenerator.h>
 #include <Agent/AgentFactory.h>
 
-#include <yaml-cpp/node/parse.h>
-#include <yaml-cpp/yaml.h>
+#include <Configuration/YamlHeaders.h>
+//#include <yaml-cpp/node/parse.h>
+//#include <yaml-cpp/yaml.h>
 
 namespace SGA
 {
