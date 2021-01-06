@@ -18,10 +18,10 @@ namespace SGA::Widgets
 	};
 
 	/// <summary>
-	/// Displays a widget for changing the settings for rendering FogOfWar
+	/// Displays a widget for changing the render-settings of FogOfWar
 	/// </summary>
 	/// <param name="state">The current GameState</param>
 	/// <param name="fowSettings">The settings that will be rendered</param>
-	/// <returns>A boolean indicating if the selected changed</returns>
+	/// <returns>A boolean indicating if the selected player changed</returns>
 	bool fowController(const GameState& state, FogOfWarSettings& fowSettings);
 }

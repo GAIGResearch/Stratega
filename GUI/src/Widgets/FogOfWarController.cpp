@@ -30,7 +30,8 @@ namespace SGA::Widgets
 			}
 			ImGui::EndCombo();
 		}
-		
+
+		// Select player
 		bool selectionChanged = false;
 		if (ImGui::BeginCombo("View", ("Player " + std::to_string(fowSettings.selectedPlayerID)).c_str()))
 		{
