@@ -140,7 +140,8 @@ namespace SGA
             type.name = nameTypePair.first;
             type.id = config.entityTypes.size();
             type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
-            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>())
+
+            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>(std::map<std::string, double>()))
             {
                 // Assign IDs to parameters that do not exist yet
                 if (config.parameters.find(nameParamPair.first) == config.parameters.end())
@@ -201,8 +202,8 @@ namespace SGA
         config.actionTypes.emplace(0, std::move(actionType));
 
         FunctionParser parser;
-        auto types = actionsNode.as<std::map<std::string, YAML::Node>>();
-        for (const auto& nameTypePair : types)
+        auto context = ParseContext::fromGameConfig(config);
+        for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
             type.id = config.actionTypes.size();
@@ -210,23 +211,23 @@ namespace SGA
             type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
             type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
             type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
-            std::unordered_map<std::string, int> actionTargetIds;
-            actionTargetIds.emplace("Source", 0);
-            actionTargetIds.emplace("Target", 1);
 
             // Parse preconditions
+            context.targetIDs.emplace("Source", 0);
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(preconditions, type.preconditions, actionTargetIds, config.parameters);
+            parser.parseFunctions(preconditions, type.preconditions, context);
 
             // Parse target conditions
+            context.targetIDs.emplace("Target", 1);
             auto targetConditions = nameTypePair.second["Target"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(targetConditions, type.targetConditions, actionTargetIds, config.parameters);
+            parser.parseFunctions(targetConditions, type.targetConditions, context);
         	
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(effects, type.effects, actionTargetIds, config.parameters);
+            parser.parseFunctions(effects, type.effects, context);
 
             config.actionTypes.emplace(type.id, std::move(type));
+            context.targetIDs.clear();
         }
     }
 
@@ -276,22 +277,20 @@ namespace SGA
 
 		// Parse Trigger
         FunctionParser parser;
-        auto triggers = fmNode["Trigger"].as<std::map<std::string, std::vector<std::string>>>(std::map<std::string, std::vector<std::string>>());
-		for(const auto& nameEffectsPair : triggers)
+        auto context = ParseContext::fromGameConfig(config);
+		for(const auto& nameEffectsPair : fmNode["Trigger"].as<std::map<std::string, std::vector<std::string>>>(std::map<std::string, std::vector<std::string>>()))
 		{
 			if(nameEffectsPair.first == "OnTick")
 			{
-                std::unordered_map<std::string, int> targetMap =
-                {
-                    {"Source", 0}
-                };
-				
-                parser.parseFunctions<Effect>(nameEffectsPair.second, fm->onTickEffects, targetMap, config.parameters);
+                context.targetIDs.emplace("Source", 0);
+                parser.parseFunctions<Effect>(nameEffectsPair.second, fm->onTickEffects, context);
 			}
             else
             {
                 std::cerr << "Unknown trigger with name " << nameEffectsPair.first << " will be ignored." << std::endl;
             }
+
+            context.targetIDs.clear();
 		}
 		
         config.forwardModel = std::move(fm);

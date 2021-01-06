@@ -1,5 +1,5 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -47,31 +47,12 @@ Board:
           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 Actions:
-    Attack:
+    # Spawn Actions
+    SpawnMiner:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: All
-            Conditions:
-                - "InRange(Source, Target, Source.AttackRange)"
-        Effects:
-            - "Attack(Target.Health, Source.AttackDamage)"
-
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 4
-        Effects:
-            - "Spawn(Warrior, Target)"
-
-    Move:
-        Type: EntityAction
         Preconditions:
-            - "HasResource(Source.MovementPoints, 1)"
+            - "HasResource(Source.Gold, 50)"
         Target:
             Type: Position
             Shape: Square
@@ -79,66 +60,65 @@ Actions:
             Conditions:
                 - "IsWalkable(Target)"
         Effects:
-            - "Move()"
-            - "ModifyResource(Source.MovementPoints, -1)"
+            - "Spawn(Miner, Target)"
+            - "ModifyResource(Source.Gold, -50)"
 
-    Heal:
+    SpawnFighter:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Fighter, Target)"
+            - "ModifyResource(Source.Gold, -100)"
+
+    # Attack Actions
+    Attack:
         Type: EntityAction
         Cooldown: 1
         Target:
             Type: Entity
             ValidTargets: All
             Conditions:
-                - "InRange(Source, Target, Source.HealRange)"
         Effects:
-            - "ModifyResource(Target.Health, Source.HealAmount)"
 
+    # Resource Actions
 
 Entities:
-    Warrior:
+    Base:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 5
+        Actions: [SpawnMiner]
+        Parameters:
+            Gold: 50
+
+    Miner:
+        Sprite: ../GUI/Assets/farmer.png
+        LineOfSightRange: 4
+        Actions: []
+        Parameters:
+            Gold: 0
+
+    Fighter:
         Sprite: ../GUI/Assets/unit2New.png
         LineOfSightRange: 6
-        Actions: [Attack, Move, Spawn]
-        Parameters:
-            Health: 200
-            AttackRange: 2
-            AttackDamage: 100
-            MovementPoints: 2
+        Actions: []
 
-    Archer:
-        Sprite: ../GUI/Assets/unit4New.png
-        LineOfSightRange: 10
-        Parameters:
-            Health: 100
-            AttackRange: 5
-            AttackDamage: 10
-            MovementPoints: 2
-        Actions: [Attack, Move]
-
-    Healer:
-        Sprite: ../GUI/Assets/unit3New.png
-        LineOfSightRange: 4
-        Parameters:
-            Health: 40
-            HealRange: 2
-            HealAmount: 10
-            MovementPoints: 5
-        Actions: [Heal, Move]
-
-    King:
-        Sprite: ../GUI/Assets/unit1New.png
+    GoldVein:
+        Sprite: ../GUI/Assets/gold_chest.png
         LineOfSightRange: 6
+        Actions: []
         Parameters:
-            Health: 400
-            AttackRange: 2
-            AttackDamage: 100
-            MovementPoints: 1
-        Actions: [Attack, Move]
+            Gold: 200
 
 ForwardModel:
     WinCondition:
-        Type: LastManStanding
-        Unit: King
-    Trigger:
-        OnTick:
-            - "SetToMaximum(Source.MovementPoints)"
+        Type: LastManStanding.
+
+

@@ -2,7 +2,7 @@
 #include <ForwardModel/EntityForwardModel.h>
 #include <Representation/TBSGameState.h>
 #include <Representation/Player.h>
-#include <ForwardModel/ActionSpaceBase.h>
+#include <ForwardModel/EntityActionSpace.h>
 
 namespace  SGA
 {
@@ -15,9 +15,11 @@ namespace  SGA
 			{
 				endTurn(state);
 			}
-			
-			//Execute the action
-			executeAction(state, action);
+			else
+			{
+				//Execute the action
+				executeAction(state, action);
+			}
 
 			//Remove entities
 			for (size_t i = 0; i < state.entities.size(); i++)
@@ -57,12 +59,12 @@ namespace  SGA
 
 		virtual std::vector<Action> generateActions(TBSGameState& state) const
 		{
-			return (ActionSpaceBase<TBSGameState>().generateActions(state, state.currentPlayer));
+			return (EntityActionSpace().generateActions(state, state.currentPlayer));
 		}
 
 		virtual std::vector<Action> generateActions(TBSGameState& state, int playerID) const
 		{
-			return (ActionSpaceBase<TBSGameState>().generateActions(state, playerID));
+			return (EntityActionSpace().generateActions(state, playerID));
 		}
 
 		virtual bool isValid(const TBSGameState& state, const Action& action) const { return true; }

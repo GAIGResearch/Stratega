@@ -290,7 +290,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 void RTSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
 {
 	// Mouse button is pressed, get the position and set moving as active
-	if (event.mouseButton.button == sf::Mouse::Left)
+	if (event.mouseButton.button == sf::Mouse::Left && ((isFogOfWarActive && (getPlayerID() == playerSelector.playerID)) || !isFogOfWarActive))
 	{
 		oldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		dragging = true;

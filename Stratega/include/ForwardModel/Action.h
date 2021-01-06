@@ -30,6 +30,7 @@ namespace SGA
 		static Action createEndAction(int playerID)
 		{
 			Action a;
+			a.actionTypeID = 0;
 			a.ownerID = playerID;
 			a.isEndAction = true;
 			return a;

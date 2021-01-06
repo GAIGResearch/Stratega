@@ -43,6 +43,9 @@ namespace SGA
 
 	class SpawnUnit : public Effect
 	{
+		FunctionParameter entityTypeParam;
+		FunctionParameter targetPositionParam;
+		
 	public:
 		SpawnUnit(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;

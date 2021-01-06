@@ -10,6 +10,7 @@ namespace SGA
 		factory.registerFunction<HasResource>("HasResource");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<IsWalkable>("IsWalkable");
 		
 		return factory;
 	}
@@ -20,7 +21,7 @@ namespace SGA
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
 		factory.registerFunction<Move>("Move");
-		factory.registerFunction<SpawnUnit>("SpawnUnit");
+		factory.registerFunction<SpawnUnit>("Spawn");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
 
 		return factory;

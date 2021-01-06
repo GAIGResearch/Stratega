@@ -4,6 +4,11 @@ namespace SGA
 {
 	Vector2f targetToPosition(const GameState& state, const ActionTarget& target)
 	{
+		if(std::holds_alternative<int>(target))
+		{
+			return targetToEntity(state, target).position;
+		}
+		
 		return std::get<Vector2f>(target);
 	}
 	
