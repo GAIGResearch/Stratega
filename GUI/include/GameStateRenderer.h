@@ -3,71 +3,67 @@
 #include <thread>
 #include <AssetCache.h>
 #include <mutex>
-
-#include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
-
-
-#include <imgui-SFML.h>
-#include <imgui.h>
-#include <iomanip>
-
 #include <Game/Game.h>
-#include<PlayerSelector.h>
 
-class GameStateRenderBase : public SGA::GameCommunicator
+#include <Widgets/FogOfWarController.h>
+
+namespace SGA
 {
-public:
-	PlayerSelector playerSelector;
-	GameStateRenderBase(int playerID) :
-		GameCommunicator{ playerID }
+	class GameStateRenderBase : public SGA::GameCommunicator
 	{
-	}
-	virtual ~GameStateRenderBase() = default;
-	virtual void render() = 0;
-};
+	public:
+		GameStateRenderBase(int playerID) :
+			GameCommunicator{ playerID }
+		{
+		}
+		virtual ~GameStateRenderBase() = default;
+		virtual void render() = 0;
+	};
 
-template<typename GameState>
-class GameStateRenderer : public GameStateRenderBase
-{
-public:
-	GameStateRenderer(int playerID) :
-		GameStateRenderBase{ playerID }
+	template<typename GameState>
+	class GameStateRenderer : public GameStateRenderBase
 	{
-	}
-	virtual ~GameStateRenderer()=default;
-	
-	// GameCommunicator functions
-	void init() override
-	{
-		isRendering = true;
-	}
-	
-	void close() override
-	{
-		isRendering = false;
-	}
+	public:
+		GameStateRenderer(int playerID) :
+			GameStateRenderBase{ playerID },
+			fowSettings{true, Widgets::FogRenderType::Fog, playerID}
+		{
+		}
+		virtual ~GameStateRenderer() = default;
 
-	void onGameStateAdvanced() override = 0;
+		// GameCommunicator functions
+		void init() override
+		{
+			isRendering = true;
+		}
 
-	//RenderThread
-	std::thread renderThread;
-	std::mutex mutexRender;
+		void close() override
+		{
+			isRendering = false;
+		}
 
-	//OpenGL context
-	sf::Context ctx;
+		void onGameStateAdvanced() override = 0;
 
-	AssetCache assetCache;
+		//RenderThread
+		std::thread renderThread;
+		std::mutex mutexRender;
 
-protected:
-	//New render system(withoutlayers)
-	std::vector<sf::Sprite> mapSprites;
-	std::vector<sf::Sprite> entitySprites;
-	std::vector<sf::Text> entityInfo;
-	std::vector<sf::Sprite> overlaySprites;
-	std::vector<sf::CircleShape> actionsSelectedEntity;
+		//OpenGL context
+		sf::Context ctx;
 
-	bool isRendering = false;
-	bool isFogOfWarActive = false;
-	bool renderFogOfWarTile = false;
-};
+		AssetCache assetCache;
+
+	protected:
+		//New render system(withoutlayers)
+		std::vector<sf::Sprite> mapSprites;
+		std::vector<sf::Sprite> entitySprites;
+		std::vector<sf::Text> entityInfo;
+		std::vector<sf::Sprite> overlaySprites;
+		std::vector<sf::CircleShape> actionsSelectedEntity;
+
+		bool isRendering = false;
+		Widgets::FogOfWarSettings fowSettings;
+	};
+
+}

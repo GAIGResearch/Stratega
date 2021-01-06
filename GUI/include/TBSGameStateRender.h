@@ -9,100 +9,104 @@
 
 #include <ForwardModel/Action.h>
 
-class TBSGameStateRender : public GameStateRenderer<SGA::TBSGameState>
+namespace SGA
 {
-public:
-	TBSGameStateRender(SGA::TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
-	void render() override;
-
-	// GameCommunicator functions
-	void onGameStateAdvanced() override;
-
-private:
-	void init() override;
-	void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
-	void initializeView(sf::RenderWindow& window) const;
-	void initializeLayers();
-
-	void handleInput(sf::RenderWindow& window);
-
-	//Events Implementation
-	void windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const;
-	void mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-
-	//Render Layers by order
-	void drawLayers(sf::RenderWindow& window);
-
-	//HUD
-	void createHUD(sf::RenderWindow& window);
-
-	void createWindowInfo()const;
-	void createWindowUnits();
-	void createWindowActions();
-	void createWindowMultipleActions(sf::RenderWindow& window);
-	void createWindowFogOfWar();
-
-	//Human player stuff
-	void waitForHumanToPlay()
+	class TBSGameStateRender : public GameStateRenderer<TBSGameState>
 	{
-		waitForAction = true;
+	public:
+		TBSGameStateRender(TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+		void render() override;
 
-		actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy,getPlayerID());
-		actionHumanUnitSelected.clear();
-	}
+		// GameCommunicator functions
+		void onGameStateAdvanced() override;
 
-	void playAction(SGA::Action action)
-	{
-		waitForAction = false;
-		actionsHumanCanPlay.clear();
-		actionHumanUnitSelected.clear();
-		selectedEntity = nullptr;
-		showMultipleActions = false;
-		game->addActionToExecute(action);
-	}
+	private:
+		void init() override;
+		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
+		void initializeView(sf::RenderWindow& window) const;
+		void initializeLayers();
 
-private:
+		void handleInput(sf::RenderWindow& window);
 
-	//Game Data
-	SGA::TBSGame* game;
+		//Events Implementation
+		void windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const;
+		void mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
 
-	//Current gamestate used to render
-	SGA::TBSGameState gameStateCopy;
-	SGA::TBSGameState gameStateCopyFogOfWar;
+		//Render Layers by order
+		void drawLayers(sf::RenderWindow& window);
 
-	//Zoom
-	float zoomValue = 5;
+		//HUD
+		void createHUD(sf::RenderWindow& window);
 
-	//Mouse Information
-	SGA::Vector2f currentMousePos;
-	sf::Vector2f oldPos;
-	bool moving = false;
+		void createWindowInfo()const;
+		void createWindowUnits();
+		void createWindowActions();
+		void createWindowMultipleActions(sf::RenderWindow& window);
+		void createWindowFogOfWar();
 
-	//FPS
-	int fpsLimit = 60;
-	int m_fps = 0;
+		//Human player stuff
+		void waitForHumanToPlay()
+		{
+			waitForAction = true;
 
-	//Drawing gameState Buffer
-	bool drawGameStateBuffer = false;
-	CircularBuffer<SGA::TBSGameState> gameStatesBuffer;
-	int gameStatesBufferRCurrentIndex = 0;
+			actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy, getPlayerID());
+			actionHumanUnitSelected.clear();
+		}
 
-	//Human player
-	bool waitForAction = false;
-	std::vector<SGA::Action> actionsHumanCanPlay;
+		void playAction(Action action)
+		{
+			waitForAction = false;
+			actionsHumanCanPlay.clear();
+			actionHumanUnitSelected.clear();
+			selectedEntity = nullptr;
+			showMultipleActions = false;
+			game->addActionToExecute(action);
+		}
 
-	std::vector<SGA::Action> actionHumanUnitSelected;
-	SGA::Entity* selectedEntity{};
+	private:
 
-	//Imgui
-	sf::Clock deltaClock;
+		//Game Data
+		TBSGame* game;
 
-	//If a tile has more than one action, we render a window
-	//to show all the action that can be played in that tile
-	bool showMultipleActions = false;
-	SGA::Vector2i multipleActionsSourceTile;
-};
+		//Current gamestate used to render
+		TBSGameState gameStateCopy;
+		TBSGameState gameStateCopyFogOfWar;
+
+		//Zoom
+		float zoomValue = 5;
+
+		//Mouse Information
+		Vector2f currentMousePos;
+		sf::Vector2f oldPos;
+		bool moving = false;
+
+		//FPS
+		int fpsLimit = 60;
+		int m_fps = 0;
+
+		//Drawing gameState Buffer
+		bool drawGameStateBuffer = false;
+		CircularBuffer<TBSGameState> gameStatesBuffer;
+		int gameStatesBufferRCurrentIndex = 0;
+
+		//Human player
+		bool waitForAction = false;
+		std::vector<Action> actionsHumanCanPlay;
+
+		std::vector<Action> actionHumanUnitSelected;
+		Entity* selectedEntity{};
+
+		//Imgui
+		sf::Clock deltaClock;
+
+		//If a tile has more than one action, we render a window
+		//to show all the action that can be played in that tile
+		bool showMultipleActions = false;
+		Vector2i multipleActionsSourceTile;
+	};
+
+}
