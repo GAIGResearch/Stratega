@@ -24,6 +24,7 @@ public:
 	{
 	}
 	virtual ~GameStateRenderBase() = default;
+	virtual void render() = 0;
 };
 
 template<typename GameState>
@@ -35,22 +36,18 @@ public:
 	{
 	}
 	virtual ~GameStateRenderer()=default;
-	virtual void run(bool& isRunning) = 0;
 	
 	// GameCommunicator functions
 	void init() override
 	{
-		//Initialization
-		isRenderThreadRunning = true;
-		renderThread = std::thread(&GameStateRenderer::run, this, std::ref(isRenderThreadRunning));
+		isRendering = true;
 	}
 	
 	void close() override
 	{
-		isRenderThreadRunning = false;
-		renderThread.join();
+		isRendering = false;
 	}
-	
+
 	void onGameStateAdvanced() override = 0;
 
 	//RenderThread
@@ -62,9 +59,6 @@ public:
 
 	AssetCache assetCache;
 
-private:
-	bool isRenderThreadRunning = false;
-
 protected:
 	//New render system(withoutlayers)
 	std::vector<sf::Sprite> mapSprites;
@@ -73,6 +67,7 @@ protected:
 	std::vector<sf::Sprite> overlaySprites;
 	std::vector<sf::CircleShape> actionsSelectedEntity;
 
+	bool isRendering = false;
 	bool isFogOfWarActive = false;
 	bool renderFogOfWarTile = false;
 };

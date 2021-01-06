@@ -98,7 +98,7 @@ void TBSGameStateRender::render()
 	int m_fpscount = 0;
 	sf::Clock clock;
 
-	while (window.isOpen() && isRunning)
+	while (window.isOpen() && isRendering)
 	{
 		m_fpscount++;
 

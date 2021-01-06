@@ -84,7 +84,7 @@ void RTSGameStateRender::initializeView(sf::RenderWindow& window) const
 	
 }
 
-void RTSGameStateRender::run(bool& isRunning)
+void RTSGameStateRender::render()
 {
 	sf::RenderWindow window(sf::VideoMode(1200, 800), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 	window.setActive(true);
@@ -105,7 +105,7 @@ void RTSGameStateRender::run(bool& isRunning)
 	//view2.zoom(8);
 	//
 
-	while (window.isOpen() && isRunning)
+	while (window.isOpen() && isRendering)
 	{
 		m_fpscount++;
 
