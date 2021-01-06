@@ -26,7 +26,8 @@ namespace SGA
 		    actionCooldown(0),
 		    maxActionCooldown(1),
 		    movementSpeed(2),
-		    collisionRadius(0.5)
+		    collisionRadius(0.5),
+			lineOfSightRange(5)
 		{
 		}
 
@@ -37,6 +38,7 @@ namespace SGA
 		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
 		bool shouldRemove=false;
+		float lineOfSightRange;
 
 		//RTS Stuff
 		std::optional<Action> intendedAction;

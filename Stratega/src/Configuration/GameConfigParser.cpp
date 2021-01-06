@@ -71,7 +71,16 @@ namespace SGA
 		
         auto tileConfigs = tilesNode.as<std::map<std::string, YAML::Node>>();
         std::unordered_map<std::string, TileType> types;
-        auto idCounter = 0;
+        auto idCounter = -1;
+
+        //Add fog of war tile
+        TileType type;
+        type.id = idCounter++;
+        type.name = "FogOfWar";
+        type.isWalkable = false;
+        type.symbol = '_';
+        config.tileTypes.emplace(type.id, std::move(type));
+
 		for(const auto& nameConfigPair : tileConfigs)
 		{
             TileType type;
@@ -130,6 +139,7 @@ namespace SGA
             EntityType type;
             type.name = nameTypePair.first;
             type.id = config.entityTypes.size();
+            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
             for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>())
             {
                 // Assign IDs to parameters that do not exist yet

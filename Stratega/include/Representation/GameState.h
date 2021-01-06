@@ -216,5 +216,52 @@ namespace SGA
 
 			return nullptr;
 		}
+
+		void applyFogOfWar(int playerID)
+		{
+			auto* targetPlayer = getPlayer(playerID);
+			auto playerUnits = targetPlayer->getEntities();
+
+			// Helper method
+			auto isVisible = [&](const Vector2f& pos)
+			{
+				for (auto* pu : playerUnits)
+				{
+					if (pu->position.distance(pos) <= pu->lineOfSightRange)
+						return true;
+				}
+				return false;
+			};
+
+			// Remove units that are not visible
+			auto it = entities.begin();
+			while (it != entities.end())
+			{
+				if (it->ownerID != targetPlayer->id && !isVisible(it->position))
+				{
+					it = entities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
+
+			// Hide tiles that are not visible
+			for (int y = 0; y < board.getHeight(); y++)
+			{
+				for (int x = 0; x < board.getWidth(); x++)
+				{
+					if (!isVisible(Vector2i(x, y)))
+					{
+						auto& tile = board.getTile(x, y);
+						tile = fogOfWarTile;
+						tile.position = Vector2i(x, y);
+					}
+				}
+			}
+
+			fogOfWarId = playerID;
+		}
 	};
 }

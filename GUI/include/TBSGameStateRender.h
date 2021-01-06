@@ -44,7 +44,7 @@ private:
 	void createWindowUnits();
 	void createWindowActions();
 	void createWindowMultipleActions(sf::RenderWindow& window);
-
+	void createWindowFogOfWar();
 
 	//Human player stuff
 	void waitForHumanToPlay()
@@ -72,6 +72,7 @@ private:
 
 	//Current gamestate used to render
 	SGA::TBSGameState gameStateCopy;
+	SGA::TBSGameState gameStateCopyFogOfWar;
 
 	//Zoom
 	float zoomValue = 5;

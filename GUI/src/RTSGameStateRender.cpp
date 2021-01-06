@@ -13,7 +13,8 @@ RTSGameStateRender::RTSGameStateRender(SGA::RTSGame& game, const std::unordered_
 	gameStateCopy(game.getStateCopy()),
 	gameStatesBuffer(50)
 {
-	init(tileSprites, entitySpritePaths);	
+	init(tileSprites, entitySpritePaths);
+	playerSelector.OnPlayerChange(getPlayerID());
 }
 
 void RTSGameStateRender::init()
@@ -28,6 +29,8 @@ void RTSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
 	gameStateCopy = game->getStateCopy();
+	gameStateCopyFogOfWar = game->getStateCopy();
+	gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
 
 	//Add state to buffer
 	gameStatesBuffer.add(gameStateCopy);
@@ -123,7 +126,7 @@ void RTSGameStateRender::run(bool& isRunning)
 			std::lock_guard<std::mutex> lockGuard(mutexRender);
 			handleInput(window);
 
-			window.clear(sf::Color::Red);
+			window.clear();
 			
 			//Render Game view
 			drawLayers(window);
@@ -208,7 +211,7 @@ void RTSGameStateRender::mouseButtonReleased(const sf::Event& event, sf::View& v
 		moving = false;
 	}
 
-	if (event.mouseButton.button == sf::Mouse::Left)
+	if (event.mouseButton.button == sf::Mouse::Left&&((isFogOfWarActive && (getPlayerID() == playerSelector.playerID)) || !isFogOfWarActive))
 	{
 		dragging = false;
 
@@ -411,20 +414,29 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	
 	renderMinimapTexture.clear();
 
-	SGA::Board& board = gameStateCopy.board;
+	SGA::RTSGameState* selectedGameStateCopy;
+	if (isFogOfWarActive)
+		selectedGameStateCopy = &gameStateCopyFogOfWar;
+	else
+		selectedGameStateCopy = &gameStateCopy;
+
+	SGA::Board& board = selectedGameStateCopy->board;
 
 	for (int y = 0; y < board.getHeight(); ++y)
 	{
 		for (int x = 0; x < board.getWidth(); ++x)
 		{
 			auto& targetTile = board.getTile(x, y);
-			sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
-			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Sprite newTile(texture);
+			if (renderFogOfWarTile || targetTile.tileTypeID != -1)
+			{				
+				sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
+				sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+				sf::Sprite newTile(texture);
 
-			newTile.setPosition(toISO(x, y));
-			newTile.setOrigin(origin);
-			mapSprites.emplace_back(newTile);
+				newTile.setPosition(toISO(x, y));
+				newTile.setOrigin(origin);
+				mapSprites.emplace_back(newTile);
+			}			
 		}
 	}
 
@@ -435,10 +447,10 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	}
 
 	//Draw entities
-	for (auto& entity : gameStateCopy.entities)
+	for (auto& entity : selectedGameStateCopy->entities)
 	{
 		//Check if entity have sprite
-		auto entityType = gameStateCopy.getEntityType(entity.typeID);
+		auto entityType = selectedGameStateCopy->getEntityType(entity.typeID);
 		//Add units
 		sf::Texture& texture = assetCache.getTexture(entityType.name);
 		sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
@@ -476,7 +488,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 		//Check if entity have health
 		if(gameStateCopy.checkEntityHaveParameter(entity.typeID, "Health"))
 		{
-			int globalHealthID = gameStateCopy.getParameterGlobalID("Health");
+			int globalHealthID = selectedGameStateCopy->getParameterGlobalID("Health");
 
 			/*double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
 			double maxHealth = gameStateCopy.getParameterType(entity.typeID, globalHealthID).maxValue;
@@ -518,7 +530,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	}
 
 	//Check if units are selected
-	for (const auto& unit : gameStateCopy.entities)
+	for (const auto& unit : selectedGameStateCopy->entities)
 	{
 		if (isSelected(unit.id))
 		{
@@ -532,12 +544,12 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	}
 	
 	if (drawDebug) {
-		const dtNavMesh* mesh = gameStateCopy.navigation->m_navMesh;
+		const dtNavMesh* mesh = selectedGameStateCopy->navigation->m_navMesh;
 
 		if (mesh)
 		{
 			//Draw navmesh polygons
-			for (int i = 0; i < gameStateCopy.navigation->m_navMesh->getMaxTiles(); ++i)
+			for (int i = 0; i < selectedGameStateCopy->navigation->m_navMesh->getMaxTiles(); ++i)
 			{
 				const dtMeshTile* tile = mesh->getTile(i);
 
@@ -585,7 +597,7 @@ void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 
 	
 	//Draw paths of units
-	for (auto& unit : gameStateCopy.entities)
+	for (auto& unit : selectedGameStateCopy->entities)
 	{
 		if (unit.executingAction.has_value())
 			if (true/*unit.executingAction.type == SGA::RTSActionType::Move || unit.executingAction.type == SGA::RTSActionType::Attack*/)
@@ -658,6 +670,7 @@ void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	createWindowUnits();
 	createWindowNavMesh();
 	createBottomBar(window);
+	createWindowFogOfWar();
 }
 
 void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
@@ -906,6 +919,54 @@ void RTSGameStateRender::createWindowNavMesh()
 	ImGui::Text("Detail Mesh");
 	ImGui::SliderFloat("Sample Distance", &config.m_detailSampleDist, 0.0f, 16.0f);
 	ImGui::SliderFloat("Max Sample Error", &config.m_detailSampleMaxError, 0.0f, 16.0f);
+
+	ImGui::End();
+}
+
+void RTSGameStateRender::createWindowFogOfWar()
+{
+	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Fog of War window");
+
+	
+	ImGui::Checkbox("Is Active", &isFogOfWarActive);
+	if (ImGui::CollapsingHeader("Options", &isFogOfWarActive))
+	{
+		ImGui::Indent(10);
+		ImGui::Checkbox("Render Fog tile", &renderFogOfWarTile);
+	}
+	ImGui::Separator();
+	// Use AlignTextToFramePadding() to align text baseline to the baseline of framed widgets elements
+	// (otherwise a Text+SameLine+Button sequence will have the text a little too high by default!)
+	// See 'Demo->Layout->Text Baseline Alignment' for details.
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Change Player View");
+	ImGui::SameLine();
+
+	// Arrow buttons with Repeater
+	float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+	ImGui::PushButtonRepeat(true);
+	if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
+		if (playerSelector.playerID > 0)
+		{
+			playerSelector.OnPlayerChange(playerSelector.playerID -= 1);
+			gameStateCopyFogOfWar = game->getStateCopy();
+			gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
+		}
+	}
+	ImGui::SameLine(0.0f, spacing);
+	if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
+		if (playerSelector.playerID < gameStateCopy.players.size() - 1)
+		{
+			playerSelector.OnPlayerChange(playerSelector.playerID += 1);
+			gameStateCopyFogOfWar = game->getStateCopy();
+			gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
+		}
+	}
+	ImGui::PopButtonRepeat();
+	ImGui::SameLine();
+	ImGui::Text("%d", playerSelector.playerID);
 
 	ImGui::End();
 }

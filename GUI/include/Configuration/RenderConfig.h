@@ -36,6 +36,7 @@ namespace YAML
                 rhs.entitySpritePaths.emplace(entityName, entityConfig["Sprite"].as<std::string>());
         	}
 
+            rhs.tileSpritePaths.emplace("FogOfWar", "../GUI/Assets/notVisible.png");
             for (const auto& tileNode : node["Tiles"])
             {
                 auto tileName = tileNode.first.as<std::string>();

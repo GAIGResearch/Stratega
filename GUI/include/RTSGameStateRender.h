@@ -52,6 +52,7 @@ private:
 	void createWindowInfo(sf::RenderWindow& window);
 	void createWindowUnits();
 	void createWindowNavMesh();
+	void createWindowFogOfWar();
 
 private:
 	//Game Data
@@ -59,7 +60,7 @@ private:
 
 	//Current gamestate used to render
 	SGA::RTSGameState gameStateCopy;
-
+	SGA::RTSGameState gameStateCopyFogOfWar;
 	//Zoom
 	float zoomValue = 5;
 

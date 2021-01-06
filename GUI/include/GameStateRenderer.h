@@ -13,10 +13,12 @@
 #include <iomanip>
 
 #include <Game/Game.h>
+#include<PlayerSelector.h>
 
 class GameStateRenderBase : public SGA::GameCommunicator
 {
 public:
+	PlayerSelector playerSelector;
 	GameStateRenderBase(int playerID) :
 		GameCommunicator{ playerID }
 	{
@@ -70,4 +72,7 @@ protected:
 	std::vector<sf::Text> entityInfo;
 	std::vector<sf::Sprite> overlaySprites;
 	std::vector<sf::CircleShape> actionsSelectedEntity;
+
+	bool isFogOfWarActive = false;
+	bool renderFogOfWarTile = false;
 };

@@ -13,6 +13,7 @@ TBSGameStateRender::TBSGameStateRender(SGA::TBSGame& game, const std::unordered_
 {
 	init(tileSprites, entitySpritePaths);
 
+	playerSelector.OnPlayerChange(getPlayerID());
 	if (gameStateCopy.currentPlayer == getPlayerID())
 	{
 		std::cout << "Wait for GUI Action" << std::endl;
@@ -32,10 +33,13 @@ void TBSGameStateRender::onGameStateAdvanced()
 {
 	std::lock_guard<std::mutex> lockGuard(mutexRender);
 	gameStateCopy = game->getStateCopy();
+	gameStateCopyFogOfWar = game->getStateCopy();
+	gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
 
 	//Add state to buffer
 	gameStatesBuffer.add(gameStateCopy);
 	gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
+	
 	if (gameStateCopy.currentPlayer == getPlayerID())
 	{
 		std::cout << "Wait for GUI Action" << std::endl;
@@ -192,7 +196,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 		sf::Vector2i pos = toGrid(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 
 		//If selected unit we check if there is action in tile
-		if (selectedEntity)
+		if (selectedEntity && ((isFogOfWarActive && (getPlayerID() == playerSelector.playerID))|| !isFogOfWarActive))
 		{
 			//Recollect each action in tile
 			std::vector<SGA::Action> actionsInTile;
@@ -248,7 +252,7 @@ void TBSGameStateRender::mouseButtonPressed(const sf::Event& event, sf::View& vi
 
 		SGA::Entity* unit = gameStateCopy.getEntity(SGA::Vector2f(pos.x, pos.y));
 
-		if (unit)
+		if (unit && ((isFogOfWarActive && (getPlayerID() == playerSelector.playerID)) || !isFogOfWarActive))
 		{
 
 			//Assign selected unit			
@@ -364,41 +368,10 @@ void TBSGameStateRender::keyPressed(const sf::Event& event, sf::View& view, sf::
 
 void TBSGameStateRender::initializeLayers()
 {
-	////Init Map Layer
-	//renderLayers.emplace_back(std::make_unique<MapLayer<SGA::TBSGameState>>(assetCache));
-	//renderLayers.back()->init(gameStateCopy);
-
-	////Init Unit Layer
-	//renderLayers.emplace_back(std::make_unique<TBSUnitLayer>(assetCache));
-	//renderLayers.back()->init(gameStateCopy);
-
-	////Init Unit Layer
-	//renderLayers.emplace_back(std::make_unique<TBSOverlayLayer>(assetCache, actionHumanUnitSelected, currentMousePos));
-	//renderLayers.back()->init(gameStateCopy);
 }
 
 void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 {
-	//Update and Draw each layer by order	
-	//if (!renderLayers.empty())
-	//	for (auto& layer : renderLayers)
-	//	{
-	//		if (!drawGameStateBuffer)
-	//		{
-	//			//Draw current gameState
-	//			layer->update(gameStateCopy);
-	//			layer->draw(gameStateCopy, window);
-	//		}
-	//		else
-	//		{
-	//			layer->update(gameStatesBuffer.getElement(gameStatesBufferRCurrentIndex));
-	//			layer->draw(gameStatesBuffer.getElement(gameStatesBufferRCurrentIndex), window);
-
-	//		}
-
-	//	}
-
-
 	//Draw Board
 	mapSprites.clear();
 	entitySprites.clear();
@@ -406,20 +379,31 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	overlaySprites.clear();
 	actionsSelectedEntity.clear();
 	
-	SGA::Board& board = gameStateCopy.board;
+	SGA::TBSGameState* selectedGameStateCopy;
+	if (isFogOfWarActive)
+		selectedGameStateCopy = &gameStateCopyFogOfWar;
+	else
+		selectedGameStateCopy = &gameStateCopy;
+
+	SGA::Board& board = selectedGameStateCopy->board;
 
 	for (int y = 0; y < board.getHeight(); ++y)
 	{
 		for (int x = 0; x < board.getWidth(); ++x)
 		{
 			auto& targetTile = board.getTile(x, y);
-			sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
-			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Sprite newTile(texture);
 
-			newTile.setPosition(toISO(x, y));
-			newTile.setOrigin(origin);
-			mapSprites.emplace_back(newTile);
+			if (renderFogOfWarTile|| targetTile.tileTypeID != -1)
+			{
+				sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
+				sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
+				sf::Sprite newTile(texture);
+
+				newTile.setPosition(toISO(x, y));
+				newTile.setOrigin(origin);
+				mapSprites.emplace_back(newTile);
+			}
+			
 		}
 
 	}
@@ -435,14 +419,14 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
 		for (const auto& action : actionHumanUnitSelected)
 		{
-			SGA::ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+			SGA::ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 			if(actionType.sourceType==SGA::ActionSourceType::Unit)
 			{			
 				
 				//Get source
 				if(actionType.actionTargets.type==SGA::TargetType::Entity)
 				{
-					const SGA::Entity& targetEntity = SGA::targetToEntity(gameStateCopy, action.targets[1]);
+					const SGA::Entity& targetEntity = SGA::targetToEntity(*selectedGameStateCopy, action.targets[1]);
 
 					sf::CircleShape shape(15);
 					sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
@@ -452,7 +436,7 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 				}
 				else
 				{
-					const SGA::Vector2f& targetPos = SGA::targetToPosition(gameStateCopy, action.targets[1]);
+					const SGA::Vector2f& targetPos = SGA::targetToPosition(*selectedGameStateCopy, action.targets[1]);
 
 					sf::CircleShape shape(15);
 					sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
@@ -485,7 +469,7 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	//Add selected tile
 	sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
 
-	if (gameStateCopy.isInBounds(SGA::Vector2i(mouseGridPos.x, mouseGridPos.y)))
+	if (selectedGameStateCopy->isInBounds(SGA::Vector2i(mouseGridPos.x, mouseGridPos.y)))
 	{
 		sf::Texture& texture = assetCache.getTexture("selected");
 		sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
@@ -495,16 +479,17 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 		selectedTile.setOrigin(origin);
 		overlaySprites.emplace_back(selectedTile);
 	}
+
 	for (const auto& sprite : overlaySprites)
 	{
 		window.draw(sprite);
 	}
 
 	//Draw entities
-	for (auto& entity : gameStateCopy.entities)
+	for (auto& entity : selectedGameStateCopy->entities)
 	{
 		//Check if entity have sprite
-		auto& entityType = gameStateCopy.getEntityType(entity.typeID);
+		auto& entityType = selectedGameStateCopy->getEntityType(entity.typeID);
 		//Add units
 		sf::Texture& texture = assetCache.getTexture(entityType.name);
 		//sf::Vector2f origin(0, texture.getSize().y / 1.4);
@@ -523,9 +508,9 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 		unitInfo.setFont(assetCache.getFont("font"));
 		std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
 		/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
+
 		for (size_t i = 0; i < entity.parameters.size(); i++)
-		{
-			
+		{			
 			// Create an output string stream
 			std::ostringstream streamObj3;
 			// Set Fixed -Point Notation
@@ -536,6 +521,7 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 			
 			info += "/" + streamObj3.str();
 		}
+
 		unitInfo.setString(info);
 		unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
 		entityInfo.emplace_back(unitInfo);
@@ -554,10 +540,12 @@ void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 
 void TBSGameStateRender::createHUD(sf::RenderWindow& window)
 {
+	//ImGui::ShowDemoWindow();
 	createWindowInfo();
 	createWindowUnits();
 	createWindowActions();
 	createWindowMultipleActions(window);
+	createWindowFogOfWar();
 }
 
 void TBSGameStateRender::createWindowInfo() const
@@ -580,6 +568,53 @@ void TBSGameStateRender::createWindowInfo() const
 	{
 		game->end();
 	}
+
+	ImGui::End();
+}
+
+void TBSGameStateRender::createWindowFogOfWar()
+{
+	ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
+	ImGui::Begin("Fog of War window");
+
+	ImGui::Checkbox("Is Active", &isFogOfWarActive);
+	if (ImGui::CollapsingHeader("Options", &isFogOfWarActive))
+	{
+		ImGui::Indent(10);
+		ImGui::Checkbox("Render Fog tile", &renderFogOfWarTile);
+	}
+	ImGui::Separator();
+	// Use AlignTextToFramePadding() to align text baseline to the baseline of framed widgets elements
+	// (otherwise a Text+SameLine+Button sequence will have the text a little too high by default!)
+	// See 'Demo->Layout->Text Baseline Alignment' for details.
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text("Change Player View");
+	ImGui::SameLine();
+
+	// Arrow buttons with Repeater
+	float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+	ImGui::PushButtonRepeat(true);
+	if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
+		if (playerSelector.playerID > 0)
+		{
+			playerSelector.OnPlayerChange(playerSelector.playerID -= 1);
+			gameStateCopyFogOfWar = game->getStateCopy();
+			gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
+		}
+	}
+	ImGui::SameLine(0.0f, spacing);
+	if (ImGui::ArrowButton("##right", ImGuiDir_Right))	{
+		if (playerSelector.playerID < gameStateCopy.players.size()-1)
+		{
+			playerSelector.OnPlayerChange(playerSelector.playerID += 1);
+			gameStateCopyFogOfWar = game->getStateCopy();
+			gameStateCopyFogOfWar.applyFogOfWar(playerSelector.playerID);
+		}
+	}
+	ImGui::PopButtonRepeat();
+	ImGui::SameLine();
+	ImGui::Text("%d", playerSelector.playerID);
 
 	ImGui::End();
 }
