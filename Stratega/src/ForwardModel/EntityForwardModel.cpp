@@ -2,9 +2,9 @@
 
 namespace SGA
 {
-	bool EntityForwardModel::canPlayerPlay(Player& player) const
+	bool EntityForwardModel::canPlayerPlay(const GameState& state, Player& player) const
 	{
-		if (player.state.get().fogOfWarId != -1 && player.id != player.state.get().fogOfWarId)
+		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
 			return true;
 
 		switch (winCondition)
@@ -13,9 +13,7 @@ namespace SGA
 		{
 			//player.getEntities();
 			bool hasKing = false;
-			std::vector<Entity*> units = player.getEntities();
-
-			for (auto& unit : units)
+			for (auto& unit : state.getPlayerEntities(player.id))
 			{
 				//Check if player has units
 				if (unit->typeID == targetUnitTypeID)
@@ -33,9 +31,7 @@ namespace SGA
 		}
 		case WinConditionType::LastManStanding:
 		{
-			std::vector<Entity*> units = player.getEntities();
-
-			if (units.empty())
+			if (state.getPlayerEntities(player.id).empty())
 			{
 				return false;
 			}

@@ -39,7 +39,7 @@ namespace SGA {
 		const int numAvailableActions = actions.size();
 
 		const int score = gameState.getPlayer(playerToScore)->score;
-		const int numberUnits = gameState.getPlayer(playerToScore)->getEntities().size();
+		const int numberUnits = gameState.getPlayerEntities(playerToScore).size();
 
 		int boost = 0;
 		if (gameState.isGameOver) {

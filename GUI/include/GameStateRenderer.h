@@ -27,7 +27,7 @@ namespace SGA
 	public:
 		GameStateRenderer(int playerID) :
 			GameStateRenderBase{ playerID },
-			fowSettings{true, Widgets::FogRenderType::Fog, playerID}
+			fowSettings{true, Widgets::FogRenderType::Fog, playerID == -1 ? 0 : playerID}
 		{
 		}
 		virtual ~GameStateRenderer() = default;
