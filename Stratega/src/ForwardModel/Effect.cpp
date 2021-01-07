@@ -14,7 +14,6 @@ namespace SGA
 	
 	void ModifyResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		std::cout << "Execute TBS Add to resource" << std::endl;
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
 		double amount = this->amount.getConstant(state, targets);
 
@@ -47,7 +46,6 @@ namespace SGA
 	{
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
-			std::cout << "Execute Move TBS" << std::endl;
 			auto& tbsState = dynamic_cast<TBSGameState&>(state);
 			auto& entity = targetToEntity(state, targets[0]);
 			auto newPos = targetToPosition(state, targets[1]);

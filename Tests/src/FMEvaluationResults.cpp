@@ -2,11 +2,12 @@
 
 double FMEvaluationResults::computeFPS()
 {
-	double timeSumSeconds = 0;
-	for(auto i = 0; i < size(); i++)
+	auto sum = executeActionDurations[0] + getActionsDurations[0];
+	for(auto i = 1; i < size(); i++)
 	{
-		timeSumSeconds += (executeActionDurations[i] + getActionsDurations[i]).count() / 1000000.0;
+		sum += executeActionDurations[i] + getActionsDurations[i];
 	}
 
+	auto timeSumSeconds = std::chrono::duration<double>(sum).count();
 	return size() / timeSumSeconds;
 }

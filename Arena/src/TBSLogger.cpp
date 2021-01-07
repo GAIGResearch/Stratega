@@ -1,11 +1,10 @@
-#pragma once
 #include <TBSLogger.h>
 #include <Logging/Log.h>
 
 void TBSLogger::close()
 {
-	SGA::Log::logSingleValue("WinnerID", this->game->getState().getWinnerID());
-	SGA::Log::logSingleValue("Turns", this->game->getState().currentGameTurn + 1);
+	SGA::Log::logSingleValue("WinnerID", this->game->getState().winnerPlayerID);
+	SGA::Log::logSingleValue("Turns", this->game->getState().currentTick + 1);
 }
 
 void TBSLogger::onGameStateAdvanced()
