@@ -60,7 +60,7 @@ namespace SGA
 		bool isGameOver;
 		int winnerPlayerID;
 		int currentTick;
-		int tickLimit;
+		int tickLimit{};
 		
 		// Board information
 		Tile fogOfWarTile;
@@ -128,10 +128,9 @@ namespace SGA
 			return nullptr;
 		}
 		
-		Parameter getParameterType(int entityTypeID, int globalParameterID) const
+		const Parameter& getParameterType(int entityTypeID, int globalParameterID) const
 		{
-			auto& entityType = getEntityType(entityTypeID);
-
+			const auto& entityType = getEntityType(entityTypeID);
 			return entityType.parameters.find(globalParameterID)->second;
 		}
 		
@@ -160,7 +159,7 @@ namespace SGA
 		int addPlayer()
 		{
 			lastUsedPlayerID++;
-			players.emplace_back(lastUsedPlayerID,*this);
+			players.emplace_back(Player{lastUsedPlayerID, 0, true});
 			return lastUsedPlayerID;
 		}
 
@@ -173,7 +172,7 @@ namespace SGA
 			entities.emplace_back(std::move(instance));
 		}
 
-		Entity* getEntity(SGA::Vector2f pos)
+		Entity* getEntity(Vector2f pos)
 		{
 			for (auto& entity : entities)
 			{
@@ -219,10 +218,26 @@ namespace SGA
 			return nullptr;
 		}
 
+		std::vector<const Entity*> getPlayerEntities(int playerID) const
+		{
+			const auto* player = getPlayer(playerID);
+			if (player == nullptr)
+				return {};
+
+			std::vector<const Entity*> ret;
+			for(const auto& entity : entities)
+			{
+				if (entity.ownerID == playerID)
+					ret.emplace_back(&entity);
+			}
+
+			return ret;
+		}
+
 		void applyFogOfWar(int playerID)
 		{
-			auto* targetPlayer = getPlayer(playerID);
-			auto playerUnits = targetPlayer->getEntities();
+			const auto* targetPlayer = getPlayer(playerID);
+			auto playerUnits = getPlayerEntities(playerID);
 
 			// Helper method
 			auto isVisible = [&](const Vector2f& pos)

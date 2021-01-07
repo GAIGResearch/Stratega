@@ -9,14 +9,8 @@ namespace SGA
 	class Player
 	{
 	public:
-		Player(int id, GameState& state);
 		int id;
 		double score;
 		bool canPlay;
-
-		//State reference
-		std::reference_wrapper<GameState> state;
-
-		std::vector<Entity*> getEntities() const;
 	};
 }

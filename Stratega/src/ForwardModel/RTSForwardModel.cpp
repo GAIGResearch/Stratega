@@ -66,7 +66,7 @@ namespace SGA
 
 	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state, int playerID) const
 	{
-		return actionSpace->generateActions(state, playerID);
+		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
 	//void RTSForwardModel::executeMove(RTSGameState2& state, RTSUnit& unit) const
@@ -243,7 +243,7 @@ namespace SGA
 				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
 					continue;
 
-				auto entityType = state.getEntityType(unit.typeID);
+				const auto& entityType = state.getEntityType(unit.typeID);
 
 				//Move action
 				if (!entityType.canExecuteAction(2))
