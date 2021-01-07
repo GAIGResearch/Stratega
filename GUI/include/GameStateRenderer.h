@@ -19,6 +19,7 @@ namespace SGA
 		}
 		virtual ~GameStateRenderBase() = default;
 		virtual void render() = 0;
+		
 		//OutLine Shader
 		sf::Shader outLineShadeR;
 	};
@@ -55,9 +56,6 @@ namespace SGA
 		sf::Context ctx;
 
 		AssetCache assetCache;
-
-		
-
 	protected:
 		//New render system(withoutlayers)
 		std::vector<sf::Sprite> mapSprites;
@@ -65,7 +63,8 @@ namespace SGA
 		std::vector<sf::Text> entityInfo;
 		std::vector<sf::Sprite> overlaySprites;
 		std::vector<sf::CircleShape> actionsSelectedEntity;
-
+		std::vector<sf::Color> playerColors;
+		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;
 	};

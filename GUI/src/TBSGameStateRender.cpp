@@ -8,7 +8,7 @@
 namespace SGA
 {
 	TBSGameStateRender::TBSGameStateRender(TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
-		GameStateRenderer{ playerID },
+		GameStateRenderer{ playerID},
 		game(&game),
 		gameStateCopy(game.getState()),
 		gameStatesBuffer(50)
@@ -19,6 +19,16 @@ namespace SGA
 		{
 			std::cout << "Wait for GUI Action" << std::endl;
 			waitForHumanToPlay();
+		}
+
+		//Initialize Player colors
+		for (auto player : gameStateCopy.players)
+		{
+			int r = rand() % 255;
+			int g = rand() % 255;
+			int b = rand() % 255;
+
+			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
 	}
 
@@ -414,10 +424,8 @@ namespace SGA
 						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
 						newTile.setTexture(texture);
 						
-					}					
-					
-					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-					
+					}				
+					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);					
 
 					newTile.setPosition(toISO(x, y));
 					newTile.setOrigin(origin);
@@ -425,7 +433,6 @@ namespace SGA
 				}
 
 			}
-
 		}
 
 		for (const auto& sprite : mapSprites)
@@ -520,7 +527,12 @@ namespace SGA
 
 			newUnit.setOrigin(origin);
 			entitySprites.emplace_back(newUnit);
-
+		
+			//Change siloutte color with the players color
+			outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
+			//Draw the sprites directly
+			window.draw(newUnit, &outLineShadeR);
+			
 			//Add units text info
 			sf::Text unitInfo;
 			unitInfo.setFont(assetCache.getFont("font"));
@@ -544,11 +556,7 @@ namespace SGA
 			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
 			entityInfo.emplace_back(unitInfo);
 		}
-
-		for (const auto& sprite : entitySprites)
-		{
-			window.draw(sprite,&outLineShadeR);
-		}
+	
 		for (const auto& info : entityInfo)
 		{
 			window.draw(info);

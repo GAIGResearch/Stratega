@@ -16,6 +16,16 @@ namespace SGA
 		gameStatesBuffer(50)
 	{
 		init(tileSprites, entitySpritePaths);
+
+		//Initialize Player colors
+		for (auto player : gameStateCopy.players)
+		{
+			int r = rand() % 255;
+			int g = rand() % 255;
+			int b = rand() % 255;
+
+			playerColors.emplace_back(sf::Color(r, g, b, 255));
+		}
 	}
 
 	void RTSGameStateRender::init()
@@ -428,17 +438,39 @@ namespace SGA
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				auto& targetTile = board.getTile(x, y);
-				if (fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
+				int targetTypeId;
+
+
+				if (fowSettings.renderType == Widgets::FogRenderType::Tiles || fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
 				{
-					sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
+					sf::Sprite newTile;
+
+					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
+					{
+
+						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
+						newTile.setTexture(texture);
+						newTile.setColor(sf::Color(144, 161, 168));
+					}
+					else
+					{
+						targetTypeId = targetTile.tileTypeID;
+						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
+						newTile.setTexture(texture);
+
+					}
+
 					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-					sf::Sprite newTile(texture);
+
 
 					newTile.setPosition(toISO(x, y));
 					newTile.setOrigin(origin);
 					mapSprites.emplace_back(newTile);
 				}
+
 			}
+
 		}
 
 		for (const auto& sprite : mapSprites)
@@ -463,6 +495,11 @@ namespace SGA
 
 			newUnit.setOrigin(origin);
 			entitySprites.emplace_back(newUnit);
+
+			//Change siloutte color with the players color
+			outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
+			//Draw the sprites directly
+			window.draw(newUnit, &outLineShadeR);
 
 			//Add units text info
 			sf::Text unitInfo;
@@ -516,12 +553,6 @@ namespace SGA
 				//fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
 				//healthBars.emplace_back(fill);
 			}
-		}
-
-		for (const auto& sprite : entitySprites)
-		{
-			window.draw(sprite);
-			renderMinimapTexture.draw(sprite);
 		}
 
 		for (const auto& sprite : healthBars)

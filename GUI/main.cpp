@@ -61,17 +61,6 @@ int main()
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath2.parent_path()));
 	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig2, humanPlayerID));
-	//Shader
-	std::string shaderVert = "../GUI/Assets/OutLine.vert";
-	std::string shaderFrag = "../GUI/Assets/OutLine.frag";
-	;
-	if (!stateRenderer->outLineShadeR.loadFromFile(shaderFrag, sf::Shader::Fragment))
-		std::cout << "Error: Could not load outlineShader" << std::endl;
-
-
-	stateRenderer->outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(0.0, 191.0, 255.0, 1.0));
-	stateRenderer->outLineShadeR.setUniform("textureOffset", 4.0f / static_cast<float>(512));
-	stateRenderer->outLineShadeR.setUniform("texture", sf::Shader::CurrentTexture);
 	
 	current_path(tmp);
 	game->addCommunicator(stateRenderer);
