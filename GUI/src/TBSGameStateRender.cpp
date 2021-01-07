@@ -393,12 +393,31 @@ namespace SGA
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				auto& targetTile = board.getTile(x, y);
+				int targetTypeId;
 
-				if (fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
+				
+				if (fowSettings.renderType == Widgets::FogRenderType::Tiles||fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
 				{
-					sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTile.tileTypeID));
+					sf::Sprite newTile;
+					
+					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
+					{
+						
+						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
+						newTile.setTexture(texture);
+						newTile.setColor(sf::Color(144, 161, 168));
+					}						
+					else
+					{
+						targetTypeId = targetTile.tileTypeID;
+						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
+						newTile.setTexture(texture);
+						
+					}					
+					
 					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-					sf::Sprite newTile(texture);
+					
 
 					newTile.setPosition(toISO(x, y));
 					newTile.setOrigin(origin);
@@ -496,7 +515,6 @@ namespace SGA
 			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
 			sf::Sprite newUnit(texture);
-
 			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
 			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
 
@@ -529,7 +547,7 @@ namespace SGA
 
 		for (const auto& sprite : entitySprites)
 		{
-			window.draw(sprite);
+			window.draw(sprite,&outLineShadeR);
 		}
 		for (const auto& info : entityInfo)
 		{

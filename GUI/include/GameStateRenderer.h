@@ -19,6 +19,8 @@ namespace SGA
 		}
 		virtual ~GameStateRenderBase() = default;
 		virtual void render() = 0;
+		//OutLine Shader
+		sf::Shader outLineShadeR;
 	};
 
 	template<typename GameState>
@@ -53,6 +55,8 @@ namespace SGA
 		sf::Context ctx;
 
 		AssetCache assetCache;
+
+		
 
 	protected:
 		//New render system(withoutlayers)

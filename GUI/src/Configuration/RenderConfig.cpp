@@ -5,6 +5,10 @@ namespace SGA
 {
 	std::unique_ptr<GameStateRenderBase> stateRendererFromConfig(Game& game, const RenderConfig& config, const GameConfig& gameConfig, int playerID)
 	{
+		//Shader
+		//std::string shaderVert = "../ GUI/Assets/OutlineShader.vert";
+		std::string shaderFrag = "../ GUI/Assets/OutlineShader.frag";
+		
 		std::unordered_map<int, std::string> tilePaths;
 		for(const auto& namePathPair : config.tileSpritePaths)
 		{
