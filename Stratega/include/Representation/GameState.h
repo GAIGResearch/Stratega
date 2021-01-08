@@ -237,6 +237,22 @@ namespace SGA
 			return ret;
 		}
 
+		std::vector< Entity*> getPlayerEntities(int playerID)
+		{
+			const auto* player = getPlayer(playerID);
+			if (player == nullptr)
+				return {};
+
+			std::vector<Entity*> ret;
+			for ( auto& entity : entities)
+			{
+				if (entity.ownerID == playerID)
+					ret.emplace_back(&entity);
+			}
+
+			return ret;
+		}
+
 		void applyFogOfWar(int playerID)
 		{
 			std::vector<std::pair<Vector2f, int>> entityData;

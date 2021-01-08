@@ -576,13 +576,15 @@ namespace SGA
 
 	void TBSGameStateRender::createHUD(sf::RenderWindow& window)
 	{
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		createWindowInfo();
 		createWindowUnits();
 		createWindowActions();
 		createWindowMultipleActions(window);
+
+		createEntityInformation(window);
 		createWindowFogOfWar();
-		createBottomBar(window);
+		createActionBar(window);
 	}
 
 	void TBSGameStateRender::createWindowInfo() const
@@ -648,10 +650,89 @@ namespace SGA
 		}
 	}
 
-	void TBSGameStateRender::createBottomBar(sf::RenderWindow& window)
+	void TBSGameStateRender::createEntityInformation(sf::RenderWindow& window)
 	{
+		if(selectedEntity)
+		{
+			ImGuiWindowFlags window_flags = 0;
+			//window_flags += ImGuiWindowFlags_NoTitleBar;
+			//window_flags += ImGuiWindowFlags_NoScrollbar;
+			//window_flags += ImGuiWindowFlags_MenuBar;
+			//window_flags+= ImGuiWindowFlags_NoMove;
+			window_flags += ImGuiWindowFlags_NoResize;
+			window_flags += ImGuiWindowFlags_NoCollapse;
+			window_flags += ImGuiWindowFlags_NoNav;
+			//window_flags+= ImGuiWindowFlags_NoBackground;
+			window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+			ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
+			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+			ImGui::Begin("Entity Information", NULL, window_flags);
+
+			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
+			
+			ImGui::Text(entityType.name.c_str());
+			ImGui::Columns(2, "mixed");
+			ImGui::SetColumnWidth(0, 100.0f);
+			
+			ImGui::Separator();
+
 		
+			//Add units
+			sf::Texture& texture = assetCache.getTexture(entityType.name);
+
+			ImGui::Image(texture, ImVec2(100, 100), sf::Color::White, sf::Color::Transparent);
+			
+			
+			ImGui::NextColumn();
+			ImGui::Text("Parameters: ");
+			
+			int parameterIndex=0;
+			for (auto parameter : entityType.parameters)
+			{
+				//Double to string with 2 precision				
+				std::stringstream stream;
+				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
+				std::string valueParameter = stream.str();
+
+				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+				ImGui::BulletText(parameterInfo.c_str());
+			}
+			
+			ImGui::NextColumn();
+
+			ImGui::Columns(1);
+			ImGui::Separator();
+
+			ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
+			ImGui::BeginChild("help", ImVec2(0, 80), true,child_flags);
+
+
+			for each (auto & entity in gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
+			{
+				//Check if entity have sprite
+				auto entityType = gameStateCopy.getEntityType(entity->typeID);
+				//Add units
+				sf::Texture& texture = assetCache.getTexture(entityType.name);
+
+				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
+				{
+					selectedEntity = entity;
+				}
+				ImGui::SameLine();
+			}
+			
+			ImGui::EndChild();
+			ImGui::SameLine();
+
+			ImGui::Spacing();
+			ImGui::End();
+		}
 		
+	}
+	
+	void TBSGameStateRender::createActionBar(sf::RenderWindow& window)
+	{	
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
 		window_flags += ImGuiWindowFlags_NoScrollbar;
@@ -663,14 +744,12 @@ namespace SGA
 		//window_flags+= ImGuiWindowFlags_NoBackground;
 		window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-
 		
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2((window.getSize().x/2), window.getSize().y/1.3),ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2((window.getSize().x/2), window.getSize().y/1.1),ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
-		//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
 		ImGui::Separator();

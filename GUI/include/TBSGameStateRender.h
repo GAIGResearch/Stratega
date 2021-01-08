@@ -48,7 +48,8 @@ namespace SGA
 		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
 		void createTopBar() const;
-		void createBottomBar(sf::RenderWindow& window);
+		void createEntityInformation(sf::RenderWindow& window);
+		void createActionBar(sf::RenderWindow& window);
 		
 
 		//Human player stuff
