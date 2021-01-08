@@ -48,5 +48,7 @@ namespace SGA
 		double maxActionCooldown;
 		double movementSpeed;
 		float collisionRadius;
+
+		bool isNeutral() const;
 	};
 }

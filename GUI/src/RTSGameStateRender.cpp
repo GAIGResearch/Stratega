@@ -501,9 +501,15 @@ namespace SGA
 			entitySprites.emplace_back(newUnit);
 
 			//Change siloutte color with the players color
-			outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
-			//Draw the sprites directly
-			window.draw(newUnit, &outLineShadeR);
+			if(entity.isNeutral())
+			{
+				outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
+				window.draw(newUnit, &outLineShadeR);
+			}
+			else
+			{
+				window.draw(newUnit);
+			}
 
 			//Add units text info
 			sf::Text unitInfo;

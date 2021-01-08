@@ -17,11 +17,13 @@ namespace SGA
 			isGameOver(false),
 			winnerPlayerID(-1),
 			currentTick(1),
+			tickLimit(-1),
 			fogOfWarTile(-1, 0, 0),
+			fogOfWarId(-1),
 			board(std::move(board)),
 			players(),
-			lastUsedEntityID(0),
-			lastUsedPlayerID(-1)
+			nextEntityID(0),
+			nextPlayerID(0)
 		{
 		}
 
@@ -31,14 +33,14 @@ namespace SGA
 			  actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 			  tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
 			  isGameOver(false),
-			  winnerPlayerID(0),
-			  currentTick(0),
+			  winnerPlayerID(-1),
+			  currentTick(1),
 			  tickLimit(-1),
-			  fogOfWarTile(0,0,0),
-			  fogOfWarId(0),
-			  board(10,10),
-			  lastUsedEntityID(0),
-			  lastUsedPlayerID(0)
+			  fogOfWarTile(-1,0,0),
+			  fogOfWarId(-1),
+			  board(0,0),
+			  nextEntityID(0),
+			  nextPlayerID(0)
 		{
 		}
 
@@ -70,8 +72,8 @@ namespace SGA
 		// Player and unit information
 		std::vector<Entity> entities;
 		std::vector<Player> players;
-		int lastUsedEntityID;
-		int lastUsedPlayerID;
+		int nextEntityID;
+		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
 
@@ -158,18 +160,19 @@ namespace SGA
 		
 		int addPlayer()
 		{
-			lastUsedPlayerID++;
-			players.emplace_back(Player{lastUsedPlayerID, 0, true});
-			return lastUsedPlayerID;
+			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
+			nextPlayerID++;
+			return player.id;
 		}
 
 		void addEntity(const EntityType& type, int playerID, const Vector2f& position)
 		{
-			lastUsedEntityID++;
-			auto instance = type.instantiateEntity(lastUsedEntityID);
+			auto instance = type.instantiateEntity(nextEntityID);
 			instance.ownerID = playerID;
 			instance.position = position;
 			entities.emplace_back(std::move(instance));
+
+			nextEntityID++;
 		}
 
 		Entity* getEntity(Vector2f pos)
@@ -236,19 +239,36 @@ namespace SGA
 
 		void applyFogOfWar(int playerID)
 		{
-			const auto* targetPlayer = getPlayer(playerID);
-			auto playerUnits = getPlayerEntities(playerID);
+			std::vector<std::pair<Vector2f, int>> entityData;
+			for(const auto& entity : getPlayerEntities(playerID))
+			{
+				entityData.emplace_back(entity->position, entity->lineOfSightRange);
+			}
 			
 			// Helper method
 			auto isVisible = [&](const Vector2f& pos)
 			{
-				for (auto* pu : playerUnits)
+				for (const auto& entry : entityData)
 				{
-					if (pu->position.distance(pos) <= pu->lineOfSightRange)
+					if (entry.first.distance(pos) <= entry.second)
 						return true;
 				}
 				return false;
 			};			
+
+			// Remove units that are not visible
+			auto it = entities.begin();
+			while (it != entities.end())
+			{
+				if (it->ownerID != playerID && !isVisible(it->position))
+				{
+					it = entities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
 			
 			// Hide tiles that are not visible
 			for (int y = 0; y < board.getHeight(); y++)
@@ -261,20 +281,6 @@ namespace SGA
 						tile = fogOfWarTile;
 						tile.position = Vector2i(x, y);
 					}
-				}
-			}
-
-			// Remove units that are not visible
-			auto it = entities.begin();
-			while (it != entities.end())
-			{
-				if (it->ownerID != targetPlayer->id && !isVisible(it->position))
-				{
-					it = entities.erase(it);
-				}
-				else
-				{
-					++it;
 				}
 			}
 

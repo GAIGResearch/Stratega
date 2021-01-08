@@ -9,6 +9,8 @@ namespace SGA
 	class Player
 	{
 	public:
+		static const int NEUTRAL_PLAYER_ID = -1;
+		
 		int id;
 		double score;
 		bool canPlay;

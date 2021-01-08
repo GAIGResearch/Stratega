@@ -12,6 +12,7 @@ Tiles:
         Sprite: ../GUI/Assets/plain.png
         Symbol: .
         IsWalkable: true
+        DefaultTile: true
     Water:
         Sprite: ../GUI/Assets/water.png
         Symbol: W
@@ -24,28 +25,7 @@ Tiles:
         Sprite: ../GUI/Assets/forest.png
         Symbol: F
         IsWalkable: true
-        
-Board:
-    GenerationType: Manual
-    Layout: >
-          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-          M.............M................M
-          M........W.....................M
-          M........W.....................M
-          M........WW....................M
-          M........WW...........MM.....MMM
-          M.........WWWW........WWWWWWWWWW
-          M.........WWWW........WWWWWWWWWW
-          MMM.........WWWWWWWWWWWWWWWWWWWW
-          M............WWWWWWWWWWWWWWWWWWW
-          M......MMMMMMMMMMMMMMMMMMM.WWWWW
-          MMM........................WWWWW
-          M..............................M
-          M..............................M
-          MMM............................M
-          M..............................M
-          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-
+     
 Actions:
     # Spawn Actions
     SpawnMiner:
@@ -93,6 +73,7 @@ Actions:
 Entities:
     Base:
         Sprite: ../GUI/Assets/castle.png
+        Symbol: b
         LineOfSightRange: 5
         Actions: [SpawnMiner]
         Parameters:
@@ -100,6 +81,7 @@ Entities:
 
     Miner:
         Sprite: ../GUI/Assets/farmer.png
+        Symbol: m
         LineOfSightRange: 4
         Actions: []
         Parameters:
@@ -107,16 +89,39 @@ Entities:
 
     Fighter:
         Sprite: ../GUI/Assets/unit2New.png
+        Symbol: f
         LineOfSightRange: 6
         Actions: []
 
     GoldVein:
         Sprite: ../GUI/Assets/gold_chest.png
+        Symbol: g
         LineOfSightRange: 6
         Actions: []
         Parameters:
             Gold: 200
 
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  b1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  g  .  .  g  g  g  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  g  .  .  .  .  g  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  b0 .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  M  M  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+                   
 ForwardModel:
     WinCondition:
         Type: LastManStanding.

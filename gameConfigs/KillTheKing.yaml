@@ -12,6 +12,7 @@ Tiles:
         Sprite: ../GUI/Assets/plain.png
         Symbol: .
         IsWalkable: true
+        DefaultTile: true
     Water:
         Sprite: ../GUI/Assets/water.png
         Symbol: W
@@ -27,24 +28,24 @@ Tiles:
         
 Board:
     GenerationType: Manual
-    Layout: >
-          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-          M.............M................M
-          M........W.....................M
-          M........W.....................M
-          M........WW....................M
-          M........WW...........MM.....MMM
-          M.........WWWW........WWWWWWWWWW
-          M.........WWWW........WWWWWWWWWW
-          MMM.........WWWWWWWWWWWWWWWWWWWW
-          M............WWWWWWWWWWWWWWWWWWW
-          M......MMMMMMMMMMMMMMMMMMM.WWWWW
-          MMM........................WWWWW
-          M..............................M
-          M..............................M
-          MMM............................M
-          M..............................M
-          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  a1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  a1 k1 h1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
     Attack:
@@ -87,6 +88,7 @@ Actions:
 Entities:
     Warrior:
         Sprite: ../GUI/Assets/unit2New.png
+        Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
         Parameters:
@@ -97,6 +99,7 @@ Entities:
 
     Archer:
         Sprite: ../GUI/Assets/unit4New.png
+        Symbol: a
         LineOfSightRange: 10
         Parameters:
             Health: 100
@@ -107,6 +110,7 @@ Entities:
 
     Healer:
         Sprite: ../GUI/Assets/unit3New.png
+        Symbol: h
         LineOfSightRange: 4
         Parameters:
             Health: 40
@@ -117,6 +121,7 @@ Entities:
 
     King:
         Sprite: ../GUI/Assets/unit1New.png
+        Symbol: k
         LineOfSightRange: 6
         Parameters:
             Health: 400

@@ -13,12 +13,13 @@ namespace SGA
 	{
 		int id;
 		std::string name;
+		char symbol;
 		std::unordered_map<ParameterID, Parameter> parameters;
 		std::vector<int> actionIds;
 		float lineOfSight;
+		
 		const Parameter& getParameter(ParameterID id) const;
 		bool canExecuteAction(int actionTypeID) const;
-
 		Entity instantiateEntity(int entityID) const;
 
 	};
