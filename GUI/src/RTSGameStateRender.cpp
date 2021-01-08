@@ -27,9 +27,9 @@ namespace SGA
 			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
 		
-		//Initialize gameStateFog and apply fog to it
+		//Initialize gameStateFog and apply fog to it		
 		gameStateCopyFogOfWar = gameStateCopy;
-		gameStateCopyFogOfWar.applyFogOfWar(getPlayerID());
+		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 	}
 
 	void RTSGameStateRender::init()
@@ -829,6 +829,7 @@ namespace SGA
 			ImGui::EndMainMenuBar();
 		}
 	}
+	
 	void RTSGameStateRender::createWindowInfo(sf::RenderWindow& window)
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);

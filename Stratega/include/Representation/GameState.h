@@ -250,7 +250,6 @@ namespace SGA
 				return false;
 			};			
 			
-			int notVisible = 0;
 			// Hide tiles that are not visible
 			for (int y = 0; y < board.getHeight(); y++)
 			{
@@ -258,15 +257,12 @@ namespace SGA
 				{
 					if (!isVisible(Vector2i(x, y)))
 					{
-						notVisible++;
 						auto& tile = board.getTile(x, y);
 						tile = fogOfWarTile;
 						tile.position = Vector2i(x, y);
 					}
 				}
 			}
-
-			std::cout<<notVisible<<std::endl;
 
 			// Remove units that are not visible
 			auto it = entities.begin();

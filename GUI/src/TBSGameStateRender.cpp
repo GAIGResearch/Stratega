@@ -31,9 +31,9 @@ namespace SGA
 			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
 
-		//Initialize gameStateFog and apply fog to it
+		//Initialize gameStateFog and apply fog to it		
 		gameStateCopyFogOfWar = gameStateCopy;
-		gameStateCopyFogOfWar.applyFogOfWar(getPlayerID());
+		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 	}
 
 	void TBSGameStateRender::init()
@@ -576,6 +576,7 @@ namespace SGA
 		createWindowActions();
 		createWindowMultipleActions(window);
 		createWindowFogOfWar();
+		createBottomBar(window);
 	}
 
 	void TBSGameStateRender::createWindowInfo() const
@@ -644,6 +645,59 @@ namespace SGA
 	void TBSGameStateRender::createBottomBar(sf::RenderWindow& window)
 	{
 		
+		
+		ImGuiWindowFlags window_flags = 0;
+		window_flags += ImGuiWindowFlags_NoTitleBar;
+		window_flags += ImGuiWindowFlags_NoScrollbar;
+		//window_flags += ImGuiWindowFlags_MenuBar;
+		//window_flags+= ImGuiWindowFlags_NoMove;
+		//window_flags += ImGuiWindowFlags_NoResize;
+		window_flags += ImGuiWindowFlags_NoCollapse;
+		window_flags += ImGuiWindowFlags_NoNav;
+		//window_flags+= ImGuiWindowFlags_NoBackground;
+		window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+
+		
+		// We specify a default position/size in case there's no data in the .ini file.
+		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
+		ImGui::SetNextWindowPos(ImVec2((window.getSize().x/2), window.getSize().y/1.3),ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowSize(ImVec2(0, 0));
+
+		//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
+		ImGui::Begin("Bottom Bar", NULL, window_flags);
+
+		ImGui::Separator();
+
+		ImGui::Text("Actions");
+		
+		//GetActionTypes		
+		std::vector<int> actionTypes;		
+		if(selectedEntity)
+		{
+			int entityTypeID = selectedEntity->typeID;
+
+			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
+			{
+				actionTypes.emplace_back(actionID);
+			}
+		}
+
+
+		int elementNumber = 0;
+		for each (auto & actionType in actionTypes)
+		{
+			ImGui::PushID(elementNumber);
+			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
+			{
+
+			}
+			ImGui::SameLine();
+			ImGui::PopID();
+		}
+		
+		ImGui::Separator();
+		ImGui::End();
 	}
 
 	void TBSGameStateRender::createWindowUnits()
