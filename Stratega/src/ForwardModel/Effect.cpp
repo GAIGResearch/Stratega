@@ -131,4 +131,26 @@ namespace SGA
 
 		paramValue = param.maxValue;
 	}
+
+	TransferEffect::TransferEffect(const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])
+	{
+	}
+
+	void TransferEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& sourceType = sourceParam.getParameter(state, targets);
+		const auto& targetType = targetParam.getParameter(state, targets);
+		auto& sourceValue = sourceParam.getParameterValue(state, targets);
+		auto& targetValue = targetParam.getParameterValue(state, targets);
+		auto amount = amountParam.getConstant(state, targets);
+
+		// Compute how much the source can transfer, if the source does not have enough just take everything
+		amount = std::min(amount, sourceValue - sourceType.minValue);
+		// Transfer
+		sourceValue -= amount;
+		// ToDo should check the maximum, but currently we have no way to set the maximum in the configuration
+		// Resulting in problems for ProtectTheBase
+		targetValue = targetValue + amount;
+	}
 }
