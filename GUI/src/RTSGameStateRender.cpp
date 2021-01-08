@@ -26,6 +26,10 @@ namespace SGA
 
 			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
+		
+		//Initialize gameStateFog and apply fog to it
+		gameStateCopyFogOfWar = gameStateCopy;
+		gameStateCopyFogOfWar.applyFogOfWar(getPlayerID());
 	}
 
 	void RTSGameStateRender::init()

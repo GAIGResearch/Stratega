@@ -30,6 +30,10 @@ namespace SGA
 
 			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
+
+		//Initialize gameStateFog and apply fog to it
+		gameStateCopyFogOfWar = gameStateCopy;
+		gameStateCopyFogOfWar.applyFogOfWar(getPlayerID());
 	}
 
 	void TBSGameStateRender::init()
@@ -566,7 +570,7 @@ namespace SGA
 
 	void TBSGameStateRender::createHUD(sf::RenderWindow& window)
 	{
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		createWindowInfo();
 		createWindowUnits();
 		createWindowActions();
@@ -612,6 +616,34 @@ namespace SGA
 		}
 
 		ImGui::End();
+	}
+
+	void TBSGameStateRender::createTopBar() const
+	{
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("Resources"))
+			{
+				if (ImGui::MenuItem("Test1", "text"))
+				{
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Resources2"))
+			{
+				if (ImGui::MenuItem("Test1", "text"))
+				{
+				}
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
+		}
+	}
+
+	void TBSGameStateRender::createBottomBar(sf::RenderWindow& window)
+	{
+		
 	}
 
 	void TBSGameStateRender::createWindowUnits()

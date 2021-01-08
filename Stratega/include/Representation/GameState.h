@@ -238,7 +238,7 @@ namespace SGA
 		{
 			const auto* targetPlayer = getPlayer(playerID);
 			auto playerUnits = getPlayerEntities(playerID);
-
+			
 			// Helper method
 			auto isVisible = [&](const Vector2f& pos)
 			{
@@ -248,7 +248,25 @@ namespace SGA
 						return true;
 				}
 				return false;
-			};
+			};			
+			
+			int notVisible = 0;
+			// Hide tiles that are not visible
+			for (int y = 0; y < board.getHeight(); y++)
+			{
+				for (int x = 0; x < board.getWidth(); x++)
+				{
+					if (!isVisible(Vector2i(x, y)))
+					{
+						notVisible++;
+						auto& tile = board.getTile(x, y);
+						tile = fogOfWarTile;
+						tile.position = Vector2i(x, y);
+					}
+				}
+			}
+
+			std::cout<<notVisible<<std::endl;
 
 			// Remove units that are not visible
 			auto it = entities.begin();
@@ -261,20 +279,6 @@ namespace SGA
 				else
 				{
 					++it;
-				}
-			}
-
-			// Hide tiles that are not visible
-			for (int y = 0; y < board.getHeight(); y++)
-			{
-				for (int x = 0; x < board.getWidth(); x++)
-				{
-					if (!isVisible(Vector2i(x, y)))
-					{
-						auto& tile = board.getTile(x, y);
-						tile = fogOfWarTile;
-						tile.position = Vector2i(x, y);
-					}
 				}
 			}
 

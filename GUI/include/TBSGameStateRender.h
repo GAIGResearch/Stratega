@@ -42,11 +42,14 @@ namespace SGA
 		//HUD
 		void createHUD(sf::RenderWindow& window);
 
-		void createWindowInfo()const;
+		void createWindowInfo() const;
 		void createWindowUnits();
 		void createWindowActions();
 		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
+		void createTopBar() const;
+		void createBottomBar(sf::RenderWindow& window);
+		
 
 		//Human player stuff
 		void waitForHumanToPlay()
