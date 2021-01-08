@@ -165,11 +165,14 @@ namespace SGA
             }
         }
 
-        // Group that contains all entities
+        // Predefined groups
         config.entityGroups.emplace("All", std::vector<int>());
         for (const auto& idEntityPair : config.entityTypes)
         {
+            // Group that contains all entities
             config.entityGroups.at("All").emplace_back(idEntityPair.first);
+        	// Group that contains one entity
+            config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
         }
     }
 
