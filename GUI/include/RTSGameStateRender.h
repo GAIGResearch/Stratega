@@ -31,8 +31,7 @@ namespace SGA
 		void init() override;
 		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
 		void initializeView(sf::RenderWindow& window) const;
-		void initializeLayers();
-
+		
 		void handleInput(sf::RenderWindow& window);
 
 		//Events Implementation

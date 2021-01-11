@@ -35,9 +35,6 @@ namespace SGA
 	void RTSGameStateRender::init()
 	{
 		GameStateRenderer::init();
-
-		//Initialization
-		initializeLayers();
 	}
 
 	void RTSGameStateRender::onGameStateAdvanced()
@@ -405,21 +402,6 @@ namespace SGA
 		}
 	}
 
-	void RTSGameStateRender::initializeLayers()
-	{
-		////Init Map Layer
-		//renderLayers.emplace_back(std::make_unique<MapLayer<SGA::RTSGameState>>(assetCache));
-		//renderLayers.back()->init(gameStateCopy);
-
-		//////Init Unit Layer
-		//renderLayers.emplace_back(std::make_unique<RTSUnitLayer>(assetCache, *this));
-		//renderLayers.back()->init(gameStateCopy);
-
-		////Init Unit Layer
-		//renderLayers.emplace_back(std::make_unique<RTSOverlayLayer>(assetCache, *this, currentMousePos));
-		//renderLayers.back()->init(gameStateCopy);
-	}
-
 	void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
 		mapSprites.clear();
@@ -444,7 +426,6 @@ namespace SGA
 				auto& targetTile = board.getTile(x, y);
 				int targetTypeId;
 
-
 				if (fowSettings.renderType == Widgets::FogRenderType::Tiles || fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
 				{
 					sf::Sprite newTile;
@@ -464,17 +445,13 @@ namespace SGA
 						newTile.setTexture(texture);
 
 					}
-
 					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-
 
 					newTile.setPosition(toISO(x, y));
 					newTile.setOrigin(origin);
 					mapSprites.emplace_back(newTile);
 				}
-
 			}
-
 		}
 
 		for (const auto& sprite : mapSprites)

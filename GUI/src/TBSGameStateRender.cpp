@@ -39,9 +39,6 @@ namespace SGA
 	void TBSGameStateRender::init()
 	{
 		GameStateRenderer::init();
-
-		//Initialization
-		initializeLayers();
 	}
 
 	void TBSGameStateRender::onGameStateAdvanced()
@@ -211,7 +208,7 @@ namespace SGA
 			sf::Vector2i pos = toGrid(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 
 			//If selected unit we check if there is action in tile
-			if (selectedEntity && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
+			if (selectedEntityID!=-1 && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 			{
 				//Recollect each action in tile
 				std::vector<Action> actionsInTile;
@@ -234,8 +231,6 @@ namespace SGA
 								actionsInTile.emplace_back(action);
 							}
 						}
-
-
 					}
 				}
 
@@ -251,6 +246,7 @@ namespace SGA
 				{
 					//Play action directly
 					playAction(actionsInTile[0]);
+					return;
 				}
 				else
 				{
@@ -262,7 +258,7 @@ namespace SGA
 			else
 			{
 				showMultipleActions = false;
-				selectedEntity = nullptr;
+				selectedEntityID = -1;
 			}
 
 			Entity* unit = gameStateCopy.getEntity(Vector2f(pos.x, pos.y));
@@ -271,7 +267,7 @@ namespace SGA
 			{
 
 				//Assign selected unit			
-				selectedEntity = unit;
+				selectedEntityID = unit->id;
 				if (unit->ownerID == gameStateCopy.currentPlayer)
 				{
 					actionHumanUnitSelected.clear();
@@ -300,7 +296,7 @@ namespace SGA
 			{
 				//Restart selected actions of unit and selected unit
 				actionHumanUnitSelected.clear();
-				selectedEntity = nullptr;
+				selectedEntityID = -1;
 
 				moving = true;
 				oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
@@ -381,10 +377,6 @@ namespace SGA
 		}
 	}
 
-	void TBSGameStateRender::initializeLayers()
-	{
-	}
-
 	void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
 		//Draw Board
@@ -440,58 +432,6 @@ namespace SGA
 		}
 
 		for (const auto& sprite : mapSprites)
-		{
-			window.draw(sprite);
-		}
-
-		//Draw selectedtile
-		//Add actions if we have actions to draw
-		if (actionHumanUnitSelected.size() > 0)
-		{
-			for (const auto& action : actionHumanUnitSelected)
-			{
-				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
-				if (actionType.sourceType == ActionSourceType::Unit)
-				{
-					//Get source
-					if (actionType.actionTargets.type == TargetType::Entity)
-					{
-						const Entity& targetEntity = targetToEntity(*selectedGameStateCopy, action.targets[1]);
-
-						sf::CircleShape shape(15);
-						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
-
-						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-						actionsSelectedEntity.emplace_back(shape);
-					}
-					else
-					{
-						const Vector2f& targetPos = targetToPosition(*selectedGameStateCopy, action.targets[1]);
-
-						sf::CircleShape shape(15);
-						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
-
-						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-						actionsSelectedEntity.emplace_back(shape);
-						shape.setFillColor(sf::Color::Green);
-					}
-
-
-					/*switch (action.type)
-					{
-					case TBSActionType::Attack: shape.setFillColor(sf::Color::Red); break;
-					case TBSActionType::Move:  break;
-					case TBSActionType::Heal: shape.setFillColor(sf::Color::Green);  break;
-					case TBSActionType::Push: shape.setFillColor(sf::Color::Black);  break;
-					case TBSActionType::EndTurn:  shape.setFillColor(sf::Color::Magenta); break;
-					default: throw std::runtime_error("Tried adding an action with an not supported action-type");
-					}*/
-
-				}
-			}
-		}
-
-		for (const auto& sprite : actionsSelectedEntity)
 		{
 			window.draw(sprite);
 		}
@@ -572,6 +512,45 @@ namespace SGA
 			window.draw(info);
 		}
 
+		//Draw selectedtile
+		//Add actions if we have actions to draw
+		if (actionHumanUnitSelected.size() > 0)
+		{
+			for (const auto& action : actionHumanUnitSelected)
+			{
+				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
+				if (actionType.sourceType == ActionSourceType::Unit)
+				{
+					//Get source
+					if (actionType.actionTargets.type == TargetType::Entity)
+					{
+						const Entity& targetEntity = targetToEntity(*selectedGameStateCopy, action.targets[1]);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+					}
+					else
+					{
+						const Vector2f& targetPos = targetToPosition(*selectedGameStateCopy, action.targets[1]);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						shape.setFillColor(sf::Color::Green);
+					}
+				}
+			}
+		}
+
+		for (const auto& sprite : actionsSelectedEntity)
+		{
+			window.draw(sprite);
+		}
 	}
 
 	void TBSGameStateRender::createHUD(sf::RenderWindow& window)
@@ -652,7 +631,7 @@ namespace SGA
 
 	void TBSGameStateRender::createEntityInformation(sf::RenderWindow& window)
 	{
-		if(selectedEntity)
+		if(selectedEntityID!=-1)
 		{
 			ImGuiWindowFlags window_flags = 0;
 			//window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -669,14 +648,14 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
+			Entity& selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+			auto entityType = gameStateCopy.getEntityType(selectedEntity.typeID);
 			
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
 			ImGui::SetColumnWidth(0, 100.0f);
 			
 			ImGui::Separator();
-
 		
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
@@ -692,7 +671,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
+				stream << std::fixed << std::setprecision(2) << selectedEntity.parameters[parameterIndex++];
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
@@ -717,7 +696,7 @@ namespace SGA
 
 				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
 				{
-					selectedEntity = entity;
+					selectedEntityID = entity->id;
 				}
 				ImGui::SameLine();
 			}
@@ -758,9 +737,10 @@ namespace SGA
 		
 		//GetActionTypes		
 		std::vector<int> actionTypes;		
-		if(selectedEntity)
+		if(selectedEntityID!=-1)
 		{
-			int entityTypeID = selectedEntity->typeID;
+			Entity& selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+			int entityTypeID = selectedEntity.typeID;
 
 			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
