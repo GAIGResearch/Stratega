@@ -141,6 +141,17 @@ namespace SGA
 
 			x++;
 		}
+
+		// Sometimes there is a newLine at the end of the string, and sometimes not
+		if(boardString[boardString.size() - 1] != '\n')
+		{
+			y++;
+			if (x != width)
+			{
+				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+			}
+		}
+		
 		state->board = Board(tiles, width, y);
 
 		return std::move(state);
