@@ -3,8 +3,11 @@
 
 namespace SGA
 {
+	typedef int ParameterID;
+	
 	struct Parameter
 	{
+		ParameterID id;
 		std::string name;
 		int index;
 

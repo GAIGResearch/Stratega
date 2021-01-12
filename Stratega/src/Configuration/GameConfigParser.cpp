@@ -2,8 +2,6 @@
 #include <Agent/AgentFactory.h>
 
 #include <Configuration/YamlHeaders.h>
-//#include <yaml-cpp/node/parse.h>
-//#include <yaml-cpp/yaml.h>
 
 namespace SGA
 {
@@ -24,6 +22,7 @@ namespace SGA
         parseEntityGroups(configNode["EntityGroups"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
+        parsePlayerParameters(configNode["PlayerParameters"], config);
 
 		// Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -128,23 +127,7 @@ namespace SGA
             type.id = config.entityTypes.size();
             type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
 
-            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>(std::map<std::string, double>()))
-            {
-                // Assign IDs to parameters that do not exist yet
-                if (config.parameters.find(nameParamPair.first) == config.parameters.end())
-                {
-                    config.parameters.insert({ nameParamPair.first, config.parameters.size() });
-                }
-
-                // Construct the parameter
-                Parameter param;
-                param.name = nameParamPair.first;
-                param.minValue = 0;
-                param.maxValue = nameParamPair.second;
-                param.defaultValue = param.maxValue;
-                param.index = type.parameters.size();
-                type.parameters.insert({ config.parameters.at(nameParamPair.first), std::move(param) });
-            }
+            parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
             config.entityTypes.emplace(type.id, std::move(type));
         }
@@ -285,5 +268,32 @@ namespace SGA
 		}
 		
         config.forwardModel = std::move(fm);
+	}
+
+    void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const
+	{
+        parseParameterList(parametersNode, config, config.playerParameterTypes);
+	}
+
+    void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
+	{
+        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, double>>(std::map<std::string, double>()))
+        {
+            // Assign IDs to parameters that do not exist yet
+            if (config.parameters.find(nameParamPair.first) == config.parameters.end())
+            {
+                config.parameters.insert({ nameParamPair.first, config.parameters.size() });
+            }
+
+            // Construct the parameter
+            Parameter param;
+            param.id = config.parameters.at(nameParamPair.first);
+            param.name = nameParamPair.first;
+            param.minValue = 0;
+            param.maxValue = nameParamPair.second;
+            param.defaultValue = param.maxValue;
+            param.index = parameterBucket.size();
+            parameterBucket.insert({ param.id, std::move(param) });
+        }
 	}
 }

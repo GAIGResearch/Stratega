@@ -60,6 +60,7 @@ namespace SGA
 		// Assign data
 		state->tickLimit = tickLimit;
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
+		state->playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
 		state->entityGroups = entityGroups;
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);

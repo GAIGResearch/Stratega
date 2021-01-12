@@ -18,6 +18,8 @@ namespace SGA
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::unordered_map<int, TileType> tileTypes;
         std::unique_ptr<EntityForwardModel> forwardModel;
+    	// Players
+        std::unordered_map<ParameterID, Parameter> playerParameterTypes;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<std::string, std::vector<int>> entityGroups;

@@ -53,6 +53,7 @@ namespace SGA
 
 		// Type information
 		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
+		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
@@ -161,6 +162,13 @@ namespace SGA
 		int addPlayer()
 		{
 			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
+			// Add parameters
+			player.parameters.resize(playerParameterTypes->size());
+			for(const auto& idParamPair : *playerParameterTypes)
+			{
+				player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			}
+			
 			nextPlayerID++;
 			return player.id;
 		}
