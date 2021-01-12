@@ -4,7 +4,7 @@
 #include <Representation/Entity.h>
 #include <Representation/Player.h>
 #include <Representation/Board.h>
-
+#include <Representation/TechnologyTree.h>
 namespace SGA
 {
 	struct GameState
@@ -57,6 +57,11 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 		std::unordered_map<std::string, std::vector<int>> entityGroups;
+
+		//Technology tree
+		TechnologyTrees technologyTrees;
+		
+		
 		
 		// Game information
 		bool isGameOver;
