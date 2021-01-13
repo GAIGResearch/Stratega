@@ -59,7 +59,7 @@ namespace SGA
 		std::unordered_map<std::string, std::vector<int>> entityGroups;
 
 		//Technology tree
-		TechnologyTrees technologyTrees;
+		TechnologyTreeCollection technologyTreeCollection;
 		
 		
 		

@@ -24,6 +24,7 @@ namespace SGA
         parseEntityGroups(configNode["EntityGroups"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
+        parseTechnologyTrees(configNode["TechnologyTrees"], config);
 
 		// Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -286,4 +287,73 @@ namespace SGA
 		
         config.forwardModel = std::move(fm);
 	}
+
+	void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const
+	{
+        if (!techtreeNode.IsDefined())
+        {
+            throw std::runtime_error("Cannot find definition for Technology Trees");
+        }
+
+        auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
+        for (const auto& nameTypePair : types)
+        {
+            SGA::TechnologyTreeType technologyTreeType;
+
+            technologyTreeType.technologyTreeName = nameTypePair.first;
+
+
+
+          
+            for (const auto& nameTechPair : nameTypePair.second.as<std::map<std::string, YAML::Node>>())
+            {
+
+                TechnologyTreeNode newTechnology;
+
+                newTechnology.id = technologyTreeType.technologies.size();
+                newTechnology.name = nameTechPair.first;
+				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
+
+                technologyTreeType.nodes.emplace_back(newTechnology);
+                technologyTreeType.technologies[newTechnology.name]= newTechnology.id;            	
+            }
+
+            config.technologyTreeCollection.technologyTreeTypes[config.technologyTreeCollection.technologyTreeTypes.size()] = technologyTreeType;
+        }
+
+
+		//Go through all the tree types we have in the config
+        for (auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
+        {
+        	//Check it tehcnology in the treetype
+            for (auto& technology : technologyTreeType.second.nodes)
+            {
+
+            	//Search the technology tree in the config yaml
+                auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
+                auto& techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
+                //Find the technology
+                auto technologyYaml= techTreeTypeYaml[technology.name].as<std::map<std::string, YAML::Node>>();
+            	//Get the parents of the technology
+                auto parentsNames=technologyYaml["Parents"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                for (auto& parent : parentsNames)
+                {
+                	//Get the new assigned technologyID of the parent and add it to the technology
+                   technology.parentIDs.emplace_back( config.getTechnologyID(parent));
+                }
+            	
+            }
+        }
+        
+		//Initialize researched list for each player
+        for (size_t i = 0; i < config.numPlayers; i++)
+        {
+            config.technologyTreeCollection.researchedTechnologies[0] = {};
+        }
+        
+		
+        
+	}
+
 }

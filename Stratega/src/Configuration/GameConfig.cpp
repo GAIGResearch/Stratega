@@ -172,6 +172,18 @@ namespace SGA
 		throw std::runtime_error("Unknown action with name " + name);
 	}
 
+	int GameConfig::getTechnologyID(const std::string& name) const
+	{
+		for (	const auto& treeType: technologyTreeCollection.technologyTreeTypes)
+			for (const auto& idTypePair : treeType.second.nodes)
+			{
+				if (idTypePair.name == name)
+					return idTypePair.id;
+			}
+
+		throw std::runtime_error("Unknown Technolgy with name " + name);
+	}
+	
 	int GameConfig::getTileID(const std::string& name) const
 	{
 		for (const auto& idTypePair : tileTypes)

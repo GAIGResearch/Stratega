@@ -161,22 +161,20 @@ ForwardModel:
     WinCondition:
         Type: LastManStanding.
 
-
-#TechnologyTrees:
-#    Name: Buildings
-#    Tree:
-#        Townhall:
-#            Description: Is  a townhall :D
-#        Archery:
-#            Description: Here you can spawn archers.
-#            Townhall
-#        AdvanceArchery:
-#            Description: Here you can spawn more type of archers.
-#            Archery
-#            Mine
-#        Mine:
-#            Description: Here you can spawn miners.
-#            Townhall
-#        AdvanceMine:
-#            Description: Here you can spawn more type of miners.
-#            Mine
+TechnologyTrees:
+    Buildings:
+        Townhall:
+            Description: Is  a townhall :D
+            Parents:
+        Archery:
+            Description: Here you can spawn archers.
+            Parents: [Townhall]
+        AdvanceArchery:
+            Description: Here you can spawn more type of archers.
+            Parents: [Archery]
+        Mine:
+            Description: Here you can spawn miners.
+            Parents: [Townhall]
+        AdvanceMine:
+            Description: Here you can spawn more type of miners.
+            Parents: [Mine]

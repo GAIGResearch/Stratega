@@ -5,7 +5,7 @@
 #include <Representation/TBSGameState.h>
 #include <Configuration/FunctionParser.h>
 #include <ForwardModel/ForwardModel.h>
-
+#include <Representation/TechnologyTree.h>
 namespace SGA
 {
     struct GameConfig
@@ -28,6 +28,9 @@ namespace SGA
         std::string boardString;
         int defaultTileTypeID;
 
+    	//Technology tree
+        TechnologyTreeCollection technologyTreeCollection;
+    	
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
         std::unique_ptr<GameState> generateGameState() const;
     	
@@ -35,6 +38,7 @@ namespace SGA
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;
+        int getTechnologyID(const std::string& name) const;
     };
 	
     std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
