@@ -12,10 +12,11 @@ namespace SGA
 	{
 		enum class Type
 		{
-			Constant,
-			ParameterReference,
-			ArgumentReference, //Entity o position
-			EntityTypeReference
+			Constant, // Values like 1, 1.5, etc
+			ParameterReference, // References the parameter of an action-target. Source.Gold references to the gold of the source of an action
+			EntityPlayerParameterReference, // References the parameter of an player indirectly. Like Source.Player.Gold, only works if Source is a entity
+			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
+			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
 		};
 
 		struct ParameterReference
@@ -48,6 +49,7 @@ namespace SGA
 		static FunctionParameter createConstParameter(double constValue);
 		static FunctionParameter createArgumentReference(int argumentIndex);
 		static FunctionParameter createParameterReference(ParameterReference ref);
+		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

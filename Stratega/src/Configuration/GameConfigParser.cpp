@@ -20,9 +20,9 @@ namespace SGA
         parseBoardGenerator(configNode["Board"], config);
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
+        parsePlayerParameters(configNode["PlayerParameters"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
-        parsePlayerParameters(configNode["PlayerParameters"], config);
 
 		// Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();

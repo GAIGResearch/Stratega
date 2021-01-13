@@ -218,6 +218,9 @@ namespace SGA
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}
 
+		// Dirty trick to reuse code between const and non-const getter
+		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
+		
 		const Player* getPlayer(int playerID) const
 		{
 			for(const auto& p : players)
