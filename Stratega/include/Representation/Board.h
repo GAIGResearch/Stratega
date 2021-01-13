@@ -10,6 +10,11 @@ namespace SGA
 	class Board
 	{
 	public:
+		Board(std::vector<Tile> tiles, int width, int height)
+			: width(width), height(height), tiles(std::move(tiles))
+		{
+		}
+		
 		Board(int width, int height)
 			:width(width), height(height)
 		{
@@ -25,8 +30,7 @@ namespace SGA
 		Tile& setTile(const TileType& type, int x, int y)
 		{
 			auto& tileRef = getTile(x, y);
-			tileRef = type.toTile();
-			tileRef.position = { x, y };
+			tileRef = type.toTile(x, y);
 			return tileRef;
 			
 		}

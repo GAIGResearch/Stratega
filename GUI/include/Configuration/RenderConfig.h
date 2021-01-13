@@ -1,8 +1,8 @@
 #pragma once
 #include <map>
 #include <string>
-#include <yaml-cpp/yaml.h>
-
+//#include <yaml-cpp/yaml.h>
+#include<Configuration/YamlHeaders.h>
 #include "TBSGameStateRender.h"
 #include "RTSGameStateRender.h"
 
@@ -35,7 +35,10 @@ namespace YAML
                 auto entityConfig = entityNode.second;
                 rhs.entitySpritePaths.emplace(entityName, entityConfig["Sprite"].as<std::string>());
         	}
-
+        	
+            //Add Fog of War tile
+            rhs.tileSpritePaths.emplace("FogOfWar", "../GUI/Assets/notVisible.png");
+        	
             for (const auto& tileNode : node["Tiles"])
             {
                 auto tileName = tileNode.first.as<std::string>();

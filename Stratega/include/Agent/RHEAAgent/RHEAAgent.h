@@ -18,7 +18,7 @@ namespace SGA
 		std::unique_ptr<StateHeuristic>  heuristic_;
 		RHEAParams params_;
 
-		std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
 	public:
 		RHEAAgent() :

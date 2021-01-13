@@ -1,9 +1,7 @@
 #include <Configuration/GameConfigParser.h>
-#include <Configuration/BoardGenerator.h>
 #include <Agent/AgentFactory.h>
 
-#include <yaml-cpp/node/parse.h>
-#include <yaml-cpp/yaml.h>
+#include <Configuration/YamlHeaders.h>
 
 namespace SGA
 {
@@ -22,6 +20,7 @@ namespace SGA
         parseBoardGenerator(configNode["Board"], config);
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
+        parsePlayerParameters(configNode["PlayerParameters"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
@@ -70,13 +69,23 @@ namespace SGA
 		
         auto tileConfigs = tilesNode.as<std::map<std::string, YAML::Node>>();
         std::unordered_map<std::string, TileType> types;
-        auto idCounter = 0;
+        auto idCounter = -1;
+
+        //Add fog of war tile
+        TileType type;
+        type.id = idCounter++;
+        type.name = "FogOfWar";
+        type.isWalkable = false;
+        type.symbol = '_';
+        config.tileTypes.emplace(type.id, std::move(type));
+
 		for(const auto& nameConfigPair : tileConfigs)
 		{
             TileType type;
             type.id = idCounter++;
             type.name = nameConfigPair.first;
 			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
+            type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
 			type.symbol = nameConfigPair.second["Symbol"].as<char>();
             config.tileTypes.emplace(type.id, std::move(type));
 		}
@@ -91,24 +100,10 @@ namespace SGA
 
         if (boardNode["GenerationType"].as<std::string>() == "Manual")
         {
-            auto layout = boardNode["Layout"].as<std::string>();
-            // Extract rows
-            std::vector<std::string> rows;
-            size_t last = 0, next;
-            while ((next = layout.find(' ', last)) != std::string::npos)
-            {
-                rows.emplace_back(layout.substr(last, next - last));
-                last = next + 1;
-            }
-            rows.push_back(layout.substr(last, layout.size() - last));
-
-            // Initialize the generator
-            std::unordered_map<char, TileType> tileMapping;
-            for (const auto& nameTypePar : config.tileTypes)
-            {
-                tileMapping.emplace(nameTypePar.second.symbol, nameTypePar.second);
-            }
-            config.boardGenerator = std::make_unique<BoardGenerator>(std::move(rows), std::move(tileMapping));
+            config.boardString = boardNode["Layout"].as<std::string>();
+        	// Remove whitespaces but keep newLines
+            config.boardString.erase(std::remove_if(config.boardString.begin(), config.boardString.end(), 
+                [](char x) { return x != '\n' && std::isspace(x); }), config.boardString.end());
         }
         else
         {
@@ -128,24 +123,11 @@ namespace SGA
         {
             EntityType type;
             type.name = nameTypePair.first;
+            type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
             type.id = config.entityTypes.size();
-            for (const auto& nameParamPair : nameTypePair.second["Parameters"].as<std::map<std::string, double>>())
-            {
-                // Assign IDs to parameters that do not exist yet
-                if (config.parameters.find(nameParamPair.first) == config.parameters.end())
-                {
-                    config.parameters.insert({ nameParamPair.first, config.parameters.size() });
-                }
+            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
 
-                // Construct the parameter
-                Parameter param;
-                param.name = nameParamPair.first;
-                param.minValue = 0;
-                param.maxValue = nameParamPair.second;
-                param.defaultValue = param.maxValue;
-                param.index = type.parameters.size();
-                type.parameters.insert({ config.parameters.at(nameParamPair.first), std::move(param) });
-            }
+            parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
             config.entityTypes.emplace(type.id, std::move(type));
         }
@@ -166,11 +148,14 @@ namespace SGA
             }
         }
 
-        // Group that contains all entities
+        // Predefined groups
         config.entityGroups.emplace("All", std::vector<int>());
         for (const auto& idEntityPair : config.entityTypes)
         {
+            // Group that contains all entities
             config.entityGroups.at("All").emplace_back(idEntityPair.first);
+        	// Group that contains one entity
+            config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
         }
     }
 
@@ -254,6 +239,7 @@ namespace SGA
             fm = std::make_unique<RTSForwardModel>();
         }
 
+
 		// Parse WinCondition
         auto winConditionNode = fmNode["WinCondition"];
         fm->winCondition = winConditionNode["Type"].as<WinConditionType>(fm->winCondition);
@@ -282,5 +268,32 @@ namespace SGA
 		}
 		
         config.forwardModel = std::move(fm);
+	}
+
+    void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const
+	{
+        parseParameterList(parametersNode, config, config.playerParameterTypes);
+	}
+
+    void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
+	{
+        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, double>>(std::map<std::string, double>()))
+        {
+            // Assign IDs to parameters that do not exist yet
+            if (config.parameters.find(nameParamPair.first) == config.parameters.end())
+            {
+                config.parameters.insert({ nameParamPair.first, config.parameters.size() });
+            }
+
+            // Construct the parameter
+            Parameter param;
+            param.id = config.parameters.at(nameParamPair.first);
+            param.name = nameParamPair.first;
+            param.minValue = 0;
+            param.maxValue = nameParamPair.second;
+            param.defaultValue = param.maxValue;
+            param.index = parameterBucket.size();
+            parameterBucket.insert({ param.id, std::move(param) });
+        }
 	}
 }

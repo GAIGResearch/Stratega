@@ -33,7 +33,7 @@ SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 	Entity instance;
 	instance.id = entityID;
 	instance.typeID = this->id;
-
+	
 	// Add actions
 	instance.attachedActions.reserve(actionIds.size());
 	for(auto actionTypeID : actionIds)
@@ -42,6 +42,7 @@ SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 	}
 
 	// Set parameter values
+	instance.lineOfSightRange = lineOfSight;
 	instance.parameters.reserve(parameters.size());
 	for(const auto& idParamPair: parameters)
 	{

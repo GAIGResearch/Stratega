@@ -6,89 +6,98 @@
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
 
-class RTSGameStateRender : public GameStateRenderer<SGA::RTSGameState>
+namespace SGA
 {
-public:
-	//Debug mode
-	bool drawDebug = false;
-
-	RTSGameStateRender(SGA::RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
-	void run(bool& isRunning) override;
-
-	// GameCommunicator functions
-	void onGameStateAdvanced() override;
-
-	bool isSelected(int unitID)
+	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
-		return selectedUnits.find(unitID) != selectedUnits.end();
-	}
+	public:
+		sf::View view2;
 
-private:
-	void init() override;
-	void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
-	void initializeView(sf::RenderWindow& window) const;
-	void initializeLayers();
+		//Debug mode
+		bool drawDebug = false;
 
-	void handleInput(sf::RenderWindow& window);
+		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+		void render() override;
 
-	//Events Implementation
-	void windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const;
-	void mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
-	void keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		// GameCommunicator functions
+		void onGameStateAdvanced() override;
 
-	//Render Layers by order
-	void drawLayers(sf::RenderWindow& window);
+		bool isSelected(int unitID)
+		{
+			return selectedUnits.find(unitID) != selectedUnits.end();
+		}
 
-	//HUD
-	void createHUD(sf::RenderWindow& window);
+	private:
+		void init() override;
+		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
+		void initializeView(sf::RenderWindow& window) const;
+		
+		void handleInput(sf::RenderWindow& window);
 
-	void createWindowInfo();
-	void createWindowUnits();
-	void createWindowNavMesh();
+		//Events Implementation
+		void windowClosed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)const;
+		void mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
+		void keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window);
 
-private:
-	//Game Data
-	SGA::RTSGame* game;
+		//Render Layers by order
+		void drawLayers(sf::RenderWindow& window);
 
-	//Current gamestate used to render
-	SGA::RTSGameState gameStateCopy;
+		//HUD
+		void createHUD(sf::RenderWindow& window);
 
-	//Zoom
-	float zoomValue = 5;
+		void createTopBar();
+		void createBottomBar(sf::RenderWindow& window);
+		void createWindowInfo(sf::RenderWindow& window);
+		void createWindowUnits();
+		void createWindowNavMesh();
+		void createWindowFogOfWar();
 
-	//Mouse Information
-	SGA::Vector2f currentMousePos;
-	sf::Vector2f oldPos;
-	bool moving = false;
-	bool dragging = false;
+	private:
+		//Game Data
+		RTSGame* game;
 
-	//FPS
-	int fpsLimit = 60;
-	int m_fps = 0;
+		//Current gamestate used to render
+		RTSGameState gameStateCopy;
+		RTSGameState gameStateCopyFogOfWar;
+		//Zoom
+		float zoomValue = 5;
 
-	//Drawing gameState Buffer
-	bool drawGameStateBuffer = false;
-	CircularBuffer<SGA::RTSGameState> gameStatesBuffer;
-	int gameStatesBufferRCurrentIndex = 0;
+		//Mouse Information
+		Vector2f currentMousePos;
+		sf::Vector2f oldPos;
+		bool moving = false;
+		bool dragging = false;
 
-	//Human player
-	std::unordered_set<int> selectedUnits;
+		//FPS
+		int fpsLimit = 60;
+		int m_fps = 0;
 
-	//Imgui
-	sf::Clock deltaClock;
+		//Drawing gameState Buffer
+		bool drawGameStateBuffer = false;
+		CircularBuffer<RTSGameState> gameStatesBuffer;
+		int gameStatesBufferRCurrentIndex = 0;
 
-	std::mutex advanceMutex;
+		//Human player
+		std::unordered_set<int> selectedUnits;
 
-	//Profiling
-	//Last call OnAdvancedGameGameState
-	int indexAdvancedGameState = 0;
+		//Imgui
+		sf::Clock deltaClock;
 
-	SGA::NavigationConfig config;
+		std::mutex advanceMutex;
 
-	std::vector<sf::Text> unitsInfo;
-	std::vector<sf::RectangleShape> healthBars;
+		//Profiling
+		//Last call OnAdvancedGameGameState
+		int indexAdvancedGameState = 0;
 
-};
+		NavigationConfig config;
+
+		std::vector<sf::Text> unitsInfo;
+		std::vector<sf::RectangleShape> healthBars;
+
+		sf::RenderTexture renderMinimapTexture;
+
+	};
+}

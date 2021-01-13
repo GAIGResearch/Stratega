@@ -23,7 +23,8 @@ namespace SGA
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnUnit>("Spawn");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
-
+		factory.registerFunction<TransferEffect>("Transfer");
+		
 		return factory;
 	}
 }

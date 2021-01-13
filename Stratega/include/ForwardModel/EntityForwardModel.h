@@ -22,7 +22,7 @@ namespace SGA
 		{
 		}
 		
-		bool canPlayerPlay(Player& player) const;
+		bool canPlayerPlay(const GameState& state, Player& player) const;
 		void executeAction(GameState& state, const Action& action) const;
 		void endTick(GameState& state) const;
 

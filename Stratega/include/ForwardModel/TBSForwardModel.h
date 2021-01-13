@@ -78,7 +78,7 @@ namespace  SGA
 			int winnerID = -1;
 			for (Player& player : state.players)
 			{
-				if (player.canPlay && canPlayerPlay(player))
+				if (player.canPlay && canPlayerPlay(state, player))
 				{
 					winnerID = player.id;
 					numberPlayerCanPlay++;

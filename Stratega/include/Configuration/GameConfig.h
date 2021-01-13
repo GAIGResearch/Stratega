@@ -4,7 +4,6 @@
 #include <Agent/Agent.h>
 #include <Representation/TBSGameState.h>
 #include <Configuration/FunctionParser.h>
-#include <Configuration/IBoardGenerator.h>
 #include <ForwardModel/ForwardModel.h>
 
 namespace SGA
@@ -18,16 +17,21 @@ namespace SGA
     	// Other stuff
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::unordered_map<int, TileType> tileTypes;
-        std::unique_ptr<IBoardGenerator> boardGenerator;
         std::unique_ptr<EntityForwardModel> forwardModel;
+    	// Players
+        std::unordered_map<ParameterID, Parameter> playerParameterTypes;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<std::string, std::vector<int>> entityGroups;
         std::unordered_map<int, EntityType> entityTypes;
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
+    	// State-Generation
+        std::string boardString;
+        int defaultTileTypeID;
 
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
+        std::unique_ptr<GameState> generateGameState() const;
     	
         int getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
@@ -36,7 +40,4 @@ namespace SGA
     };
 	
     std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
-
-    std::unique_ptr<TBSGameState> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
-    std::unique_ptr<RTSGameState> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }

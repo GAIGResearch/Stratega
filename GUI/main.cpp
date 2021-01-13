@@ -2,16 +2,18 @@
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 #include <Game/TBSGameCommunicator.h>
-#include <yaml-cpp/node/parse.h>
+#include <Configuration/YamlHeaders.h>
 #include <Game/TBSGame.h>
 #include "Configuration/GameConfigParser.h"
+
+#include <GameStateRenderer.h>
 
 int main()
 {
 	// Read Config
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
-	std::filesystem::path configPath2("../../../gameConfigs/KillTheKing.yaml");
+	std::filesystem::path configPath2("../../../gameConfigs/ProtectTheBase.yaml");
 	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
 	auto gameConfig2 = parser.parseFromFile(configPath2.string());
 	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();
@@ -57,12 +59,15 @@ int main()
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath2.parent_path()));
-	auto stateRenderer = stateRendererFromConfig(*game, renderConfig, gameConfig2, humanPlayerID);
+	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig2, humanPlayerID));
+	
 	current_path(tmp);
-	game->addCommunicator(std::move(stateRenderer));
+	game->addCommunicator(stateRenderer);
 	
 	// Run the game
-	game->run();
+	std::thread gameThread(&SGA::Game::run, std::ref(*game));
+	stateRenderer->render();
+	gameThread.join();
 	
     return 0;
 }

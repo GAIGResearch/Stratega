@@ -1,5 +1,4 @@
 #include <Configuration/GameConfig.h>
-#include <Configuration/BoardGenerator.h>
 #include <Agent/AgentFactory.h>
 
 namespace SGA
@@ -23,21 +22,18 @@ namespace SGA
 	
 	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
 	{
-		//TODO ADD FM AbstractGeneration
 		// Generate game
 		std::unique_ptr<Game> game;
 		if (config.gameType == ForwardModelType::TBS)
 		{
-			auto gameState = generateAbstractTBSStateFromConfig(config, rngEngine);
-			TBSForwardModel fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
+			auto gameState = std::unique_ptr<TBSGameState>(dynamic_cast<TBSGameState*>(config.generateGameState().release()));
+			auto fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
 		else if (config.gameType == ForwardModelType::RTS)
 		{
-			auto board = config.boardGenerator->generate(rngEngine);
-			auto gameState = generateAbstractRTSStateFromConfig(config, rngEngine);
-
-			RTSForwardModel fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
+			auto gameState = std::unique_ptr<RTSGameState>(dynamic_cast<RTSGameState*>(config.generateGameState().release()));
+			auto fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else
@@ -47,87 +43,116 @@ namespace SGA
 
 		return game;
 	}
-	
-	std::unique_ptr<RTSGameState> generateAbstractRTSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+
+	std::unique_ptr<GameState> GameConfig::generateGameState() const
 	{
 		// Initialize state
-		auto board = config.boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<RTSGameState>(std::move(board), config.tileTypes);
-
-		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
-		state->entityGroups = config.entityGroups;
-		//std::unordered_map<int, ActionType> copy = std::move(config.actionTypes);
-		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);
-		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(config.parameters);
-		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
+		std::unique_ptr<GameState> state;
+		if(gameType == ForwardModelType::TBS)
 		{
-			playerIDs.push_back(state->addPlayer());
+			state = std::make_unique<TBSGameState>();
+		}
+		else if(gameType == ForwardModelType::RTS)
+		{
+			state = std::make_unique<RTSGameState>();
 		}
 
-		// Spawn units
-		// TODO Unit spawn configuration
-		std::unordered_set<Vector2i> occupiedSet;
-		std::uniform_int_distribution<int> xDist(0, state->board.getWidth() - 1);
-		std::uniform_int_distribution<int> yDist(0, state->board.getHeight() - 1);
-		for (const auto& player : state->players)
+		// Assign data
+		state->tickLimit = tickLimit;
+		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
+		state->playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
+		state->entityGroups = entityGroups;
+		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
+		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
+		std::unordered_set<int> playerIDs;
+		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
-			for (const auto& nameTypePair : config.entityTypes)
-			{
-				// Generate random positions until a suitable was found
-				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-				while (!state->board.getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
-				{
-					pos.x = xDist(rngEngine);
-					pos.y = yDist(rngEngine);
-				}
-				occupiedSet.insert(pos);
+			playerIDs.emplace(state->addPlayer());
+		}
 
-				state->addEntity(nameTypePair.second, player.id, pos);
+		// Create some lookups for initializing the board and entities
+		std::unordered_map<char, const TileType*> tileLookup;
+		const auto* defaultTile = &tileTypes.begin()->second;
+		for(const auto& idTilePair : tileTypes)
+		{
+			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
+			if (idTilePair.second.isDefaultTile)
+				defaultTile = &idTilePair.second;
+		}
+
+		std::unordered_map<char, const EntityType*> entityLookup;
+		for(const auto& idEntityPair : entityTypes)
+		{
+			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+		}
+
+		// Configure board and spawn entities
+		auto x = 0;
+		auto y = 0;
+		auto width = -1;
+		std::vector<Tile> tiles;
+		for(size_t i = 0; i < boardString.size(); i++)
+		{
+			auto c = boardString[i];
+			if(c == '\n')
+			{
+				y++;
+				if(width == -1)
+				{
+					width = x;
+				}
+				else if (x != width)
+				{
+					throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+				}
+				
+				x = 0;
+				continue;
+			}
+
+			auto entityIt = entityLookup.find(c);
+			auto tileIt = tileLookup.find(c);
+			if(entityIt != entityLookup.end())
+			{
+				// Check if the entity was assigned to an player, we only look for players with ID 0-9
+				auto ownerID = Player::NEUTRAL_PLAYER_ID;
+				if(i < boardString.size() - 1 && std::isdigit(boardString[i + 1]))
+				{
+					ownerID = static_cast<int>(boardString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
+					if(playerIDs.find(ownerID) == playerIDs.end())
+					{
+						throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
+					}
+					i++;
+				}
+
+				state->addEntity(*entityIt->second, ownerID, Vector2f(x, y));
+				// Since an entity occupied this position, we will place the default tile here
+				tiles.emplace_back(defaultTile->toTile(x, y));
+			}
+			else if(tileIt != tileLookup.end())
+			{
+				tiles.emplace_back(tileIt->second->toTile(x, y));
+			}
+			else
+			{
+				throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
+			}
+
+			x++;
+		}
+
+		// Sometimes there is a newLine at the end of the string, and sometimes not
+		if(boardString[boardString.size() - 1] != '\n')
+		{
+			y++;
+			if (x != width)
+			{
+				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
 			}
 		}
-
-		return std::move(state);
-	}
-	
-	std::unique_ptr<TBSGameState> generateAbstractTBSStateFromConfig(const GameConfig& config, std::mt19937& rngEngine)
-	{
-		// Initialize state
-		auto board = config.boardGenerator->generate(rngEngine);
-		auto state = std::make_unique<TBSGameState>(std::move(board), config.tileTypes);
-		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(config.entityTypes);
-		state->entityGroups = config.entityGroups;
-		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(config.actionTypes);
-		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(config.parameters);
 		
-		state->tickLimit = config.tickLimit;
-		std::vector<int> playerIDs;
-		for (auto i = 0; i < config.getNumberOfPlayers(); i++)
-		{
-			playerIDs.push_back(state->addPlayer());
-		}
-
-		// Spawn units
-		// TODO Unit spawn configuration
-		std::unordered_set<Vector2i> occupiedSet;
-		std::uniform_int_distribution<int> xDist(0, state->board.getWidth() - 1);
-		std::uniform_int_distribution<int> yDist(0, state->board.getHeight() - 1);
-		for(const auto& player : state->players)
-		{
-			for (const auto& nameTypePair : config.entityTypes)
-			{
-				// Generate random positions until a suitable was found
-				Vector2i pos(xDist(rngEngine), yDist(rngEngine));
-				while (!state->board.getTile(pos.x, pos.y).isWalkable || occupiedSet.find(pos) != occupiedSet.end())
-				{
-					pos.x = xDist(rngEngine);
-					pos.y = yDist(rngEngine);
-				}
-				occupiedSet.insert(pos);
-
-				state->addEntity(nameTypePair.second, player.id, pos);
-			}
-		}
+		state->board = Board(tiles, width, y);
 
 		return std::move(state);
 	}

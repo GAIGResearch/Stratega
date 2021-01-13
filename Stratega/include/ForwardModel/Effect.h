@@ -59,4 +59,15 @@ namespace SGA
 		SetToMaximum(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class TransferEffect : public Effect
+	{
+		FunctionParameter sourceParam;
+		FunctionParameter targetParam;
+		FunctionParameter amountParam;
+
+	public:
+		TransferEffect(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
 }
