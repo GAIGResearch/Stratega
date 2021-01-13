@@ -13,7 +13,7 @@ namespace SGA {
 	{
 		
 	private:
-		std::vector<TBSAction> actions;
+		std::vector<Action> actions;
 		double value = 0;
 
 	public:
@@ -23,7 +23,7 @@ namespace SGA {
 		// creates a copy of an existing Portfolio Genome
 		RHEAGenome(const RHEAGenome& other) = default;
 
-		std::vector<TBSAction>& getActions() { return actions; };
+		std::vector<Action>& getActions() { return actions; };
 
 		void mutate(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937 & randomGenerator);
 
@@ -35,8 +35,8 @@ namespace SGA {
 		static RHEAGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
 
 	private:
-		RHEAGenome(std::vector<TBSAction>& actions, double value);
-		static void applyActionToGameState(const TBSForwardModel & forwardModel, TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, const TBSAction& action, RHEAParams& params);
+		RHEAGenome(std::vector<Action>& actions, double value);
+		static void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, RHEAParams& params);
 		
 	};
 }

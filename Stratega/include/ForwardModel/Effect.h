@@ -1,17 +1,73 @@
 #pragma once
-#include <ForwardModel/ConditionType.h>
-#include <ForwardModel/EffectType.h>
+#include <vector>
+#include <ForwardModel/FunctionParameter.h>
+#include <ForwardModel/ActionTarget.h>
 
 namespace SGA
 {
-	struct Effect
+	class EntityForwardModel;
+	
+	class Effect
 	{
-		// Condition variables
-		ConditionType conditionType;
-		int targetTileTypeID;
+	public:
+		virtual ~Effect() = default;
 		
-		// Effect variables
-		EffectType type;
-		int damage;
+		virtual void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+	};
+
+	class ModifyResource: public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+	public:
+		ModifyResource(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class Attack : public Effect
+	{
+		/*FunctionParameter entityTarget;*/
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+	public:
+		Attack(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class Move : public Effect
+	{
+	public:
+		Move(const std::vector<FunctionParameter>& parameters) {};
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class SpawnUnit : public Effect
+	{
+		FunctionParameter entityTypeParam;
+		FunctionParameter targetPositionParam;
+		
+	public:
+		SpawnUnit(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class SetToMaximum : public Effect
+	{
+		FunctionParameter targetResource;
+		
+	public:
+		SetToMaximum(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class TransferEffect : public Effect
+	{
+		FunctionParameter sourceParam;
+		FunctionParameter targetParam;
+		FunctionParameter amountParam;
+
+	public:
+		TransferEffect(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 }

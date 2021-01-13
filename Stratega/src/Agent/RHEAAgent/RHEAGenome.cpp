@@ -21,10 +21,10 @@ namespace SGA {
         value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
     }
 
-    RHEAGenome::RHEAGenome(std::vector<TBSAction>& actions, double value) :
+    RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
         actions(std::move(actions)), value(value) {}
 
-    void RHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<TBSAction>& actionSpace, const TBSAction& action, RHEAParams& params)
+    void RHEAGenome::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, std::vector<Action>& actionSpace, const Action& action, RHEAParams& params)
     {
         params.REMAINING_FM_CALLS--;
         forwardModel.advanceGameState(gameState, action);
@@ -39,9 +39,7 @@ namespace SGA {
             }
             else // skip opponent turn
             {
-                std::vector<TBSAction> endTurnActionSpace;
-                forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-                forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
+                forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
             }
         }
 
@@ -98,7 +96,7 @@ namespace SGA {
         const int playerID = gameState.currentPlayer;
 
     	// initialize variables for the new genome to be created
-        std::vector<TBSAction> actions;
+        std::vector<Action> actions;
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
@@ -111,7 +109,7 @@ namespace SGA {
             // mutation = randomly select a new action for gameStateCopy
             if (mutate)
             {
-                TBSAction action = actionSpace.at(rand() % actionSpace.size());
+                auto action = actionSpace.at(rand() % actionSpace.size());
                 applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
                 actions.emplace_back(action);
             }
@@ -185,7 +183,7 @@ namespace SGA {
         std::cout << "\tactions=" << "\n";
         for (const auto& action : actions)
         {
-            std::cout << "\t\t" << action.playerID << ";" << action.sourceUnitID << ";" << action.targetUnitID << "\n";
+            std::cout << "\t\t" << action.ownerID << ";" << "Type=" << action.actionTypeID << "\n";
         }
 
         std::cout << "\tvalue=" << value << "\n;";

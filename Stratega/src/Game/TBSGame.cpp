@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	TBSGame::TBSGame(std::unique_ptr<TBSGameState> gameState, SGA::TBSForwardModel forwardModel, std::mt19937 rngEngine)
+	TBSGame::TBSGame(std::unique_ptr<TBSGameState> gameState, TBSForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
@@ -31,12 +31,12 @@ namespace SGA
 	void TBSGame::close()
 	{
 		Game::close();
-		
+
 		std::cout << "GAME IS FINISHED" << std::endl;
-		std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
+		//std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
-	
-	void TBSGame::executeAction(TBSAction action)
+
+	void TBSGame::executeAction(Action action)
 	{
 		//Lock mutex while we are advancing the gameState
 		mutexGameState.lock();
@@ -45,15 +45,15 @@ namespace SGA
 		hasActionToExecute = false;
 		updatingState = false;
 
-		for(auto& com : communicators)
+		for (auto& com : communicators)
 		{
 			com->onGameStateAdvanced();
 		}
 	}
 
-	void TBSGame::addActionToExecute(TBSAction action)
+	void TBSGame::addActionToExecute(Action action)
 	{
-		if (gameState->currentPlayer == action.playerID)
+		if (gameState->currentPlayer == action.ownerID)
 		{
 			actionToExecute = action;
 			hasActionToExecute = true;

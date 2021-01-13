@@ -2,7 +2,6 @@
 #include <Game/GameCommunicator.h>
 #include <Representation/TBSGameState.h>
 #include <Game/TBSGame.h>
-#include <Agent/Agent.h>
 
 #include <random>
 #include <thread>
@@ -10,7 +9,7 @@
 namespace SGA
 {
 	class Agent;
-	
+
 	class TBSGameCommunicator : public GameCommunicator
 	{
 	public:
@@ -18,7 +17,7 @@ namespace SGA
 			GameCommunicator{ playerID }
 		{
 		}
-		
+
 		void init() override;
 		void close() override
 		{
@@ -34,7 +33,7 @@ namespace SGA
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
-		void executeAction(TBSAction action) const;
+		void executeAction(Action action) const;
 		bool isMyTurn() const;
 		TBSGameState getGameState() const;
 
@@ -44,4 +43,5 @@ namespace SGA
 		std::mt19937 rngEngine;
 		std::thread thread;
 	};
+
 }

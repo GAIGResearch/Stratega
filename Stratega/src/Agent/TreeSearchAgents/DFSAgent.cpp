@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void DFSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void DFSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{
@@ -11,7 +11,7 @@ namespace SGA
 			{
 				remainingForwardModelCalls = forwardModelCalls;
 
-				TBSGameState gameState = gameCommunicator.getGameState();
+				auto gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)
 					break;
 				auto actionSpace = forwardModel.generateActions(gameState);
@@ -28,7 +28,7 @@ namespace SGA
 
 					for (size_t i = 0; i < actionSpace.size(); i++)
 					{
-						TBSGameState gsCopy(gameState);
+						auto gsCopy(gameState);
 						forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
 						const double value = evaluateRollout(forwardModel, gameState, 1, playerID);
 						if (value > bestHeuristicValue)
@@ -58,9 +58,9 @@ namespace SGA
 		else
 		{
 			auto actionSpace = forwardModel.generateActions(gameState);
-			for (TBSAction action : actionSpace)
+			for (const auto& action : actionSpace)
 			{
-				TBSGameState gsCopy(gameState);
+				auto gsCopy(gameState);
 				applyActionToGameState(forwardModel, gameState, action);
 
 				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
@@ -76,7 +76,7 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const TBSAction& action)
+	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const Action& action)
 	{
 		remainingForwardModelCalls--;
 		const int playerID = gameState.currentPlayer;
@@ -92,9 +92,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				std::vector<TBSAction> endTurnActionSpace;
-				forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
+				forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
 			}
 			remainingForwardModelCalls--;
 		}

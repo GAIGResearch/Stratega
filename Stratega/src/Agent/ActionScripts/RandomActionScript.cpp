@@ -2,19 +2,22 @@
 
 namespace SGA
 {
-	TBSAction RandomActionScript::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace) const
+	Action RandomActionScript::getAction(TBSGameState& gameState, std::vector<Action>& actionSpace) const
 	{
 		return actionSpace[rand() % actionSpace.size()];
 	}
 	
-	TBSAction RandomActionScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, int unitID) const
+	Action RandomActionScript::getActionForUnit(TBSGameState& gameState, std::vector<Action>& actionSpace, int unitID) const
 	{
-		std::vector<TBSAction> suitableActions = std::vector<TBSAction>();
+		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.sourceUnitID == unitID)
+			auto& actionType = gameState.getActionType(action.actionTypeID);
+			if (actionType.sourceType == ActionSourceType::Unit)
 			{
-				suitableActions.push_back(action);
+				auto sourceEntity = targetToEntity(gameState, action.targets[0]);
+				if(sourceEntity.id == unitID)
+					suitableActions.push_back(action);
 			}
 		}
 

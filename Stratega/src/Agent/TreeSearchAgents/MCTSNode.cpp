@@ -106,7 +106,7 @@ namespace SGA
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
-		TBSGameState gsCopy = TBSGameState(gameState);
+		auto gsCopy(gameState);
 		childIndex = children.size();
 		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
 
@@ -194,7 +194,7 @@ namespace SGA
 	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
-			TBSGameState gsCopy = TBSGameState(gameState);
+			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, TBSAction& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);
@@ -235,9 +235,7 @@ namespace SGA
 			}
 			else // skip opponent turn
 			{
-				std::vector<TBSAction> endTurnActionSpace;
-				forwardModel.getActionSpace().generateEndOfTurnActions(gameState, gameState.currentPlayer, endTurnActionSpace);
-				forwardModel.advanceGameState(gameState, endTurnActionSpace.at(0));
+				forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
 			}
 		}
 	}

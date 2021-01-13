@@ -3,7 +3,7 @@
 #include <ForwardModel/TBSForwardModel.h>
 
 namespace SGA
-{	
+{
 	template<typename NodeType>
 	class ITreeNode
 	{
@@ -11,7 +11,7 @@ namespace SGA
 		TBSGameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::vector<TBSAction> actionSpace;
+		std::vector<Action> actionSpace;
 		int childIndex = 0;
 		double value = 0;
 		

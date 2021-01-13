@@ -1,9 +1,6 @@
 #pragma once
 #include <Game/GameCommunicator.h>
-#include <Representation/RTSGameState.h>
 #include <Game/RTSGame.h>
-#include <Agent/Agent.h>
-
 #include <random>
 #include <thread>
 
@@ -18,7 +15,7 @@ namespace SGA
 			GameCommunicator{ playerID }
 		{
 		}
-		
+
 		void init() override;
 		void close() override
 		{
@@ -34,7 +31,8 @@ namespace SGA
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
-		void executeAction(RTSAction action) const;
+		void executeAction(Action action) const;
+		bool isMyTurn() const;
 		RTSGameState getGameState() const;
 
 	private:

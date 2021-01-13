@@ -2,8 +2,6 @@
 #include <iostream>
 #include <vector>
 
-
-
 namespace SGA
 {
 
@@ -30,7 +28,7 @@ namespace SGA
 			return nullptr;
 
 		// roll the state using a the next action that hasn't been expanded yet
-		TBSGameState gsCopy = TBSGameState(gameState);
+		auto gsCopy(gameState);
 		forwardModel.advanceGameState(gsCopy, actionSpace.at(static_cast<int>(children.size())));
 		agentParameters.REMAINING_FM_CALLS--;
 		

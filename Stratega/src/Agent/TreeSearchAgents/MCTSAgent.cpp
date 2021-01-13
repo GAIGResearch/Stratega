@@ -2,14 +2,14 @@
 
 namespace SGA
 {
-	void MCTSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void MCTSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
 			{
-                TBSGameState gameState = gameCommunicator.getGameState();
+                auto gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
 				
@@ -52,7 +52,7 @@ namespace SGA
                     gameCommunicator.executeAction(bestAction);
 
                 	// return best action
-                    previousActionIndex = bestAction.type == TBSActionType::EndTurn ? (-1) : bestActionIndex;
+                    previousActionIndex = bestAction.isEndAction ? -1 : bestActionIndex;
                 }
 
 			}

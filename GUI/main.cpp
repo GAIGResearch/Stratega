@@ -1,35 +1,31 @@
 #include <filesystem>
-#include <GameStateRenderer.h>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 #include <Game/TBSGameCommunicator.h>
-#include <yaml-cpp/node/parse.h>
+#include <Configuration/YamlHeaders.h>
+#include <Game/TBSGame.h>
+#include "Configuration/GameConfigParser.h"
 
-int main(int argc, char **argv)
+#include <GameStateRenderer.h>
+
+int main()
 {
-    std::string filename = "../../../gameConfigs/KillTheKing.yaml";
-    if(argc > 1)
-        filename = argv[1];
-    else
-        std::cout << "Loading default config " << filename << std::endl;
-
-    std::filesystem::path configPath(filename);
-	std::mt19937 rngEngine(0ll);
-
 	// Read Config
-	auto yamlConfig = YAML::LoadFile(configPath.string());
-	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
-	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
-
-	// Initialize the game
-	auto game = SGA::generateGameFromConfig(gameConfig, rngEngine);
+	std::mt19937 engine(0ll);
+	SGA::GameConfigParser parser;
+	std::filesystem::path configPath2("../../../gameConfigs/ProtectTheBase.yaml");
+	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
+	auto gameConfig2 = parser.parseFromFile(configPath2.string());
+	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();
 	
+	//// Initialize the game
+	auto game = generateAbstractGameFromConfig(gameConfig2, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
-	auto agents = SGA::agentsFromConfig(gameConfig);
+	auto agents = gameConfig2.generateAgents();
 	
-	std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
-	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
+	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
+	for(size_t i = 0; i < gameConfig2.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it
@@ -39,13 +35,12 @@ int main(int argc, char **argv)
 			playerID++;
 			continue;
 		}
-		
-		if(gameConfig.gameType == "TBS")
+		if (gameConfig2.gameType == SGA::ForwardModelType::TBS)
 		{
 			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
+			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));
 		}
 		else
@@ -53,29 +48,20 @@ int main(int argc, char **argv)
 			std::unique_ptr<SGA::RTSGameCommunicator> comm = std::make_unique<SGA::RTSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
+			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));			
 		}
 		
 		playerID++;
 	}
 	
-	//Build Navmesh
-	if (gameConfig.gameType == "RTS")
-	{
-		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
-		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
-		SGA::RTSGameState& state = *gameRTS.gameState;
-		fm.buildNavMesh(state,SGA::NavigationConfig());
-	}
-
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
-	current_path(absolute(configPath.parent_path()));
-	auto stateRenderer = std::shared_ptr<GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID));
+	current_path(absolute(configPath2.parent_path()));
+	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig2, humanPlayerID));
+	
 	current_path(tmp);
-
 	game->addCommunicator(stateRenderer);
 	
 	// Run the game

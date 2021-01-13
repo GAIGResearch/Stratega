@@ -4,13 +4,13 @@
 namespace SGA
 {
 	
-	void RHEAAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void RHEAAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
         while (!gameCommunicator.isGameOver())
         {
             if (gameCommunicator.isMyTurn())
             {
-                TBSGameState gameState = gameCommunicator.getGameState();
+                auto gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
             	

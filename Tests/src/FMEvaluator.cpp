@@ -10,20 +10,20 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 	auto results = std::make_unique<FMEvaluationResults>();
 	while(results->size() < StepCount)
 	{
-		if(config.gameType == "TBS")
+		if(config.gameType == SGA::ForwardModelType::TBS)
 		{
-			auto fm = generateTBSforwardModelFromConfig(config);
-			auto state = generateTBSStateFromConfig(config, *rngEngine);
-			runGameTBS(*state, fm, *results);
+			auto* fm = dynamic_cast<SGA::TBSForwardModel*>(config.forwardModel.get());
+			auto state = generateAbstractTBSStateFromConfig(config, *rngEngine);
+			runGameTBS(*state, *fm, *results);
 		}
 		else
 		{
-			SGA::RTSForwardModel fm;
-			auto state = SGA::generateRTSStateFromConfig(config, *rngEngine);
+			auto* fm = dynamic_cast<SGA::RTSForwardModel*>(config.forwardModel.get());
+			auto state = SGA::generateAbstractRTSStateFromConfig(config, *rngEngine);
 			//Build Navmesh
-			fm.buildNavMesh(*state, SGA::NavigationConfig());
+			fm->buildNavMesh(*state, SGA::NavigationConfig());
 			
-			runGameRTS(*state, fm, *results);
+			runGameRTS(*state, *fm, *results);
 		}
 	}
 

@@ -1,48 +1,54 @@
 #pragma once
+#include <mutex>
 #include <Game/Game.h>
 #include <Representation/RTSGameState.h>
 #include <ForwardModel/RTSForwardModel.h>
-
-#include <memory>
-#include <mutex>
 #include <random>
-
 namespace SGA
 {
 	class RTSGame final : public Game
 	{
+	private:
+		double accumulatedTimeUpdate = 0;
+		double accumulatedTimePrint = 0;
+		int executionCount = 0;
+		
 	public:
+		Action actionToExecute;
+		bool hasActionToExecute = false;
+
 		RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
 
+		void executeAction(Action action);
 		void update(double deltaTime) override;
-		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; };
 		void close() override;
-		const RTSForwardModel& getForwardModel() const
-		{
-			return forwardModel;
-		}
-
-		void executeAction(const RTSAction& action);
+		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
+		
+		const RTSForwardModel& getForwardModel() const { return forwardModel; }
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.
 		/// Use this only to access scalar-variables, because the state is continuously modified
 		/// For more complicated code use getStateCopy.
 		/// </summary>
-		[[nodiscard]] const RTSGameState& getState();
-		[[nodiscard]] RTSGameState getStateCopy();
+		const RTSGameState& getState() const;
+		RTSGameState getStateCopy();
+
+		[[nodiscard]] bool isUpdatingState() const { return updatingState && !isGameOver(); }
 
 	private:
-		double accumulatedTimeUpdate = 0;
-		double accumulatedTimePrint = 0;
-		int executionCount = 0;
-	public:
+		bool updatingState = false;
+
 		std::unique_ptr<RTSGameState> gameState;
 		RTSForwardModel forwardModel;
-		std::mutex stateMutex;
 
+		std::mt19937 rngEngine;
+
+		std::mutex stateMutex;
+	public:
 		//Navmesh Update
 		NavigationConfig navigationConfig;
 		bool shouldUpdateNavmesh;
+
 	};
 }

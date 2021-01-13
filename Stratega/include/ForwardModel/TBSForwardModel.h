@@ -1,82 +1,106 @@
 #pragma once
+#include <ForwardModel/EntityForwardModel.h>
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/TBSAction.h>
-#include <ForwardModel/Effect.h>
-#include <ForwardModel/FMState.h>
-#include <Configuration/WinConditionType.h>
-#include <ForwardModel/ForwardModelBase.h>
-#include <ForwardModel/TBSActionSpace.h>
+#include <Representation/Player.h>
+#include <ForwardModel/EntityActionSpace.h>
 
-namespace SGA
+namespace  SGA
 {
-	class TBSForwardModel : public ForwardModelBase<TBSGameState, TBSAction>
+	class TBSForwardModel : public EntityForwardModel
 	{
 	public:
-		TBSForwardModel()
-			: winCondition(),
-			  unitTypeID(),
-			  unitEndOfTurnEffects(),
-			  onTileEnterEffects(),
-			  actionSpace(generateDefaultActionSpace())
+		void advanceGameState(TBSGameState& state, const Action& action) const
 		{
+			if(action.isEndAction)
+			{
+				endTurn(state);
+			}
+			else
+			{
+				//Execute the action
+				executeAction(state, action);
+			}
+
+			//Remove entities
+			for (size_t i = 0; i < state.entities.size(); i++)
+			{
+				if (state.entities[i].shouldRemove)
+				{
+					state.entities.erase(state.entities.begin() + i);
+					i--;
+				}
+			}
+
+			//Check game is finished
+			state.isGameOver = checkGameIsFinished(state);
 		}
 
-		WinConditionType winCondition;
-		int unitTypeID;
+		void endTurn(TBSGameState& state) const
+		{
+			// Find the next player who's still able to play
+			for (auto i = 1; i <= state.players.size(); i++)
+			{
+				int nextPlayerID = (state.currentPlayer + i) % state.players.size();
+				auto& targetPlayer = state.players[nextPlayerID];
 
-		void advanceGameState(TBSGameState& state, const TBSAction& action) const override;
-		void advanceGameState(TBSGameState& state, const TBSAction& action, std::vector<TBSAction>& actionSpace) const;
+				// All players did play, we consider this as a tick
+				if (nextPlayerID == 0)
+				{
+					endTick(state);
+				}
 
-		std::vector<TBSAction> generateActions(TBSGameState& state) const override;
-		std::vector<TBSAction> generateActions(TBSGameState& state, int playerID) const override;
+				if (targetPlayer.canPlay)
+				{
+					state.currentPlayer = nextPlayerID;
+					break;
+				}
+			}
+		}
+
+		virtual std::vector<Action> generateActions(TBSGameState& state) const
+		{
+			return (EntityActionSpace().generateActions(state, state.currentPlayer));
+		}
+
+		virtual std::vector<Action> generateActions(TBSGameState& state, int playerID) const
+		{
+			return (EntityActionSpace().generateActions(state, playerID));
+		}
+
+		virtual bool isValid(const TBSGameState& state, const Action& action) const { return true; }
 		
-		bool isValid(TBSGameState& state, const TBSAction& action) const;
-
-		void executeMove(FMState& state, const TBSAction& action) const;
-		void executeAttack(FMState& state, const TBSAction& action) const;
-		void executePush(FMState& state, const TBSAction& action) const;
-		void executeHeal(FMState& state, const TBSAction& action) const;
-		void executeEndOfTurn(FMState& state, const TBSAction& action) const;
-
-		// Utility methods for game logic
-		bool isWalkable(TBSGameState& state, const Vector2i& position) const;
-		void moveUnit(FMState& state, TBSUnit& u, Vector2i newPosition) const;
-		void killUnit(FMState& state, TBSUnit& u) const;
-		void damageUnit(FMState& state, TBSUnit& u, int damageAmount) const;
-
-		void endTurn(FMState& state) const;
-		void initTurn(FMState& state) const;
-		bool checkGameIsFinished(TBSGameState& state) const;
-		bool canPlayerPlay(TBSPlayer& player) const;
-
-		// Effect handling
-		void addOnTileEnterEffect(Effect&& effect);
-		void addUnitEndOfTurnEffect(Effect&& effect);
-		void executeEndOfTurnTrigger(FMState& state) const;
-		void executeOnEnterTileTrigger(FMState& state, TBSUnit& targetUnit) const;
-		bool isConditionFulfilled(const Effect& effect, TBSUnit& targetUnit) const;
-		void executeEffect(FMState& state, const Effect& effect, TBSUnit& targetUnit) const;
-
-		// ActionSpaces
-		void setActionSpace(std::unique_ptr<TBSActionSpace> as)
+		bool checkGameIsFinished(TBSGameState& state) const
 		{
-			actionSpace = std::move(as);
-		}
+			if (state.currentTick >= state.tickLimit)
+				return true;
 
-		TBSActionSpace& getActionSpace() const
-		{
-			return *actionSpace;
-		}
+			int numberPlayerCanPlay = 0;
+			int winnerID = -1;
+			for (Player& player : state.players)
+			{
+				if (player.canPlay && canPlayerPlay(state, player))
+				{
+					winnerID = player.id;
+					numberPlayerCanPlay++;
+				}
+				else
+				{
+					player.canPlay = false;
+				}
+			}
 
-		std::unique_ptr<TBSActionSpace> generateDefaultActionSpace() const
-		{
-			return std::make_unique<TBSActionSpace>();
+			if (numberPlayerCanPlay <= 1)
+			{
+				state.winnerPlayerID=(winnerID);
+				return true;
+			}
+
+			return false;
 		}
 		
-	protected:
-		std::vector<Effect> unitEndOfTurnEffects;
-		std::vector<Effect> onTileEnterEffects;
-		std::shared_ptr<TBSActionSpace> actionSpace;
-		
+		void moveEntity(TBSGameState& state, Entity& entity, Vector2f newPosition) const
+		{
+			entity.position = newPosition;
+		}
 	};
 }

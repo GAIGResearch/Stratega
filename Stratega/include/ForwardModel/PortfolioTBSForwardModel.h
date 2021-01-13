@@ -1,9 +1,6 @@
 #pragma once
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/FMState.h>
-#include <Configuration/WinConditionType.h>
 #include <ForwardModel/TBSForwardModel.h>
-
 #include "Agent/ActionScripts/BaseActionScript.h"
 
 namespace SGA
@@ -13,12 +10,13 @@ namespace SGA
 	public:
 		std::vector<std::unique_ptr<BaseActionScript>>& portfolio;
 		
-		PortfolioTBSForwardModel(TBSForwardModel forwardModel, std::vector<std::unique_ptr<BaseActionScript>>& portfolio) : TBSForwardModel(std::move(forwardModel)), portfolio(portfolio)
+		PortfolioTBSForwardModel(TBSForwardModel forwardModel, std::vector<std::unique_ptr<BaseActionScript>>& portfolio)
+			: TBSForwardModel(std::move(forwardModel)), portfolio(portfolio)
 		{
 		}
 		
-		std::vector<TBSAction> generateActions(TBSGameState& state) const override;
-		std::vector<TBSAction> generateActions(TBSGameState& state, int playerID) const override;
+		std::vector<Action> generateActions(TBSGameState& state) const override;
+		std::vector<Action> generateActions(TBSGameState& state, int playerID) const override;
 
 	};
 }

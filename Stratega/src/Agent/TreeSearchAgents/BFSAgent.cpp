@@ -1,10 +1,8 @@
 #include <Agent/TreeSearchAgents/BFSAgent.h>
 
-#include "ForwardModel/PortfolioTBSForwardModel.h"
-
 namespace SGA
 {
-	void BFSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BFSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
@@ -12,7 +10,7 @@ namespace SGA
 		{
 			if (gameCommunicator.isMyTurn())
 			{
-				TBSGameState gameState = gameCommunicator.getGameState();
+				auto gameState = gameCommunicator.getGameState();
 				if (gameState.isGameOver)	//safety check against race conditions
 					break;
 				const auto actionSpace = forwardModel.generateActions(gameState);
@@ -41,7 +39,7 @@ namespace SGA
 					gameCommunicator.executeAction(action);
 					
 					// remember latest action in case the search should be continued
-					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.type != TBSActionType::EndTurn ? bestActionIndex : -1;
+					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && action.isEndAction ? bestActionIndex : -1;
 
 				}
 			}

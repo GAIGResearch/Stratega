@@ -2,8 +2,8 @@
 #include <random>
 #include <Agent/Agent.h>
 #include <Agent/Heuristic/StateHeuristic.h>
-#include <Agent/Heuristic/LinearSumHeuristic.h>
 #include <Representation/TBSGameState.h>
+#include <ForwardModel/TBSForwardModel.h>
 
 #include <Agent/RHEAAgent/RHEAGenome.h>
 #include <Agent/RHEAAgent/RHEAParams.h>
@@ -26,7 +26,7 @@ namespace SGA
 		{
 		}
 
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
 		std::vector<RHEAGenome> shiftPopulation(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator);

@@ -1,6 +1,5 @@
 #include <Agent/AgentFactory.h>
 #include <Agent/RandomAgent.h>
-#include <Agent/CombatAgent.h>
 #include <Agent/DoNothingAgent.h>
 #include <Agent/OSLAAgent.h>
 #include <Agent/TreeSearchAgents/BFSAgent.h>
@@ -8,11 +7,6 @@
 #include <Agent/TreeSearchAgents/BeamSearchAgent.h>
 #include <Agent/TreeSearchAgents/DFSAgent.h>
 #include <Agent/TreeSearchAgents/MCTSAgent.h>
-#include <Agent/PortfolioRHEA/PortfolioRHEAAgent.h>
-#include <Agent/PortfolioGreedySearchAgent.h>
-#include <Agent/MetaPortfolioOptimizer/MetaPOAgent.h>
-#include <Agent/MOPortfolioRHEA/MOPortfolioRHEAAgent.h>
-#include <Agent/PortfolioOnlineEvolution/POEAgent.h>
 
 namespace SGA
 {
@@ -67,18 +61,12 @@ namespace SGA
 		// Register agents available in the Stratega framework
 		factory.registerAgent<DoNothingAgent>("DoNothingAgent");
 		factory.registerAgent<RandomAgent>("RandomAgent");
-		factory.registerAgent<CombatAgent>("CombatAgent");
 		factory.registerAgent<BFSAgent>("BFSAgent");
 		factory.registerAgent<RHEAAgent>("RHEAAgent");
 		factory.registerAgent<OSLAAgent>("OSLAAgent");
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
-		factory.registerAgent<PortfolioRHEAAgent>("PortfolioRHEAAgent");
-		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
-		factory.registerAgent<MetaPOAgent>("MetaPOAgent");
-		factory.registerAgent<MOPortfolioRHEAAgent>("MOPRHEAAgent");
-		factory.registerAgent<POEAgent>("POEAgent");
 		
 		return factory;
 	}

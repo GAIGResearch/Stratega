@@ -1,6 +1,6 @@
 #pragma once
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/TBSAction.h>
+#include <ForwardModel/Action.h>
 
 namespace SGA {
 	class BaseActionScript
@@ -15,8 +15,8 @@ namespace SGA {
 		BaseActionScript(BaseActionScript&&) = default;
 		BaseActionScript& operator=(BaseActionScript&&) = default;
 		
-		virtual TBSAction getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace) const = 0;
-		virtual TBSAction getActionForUnit(TBSGameState& gameState, std::vector<TBSAction>& actionSpace, int unitID) const = 0;
+		virtual Action getAction(TBSGameState& gameState, std::vector<Action>& actionSpace) const = 0;
+		virtual Action getActionForUnit(TBSGameState& gameState, std::vector<Action>& actionSpace, int unitID) const = 0;
 		[[nodiscard]] virtual std::string toString() const = 0;
 		
 		friend std::ostream& operator<<(std::ostream& os, const BaseActionScript& dt)
