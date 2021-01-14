@@ -16,9 +16,12 @@ namespace SGA
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
         void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
+        void parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const;
+
 		
 	private:
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
+        void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
 		
 	};
 }

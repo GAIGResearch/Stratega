@@ -7,8 +7,6 @@
 
 namespace SGA
 {
-	typedef int ParameterID;
-	
 	struct EntityType
 	{
 		int id;

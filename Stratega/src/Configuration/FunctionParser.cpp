@@ -25,7 +25,11 @@ namespace SGA
 
 		// Parse name
 		AbstractFunctionCall call;
-		call.functionName = parseText(ss);
+		if(auto functionName = parseText(ss))
+		{
+			call.functionName = functionName.value();
+		}
+		
 		// Not a valid function call
 		// ToDo Output error message
 		if (ss.peek() != '(')
@@ -39,6 +43,7 @@ namespace SGA
 		{
 			std::optional<FunctionParameter> param;
 			if (((param = parseConstant(ss))) ||
+				((param = parseEntityPlayerParameterReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))))
@@ -78,16 +83,14 @@ namespace SGA
 
 	std::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
 	{
-		auto begin = ss.tellg();
-		auto targetName = parseText(ss);
-		if (ss.peek() != '.')
+		auto names = parseAccessorList(ss, 2);
+		if(!names)
 		{
-			ss.seekg(begin); // Set back to start
 			return {};
 		}
 
-		ss.get();
-		auto parameterName = parseText(ss);
+		auto targetName = names.value()[0];
+		auto parameterName = names.value()[1];
 		auto targetIt = context.targetIDs.find(targetName);
 		auto parameterIt = context.parameterIDs.find(parameterName);
 		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
@@ -98,17 +101,44 @@ namespace SGA
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const
+	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
-		std::string targetName = parseText(ss);
-		if (targetName.empty())
+		auto names = parseAccessorList(ss, 3);
+		if(!names)
 		{
-			ss.seekg(begin); // Set back to start
+			return {};
+		}
+
+		auto targetName = names.value()[0];
+		auto playerName = names.value()[1];
+		auto parameterName = names.value()[2];
+		if(playerName != "Player")
+		{
+			ss.seekg(begin);
 			return {};
 		}
 
 		auto targetIt = context.targetIDs.find(targetName);
+		auto parameterIt = context.parameterIDs.find(parameterName);
+		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
+		{
+			throw std::runtime_error("Unknown parameter/action-target: " + targetName + ".Player." + parameterName);
+		}
+
+		return FunctionParameter::createEntityPlayerParameterReference({ parameterIt->second, targetIt->second });
+	}
+
+	std::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetIt = context.targetIDs.find(names.value()[0]);
 		if (targetIt == context.targetIDs.end())
 		{
 			ss.seekg(begin); // Set back to start
@@ -121,30 +151,71 @@ namespace SGA
 	std::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
-		std::string typeName = parseText(ss);
-		if (typeName.empty())
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetIt = context.entityTypeIDs.find(names.value()[0]);
+		if (targetIt == context.entityTypeIDs.end())
 		{
 			ss.seekg(begin); // Set back to start
 			return {};
 		}
-
-		auto targetIt = context.entityTypeIDs.find(typeName);
-		if (targetIt == context.entityTypeIDs.end())
-		{
-			throw std::runtime_error("Unknown entity type" + typeName);
-		}
-
+		
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
-	std::string FunctionParser::parseText(std::istringstream& ss) const
+	std::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
 	{
+		auto begin = ss.tellg();
+		
+		std::vector<std::string> names;
+		while(names.size() < length - 1) // Parse until the last dot
+		{
+			auto targetName = parseText(ss);
+			if (!targetName.has_value())
+			{
+				ss.seekg(begin);
+				return {};
+			}
+			
+			names.emplace_back(targetName.value());
+			if(ss.peek() != '.')
+			{
+				break;
+			}
+			ss.get();
+		}
+
+		auto lastName = parseText(ss);
+		if (!lastName.has_value() || ss.peek() == '.')
+		{
+			ss.seekg(begin);
+			return {};
+		}
+		
+		names.emplace_back(lastName.value());
+		return names;
+	}
+
+	std::optional<std::string> FunctionParser::parseText(std::istringstream& ss) const
+	{
+		auto begin = ss.tellg();
+		
 		std::string text;
 		while (std::isalpha(ss.peek()))
 		{
 			text.push_back(ss.get());
 		}
 
+		if (text.empty())
+		{
+			ss.seekg(begin);
+			return {};
+		}
+		
 		return text;
 	}
 }
