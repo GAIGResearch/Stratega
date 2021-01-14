@@ -71,6 +71,7 @@ namespace SGA
 		{
 			case TargetType::Position: return generatePositionTargets(state, entity.position, action.actionTargets.shapeType, action.actionTargets.shapeSize);
 			case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
+			case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
 			case TargetType::None: return {};
 		}
 
@@ -115,6 +116,22 @@ namespace SGA
 			{
 				targets.emplace_back(entity.id);
 			}
+		}
+		return targets;
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs)
+	{
+		std::vector<ActionTarget> targets;
+		for (const auto& technoloTreeType : gameState.technologyTreeCollection.technologyTreeTypes)
+		{
+			for (auto& technology : technoloTreeType.second.nodes)
+			{
+				if (entityTypeIDs.find(technology.id) != entityTypeIDs.end())
+				{
+					targets.emplace_back(technology.id);
+				}
+			}			
 		}
 		return targets;
 	}

@@ -221,6 +221,16 @@ namespace SGA
             const auto& group = config.entityGroups.at(groupName);
             targetType.groupEntityTypes.insert(group.begin(), group.end());
         }
+        else if (targetType.type == TargetType::Technology)
+        {
+            auto technologies = node["ValidTargets"].as<std::vector<std::string>>(std::vector<std::string>());
+
+        	//Assigne technology IDs to the technologytypes map
+            for (auto& technology : technologies)
+            {
+                targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+            }
+        }
         return targetType;
     }
 
@@ -272,7 +282,7 @@ namespace SGA
         config.forwardModel = std::move(fm);
 	}
 
-void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const
+	void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const
 	{
         if (!techtreeNode.IsDefined())
         {
@@ -286,12 +296,8 @@ void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, Game
 
             technologyTreeType.technologyTreeName = nameTypePair.first;
 
-
-
-          
             for (const auto& nameTechPair : nameTypePair.second.as<std::map<std::string, YAML::Node>>())
             {
-
                 TechnologyTreeNode newTechnology;
 
                 newTechnology.id = technologyTreeType.technologies.size();
@@ -335,9 +341,6 @@ void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, Game
         {
             config.technologyTreeCollection.researchedTechnologies[i] = {};
         }
-        
-		
-        
 	}
 
     void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const

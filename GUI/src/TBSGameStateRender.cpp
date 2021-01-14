@@ -288,6 +288,11 @@ namespace SGA
 							if (targetToEntity(gameStateCopy, action.targets[0]).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
+						else if (actionType.actionTargets == TargetType::Technology)
+						{
+							if (targetToEntity(gameStateCopy, action.targets[0]).id == unit->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
 
 					}
 				}
@@ -532,7 +537,7 @@ namespace SGA
 						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
 						actionsSelectedEntity.emplace_back(shape);
 					}
-					else
+					else if (actionType.actionTargets.type == TargetType::Position)
 					{
 						const Vector2f& targetPos = targetToPosition(*selectedGameStateCopy, action.targets[1]);
 

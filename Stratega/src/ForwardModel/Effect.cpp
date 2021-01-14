@@ -163,15 +163,8 @@ namespace SGA
 
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		//// ToDo Is there a better way to do this?
-		//int playerID = -1;
-		//if (std::holds_alternative<int>(targets[0]))
-		//{
-		//	auto& executingEntity = targetToEntity(state, targets[0]);
-		//	playerID = executingEntity.ownerID;
-		//}
-
-		//const auto& entityType = technologyTypeParam.getEntityType(state, targets);
-		//state.addEntity(entityType, playerID, targetPositionParam.getPosition(state, targets));
+		//ey
+		auto& executingEntity = targetToEntity(state, targets[0]);
+		state.technologyTreeCollection.research(executingEntity.ownerID, std::get<int>(targets[1]));
 	}
 }

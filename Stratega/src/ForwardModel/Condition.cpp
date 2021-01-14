@@ -73,6 +73,22 @@ namespace  SGA
 		int playerID = sourceEntity.ownerID;
 
 		return state.technologyTreeCollection.isResearched(playerID, targetResource.id);
-		return true;
+	}
+
+	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
+		technologyReference(parameters.at(0))
+	{
+	}
+
+	bool CanResearch::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Get technologyType
+		auto& targetResource = technologyReference.getTechnology(state, targets);
+
+		//Check if player has the type researched
+		auto& sourceEntity = targetToEntity(state, targets[0]);
+		int playerID = sourceEntity.ownerID;
+
+		return state.technologyTreeCollection.canResearch(playerID, targetResource.id);
 	}
 }

@@ -118,16 +118,31 @@ namespace SGA
 
 			canResearch(0, 0, 2);
 			canResearch(0, 0, 4);
-			research(0, 0, 4);			
+			research(0, 0, 4);
 			canResearch(0, 0, 2);
 			research(0, 0, 2);*/
 
 		}
-		/*TODO search by int 
-		List of tech types*/
+
+		//List of tech types
 		std::unordered_map<int, TechnologyTreeType> technologyTreeTypes;
 		//PlayerID + pair of technology tree type id + the researched technology
 		std::unordered_map<int, std::vector<std::pair<int, int>>> researchedTechnologies;
+
+		int getTechnologyTreeTypeID(int technologyID) const
+		{
+			for (auto& technologyTreeType : technologyTreeTypes)
+			{
+				for (auto& technology : technologyTreeType.second.nodes)
+				{
+					if (technology.id == technologyID)
+					{
+						//We found the technology						
+						return technologyTreeType.first;
+					}
+				}
+			}
+		}
 
 		bool isResearched(int playerID, int techologyTreeID, int technologyID) const
 		{
@@ -145,7 +160,7 @@ namespace SGA
 		{
 			//Search if the technology is found in the list of researchedtechnologies
 			auto& researchedPairList = researchedTechnologies.find(playerID);
-			
+
 			for (auto& element : researchedPairList->second)
 			{
 				if (element.second == technologyID)
@@ -180,17 +195,61 @@ namespace SGA
 			return true;
 		}
 
-		void  research(int playerID, int techologyTreeID, int technologyID)
+		bool canResearch(int playerID, int technologyID) const
+		{
+			//Check if is researched
+			if (isResearched(playerID, technologyID))
+				return false;
+			
+			//Check if technology parents are researched
+			//Get tech tree type
+			int techTreeID = getTechnologyTreeTypeID(technologyID);
+			TechnologyTreeType technologyTreeType = technologyTreeTypes.at(techTreeID);
+
+			TechnologyTreeNode& technologyNode = technologyTreeType.searchNode(technologyID);
+
+			std::vector<int>& parentsIDs = technologyNode.parentIDs;
+
+			for (auto& parent : parentsIDs)
+			{
+				TechnologyTreeNode& technologyParentNode = technologyTreeType.searchNode(parent);
+
+				//TODO search by int 
+				if (!isResearched(playerID, technologyParentNode.id))
+				{
+					std::cout << "Cant research " << technologyNode.name << std::endl;
+					return false;
+				}
+			}
+
+			std::cout << "Can research " << technologyNode.name << std::endl;
+			return true;
+		}
+
+		void  research(int playerID,int technologyID)
 		{
 			//Get researched technologies of player
 			auto& researchedPairList = researchedTechnologies.find(playerID);
 
+			//Get tech tree type
+			int techTreeID = getTechnologyTreeTypeID(technologyID);
+			
 			std::cout << "Researched " << technologyID << std::endl;
 			//Find technology index and add it to the researched list			
-			researchedPairList->second.emplace_back(techologyTreeID, technologyID);
+			researchedPairList->second.emplace_back(techTreeID, technologyID);
 		}
+		
+		//void  research(int playerID, int techologyTreeID, int technologyID)
+		//{
+		//	//Get researched technologies of player
+		//	auto& researchedPairList = researchedTechnologies.find(playerID);
 
-		const TechnologyTreeNode& getTechnologyType(int technologyID)const 
+		//	std::cout << "Researched " << technologyID << std::endl;
+		//	//Find technology index and add it to the researched list			
+		//	researchedPairList->second.emplace_back(techologyTreeID, technologyID);
+		//}
+
+		const TechnologyTreeNode& getTechnologyType(int technologyID)const
 		{
 			for (const auto& technologyTreeType : technologyTreeTypes)
 			{
@@ -201,7 +260,18 @@ namespace SGA
 				}
 			}
 		}
-		
+
+		int getTechnologyTypeID(std::string technologyName)const
+		{
+			for (const auto& technologyTreeType : technologyTreeTypes)
+			{				
+				for (const auto& technology : technologyTreeType.second.nodes)
+				{
+					if (technology.name== technologyName)
+						return technology.id;
+				}
+			}
+		}
 	};
 
 }

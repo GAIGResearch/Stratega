@@ -33,7 +33,7 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 50)"
-            - "IsResearched(Townhall)"
+#            - "IsResearched(Townhall)"
         Target:
             Type: Position
             Shape: Square
@@ -59,17 +59,17 @@ Actions:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
 
-#    #Research
-#    ResearchWarrior:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Preconditions:
-#            - "CanResearch(Target)"
-#        Target:
-#            Type: Technology
-#            ValidTargets: [Better Bows, Horse Archers]
-#        Effects:
-#            - "Research(Target)
+    #Research
+    ResearchWarrior:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Technology
+            ValidTargets: [Townhall, Archery, AdvanceArchery]
+            Conditions:
+               - "CanResearch(Target)"
+        Effects:
+            - "Research(Target)"
 #
 #
 #        ResearchArcher:
@@ -90,6 +90,8 @@ Actions:
         Target:
             Type: Entity
             ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, 10)"
         Effects:
 
     # Move Actions
@@ -135,7 +137,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter]
+        Actions: [SpawnMiner, SpawnFighter, ResearchWarrior]
         Parameters:
             Gold: 50
 
