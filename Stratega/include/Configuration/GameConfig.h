@@ -22,7 +22,7 @@ namespace SGA
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;
-        std::unordered_map<std::string, std::vector<int>> entityGroups;
+        std::unordered_map<std::string, std::unordered_set<int>> entityGroups;
         std::unordered_map<int, EntityType> entityTypes;
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;

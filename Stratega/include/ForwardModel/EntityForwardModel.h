@@ -7,11 +7,18 @@
 
 namespace SGA
 {
+	struct OnTickEffect
+	{
+		std::unordered_set<EntityTypeID> validTargets;
+		std::vector<std::shared_ptr<Condition>> conditions;
+		std::vector<std::shared_ptr<Effect>> effects;
+	};
+	
 	class EntityForwardModel
 	{
 	public:
 		std::shared_ptr<EntityActionSpace> actionSpace;
-		std::vector<std::shared_ptr<Effect>> onTickEffects;
+		std::vector<OnTickEffect> onTickEffects;
 		WinConditionType winCondition;
 		int targetUnitTypeID;
 
