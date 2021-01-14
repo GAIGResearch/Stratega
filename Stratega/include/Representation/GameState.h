@@ -57,13 +57,13 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
-		std::unordered_map<std::string, std::vector<int>> entityGroups;
+		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
 		
 		// Game information
 		bool isGameOver;
 		int winnerPlayerID;
 		int currentTick;
-		int tickLimit{};
+		int tickLimit;
 		
 		// Board information
 		Tile fogOfWarTile;

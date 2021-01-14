@@ -14,18 +14,18 @@ int main()
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
 	std::filesystem::path configPath2("../../../gameConfigs/ProtectTheBase.yaml");
-	auto yamlConfig2 = YAML::LoadFile(configPath2.string());
-	auto gameConfig2 = parser.parseFromFile(configPath2.string());
-	auto renderConfig = yamlConfig2.as<SGA::RenderConfig>();
+	auto yamlConfig = YAML::LoadFile(configPath2.string());
+	auto gameConfig = parser.parseFromFile(configPath2.string());
+	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
 	
 	//// Initialize the game
-	auto game = generateAbstractGameFromConfig(gameConfig2, engine);
+	auto game = SGA::generateAbstractGameFromConfig(gameConfig, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
-	auto agents = gameConfig2.generateAgents();
+	auto agents = gameConfig.generateAgents();
 	
 	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
-	for(size_t i = 0; i < gameConfig2.getNumberOfPlayers(); i++)
+	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it
@@ -35,7 +35,7 @@ int main()
 			playerID++;
 			continue;
 		}
-		if (gameConfig2.gameType == SGA::ForwardModelType::TBS)
+		if (gameConfig.gameType == SGA::ForwardModelType::TBS)
 		{
 			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
@@ -59,7 +59,7 @@ int main()
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath2.parent_path()));
-	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig2, humanPlayerID));
+	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID));
 	
 	current_path(tmp);
 	game->addCommunicator(stateRenderer);

@@ -7,6 +7,8 @@
 
 namespace SGA
 {
+	typedef int EntityTypeID;
+	
 	struct EntityType
 	{
 		int id;
