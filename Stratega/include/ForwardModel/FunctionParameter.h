@@ -38,6 +38,7 @@ namespace SGA
 			ParameterReference parameterData;
 			int argumentIndex;
 			int entityTypeID;
+			int technologyTypeID;
 		};
 		
 		Type parameterType;
@@ -52,6 +53,7 @@ namespace SGA
 		static FunctionParameter createParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
+		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;

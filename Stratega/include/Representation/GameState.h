@@ -60,6 +60,7 @@ namespace SGA
 		std::unordered_map<std::string, std::vector<int>> entityGroups;
 
 		//Technology tree
+		//TODO sharedptr
 		TechnologyTreeCollection technologyTreeCollection;
 		
 		

@@ -33,6 +33,7 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 50)"
+            - "IsResearched(Townhall)"
         Target:
             Type: Position
             Shape: Square
@@ -58,15 +59,29 @@ Actions:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
 
-    Research:
-        Type: EntityAction
-        Cooldown: 1
-        Preconditions:
-            - "CanResearch(Technology)"
-        Target:
-            Type: Technology
-        Effects:
-            - Research(Technolgy)
+#    #Research
+#    ResearchWarrior:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Preconditions:
+#            - "CanResearch(Target)"
+#        Target:
+#            Type: Technology
+#            ValidTargets: [Better Bows, Horse Archers]
+#        Effects:
+#            - "Research(Target)
+#
+#
+#        ResearchArcher:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Preconditions:
+#            - "CanResearch(Target)"
+#        Target:
+#            Type: Technology
+#            ValidTargets: [Better Bows, Horse Archers]
+#        Effects:
+#            - "Research(Target)
 
     # Attack Actions
     Attack:
@@ -145,6 +160,18 @@ Entities:
         Actions: []
         Parameters:
             Gold: 200
+
+#    LabArcher:
+#        Sprite: ../GUI/Assets/unit2New.png
+#        Symbol: f
+#        LineOfSightRange: 6
+#        Actions: [ResearchArcher]
+#
+#    LabWarriors:
+#        Sprite: ../GUI/Assets/unit2New.png
+#        Symbol: f
+#        LineOfSightRange: 6
+#        Actions: [ResearchWarrior]
 
 Board:
     GenerationType: Manual

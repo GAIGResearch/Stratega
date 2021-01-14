@@ -11,6 +11,7 @@ namespace SGA
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsWalkable>("IsWalkable");
+		factory.registerFunction<IsResearched>("IsResearched");
 		
 		return factory;
 	}

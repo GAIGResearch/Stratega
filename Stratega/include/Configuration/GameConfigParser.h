@@ -15,8 +15,8 @@ namespace SGA
         void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
-        void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
         void parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const;
+        void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
 
 		
 	private:

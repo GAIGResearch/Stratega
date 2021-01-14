@@ -64,6 +64,8 @@ namespace SGA
 		state->entityGroups = entityGroups;
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
+		state->technologyTreeCollection = technologyTreeCollection;
+
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{

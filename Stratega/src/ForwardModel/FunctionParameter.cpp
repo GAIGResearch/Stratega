@@ -28,6 +28,11 @@ namespace SGA
 		return FunctionParameter(Type::EntityTypeReference, { .entityTypeID = entityTypeID});
 	}
 
+	FunctionParameter FunctionParameter::createTechnologyTypeReference(int technologyTypeID)
+	{
+		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
+	}
+
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
@@ -132,8 +137,11 @@ namespace SGA
 		}
 	}
 
-	/*const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
-		return getEntity(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
-	}*/
+		return state.technologyTreeCollection.getTechnologyType(data.technologyTypeID);
+		
+		throw std::runtime_error("Type not recognized");
+	}
+	
 }

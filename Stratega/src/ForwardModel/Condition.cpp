@@ -57,4 +57,22 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
 	}
+
+	IsResearched::IsResearched(const std::vector<FunctionParameter>& parameters) :
+		technologyReference(parameters.at(0))
+	{
+	}
+
+	bool IsResearched::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Get technologyType
+		auto& targetResource = technologyReference.getTechnology(state, targets);
+
+		//Check if player has the type researched
+		auto& sourceEntity = targetToEntity(state, targets[0]);
+		int playerID = sourceEntity.ownerID;
+
+		return state.technologyTreeCollection.isResearched(playerID, targetResource.id);
+		return true;
+	}
 }

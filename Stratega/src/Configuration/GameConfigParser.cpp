@@ -21,9 +21,10 @@ namespace SGA
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
         parsePlayerParameters(configNode["PlayerParameters"], config);
+       
+        parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
-        parseTechnologyTrees(configNode["TechnologyTrees"], config);
 
 		// Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -330,9 +331,9 @@ void GameConfigParser::parseTechnologyTrees(const YAML::Node& techtreeNode, Game
         }
         
 		//Initialize researched list for each player
-        for (size_t i = 0; i < config.numPlayers; i++)
+        for (size_t i = 0; i < config.agentParams.size(); i++)
         {
-            config.technologyTreeCollection.researchedTechnologies[0] = {};
+            config.technologyTreeCollection.researchedTechnologies[i] = {};
         }
         
 		
