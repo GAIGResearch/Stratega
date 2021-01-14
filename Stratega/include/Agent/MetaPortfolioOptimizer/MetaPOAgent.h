@@ -22,8 +22,8 @@ namespace SGA
 		std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
 
 	public:
-		MetaPOAgent() :
-			Agent{}, params_(MetaPOParams())
+		MetaPOAgent(MetaPOParams&& params) :
+			Agent{}, params_(std::move(params))
 		{
 		}
 		

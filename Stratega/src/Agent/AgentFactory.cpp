@@ -75,10 +75,10 @@ namespace SGA
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
 		factory.registerAgent<PortfolioRHEAAgent, PortfolioRHEAParams>("PortfolioRHEAAgent");
-		factory.registerAgent<PortfolioGreedySearchAgent>("PGSAgent");
-		factory.registerAgent<MetaPOAgent>("MetaPOAgent");
-		factory.registerAgent<MOPortfolioRHEAAgent>("MOPRHEAAgent");
-		factory.registerAgent<POEAgent>("POEAgent");
+		factory.registerAgent<PortfolioGreedySearchAgent, PortfolioGreedySearchParams>("PGSAgent");
+		factory.registerAgent<MetaPOAgent, MetaPOParams>("MetaPOAgent");
+		factory.registerAgent<MOPortfolioRHEAAgent, MOPortfolioRHEAParams>("MOPRHEAAgent");
+		factory.registerAgent<POEAgent, POEParams>("POEAgent");
 		
 		return factory;
 	}

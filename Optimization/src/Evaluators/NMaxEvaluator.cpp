@@ -1,12 +1,11 @@
-#include <examples/NMaxEvaluator.h>
+#include <Evaluators/NMaxEvaluator.h>
 
 
 namespace SGA
 {
 
     NMaxEvaluator::NMaxEvaluator(int dim, int sizePerDim) :
-	Evaluator("NMaxEvaluator", 
-	          nullptr)
+	Evaluator("NMaxEvaluator")
     {
         std::vector<int> searchSpaceDims;
     	for (int i = 0; i < dim; i++)

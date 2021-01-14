@@ -18,8 +18,8 @@ namespace SGA
         std::unique_ptr<SearchSpace> _searchSpace;
 
     public:
-        Evaluator(std::string name, std::unique_ptr<SearchSpace> searchSpace) :
-    		_name(std::move(name)), _searchSpace(std::move(searchSpace))
+        Evaluator(std::string name) :
+    		_name(std::move(name))
         {
 	        
         }

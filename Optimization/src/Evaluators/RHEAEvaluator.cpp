@@ -1,4 +1,4 @@
-#include <RHEAEvaluator.h>
+#include <Evaluators/RHEAEvaluator.h>
 
 #include <Configuration/GameConfig.h>
 
@@ -14,8 +14,7 @@ namespace SGA
         std::vector<bool> elitism,
         std::vector<bool> continueSearch,
 		SGA::GameConfig& config
-	) : Evaluator("RHEAEvaluator",
-		nullptr
+	) : Evaluator("RHEAEvaluator"
 	),
 		_popSizeCandidates(popSizeCandidates), _individualLengthCandidates(individualLengthCandidates),
 		_mutationRateCandidates(mutationRateCandidates), _tournamentSize(tournamentSize),
