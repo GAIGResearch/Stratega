@@ -38,12 +38,12 @@ namespace SGA
 		searchSpaceDims.emplace_back(elitism.size());
 		searchSpaceDims.emplace_back(continueSearch.size());
 		searchSpaceDims.emplace_back(nrOfChanges.size());
-		searchSpaceDims.emplace_back(p1.size());
-		searchSpaceDims.emplace_back(p2.size());
-		searchSpaceDims.emplace_back(p3.size());
-		searchSpaceDims.emplace_back(p4.size());
-		searchSpaceDims.emplace_back(p5.size());
-		searchSpaceDims.emplace_back(p6.size());
+		searchSpaceDims.emplace_back(_p1.size());
+		searchSpaceDims.emplace_back(_p2.size());
+		searchSpaceDims.emplace_back(_p3.size());
+		searchSpaceDims.emplace_back(_p4.size());
+		searchSpaceDims.emplace_back(_p5.size());
+		searchSpaceDims.emplace_back(_p6.size());
     	
 		_searchSpace = std::make_unique<VectorSearchSpace>(searchSpaceDims);
 		config.numPlayers = 2;

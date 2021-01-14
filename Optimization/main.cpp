@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/KillTheKing.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 0);
+	auto agent = parser.getCmdOption<int>("-agent", 6);
 
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	if (configPath.empty())

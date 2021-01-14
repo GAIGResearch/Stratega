@@ -20,6 +20,8 @@ namespace SGA
 				}
 				else
 				{
+					params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;
+					
 					// player PORTFOLIO
 					auto playerUnits = gameState.getPlayer(gameCommunicator.getPlayerID())->getUnits();
 					std::map<int, BaseActionScript*> playerPortfolios = std::map<int, BaseActionScript*>();
