@@ -384,6 +384,11 @@ namespace SGA
 
 	void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
+		if(gameStateCopy.getEntity( selectedEntityID) == nullptr)
+		{
+			selectedEntityID = -1;
+		}
+		
 		//Draw Board
 		mapSprites.clear();
 		entitySprites.clear();
@@ -565,7 +570,8 @@ namespace SGA
 		createWindowUnits();
 		createWindowActions();
 		createWindowMultipleActions(window);
-
+		createWindowPlayerParameters();
+		
 		createEntityInformation(window);
 		createWindowFogOfWar();
 		createActionBar(window);
@@ -653,8 +659,8 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			Entity& selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-			auto entityType = gameStateCopy.getEntityType(selectedEntity.typeID);
+			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
 			
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -672,11 +678,11 @@ namespace SGA
 			ImGui::Text("Parameters: ");
 			
 			int parameterIndex=0;
-			for (auto parameter : entityType.parameters)
+			for (const auto& parameter : entityType.parameters)
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << selectedEntity.parameters[parameterIndex++];
+				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
@@ -744,8 +750,8 @@ namespace SGA
 		std::vector<int> actionTypes;		
 		if(selectedEntityID!=-1)
 		{
-			Entity& selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-			int entityTypeID = selectedEntity.typeID;
+			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+			int entityTypeID = selectedEntity->typeID;
 
 			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
@@ -812,6 +818,32 @@ namespace SGA
 				playAction(action);
 				break;
 			}
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
+		ImGui::End();
+	}
+
+	void TBSGameStateRender::createWindowPlayerParameters() const
+	{
+		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
+		ImGui::Begin("PlayerParameters");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
+		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		{
+			//Double to string with 2 precision				
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+			std::string valueParameter = stream.str();
+
+			std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+			ImGui::BulletText(parameterInfo.c_str());
 		}
 
 		ImGui::EndGroup();

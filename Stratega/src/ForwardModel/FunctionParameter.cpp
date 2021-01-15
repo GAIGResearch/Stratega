@@ -18,6 +18,11 @@ namespace SGA
 		return FunctionParameter(Type::ParameterReference, { .parameterData = ref});
 	}
 
+	FunctionParameter FunctionParameter::createEntityPlayerReference(int argumentIndex)
+	{
+		return FunctionParameter(Type::EntityPlayerReference, { .argumentIndex = argumentIndex });
+	}
+
 	FunctionParameter FunctionParameter::createEntityPlayerParameterReference(ParameterReference ref)
 	{
 		return FunctionParameter(Type::EntityPlayerParameterReference, { .parameterData = ref });
@@ -67,7 +72,7 @@ namespace SGA
 	{
 		return getParameterValue(const_cast<GameState&>(state), actionTargets);
 	}
-	
+
 	double& FunctionParameter::getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if(parameterType == Type::ParameterReference)
@@ -103,26 +108,46 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+			case Type::EntityPlayerReference:
 			case Type::ArgumentReference:
 			{
 				auto entityID = actionTargets[data.argumentIndex].getEntityID();
-				return state.getEntity(entityID);
+				return *state.getEntity(entityID);
 			}
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference:
 			{
 				auto entityID = actionTargets[data.parameterData.argumentIndex].getEntityID();
-				auto& entity = state.getEntity(entityID);
-				return entity;
+				return *state.getEntity(entityID);
 			}
 			default:
 				throw std::runtime_error("Type not recognised");
 		}
 	}
-	
+
 	const Entity& FunctionParameter::getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		return getEntity(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
+	}
+
+	Player& FunctionParameter::getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			auto& entity = getEntity(state, actionTargets);
+			return *state.getPlayer(entity.ownerID);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	const Player& FunctionParameter::getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		return getPlayer(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
 	}
 
 	const EntityType& FunctionParameter::getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const

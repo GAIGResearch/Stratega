@@ -279,6 +279,20 @@ namespace SGA
 				// Add it to the fm
                 fm->onTickEffects.emplace_back(std::move(onTickEffect));
 			}
+            else if(nameEffectsPair.first == "OnSpawn")
+            {
+                context.targetIDs.emplace("Source", 0);
+                auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                // Initiliaze OnTickEffect
+                OnEntitySpawnEffect onSpawnEffect;
+                onSpawnEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+                parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
+                parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
+                // Add it to the fm
+                fm->onEntitySpawnEffects.emplace_back(std::move(onSpawnEffect));
+            }
             else
             {
                 std::cerr << "Unknown trigger with name " << nameEffectsPair.first << " will be ignored." << std::endl;

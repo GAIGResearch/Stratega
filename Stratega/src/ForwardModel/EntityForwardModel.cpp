@@ -96,4 +96,34 @@ namespace SGA
 			}
 		}
 	}
+
+	void EntityForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
+	{
+		auto entityID = state.addEntity(entityType, playerID, position);
+
+		std::vector<ActionTarget> targets = { ActionTarget::createEntityActionTarget(entityID) };
+		for(const auto& onSpawnEffect : onEntitySpawnEffects)
+		{
+			if (onSpawnEffect.validTargets.find(entityType.id) == onSpawnEffect.validTargets.end())
+				continue;
+
+			auto isValid = true;
+			for (const auto& condition : onSpawnEffect.conditions)
+			{
+				if (!condition->isFullfilled(state, targets))
+				{
+					isValid = false;
+					break;
+				}
+			}
+
+			if (isValid)
+			{
+				for (const auto& effect : onSpawnEffect.effects)
+				{
+					effect->execute(state, *this, targets);
+				}
+			}
+		}
+	}
 }

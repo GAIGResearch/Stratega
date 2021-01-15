@@ -136,4 +136,5 @@ ForwardModel:
         Unit: King
     Trigger:
         OnTick:
-            - "SetToMaximum(Source.MovementPoints)"
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"

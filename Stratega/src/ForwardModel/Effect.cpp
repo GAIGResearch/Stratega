@@ -116,7 +116,7 @@ namespace SGA
 		}
 		
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
-		state.addEntity(entityType, playerID, targetPositionParam.getPosition(state, targets));
+		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
@@ -154,16 +154,38 @@ namespace SGA
 		targetValue = targetValue + amount;
 	}
 
+	ChangeOwnerEffect::ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]), playerParam(parameters[1])
+	{
+	}
+	
+	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& targetEntity = targetEntityParam.getEntity(state, targets);
+		auto& newOwner = playerParam.getPlayer(state, targets);
+		targetEntity.ownerID = newOwner.id;
+	}
 
+	RemoveEntityEffect::RemoveEntityEffect(const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0])
+	{
+	}
+
+	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& targetEntity = targetEntityParam.getEntity(state, targets);
+		targetEntity.shouldRemove = true;
+	}
 
 	ResearchTechnology::ResearchTechnology(const std::vector<FunctionParameter>& parameters)
-		: technologyTypeParam(parameters[0])
+		: playerParam(parameters[0]),
+		  technologyTypeParam(parameters[1])
 	{
 	}
 
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto& executingEntity = targets[0].getEntityConst(state);/*  targetToEntity(state, targets[0]);*/
-		state.technologyTreeCollection->researchTechnology(executingEntity.ownerID, targets[1].getTechnologyID());
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 }

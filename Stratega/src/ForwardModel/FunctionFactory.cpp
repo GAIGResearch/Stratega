@@ -11,7 +11,8 @@ namespace SGA
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsWalkable>("IsWalkable");
-		factory.registerFunction<IsResearched>("IsResearched");
+		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
+		factory.registerFunction<IsResearched>("HasResearched");
 		factory.registerFunction<CanResearch>("CanResearch");
 		
 		return factory;
@@ -26,6 +27,8 @@ namespace SGA
 		factory.registerFunction<SpawnUnit>("Spawn");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
 		factory.registerFunction<TransferEffect>("Transfer");
+		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
+		factory.registerFunction<RemoveEntityEffect>("Remove");
 		factory.registerFunction<ResearchTechnology>("Research");
 		
 		return factory;

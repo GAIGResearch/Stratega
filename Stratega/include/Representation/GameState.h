@@ -87,10 +87,11 @@ namespace SGA
 
 		const Entity* getEntityAt(const Vector2f& pos) const;
 		
-		Entity& getEntity(int entityID)
+		Entity* getEntity(int entityID)
 		{
-			return* std::find_if(std::begin(entities), std::end(entities),
-				[&](Entity const& p) { return p.id == entityID; });			
+			auto iter = std::find_if(std::begin(entities), std::end(entities),
+				[&](Entity const& p) { return p.id == entityID; });
+			return iter == entities.end() ? nullptr : &*iter;
 		}
 
 		const Entity& getEntityConst(int entityID) const 
@@ -144,16 +145,6 @@ namespace SGA
 			return entityType.parameters.find(globalParameterID)->second;
 		}
 		
-		double& getParameterReference(int entityID,int globalParameterID)
-		{
-			auto& entity = getEntity(entityID);
-			const auto& entityType = getEntityType(entity.typeID);
-
-			int parameterIndex=entityType.parameters.find(globalParameterID)->second.index;
-			
-			return entity.parameters[parameterIndex];
-		}
-		
 		bool checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
 		{
 			const auto& entityType = getEntityType(entityTypeID);
@@ -180,7 +171,7 @@ namespace SGA
 			return player.id;
 		}
 
-		void addEntity(const EntityType& type, int playerID, const Vector2f& position)
+		int addEntity(const EntityType& type, int playerID, const Vector2f& position)
 		{
 			auto instance = type.instantiateEntity(nextEntityID);
 			instance.ownerID = playerID;
@@ -188,6 +179,7 @@ namespace SGA
 			entities.emplace_back(std::move(instance));
 
 			nextEntityID++;
+			return instance.id;
 		}
 
 		Entity* getEntity(Vector2f pos)

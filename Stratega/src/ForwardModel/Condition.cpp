@@ -58,37 +58,42 @@ namespace  SGA
 		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
 	}
 
+	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)
+		: targetParam(parameters[0])
+	{
+	}
+
+	bool IsPlayerEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& entity = targetParam.getEntity(state, targets);
+		return !entity.isNeutral();
+	}
+	
 	IsResearched::IsResearched(const std::vector<FunctionParameter>& parameters) :
-		technologyReference(parameters.at(0))
+		playerParam(parameters[0]),
+		technologyTypeParam(parameters[1])
 	{
 	}
 
 	bool IsResearched::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		//Get technologyType
-		auto& targetResource = technologyReference.getTechnology(state, targets);
-
-		//Check if player has the type researched
-		auto& sourceEntity = targets[0].getEntityConst(state);
-		int playerID = sourceEntity.ownerID;
-
-		return state.technologyTreeCollection->isResearched(playerID, targetResource.id);
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
+		
+		return state.technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
 	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
-		technologyReference(parameters.at(0))
+		playerParam(parameters[0]),
+		technologyTypeParam(parameters[1])
 	{
 	}
 
 	bool CanResearch::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		//Get technologyType
-		auto& targetResource = technologyReference.getTechnology(state, targets);
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 
-		//Check if player has the type researched
-		auto& sourceEntity = targets[0].getEntityConst(state);
-		int playerID = sourceEntity.ownerID;
-
-		return state.technologyTreeCollection->canResearch(playerID, targetResource.id);
+		return state.technologyTreeCollection->canResearch(targetPlayer.id, targetTechnology.id);
 	}
 }

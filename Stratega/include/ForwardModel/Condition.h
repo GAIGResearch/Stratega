@@ -55,21 +55,32 @@ namespace SGA
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class IsPlayerEntity : public Condition
+	{
+		FunctionParameter targetParam;
+
+	public:
+		IsPlayerEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class IsResearched : public Condition
 	{
-		FunctionParameter technologyReference;
+		FunctionParameter playerParam;
+		FunctionParameter technologyTypeParam;
+		
 	public:
 		IsResearched(const std::vector<FunctionParameter>& parameters);
-
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class CanResearch : public Condition
 	{
-		FunctionParameter technologyReference;
+		FunctionParameter playerParam;
+		FunctionParameter technologyTypeParam;
+		
 	public:
 		CanResearch(const std::vector<FunctionParameter>& parameters);
-
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 }

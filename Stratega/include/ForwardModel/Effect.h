@@ -71,8 +71,28 @@ namespace SGA
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class ChangeOwnerEffect : public Effect
+	{
+		FunctionParameter targetEntityParam;
+		FunctionParameter playerParam;
+
+	public:
+		ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class RemoveEntityEffect : public Effect
+	{
+		FunctionParameter targetEntityParam;
+
+	public:
+		RemoveEntityEffect(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class ResearchTechnology : public Effect
 	{
+		FunctionParameter playerParam;
 		FunctionParameter technologyTypeParam;
 
 	public:

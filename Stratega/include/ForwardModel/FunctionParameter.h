@@ -1,9 +1,10 @@
 #pragma once
-#include <string>
 #include <vector>
 #include <ForwardModel/ActionTarget.h>
 #include <Representation/EntityType.h>
+#include <Representation/Player.h>
 #include <Representation/TechnologyTree.h>
+
 namespace SGA
 {
 	struct GameState;
@@ -14,6 +15,7 @@ namespace SGA
 		{
 			Constant, // Values like 1, 1.5, etc
 			ParameterReference, // References the parameter of an action-target. Source.Gold references to the gold of the source of an action
+			EntityPlayerReference, // References the player indirectly. Like Source.Player, only works if Source is a entity
 			EntityPlayerParameterReference, // References the parameter of an player indirectly. Like Source.Player.Gold, only works if Source is a entity
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
@@ -51,6 +53,7 @@ namespace SGA
 		static FunctionParameter createConstParameter(double constValue);
 		static FunctionParameter createArgumentReference(int argumentIndex);
 		static FunctionParameter createParameterReference(ParameterReference ref);
+		static FunctionParameter createEntityPlayerReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
@@ -62,6 +65,8 @@ namespace SGA
 		Vector2f getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		

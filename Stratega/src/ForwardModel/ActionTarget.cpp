@@ -40,12 +40,17 @@ namespace SGA
 			throw std::runtime_error("Type not recognised");
 		}
 	}
-
+	
 	Entity& ActionTarget::getEntity(GameState& state) const
 	{
 		if (targetType == Type::EntityReference)
 		{
-			return state.getEntity(data.entityID);
+			auto* entity = state.getEntity(data.entityID);
+			if(entity == nullptr)
+			{
+				throw std::runtime_error("A action-target contained an not existing entity.");
+			}
+			return *entity;
 		}
 		else
 		{
