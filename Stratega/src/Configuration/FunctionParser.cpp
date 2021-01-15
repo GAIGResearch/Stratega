@@ -13,6 +13,15 @@ namespace SGA
 			context.entityTypeIDs.emplace(entityType.second.name, entityType.first);
 		}
 
+		for (const auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
+		{
+			for (const auto& technology : technologyTreeType.second.technologies)
+			{
+				context.technologyTypeIDs.emplace(technology.second.name, technology.first);
+			}
+			
+		}
+		
 		return context;
 	}
 
@@ -47,7 +56,8 @@ namespace SGA
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
-				((param = parseEntityTypeReference(ss, context)))))
+				((param = parseEntityTypeReference(ss, context))) ||
+				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
 			}
@@ -195,6 +205,25 @@ namespace SGA
 		}
 		
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
+	}
+
+	std::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+	
+		auto targetIt = context.technologyTypeIDs.find(names.value()[0]);
+		if (targetIt == context.technologyTypeIDs.end())
+		{
+			ss.seekg(begin); // Set back to start
+			return {};
+		}
+
+		return FunctionParameter::createTechnologyTypeReference(targetIt->second);
 	}
 
 	std::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const

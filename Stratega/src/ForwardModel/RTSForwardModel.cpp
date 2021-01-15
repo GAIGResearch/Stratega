@@ -9,7 +9,7 @@ namespace SGA
 			auto& actionType = state.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)
 			{
-				auto& sourceUnit = targetToEntity(state, action.targets[0]);
+				auto& sourceUnit = action.targets[0].getEntity(state);
 				/*if (sourceUnit == nullptr)
 					return;*/
 

@@ -12,6 +12,8 @@ namespace SGA
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
+		factory.registerFunction<IsResearched>("IsResearched");
+		factory.registerFunction<CanResearch>("CanResearch");
 		
 		return factory;
 	}
@@ -27,6 +29,7 @@ namespace SGA
 		factory.registerFunction<TransferEffect>("Transfer");
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
 		factory.registerFunction<RemoveEntityEffect>("Remove");
+		factory.registerFunction<ResearchTechnology>("Research");
 		
 		return factory;
 	}

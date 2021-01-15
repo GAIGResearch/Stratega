@@ -50,7 +50,7 @@ namespace SGA
 		if(actionType.sourceType == ActionSourceType::Unit)
 		{
 			// Remember when the action was executed
-			auto& executingEntity = targetToEntity(state, action.targets[0]);
+			auto& executingEntity = action.targets[0].getEntity(state);
 			// ToDo We should probably find a way to avoid this loop
 			for(auto& actionInfo : executingEntity.attachedActions)
 			{
@@ -68,16 +68,14 @@ namespace SGA
 		state.currentTick++;
 
 		// Execute OnTick-trigger
-		std::vector<ActionTarget> targets;
-		targets.resize(1);
 		for(const auto& onTickEffect : onTickEffects)
-		{
+		{		
 			for (const auto& entity : state.entities)
 			{
 				if (onTickEffect.validTargets.find(entity.typeID) == onTickEffect.validTargets.end())
 					continue;
-				
-				targets[0] = entity.id;
+				std::vector<ActionTarget> targets;
+				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
 				auto isValid = true;
 				for(const auto& condition : onTickEffect.conditions)
 				{

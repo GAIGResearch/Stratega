@@ -33,6 +33,11 @@ namespace SGA
 		return FunctionParameter(Type::EntityTypeReference, { .entityTypeID = entityTypeID});
 	}
 
+	FunctionParameter FunctionParameter::createTechnologyTypeReference(int technologyTypeID)
+	{
+		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
+	}
+
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
@@ -91,7 +96,7 @@ namespace SGA
 	{
 		if(parameterType == Type::ArgumentReference)
 		{
-			return targetToPosition(state, actionTargets[data.argumentIndex]);
+			return actionTargets[data.argumentIndex].getPosition();
 		}
 		else
 		{
@@ -106,13 +111,14 @@ namespace SGA
 			case Type::EntityPlayerReference:
 			case Type::ArgumentReference:
 			{
-				return targetToEntity(state, actionTargets[data.argumentIndex]);
+				auto entityID = actionTargets[data.argumentIndex].getEntityID();
+				return *state.getEntity(entityID);
 			}
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference:
 			{
-				auto& entity = targetToEntity(state, actionTargets[data.parameterData.argumentIndex]);
-				return entity;
+				auto entityID = actionTargets[data.parameterData.argumentIndex].getEntityID();
+				return *state.getEntity(entityID);
 			}
 			default:
 				throw std::runtime_error("Type not recognised");
@@ -126,8 +132,8 @@ namespace SGA
 			case Type::EntityPlayerParameterReference:
 			case Type::EntityPlayerReference:
 			{
-				auto& entity = getEntity(state, actionTargets);
-				return *state.getPlayer(entity.ownerID);
+				auto* entity = getEntity(state, actionTargets);
+				return *state.getPlayer(entity->ownerID);
 			}
 			default:
 				throw std::runtime_error("Type not recognised");
@@ -150,4 +156,24 @@ namespace SGA
 			throw std::runtime_error("Type not recognised");
 		}
 	}
+
+	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		
+		if (parameterType == Type::ArgumentReference)
+		{
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			return state.technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
+		}
+		else if (parameterType == Type::TechnologyTypeReference)
+		{	
+			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognized");
+		}
+		
+	}
+	
 }

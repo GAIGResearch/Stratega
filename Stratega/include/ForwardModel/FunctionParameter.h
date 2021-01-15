@@ -3,6 +3,7 @@
 #include <ForwardModel/ActionTarget.h>
 #include <Representation/EntityType.h>
 #include <Representation/Player.h>
+#include <Representation/TechnologyTree.h>
 
 namespace SGA
 {
@@ -18,6 +19,7 @@ namespace SGA
 			EntityPlayerParameterReference, // References the parameter of an player indirectly. Like Source.Player.Gold, only works if Source is a entity
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
+			TechnologyTypeReference, // References TechnologyTypes defined in the Game 
 		};
 
 		struct ParameterReference
@@ -38,6 +40,7 @@ namespace SGA
 			ParameterReference parameterData;
 			int argumentIndex;
 			int entityTypeID;
+			int technologyTypeID;
 		};
 		
 		Type parameterType;
@@ -53,6 +56,7 @@ namespace SGA
 		static FunctionParameter createEntityPlayerReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
+		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -63,6 +67,7 @@ namespace SGA
 		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 	};
 }

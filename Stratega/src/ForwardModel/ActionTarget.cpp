@@ -2,28 +2,59 @@
 #include <Representation/GameState.h>
 namespace SGA
 {
-	Vector2f targetToPosition(const GameState& state, const ActionTarget& target)
+	ActionTarget ActionTarget::createPositionActionTarget(Vector2f position)
 	{
-		if(std::holds_alternative<int>(target))
-		{
-			return targetToEntity(state, target).position;
-		}
-		
-		return std::get<Vector2f>(target);
-	}
-	
-	const Entity& targetToEntity(const GameState& state, const ActionTarget& target)
-	{
-		return state.getEntityConst(std::get<int>(target));
+		return ActionTarget(Type::Position, {.position = position });
 	}
 
-	Entity& targetToEntity(GameState& state,  const ActionTarget& target)
+	ActionTarget ActionTarget::createEntityActionTarget(int entityID)
 	{
-		auto* entity = state.getEntity(std::get<int>(target));
-		if(entity == nullptr)
+		return ActionTarget(Type::EntityReference, { .entityID = entityID });
+	}
+
+	ActionTarget ActionTarget::createTechnologyEntityActionTarget(int technologyID)
+	{
+		return ActionTarget(Type::TechnologyReference, { .technologyID = technologyID });
+	}
+
+	Vector2f ActionTarget::getPosition() const
+	{
+		if (targetType == Type::Position)
 		{
-			throw std::runtime_error("A action-target contained an not existing entity.");
+			return data.position;
 		}
-		return *entity;
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	const Entity& ActionTarget::getEntityConst(const GameState& state) const
+	{
+		if (targetType == Type::EntityReference)
+		{
+			return state.getEntityConst(data.entityID);
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+	
+	Entity& ActionTarget::getEntity(GameState& state) const
+	{
+		if (targetType == Type::EntityReference)
+		{
+			auto* entity = state.getEntity(std::get<int>(target));
+			if(entity == nullptr)
+			{
+				throw std::runtime_error("A action-target contained an not existing entity.");
+			}
+			return *entity;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
 	}
 }
