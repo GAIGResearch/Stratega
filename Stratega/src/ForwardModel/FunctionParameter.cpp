@@ -139,14 +139,14 @@ namespace SGA
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
-		if (parameterType == Type::TechnologyTypeReference)
-		{
+		/*if (parameterType == Type::TechnologyTypeReference)
+		{*/
 			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
-		}
+		/*}
 		else
 		{
 			throw std::runtime_error("Type not recognized");
-		}
+		}*/
 		
 	}
 	

@@ -143,20 +143,20 @@ namespace SGA
             auto groups = entityGroupsNode.as<std::map<std::string, std::vector<std::string>>>();
             for (const auto& nameGroupPair : groups)
             {
-                config.entityGroups.emplace(nameGroupPair.first, std::vector<int>());
+                config.entityGroups.emplace(nameGroupPair.first, std::unordered_set<int>());
                 for (const auto& entityName : nameGroupPair.second)
                 {
-                    config.entityGroups[nameGroupPair.first].emplace_back(config.getEntityID(entityName));
+                    config.entityGroups[nameGroupPair.first].emplace(config.getEntityID(entityName));
                 }
             }
         }
 
         // Predefined groups
-        config.entityGroups.emplace("All", std::vector<int>());
+        config.entityGroups.emplace("All", std::unordered_set<int>());
         for (const auto& idEntityPair : config.entityTypes)
         {
             // Group that contains all entities
-            config.entityGroups.at("All").emplace_back(idEntityPair.first);
+            config.entityGroups.at("All").emplace(idEntityPair.first);
         	// Group that contains one entity
             config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
         }
@@ -218,9 +218,7 @@ namespace SGA
         }
         else if (targetType.type == TargetType::Entity)
         {
-            auto groupName = node["ValidTargets"].as<std::string>("All");
-            const auto& group = config.entityGroups.at(groupName);
-            targetType.groupEntityTypes.insert(group.begin(), group.end());
+            targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
         else if (targetType.type == TargetType::Technology)
         {
@@ -265,12 +263,21 @@ namespace SGA
 		// Parse Trigger
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);
-		for(const auto& nameEffectsPair : fmNode["Trigger"].as<std::map<std::string, std::vector<std::string>>>(std::map<std::string, std::vector<std::string>>()))
+		for(const auto& nameEffectsPair : fmNode["Trigger"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>()))
 		{
 			if(nameEffectsPair.first == "OnTick")
 			{
                 context.targetIDs.emplace("Source", 0);
-                parser.parseFunctions<Effect>(nameEffectsPair.second, fm->onTickEffects, context);
+                auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                // Initiliaze OnTickEffect
+                OnTickEffect onTickEffect;
+                onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+                parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
+                parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
+				// Add it to the fm
+                fm->onTickEffects.emplace_back(std::move(onTickEffect));
 			}
             else
             {
@@ -368,6 +375,47 @@ namespace SGA
             param.index = parameterBucket.size();
             parameterBucket.insert({ param.id, std::move(param) });
         }
+	}
+
+
+    std::unordered_set<EntityTypeID> GameConfigParser::parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const
+	{
+        if(!groupNode.IsDefined())
+        {
+            return config.entityGroups.at("All");
+        }
+		
+		if(groupNode.IsScalar())
+		{
+            auto groupName = groupNode.as<std::string>();
+            auto groupIt = config.entityGroups.find(groupName);
+			if(groupIt == config.entityGroups.end())
+			{
+                throw std::runtime_error("There exists no entity-group with the name " + groupName);
+			}
+        
+            return groupIt->second;
+		}
+		
+        if(groupNode.IsSequence())
+        {
+            std::unordered_set<EntityTypeID> anonymousGroup;
+            auto names = groupNode.as<std::vector<std::string>>();
+        	for(const auto& name : names)
+        	{
+                auto groupIt = config.entityGroups.find(name);
+                if (groupIt == config.entityGroups.end())
+                {
+                    throw std::runtime_error("There exists no entity-group with the name " + name);
+                }
+        
+                std::copy(groupIt->second.begin(), groupIt->second.end(), std::inserter(anonymousGroup, anonymousGroup.end()));
+        	}
+        
+            return anonymousGroup;
+        }
+
+        throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
 	}
 
 }

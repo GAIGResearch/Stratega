@@ -70,12 +70,31 @@ namespace SGA
 		// Execute OnTick-trigger
 		std::vector<ActionTarget> targets;
 		targets.resize(1);
-		for(const auto& effect : onTickEffects)
+		for(const auto& onTickEffect : onTickEffects)
 		{
 			for (const auto& entity : state.entities)
 			{
+				if (onTickEffect.validTargets.find(entity.typeID) == onTickEffect.validTargets.end())
+					continue;
+				
 				targets[0] = entity.id;
-				effect->execute(state, *this, targets);
+				auto isValid = true;
+				for(const auto& condition : onTickEffect.conditions)
+				{
+					if(!condition->isFullfilled(state, targets))
+					{
+						isValid = false;
+						break;
+					}
+				}
+
+				if(isValid)
+				{
+					for (const auto& effect : onTickEffect.effects)
+					{
+						effect->execute(state, *this, targets);
+					}
+				}
 			}
 		}
 	}
