@@ -565,7 +565,8 @@ namespace SGA
 		createWindowUnits();
 		createWindowActions();
 		createWindowMultipleActions(window);
-
+		createWindowPlayerParameters();
+		
 		createEntityInformation(window);
 		createWindowFogOfWar();
 		createActionBar(window);
@@ -812,6 +813,32 @@ namespace SGA
 				playAction(action);
 				break;
 			}
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
+		ImGui::End();
+	}
+
+	void TBSGameStateRender::createWindowPlayerParameters() const
+	{
+		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
+		ImGui::Begin("PlayerParameters");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
+		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		{
+			//Double to string with 2 precision				
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+			std::string valueParameter = stream.str();
+
+			std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+			ImGui::BulletText(parameterInfo.c_str());
 		}
 
 		ImGui::EndGroup();

@@ -44,6 +44,7 @@ namespace SGA
 		void createWindowInfo() const;
 		void createWindowUnits();
 		void createWindowActions();
+		void createWindowPlayerParameters() const;
 		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
 		void createTopBar() const;
