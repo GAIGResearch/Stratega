@@ -123,13 +123,14 @@ namespace SGA
 	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs)
 	{
 		std::vector<ActionTarget> targets;
+		
 		for (const auto& technoloTreeType : gameState.technologyTreeCollection.technologyTreeTypes)
 		{
-			for (auto& technology : technoloTreeType.second.nodes)
+			for (auto& technology : technoloTreeType.second.technologies)
 			{
-				if (entityTypeIDs.find(technology.id) != entityTypeIDs.end())
+				if (entityTypeIDs.find(technology.second.id) != entityTypeIDs.end())
 				{
-					targets.emplace_back(technology.id);
+					targets.emplace_back(technology.second.id);
 				}
 			}			
 		}

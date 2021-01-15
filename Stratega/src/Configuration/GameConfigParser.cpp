@@ -288,24 +288,23 @@ namespace SGA
         {
             throw std::runtime_error("Cannot find definition for Technology Trees");
         }
-
+        int technologyNextID=0;
         auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
         for (const auto& nameTypePair : types)
         {
             SGA::TechnologyTreeType technologyTreeType;
 
             technologyTreeType.technologyTreeName = nameTypePair.first;
-
+           
             for (const auto& nameTechPair : nameTypePair.second.as<std::map<std::string, YAML::Node>>())
             {
                 TechnologyTreeNode newTechnology;
 
-                newTechnology.id = technologyTreeType.technologies.size();
+                newTechnology.id = technologyNextID++;
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
 
-                technologyTreeType.nodes.emplace_back(newTechnology);
-                technologyTreeType.technologies[newTechnology.name]= newTechnology.id;            	
+                technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
 
             config.technologyTreeCollection.technologyTreeTypes[config.technologyTreeCollection.technologyTreeTypes.size()] = technologyTreeType;
@@ -316,21 +315,21 @@ namespace SGA
         for (auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
         {
         	//Check it tehcnology in the treetype
-            for (auto& technology : technologyTreeType.second.nodes)
+            for (auto& technology : technologyTreeType.second.technologies)
             {
 
             	//Search the technology tree in the config yaml
                 auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
                 auto& techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
                 //Find the technology
-                auto technologyYaml= techTreeTypeYaml[technology.name].as<std::map<std::string, YAML::Node>>();
+                auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
                 auto parentsNames=technologyYaml["Parents"].as<std::vector<std::string>>(std::vector<std::string>());
 
                 for (auto& parent : parentsNames)
                 {
                 	//Get the new assigned technologyID of the parent and add it to the technology
-                   technology.parentIDs.emplace_back( config.getTechnologyID(parent));
+                   technology.second.parentIDs.emplace_back( config.getTechnologyID(parent));
                 }
             	
             }

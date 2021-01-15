@@ -17,7 +17,7 @@ namespace SGA
 		{
 			for (const auto& technology : technologyTreeType.second.technologies)
 			{
-				context.technologyTypeIDs.emplace(technology.first, technology.second);
+				context.technologyTypeIDs.emplace(technology.second.name, technology.first);
 			}
 			
 		}

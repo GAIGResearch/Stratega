@@ -21,7 +21,6 @@ namespace SGA
 	}
 
 	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
-		/*entityTarget(parameters.at(0)),*/
 		resourceReference(parameters.at(0)),
 		amount(parameters.at(1))
 	{
@@ -165,6 +164,6 @@ namespace SGA
 	{
 		//ey
 		auto& executingEntity = targetToEntity(state, targets[0]);
-		state.technologyTreeCollection.research(executingEntity.ownerID, std::get<int>(targets[1]));
+		state.technologyTreeCollection.researchTechnology(executingEntity.ownerID, std::get<int>(targets[1]));
 	}
 }

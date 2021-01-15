@@ -188,11 +188,11 @@ namespace SGA
 
 	int GameConfig::getTechnologyID(const std::string& name) const
 	{
-		for (	const auto& treeType: technologyTreeCollection.technologyTreeTypes)
-			for (const auto& idTypePair : treeType.second.nodes)
+		for (const auto& treeType: technologyTreeCollection.technologyTreeTypes)
+			for (const auto& idTypePair : treeType.second.technologies)
 			{
-				if (idTypePair.name == name)
-					return idTypePair.id;
+				if (idTypePair.second.name == name)
+					return idTypePair.second.id;
 			}
 
 		throw std::runtime_error("Unknown Technolgy with name " + name);
