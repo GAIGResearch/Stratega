@@ -10,7 +10,7 @@ namespace SGA
 	Action RandomActionScript::getActionForUnit(TBSGameState& gameState, std::vector<Action>& actionSpace, int unitID) const
 	{
 		std::vector<Action> suitableActions;
-		for (const auto& action : actionSpace)
+		/*for (const auto& action : actionSpace)
 		{
 			auto& actionType = gameState.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)
@@ -22,7 +22,7 @@ namespace SGA
 		}
 
 		if (!suitableActions.empty())
-			return suitableActions.at(rand() % suitableActions.size());
+			return suitableActions.at(rand() % suitableActions.size());*/
 		
 		return actionSpace[rand() % actionSpace.size()];
 	}

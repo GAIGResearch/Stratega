@@ -91,7 +91,7 @@ namespace SGA
 	{
 		if(parameterType == Type::ArgumentReference)
 		{
-			return targetToPosition(state, actionTargets[data.argumentIndex]);
+			return actionTargets[data.argumentIndex].getPosition();
 		}
 		else
 		{
@@ -105,13 +105,13 @@ namespace SGA
 		{
 			case Type::ArgumentReference:
 			{
-				auto entityID = std::get<int>(actionTargets[data.argumentIndex]);
+				auto entityID = actionTargets[data.argumentIndex].getEntityID();
 				return state.getEntity(entityID);
 			}
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference:
 			{
-				auto entityID = std::get<int>(actionTargets[data.parameterData.argumentIndex]);
+				auto entityID = actionTargets[data.parameterData.argumentIndex].getEntityID();
 				auto& entity = state.getEntity(entityID);
 				return entity;
 			}

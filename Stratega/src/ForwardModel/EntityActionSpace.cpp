@@ -43,8 +43,9 @@ namespace SGA
 		Action action;
 		action.actionTypeID = actionType.id;
 		action.ownerID = sourceEntity.ownerID;
-		action.targets.resize(2);
-		action.targets[0] = sourceEntity.id;
+		
+		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
+		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 
 		std::vector<Action> allActions;
 		for (const auto& target : targets)
@@ -101,7 +102,7 @@ namespace SGA
 			for (auto y = startCheckPositionY; y <= endCheckPositionY; y++)
 			{
 				if(isValidPos(x, y))
-					targets.emplace_back(Vector2f(x, y));
+					targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
 			}
 		}
 		return targets;
@@ -114,7 +115,7 @@ namespace SGA
 		{
 			if(entityTypeIDs.find(entity.typeID) != entityTypeIDs.end())
 			{
-				targets.emplace_back(entity.id);
+				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
 			}
 		}
 		return targets;
@@ -130,7 +131,7 @@ namespace SGA
 			{
 				if (entityTypeIDs.find(technology.second.id) != entityTypeIDs.end())
 				{
-					targets.emplace_back(technology.second.id);
+					targets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(technology.second.id));
 				}
 			}			
 		}
@@ -141,7 +142,7 @@ namespace SGA
 	{
 		Action selfAction;
 		selfAction.actionTypeID = actionType.id;
-		selfAction.targets = { sourceEntity.id };
+		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
 		return selfAction;
 	}
 

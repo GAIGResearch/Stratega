@@ -46,14 +46,14 @@ namespace SGA
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
 			auto& tbsState = dynamic_cast<TBSGameState&>(state);
-			auto& entity = targetToEntity(state, targets[0]);
-			auto newPos = targetToPosition(state, targets[1]);
+			auto& entity = targets[0].getEntity(state);
+			auto newPos = targets[1].getPosition();
 			tbsFM->moveEntity(tbsState, entity, newPos);
 		}
 		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
 		{
-			Entity& unit = targetToEntity(state, targets[0]);
-			Vector2f targetPos = targetToPosition(state, targets[1]);
+			Entity& unit = targets[0].getEntity(state);
+			Vector2f targetPos = targets[1].getPosition();
 
 			//Get end position of current path
 			Vector2f oldTargetPos(0, 0);
@@ -108,9 +108,10 @@ namespace SGA
 	{
 		// ToDo Is there a better way to do this?
 		int playerID = -1;
-		if(std::holds_alternative<int>(targets[0]))
+		
+		if(targets[0].getType()==ActionTarget::EntityReference)
 		{
-			auto& executingEntity = targetToEntity(state, targets[0]);
+			auto& executingEntity = (state, targets[0].getEntityConst(state));
 			playerID = executingEntity.ownerID;
 		}
 		
@@ -162,7 +163,7 @@ namespace SGA
 
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto& executingEntity = targetToEntity(state, targets[0]);
-		state.technologyTreeCollection->researchTechnology(executingEntity.ownerID, std::get<int>(targets[1]));
+		auto& executingEntity = targets[0].getEntityConst(state);/*  targetToEntity(state, targets[0]);*/
+		state.technologyTreeCollection->researchTechnology(executingEntity.ownerID, targets[1].getTechnologyID());
 	}
 }

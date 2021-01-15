@@ -258,9 +258,9 @@ namespace SGA
 							{
 								SGA::Action newAction;
 								newAction.actionTypeID = 2;
-								newAction.targets.emplace_back(i);
+								newAction.targets.emplace_back(ActionTarget::createEntityActionTarget(i));
 								//SGA::ActionTarget targetPos=SGA::ActionTarget(SGA::Vector2f(worldPos.x, worldPos.y));
-								newAction.targets.emplace_back(SGA::Vector2f(worldPos.x, worldPos.y));
+								newAction.targets.emplace_back(ActionTarget::createPositionActionTarget(SGA::Vector2f(worldPos.x, worldPos.y)));
 								newAction.ownerID = getPlayerID();
 								game->executeAction(newAction);
 

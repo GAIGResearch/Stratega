@@ -219,14 +219,14 @@ namespace SGA
 					{
 						if (actionType.actionTargets.type == TargetType::Entity)
 						{
-							if (targetToEntity(gameStateCopy, action.targets[1]).position == Vector2i(pos.x, pos.y))
+							if (action.targets[1].getEntity(gameStateCopy).position == Vector2i(pos.x, pos.y))
 							{
 								actionsInTile.emplace_back(action);
 							}
 						}
 						else
 						{
-							if (targetToPosition(gameStateCopy, action.targets[1]) == Vector2i(pos.x, pos.y))
+							if (action.targets[1].getPosition() == Vector2i(pos.x, pos.y))
 							{
 								actionsInTile.emplace_back(action);
 							}
@@ -279,18 +279,18 @@ namespace SGA
 
 						if (actionType.actionTargets == TargetType::Entity)
 						{
-							auto& entity = targetToEntity(gameStateCopy, action.targets[0]);
+							auto& entity = action.targets[0].getEntity(gameStateCopy);
 							if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
 								actionHumanUnitSelected.emplace_back(action);
 						}
 						else if (actionType.actionTargets == TargetType::Position)
 						{
-							if (targetToEntity(gameStateCopy, action.targets[0]).id == unit->id)
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
 						else if (actionType.actionTargets == TargetType::Technology)
 						{
-							if (targetToEntity(gameStateCopy, action.targets[0]).id == unit->id)
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
 
@@ -529,7 +529,7 @@ namespace SGA
 					//Get source
 					if (actionType.actionTargets.type == TargetType::Entity)
 					{
-						const Entity& targetEntity = targetToEntity(*selectedGameStateCopy, action.targets[1]);
+						const Entity& targetEntity = action.targets[1].getEntity(*selectedGameStateCopy);
 
 						sf::CircleShape shape(15);
 						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
@@ -539,7 +539,7 @@ namespace SGA
 					}
 					else if (actionType.actionTargets.type == TargetType::Position)
 					{
-						const Vector2f& targetPos = targetToPosition(*selectedGameStateCopy, action.targets[1]);
+						const Vector2f& targetPos = action.targets[1].getPosition();
 
 						sf::CircleShape shape(15);
 						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
@@ -839,7 +839,7 @@ namespace SGA
 				{
 					if (actionType.actionTargets.type == TargetType::Entity)
 					{
-						auto& entity = targetToEntity(gameStateCopy, action.targets[1]);
+						auto& entity = action.targets[1].getEntity(gameStateCopy);
 
 						if (entity.position == multipleActionsSourceTile)
 						{
@@ -855,7 +855,7 @@ namespace SGA
 					}
 					else
 					{
-						if (targetToPosition(gameStateCopy, action.targets[1]) == multipleActionsSourceTile)
+						if (action.targets[1].getPosition() == multipleActionsSourceTile)
 						{
 							std::string actionInfo = std::to_string(index) + " " + actionType.name;
 							index++;
