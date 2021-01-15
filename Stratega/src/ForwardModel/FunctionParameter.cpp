@@ -139,9 +139,15 @@ namespace SGA
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
-		return state.technologyTreeCollection.getTechnology(std::get<int>(actionTargets[1]));
+		if (parameterType == Type::TechnologyTypeReference)
+		{
+			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognized");
+		}
 		
-		throw std::runtime_error("Type not recognized");
 	}
 	
 }

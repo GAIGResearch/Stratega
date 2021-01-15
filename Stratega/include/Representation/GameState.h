@@ -14,6 +14,7 @@ namespace SGA
 			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
+			technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
 			isGameOver(false),
 			winnerPlayerID(-1),
 			currentTick(1),
@@ -32,6 +33,7 @@ namespace SGA
 			  entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 			  actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 			  tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
+			  technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
 			  isGameOver(false),
 			  winnerPlayerID(-1),
 			  currentTick(1),
@@ -60,10 +62,7 @@ namespace SGA
 		std::unordered_map<std::string, std::vector<int>> entityGroups;
 
 		//Technology tree
-		//TODO sharedptr
-		TechnologyTreeCollection technologyTreeCollection;
-		
-		
+		std::shared_ptr <TechnologyTreeCollection> technologyTreeCollection;		
 		
 		// Game information
 		bool isGameOver;

@@ -124,7 +124,7 @@ namespace SGA
 	{
 		std::vector<ActionTarget> targets;
 		
-		for (const auto& technoloTreeType : gameState.technologyTreeCollection.technologyTreeTypes)
+		for (const auto& technoloTreeType : gameState.technologyTreeCollection->technologyTreeTypes)
 		{
 			for (auto& technology : technoloTreeType.second.technologies)
 			{

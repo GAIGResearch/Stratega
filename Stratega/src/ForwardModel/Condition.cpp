@@ -72,7 +72,7 @@ namespace  SGA
 		auto& sourceEntity = targetToEntity(state, targets[0]);
 		int playerID = sourceEntity.ownerID;
 
-		return state.technologyTreeCollection.isResearched(playerID, targetResource.id);
+		return state.technologyTreeCollection->isResearched(playerID, targetResource.id);
 	}
 
 	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
@@ -89,6 +89,6 @@ namespace  SGA
 		auto& sourceEntity = targetToEntity(state, targets[0]);
 		int playerID = sourceEntity.ownerID;
 
-		return state.technologyTreeCollection.canResearch(playerID, targetResource.id);
+		return state.technologyTreeCollection->canResearch(playerID, targetResource.id);
 	}
 }

@@ -162,8 +162,7 @@ namespace SGA
 
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		//ey
 		auto& executingEntity = targetToEntity(state, targets[0]);
-		state.technologyTreeCollection.researchTechnology(executingEntity.ownerID, std::get<int>(targets[1]));
+		state.technologyTreeCollection->researchTechnology(executingEntity.ownerID, std::get<int>(targets[1]));
 	}
 }
