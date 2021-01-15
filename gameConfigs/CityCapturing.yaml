@@ -1,0 +1,156 @@
+GameConfig:
+    Type: TBS
+    ActionTimer: 10s
+    RoundLimit: 100
+
+Agents:
+    - RandomAgent
+    - HumanAgent
+
+PlayerParameters:
+    Gold: 5
+
+Tiles:
+    Plain:
+        Sprite: ../GUI/Assets/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../GUI/Assets/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../GUI/Assets/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../GUI/Assets/forest.png
+        Symbol: F
+        IsWalkable: true
+     
+Actions:
+    # Spawn Actions
+    SpawnConquerer:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Player.Gold, 6)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Conquerer, Target)"
+            - "ModifyResource(Source.Player.Gold, -6)"
+
+    SpawnFighter:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Player.Gold, 5)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Fighter, Target)"
+            - "ModifyResource(Source.Player.Gold, -5)"
+
+    # Attack Actions
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Entity
+            ValidTargets: [Conquerer, Fighter]
+            Conditions:
+                - "InRange(Source, Target, 1)"
+        Effects:
+            - "Attack(Target.Health, 25)"
+
+    # Capturing
+    Capture:
+        Type: EntityAction
+        Target:
+            Type: Entity
+            ValidTargets: City
+            Conditions:
+                - "InRange(Source, Target, 1)"
+        Effects:
+            - "ChangeOwner(Target, Source.Player)"
+            - "Remove(Source)"
+
+    # Move Actions
+    Move:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Position
+            Shape: Circle
+            Size: 3
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+
+
+Entities:
+    City:
+        Sprite: ../GUI/Assets/castle.png
+        Symbol: c
+        LineOfSightRange: 5
+        Actions: [SpawnConquerer, SpawnFighter]
+
+    Conquerer:
+        Sprite: ../GUI/Assets/farmer.png
+        Symbol: s
+        LineOfSightRange: 4
+        Actions: [Move, Capture]
+        Parameters:
+            Health: 25
+
+    Fighter:
+        Sprite: ../GUI/Assets/unit2New.png
+        Symbol: f
+        LineOfSightRange: 6
+        Actions: [Move, Attack]
+        Parameters:
+            Health: 100
+
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+                   
+ForwardModel:
+    WinCondition:
+        Type: UnitAlive
+        Unit: City
+
+    Trigger:
+        OnTick:
+            ValidTargets: City
+            Conditions:
+                - "IsPlayerEntity(Source)"
+            Effects:
+                - "ModifyResource(Source.Player.Gold, 1)"
+        

@@ -43,10 +43,11 @@ namespace SGA
 		{
 			std::optional<FunctionParameter> param;
 			if (((param = parseConstant(ss))) ||
+				((param = parseEntityPlayerReference(ss, context)) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
-				((param = parseEntityTypeReference(ss, context))))
+				((param = parseEntityTypeReference(ss, context)))))
 			{
 				call.parameters.emplace_back(param.value());
 			}
@@ -83,9 +84,11 @@ namespace SGA
 
 	std::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
 	{
+		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
 		if(!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -95,10 +98,37 @@ namespace SGA
 		auto parameterIt = context.parameterIDs.find(parameterName);
 		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
 		{
-			throw std::runtime_error("Unknown parameter/action-target: " + targetName + "." + parameterName);
+			ss.seekg(begin);
+			return {};
 		}
 
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
+	}
+
+	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 2);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetName = names.value()[0];
+		auto playerName = names.value()[1];
+		if (playerName != "Player")
+		{
+			ss.seekg(begin);
+			return {};
+		}
+
+		auto targetIt = context.targetIDs.find(targetName);
+		if (targetIt == context.targetIDs.end())
+		{
+			throw std::runtime_error("Unknown action-target: " + targetName);
+		}
+
+		return FunctionParameter::createEntityPlayerReference(targetIt->second);
 	}
 
 	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const

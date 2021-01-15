@@ -18,6 +18,11 @@ namespace SGA
 		return FunctionParameter(Type::ParameterReference, { .parameterData = ref});
 	}
 
+	FunctionParameter FunctionParameter::createEntityPlayerReference(int argumentIndex)
+	{
+		return FunctionParameter(Type::EntityPlayerReference, { .argumentIndex = argumentIndex });
+	}
+
 	FunctionParameter FunctionParameter::createEntityPlayerParameterReference(ParameterReference ref)
 	{
 		return FunctionParameter(Type::EntityPlayerParameterReference, { .parameterData = ref });
@@ -62,7 +67,7 @@ namespace SGA
 	{
 		return getParameterValue(const_cast<GameState&>(state), actionTargets);
 	}
-	
+
 	double& FunctionParameter::getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if(parameterType == Type::ParameterReference)
@@ -98,17 +103,31 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+			case Type::EntityPlayerReference:
 			case Type::ArgumentReference:
 			{
-				auto entityID = std::get<int>(actionTargets[data.argumentIndex]);
-				return state.getEntity(entityID);
+				return targetToEntity(state, actionTargets[data.argumentIndex]);
 			}
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference:
 			{
-				auto entityID = std::get<int>(actionTargets[data.parameterData.argumentIndex]);
-				auto& entity = state.getEntity(entityID);
+				auto& entity = targetToEntity(state, actionTargets[data.parameterData.argumentIndex]);
 				return entity;
+			}
+			default:
+				throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	Player& FunctionParameter::getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+			case Type::EntityPlayerParameterReference:
+			case Type::EntityPlayerReference:
+			{
+				auto& entity = getEntity(state, actionTargets);
+				return *state.getPlayer(entity.ownerID);
 			}
 			default:
 				throw std::runtime_error("Type not recognised");

@@ -54,5 +54,14 @@ namespace SGA
 		IsWalkable(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class IsPlayerEntity : public Condition
+	{
+		FunctionParameter targetParam;
+
+	public:
+		IsPlayerEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 }

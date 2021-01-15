@@ -153,4 +153,29 @@ namespace SGA
 		// Resulting in problems for ProtectTheBase
 		targetValue = targetValue + amount;
 	}
+
+	ChangeOwnerEffect::ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]), playerParam(parameters[1])
+	{
+	}
+	
+	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& targetEntity = targetEntityParam.getEntity(state, targets);
+		auto& newOwner = playerParam.getPlayer(state, targets);
+		targetEntity.ownerID = newOwner.id;
+	}
+
+	RemoveEntityEffect::RemoveEntityEffect(const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0])
+	{
+	}
+
+	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& targetEntity = targetEntityParam.getEntity(state, targets);
+		targetEntity.shouldRemove = true;
+	}
+
+
 }

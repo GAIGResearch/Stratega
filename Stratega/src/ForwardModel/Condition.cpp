@@ -57,4 +57,15 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
 	}
+
+	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)
+		: targetParam(parameters[0])
+	{
+	}
+
+	bool IsPlayerEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& entity = targetParam.getEntity(state, targets);
+		return !entity.isNeutral();
+	}
 }

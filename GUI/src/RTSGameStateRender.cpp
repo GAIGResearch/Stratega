@@ -251,7 +251,7 @@ namespace SGA
 					{
 						for (const auto& i : selectedUnits)
 						{
-							auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i).typeID);
+							auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i)->typeID);
 
 							//Move action
 							if (entityType.canExecuteAction(2))
@@ -404,6 +404,19 @@ namespace SGA
 
 	void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
+		// Remove entities that do not exist anymore
+		for(auto i = selectedUnits.begin(); i != selectedUnits.end();)
+		{
+			if(gameStateCopy.getEntity(*i) == nullptr)
+			{
+				selectedUnits.erase(i);
+			}
+			else
+			{
+				++i;
+			}
+		}
+		
 		mapSprites.clear();
 		entitySprites.clear();
 		unitsInfo.clear();
@@ -725,7 +738,7 @@ namespace SGA
 		std::unordered_set<int> actionTypes;
 		for each (auto & entity in selectedUnits)
 		{
-			int entityTypeID = gameStateCopy.getEntity(entity).typeID;
+			int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
 
 
 			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
@@ -760,7 +773,7 @@ namespace SGA
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 
 			//Check if entity have sprite
-			auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(entity).typeID);
+			auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(entity)->typeID);
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 

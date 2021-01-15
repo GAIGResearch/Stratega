@@ -17,8 +17,13 @@ namespace SGA
 		return state.getEntityConst(std::get<int>(target));
 	}
 
-	 Entity& targetToEntity( GameState& state,  const ActionTarget& target)
+	Entity& targetToEntity(GameState& state,  const ActionTarget& target)
 	{
-		return state.getEntity(std::get<int>(target));
+		auto* entity = state.getEntity(std::get<int>(target));
+		if(entity == nullptr)
+		{
+			throw std::runtime_error("A action-target contained an not existing entity.");
+		}
+		return *entity;
 	}
 }
