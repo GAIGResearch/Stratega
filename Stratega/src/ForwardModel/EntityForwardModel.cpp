@@ -101,7 +101,7 @@ namespace SGA
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
 
-		std::vector<ActionTarget> targets = { entityID };
+		std::vector<ActionTarget> targets = { ActionTarget::createEntityActionTarget(entityID) };
 		for(const auto& onSpawnEffect : onEntitySpawnEffects)
 		{
 			if (onSpawnEffect.validTargets.find(entityType.id) == onSpawnEffect.validTargets.end())

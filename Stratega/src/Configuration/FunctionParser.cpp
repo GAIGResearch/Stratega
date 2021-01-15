@@ -52,7 +52,7 @@ namespace SGA
 		{
 			std::optional<FunctionParameter> param;
 			if (((param = parseConstant(ss))) ||
-				((param = parseEntityPlayerReference(ss, context)) ||
+				((param = parseEntityPlayerReference(ss, context))) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||

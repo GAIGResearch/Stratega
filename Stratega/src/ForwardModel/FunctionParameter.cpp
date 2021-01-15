@@ -132,8 +132,8 @@ namespace SGA
 			case Type::EntityPlayerParameterReference:
 			case Type::EntityPlayerReference:
 			{
-				auto* entity = getEntity(state, actionTargets);
-				return *state.getPlayer(entity->ownerID);
+				auto& entity = getEntity(state, actionTargets);
+				return *state.getPlayer(entity.ownerID);
 			}
 			default:
 				throw std::runtime_error("Type not recognised");

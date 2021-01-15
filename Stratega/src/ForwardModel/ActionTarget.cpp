@@ -45,7 +45,7 @@ namespace SGA
 	{
 		if (targetType == Type::EntityReference)
 		{
-			auto* entity = state.getEntity(std::get<int>(target));
+			auto* entity = state.getEntity(data.entityID);
 			if(entity == nullptr)
 			{
 				throw std::runtime_error("A action-target contained an not existing entity.");
