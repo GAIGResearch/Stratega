@@ -16,6 +16,8 @@ namespace SGA
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
         void parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const;
+        void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
+
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
@@ -78,6 +80,8 @@ namespace YAML
                 rhs = SGA::TargetType::Type::Position;
             else if (value == "Entity")
                 rhs = SGA::TargetType::Type::Entity;
+            else if (value == "Technology")
+                rhs = SGA::TargetType::Type::Technology;
             else
                 return false;
 

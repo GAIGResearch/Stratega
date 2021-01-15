@@ -54,5 +54,22 @@ namespace SGA
 		IsWalkable(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
-	
+
+	class IsResearched : public Condition
+	{
+		FunctionParameter technologyReference;
+	public:
+		IsResearched(const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class CanResearch : public Condition
+	{
+		FunctionParameter technologyReference;
+	public:
+		CanResearch(const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 }

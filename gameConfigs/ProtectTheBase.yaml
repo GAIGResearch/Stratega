@@ -65,6 +65,8 @@ Actions:
         Target:
             Type: Entity
             ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, 10)"
         Effects:
 
     # Move Actions
@@ -103,7 +105,6 @@ Actions:
                 - "InRange(Source, Target, 1)"
         Effects:
             - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
-
 
 Entities:
     Base:
@@ -159,6 +160,4 @@ Board:
                    
 ForwardModel:
     WinCondition:
-        Type: LastManStanding.
-
-
+        Type: LastManStanding

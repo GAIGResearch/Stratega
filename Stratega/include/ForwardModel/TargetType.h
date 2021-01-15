@@ -18,7 +18,7 @@ namespace SGA
 
 	struct TargetType
 	{
-		enum Type { None, Position, Entity };
+		enum Type { None, Position, Entity, Technology};
 		
 		Type type;
 
@@ -28,6 +28,9 @@ namespace SGA
 		
 		// Specific variables for targetType=Unit
 		std::unordered_set<int> groupEntityTypes;
+		
+		// Specific variables for targetType=Technology
+		std::unordered_set<int> technologyTypes;
 
 		operator Type() const { return type; }
 	};

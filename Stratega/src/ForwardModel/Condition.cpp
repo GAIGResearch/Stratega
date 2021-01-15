@@ -25,8 +25,8 @@ namespace  SGA
 
 	bool SamePlayer::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		auto& sourceEntity = targetToEntity(state,targets[0]);
-		auto& targetEntity = targetToEntity(state,targets[1]);
+		auto& sourceEntity =targets[0].getEntityConst(state);
+		auto& targetEntity =targets[1].getEntityConst(state);
 
 		return sourceEntity.ownerID == targetEntity.ownerID;
 	}
@@ -56,5 +56,39 @@ namespace  SGA
 	{
 		auto pos = targetPosition.getPosition(state, targets);
 		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
+	}
+
+	IsResearched::IsResearched(const std::vector<FunctionParameter>& parameters) :
+		technologyReference(parameters.at(0))
+	{
+	}
+
+	bool IsResearched::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Get technologyType
+		auto& targetResource = technologyReference.getTechnology(state, targets);
+
+		//Check if player has the type researched
+		auto& sourceEntity = targets[0].getEntityConst(state);
+		int playerID = sourceEntity.ownerID;
+
+		return state.technologyTreeCollection->isResearched(playerID, targetResource.id);
+	}
+
+	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
+		technologyReference(parameters.at(0))
+	{
+	}
+
+	bool CanResearch::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Get technologyType
+		auto& targetResource = technologyReference.getTechnology(state, targets);
+
+		//Check if player has the type researched
+		auto& sourceEntity = targets[0].getEntityConst(state);
+		int playerID = sourceEntity.ownerID;
+
+		return state.technologyTreeCollection->canResearch(playerID, targetResource.id);
 	}
 }

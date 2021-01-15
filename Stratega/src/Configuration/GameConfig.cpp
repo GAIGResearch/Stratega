@@ -64,6 +64,8 @@ namespace SGA
 		state->entityGroups = entityGroups;
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
+		state->technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
+
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
@@ -184,6 +186,20 @@ namespace SGA
 		throw std::runtime_error("Unknown action with name " + name);
 	}
 
+	int GameConfig::getTechnologyID(const std::string& name) const
+	{
+		for (const auto& treeType: technologyTreeCollection.technologyTreeTypes)
+		{
+			for (const auto& idTypePair : treeType.second.technologies)
+			{
+				if (idTypePair.second.name == name)
+					return idTypePair.second.id;
+			}
+		}			
+
+		throw std::runtime_error("Unknown Technolgy with name " + name);
+	}
+	
 	int GameConfig::getTileID(const std::string& name) const
 	{
 		for (const auto& idTypePair : tileTypes)

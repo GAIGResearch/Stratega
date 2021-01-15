@@ -8,7 +8,7 @@ namespace SGA
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
 		{
-			if (!precondition->isFullfilled(*this, { entity.id }))
+			if (!precondition->isFullfilled(*this, { ActionTarget::createEntityActionTarget(entity.id) }))
 			{
 				return false;
 			}
