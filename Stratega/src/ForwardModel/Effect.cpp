@@ -116,7 +116,7 @@ namespace SGA
 		}
 		
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
-		state.addEntity(entityType, playerID, targetPositionParam.getPosition(state, targets));
+		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)

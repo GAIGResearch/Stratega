@@ -164,7 +164,7 @@ namespace SGA
 			return player.id;
 		}
 
-		void addEntity(const EntityType& type, int playerID, const Vector2f& position)
+		int addEntity(const EntityType& type, int playerID, const Vector2f& position)
 		{
 			auto instance = type.instantiateEntity(nextEntityID);
 			instance.ownerID = playerID;
@@ -172,6 +172,7 @@ namespace SGA
 			entities.emplace_back(std::move(instance));
 
 			nextEntityID++;
+			return instance.id;
 		}
 
 		Entity* getEntity(Vector2f pos)
