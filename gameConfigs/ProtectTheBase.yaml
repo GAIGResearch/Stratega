@@ -33,7 +33,6 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 50)"
-            - "IsResearched(Townhall)"
         Target:
             Type: Position
             Shape: Square
@@ -58,18 +57,6 @@ Actions:
         Effects:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
-
-    #Research
-    Research:
-        Type: EntityAction
-        Cooldown: 0
-        Target:
-            Type: Technology
-            ValidTargets: [Townhall, Archery, AdvanceArchery]
-            Conditions:
-               - "CanResearch(Target)"
-        Effects:
-            - "Research(Target)"
 
     # Attack Actions
     Attack:
@@ -124,7 +111,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter, Research]
+        Actions: [SpawnMiner, SpawnFighter]
         Parameters:
             Gold: 50
 
@@ -173,22 +160,4 @@ Board:
                    
 ForwardModel:
     WinCondition:
-        Type: LastManStanding.
-
-TechnologyTrees:
-    Buildings:
-        Townhall:
-            Description: Is  a townhall :D
-            Requirements:
-        Archery:
-            Description: Here you can spawn archers.
-            Requirements: [Townhall]
-        AdvanceArchery:
-            Description: Here you can spawn more type of archers.
-            Requirements: [Archery]
-        Mine:
-            Description: Here you can spawn miners.
-            Requirements: [Townhall]
-        AdvanceMine:
-            Description: Here you can spawn more type of miners.
-            Requirements: [Mine]
+        Type: LastManStanding

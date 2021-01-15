@@ -224,7 +224,7 @@ namespace SGA
 								actionsInTile.emplace_back(action);
 							}
 						}
-						else
+						else if(actionType.actionTargets.type == TargetType::Position)
 						{
 							if (action.targets[1].getPosition() == Vector2i(pos.x, pos.y))
 							{
@@ -853,7 +853,7 @@ namespace SGA
 							}
 						}
 					}
-					else
+					else if(actionType.actionTargets.type == TargetType::Position)
 					{
 						if (action.targets[1].getPosition() == multipleActionsSourceTile)
 						{
