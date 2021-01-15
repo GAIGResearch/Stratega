@@ -64,8 +64,9 @@ namespace SGA
 		double& getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Vector2f getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		

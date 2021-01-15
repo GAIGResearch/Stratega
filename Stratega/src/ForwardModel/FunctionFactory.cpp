@@ -12,7 +12,7 @@ namespace SGA
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
-		factory.registerFunction<IsResearched>("IsResearched");
+		factory.registerFunction<IsResearched>("HasResearched");
 		factory.registerFunction<CanResearch>("CanResearch");
 		
 		return factory;

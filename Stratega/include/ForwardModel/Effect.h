@@ -92,6 +92,7 @@ namespace SGA
 	
 	class ResearchTechnology : public Effect
 	{
+		FunctionParameter playerParam;
 		FunctionParameter technologyTypeParam;
 
 	public:

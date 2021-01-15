@@ -178,13 +178,14 @@ namespace SGA
 	}
 
 	ResearchTechnology::ResearchTechnology(const std::vector<FunctionParameter>& parameters)
-		: technologyTypeParam(parameters[0])
+		: playerParam(parameters[0]),
+		  technologyTypeParam(parameters[1])
 	{
 	}
 
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto& executingEntity = targets[0].getEntityConst(state);/*  targetToEntity(state, targets[0]);*/
-		state.technologyTreeCollection->researchTechnology(executingEntity.ownerID, targets[1].getTechnologyID());
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 }
