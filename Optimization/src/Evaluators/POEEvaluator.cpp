@@ -48,28 +48,33 @@ namespace SGA
     }
 	
     std::vector<float> POEEvaluator::evaluate(std::vector<int> point, int nSamples)
-    {
+	{
 		float value = 0;
-    	
+
 		float agentValue = 0;
 		int samples = 0;
 		bool playFirst = false;
-    	
-    	while (samples < nSamples)
-    	{
+		std::cout << "evaluate agent " << nSamples << " times: ";
+
+		while (samples < nSamples)
+		{
 			for (int agentID = 0; agentID < agents.size(); agentID++)
 			{
 				if (samples >= nSamples)
 					break;
 				agentValue += evaluateGame(point, agentID, playFirst);
 				samples++;
+				std::cout << "x";
+				if (samples % 5 == 0)
+					std::cout << " ";
 			}
 			playFirst = !playFirst;
-    	}
+		}
 
-		
-        return { agentValue };
-    }
+		std::cout << std::endl;
+
+		return { agentValue };
+	}
 
 	float POEEvaluator::evaluateGame(std::vector<int> point, int opponentID, bool playFirst)
     {
@@ -112,6 +117,11 @@ namespace SGA
 			newPortfolio.emplace_back(std::move(runToFriends));
 		}
 		if (_p6[point[11]])
+		{
+			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			newPortfolio.emplace_back(std::move(random));
+		}
+		if (newPortfolio.empty())
 		{
 			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
 			newPortfolio.emplace_back(std::move(random));
@@ -189,7 +199,7 @@ namespace SGA
 	    std::cout << _mutationRateCandidates[point[2]] << ", ";
 	    std::cout << _tournamentSize[point[3]] << ", ";
 	    std::cout << _elitism[point[4]] << ", ";
-		std::cout << _continueSearch[point[5]];
+		std::cout << _continueSearch[point[5]] << ", ";;
 		std::cout << _p1[point[6]];
 		std::cout << _p2[point[7]];
 		std::cout << _p3[point[8]];

@@ -1,0 +1,109 @@
+GameConfig:
+    Type: TBS
+    ActionTimer: 10s
+    RoundLimit: 30
+
+Agents:
+    - CombatAgent
+    - CombatAgent
+
+Tiles:
+    Plain:
+        Sprite: ../GUI/Assets/plain.png
+        Symbol: .
+        IsWalkable: true
+    Water:
+        Sprite: ../GUI/Assets/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../GUI/Assets/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../GUI/Assets/forest.png
+        Symbol: F
+        IsWalkable: true
+    Hole:
+        Sprite: ../GUI/Assets/hole.png
+        Symbol: H
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: >
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+          M.............M................M
+          M..............................M
+          M..............................M
+          M..............................M
+          M.....................MM.....MMM
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+
+Units:
+    Warrior:
+        Sprite: ../GUI/Assets/basicCloseRange (2).png
+        Health: 200
+        LineOfSightRange: 6
+
+        MovementRange: 2
+        ActionRange: 2
+        AttackDamage: 10
+        ActionsPerTurn: 2
+        RepeatableActions: false
+        Actions: [Attack, Move]
+    Archer:
+        Sprite: ../GUI/Assets/basicLongRange (2).png
+        Health: 100
+        LineOfSightRange: 10
+
+        MovementRange: 2
+        ActionRange: 5
+        ActionsPerTurn: 2
+        RepeatableActions: false
+        AttackDamage: 10
+        Actions: [Attack, Move]
+    Healer:
+        Sprite: ../GUI/Assets/healer (2).png
+        Health: 40
+        LineOfSightRange: 6
+
+        MovementRange: 4
+        ActionRange: 2
+        HealAmount: 10
+        ActionsPerTurn: 2
+        RepeatableActions: false
+        Actions: [Heal, Move]
+    King:
+        Sprite: ../GUI/Assets/advanceCloseRange (2).png
+        Health: 400
+        LineOfSightRange: 6
+
+        MovementRange: 1
+        ActionRange: 2
+        AttackDamage: 10
+        ActionsPerTurn: 2
+        RepeatableActions: false
+        Actions: [Attack, Move]
+
+ForwardModel:
+    WinCondition:
+        Type: LastManStanding
+        Unit: King
+
+    Effects:
+        DeadlyHole:
+            Type: Death
+            Trigger: EnterTile
+            Condition: StandingOnTile
+            TargetTile: Hole

@@ -33,28 +33,33 @@ namespace SGA
     }
 	
     std::vector<float> RHEAEvaluator::evaluate(std::vector<int> point, int nSamples)
-    {
+	{
 		float value = 0;
-    	
+
 		float agentValue = 0;
 		int samples = 0;
 		bool playFirst = false;
-    	
-    	while (samples < nSamples)
-    	{
+		std::cout << "evaluate agent " << nSamples << " times: ";
+
+		while (samples < nSamples)
+		{
 			for (int agentID = 0; agentID < agents.size(); agentID++)
 			{
 				if (samples >= nSamples)
 					break;
 				agentValue += evaluateGame(point, agentID, playFirst);
 				samples++;
+				std::cout << "x";
+				if (samples % 5 == 0)
+					std::cout << " ";
 			}
 			playFirst = !playFirst;
-    	}
+		}
 
-		
-        return { agentValue };
-    }
+		std::cout << std::endl;
+
+		return { agentValue };
+	}
 
 	float RHEAEvaluator::evaluateGame(std::vector<int> point, int opponentID, bool playFirst)
     {

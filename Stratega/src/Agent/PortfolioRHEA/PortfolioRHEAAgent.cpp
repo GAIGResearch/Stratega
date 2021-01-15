@@ -12,7 +12,7 @@ namespace SGA
                 TBSGameState gameState = gameCommunicator.getGameState();
                 if (gameState.isGameOver)
                     break;
-                std::cout << "PortfolioRHEAAgent " << gameState.currentGameTurn << " playing for ";
+                //std::cout << "PortfolioRHEAAgent " << gameState.currentGameTurn << " playing for ";
 
                 auto actionSpace = forwardModel.generateActions(gameState);
 
@@ -43,10 +43,10 @@ namespace SGA
             		// run rhea and return the best individual of the previous generation
                     rheaLoop(forwardModel, gameState, rnd);
                     gameCommunicator.executeAction(pop_[0].getActions().front());
-                    std::cout << pop_[0].getActions().front().playerID << std::endl;
+                    //std::cout << pop_[0].getActions().front().playerID << std::endl;
             		if (pop_[0].getActions().front().playerID != gameCommunicator.getPlayerID())
             		{
-                        std::cout << "something is wrong";
+                        //std::cout << "something is wrong";
             		}
                 }
 			}

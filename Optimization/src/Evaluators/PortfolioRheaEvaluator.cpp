@@ -55,6 +55,7 @@ namespace SGA
 		float agentValue = 0;
 		int samples = 0;
 		bool playFirst = false;
+		std::cout << "evaluate agent " << nSamples << " times: ";
 
 		while (samples < nSamples)
 		{
@@ -64,10 +65,14 @@ namespace SGA
 					break;
 				agentValue += evaluateGame(point, agentID, playFirst);
 				samples++;
+				std::cout << "x";
+				if (samples % 5 == 0)
+					std::cout << " ";
 			}
 			playFirst = !playFirst;
 		}
 
+		std::cout << std::endl;
 
 		return { agentValue };
 	}
@@ -118,7 +123,11 @@ namespace SGA
 			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
 			newPortfolio.emplace_back(std::move(random));
 		}
-		
+		if (newPortfolio.empty())
+		{
+			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			newPortfolio.emplace_back(std::move(random));
+		}
 		params.PORTFOLIO = std::move(newPortfolio);
 		
 
@@ -193,7 +202,7 @@ namespace SGA
 		std::cout << _mutationRateCandidates[point[2]] << ", ";
 		std::cout << _tournamentSize[point[3]] << ", ";
 		std::cout << _elitism[point[4]] << ", ";
-		std::cout << _continueSearch[point[5]];
+		std::cout << _continueSearch[point[5]] << ", ";
 		std::cout << _p1[point[6]];
 		std::cout << _p2[point[7]];
 		std::cout << _p3[point[8]];
