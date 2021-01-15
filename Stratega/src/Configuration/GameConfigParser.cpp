@@ -21,8 +21,9 @@ namespace SGA
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
         parsePlayerParameters(configNode["PlayerParameters"], config);
-       
-        parseTechnologyTrees(configNode["TechnologyTrees"], config);
+
+		if(configNode["TechnologyTrees"].IsDefined())
+			parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
@@ -324,7 +325,7 @@ namespace SGA
                 //Find the technology
                 auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
-                auto parentsNames=technologyYaml["Parents"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto parentsNames=technologyYaml["Requirements"].as<std::vector<std::string>>(std::vector<std::string>());
 
                 for (auto& parent : parentsNames)
                 {

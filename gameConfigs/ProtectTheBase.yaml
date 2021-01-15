@@ -178,16 +178,16 @@ TechnologyTrees:
     Buildings:
         Townhall:
             Description: Is  a townhall :D
-            Parents:
+            Requirements:
         Archery:
             Description: Here you can spawn archers.
-            Parents: [Townhall]
+            Requirements: [Townhall]
         AdvanceArchery:
             Description: Here you can spawn more type of archers.
-            Parents: [Archery]
+            Requirements: [Archery]
         Mine:
             Description: Here you can spawn miners.
-            Parents: [Townhall]
+            Requirements: [Townhall]
         AdvanceMine:
             Description: Here you can spawn more type of miners.
-            Parents: [Mine]
+            Requirements: [Mine]
