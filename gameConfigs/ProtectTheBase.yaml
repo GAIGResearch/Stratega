@@ -33,6 +33,7 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 50)"
+            - "IsResearched(Townhall)"
         Target:
             Type: Position
             Shape: Square
@@ -59,7 +60,7 @@ Actions:
             - "ModifyResource(Source.Gold, -100)"
 
     #Research
-    ResearchArchery:
+    Research:
         Type: EntityAction
         Cooldown: 0
         Target:
@@ -123,7 +124,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter, ResearchArchery]
+        Actions: [SpawnMiner, SpawnFighter, Research]
         Parameters:
             Gold: 50
 
