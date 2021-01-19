@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	auto seed = parser.getCmdOption<int>("-seed", 0);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
-	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/KillTheKingOptimization.yaml");
+	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/PushManiaOptimization.yaml");
 	auto agent = parser.getCmdOption<int>("-agent", 2);
 
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
