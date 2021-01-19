@@ -1,11 +1,10 @@
-#include <filesystem>
+#include <Configuration/GameConfigParser.h>
+#include <Logging/Log.h>
 
 #include <GameRunner.h>
 #include <InputParser.h>
 
-#include <Configuration/GameConfig.h>
-#include <Configuration/GameConfigParser.h>
-#include <Logging/Log.h>
+#include <filesystem>
 
 
 int main(int argc, char** argv)
@@ -23,8 +22,8 @@ int main(int argc, char** argv)
 	}
 	
 	// Read Config
-	SGA::GameConfigParser yamlParser;
-	auto gameConfig = yamlParser.parseFromFile(configPath);
+	SGA::GameConfigParser configParser;
+	auto gameConfig = configParser.parseFromFile(configPath);
 
 	// Run games
 	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));

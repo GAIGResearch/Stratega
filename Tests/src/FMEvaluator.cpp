@@ -13,17 +13,17 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 		if(config.gameType == SGA::ForwardModelType::TBS)
 		{
 			auto* fm = dynamic_cast<SGA::TBSForwardModel*>(config.forwardModel.get());
-			auto state = generateAbstractTBSStateFromConfig(config, *rngEngine);
-			runGameTBS(*state, *fm, *results);
+			auto state = config.generateGameState();
+			runGameTBS(*dynamic_cast<SGA::TBSGameState*>(state.get()), *fm, *results);
 		}
 		else
 		{
 			auto* fm = dynamic_cast<SGA::RTSForwardModel*>(config.forwardModel.get());
-			auto state = SGA::generateAbstractRTSStateFromConfig(config, *rngEngine);
+			auto state = config.generateGameState();
 			//Build Navmesh
-			fm->buildNavMesh(*state, SGA::NavigationConfig());
+			fm->buildNavMesh(*dynamic_cast<SGA::RTSGameState*>(state.get()), SGA::NavigationConfig());
 			
-			runGameRTS(*state, *fm, *results);
+			runGameRTS(*dynamic_cast<SGA::RTSGameState*>(state.get()), *fm, *results);
 		}
 	}
 
