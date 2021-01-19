@@ -1,10 +1,10 @@
 GameConfig:
     Type: TBS
     ActionTimer: 10s
-    RoundLimit: 30
+    RoundLimit: 100
 
 Agents:
-    - CombatAgent
+    - PGSAgent
     - CombatAgent
 
 Tiles:

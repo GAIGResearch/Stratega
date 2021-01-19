@@ -14,10 +14,13 @@ namespace SGA
 		std::vector<bool> p4,
 		std::vector<bool> p5,
 		std::vector<bool> p6,
+		std::vector<int> iterations,
+		std::vector<int> length,
 		SGA::GameConfig& config
 	) : Evaluator("PGSEvaluator"),
 		_p1(std::move(p1)), _p2(std::move(p2)), _p3(std::move(p3)),
 		_p4(std::move(p4)), _p5(std::move(p5)), _p6(std::move(p6)),
+		_iterations(std::move(iterations)), _length(std::move(length)),
 		config(&config), agents(agentsFromConfig(config))
     {
 		std::vector<int> searchSpaceDims;
@@ -27,6 +30,8 @@ namespace SGA
 		searchSpaceDims.emplace_back(_p4.size());
 		searchSpaceDims.emplace_back(_p5.size());
 		searchSpaceDims.emplace_back(_p6.size());
+		searchSpaceDims.emplace_back(_iterations.size());
+		searchSpaceDims.emplace_back(_length.size());
     	
 		_searchSpace = std::make_unique<VectorSearchSpace>(searchSpaceDims);
 		config.numPlayers = 2;
@@ -37,6 +42,7 @@ namespace SGA
 		float value = 0;
 
 		float agentValue = 0;
+		float nrOfWins = 0;
 		int samples = 0;
 		bool playFirst = false;
 		std::cout << "evaluate agent " << nSamples << " times: ";
@@ -47,7 +53,10 @@ namespace SGA
 			{
 				if (samples >= nSamples)
 					break;
-				agentValue += evaluateGame(point, agentID, playFirst);
+				int newValue = evaluateGame(point, agentID, playFirst);
+				agentValue += newValue;
+				if (newValue == 3)
+					nrOfWins += 1;
 				samples++;
 				std::cout << "x";
 				if (samples % 5 == 0)
@@ -58,7 +67,7 @@ namespace SGA
 
 		std::cout << std::endl;
 
-		return { agentValue };
+		return { agentValue, nrOfWins};
 	}
 
 	float PGSEvaluator::evaluateGame(std::vector<int> point, int opponentID, bool playFirst)
@@ -105,7 +114,9 @@ namespace SGA
 			newPortfolio.emplace_back(std::move(random));
 		}
 		params.PORTFOLIO = std::move(newPortfolio);
-    	
+		params.ITERATIONS_PER_IMPROVE = _iterations[point[6]];
+		params.NR_OF_TURNS_PLANNED = _length[point[7]];
+
 		auto agentToEvaluate = std::make_unique<PortfolioGreedySearchAgent>(std::move(params));
     	
     	if (playFirst)
@@ -165,18 +176,22 @@ namespace SGA
 		// return result
 		const int winnerID = dynamic_cast<SGA::TBSGame&>(*game).getState().getWinnerID();
 		if ((playFirst && winnerID == 0) || (!playFirst && winnerID == 1))
+			return 3;
+		if (winnerID == -1)
 			return 1;
 		return 0;
     }
 
 	void PGSEvaluator::printPoint(const std::vector<int>& point)
     {
-	    std::cout << _p1[point[0]] << ", ";
-	    std::cout << _p2[point[1]] << ", ";
-	    std::cout << _p3[point[2]] << ", ";
-	    std::cout << _p4[point[3]] << ", ";
-	    std::cout << _p5[point[4]] << ", ";
-		std::cout << _p6[point[5]];
+	    std::cout << _p1[point[0]];
+	    std::cout << _p2[point[1]];
+	    std::cout << _p3[point[2]];
+	    std::cout << _p4[point[3]];
+	    std::cout << _p5[point[4]];
+		std::cout << _p6[point[5]] << ", ";
+		std::cout << _iterations[point[6]] << ", ";
+		std::cout << _length[point[7]];
     }
     
 }

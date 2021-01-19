@@ -38,6 +38,9 @@ namespace SGA
 					while (params_.REMAINING_FM_CALLS > 0)
 					{
 						Improve(forwardModel, gameState, opUnits, opponentPortfolios, playerPortfolios);
+						if (params_.REMAINING_FM_CALLS <= 0)
+							break;
+
 						Improve(forwardModel, gameState, playerUnits, playerPortfolios, opponentPortfolios);
 					}
 					
@@ -73,8 +76,8 @@ namespace SGA
 				// search for best script for the current unit
 				for (int i = 0; i < params_.PORTFOLIO.size(); i++)
 				{
-					if (params_.PORTFOLIO[i].get() == previousBestScript) 
-						continue;	// skip the playout from the previousBestScript
+					//if (params_.PORTFOLIO[i].get() == previousBestScript) 
+					//	continue;	// skip the playout from the previousBestScript
 					
 					playerPortfolios[unitId] = params_.PORTFOLIO[i].get();
 					const double currentScriptValue = Playout(forwardModel, gameState, playerPortfolios, opponentPortfolios);
@@ -97,6 +100,9 @@ namespace SGA
 					// if no script has been better than the previous best one, we just reset the portfolio
 					playerPortfolios[unitId] = previousBestScript;
 				}
+
+				if (params_.REMAINING_FM_CALLS <= 0)
+					return;
 			}
 		}
 	}

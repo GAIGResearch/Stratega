@@ -19,6 +19,8 @@ namespace SGA
         std::vector<bool> _p4;
         std::vector<bool> _p5;
         std::vector<bool> _p6;
+        std::vector<int> _iterations;
+        std::vector<int> _length;
     	
         const SGA::GameConfig* config;
         std::mt19937 rngEngine = std::mt19937(0);
@@ -32,6 +34,8 @@ namespace SGA
             std::vector<bool> p4,
             std::vector<bool> p5,
             std::vector<bool> p6,
+            std::vector<int> iterations,
+            std::vector<int> length,
             SGA::GameConfig& config
         );
     

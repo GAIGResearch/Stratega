@@ -32,11 +32,12 @@ namespace SGA
 		config.numPlayers = 2;
     }
 	
-    std::vector<float> RHEAEvaluator::evaluate(std::vector<int> point, int nSamples)
+	std::vector<float> RHEAEvaluator::evaluate(std::vector<int> point, int nSamples)
 	{
 		float value = 0;
 
 		float agentValue = 0;
+		float nrOfWins = 0;
 		int samples = 0;
 		bool playFirst = false;
 		std::cout << "evaluate agent " << nSamples << " times: ";
@@ -47,7 +48,10 @@ namespace SGA
 			{
 				if (samples >= nSamples)
 					break;
-				agentValue += evaluateGame(point, agentID, playFirst);
+				int newValue = evaluateGame(point, agentID, playFirst);
+				agentValue += newValue;
+				if (newValue == 3)
+					nrOfWins += 1;
 				samples++;
 				std::cout << "x";
 				if (samples % 5 == 0)
@@ -58,7 +62,7 @@ namespace SGA
 
 		std::cout << std::endl;
 
-		return { agentValue };
+		return { agentValue, nrOfWins };
 	}
 
 	float RHEAEvaluator::evaluateGame(std::vector<int> point, int opponentID, bool playFirst)
@@ -134,6 +138,8 @@ namespace SGA
 		// return result
 		const int winnerID = dynamic_cast<SGA::TBSGame&>(*game).getState().getWinnerID();
 		if ((playFirst && winnerID == 0) || (!playFirst && winnerID == 1))
+			return 3;
+		if (winnerID == -1)
 			return 1;
 		return 0;
     }

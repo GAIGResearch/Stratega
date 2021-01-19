@@ -89,13 +89,16 @@ namespace SGA
         	
             // Evaluate the point(is repeated several times if n_samples > 0)
             std::vector<float> fitnessValues = _evaluator->evaluate(point, _nSamples);
+            int nrOfWins = fitnessValues.back();
+            fitnessValues.pop_back();
+
             double fitness = 0.0f;
             const int n = fitnessValues.size();
             if (n != 0) {
                 fitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0) / n;
             }
         	
-            std::cout << "Evaluated fitness: " << fitness << " at " ;
+            std::cout << "Evaluated fitness: " << fitness << " and Wins: " << nrOfWins << " at " ;
             _evaluator->printPoint(point);
             std::cout << std::endl;
         	
