@@ -1,0 +1,326 @@
+GameConfig:
+    Type: TBS
+    ActionTimer: 10s
+    RoundLimit: 100
+
+Agents:
+    - RandomAgent
+    - HumanAgent
+
+PlayerParameters:
+    Gold: 0
+    Prod: 5
+
+Tiles:
+    Plain:
+        Sprite: ../GUI/Assets/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../GUI/Assets/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../GUI/Assets/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../GUI/Assets/forest.png
+        Symbol: F
+        IsWalkable: true
+     
+Actions:
+
+    # Attack Actions
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Entity
+            ValidTargets: [Conquerer, Fighter]
+            Conditions:
+                - "InRange(Source, Target, 1)"
+        Effects:
+            - "Attack(Target.Health, 25)"
+
+    # Move Actions
+    Move:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Position
+            Shape: Circle
+            Size: 3
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+
+    #Research
+    Research:
+        Type: PlayerAction
+        Cooldown: 0
+        Target:
+            Type: Technology
+            ValidTargets: All
+            Conditions:
+               - "CanResearch(Target)"
+        Effects:
+            - "Research(Target)"
+
+    #Ideal Spawn
+    Spawn:
+        Type: EntityAction
+        Cooldown: 0
+        Target:
+            Type: Unit
+            Conditions:
+                - "CanSpawn(Target)"
+        Effects:
+            - "Spawn(Target)"
+            
+    #Ideal Build
+    Build:
+        Type: PlayerAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Player.Gold, 6)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Conquerer, Target)"
+            - "ModifyResource(Source.Player.Gold, -6)"
+
+TechnologyTrees:
+    SingleTree:
+        Mining:
+            Description: Base technology
+            Requirements:
+        Discipline:
+            Description: Enables barracks construction.
+            Requirements: [Mining]
+            Cost: 15 
+            Resource: Prod
+        Pottery:
+            Description: Allows to construct a Storage.
+            Requirements: [Mining]
+            Cost: 10
+            Resource: Prod
+        Mathematics:
+            Description: Here you can build a military academy
+            Requirements: [Mining]
+            Cost: 15
+            Resource: Prod
+        Archery:
+            Description: Here you can spawn archers.
+            Requirements: [Discipline]
+            Cost: 20
+            Resource: Gold
+        Bronze Working:
+            Description: Here you can spawn warriors.
+            Requirements: [Discipline]
+            Cost: 20
+            Resource: Gold
+        Apprenticeship:
+            Description: Here you can build a workshop.
+            Requirements: [Pottery]
+            Cost: 30
+            Resource: Gold
+        Metallurgy:
+            Description: Here you can build a foundry.
+            Requirements: [Apprenticeship]
+            Cost: 40
+            Resource: Gold
+        Engineering:
+            Description: Here you can spawn a catapult.
+            Requirements: [Mathematics]
+            Cost: 30
+            Resource: Gold
+
+Entities:
+    City:
+        Sprite: ../GUI/Assets/castle.png
+        Symbol: c
+        LineOfSightRange: 5
+        Actions: [Spawn]
+        Parameters:
+            Health: 800
+            Storage Capacity: 50
+
+    Barracks:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 3
+        Requirements: [Discipline]
+        Parameters:
+            Cost: 20
+            Resource: Prod
+            Health: 500
+
+    Military Academy:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 3
+        Requirements: [Mathematics]
+        Actions: [Spawn]
+        Parameters:
+            Cost: 40
+            Resource: Prod
+            Health: 500
+
+    Foundry:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 2
+        Requirements: [Metallurgy]
+        Actions: []
+        Parameters:
+            Cost: 50
+            Resource: Prod
+            Health: 300
+            
+    Workshop:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 2
+        Requirements: [Apprenticeship]
+        Actions: []
+        Parameters:
+            Cost: 50
+            Resource: Prod
+            Health: 300
+
+    Storage:
+        Sprite: ../GUI/Assets/castle.png
+        LineOfSightRange: 1
+        Requirements: [Pottery]
+        Actions: []
+        Parameters:
+            Cost: 40
+            Resource: Prod
+            Health: 200
+            Storage Capacity: 50
+
+    Worker:
+        Sprite: ../GUI/Assets/farmer.png
+        LineOfSightRange: 3
+        Actions: [Move, Mine]
+        Requirements: [City]
+        Parameters:
+            Cost: 5
+            Resource: Prod
+            Resource Capacity: 10
+            Armor: 5
+            Speed: 1
+            Weapon Strength: 5
+            Health: 50
+            
+    Warrior:
+        Sprite: ../GUI/Assets/basicCloseRange.png
+        LineOfSightRange: 3
+        Actions: [Move, Attack]
+        Requirements: [Barracks, Bronze Working] # The first specifies where the unit is spawned from, the second one is a tech. Split up?
+        Parameters:
+            Cost: 10
+            Resource: Prod
+            Armor: 20
+            Speed: 1
+            Weapon Strength: 25
+            Morale: 10
+            Health: 150
+            Type: Melee
+            
+    Archer:
+        Sprite: ../GUI/Assets/advanceCloseRange.png
+        LineOfSightRange: 3
+        Actions: [Move, Attack]
+        Requirements: [Barracks, Archery]
+        Parameters:
+            Cost: 15
+            Resource: Prod
+            Armor: 15
+            Speed: 1
+            Range: 6
+            Weapon Strength: 15
+            Reload Time: 2
+            Morale: 10
+            Health: 100
+            Type: Ranged
+            
+    Catapult:
+        Sprite: ../GUI/Assets/unit4New.png
+        LineOfSightRange: 3
+        Actions: [Move, Attack]
+        Requirements: [Military Academy, Engineering]
+        Parameters:
+            Cost: 20
+            Resource: Prod
+            Armor: 10
+            Speed: 1
+            Range: 15
+            Weapon Strength: 40
+            Reload Time: 3
+            Morale: 5
+            Health: 60
+            Type: Ranged
+
+    GoldVein:
+        Sprite: ../GUI/Assets/gold_chest.png
+        Symbol: g
+        LineOfSightRange: 6
+        Actions: []
+        Parameters:
+            Gold: 200
+            
+
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  .  .  .  F  F  F  F  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  g  .  .  g  g  g  .  W  W  W  W  .  .  .  .  .  F F F F W  W  W  W  W  W  W  W  W  W
+        M  M  M  g  .  .  .  .  g  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  F  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  F  F  F  F  F  F  F  F  F  W  W  W  W  W
+        M  .  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  g  .  .  .  F F F F  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  M  M  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+                   
+ForwardModel:
+    WinCondition:
+        Type: UnitAlive
+        Unit: City
+
+    Trigger:
+        OnTick:
+            ValidTargets: City
+            Conditions:
+                - "IsPlayerEntity(Source)"
+            Effects:
+                - "ModifyResource(Source.Player.Prod, 1)"
+
+        OnTick:
+            ValidTargets: Workshop
+            Conditions:
+                - "IsPlayerEntity(Source)"
+            Effects:
+                - "ModifyResource(Source.Player.Prod, 2)"
+
+        OnTick:
+            ValidTargets: Foundry
+            Conditions:
+                - "IsPlayerEntity(Source)"
+                - "HasResource(Source.Player.Gold, 2)"
+            Effects:
+                - "ModifyResource(Source.Player.Gold, -2)"
+                - "ModifyResource(Source.Player.Prod, 1)"
+        

@@ -98,7 +98,7 @@ namespace SGA
 
 	void TBSGameStateRender::render()
 	{
-		sf::RenderWindow window(sf::VideoMode(800, 600), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
+		sf::RenderWindow window(sf::VideoMode(2400, 1600), "Strategy Game Engine", sf::Style::Default | sf::Style::Titlebar);
 		window.setActive(true);
 
 		ImGui::SFML::Init(window);
