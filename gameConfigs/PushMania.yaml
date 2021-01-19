@@ -1,11 +1,11 @@
 GameConfig:
     Type: TBS
     ActionTimer: 10s
-    RoundLimit: 100
+    RoundLimit: 1000
 
 Agents:
-    - RandomAgent
     - HumanAgent
+    - PushAgent
 
 Tiles:
     Plain:
@@ -54,7 +54,3 @@ ForwardModel:
             Trigger: EnterTile
             Condition: StandingOnTile
             TargetTile: Hole
-        DamageAll:
-            Type: Damage
-            Trigger: EndOfTurn
-            Amount: 25

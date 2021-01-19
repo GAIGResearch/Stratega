@@ -23,6 +23,10 @@ namespace SGA
 
 		WinConditionType winCondition;
 		int unitTypeID;
+		
+		std::vector<Effect> unitEndOfTurnEffects;
+		std::vector<Effect> onTileEnterEffects;
+		std::shared_ptr<TBSActionSpace> actionSpace;
 
 		void advanceGameState(TBSGameState& state, const TBSAction& action) const override;
 		void advanceGameState(TBSGameState& state, const TBSAction& action, std::vector<TBSAction>& actionSpace) const;
@@ -39,6 +43,8 @@ namespace SGA
 		void executeEndOfTurn(FMState& state, const TBSAction& action) const;
 
 		// Utility methods for game logic
+		bool canKill(const TBSGameState& state, Vector2i pos) const;
+		
 		bool isWalkable(TBSGameState& state, const Vector2i& position) const;
 		void moveUnit(FMState& state, TBSUnit& u, Vector2i newPosition) const;
 		void killUnit(FMState& state, TBSUnit& u) const;
@@ -72,11 +78,6 @@ namespace SGA
 		{
 			return std::make_unique<TBSActionSpace>();
 		}
-		
-	protected:
-		std::vector<Effect> unitEndOfTurnEffects;
-		std::vector<Effect> onTileEnterEffects;
-		std::shared_ptr<TBSActionSpace> actionSpace;
 		
 	};
 }

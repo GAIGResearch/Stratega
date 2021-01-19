@@ -1,4 +1,4 @@
-#include <Agent/CombatAgent.h>
+#include <Agent/RuleBased/CombatAgent.h>
 
 namespace SGA
 {

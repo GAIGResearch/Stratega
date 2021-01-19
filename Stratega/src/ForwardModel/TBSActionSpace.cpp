@@ -19,28 +19,31 @@ namespace SGA
 
 			for (auto actionType : unit->getType().tbsActions)
 			{
-				if (!unit->getType().canRepeatActions && unit->executedActionTypes.find(actionType) != unit->executedActionTypes.end())
-				{
-					continue;
-				}
-
 				switch (actionType)
 				{
-				case TBSActionType::Attack: generateAttackActions(*unit, actionBucket); break;
-				case TBSActionType::Move: generateMoveActions(*unit, actionBucket); break;
-				case TBSActionType::Heal: generateHealActions(*unit, actionBucket); break;
-				case TBSActionType::Push: generatePushActions(*unit, actionBucket); break;
-				default: throw std::runtime_error("Unit can execute an invalid action-type");
+					case TBSActionType::Attack: generateAttackActions(*unit, actionBucket); break;
+					case TBSActionType::Move: generateMoveActions(*unit, actionBucket); break;
+					case TBSActionType::Heal: generateHealActions(*unit, actionBucket); break;
+					case TBSActionType::Push: generatePushActions(*unit, actionBucket); break;
+					default: throw std::runtime_error("Unit can execute an invalid action-type");
 				}
 			}
 		}
 
-		generateEndOfTurnActions(gameState, playerID, actionBucket);
+		actionBucket.emplace_back(generateEndOfTurnAction(gameState, playerID));
 		return actionBucket;
+	}
+
+	bool TBSActionSpace::canExecuteAction(TBSUnit& unit, TBSActionType type) const
+	{
+		return unit.getType().canRepeatActions || unit.executedActionTypes.find(type) == unit.executedActionTypes.end();
 	}
 	
 	void TBSActionSpace::generateMoveActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const
 	{
+		if (!canExecuteAction(unit, TBSActionType::Move))
+			return;
+		
 		auto& state = unit.state.get();
 		auto moveRange = unit.getRange();
 		auto startCheckPositionX = std::max(0, unit.getPosition().x - moveRange);
@@ -62,6 +65,9 @@ namespace SGA
 
 	void TBSActionSpace::generateAttackActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const
 	{
+		if (!canExecuteAction(unit, TBSActionType::Attack))
+			return;
+		
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
@@ -75,6 +81,9 @@ namespace SGA
 
 	void TBSActionSpace::generatePushActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const
 	{
+		if (!canExecuteAction(unit, TBSActionType::Push))
+			return;
+		
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
@@ -88,6 +97,9 @@ namespace SGA
 
 	void TBSActionSpace::generateHealActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const
 	{
+		if (!canExecuteAction(unit, TBSActionType::Heal))
+			return;
+		
 		auto& state = unit.state.get();
 		for (const auto& targetUnit : state.getUnits())
 		{
@@ -99,12 +111,9 @@ namespace SGA
 		}
 	}
 
-	void TBSActionSpace::generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const
+	TBSAction TBSActionSpace::generateEndOfTurnAction(TBSGameState& state, int playerID) const
 	{
 		TBSAction endTurnAction{ TBSActionType::EndTurn, playerID, -1, {}, -1 };
-		if (endTurnAction.validate(state))
-		{
-			actionBucket.emplace_back(endTurnAction);
-		}
+		return endTurnAction;
 	}
 }

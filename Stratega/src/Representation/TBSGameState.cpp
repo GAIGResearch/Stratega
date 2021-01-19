@@ -126,17 +126,21 @@ namespace SGA
 
 	}
 
-	TBSUnit* TBSGameState::getUnit(Vector2i pos)
+	const TBSUnit* TBSGameState::getUnit(Vector2i pos) const
 	{
-		for (TBSUnit& unit : units)
+		for (auto& unit : units)
 		{
 			if (unit.getPosition() == pos)
-			{
 				return &unit;
-			}
 		}
-		return nullptr;
 
+		return nullptr;
+	}
+
+	TBSUnit* TBSGameState::getUnit(Vector2i pos)
+	{
+		// This is ridiculous complicated just to reuse code
+		return const_cast<TBSUnit*>(static_cast<const TBSGameState&>(*this).getUnit(pos));
 	}
 
 	void TBSGameState::printGameStateStatus()

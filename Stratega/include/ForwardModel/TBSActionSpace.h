@@ -11,10 +11,11 @@ namespace SGA
 		std::vector<TBSAction> generateActions(TBSGameState& gameState) override;
 		std::vector<TBSAction> generateActions(TBSGameState& gameState, int playerID);
 
+		bool canExecuteAction(TBSUnit& unit, TBSActionType type) const;
 		void generateMoveActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
 		void generateAttackActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
 		void generatePushActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
 		void generateHealActions(TBSUnit& unit, std::vector<TBSAction>& actionBucket) const;
-		void generateEndOfTurnActions(TBSGameState& state, int playerID, std::vector<TBSAction>& actionBucket) const;
+		TBSAction TBSActionSpace::generateEndOfTurnAction(TBSGameState& state, int playerID) const;
 	};
 }

@@ -5,7 +5,6 @@
 #include <Representation/UnitType.h>
 #include <Representation/TileType.h>
 
-#include <iostream>
 #include <string>
 #include <algorithm>
 #include <unordered_map>
@@ -63,6 +62,7 @@ namespace SGA
 
 		TBSUnit* getUnit(int unitID);
 		TBSUnit* getUnit(Vector2i pos);
+		const TBSUnit* getUnit(Vector2i pos) const;
 		void setWinnerID(int winner) { winnerPlayerID = winner; }
 
 		Board& getBoard() { return board; }
@@ -75,17 +75,20 @@ namespace SGA
 		const std::unordered_map<int, UnitType>& getUnitTypes() const { return *unitTypes; }
 		const std::unordered_map<int, TileType>& getTileTypes() const { return *tileTypes; }
 		
-		bool isWalkable(const Vector2i& position)
+		bool isWalkable(const Vector2i& position) const
 		{
-			Tile& targetTile = board.getTile(position.x, position.y);
-			TBSUnit* targetUnit = getUnit(position);
+			if (!isInBounds(position))
+				return false;
+			
+			const Tile& targetTile = board.getTile(position.x, position.y);
+			const TBSUnit* targetUnit = getUnit(position);
 
 			return targetUnit == nullptr && targetTile.isWalkable;
 		}
 		
 		void printGameStateStatus();
 
-		bool isInBounds(Vector2i pos)
+		bool isInBounds(Vector2i pos) const
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}

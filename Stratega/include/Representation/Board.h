@@ -37,6 +37,11 @@ namespace SGA
 			return tiles[y * width + x];
 		}
 
+		const Tile& getTile(int x, int y) const
+		{
+			return tiles[y * width + x];
+		}
+
 		int getWidth() const
 		{
 			return width;

@@ -84,7 +84,7 @@ namespace SGA
 		auto* target = state.target.getUnit(action.targetUnitID);
 		auto pushDir = target->getPosition() - pusher->getPosition();
 		auto newTargetPos = target->getPosition() + pushDir;
-		if (state.target.isInBounds(newTargetPos) && state.target.isWalkable(newTargetPos))
+		if (state.target.isWalkable(newTargetPos))
 		{
 			moveUnit(state, *target, newTargetPos);
 		}
@@ -105,6 +105,21 @@ namespace SGA
 	}
 
 	// --- Start: Utility methods for game logic ---
+	bool TBSForwardModel::canKill(const TBSGameState& state, Vector2i pos) const
+	{
+		if (!state.isWalkable(pos))
+			return false;
+
+		auto targetTile = state.getBoard().getTile(pos.x, pos.y);
+		for (auto& effect : onTileEnterEffects)
+		{
+			if (effect.type == EffectType::Death && effect.targetTileTypeID == targetTile.tileTypeID)
+				return true;
+		}
+
+		return false;
+	}
+	
 	void TBSForwardModel::endTurn(FMState& state) const
 	{
 		executeEndOfTurnTrigger(state);
