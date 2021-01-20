@@ -1,26 +1,28 @@
 #pragma once
+#include <ForwardModel/Effect.h>
+#include <ForwardModel/Condition.h>
+#include <ForwardModel/ActionSourceType.h>
+#include <ForwardModel/TargetType.h>
+
 #include <string>
+#include <vector>
+#include <memory>
 
 namespace SGA
 {
-	enum class ActionType
+	class Condition;
+	
+	struct ActionType
 	{
-		Move,
-		Attack,
-		Push,
-		Heal,
-		EndTurn
+		std::string name;
+		int id;
+		ActionSourceType sourceType;
+
+		int cooldownTicks;
+		
+		TargetType actionTargets;
+		std::vector<std::shared_ptr<Condition>> preconditions;
+		std::vector<std::shared_ptr<Condition>> targetConditions;
+		std::vector<std::shared_ptr<Effect>> effects;
 	};
-	static std::string getActionType(const ActionType& action)
-	{
-		switch (action)
-		{
-		case ActionType::Attack: return "Attack"; break;
-		case ActionType::Move: return "Move"; break;
-		case ActionType::Heal: return "Heal"; break;
-		case ActionType::Push: return "Push"; break;
-		case ActionType::EndTurn: return "EndTurn"; break;
-		default: return "Not found"; break;
-		}
-	}
 }

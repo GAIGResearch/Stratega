@@ -1,7 +1,6 @@
 #pragma once
 #include <Agent/Heuristic/StateHeuristic.h>
 #include <Agent/Heuristic/StatSummary.h>
-#include <ForwardModel/TBSActionSpace.h>
 
 namespace SGA {
 
@@ -23,7 +22,7 @@ namespace SGA {
 		SimpleHeuristic(int playerID, int numberOfPlayers);
 		~SimpleHeuristic();
 
-		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState) override;
+		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) override;
 	};
 
 }

@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libImGUI.a CMakeFiles/ImGUI.dir/imgui-SFML.cpp.o CMakeFiles/ImGUI.dir/imgui.cpp.o CMakeFiles/ImGUI.dir/imgui_demo.cpp.o CMakeFiles/ImGUI.dir/imgui_draw.cpp.o CMakeFiles/ImGUI.dir/imgui_widgets.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libImGUI.a

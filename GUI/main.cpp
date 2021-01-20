@@ -1,29 +1,31 @@
 #include <filesystem>
-#include <GameStateRenderer.h>
 #include <Configuration/RenderConfig.h>
 #include <Configuration/GameConfig.h>
 #include <Game/TBSGameCommunicator.h>
-#include <yaml-cpp/node/parse.h>
+#include <Configuration/YamlHeaders.h>
+#include <Game/TBSGame.h>
+#include "Configuration/GameConfigParser.h"
+
+#include <GameStateRenderer.h>
 
 int main()
 {
-	std::mt19937 rngEngine(0ll);
-
 	// Read Config
-	std::filesystem::path configPath("../../../gameConfigs/KillTheKing.yaml");
-	auto yamlConfig = YAML::LoadFile(configPath.string());
+	std::mt19937 engine(0ll);
+	SGA::GameConfigParser parser;
+	std::filesystem::path configPath2("../../../gameConfigs/ProtectTheBase.yaml");
+	auto yamlConfig = YAML::LoadFile(configPath2.string());
+	auto gameConfig = parser.parseFromFile(configPath2.string());
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
-	auto gameConfig = yamlConfig.as<SGA::GameConfig>();
-
-	// Initialize the game
-	auto game = SGA::generateGameFromConfig(gameConfig, rngEngine);
 	
+	//// Initialize the game
+	auto game = SGA::generateAbstractGameFromConfig(gameConfig, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
-	auto agents = SGA::agentsFromConfig(gameConfig);
+	auto agents = gameConfig.generateAgents();
 	
-	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
-	for(size_t i = 0; i < gameConfig.numPlayers; i++)
+	std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
+	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it
@@ -33,13 +35,12 @@ int main()
 			playerID++;
 			continue;
 		}
-		
-		if(gameConfig.gameType == "TBS")
+		if (gameConfig.gameType == SGA::ForwardModelType::TBS)
 		{
 			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
+			comm->setRNGEngine(std::mt19937(distribution(engine)));
 			game->addCommunicator(std::move(comm));
 		}
 		else
@@ -47,8 +48,8 @@ int main()
 			std::unique_ptr<SGA::RTSGameCommunicator> comm = std::make_unique<SGA::RTSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
-			game->addCommunicator(std::move(comm));
+			comm->setRNGEngine(std::mt19937(distribution(engine)));
+			game->addCommunicator(std::move(comm));			
 		}
 		
 		playerID++;
@@ -57,14 +58,16 @@ int main()
 	// Initialize the gameRenderer
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
-	current_path(absolute(configPath.parent_path()));
-	auto stateRenderer = SGA::stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID);
+	current_path(absolute(configPath2.parent_path()));
+	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID));
+	
 	current_path(tmp);
-
-	game->addCommunicator(std::move(stateRenderer));
+	game->addCommunicator(stateRenderer);
 	
 	// Run the game
-	game->run();
+	std::thread gameThread(&SGA::Game::run, std::ref(*game));
+	stateRenderer->render();
+	gameThread.join();
 	
     return 0;
 }

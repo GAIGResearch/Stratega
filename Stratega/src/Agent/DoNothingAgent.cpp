@@ -2,13 +2,14 @@
 
 namespace SGA
 {
-	void DoNothingAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel ForwardModel)
+	void DoNothingAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
-				gameCommunicator.executeAction(Action<Vector2i>(SGA::ActionType::EndTurn, gameCommunicator.getPlayerID()));
-
+			{
+				gameCommunicator.executeAction(Action::createEndAction(gameCommunicator.getPlayerID()));
+			}
 		}
 	}
 }

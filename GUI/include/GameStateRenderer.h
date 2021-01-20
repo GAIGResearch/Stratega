@@ -3,69 +3,70 @@
 #include <thread>
 #include <AssetCache.h>
 #include <mutex>
-
-#include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
-
-
-#include <MapLayer.h>
-#include <UnitLayer.h>
-#include <OverlayLayer.h>
-
-#include <imgui-SFML.h>
-#include <imgui.h>
-#include <iomanip>
-
 #include <Game/Game.h>
 
-class GameStateRenderBase : public SGA::GameCommunicator
+#include <Widgets/FogOfWarController.h>
+
+namespace SGA
 {
-public:
-	GameStateRenderBase(int playerID) :
-		GameCommunicator{ playerID }
+	class GameStateRenderBase : public SGA::GameCommunicator
 	{
-	}
-	virtual ~GameStateRenderBase() = default;
-};
+	public:
+		GameStateRenderBase(int playerID) :
+			GameCommunicator{ playerID }
+		{
+		}
+		virtual ~GameStateRenderBase() = default;
+		virtual void render() = 0;
+		
+		//OutLine Shader
+		sf::Shader outLineShadeR;
+	};
 
-template<typename GameState>
-class GameStateRenderer : public GameStateRenderBase
-{
-public:
-	GameStateRenderer(int playerID) :
-		GameStateRenderBase{ playerID }
+	template<typename GameState>
+	class GameStateRenderer : public GameStateRenderBase
 	{
-	}
-	virtual ~GameStateRenderer()=default;
-	virtual void run(bool& isRunning) = 0;
-	
-	// GameCommunicator functions
-	void init() override
-	{
-		//Initialization
-		isRenderThreadRunning = true;
-		renderThread = std::thread(&GameStateRenderer::run, this, std::ref(isRenderThreadRunning));
-	}
-	
-	void close() override
-	{
-		isRenderThreadRunning = false;
-		renderThread.join();
-	}
-	
-	void onGameStateAdvanced() override = 0;
+	public:
+		GameStateRenderer(int playerID) :
+			GameStateRenderBase{ playerID },
+			fowSettings{true, Widgets::FogRenderType::Fog, playerID == -1 ? 0 : playerID}
+		{
+		}
+		virtual ~GameStateRenderer() = default;
 
-	//RenderThread
-	std::thread renderThread;
-	std::mutex mutexRender;
+		// GameCommunicator functions
+		void init() override
+		{
+			isRendering = true;
+		}
 
-	//OpenGL context
-	sf::Context ctx;
+		void close() override
+		{
+			isRendering = false;
+		}
 
-	AssetCache assetCache;
+		void onGameStateAdvanced() override = 0;
 
-	std::vector<std::unique_ptr<RenderLayer<GameState>>> renderLayers;
+		//RenderThread
+		std::thread renderThread;
+		std::mutex mutexRender;
 
-private:
-	bool isRenderThreadRunning = false;
-};
+		//OpenGL context
+		sf::Context ctx;
+
+		AssetCache assetCache;
+	protected:
+		//New render system(withoutlayers)
+		std::vector<sf::Sprite> mapSprites;
+		std::vector<sf::Sprite> entitySprites;
+		std::vector<sf::Text> entityInfo;
+		std::vector<sf::Sprite> overlaySprites;
+		std::vector<sf::CircleShape> actionsSelectedEntity;
+		std::vector<sf::Color> playerColors;
+		
+		bool isRendering = false;
+		Widgets::FogOfWarSettings fowSettings;
+	};
+
+}

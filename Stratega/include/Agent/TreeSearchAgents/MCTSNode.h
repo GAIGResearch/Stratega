@@ -1,11 +1,11 @@
 #pragma once
-#include <Agent/TreeSearchAgents/MCTSParams.h>
+#include <Agent/TreeSearchAgents/MCTSParameters.h>
 #include <Agent/TreeSearchAgents/TreeNode.h>
-#include <ForwardModel/Action.h>
 
 namespace SGA {
 
-	class MCTSNode : public ITreeNode<MCTSNode> {
+	class MCTSNode : public ITreeNode<MCTSNode>
+	{
 	public:
 		int nodeDepth = 0;
 		int treesize = 1;
@@ -20,24 +20,24 @@ namespace SGA {
 		void increaseTreeSize();
 
 		// tree policy phase
-		MCTSNode* treePolicy(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator);
-		MCTSNode* expand(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator);
-		MCTSNode* uct(MCTSParams& params, std::mt19937& randomGenerator);
+		MCTSNode* treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* uct(MCTSParameters& params, std::mt19937& randomGenerator);
 
 		// rollout phase
-		double rollOut(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator);
-		static bool rolloutFinished(TBSGameState& rollerState, int depth, MCTSParams& params);
+		double rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		static bool rolloutFinished(TBSGameState& rollerState, int depth, MCTSParameters& params);
 
 		// backpropagation phase
 		static void backUp(MCTSNode* node, double result);
 
 		// return action
-		int bestAction(MCTSParams& params, std::mt19937& randomGenerator);
+		int bestAction(MCTSParameters& params, std::mt19937& randomGenerator);
 
 		// helper functions
 		static double normalize(double aValue, double aMin, double aMax);
 		static double noise(double input, double epsilon, double random);
-		void applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action<Vector2i>& action, MCTSParams& params) const;
+		void applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action& action, MCTSParameters& params) const;
 		void setDepth(int depth);
 
 	public:
@@ -45,8 +45,8 @@ namespace SGA {
 		MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState);
 
 		//void setRootGameState(shared_ptr<TreeNode> root);
-		void searchMCTS(TBSForwardModel& forwardModel, MCTSParams& params, std::mt19937& randomGenerator);
-		int mostVisitedAction(MCTSParams& params, std::mt19937& randomGenerator);
+		void searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		int mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator);
 		void print() const override;
 
 	private:

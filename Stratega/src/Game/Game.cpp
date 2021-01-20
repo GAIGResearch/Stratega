@@ -41,7 +41,7 @@ namespace  SGA
 			comm->close();
 		}
 	}
-	void Game::addCommunicator(std::unique_ptr<GameCommunicator> comm)
+	void Game::addCommunicator(std::shared_ptr<GameCommunicator> comm)
 	{
 		communicators.emplace_back(std::move(comm));
 	}

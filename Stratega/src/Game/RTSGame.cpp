@@ -1,31 +1,46 @@
 #include <Game/RTSGame.h>
-
 namespace SGA
 {
-	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine):
-		Game(engine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
+	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
+		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
-	
+
+	const RTSGameState& RTSGame::getState() const
+	{
+		return *gameState;
+	}
+
+	RTSGameState RTSGame::getStateCopy()
+	{
+		std::lock_guard<std::mutex> copyGuard(stateMutex);
+		return *gameState;
+	}
+
 	void RTSGame::update(double deltaTime)
 	{
 		accumulatedTimeUpdate += deltaTime;
 		accumulatedTimePrint += deltaTime;
-		
+
 		if (accumulatedTimeUpdate > forwardModel.deltaTime)
 		{
 			//Execute
 			stateMutex.lock();
-			forwardModel.advanceGameState(*gameState, actionCache);
+			forwardModel.advanceGameState(*gameState, Action::createEndAction(-1));
+
+			//Update navmesh if it needs to
+			if (shouldUpdateNavmesh)
+			{
+				forwardModel.buildNavMesh(*gameState, navigationConfig);
+				shouldUpdateNavmesh = false;
+			}
+
 			stateMutex.unlock();
 
 			for (auto& com : communicators)
 			{
 				com->onGameStateAdvanced();
 			}
-
-			// Clean up cache
-			actionCache.clear();
 
 			accumulatedTimeUpdate = 0;
 			executionCount++;
@@ -34,31 +49,33 @@ namespace SGA
 		if (accumulatedTimePrint >= 1)
 		{
 			std::cout << "Advanced " << executionCount << " times the forwardModel in " << accumulatedTimePrint << "s." << std::endl;
-			for (const auto& unit : gameState->units)
+			for (const auto& unit : gameState->entities)
 			{
-				std::cout << "Unit " << unit.unitID << " at position (" << unit.position.x << ", " << unit.position.y << ")" << std::endl;
+				std::cout << "Unit " << unit.id << " at position (" << unit.position.x << ", " << unit.position.y << ")" << std::endl;
 			}
+
 
 			executionCount = 0;
 			accumulatedTimePrint = 0;
 		}
 	}
 
-	void RTSGame::addAction(const Action<Vector2f>& action)
+	void RTSGame::close()
 	{
-		std::lock_guard<std::mutex> copyGuard(stateMutex);
-		actionCache.emplace_back(action);
+		Game::close();
+
+		std::cout << "GAME IS FINISHED" << std::endl;
+		//std::cout << "Winner ID: " << gameState->getWinnerID() << std::endl;
 	}
 
-	const RTSGameState& RTSGame::getState()
+	void RTSGame::executeAction(Action action)
 	{
-		return *gameState;
+		if (action.isEndAction)
+			return;
+
+		std::lock_guard<std::mutex> stateGuard(stateMutex);
+		forwardModel.advanceGameState(*gameState, action);
 	}
+
 	
-	RTSGameState RTSGame::getStateCopy()
-	{
-		std::lock_guard<std::mutex> copyGuard(stateMutex);
-		return *gameState;
-	}
-
 }

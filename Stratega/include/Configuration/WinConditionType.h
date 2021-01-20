@@ -1,6 +1,6 @@
 #pragma once
-#include <yaml-cpp/node/node.h>
-
+//#include <yaml-cpp/node/node.h>
+#include <Configuration/YamlHeaders.h>
 namespace SGA
 {
 	enum class WinConditionType

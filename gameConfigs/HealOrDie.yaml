@@ -1,5 +1,5 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -12,66 +12,98 @@ Tiles:
         Sprite: ../GUI/Assets/plain.png
         Symbol: .
         IsWalkable: true
+    Water:
+        Sprite: ../GUI/Assets/water.png
+        Symbol: W
+        IsWalkable: false
     Mountain:
         Sprite: ../GUI/Assets/rock.png
         Symbol: M
         IsWalkable: false
-    Hole:
-        Sprite: ../GUI/Assets/hole.png
-        Symbol: H
+    Forest:
+        Sprite: ../GUI/Assets/forest.png
+        Symbol: F
         IsWalkable: true
         
 Board:
     GenerationType: Manual
     Layout: >
-       MMMMMMMMMMMMMMMMMMMMMMMMM
-       MMMH........M.........MMM
-       MMH...................HMM
-       MH....M.....H.....M....HM
-       MH....M....HHH....M....HM
-       MH....M....HHH....M....HM
-       MH....M.....H.....M....HM
-       MMH...................HMM
-       MMMH........M........HMMM
-       MMMMMMMMMMMMMMMMMMMMMMMMM
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+          M.............M................M
+          M........W.....................M
+          M........W.....................M
+          M........WW....................M
+          M........WW...........MM.....MMM
+          M.........WWWW........WWWWWWWWWW
+          M.........WWWW........WWWWWWWWWW
+          MMM.........WWWWWWWWWWWWWWWWWWWW
+          M............WWWWWWWWWWWWWWWWWWW
+          M......MMMMMMMMMMMMMMMMMMM.WWWWW
+          MMM........................WWWWW
+          M..............................M
+          M..............................M
+          MMM............................M
+          M..............................M
+          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
-Units:
-    Healer:
-        Sprite: ../GUI/Assets/healer (2).png
-        Health: 150
-        LineOfSightRange: 4
+Actions:
+    Attack:
+        Type: EntityAction
+        Cooldown: 60
+        Target:
+            Type: Entity
+            ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
 
-        MovementRange: 3
-        ActionRange: 2
-        HealAmount: 100
-        ActionsPerTurn: 2
-        RepeatableActions: false
-        Actions: [Heal, Move]
+    Move:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+        Effects:
+            - "Move()"
 
+    Heal:
+        Type: EntityAction
+        Cooldown: 60
+        Target:
+            Type: Entity
+            ValidTargets: All
+            Conditions:
+                - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+
+
+Entities:
     Warrior:
-        Sprite: ../GUI/Assets/basicCloseRange (2).png
-        Health: 200
+        Sprite: ../GUI/Assets/unit1New.png
         LineOfSightRange: 6
-
-        MovementRange: 3
-        ActionRange: 1
-        AttackDamage: 100
-        ActionsPerTurn: 2
-        RepeatableActions: false
         Actions: [Attack, Move]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
 
+    Healer:
+        Sprite: ../GUI/Assets/unit5New.png
+        LineOfSightRange: 4
+        Parameters:
+            Health: 40
+            HealRange: 2
+            HealAmount: 100
+            MovementPoints: 5
+        Actions: [Heal, Move]
 
 ForwardModel:
     WinCondition:
         Type: LastManStanding
-
-    Effects:
-        DeadlyHole:
-            Type: Death
-            Trigger: EnterTile
-            Condition: StandingOnTile
-            TargetTile: Hole
-        DamageAll:
-            Type: Damage
-            Trigger: EndOfTurn
-            Amount: 25
+    Trigger:
+        OnTick:
+            - "ModifyResource(Source.Health, 1)"

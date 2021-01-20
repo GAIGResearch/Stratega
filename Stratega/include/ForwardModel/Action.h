@@ -1,43 +1,39 @@
 #pragma once
-#include <ForwardModel/ActionType.h>
-#include <Representation/Vector2.h>
+#include <vector>
+#include <ForwardModel/ActionTarget.h>
 
 namespace SGA
-{	template<class T>
-	class Action
+{
+	class EntityForwardModel;
+	
+	struct Action
 	{
-	public:
-		Action() = default;
-		Action(ActionType type,int playerID,int unitID=-1, T targetPos = T(0, 0), int targetID = -1)
+		Action():
+			isEndAction(false),
+			actionTypeID(-1),
+			ownerID(0)
 		{
-			this->type = type;
-			this->playerID = playerID;
-			sourceUnitID = unitID;
-			targetPosition = targetPos;
-			targetUnitID = targetID;
 		}
 
-		const ActionType& getType() const
-		{
-			return type;
-		}
-
-		const int& getSourceUnitID() const { return sourceUnitID; }
-		const int& getTargetUnitID() const  { return targetUnitID; }
-		const T& getTargetPosition() const { return targetPosition; }
-		const int getPlayerID() const { return playerID; }
-
-	private:
-		ActionType type;
-
-		//IDs
-		int targetUnitID;
-		int sourceUnitID;
-
-		T targetPosition;
-
-		int playerID;
+		//RTS Endtick && TBS Endturn
+		bool isEndAction;
 		
+		int actionTypeID;
+		// Contains all targets involved in an action
+		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
+		// PlayerAction": Index 0 contains the target of the action
+		std::vector<ActionTarget> targets;
+		int ownerID;
+		
+		void execute(GameState& state, const EntityForwardModel& fm) const;
+
+		static Action createEndAction(int playerID)
+		{
+			Action a;
+			a.actionTypeID = 0;
+			a.ownerID = playerID;
+			a.isEndAction = true;
+			return a;
+		}
 	};
 }
-
