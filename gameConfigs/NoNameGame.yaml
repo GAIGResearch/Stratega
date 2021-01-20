@@ -38,11 +38,10 @@ Actions:
         Cooldown: 1
         Target:
             Type: Entity
-            ValidTargets: [Conquerer, Fighter]
             Conditions:
-                - "InRange(Source, Target, 1)"
+                - "InRange(Source, Target, Source.Range)"
         Effects:
-            - "Attack(Target.Health, 25)"
+            - "Attack(Source, Target)"
 
     # Move Actions
     Move:
@@ -51,7 +50,7 @@ Actions:
         Target:
             Type: Position
             Shape: Circle
-            Size: 3
+            Size: Target.Speed
             Conditions:
                 - "IsWalkable(Target)"
         Effects:
@@ -61,40 +60,70 @@ Actions:
     Research:
         Type: PlayerAction
         Cooldown: 0
-        Target:
-            Type: Technology
-            ValidTargets: All
+        Target: Technology
+            ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
             Conditions:
-               - "CanResearch(Target)"
-        Effects:
+                - "HasResource(Target.Resource, Target.Cost)"
+                - "IsResearched(Target.Requirements)"
+        OnActivate:
+            - "ModifyResource(Target.Resource, -Target.Cost)"
+            
+        DeactivateCondition:
+            - "ElapsedTime(Target.Time)"
+            
+        OnDeactivate:
             - "Research(Target)"
 
-    #Ideal Spawn
+
+    #Spawn
     Spawn:
         Type: EntityAction
-        Cooldown: 0
-        Target:
-            Type: Unit
-            Conditions:
-                - "CanSpawn(Target)"
-        Effects:
-            - "Spawn(Target)"
+        Cooldown: 1
+        Target: Unit
+        Location: 
+            Shape: Square
+            Size: 1
+
+        Conditions:
+            - "HasResource(Target.Resource, Target.Cost)"
+            - "IsWalkable(Location)"
+
+        OnActivate:
+            - "ModifyResource(Target.Resource, -Target.Cost)"
+
+        DeactivateCondition:
+            - "ElapsedTime(Target.Time)"
+
+        OnDeactivate:
+            - "Spawn(Target, Location)"
             
-    #Ideal Build
+        OnAbort:
+            - "ModifyResource(Target.Resource, Target.Cost)"
+
+
+
+    #Build
     Build:
         Type: PlayerAction
         Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Player.Gold, 6)"
-        Target:
-            Type: Position
+        Target: Building
+        Location: 
             Shape: Square
             Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
-        Effects:
-            - "Spawn(Conquerer, Target)"
-            - "ModifyResource(Source.Player.Gold, -6)"
+
+        Conditions:
+            - "HasResource(Target.Resource, Target.Cost)"
+            - "IsWalkable(Location)"
+            
+        OnActivate:
+            - "ModifyResource(Target.Resource, -Target.Cost)"
+        
+        DeactivateCondition:
+            - "ElapsedTime(Target.Time)"
+
+        OnDeactivate:
+            - "Build(Target, Location)"
+            
 
 TechnologyTrees:
     SingleTree:
@@ -106,41 +135,49 @@ TechnologyTrees:
             Requirements: [Mining]
             Cost: 15 
             Resource: Prod
+            Time: 2
         Pottery:
             Description: Allows to construct a Storage.
             Requirements: [Mining]
             Cost: 10
             Resource: Prod
+            Time: 2
         Mathematics:
             Description: Here you can build a military academy
             Requirements: [Mining]
             Cost: 15
             Resource: Prod
+            Time: 2
         Archery:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost: 20
             Resource: Gold
+            Time: 5
         Bronze Working:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost: 20
             Resource: Gold
+            Time: 5
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost: 30
             Resource: Gold
+            Time: 5
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost: 40
             Resource: Gold
+            Time: 8
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost: 30
             Resource: Gold
+            Time: 5
 
 Entities:
     City:
@@ -148,6 +185,7 @@ Entities:
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
+        Spawnable: [Worker]
         Parameters:
             Health: 800
             Storage Capacity: 50
@@ -156,6 +194,8 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         LineOfSightRange: 3
         Requirements: [Discipline]
+        Actions: [Spawn]
+        Spawnable: [Warrior, Archer]
         Parameters:
             Cost: 20
             Resource: Prod
@@ -166,6 +206,7 @@ Entities:
         LineOfSightRange: 3
         Requirements: [Mathematics]
         Actions: [Spawn]
+        Spawnable: [Catapult]
         Parameters:
             Cost: 40
             Resource: Prod
@@ -220,7 +261,8 @@ Entities:
         Sprite: ../GUI/Assets/basicCloseRange.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
-        Requirements: [Barracks, Bronze Working] # The first specifies where the unit is spawned from, the second one is a tech. Split up?
+        Requirements: [Bronze Working]
+        
         Parameters:
             Cost: 10
             Resource: Prod
@@ -235,7 +277,7 @@ Entities:
         Sprite: ../GUI/Assets/advanceCloseRange.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
-        Requirements: [Barracks, Archery]
+        Requirements: [Archery]
         Parameters:
             Cost: 15
             Resource: Prod
@@ -252,7 +294,7 @@ Entities:
         Sprite: ../GUI/Assets/unit4New.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
-        Requirements: [Military Academy, Engineering]
+        Requirements: [Engineering]
         Parameters:
             Cost: 20
             Resource: Prod
