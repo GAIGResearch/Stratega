@@ -15,13 +15,13 @@
 namespace SGA {
 	struct MetaPOParams {
 		// basic parameters
-		size_t POP_SIZE = 10;				// population size
-		int HORIZON = 5;					// planning horizon of an individual (number of completed turns)
-		int NR_OF_SCRIPT_CHANGES = 3;	    // number of script changes per genome, each script change updates the unit script assignment in a certain point in time
+		size_t POP_SIZE = 1;				// population size
+		int HORIZON = 3;					// planning horizon of an individual (number of completed turns)
+		int NR_OF_SCRIPT_CHANGES = 5;	    // number of script changes per genome, each script change updates the unit script assignment in a certain point in time
 
 		// evolution and selection
-		double MUTATION_RATE = 0.1;			// mutation rate when transferring one individual to the next generation
-		int TOURNAMENT_SIZE = 3;			// number of individuals per tournament selection
+		double MUTATION_RATE = 0.5;			// mutation rate when transferring one individual to the next generation
+		int TOURNAMENT_SIZE = 5;			// number of individuals per tournament selection
 		bool ELITISM = true;				// if true, always transfer the best individual to the next generation
 
 		// re-use previous iteration?
@@ -40,18 +40,18 @@ namespace SGA {
 		double EPSILON = 1e-2;									// the amount of noise for randomly modifying an individuals value
 
 		MetaPOParams() {
-			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
-			PORTFOLIO.emplace_back(std::move(attackClose));
+			//std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
+			//PORTFOLIO.emplace_back(std::move(attackClose));
 			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
 			PORTFOLIO.emplace_back(std::move(attackWeak));
-			std::unique_ptr<BaseActionScript> runAway = std::make_unique<RunAwayFromOpponentScript>();
-			PORTFOLIO.emplace_back(std::move(runAway));
-			std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
-			PORTFOLIO.emplace_back(std::move(useSpecialAbility));
-			std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
-			PORTFOLIO.emplace_back(std::move(runToFriends));
-			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
-			PORTFOLIO.emplace_back(std::move(random));
+			//std::unique_ptr<BaseActionScript> runAway = std::make_unique<RunAwayFromOpponentScript>();
+			//PORTFOLIO.emplace_back(std::move(runAway));
+			//std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
+			//PORTFOLIO.emplace_back(std::move(useSpecialAbility));
+			//std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
+			//PORTFOLIO.emplace_back(std::move(runToFriends));
+			//std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			//PORTFOLIO.emplace_back(std::move(random));
 		}
 		
 		void printDetails() const;

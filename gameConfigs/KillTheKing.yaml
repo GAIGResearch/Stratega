@@ -4,8 +4,12 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - PGSAgent
     - CombatAgent
+    - PGSAgent
+    - PortfolioRHEAAgent
+    - MetaPOAgent
+    - MOPRHEAAgent
+    - POEAgent
 
 Tiles:
     Plain:

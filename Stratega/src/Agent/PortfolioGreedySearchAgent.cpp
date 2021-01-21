@@ -138,7 +138,12 @@ namespace SGA
 		{
 			return portfolioMap1[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
 		}
-		return portfolioMap2[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
+		if (portfolioMap2.contains(nextUnit))
+		{
+			portfolioMap2[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
+		}
+
+		return params_.PORTFOLIO[rand() % params_.PORTFOLIO.size()].get()->getActionForUnit(gameState, actionSpace, nextUnit);
 	}
 
 	// applies an action to the current game state, reduces the number of remaining forward model calls and updates the action space
