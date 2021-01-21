@@ -2,6 +2,7 @@ GameConfig:
     Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
+    PlayerCount: 2
 
 Agents:
     - CombatAgent
