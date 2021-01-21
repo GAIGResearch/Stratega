@@ -24,5 +24,17 @@ namespace SGA
 		std::vector<std::shared_ptr<Condition>> preconditions;
 		std::vector<std::shared_ptr<Condition>> targetConditions;
 		std::vector<std::shared_ptr<Effect>> effects;
+
+		//TODO Split in two different types of actions? Normal and Continuous 
+		//ContinuousAction
+		bool isContinuous;
+		int elapsedTicks;
+		//Condition that trigger the completion 
+		std::vector<std::shared_ptr<Condition>> triggerComplete;
+		//List of effects
+		std::vector<std::shared_ptr<Effect>> OnStart;
+		std::vector<std::shared_ptr<Effect>> OnTick;
+		std::vector<std::shared_ptr<Effect>> OnComplete;
+		std::vector<std::shared_ptr<Effect>> OnAbort;
 	};
 }

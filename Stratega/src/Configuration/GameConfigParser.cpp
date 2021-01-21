@@ -202,6 +202,48 @@ namespace SGA
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
 
+
+        	//Continuous Action
+        	//Check if
+            if (nameTypePair.second["TriggerComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+                auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+            }
+        	
+            if (nameTypePair.second["OnStart"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnStart, context);
+            }
+
+            if (nameTypePair.second["OnTick"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnTick, context);
+            }
+
+            if (nameTypePair.second["OnComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnComplete, context);
+            }
+
+            if (nameTypePair.second["OnAbort"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnAbort, context);
+            }
+        	
             config.actionTypes.emplace(type.id, std::move(type));
             context.targetIDs.clear();
         }
