@@ -202,7 +202,7 @@ namespace SGA
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
 
-
+            type.isContinuous = false;
         	//Continuous Action
         	//Check if
             if (nameTypePair.second["TriggerComplete"].IsDefined())

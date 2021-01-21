@@ -76,7 +76,7 @@ Actions:
         OnTick:
             - "ModifyResource(Source.Gold, +10)"
         OnComplete:
-            - "Spawn(Fighter, Target)"
+            - "Spawn(Miner, Target)"
         OnAbort:
 
 
@@ -133,9 +133,9 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter]
+        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous]
         Parameters:
-            Gold: 50
+            Gold: 100
 
     Miner:
         Sprite: ../GUI/Assets/farmer.png

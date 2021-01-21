@@ -11,7 +11,9 @@ namespace SGA
 		Action():
 			isEndAction(false),
 			actionTypeID(-1),
-			ownerID(0)
+			ownerID(0),
+			elapsedTicks(0),
+			isContinuous(false)
 		{
 		}
 
@@ -24,7 +26,10 @@ namespace SGA
 		// PlayerAction": Index 0 contains the target of the action
 		std::vector<ActionTarget> targets;
 		int ownerID;
-		
+
+		bool isContinuous;
+
+		int elapsedTicks;
 		void execute(GameState& state, const EntityForwardModel& fm) const;
 
 		static Action createEndAction(int playerID)
@@ -33,6 +38,7 @@ namespace SGA
 			a.actionTypeID = 0;
 			a.ownerID = playerID;
 			a.isEndAction = true;
+			a.isContinuous = false;
 			return a;
 		}
 	};

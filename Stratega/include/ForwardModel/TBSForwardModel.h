@@ -11,9 +11,27 @@ namespace  SGA
 	public:
 		void advanceGameState(TBSGameState& state, const Action& action) const
 		{
+			auto& actionType = state.getActionType(action.actionTypeID);
 			if(action.isEndAction)
 			{
 				endTurn(state);
+			}
+			else if(actionType.isContinuous)
+			{
+				//If is continues we execute OnStart Effects
+				//and we add the action to the list of continuous actions
+				/*auto& actionType = state.getActionType(action.actionTypeID);*/
+				if (actionType.sourceType == ActionSourceType::Unit)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnStart)
+					{
+						effect->execute(state, *this, action.targets);
+					}
+
+					auto& executingEntity = action.targets[0].getEntity(state);
+					executingEntity.continuousAction.emplace_back(action);
+				}				
 			}
 			else
 			{

@@ -28,7 +28,6 @@ namespace SGA
 		//TODO Split in two different types of actions? Normal and Continuous 
 		//ContinuousAction
 		bool isContinuous;
-		int elapsedTicks;
 		//Condition that trigger the completion 
 		std::vector<std::shared_ptr<Condition>> triggerComplete;
 		//List of effects
