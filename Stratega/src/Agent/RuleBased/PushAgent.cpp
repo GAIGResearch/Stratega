@@ -197,7 +197,7 @@ namespace SGA
 				}
 
 				// Only explore the new found tile if it's safe to move to, is not occupied by an opponent, and is walkable
-				if (!forwardModel.canKill(state, targetPos) && (state.getUnit(targetPos) == nullptr || state.getUnit(targetPos)->getPlayerID() == state.currentPlayer))
+				if (state.isInBounds(targetPos) && !forwardModel.canKill(state, targetPos) && (state.getUnit(targetPos) == nullptr || state.getUnit(targetPos)->getPlayerID() == state.currentPlayer))
 				{
 					openList.push(targetPos);
 					previous[targetPos] = openList.front();
