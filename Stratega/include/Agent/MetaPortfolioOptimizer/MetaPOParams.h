@@ -15,13 +15,13 @@
 namespace SGA {
 	struct MetaPOParams {
 		// basic parameters
-		size_t POP_SIZE = 1;				// population size
+		size_t POP_SIZE = 100;				// population size
 		int HORIZON = 3;					// planning horizon of an individual (number of completed turns)
 		int NR_OF_SCRIPT_CHANGES = 5;	    // number of script changes per genome, each script change updates the unit script assignment in a certain point in time
 
 		// evolution and selection
-		double MUTATION_RATE = 0.5;			// mutation rate when transferring one individual to the next generation
-		int TOURNAMENT_SIZE = 5;			// number of individuals per tournament selection
+		double MUTATION_RATE = 0.1;			// mutation rate when transferring one individual to the next generation
+		int TOURNAMENT_SIZE = 3;			// number of individuals per tournament selection
 		bool ELITISM = true;				// if true, always transfer the best individual to the next generation
 
 		// re-use previous iteration?

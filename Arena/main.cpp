@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	auto seed = parser.getCmdOption<int>("-seed", 0);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", -1);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
-	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/KillTheKing.yaml");
+	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/PushMania.yaml");
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	if(configPath.empty())
 	{

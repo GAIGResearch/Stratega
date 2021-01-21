@@ -1,11 +1,16 @@
 GameConfig:
     Type: TBS
     ActionTimer: 10s
-    RoundLimit: 1000
+    RoundLimit: 100
+    PlayerCount: 2
 
 Agents:
-    - HumanAgent
     - PushAgent
+    - PGSAgent
+    - PortfolioRHEAAgent
+    - MetaPOAgent
+    - MOPRHEAAgent
+    - POEAgent
 
 Tiles:
     Plain:

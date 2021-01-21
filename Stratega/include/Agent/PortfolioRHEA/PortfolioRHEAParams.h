@@ -16,8 +16,8 @@
 namespace SGA {
 	struct PortfolioRHEAParams {
 		// basic parameters
-		size_t POP_SIZE = 1;				// population size
-		size_t INDIVIDUAL_LENGTH = 1;		// planning horizon of an individual
+		size_t POP_SIZE = 100;				// population size
+		size_t INDIVIDUAL_LENGTH = 3;		// planning horizon of an individual
 
 		// evolution and selection
 		double MUTATION_RATE = 0.5;			// mutation rate when transferring one individual to the next generation
