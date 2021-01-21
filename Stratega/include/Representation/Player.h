@@ -1,7 +1,7 @@
 #pragma once
 #include <Representation/Parameter.h>
 #include <unordered_map>
-
+#include <vector>
 namespace SGA
 {
 	struct Player

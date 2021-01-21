@@ -24,7 +24,7 @@ int main()
 	int humanPlayerID=-1;
 	auto agents = gameConfig.generateAgents();
 	
-	const std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
+	std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
 	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);

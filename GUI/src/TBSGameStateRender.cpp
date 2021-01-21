@@ -698,7 +698,7 @@ namespace SGA
 			ImGui::BeginChild("help", ImVec2(0, 80), true,child_flags);
 
 
-			for each (auto & entity in gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
+			for (auto & entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
 				auto entityType = gameStateCopy.getEntityType(entity->typeID);
@@ -753,7 +753,7 @@ namespace SGA
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
 			int entityTypeID = selectedEntity->typeID;
 
-			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
+			for (auto & actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.emplace_back(actionID);
 			}
@@ -761,7 +761,7 @@ namespace SGA
 
 
 		int elementNumber = 0;
-		for each (auto & actionType in actionTypes)
+		for (auto & actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))

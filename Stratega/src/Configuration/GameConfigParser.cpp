@@ -342,7 +342,7 @@ namespace SGA
 
             	//Search the technology tree in the config yaml
                 auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
-                auto& techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
+                auto techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
                 //Find the technology
                 auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
