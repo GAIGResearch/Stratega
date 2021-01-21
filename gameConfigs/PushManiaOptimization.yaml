@@ -1,7 +1,7 @@
 GameConfig:
     Type: TBS
     ActionTimer: 10s
-    RoundLimit: 1000
+    RoundLimit: 100
 
 Agents:
     - PushAgent
