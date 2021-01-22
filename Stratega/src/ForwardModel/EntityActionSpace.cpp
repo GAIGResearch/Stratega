@@ -38,7 +38,7 @@ namespace SGA
 		return bucket;
 	}
 
-	void EntityActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket)
+	void EntityActionSpace::generateActions( GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket)
 	{
 		Action action;
 		action.actionTypeID = actionType.id;
@@ -47,6 +47,8 @@ namespace SGA
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 
+		
+		
 		std::vector<Action> allActions;
 		for (const auto& target : targets)
 		{
@@ -62,7 +64,12 @@ namespace SGA
 			}
 
 			if (isValidAction)
+			{
+				
+
 				actionBucket.emplace_back(action);
+			}
+				
 		}
 	}
 	

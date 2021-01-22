@@ -204,7 +204,8 @@ namespace SGA
 
             type.isContinuous = false;
         	//Continuous Action
-        	//Check if
+        	//
+            context.targetIDs.emplace("Action", 2);
             if (nameTypePair.second["TriggerComplete"].IsDefined())
             {
                 type.isContinuous = true;

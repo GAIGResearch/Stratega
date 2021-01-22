@@ -69,8 +69,9 @@ Actions:
             Size: 1
             Conditions:
                 - "IsWalkable(Target)"
+        #Continuous Stuff
         TriggerComplete:
-            - "HasResource(Source.Gold, 150)"
+            - "HasElapsedTick(10)"
         OnStart:
             - "ModifyResource(Source.Gold, -100)"
         OnTick:
@@ -78,6 +79,7 @@ Actions:
         OnComplete:
             - "Spawn(Miner, Target)"
         OnAbort:
+        #    - "ModifyResource(Source.Gold, -50)"
 
 
     # Attack Actions
@@ -135,7 +137,7 @@ Entities:
         LineOfSightRange: 5
         Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous]
         Parameters:
-            Gold: 100
+            Gold: 500
 
     Miner:
         Sprite: ../GUI/Assets/farmer.png

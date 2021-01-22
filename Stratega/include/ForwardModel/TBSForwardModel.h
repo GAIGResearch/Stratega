@@ -9,6 +9,7 @@ namespace  SGA
 	class TBSForwardModel : public EntityForwardModel
 	{
 	public:
+		//TODO ACTION CONST?
 		void advanceGameState(TBSGameState& state, const Action& action) const
 		{
 			auto& actionType = state.getActionType(action.actionTypeID);
@@ -18,6 +19,16 @@ namespace  SGA
 			}
 			else if(actionType.isContinuous)
 			{
+
+				//If we are generating continuousAction we need to track them somehow
+				//Using ID for each action for example
+				
+					Action newAction = action;
+					std::cout << state.continueNextID << "" << std::endl;
+					newAction.continuousActionID = state.continueNextID++;
+					newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
+				
+				
 				//If is continues we execute OnStart Effects
 				//and we add the action to the list of continuous actions
 				/*auto& actionType = state.getActionType(action.actionTypeID);*/
@@ -26,11 +37,11 @@ namespace  SGA
 					auto& type = state.actionTypes->at(actionType.id);
 					for (auto& effect : type.OnStart)
 					{
-						effect->execute(state, *this, action.targets);
+						effect->execute(state, *this, newAction.targets);
 					}
 
-					auto& executingEntity = action.targets[0].getEntity(state);
-					executingEntity.continuousAction.emplace_back(action);
+					auto& executingEntity = newAction.targets[0].getEntity(state);
+					executingEntity.continuousAction.emplace_back(newAction);
 				}				
 			}
 			else

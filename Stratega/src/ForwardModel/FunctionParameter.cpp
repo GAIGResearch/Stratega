@@ -38,6 +38,10 @@ namespace SGA
 		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
 	}
 
+	FunctionParameter FunctionParameter::createContinuousActionReference(ContinuousActionReference continuousActionReference)
+	{
+		return FunctionParameter(Type::ContinuousActionTypeReference, { .continuousActionData = continuousActionReference });
+	}
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)

@@ -13,7 +13,8 @@ namespace SGA
 			actionTypeID(-1),
 			ownerID(0),
 			elapsedTicks(0),
-			isContinuous(false)
+			isContinuous(false),
+			continuousActionID(-1)
 		{
 		}
 
@@ -28,7 +29,7 @@ namespace SGA
 		int ownerID;
 
 		bool isContinuous;
-
+		int continuousActionID;
 		int elapsedTicks;
 		void execute(GameState& state, const EntityForwardModel& fm) const;
 

@@ -18,6 +18,31 @@ namespace  SGA
 		return targetResource >= lowerBound;
 	}
 
+	HasElapsedTime::HasElapsedTime(const std::vector<FunctionParameter>& parameters) :
+		lowerBound(parameters.at(0))
+	{
+	}
+
+	bool HasElapsedTime::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& sourceEntity = targets[0].getEntityConst(state);
+
+		for (auto& action : sourceEntity.continuousAction)
+		{
+			if(action.continuousActionID== targets[2].getContinuousActionID())
+			{
+				//We reached the action
+				//Tick amount
+				double lowerBound = this->lowerBound.getConstant(state, targets);
+				if (action.elapsedTicks >= lowerBound)
+					return true;
+			}
+		}
+		
+
+		return false;
+	}
+	
 	SamePlayer::SamePlayer(const std::vector<FunctionParameter>& parameters)
 	{
 		
