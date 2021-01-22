@@ -16,12 +16,12 @@
 namespace SGA {
 	struct POEParams {
 		// basic parameters
-		size_t POP_SIZE = 10;				// population size
-		size_t INDIVIDUAL_LENGTH = 5;		// planning horizon of an individual
+		size_t POP_SIZE = 1;				// population size
+		size_t INDIVIDUAL_LENGTH = 3;		// planning horizon of an individual
 
 		// evolution and selection
-		double MUTATION_RATE = 0.9;			// mutation rate when transferring one individual to the next generation
-		int TOURNAMENT_SIZE = 3;			// number of individuals per tournament selection
+		double MUTATION_RATE = 0.5;			// mutation rate when transferring one individual to the next generation
+		int TOURNAMENT_SIZE = 5;			// number of individuals per tournament selection
 		bool ELITISM = true;				// if true, always transfer the best individual to the next generation
 
 		// re-use previous iteration?
