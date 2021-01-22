@@ -18,6 +18,7 @@ namespace SGA {
 		virtual TBSAction getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace) const = 0;
 		virtual TBSAction getActionForUnit(TBSGameState& gameState, std::vector<TBSAction>& actionSpace, int unitID) const = 0;
 		[[nodiscard]] virtual std::string toString() const = 0;
+		[[nodiscard]] virtual int getID() const = 0;
 		
 		friend std::ostream& operator<<(std::ostream& os, const BaseActionScript& dt)
 		{

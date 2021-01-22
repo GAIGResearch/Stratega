@@ -26,18 +26,18 @@ namespace  SGA
 		PortfolioGreedySearchParams()
 		{
 			
-			//std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
-			//PORTFOLIO.emplace_back(std::move(attackClose));
+			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
+			PORTFOLIO.emplace_back(std::move(attackClose));
 			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
 			PORTFOLIO.emplace_back(std::move(attackWeak));
 			std::unique_ptr<BaseActionScript> runAway = std::make_unique<RunAwayFromOpponentScript>();
 			PORTFOLIO.emplace_back(std::move(runAway));
-			//std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
-			//PORTFOLIO.emplace_back(std::move(useSpecialAbility));
-			//std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
-			//PORTFOLIO.emplace_back(std::move(runToFriends));
-			//std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
-			//PORTFOLIO.emplace_back(std::move(random));
+			std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
+			PORTFOLIO.emplace_back(std::move(useSpecialAbility));
+			std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
+			PORTFOLIO.emplace_back(std::move(runToFriends));
+			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			PORTFOLIO.emplace_back(std::move(random));
 		}
 	};
 }
