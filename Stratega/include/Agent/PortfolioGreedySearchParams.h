@@ -18,8 +18,8 @@ namespace  SGA
 		int MAX_FM_CALLS = 2000;				// the maximum number of forward model calls (can be slightly exceeded in case the next generation takes more evaluations)
 		int REMAINING_FM_CALLS = MAX_FM_CALLS;	// the number of remaining forward model calls
 		int PLAYER_ID = -1;						// the agents ID in the current game
-		int NR_OF_TURNS_PLANNED = 3;			// the agents ID in the current game
-		int ITERATIONS_PER_IMPROVE = 1;			// the number of iterations for one call of the improve method
+		int NR_OF_TURNS_PLANNED = 2;			// the agents ID in the current game
+		int ITERATIONS_PER_IMPROVE = 3;			// the number of iterations for one call of the improve method
 
 		std::vector<std::unique_ptr<BaseActionScript>> PORTFOLIO = std::vector<std::unique_ptr<BaseActionScript>>();	// the PORTFOLIO used to sample actions of a genome
 		LinearSumHeuristic HEURISTIC{ LinearSumHeuristic() };	// the heuristic used to evaluate a genome
