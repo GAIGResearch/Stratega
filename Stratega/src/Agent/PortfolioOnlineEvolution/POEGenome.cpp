@@ -1,4 +1,6 @@
 #include <Agent/PortfolioOnlineEvolution/POEGenome.h>
+#include <Logging/Log.h>
+
 
 namespace SGA {
 
@@ -124,13 +126,17 @@ namespace SGA {
         this->value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    TBSAction POEGenome::getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace)
+    TBSAction POEGenome::getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace, bool log)
     {
         const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (scriptAssignment[0].contains(nextUnit))
         {
+            if (log)
+                SGA::Log::logValue("Script", scriptAssignment[0][nextUnit]->getID());
             return scriptAssignment[0][nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
+        if (log)
+            SGA::Log::logValue("Script", 6);
         return actionSpace.at(rand() % actionSpace.size());
     };
 	

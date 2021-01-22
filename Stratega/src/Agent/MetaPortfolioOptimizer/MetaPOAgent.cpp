@@ -45,7 +45,7 @@ namespace SGA
             		// run rhea and return the best individual of the previous generation
                     rheaLoop(forwardModel, gameState, rnd);
 
-                    gameCommunicator.executeAction(pop_[0].getAction(gameState, actionSpace));
+                    gameCommunicator.executeAction(pop_[0].getAction(gameState, actionSpace, true));
 
             		/*
 					// return all actions until the end of the agent's turn

@@ -1,4 +1,6 @@
 #include <Agent/MetaPortfolioOptimizer/MetaPOGenome.h>
+#include <Logging/Log.h>
+
 
 namespace SGA {
 
@@ -95,13 +97,21 @@ namespace SGA {
         value = evaluateGenome(forwardModel, gameState, params);
     }
 
-    TBSAction MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace)
+    TBSAction MetaPOGenome::getAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, bool log)
     {
         const int nextUnit = actionSpace.at(0).sourceUnitID;
         if (unitScript.contains(nextUnit))
         {
+            if (log)
+                SGA::Log::logValue("Script", unitScript[nextUnit]->getID());
+
+
             return unitScript[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
         }
+
+        if (log)
+            SGA::Log::logValue("Script", 6);
+
         return actionSpace.at(rand() % actionSpace.size());
     };
 	

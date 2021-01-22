@@ -1,4 +1,6 @@
 #include <Agent/MOPortfolioRHEA/MOPortfolioRHEAAgent.h>
+#include <Logging/Log.h>
+
 
 
 namespace SGA
@@ -40,6 +42,9 @@ namespace SGA
 
             		// run rhea and return the best individual of the previous generation
                     rheaLoop(forwardModel, gameState, rnd);
+
+                    SGA::Log::logValue("Script", params_.PORTFOLIO[pop_[0].getPortfolioVector().front()]->getID());
+
                     gameCommunicator.executeAction(pop_[0].getActions().front());
                 }
 			}

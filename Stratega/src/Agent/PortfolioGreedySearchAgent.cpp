@@ -1,4 +1,6 @@
 #include <Agent/PortfolioGreedySearchAgent.h>
+#include <Logging/Log.h>
+
 
 namespace SGA
 {
@@ -45,7 +47,7 @@ namespace SGA
 					}
 					
 					// return the first action of the player's portfolio
-					gameCommunicator.executeAction(GetPortfolioAction(gameState, actionSpace, playerPortfolios, opponentPortfolios));
+					gameCommunicator.executeAction(GetPortfolioAction(gameState, actionSpace, playerPortfolios, opponentPortfolios, true));
 				}
 			}
 		}
@@ -131,18 +133,26 @@ namespace SGA
 	}
 
 	// returns the action defined by the player's portfolio
-	TBSAction PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2)
+	TBSAction PortfolioGreedySearchAgent::GetPortfolioAction(TBSGameState& gameState, std::vector<SGA::TBSAction>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2, bool log)
 	{
 		const int nextUnit = actionSpace.at(0).sourceUnitID;
 		if (portfolioMap1.contains(nextUnit))
 		{
+			if (log)
+				SGA::Log::logValue("Script", portfolioMap1[nextUnit]->getID());
+
 			return portfolioMap1[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
 		}
 		if (portfolioMap2.contains(nextUnit))
 		{
+			if (log)
+				SGA::Log::logValue("Script", portfolioMap2[nextUnit]->getID());
+
 			portfolioMap2[nextUnit]->getActionForUnit(gameState, actionSpace, nextUnit);
 		}
 
+		if (log)
+			SGA::Log::logValue("Script", 6);
 		return params_.PORTFOLIO[rand() % params_.PORTFOLIO.size()].get()->getActionForUnit(gameState, actionSpace, nextUnit);
 	}
 

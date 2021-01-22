@@ -30,7 +30,7 @@ namespace SGA {
 		void shift(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params);
 		void toString() const;
 		static POEGenome crossover(TBSForwardModel& forwardModel, TBSGameState gameState, POEParams& params, std::mt19937& randomGenerator, POEGenome& parent1, POEGenome& parent2);
-		TBSAction getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace);
+		TBSAction getAction(TBSGameState& gameState, std::vector<TBSAction>& actionSpace, bool log=false);
 
 	private:
 		POEGenome(std::vector<std::map<int, BaseActionScript*>>, TBSForwardModel& forwardModel, TBSGameState& gameState, POEParams& params);
