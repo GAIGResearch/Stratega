@@ -20,14 +20,14 @@ namespace SGA
         parseBoardGenerator(configNode["Board"], config);
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
-        parsePlayerParameters(configNode["PlayerParameters"], config);
+        parsePlayers(configNode["Player"], config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
-		// Assign actions to entities
+		//Assign actions to entities
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
         for (auto& type : config.entityTypes)
         {
@@ -38,6 +38,13 @@ namespace SGA
             }
         }
 		
+		//Assign player actions
+        auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+        for (const auto& actionName : actions)
+        {
+            config.playerActionIds.emplace_back(config.getActionID(actionName));
+        }	
+		    		
         return config;
 	}
 
@@ -406,8 +413,11 @@ namespace SGA
         }
 	}
 
-    void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const
+    void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
+
+		//Parse parameters
+        auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
 	}
 

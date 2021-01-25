@@ -7,6 +7,11 @@ Agents:
     - RandomAgent
     - HumanAgent
 
+Player:
+    Actions: [SpawnFighterByPlayer]
+    Parameters:
+        Gold: 5
+
 Tiles:
     Plain:
         Sprite: ../GUI/Assets/plain.png
@@ -45,6 +50,21 @@ Actions:
 
     SpawnFighter:
         Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Fighter, Target)"
+            - "ModifyResource(Source.Gold, -100)"
+
+    SpawnFighterByPlayer:
+        Type: PlayerAction
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 100)"
