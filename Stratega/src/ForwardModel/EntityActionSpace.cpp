@@ -77,6 +77,7 @@ namespace SGA
 			case TargetType::Position: return generatePositionTargets(state, entity.position, action.actionTargets.shapeType, action.actionTargets.shapeSize);
 			case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
 			case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
+			case TargetType::ContinuousAction: return generateContinuousActionTargets(state,entity);
 			case TargetType::None: return {};
 		}
 
@@ -142,6 +143,17 @@ namespace SGA
 		return targets;
 	}
 
+	std::vector<ActionTarget> EntityActionSpace::generateContinuousActionTargets(const GameState& gameState, const Entity& sourceEntity)
+	{
+		std::vector<ActionTarget> targets;
+
+		for (auto& action : sourceEntity.continuousAction)
+		{
+			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.continuousActionID));
+		}
+		return targets;
+	}
+	
 	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType)
 	{
 		Action selfAction;

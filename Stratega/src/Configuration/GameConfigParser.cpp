@@ -176,7 +176,7 @@ namespace SGA
         actionType.sourceType = ActionSourceType::Player;
         actionType.cooldownTicks = 0;
         config.actionTypes.emplace(0, std::move(actionType));
-
+		
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())

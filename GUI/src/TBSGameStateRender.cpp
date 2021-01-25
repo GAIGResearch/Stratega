@@ -276,7 +276,8 @@ namespace SGA
 						//If is player unit action or globlal action(i.e End turn)
 
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
-
+						if (action.actionTypeID == 1)
+							std::cout << "here";
 						if (actionType.actionTargets == TargetType::Entity)
 						{
 							auto& entity = action.targets[0].getEntity(gameStateCopy);
@@ -289,6 +290,11 @@ namespace SGA
 								actionHumanUnitSelected.emplace_back(action);
 						}
 						else if (actionType.actionTargets == TargetType::Technology)
+						{
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);

@@ -18,7 +18,7 @@ namespace SGA
 
 	struct TargetType
 	{
-		enum Type { None, Position, Entity, Technology};
+		enum Type { None, Position, Entity, Technology, ContinuousAction};
 		
 		Type type;
 
