@@ -288,6 +288,11 @@ namespace SGA
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
+						else if (actionType.actionTargets == TargetType::EntityType)
+						{
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
 						else if (actionType.actionTargets == TargetType::Technology)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)

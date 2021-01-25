@@ -216,7 +216,7 @@ namespace SGA
             targetType.shapeType = node["Shape"].as<ShapeType>();
             targetType.shapeSize = node["Size"].as<int>();
         }
-        else if (targetType.type == TargetType::Entity)
+        else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
             targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
@@ -390,7 +390,6 @@ namespace SGA
             parameterBucket.insert({ param.id, std::move(param) });
         }
 	}
-
 
     std::unordered_set<EntityTypeID> GameConfigParser::parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const
 	{

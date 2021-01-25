@@ -80,6 +80,8 @@ namespace YAML
                 rhs = SGA::TargetType::Type::Position;
             else if (value == "Entity")
                 rhs = SGA::TargetType::Type::Entity;
+            else if (value == "EntityType")
+                rhs = SGA::TargetType::Type::EntityType;
             else if (value == "Technology")
                 rhs = SGA::TargetType::Type::Technology;
             else

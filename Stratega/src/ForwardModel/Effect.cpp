@@ -188,4 +188,38 @@ namespace SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
+
+	SpawnUnitRandom::SpawnUnitRandom(const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	{
+	}
+
+	void SpawnUnitRandom::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		{
+			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+
+			for(int dx = -1; dx <= 1; dx++)
+			{
+				for (int dy = -1; dy <= 1; dy++)
+				{
+					Vector2i spawnPos{ static_cast<int>(sourceEntity.position.x) + dx, static_cast<int>(sourceEntity.position.y) + dy};
+					if (!state.isInBounds(spawnPos)) continue;
+					if (state.getEntityAt(spawnPos) != nullptr) continue;
+
+					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, spawnPos);
+					return;
+				}
+			}
+		}
+		else
+		{
+			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
+		}
+	}
+
+
+
 }

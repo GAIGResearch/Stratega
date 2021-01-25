@@ -156,10 +156,13 @@ namespace SGA
 		{
 			return state.getEntityType(data.entityTypeID);
 		}
-		else
+		if(parameterType == Type::ArgumentReference)
 		{
-			throw std::runtime_error("Type not recognised");
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			return actionTarget.getEntityType(state);
 		}
+		
+		throw std::runtime_error("Type not recognised");
 	}
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
