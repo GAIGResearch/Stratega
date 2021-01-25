@@ -48,18 +48,7 @@ namespace SGA
 		for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
 		{
 			auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
-			//Check if action is complete
-
-			bool isComplete = true;
-			for (const auto& condition : actionType.triggerComplete)
-			{
-				if (!condition->isFullfilled(state, sourceEntity.continuousAction[i].targets))
-				{
-					isComplete = false;
-					break;
-				}
-			}
-
+			
 			//Execute OnAbort Effects				
 			for (auto& effect : actionType.OnAbort)
 			{

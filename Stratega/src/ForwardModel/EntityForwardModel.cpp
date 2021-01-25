@@ -117,24 +117,37 @@ namespace SGA
 
 				if (isComplete)
 				{
-					//Execute OnComplete Effects
-
-					if (actionType.sourceType == ActionSourceType::Unit)
+					//Check before we execute OnComplete Effects
+					//if the conditions continue being true
+					bool canExecute = true;
+					for (const auto& condition : actionType.targetConditions)
 					{
-						auto& type = state.actionTypes->at(actionType.id);
-						for (auto& effect : type.OnComplete)
+						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
 						{
-							effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+							canExecute = false;
+							break;
 						}
 					}
-
+					
+					if(canExecute)
+					{
+						//Execute OnComplete Effects
+						if (actionType.sourceType == ActionSourceType::Unit)
+						{
+							auto& type = state.actionTypes->at(actionType.id);
+							for (auto& effect : type.OnComplete)
+							{
+								effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+							}
+						}
+					}
+					
+					//Delete the ContinuousAction
 					state.entities[j].continuousAction.erase(state.entities[j].continuousAction.begin() + i);
 					i--;
 					//Stop executing this action
 					continue;
-				}
-
-				
+				}				
 
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Unit)

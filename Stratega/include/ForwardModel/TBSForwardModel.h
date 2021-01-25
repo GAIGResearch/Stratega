@@ -18,15 +18,12 @@ namespace  SGA
 			}
 			else if(actionType.isContinuous)
 			{
-
 				//If we are generating continuousAction we need to track them somehow
 				//Using ID for each action for example				
 				Action newAction = action;
-				std::cout << state.continueNextID << "" << std::endl;
 				newAction.continuousActionID = state.continueNextID++;
 				newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
-				
-				
+								
 				//If is continues we execute OnStart Effects
 				//and we add the action to the list of continuous actions
 				if (actionType.sourceType == ActionSourceType::Unit)
