@@ -203,9 +203,8 @@ namespace SGA
             parser.parseFunctions(effects, type.effects, context);
 
             type.isContinuous = false;
-        	//Continuous Action
-        	//
-            context.targetIDs.emplace("Action", 2);
+        	
+        	//Continuous Action Stuff
             if (nameTypePair.second["TriggerComplete"].IsDefined())
             {
                 type.isContinuous = true;

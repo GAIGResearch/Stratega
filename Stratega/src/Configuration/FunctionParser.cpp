@@ -57,7 +57,6 @@ namespace SGA
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))) ||
-				((param = parseContinuousActionReference(ss, context))) ||
 				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -226,28 +225,7 @@ namespace SGA
 
 		return FunctionParameter::createTechnologyTypeReference(targetIt->second);
 	}
-	std::optional<FunctionParameter> FunctionParser::parseContinuousActionReference(std::istringstream& ss, const ParseContext& context) const
-	{
-		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 2);
-		if (!names)
-		{
-			ss.seekg(begin);
-			return {};
-		}
-		
-		auto targetName = names.value()[0];
-		auto parameterName = names.value()[1];
-		auto targetIt = context.targetIDs.find(targetName);
-		auto parameterIt = context.parameterIDs.find(parameterName);
-		if (targetIt == context.targetIDs.end())
-		{
-			ss.seekg(begin);
-			return {};
-		}
-
-		return FunctionParameter::createContinuousActionReference({ targetIt->second,0 });
-	}
+	
 
 	std::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
 	{

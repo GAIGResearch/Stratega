@@ -46,8 +46,7 @@ namespace SGA
 		
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
-
-		
+				
 		
 		std::vector<Action> allActions;
 		for (const auto& target : targets)
@@ -65,8 +64,6 @@ namespace SGA
 
 			if (isValidAction)
 			{
-				
-
 				actionBucket.emplace_back(action);
 			}
 				
