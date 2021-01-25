@@ -25,7 +25,6 @@ namespace SGA
 		std::vector<std::shared_ptr<Condition>> targetConditions;
 		std::vector<std::shared_ptr<Effect>> effects;
 
-		//TODO Split in two different types of actions? Normal and Continuous 
 		//ContinuousAction
 		bool isContinuous;
 		//Condition that trigger the completion 

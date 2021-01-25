@@ -21,7 +21,7 @@ namespace  SGA
 				//If we are generating continuousAction we need to track them somehow
 				//Using ID for each action for example				
 				Action newAction = action;
-				newAction.continuousActionID = state.continueNextID++;
+				newAction.continuousActionID = state.continueActionNextID++;
 				newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
 								
 				//If is continues we execute OnStart Effects

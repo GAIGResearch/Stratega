@@ -276,8 +276,7 @@ namespace SGA
 						//If is player unit action or globlal action(i.e End turn)
 
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
-						if (action.actionTypeID == 1)
-							std::cout << "here";
+
 						if (actionType.actionTargets == TargetType::Entity)
 						{
 							auto& entity = action.targets[0].getEntity(gameStateCopy);
