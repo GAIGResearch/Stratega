@@ -96,4 +96,33 @@ namespace  SGA
 
 		return state.technologyTreeCollection->canResearch(targetPlayer.id, targetTechnology.id);
 	}
+
+	CanSpawnCondition::CanSpawnCondition(const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	{
+	}
+
+	bool CanSpawnCondition::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+		const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+
+		// Check if we fullfill the technology-requirements for the target entity
+		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
+			!state.technologyTreeCollection->isResearched(sourceEntity.ownerID, targetEntityType.requiredTechnologyID))
+		{
+			return false;
+		}
+		
+		// Check if we are allowed to spawn this entity
+		const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+		if(sourceEntityType.spawnableEntityTypes.find(targetEntityType.id) == sourceEntityType.spawnableEntityTypes.end())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
 }

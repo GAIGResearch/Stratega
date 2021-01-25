@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+#include <unordered_set>
 #include <Representation/Parameter.h>
 #include <Representation/Entity.h>
 
@@ -16,6 +17,8 @@ namespace SGA
 		char symbol;
 		std::unordered_map<ParameterID, Parameter> parameters;
 		std::vector<int> actionIds;
+		int requiredTechnologyID;
+		std::unordered_set<EntityTypeID> spawnableEntityTypes;
 		float lineOfSight;
 		
 		const Parameter& getParameter(ParameterID id) const;

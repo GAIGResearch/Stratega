@@ -27,15 +27,21 @@ namespace SGA
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
-		// Assign actions to entities
+        // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
         for (auto& type : config.entityTypes)
         {
+            // Assign actions to entities
             auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
                 type.second.actionIds.emplace_back(config.getActionID(actionName));
             }
+
+            // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
+            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
+            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
+            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
         }
 		
         return config;

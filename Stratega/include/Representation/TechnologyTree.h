@@ -16,6 +16,8 @@ namespace SGA
 	class TechnologyTreeType
 	{
 	public:
+		static const int UNDEFINED_TECHNOLOGY_ID = -1;
+		
 		std::string technologyTreeName;
 
 		//Data

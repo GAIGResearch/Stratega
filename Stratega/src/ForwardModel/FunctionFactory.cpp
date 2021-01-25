@@ -14,6 +14,7 @@ namespace SGA
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
 		factory.registerFunction<IsResearched>("HasResearched");
 		factory.registerFunction<CanResearch>("CanResearch");
+		factory.registerFunction<CanSpawnCondition>("CanSpawn");
 		
 		return factory;
 	}

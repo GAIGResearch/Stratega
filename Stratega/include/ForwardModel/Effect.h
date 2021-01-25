@@ -51,7 +51,7 @@ namespace SGA
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	// ToDo This effect makes a lot of assumptions, for example what a valid position or how large the spawn-area is. Additionally it doesn't work for RTS
+	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
 	class SpawnUnitRandom : public Effect
 	{
 		FunctionParameter sourceEntityParam;
