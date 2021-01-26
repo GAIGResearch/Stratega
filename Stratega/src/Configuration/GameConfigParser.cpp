@@ -88,6 +88,7 @@ namespace SGA
             type.id = idCounter++;
             type.name = nameConfigPair.first;
 			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
+			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
             type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
 			type.symbol = nameConfigPair.second["Symbol"].as<char>();
             config.tileTypes.emplace(type.id, std::move(type));

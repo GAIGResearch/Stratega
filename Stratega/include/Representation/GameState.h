@@ -280,10 +280,13 @@ namespace SGA
 				// Helper method for shadowcasting
 				auto rayCallback = [&](const Vector2i& pos) -> bool
 				{
-					// Mark the tile as visible
+					if (entity->position.distance(pos) > entity->lineOfSightRange)
+					{
+						return true;
+					}
+					
 					visibilityMap[pos] = true;
-					// Check if we should stop the ray
-					return !board[pos].isWalkable || entity->position.distance(pos) > entity->lineOfSightRange;
+					return board[pos].blocksSight;
 				};
 				
 				// Shadowcasting
