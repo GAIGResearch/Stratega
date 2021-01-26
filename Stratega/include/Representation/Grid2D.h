@@ -42,7 +42,45 @@ namespace SGA
 		int getWidth() const { return width; }
 		int getHeight() const { return height; }
 		
-		bool isInBounds(const Vector2i& pos) const { return pos.x > 0 && pos.x < width&& pos.y > 0 && pos.y < height; };
+		bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
 		bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
+
+		/// <summary>
+		/// Visits all positions from start to end using Bresenhams's line algorithm.
+		/// </summary>
+		/// <param name="start">The start position of the ray</param>
+		/// <param name="end">The end position of the ray. This position can be outside of the map boundaries.</param>
+		/// <param name="c">Callback triggered for every position visited. Receives as input a Vector2i and has to return a boolean to indicating if the ray should stop.</param>
+		template<typename Callback>
+		void bresenhamRay(const Vector2i& start, const Vector2i& end, Callback c)
+		{
+			auto x0 = start.x, y0 = start.y;
+			auto x1 = end.x, y1 = end.y;
+			auto dx = abs(x1 - x0);
+			auto sx = x0 < x1 ? 1 : -1;
+			auto dy = -abs(y1 - y0);
+			auto sy = y0 < y1 ? 1 : -1;
+			auto err = dx + dy;
+			
+			while (true)
+			{
+				if (!isInBounds(x0, y0) || c(Vector2i(x0, y0)))
+					break;
+				if (x0 == x1 && y0 == y1)
+					break;
+				
+				auto e2 = 2 * err;
+				if (e2 >= dy)
+				{
+					err += dy;
+					x0 += sx;
+				}
+				if (e2 <= dx)
+				{
+					err += dx;
+					y0 += sy;
+				}
+			}
+		}
 	};
 }

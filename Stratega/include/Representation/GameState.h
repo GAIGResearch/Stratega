@@ -268,28 +268,44 @@ namespace SGA
 
 		void applyFogOfWar(int playerID)
 		{
-			std::vector<std::pair<Vector2f, int>> entityData;
-			for(const auto& entity : getPlayerEntities(playerID))
+			Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
+			for(const auto* entity : getPlayerEntities(playerID))
 			{
-				entityData.emplace_back(entity->position, entity->lineOfSightRange);
+				// Compute maximum sized rectangle around entity
+				auto leftX = std::max<int>(0, entity->position.x - entity->lineOfSightRange);
+				auto rightX = std::min<int>(board.getWidth() - 1, entity->position.x + entity->lineOfSightRange);
+				auto leftY = std::max<int>(0, entity->position.y - entity->lineOfSightRange);
+				auto rightY = std::min<int>(board.getHeight() - 1, entity->position.y + entity->lineOfSightRange);
+
+				// Helper method for shadowcasting
+				auto rayCallback = [&](const Vector2i& pos) -> bool
+				{
+					// Mark the tile as visible
+					visibilityMap[pos] = true;
+					// Check if we should stop the ray
+					return !board[pos].isWalkable || entity->position.distance(pos) > entity->lineOfSightRange;
+				};
+				
+				// Shadowcasting
+				for (int x = leftX; x <= rightX; x++)
+				{
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, leftY }, rayCallback);
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, rightY }, rayCallback);
+				}
+				 
+				 
+				for (int y = leftY; y <= rightY; y++)
+				{
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ leftX, y}, rayCallback);
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ rightX, y}, rayCallback);
+				}
 			}
 			
-			// Helper method
-			auto isVisible = [&](const Vector2f& pos)
-			{
-				for (const auto& entry : entityData)
-				{
-					if (entry.first.distance(pos) <= entry.second)
-						return true;
-				}
-				return false;
-			};			
-
 			// Remove entities that are not visible
 			auto it = entities.begin();
 			while (it != entities.end())
 			{
-				if (it->ownerID != playerID && !isVisible(it->position))
+				if(!visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
 				{
 					it = entities.erase(it);
 				}
@@ -304,7 +320,7 @@ namespace SGA
 			{
 				for (int x = 0; x < board.getWidth(); x++)
 				{
-					if (!isVisible(Vector2i(x, y)))
+					if (!visibilityMap.get(x, y))
 					{
 						auto& tile = board.get(x, y);
 						tile = fogOfWarTile;
