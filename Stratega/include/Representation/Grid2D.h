@@ -64,11 +64,14 @@ namespace SGA
 			
 			while (true)
 			{
-				if (!isInBounds(x0, y0) || c(Vector2i(x0, y0)))
+				if (!isInBounds(x0, y0))
+					break;
+				if (c(Vector2i(x0, y0)))
 					break;
 				if (x0 == x1 && y0 == y1)
 					break;
-				
+
+				// Compute next position
 				auto e2 = 2 * err;
 				if (e2 >= dy)
 				{
