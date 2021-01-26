@@ -42,5 +42,17 @@ namespace SGA
 			a.isContinuous = false;
 			return a;
 		}
+
+		static Action createAbortAction(int playerID,int entityID, int continuousActionID)
+		{
+			Action a;
+			a.actionTypeID = 1;
+			a.ownerID = playerID;
+			a.isEndAction = false;
+			a.isContinuous = false;
+			a.targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
+			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
+			return a;
+		}
 	};
 }

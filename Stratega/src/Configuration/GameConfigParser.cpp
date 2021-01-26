@@ -169,6 +169,12 @@ namespace SGA
             throw std::runtime_error("Cannot find definition for Actions");
         }
 
+        FunctionParser parser;
+
+        auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+        context.targetIDs.emplace("Target", 1);
+		
         // ToDo Is this necessary? - Hardcode EndTurn
         ActionType actionType;
         actionType.id = 0;
@@ -176,9 +182,19 @@ namespace SGA
         actionType.sourceType = ActionSourceType::Player;
         actionType.cooldownTicks = 0;
         config.actionTypes.emplace(0, std::move(actionType));
-		
-        FunctionParser parser;
-        auto context = ParseContext::fromGameConfig(config);
+
+		//Add hardcoded AbortAction
+        ActionType abortActionType;
+        abortActionType.id = 1;
+        abortActionType.name = "AbortAction";
+        abortActionType.sourceType = ActionSourceType::Unit;
+        abortActionType.cooldownTicks = 0;
+        abortActionType.isContinuous = false;
+        abortActionType.actionTargets.type = TargetType::ContinuousAction; 
+        parser.parseFunctions({"AbortContinuousAction(Source, Target)"}, abortActionType.effects, context);
+        config.actionTypes.emplace(1, std::move(abortActionType));
+        context.targetIDs.clear();
+        
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;

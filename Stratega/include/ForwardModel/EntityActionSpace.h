@@ -17,5 +17,6 @@ namespace SGA
 		virtual std::vector<ActionTarget> generateContinuousActionTargets(const GameState& gameState, const Entity& sourceEntity);
 		virtual void generateActions( GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket);
 		virtual Action generateSelfAction(const Entity& sourceEntity, const ActionType& actionType);
+		
 	};
 }

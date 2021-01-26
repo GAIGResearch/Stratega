@@ -81,6 +81,29 @@ Actions:
         OnAbort:
             - "ModifyResource(Source.Gold, -50)"
 
+    SpawnFighterContinuous2:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        #Continuous Stuff
+        TriggerComplete:
+            - "HasElapsedTick(10)"
+        OnStart:
+            - "ModifyResource(Source.Gold, -100)"
+        OnTick:
+            - "ModifyResource(Source.Gold, +10)"
+        OnComplete:
+            - "Spawn(Miner, Target)"
+        OnAbort:
+            - "ModifyResource(Source.Gold, -50)"
+
 
     # Attack Actions
     Attack:
@@ -130,22 +153,12 @@ Actions:
         Effects:
             - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
 
-    #ContinuousAction
-    AbortContinuousAction:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: ContinuousAction
-        Effects:
-            - "AbortContinuousAction(Source,Target)"
-        #Add more commun effect if you abort a continuousAction?
-
 Entities:
     Base:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous, AbortContinuousAction]
+        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous, SpawnFighterContinuous2]
         Parameters:
             Gold: 500
 
