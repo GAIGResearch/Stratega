@@ -103,8 +103,18 @@ namespace SGA
 			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
 			{
 				auto& actionType = state.getActionType(state.entities[j].continuousAction[i].actionTypeID);
-				//Check if action is complete
 
+				//Execute OnTick Effects
+				if (actionType.sourceType == ActionSourceType::Unit)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnTick)
+					{
+						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+					}
+				}
+				
+				//Check if action is complete
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
@@ -149,15 +159,7 @@ namespace SGA
 					continue;
 				}				
 
-				//Execute OnTick Effects
-				if (actionType.sourceType == ActionSourceType::Unit)
-				{
-					auto& type = state.actionTypes->at(actionType.id);
-					for (auto& effect : type.OnTick)
-					{
-						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
-					}
-				}
+				
 
 				//Add one elapsed tick
 				state.entities[j].continuousAction[i].elapsedTicks++;
