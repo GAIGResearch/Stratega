@@ -68,7 +68,9 @@ namespace SGA
 		
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
-				
+
+		if (actionType.isContinuous)
+			action.actionTypeFlags = ContinuousAction;
 		
 		std::vector<Action> allActions;
 		for (const auto& target : targets)

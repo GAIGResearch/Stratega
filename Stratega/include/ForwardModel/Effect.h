@@ -41,13 +41,6 @@ namespace SGA
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class AbortContinuousAction: public Effect
-	{
-	public:
-		AbortContinuousAction(const std::vector<FunctionParameter>& parameters) {};
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-	};
-	
 	class SpawnUnit : public Effect
 	{
 		FunctionParameter entityTypeParam;

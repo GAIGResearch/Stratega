@@ -183,16 +183,16 @@ namespace SGA
         actionType.cooldownTicks = 0;
         config.actionTypes.emplace(0, std::move(actionType));
 
-		//Add hardcoded AbortAction
-        ActionType abortActionType;
-        abortActionType.id = 1;
-        abortActionType.name = "AbortAction";
-        abortActionType.sourceType = ActionSourceType::Unit;
-        abortActionType.cooldownTicks = 0;
-        abortActionType.isContinuous = false;
-        abortActionType.actionTargets.type = TargetType::ContinuousAction; 
-        parser.parseFunctions({"AbortContinuousAction(Source, Target)"}, abortActionType.effects, context);
-        config.actionTypes.emplace(1, std::move(abortActionType));
+		////Add hardcoded AbortAction
+  //      ActionType abortActionType;
+  //      abortActionType.id = 1;
+  //      abortActionType.name = "AbortAction";
+  //      abortActionType.sourceType = ActionSourceType::Unit;
+  //      abortActionType.cooldownTicks = 0;
+  //      abortActionType.isContinuous = false;
+  //      abortActionType.actionTargets.type = TargetType::ContinuousAction; 
+  //      parser.parseFunctions({"AbortContinuousAction(Source, Target)"}, abortActionType.effects, context);
+  //      config.actionTypes.emplace(1, std::move(abortActionType));
         context.targetIDs.clear();
         
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())

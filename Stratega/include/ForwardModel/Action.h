@@ -6,20 +6,25 @@ namespace SGA
 {
 	class EntityForwardModel;
 	
+	enum ActionFlag
+	{
+		EndTickAction = 1 << 0,
+		ContinuousAction = 1 << 1,
+		AbortContinuousAction = 1 << 2
+	};
+	
 	struct Action
 	{
 		Action():
-			isEndAction(false),
 			actionTypeID(-1),
 			ownerID(0),
 			elapsedTicks(0),
-			isContinuous(false),
-			continuousActionID(-1)
+			continuousActionID(-1)		
 		{
+			
 		}
-
-		//RTS Endtick && TBS Endturn
-		bool isEndAction;
+		
+		ActionFlag actionTypeFlags;
 		
 		int actionTypeID;
 		// Contains all targets involved in an action
@@ -28,28 +33,26 @@ namespace SGA
 		std::vector<ActionTarget> targets;
 		int ownerID;
 
-		bool isContinuous;
 		int continuousActionID;
 		int elapsedTicks;
+		
 		void execute(GameState& state, const EntityForwardModel& fm) const;
 
 		static Action createEndAction(int playerID)
 		{
 			Action a;
-			a.actionTypeID = 0;
+			a.actionTypeID = -1;
+			a.actionTypeFlags = EndTickAction;
 			a.ownerID = playerID;
-			a.isEndAction = true;
-			a.isContinuous = false;
 			return a;
 		}
 
 		static Action createAbortAction(int playerID,int entityID, int continuousActionID)
 		{
-			Action a;
-			a.actionTypeID = 1;
-			a.ownerID = playerID;
-			a.isEndAction = false;
-			a.isContinuous = false;
+			Action a;			
+			a.ownerID = playerID;			
+			a.actionTypeFlags = AbortContinuousAction;
+			a.continuousActionID = continuousActionID;
 			a.targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
 			return a;

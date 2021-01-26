@@ -70,7 +70,7 @@ namespace SGA
 
 	void RTSGame::executeAction(Action action)
 	{
-		if (action.isEndAction)
+		if (action.actionTypeFlags==EndTickAction)
 			return;
 
 		std::lock_guard<std::mutex> stateGuard(stateMutex);

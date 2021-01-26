@@ -31,7 +31,6 @@ namespace SGA
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
 		factory.registerFunction<RemoveEntityEffect>("Remove");
 		factory.registerFunction<ResearchTechnology>("Research");
-		factory.registerFunction<AbortContinuousAction>("AbortContinuousAction");
 		
 		return factory;
 	}
