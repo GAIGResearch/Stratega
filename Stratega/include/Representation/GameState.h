@@ -3,13 +3,16 @@
 #include <ForwardModel/ActionType.h>
 #include <Representation/Entity.h>
 #include <Representation/Player.h>
-#include <Representation/Board.h>
+#include <Representation/Grid2D.h>
 #include <Representation/TechnologyTree.h>
+#include <Representation/Tile.h>
+#include <Representation/TileType.h>
+
 namespace SGA
 {
 	struct GameState
 	{
-		GameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
+		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
@@ -40,7 +43,7 @@ namespace SGA
 			  tickLimit(-1),
 			  fogOfWarTile(-1,0,0),
 			  fogOfWarId(-1),
-			  board(0,0),
+			  board(0,0, fogOfWarTile),
 			  nextEntityID(0),
 			  nextPlayerID(0)
 		{
@@ -75,7 +78,7 @@ namespace SGA
 		// Board information
 		Tile fogOfWarTile;
 		int fogOfWarId = -1;
-		Board board;
+		Grid2D<Tile> board;
 
 		// Player and unit information
 		std::vector<Entity> entities;
@@ -195,7 +198,7 @@ namespace SGA
 
 		bool isWalkable(const Vector2i& position)
 		{
-			Tile& targetTile = board.getTile(position.x, position.y);
+			Tile& targetTile = board.get(position.x, position.y);
 			Entity* targetUnit = getEntity(position);
 
 			return targetUnit == nullptr && targetTile.isWalkable;
@@ -282,7 +285,7 @@ namespace SGA
 				return false;
 			};			
 
-			// Remove units that are not visible
+			// Remove entities that are not visible
 			auto it = entities.begin();
 			while (it != entities.end())
 			{
@@ -303,7 +306,7 @@ namespace SGA
 				{
 					if (!isVisible(Vector2i(x, y)))
 					{
-						auto& tile = board.getTile(x, y);
+						auto& tile = board.get(x, y);
 						tile = fogOfWarTile;
 						tile.position = Vector2i(x, y);
 					}

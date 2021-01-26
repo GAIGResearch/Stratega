@@ -55,7 +55,7 @@ namespace  SGA
 	bool IsWalkable::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		return state.board.getTile(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable&& state.getEntityAt(pos) == nullptr;
+		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)

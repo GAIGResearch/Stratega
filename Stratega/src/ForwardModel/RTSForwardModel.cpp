@@ -279,7 +279,7 @@ namespace SGA
 				for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
 				{
 					// Everything outside bounds is considered as un-walkable tiles
-					if (state.isInBounds({ x, y }) && state.board.getTile(x, y).isWalkable)
+					if (state.isInBounds({ x, y }) && state.board.get(x, y).isWalkable)
 						continue;
 
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
@@ -312,7 +312,7 @@ namespace SGA
 		state.navigation->config = config;
 
 		//Get size from current board
-		Board& board = state.board;
+		auto& board = state.board;
 		float width = board.getWidth();
 		float height = board.getHeight();
 		float cellSize = 1;
@@ -390,7 +390,7 @@ namespace SGA
 			for (float y = 0; y < h; y++)
 			{
 				int pos = (y * width + x);
-				Tile tile = board.getTile(x, y);
+				auto& tile = board.get(x, y);
 
 				if (tile.isWalkable)
 					rcAddSpan(&state.navigation->m_ctx, *state.navigation->m_solid, x, y, 0, 5, RC_WALKABLE_AREA, 0);
