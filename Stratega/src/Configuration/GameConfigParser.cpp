@@ -176,16 +176,9 @@ namespace SGA
             throw std::runtime_error("Cannot find definition for Actions");
         }
 
-        // ToDo Is this necessary? - Hardcode EndTurn
-        ActionType actionType;
-        actionType.id = 0;
-        actionType.name = "EndTurn";
-        actionType.sourceType = ActionSourceType::Player;
-        actionType.cooldownTicks = 0;
-        config.actionTypes.emplace(0, std::move(actionType));
-		
         FunctionParser parser;
-        auto context = ParseContext::fromGameConfig(config);
+
+        auto context = ParseContext::fromGameConfig(config);      
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;

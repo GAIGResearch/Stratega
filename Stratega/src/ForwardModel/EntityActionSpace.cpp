@@ -10,6 +10,7 @@ namespace SGA
 			if (sourceEntity.ownerID != player)
 				continue;
 
+			
 			for (const auto& actionInfo : sourceEntity.attachedActions)
 			{
 				// Check if this action can be executed
@@ -17,6 +18,27 @@ namespace SGA
 				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
 					continue;
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
+					continue;
+				
+				bool generateContinuousAction = true;
+				//Check if action is continuos
+				if(actionType.isContinuous)
+				{
+					//Check if entity is already executing it
+					for (auto& action : sourceEntity.continuousAction)
+					{
+						if (action.actionTypeID == actionType.id)
+						{
+							//This entity cant execute the action
+							generateContinuousAction = false;
+
+							//Give the posibility to abort it
+							bucket.emplace_back(Action::createAbortAction(player,sourceEntity.id,action.continuousActionID));
+						}							
+					}
+				}
+				
+				if(!generateContinuousAction)
 					continue;
 
 				// Generate all actions
@@ -46,7 +68,9 @@ namespace SGA
 		
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 		action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
-				
+
+		if (actionType.isContinuous)
+			action.actionTypeFlags = ContinuousAction;
 		
 		std::vector<Action> allActions;
 		for (const auto& target : targets)

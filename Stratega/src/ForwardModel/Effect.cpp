@@ -41,27 +41,6 @@ namespace SGA
 		}
 	}
 
-	void AbortContinuousAction::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		auto& sourceEntity = targets[0].getEntity(state);
-
-		for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
-		{
-			auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
-			
-			//Execute OnAbort Effects				
-			for (auto& effect : actionType.OnAbort)
-			{
-				effect->execute(state, fm, sourceEntity.continuousAction[i].targets);
-			}
-
-			//Remove continuous action
-			sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
-			i--;
-		}
-	}
-
-	
 	
 	void Move::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
