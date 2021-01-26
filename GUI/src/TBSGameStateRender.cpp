@@ -833,7 +833,22 @@ namespace SGA
 			std::string actionInfo = std::to_string(index);
 			if (action.actionTypeID == -1)
 			{
-				actionInfo +=" SpecialAction";				
+				if (action.actionTypeFlags == AbortContinuousAction)
+				{
+					//We need to find the continues action name that will abort
+					auto& sourceEntity =gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+					for (auto& continueAction : sourceEntity.continuousAction)
+					{
+						if(continueAction.continuousActionID==action.continuousActionID)
+						{
+							ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+							actionInfo += " Abort " + actionType.name;
+						}
+					}
+					
+				}					
+				else
+					actionInfo +=" SpecialAction";				
 			}
 			else
 			{
