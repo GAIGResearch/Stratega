@@ -62,7 +62,7 @@ namespace SGA {
 		{
 			for (size_t y = 0; y < copy.board.getHeight(); y++)
 			{
-				if (copy.board.getTile(x,y).tileTypeID != copy.fogOfWarTile.tileTypeID)
+				if (copy.board.get(x,y).tileTypeID != copy.fogOfWarTile.tileTypeID)
 					visCount++;
 			}
 		}

@@ -13,7 +13,7 @@ namespace SGA
 		{
 			
 		}
-		RTSGameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
+		RTSGameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			GameState(std::move(board), std::move(tileTypes)),
 			navigation(nullptr)
 		{

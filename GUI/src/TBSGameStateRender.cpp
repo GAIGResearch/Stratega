@@ -419,13 +419,13 @@ namespace SGA
 		else
 			selectedGameStateCopy = &gameStateCopy;
 
-		Board& board = selectedGameStateCopy->board;
+		auto& board = selectedGameStateCopy->board;
 
 		for (int y = 0; y < board.getHeight(); ++y)
 		{
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
-				auto& targetTile = board.getTile(x, y);
+				auto& targetTile = board.get(x, y);
 				int targetTypeId;
 
 				
@@ -436,7 +436,7 @@ namespace SGA
 					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
 					{
 						
-						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
 						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
 						newTile.setTexture(texture);
 						newTile.setColor(sf::Color(144, 161, 168));

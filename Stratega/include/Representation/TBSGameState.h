@@ -9,7 +9,7 @@ namespace SGA
 		{
 		}
 
-		TBSGameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes)
+		TBSGameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes)
 			: GameState(std::move(board), tileTypes),
 			currentPlayer(0)
 		{
