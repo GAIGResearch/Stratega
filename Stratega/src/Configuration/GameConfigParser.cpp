@@ -169,16 +169,9 @@ namespace SGA
             throw std::runtime_error("Cannot find definition for Actions");
         }
 
-        // ToDo Is this necessary? - Hardcode EndTurn
-        ActionType actionType;
-        actionType.id = 0;
-        actionType.name = "EndTurn";
-        actionType.sourceType = ActionSourceType::Player;
-        actionType.cooldownTicks = 0;
-        config.actionTypes.emplace(0, std::move(actionType));
-
         FunctionParser parser;
-        auto context = ParseContext::fromGameConfig(config);
+
+        auto context = ParseContext::fromGameConfig(config);      
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
@@ -202,6 +195,48 @@ namespace SGA
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
 
+            type.isContinuous = false;
+        	
+        	//Continuous Action Stuff
+            if (nameTypePair.second["TriggerComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+                auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+            }
+        	
+            if (nameTypePair.second["OnStart"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnStart, context);
+            }
+
+            if (nameTypePair.second["OnTick"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnTick, context);
+            }
+
+            if (nameTypePair.second["OnComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnComplete, context);
+            }
+
+            if (nameTypePair.second["OnAbort"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnAbort, context);
+            }
+        	
             config.actionTypes.emplace(type.id, std::move(type));
             context.targetIDs.clear();
         }

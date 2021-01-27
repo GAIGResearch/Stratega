@@ -52,7 +52,7 @@ namespace SGA
                     gameCommunicator.executeAction(bestAction);
 
                 	// return best action
-                    previousActionIndex = bestAction.isEndAction ? -1 : bestActionIndex;
+                    previousActionIndex = (bestAction.actionTypeFlags==EndTickAction) ? -1 : bestActionIndex;
                 }
 
 			}

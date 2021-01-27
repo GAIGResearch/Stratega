@@ -95,6 +95,76 @@ namespace SGA
 				}
 			}
 		}
+
+		//Check if condition is complete
+		for (size_t j = 0; j < state.entities.size(); j++)
+		
+		{
+			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
+			{
+				auto& actionType = state.getActionType(state.entities[j].continuousAction[i].actionTypeID);
+
+				//Execute OnTick Effects
+				if (actionType.sourceType == ActionSourceType::Unit)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnTick)
+					{
+						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+					}
+				}
+				
+				//Check if action is complete
+				bool isComplete = true;
+				for (const auto& condition : actionType.triggerComplete)
+				{
+					if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
+					{
+						isComplete = false;
+						break;
+					}
+				}
+
+				if (isComplete)
+				{
+					//Check before we execute OnComplete Effects
+					//if the conditions continue being true
+					bool canExecute = true;
+					for (const auto& condition : actionType.targetConditions)
+					{
+						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
+						{
+							canExecute = false;
+							break;
+						}
+					}
+					
+					if(canExecute)
+					{
+						//Execute OnComplete Effects
+						if (actionType.sourceType == ActionSourceType::Unit)
+						{
+							auto& type = state.actionTypes->at(actionType.id);
+							for (auto& effect : type.OnComplete)
+							{
+								effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+							}
+						}
+					}
+					
+					//Delete the ContinuousAction
+					state.entities[j].continuousAction.erase(state.entities[j].continuousAction.begin() + i);
+					i--;
+					//Stop executing this action
+					continue;
+				}				
+
+				
+
+				//Add one elapsed tick
+				state.entities[j].continuousAction[i].elapsedTicks++;
+			}
+		}
 	}
 
 	void EntityForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const

@@ -40,6 +40,7 @@ namespace SGA
 				entity.shouldRemove = true;
 		}
 	}
+
 	
 	void Move::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{

@@ -17,6 +17,11 @@ namespace SGA
 		return ActionTarget(Type::TechnologyReference, { .technologyID = technologyID });
 	}
 
+	ActionTarget ActionTarget::createContinuousActionActionTarget(int continuousActionID)
+	{
+		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
+	}
+
 	Vector2f ActionTarget::getPosition() const
 	{
 		if (targetType == Type::Position)

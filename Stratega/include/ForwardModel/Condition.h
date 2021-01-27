@@ -26,7 +26,16 @@ namespace SGA
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+	
+	class HasElapsedTime : public Condition
+	{
+		FunctionParameter lowerBound;
+	public:
+		HasElapsedTime(const std::vector<FunctionParameter>& parameters);
 
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class SamePlayer : public Condition
 	{
 	public:
