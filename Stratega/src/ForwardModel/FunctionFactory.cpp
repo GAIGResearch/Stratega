@@ -15,6 +15,7 @@ namespace SGA
 		factory.registerFunction<IsResearched>("HasResearched");
 		factory.registerFunction<CanResearch>("CanResearch");
 		factory.registerFunction<CanSpawnCondition>("CanSpawn");
+		factory.registerFunction<CanAfford>("CanAfford");
 		
 		return factory;
 	}
@@ -31,7 +32,8 @@ namespace SGA
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
 		factory.registerFunction<RemoveEntityEffect>("Remove");
 		factory.registerFunction<ResearchTechnology>("Research");
-		factory.registerFunction<SpawnUnitRandom>("SpawnRandom");
+		factory.registerFunction<SpawnEntityRandom>("SpawnRandom");
+		factory.registerFunction<PayCostEffect>("PayCost");
 		
 		return factory;
 	}

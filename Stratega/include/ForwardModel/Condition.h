@@ -94,4 +94,14 @@ namespace SGA
 		CanSpawnCondition(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class CanAfford : public Condition
+	{
+		FunctionParameter sourceEntityParam;
+		FunctionParameter costParam;
+
+	public:
+		CanAfford(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 }

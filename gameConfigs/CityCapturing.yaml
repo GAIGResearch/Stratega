@@ -30,36 +30,18 @@ Tiles:
         IsWalkable: true
      
 Actions:
-    # Spawn Actions
-    SpawnConquerer:
+    Spawn:
         Type: EntityAction
         Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Player.Gold, 6)"
         Target:
-            Type: Position
-            Shape: Square
-            Size: 1
+            Type: EntityType
+            ValidTargets: Units
             Conditions:
-                - "IsWalkable(Target)"
+                - "CanAfford(Source.Player, Target)"
+                - "CanSpawn(Source, Target)"
         Effects:
-            - "Spawn(Conquerer, Target)"
-            - "ModifyResource(Source.Player.Gold, -6)"
-
-    SpawnFighter:
-        Type: EntityAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Player.Gold, 5)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
-        Effects:
-            - "Spawn(Fighter, Target)"
-            - "ModifyResource(Source.Player.Gold, -5)"
+            - "SpawnRandom(Source, Target)"
+            - "PayCost(Source.Player, Target)"
 
     # Attack Actions
     Attack:
@@ -104,7 +86,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [SpawnConquerer, SpawnFighter]
+        Actions: [Spawn]
 
     Conquerer:
         Sprite: ../GUI/Assets/farmer.png
@@ -113,6 +95,8 @@ Entities:
         Actions: [Move, Capture]
         Parameters:
             Health: 25
+        Cost:
+            Gold: 6
 
     Fighter:
         Sprite: ../GUI/Assets/unit2New.png
@@ -121,6 +105,11 @@ Entities:
         Actions: [Move, Attack]
         Parameters:
             Health: 100
+        Cost:
+            Gold: 5
+
+EntityGroups:
+    Units: [Fighter, Conquerer]
 
 Board:
     GenerationType: Manual

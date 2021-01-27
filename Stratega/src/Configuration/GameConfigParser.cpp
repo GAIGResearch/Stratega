@@ -15,11 +15,11 @@ namespace SGA
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
+		parseEntities(configNode["Entities"], config);
+        parseEntityGroups(configNode["EntityGroups"], config);
         parseAgents(configNode["Agents"], config);
         parseTileTypes(configNode["Tiles"], config);
         parseBoardGenerator(configNode["Board"], config);
-        parseEntities(configNode["Entities"], config);
-        parseEntityGroups(configNode["EntityGroups"], config);
         parsePlayerParameters(configNode["PlayerParameters"], config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
@@ -42,6 +42,8 @@ namespace SGA
             type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
             auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
             type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+        	// Hardcoded cost information
+            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
         }
 		
         return config;
@@ -331,6 +333,7 @@ namespace SGA
                 newTechnology.id = technologyNextID++;
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
+                newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
@@ -437,4 +440,22 @@ namespace SGA
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
 	}
 
+    std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const
+	{
+        auto nameCostMap = costNode.as<std::map<std::string, double>>(std::map<std::string, double>());
+        std::unordered_map<ParameterID, double> idCostMap;
+
+		for(const auto& nameCostPair : nameCostMap)
+		{
+            auto it = config.parameters.find(nameCostPair.first);
+			if(it == config.parameters.end())
+			{
+                throw std::runtime_error("Could not find a parameter with the name " + nameCostPair.first);
+			}
+
+            idCostMap.emplace(it->second, nameCostPair.second);
+		}
+
+        return idCostMap;
+	}
 }

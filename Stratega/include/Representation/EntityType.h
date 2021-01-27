@@ -17,8 +17,11 @@ namespace SGA
 		char symbol;
 		std::unordered_map<ParameterID, Parameter> parameters;
 		std::vector<int> actionIds;
+
 		int requiredTechnologyID;
 		std::unordered_set<EntityTypeID> spawnableEntityTypes;
+		std::unordered_map<ParameterID, double> cost;
+		
 		float lineOfSight;
 		
 		const Parameter& getParameter(ParameterID id) const;

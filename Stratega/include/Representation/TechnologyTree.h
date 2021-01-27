@@ -11,6 +11,7 @@ namespace SGA
 		std::string description;
 		int id;
 		std::vector<int> parentIDs;
+		std::unordered_map<ParameterID, double> cost;
 	};
 
 	class TechnologyTreeType

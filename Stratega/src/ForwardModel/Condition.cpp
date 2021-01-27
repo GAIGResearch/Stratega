@@ -124,5 +124,41 @@ namespace  SGA
 		return true;
 	}
 
+	CanAfford::CanAfford(const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), costParam(parameters[1])
+	{
+	}
+
+	bool CanAfford::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		if(sourceEntityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			const auto& player = sourceEntityParam.getPlayer(state, targets);
+			const auto& cost = costParam.getCost(state, targets);
+
+			for (const auto& idCostPair : cost)
+			{
+				const auto& param = state.playerParameterTypes->at(idCostPair.first);
+				if (player.parameters[param.index] < idCostPair.second)
+					return false;
+			}
+		}
+		else
+		{
+			const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+			const auto& cost = costParam.getCost(state, targets);
+
+			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+			for (const auto& idCostPair : cost)
+			{
+				const auto& param = sourceEntityType.parameters.at(idCostPair.first);
+				if (sourceEntity.parameters[param.index] < idCostPair.second)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
 
 }

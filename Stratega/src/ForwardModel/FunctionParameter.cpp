@@ -38,6 +38,11 @@ namespace SGA
 		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
 	}
 
+	FunctionParameter::Type FunctionParameter::getType() const
+	{
+		return parameterType;
+	}
+
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
@@ -183,5 +188,30 @@ namespace SGA
 		}
 		
 	}
-	
+
+	const std::unordered_map<ParameterID, double> FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if(parameterType == Type::ArgumentReference)
+		{
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			if(actionTarget.getType() == ActionTarget::EntityTypeReference)
+			{
+				return getEntityType(state, actionTargets).cost;
+			}
+			else if(actionTarget.getType() == ActionTarget::TechnologyReference)
+			{
+				return getTechnology(state, actionTargets).cost;
+			}
+		}
+		else if(parameterType == Type::TechnologyTypeReference)
+		{
+			return getTechnology(state, actionTargets).cost;
+		}
+		else if(parameterType == Type::EntityTypeReference)
+		{
+			return getEntityType(state, actionTargets).cost;
+		}
+
+		throw std::runtime_error("Type not recognized");
+	}
 }

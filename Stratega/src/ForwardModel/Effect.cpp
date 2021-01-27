@@ -189,12 +189,12 @@ namespace SGA
 		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
-	SpawnUnitRandom::SpawnUnitRandom(const std::vector<FunctionParameter>& parameters)
+	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)
 		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
 	{
 	}
 
-	void SpawnUnitRandom::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnEntityRandom::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
@@ -207,7 +207,7 @@ namespace SGA
 				{
 					Vector2i spawnPos{ static_cast<int>(sourceEntity.position.x) + dx, static_cast<int>(sourceEntity.position.y) + dy};
 					if (!state.isInBounds(spawnPos)) continue;
-					if (state.getEntityAt(spawnPos) != nullptr) continue;
+					if (!state.isWalkable(spawnPos)) continue;
 
 					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, spawnPos);
 					return;
@@ -220,6 +220,37 @@ namespace SGA
 		}
 	}
 
+	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), costParam(parameters[1])
+	{
+	}
+
+	void PayCostEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (sourceEntityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& player = sourceEntityParam.getPlayer(state, targets);
+			const auto& cost = costParam.getCost(state, targets);
+
+			for (const auto& idCostPair : cost)
+			{
+				const auto& param = state.playerParameterTypes->at(idCostPair.first);
+				player.parameters[param.index] -= idCostPair.second;
+			}
+		}
+		else
+		{
+			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+			const auto& cost = costParam.getCost(state, targets);
+
+			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+			for (const auto& idCostPair : cost)
+			{
+				const auto& param = sourceEntityType.parameters.at(idCostPair.first);
+				sourceEntity.parameters[param.index] -= idCostPair.second;
+			}
+		}
+	}
 
 
 }
