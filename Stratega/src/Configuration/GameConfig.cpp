@@ -154,7 +154,7 @@ namespace SGA
 			}
 		}
 		
-		state->board = Board(tiles, width, y);
+		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
 
 		return std::move(state);
 	}

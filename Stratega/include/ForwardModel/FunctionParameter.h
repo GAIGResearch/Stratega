@@ -11,6 +11,7 @@ namespace SGA
 	
 	class FunctionParameter
 	{
+	public:
 		enum class Type
 		{
 			Constant, // Values like 1, 1.5, etc
@@ -20,9 +21,9 @@ namespace SGA
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
-			ContinuousActionTypeReference, // References ContinuousAction
 		};
 
+	private:
 		struct ParameterReference
 		{
 			ParameterID parameterID;
@@ -73,6 +74,8 @@ namespace SGA
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 		static FunctionParameter createContinuousActionReference(ContinuousActionReference continuousActionReference);
 
+		Type getType() const;
+		
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -84,6 +87,7 @@ namespace SGA
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::unordered_map<ParameterID, double> getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 	};
 }

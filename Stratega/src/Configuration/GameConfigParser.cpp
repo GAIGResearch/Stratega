@@ -15,27 +15,41 @@ namespace SGA
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
+		parseEntities(configNode["Entities"], config);
+        parseEntityGroups(configNode["EntityGroups"], config);
         parseAgents(configNode["Agents"], config);
         parseTileTypes(configNode["Tiles"], config);
         parseBoardGenerator(configNode["Board"], config);
+
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
         parsePlayers(configNode["Player"], config);
+
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
+
 		//Assign actions to entities
+        // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
         for (auto& type : config.entityTypes)
         {
+            // Assign actions to entities
             auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
                 type.second.actionIds.emplace_back(config.getActionID(actionName));
             }
+
+            // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
+            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
+            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
+            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+        	// Hardcoded cost information
+            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
         }
 		
 		//Assign player actions
@@ -95,6 +109,7 @@ namespace SGA
             type.id = idCounter++;
             type.name = nameConfigPair.first;
 			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
+			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
             type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
 			type.symbol = nameConfigPair.second["Symbol"].as<char>();
             config.tileTypes.emplace(type.id, std::move(type));
@@ -262,7 +277,7 @@ namespace SGA
                 targetType.shapeSize = node["Size"].as<int>();
         	}
         }
-        else if (targetType.type == TargetType::Entity)
+        else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
             targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
@@ -371,6 +386,7 @@ namespace SGA
                 newTechnology.id = technologyNextID++;
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
+                newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
@@ -388,7 +404,7 @@ namespace SGA
 
             	//Search the technology tree in the config yaml
                 auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
-                auto& techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
+                auto techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
                 //Find the technology
                 auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
@@ -440,7 +456,6 @@ namespace SGA
         }
 	}
 
-
     std::unordered_set<EntityTypeID> GameConfigParser::parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const
 	{
         if(!groupNode.IsDefined())
@@ -481,4 +496,22 @@ namespace SGA
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
 	}
 
+    std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const
+	{
+        auto nameCostMap = costNode.as<std::map<std::string, double>>(std::map<std::string, double>());
+        std::unordered_map<ParameterID, double> idCostMap;
+
+		for(const auto& nameCostPair : nameCostMap)
+		{
+            auto it = config.parameters.find(nameCostPair.first);
+			if(it == config.parameters.end())
+			{
+                throw std::runtime_error("Could not find a parameter with the name " + nameCostPair.first);
+			}
+
+            idCostMap.emplace(it->second, nameCostPair.second);
+		}
+
+        return idCostMap;
+	}
 }

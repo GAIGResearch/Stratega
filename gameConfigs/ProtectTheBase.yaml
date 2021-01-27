@@ -26,6 +26,7 @@ Tiles:
         Sprite: ../GUI/Assets/rock.png
         Symbol: M
         IsWalkable: false
+        BlocksSight: true
     Forest:
         Sprite: ../GUI/Assets/forest.png
         Symbol: F

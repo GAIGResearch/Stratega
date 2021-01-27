@@ -90,6 +90,7 @@ namespace  SGA
 
 					auto& executingEntity = newAction.targets[0].getEntity(state);
 					executingEntity.continuousAction.emplace_back(newAction);
+
 				}
 				else if (actionType.sourceType == ActionSourceType::Player)
 				{
@@ -102,6 +103,7 @@ namespace  SGA
 					auto& executingPlayer = newAction.targets[0].getPlayer(state);
 					executingPlayer.continuousAction.emplace_back(newAction);
 				}
+
 			}
 			else
 			{

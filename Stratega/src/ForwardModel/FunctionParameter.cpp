@@ -38,10 +38,11 @@ namespace SGA
 		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
 	}
 
-	FunctionParameter FunctionParameter::createContinuousActionReference(ContinuousActionReference continuousActionReference)
+	FunctionParameter::Type FunctionParameter::getType() const
 	{
-		return FunctionParameter(Type::ContinuousActionTypeReference, { .continuousActionData = continuousActionReference });
+		return parameterType;
 	}
+
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
@@ -188,10 +189,13 @@ namespace SGA
 		{
 			return state.getEntityType(data.entityTypeID);
 		}
-		else
+		if(parameterType == Type::ArgumentReference)
 		{
-			throw std::runtime_error("Type not recognised");
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			return actionTarget.getEntityType(state);
 		}
+		
+		throw std::runtime_error("Type not recognised");
 	}
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -212,5 +216,30 @@ namespace SGA
 		}
 		
 	}
-	
+
+	const std::unordered_map<ParameterID, double> FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if(parameterType == Type::ArgumentReference)
+		{
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			if(actionTarget.getType() == ActionTarget::EntityTypeReference)
+			{
+				return getEntityType(state, actionTargets).cost;
+			}
+			else if(actionTarget.getType() == ActionTarget::TechnologyReference)
+			{
+				return getTechnology(state, actionTargets).cost;
+			}
+		}
+		else if(parameterType == Type::TechnologyTypeReference)
+		{
+			return getTechnology(state, actionTargets).cost;
+		}
+		else if(parameterType == Type::EntityTypeReference)
+		{
+			return getEntityType(state, actionTargets).cost;
+		}
+
+		throw std::runtime_error("Type not recognized");
+	}
 }

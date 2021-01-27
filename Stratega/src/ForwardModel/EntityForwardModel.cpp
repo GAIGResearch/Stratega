@@ -98,7 +98,6 @@ namespace SGA
 
 		//Check if condition is complete
 		for (size_t j = 0; j < state.entities.size(); j++)
-
 		{
 			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
 			{
@@ -113,7 +112,6 @@ namespace SGA
 						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
 					}
 				}
-
 				//Check if action is complete
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
@@ -232,9 +230,11 @@ namespace SGA
 
 				//Add one elapsed tick
 				state.players[j].continuousAction[i].elapsedTicks++;
+				}				
+
 			}
 		}
-	}
+	
 
 	void EntityForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
