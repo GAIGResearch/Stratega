@@ -1,5 +1,5 @@
 #include <Representation/EntityType.h>
-
+#include <ForwardModel/Action.h>
 const SGA::Parameter& SGA::EntityType::getParameter(ParameterID id) const
 {
 	auto it = parameters.find(id);
@@ -38,7 +38,7 @@ SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 	instance.attachedActions.reserve(actionIds.size());
 	for(auto actionTypeID : actionIds)
 	{
-		instance.attachedActions.emplace_back(Entity::ActionInfo{ actionTypeID, 0 });
+		instance.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 	}
 
 	// Set parameter values

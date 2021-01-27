@@ -85,6 +85,7 @@ namespace SGA
 		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
+		virtual bool canExecuteAction(Player& player, ActionType& actionType);
 
 		const Entity* getEntityAt(const Vector2f& pos) const;
 		
@@ -158,7 +159,7 @@ namespace SGA
 			return false;
 		}
 		
-		int addPlayer()
+		int addPlayer(std::vector<int> actionIds)
 		{
 			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
 			// Add parameters
@@ -166,6 +167,13 @@ namespace SGA
 			for(const auto& idParamPair : *playerParameterTypes)
 			{
 				player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			}
+
+			// Add actions
+			player.attachedActions.reserve(actionIds.size());
+			for (auto actionTypeID : actionIds)
+			{
+				player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 			}
 			
 			nextPlayerID++;

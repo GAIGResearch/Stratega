@@ -12,6 +12,11 @@ namespace SGA
 		return ActionTarget(Type::EntityReference, { .entityID = entityID });
 	}
 
+	ActionTarget ActionTarget::createPlayerActionTarget(int playerID)
+	{
+		return ActionTarget(Type::PlayerReference, { .playerID = playerID });
+	}
+	
 	ActionTarget ActionTarget::createTechnologyEntityActionTarget(int technologyID)
 	{
 		return ActionTarget(Type::TechnologyReference, { .technologyID = technologyID });

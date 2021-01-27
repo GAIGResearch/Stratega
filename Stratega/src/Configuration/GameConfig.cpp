@@ -69,7 +69,7 @@ namespace SGA
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
-			playerIDs.emplace(state->addPlayer());
+			playerIDs.emplace(state->addPlayer(playerActionIds));
 		}
 
 		// Create some lookups for initializing the board and entities

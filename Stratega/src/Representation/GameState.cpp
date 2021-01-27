@@ -17,6 +17,20 @@ namespace SGA
 		return true;
 	}
 
+	bool GameState::canExecuteAction(Player& player, ActionType& actionType)
+	{
+		//Check preconditions
+		for (const auto& precondition : actionType.preconditions)
+		{
+			if (!precondition->isFullfilled(*this, { ActionTarget::createPlayerActionTarget(player.id) }))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	const Entity* GameState::getEntityAt(const Vector2f& pos) const
 	{
 		for(const auto& entity : entities)

@@ -2,12 +2,13 @@
 
 namespace SGA
 {
-	std::vector<Action> EntityActionSpace::generateActions(GameState& gameState, int player)
+	std::vector<Action> EntityActionSpace::generateActions(GameState& gameState, int playerID)
 	{
 		std::vector<Action> bucket;
+		//Generate entities actions
 		for (auto& sourceEntity : gameState.entities)
 		{
-			if (sourceEntity.ownerID != player)
+			if (sourceEntity.ownerID != playerID)
 				continue;
 
 			
@@ -33,7 +34,7 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(player,sourceEntity.id,action.continuousActionID));
+							bucket.emplace_back(Action::createAbortAction(playerID,sourceEntity.id,action.continuousActionID));
 						}							
 					}
 				}
@@ -55,8 +56,55 @@ namespace SGA
 			}
 		}
 
+
+		//Generate player actions
+		auto& player = *gameState.getPlayer(playerID);
+		for (const auto& actionInfo : player.attachedActions)
+		{
+			// Check if this action can be executed
+			auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
+			if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				continue;
+			if (!gameState.canExecuteAction(player, actionType))
+				continue;
+
+			bool generateContinuousAction = true;
+			//Check if action is continuos
+			if (actionType.isContinuous)
+			{
+				//Check if entity is already executing it
+				for (auto& action : player.continuousAction)
+				{
+					if (action.actionTypeID == actionType.id)
+					{
+						//This entity cant execute the action
+						generateContinuousAction = false;
+
+						//Give the posibility to abort it
+						bucket.emplace_back(Action::createAbortAction(playerID, action.continuousActionID));
+					}
+				}
+			}
+
+			if (!generateContinuousAction)
+				continue;
+
+			// Generate all actions
+			if (actionType.actionTargets == TargetType::None)
+			{
+				// Self-actions do not have a target, only a source
+				bucket.emplace_back(generateSelfAction(player, actionType));
+			}
+			else
+			{
+				/*auto targets = generateTargets(gameState, sourceEntity, actionType);
+				generateActions(gameState, sourceEntity, actionType, targets, bucket);*/
+			}
+		}
+		
+		
 		//Generate EndTurnAction
-		bucket.emplace_back(Action::createEndAction(player));
+		bucket.emplace_back(Action::createEndAction(playerID));
 		return bucket;
 	}
 
@@ -183,6 +231,14 @@ namespace SGA
 		Action selfAction;
 		selfAction.actionTypeID = actionType.id;
 		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
+		return selfAction;
+	}
+
+	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType)
+	{
+		Action selfAction;
+		selfAction.actionTypeID = actionType.id;
+		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };
 		return selfAction;
 	}
 

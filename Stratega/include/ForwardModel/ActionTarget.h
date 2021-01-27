@@ -14,12 +14,14 @@ namespace SGA
 		{
 			Position,
 			EntityReference,
+			PlayerReference,
 			TechnologyReference,
 			ContinuousActionReference
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
+		static ActionTarget createPlayerActionTarget(int playerID);
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
 		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 
@@ -52,6 +54,7 @@ namespace SGA
 		{
 			Vector2f position;
 			int entityID;
+			int playerID;
 			int technologyID;
 			int continuousActionID;
 		};
