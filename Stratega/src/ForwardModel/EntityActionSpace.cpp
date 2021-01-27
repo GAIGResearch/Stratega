@@ -13,16 +13,11 @@ namespace SGA
 			
 			for (const auto& actionInfo : sourceEntity.attachedActions)
 			{
-				// Check if this action can be executed
 				auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
-				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
-					continue;
-				if (!gameState.canExecuteAction(sourceEntity, actionType))
-					continue;
 				
 				bool generateContinuousAction = true;
 				//Check if action is continuos
-				if(actionType.isContinuous)
+				if (actionType.isContinuous)
 				{
 					//Check if entity is already executing it
 					for (auto& action : sourceEntity.continuousAction)
@@ -33,14 +28,22 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(player,sourceEntity.id,action.continuousActionID));
-						}							
+							bucket.emplace_back(Action::createAbortAction(player, sourceEntity.id, action.continuousActionID));
+						}
 					}
 				}
-				
-				if(!generateContinuousAction)
-					continue;
 
+				if (!generateContinuousAction)
+					continue;
+				
+				// Check if this action can be executed
+				
+				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+					continue;
+				if (!gameState.canExecuteAction(sourceEntity, actionType))
+					continue;
+				
+				
 				// Generate all actions
 				if(actionType.actionTargets == TargetType::None)
 				{
