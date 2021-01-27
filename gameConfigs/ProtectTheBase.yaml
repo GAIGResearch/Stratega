@@ -59,53 +59,6 @@ Actions:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
 
-    SpawnFighterContinuous:
-        Type: EntityAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
-        #Continuous Stuff
-        TriggerComplete:
-            - "HasElapsedTick(10)"
-        OnStart:
-            - "ModifyResource(Source.Gold, -100)"
-        OnTick:
-            - "ModifyResource(Source.Gold, +10)"
-        OnComplete:
-            - "Spawn(Miner, Target)"
-        OnAbort:
-            - "ModifyResource(Source.Gold, -50)"
-
-    SpawnFighterContinuous2:
-        Type: EntityAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
-        #Continuous Stuff
-        TriggerComplete:
-            - "HasElapsedTick(10)"
-        OnStart:
-            - "ModifyResource(Source.Gold, -100)"
-        OnTick:
-            - "ModifyResource(Source.Gold, +10)"
-        OnComplete:
-            - "Spawn(Miner, Target)"
-        OnAbort:
-            - "ModifyResource(Source.Gold, -50)"
-
-
     # Attack Actions
     Attack:
         Type: EntityAction
@@ -161,7 +114,7 @@ Entities:
         LineOfSightRange: 4
         Actions: [SpawnMiner, SpawnFighter]
         Parameters:
-            Gold: 500
+            Gold: 50
 
     Miner:
         Sprite: ../GUI/Assets/farmer.png
