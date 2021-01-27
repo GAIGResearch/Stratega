@@ -16,6 +16,7 @@ namespace SGA
 		factory.registerFunction<CanResearch>("CanResearch");
 		factory.registerFunction<CanSpawnCondition>("CanSpawn");
 		factory.registerFunction<CanAfford>("CanAfford");
+		factory.registerFunction<HasElapsedTime>("HasElapsedTick");
 		
 		return factory;
 	}

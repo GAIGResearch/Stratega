@@ -85,6 +85,8 @@ namespace YAML
                 rhs = SGA::TargetType::Type::EntityType;
             else if (value == "Technology")
                 rhs = SGA::TargetType::Type::Technology;
+            else if (value == "ContinuousAction")
+                rhs = SGA::TargetType::Type::ContinuousAction;
             else
                 return false;
 

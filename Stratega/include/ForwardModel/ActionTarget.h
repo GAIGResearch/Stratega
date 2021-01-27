@@ -16,13 +16,15 @@ namespace SGA
 			Position,
 			EntityReference,
 			EntityTypeReference,
-			TechnologyReference
+			TechnologyReference,
+			ContinuousActionReference
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
 		static ActionTarget createEntityTypeActionTarget(EntityTypeID entityTypeID);
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
+		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
@@ -39,6 +41,10 @@ namespace SGA
 		{
 			return data.entityID;
 		}
+		int getContinuousActionID() const
+		{
+			return data.continuousActionID;
+		}
 		Type getType() const
 		{
 			return targetType;
@@ -51,6 +57,7 @@ namespace SGA
 			int entityID;
 			EntityTypeID entityTypeID;
 			int technologyID;
+			int continuousActionID;
 		};
 
 		Type targetType;

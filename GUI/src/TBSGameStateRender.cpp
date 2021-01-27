@@ -275,6 +275,18 @@ namespace SGA
 					{
 						//If is player unit action or globlal action(i.e End turn)
 
+						//SpecialActions like EndTurn and AbortContinunousAction
+						if (action.actionTypeID == -1)
+						{
+							if(action.actionTypeFlags==AbortContinuousAction)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							continue;
+						}
+							
+						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
 						if (actionType.actionTargets == TargetType::Entity)
@@ -294,6 +306,11 @@ namespace SGA
 								actionHumanUnitSelected.emplace_back(action);
 						}
 						else if (actionType.actionTargets == TargetType::Technology)
+						{
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
@@ -407,13 +424,13 @@ namespace SGA
 		else
 			selectedGameStateCopy = &gameStateCopy;
 
-		Board& board = selectedGameStateCopy->board;
+		auto& board = selectedGameStateCopy->board;
 
 		for (int y = 0; y < board.getHeight(); ++y)
 		{
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
-				auto& targetTile = board.getTile(x, y);
+				auto& targetTile = board.get(x, y);
 				int targetTypeId;
 
 				
@@ -424,7 +441,7 @@ namespace SGA
 					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
 					{
 						
-						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
 						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
 						newTile.setTexture(texture);
 						newTile.setColor(sf::Color(144, 161, 168));
@@ -533,6 +550,9 @@ namespace SGA
 		{
 			for (const auto& action : actionHumanUnitSelected)
 			{
+				if (action.actionTypeID == -1)
+					continue;
+				
 				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
@@ -703,7 +723,7 @@ namespace SGA
 			ImGui::BeginChild("help", ImVec2(0, 80), true,child_flags);
 
 
-			for each (auto & entity in gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
+			for (auto &entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
 				auto entityType = gameStateCopy.getEntityType(entity->typeID);
@@ -758,7 +778,7 @@ namespace SGA
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
 			int entityTypeID = selectedEntity->typeID;
 
-			for each (auto & actionID in gameStateCopy.getEntityType(entityTypeID).actionIds)
+			for (auto &actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.emplace_back(actionID);
 			}
@@ -766,7 +786,7 @@ namespace SGA
 
 
 		int elementNumber = 0;
-		for each (auto & actionType in actionTypes)
+		for(auto &actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
@@ -814,9 +834,34 @@ namespace SGA
 		int index = 0;
 		for (auto action : actionHumanUnitSelected)
 		{
-			ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-			std::string actionInfo = std::to_string(index) + " " + actionType.name;
-			index++;
+
+			std::string actionInfo = std::to_string(index);
+			if (action.actionTypeID == -1)
+			{
+				if (action.actionTypeFlags == AbortContinuousAction)
+				{
+					//We need to find the continues action name that will abort
+					auto& sourceEntity =gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+					for (auto& continueAction : sourceEntity.continuousAction)
+					{
+						if(continueAction.continuousActionID==action.continuousActionID)
+						{
+							ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+							actionInfo += " Abort " + actionType.name;
+						}
+					}
+					
+				}					
+				else
+					actionInfo +=" SpecialAction";				
+			}
+			else
+			{
+				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				actionInfo += " " + actionType.name;			
+			}
+			
+			index++;			
 
 			if (ImGui::Button(actionInfo.c_str()))
 			{
