@@ -21,6 +21,7 @@ namespace SGA
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
+        std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
 		
@@ -80,6 +81,8 @@ namespace YAML
                 rhs = SGA::TargetType::Type::Position;
             else if (value == "Entity")
                 rhs = SGA::TargetType::Type::Entity;
+            else if (value == "EntityType")
+                rhs = SGA::TargetType::Type::EntityType;
             else if (value == "Technology")
                 rhs = SGA::TargetType::Type::Technology;
             else if (value == "ContinuousAction")

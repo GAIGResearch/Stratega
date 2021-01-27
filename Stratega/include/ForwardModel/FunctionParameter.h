@@ -11,6 +11,7 @@ namespace SGA
 	
 	class FunctionParameter
 	{
+	public:
 		enum class Type
 		{
 			Constant, // Values like 1, 1.5, etc
@@ -22,6 +23,7 @@ namespace SGA
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
 		};
 
+	private:
 		struct ParameterReference
 		{
 			ParameterID parameterID;
@@ -71,6 +73,8 @@ namespace SGA
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 
+		Type getType() const;
+		
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -82,6 +86,7 @@ namespace SGA
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::unordered_map<ParameterID, double> getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 	};
 }

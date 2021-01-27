@@ -92,4 +92,25 @@ namespace SGA
 		CanResearch(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
+	class CanSpawnCondition : public Condition
+	{
+		FunctionParameter sourceEntityParam;
+		FunctionParameter targetEntityTypeParam;
+
+	public:
+		CanSpawnCondition(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class CanAfford : public Condition
+	{
+		FunctionParameter sourceEntityParam;
+		FunctionParameter costParam;
+
+	public:
+		CanAfford(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 }

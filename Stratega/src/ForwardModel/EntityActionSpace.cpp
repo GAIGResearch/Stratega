@@ -103,6 +103,7 @@ namespace SGA
 		{
 			case TargetType::Position: return generatePositionTargets(state, entity.position, action.actionTargets.shapeType, action.actionTargets.shapeSize);
 			case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
+			case TargetType::EntityType: return generateEntityTypeTargets(state, action.actionTargets.groupEntityTypes);
 			case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
 			case TargetType::ContinuousAction: return generateContinuousActionTargets(state,entity);
 			case TargetType::None: return {};
@@ -140,7 +141,18 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs)
+	std::vector<ActionTarget> EntityActionSpace::generateEntityTypeTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs)
+	{
+		std::vector<ActionTarget> targets;
+		for(const auto& entityTypeID : entityTypeIDs)
+		{
+			targets.push_back(ActionTarget::createEntityTypeActionTarget(entityTypeID));
+		}
+
+		return targets;
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs)
 	{
 		std::vector<ActionTarget> targets;
 		for (const auto& entity : gameState.entities)
