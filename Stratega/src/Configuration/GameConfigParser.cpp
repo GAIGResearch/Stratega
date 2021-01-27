@@ -255,8 +255,12 @@ namespace SGA
         targetType.type = node["Type"].as<TargetType::Type>();
         if (targetType.type == TargetType::Position)
         {
-            targetType.shapeType = node["Shape"].as<ShapeType>();
-            targetType.shapeSize = node["Size"].as<int>();
+        	if(node["Shape"].IsDefined())
+        	{
+
+                targetType.shapeType = node["Shape"].as<ShapeType>();
+                targetType.shapeSize = node["Size"].as<int>();
+        	}
         }
         else if (targetType.type == TargetType::Entity)
         {

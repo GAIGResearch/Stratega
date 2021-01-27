@@ -18,28 +18,56 @@ namespace  SGA
 			}
 			else if(action.actionTypeFlags==AbortContinuousAction)
 			{
-				
-				auto& sourceEntity = action.targets[0].getEntity(state);
-				int continuousActionID = action.targets[1].getContinuousActionID();
 
-				//Search continuousAction to abort
-				for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+				if(action.targets[0].getType()==ActionTarget::PlayerReference)
 				{
-					if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+					auto& sourcePlayer = action.targets[0].getPlayer(state);
+					int continuousActionID = action.targets[1].getContinuousActionID();
+
+					//Search continuousAction to abort
+					for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
 					{
-						auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
-
-						//Execute OnAbort Effects				
-						for (auto& effect : actionType.OnAbort)
+						if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
 						{
-							effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
-						}
+							auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
 
-						//Remove continuous action
-						sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
-						i--;
+							//Execute OnAbort Effects				
+							for (auto& effect : actionType.OnAbort)
+							{
+								effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
+							}
+
+							//Remove continuous action
+							sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+							i--;
+						}
 					}
 				}
+				else
+				{
+					auto& sourceEntity = action.targets[0].getEntity(state);
+					int continuousActionID = action.targets[1].getContinuousActionID();
+
+					//Search continuousAction to abort
+					for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+					{
+						if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+						{
+							auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
+
+							//Execute OnAbort Effects				
+							for (auto& effect : actionType.OnAbort)
+							{
+								effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
+							}
+
+							//Remove continuous action
+							sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
+							i--;
+						}
+					}
+				}
+
 			}
 			else if(action.actionTypeFlags==ContinuousAction)
 			{
@@ -62,7 +90,18 @@ namespace  SGA
 
 					auto& executingEntity = newAction.targets[0].getEntity(state);
 					executingEntity.continuousAction.emplace_back(newAction);
-				}				
+				}
+				else if (actionType.sourceType == ActionSourceType::Player)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnStart)
+					{
+						effect->execute(state, *this, newAction.targets);
+					}
+
+					auto& executingPlayer = newAction.targets[0].getPlayer(state);
+					executingPlayer.continuousAction.emplace_back(newAction);
+				}
 			}
 			else
 			{

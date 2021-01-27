@@ -3,10 +3,13 @@
 #include <variant>
 #include <Representation/Vector2.h>
 
+
+
 namespace SGA
 {
 	struct GameState;
 	struct Entity;
+	class Player;
 	
 	class ActionTarget
 	{	
@@ -30,6 +33,8 @@ namespace SGA
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
 		Entity& getEntity(GameState& state) const;
+		Player& getPlayer(GameState& state) const;
+		const Player& getPlayerConst(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition() const;

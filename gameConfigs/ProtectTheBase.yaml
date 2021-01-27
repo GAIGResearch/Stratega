@@ -8,7 +8,7 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: [SpawnFighterByPlayer]
+    Actions: [SpawnFighterByPlayer, SpawnFighterContinuousByPlayer]
     Parameters:
         Gold: 200
 
@@ -70,13 +70,32 @@ Actions:
             - "HasResource(Source.Gold, 100)"
         Target:
             Type: Position
-            Shape: Square
-            Size: 1
             Conditions:
                 - "IsWalkable(Target)"
         Effects:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
+
+    SpawnFighterContinuousByPlayer:
+        Type: PlayerAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Conditions:
+                - "IsWalkable(Target)"
+        #Continuous Stuff
+        TriggerComplete:
+            - "HasElapsedTick(10)"
+        OnStart:
+            - "ModifyResource(Source.Gold, -100)"
+        OnTick:
+            - "ModifyResource(Source.Gold, +10)"
+        OnComplete:
+            - "Spawn(Miner, Target)"
+        OnAbort:
+            - "ModifyResource(Source.Gold, -50)"
 
     SpawnFighterContinuous:
         Type: EntityAction

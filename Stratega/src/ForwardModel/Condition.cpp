@@ -25,19 +25,39 @@ namespace  SGA
 
 	bool HasElapsedTime::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		auto& sourceEntity = targets[0].getEntityConst(state);
-
-		for (auto& action : sourceEntity.continuousAction)
+		if(targets[0].getType()==ActionTarget::EntityReference)
 		{
-			if(action.continuousActionID== targets[2].getContinuousActionID())
+			auto& sourceEntity = targets[0].getEntityConst(state);
+
+			for (auto& action : sourceEntity.continuousAction)
 			{
-				//We reached the action
-				//Tick amount
-				double lowerBound = this->lowerBound.getConstant(state, targets);
-				if (action.elapsedTicks >= lowerBound)
-					return true;
+				if (action.continuousActionID == targets[2].getContinuousActionID())
+				{
+					//We reached the action
+					//Tick amount
+					double lowerBound = this->lowerBound.getConstant(state, targets);
+					if (action.elapsedTicks >= lowerBound)
+						return true;
+				}
 			}
 		}
+		else if (targets[0].getType() == ActionTarget::PlayerReference)
+		{
+			auto& sourceEntity = targets[0].getPlayerConst(state);
+
+			for (auto& action : sourceEntity.continuousAction)
+			{
+				if (action.continuousActionID == targets[2].getContinuousActionID())
+				{
+					//We reached the action
+					//Tick amount
+					double lowerBound = this->lowerBound.getConstant(state, targets);
+					if (action.elapsedTicks >= lowerBound)
+						return true;
+				}
+			}
+		}
+		
 		
 
 		return false;

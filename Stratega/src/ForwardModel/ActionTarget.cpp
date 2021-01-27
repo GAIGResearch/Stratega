@@ -1,4 +1,5 @@
 #include <ForwardModel/ActionType.h>
+#include <Representation/Player.h>
 #include <Representation/GameState.h>
 namespace SGA
 {
@@ -61,6 +62,40 @@ namespace SGA
 				throw std::runtime_error("A action-target contained an not existing entity.");
 			}
 			return *entity;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	Player& ActionTarget::getPlayer(GameState& state) const
+	{
+		if (targetType == Type::PlayerReference)
+		{
+			auto* player = state.getPlayer(data.playerID);
+			if (player == nullptr)
+			{
+				throw std::runtime_error("A action-target contained an not existing entity.");
+			}
+			return *player;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	const Player& ActionTarget::getPlayerConst(const GameState& state) const
+	{
+		if (targetType == Type::PlayerReference)
+		{
+			auto* player = state.getPlayer(data.playerID);
+			if (player == nullptr)
+			{
+				throw std::runtime_error("A action-target contained an not existing entity.");
+			}
+			return *player;
 		}
 		else
 		{
