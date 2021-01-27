@@ -49,6 +49,8 @@ namespace SGA
 		double movementSpeed;
 		float collisionRadius;
 
+		//Continuous Action
+		std::vector<Action> continuousAction;
 		bool isNeutral() const;
 	};
 }

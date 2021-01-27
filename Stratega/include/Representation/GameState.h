@@ -49,6 +49,7 @@ namespace SGA
 		{
 		}
 
+		int continueActionNextID = 0;
 		//Rule of six
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;

@@ -4,7 +4,7 @@ namespace SGA
 {
 	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action& action) const
 	{
-		if (!action.isEndAction)
+		if (!(action.actionTypeFlags==EndTickAction))
 		{
 			auto& actionType = state.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)

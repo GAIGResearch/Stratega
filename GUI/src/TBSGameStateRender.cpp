@@ -275,6 +275,18 @@ namespace SGA
 					{
 						//If is player unit action or globlal action(i.e End turn)
 
+						//SpecialActions like EndTurn and AbortContinunousAction
+						if (action.actionTypeID == -1)
+						{
+							if(action.actionTypeFlags==AbortContinuousAction)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							continue;
+						}
+							
+						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
 						if (actionType.actionTargets == TargetType::Entity)
@@ -289,6 +301,11 @@ namespace SGA
 								actionHumanUnitSelected.emplace_back(action);
 						}
 						else if (actionType.actionTargets == TargetType::Technology)
+						{
+							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
@@ -528,6 +545,9 @@ namespace SGA
 		{
 			for (const auto& action : actionHumanUnitSelected)
 			{
+				if (action.actionTypeID == -1)
+					continue;
+				
 				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
@@ -809,9 +829,34 @@ namespace SGA
 		int index = 0;
 		for (auto action : actionHumanUnitSelected)
 		{
-			ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-			std::string actionInfo = std::to_string(index) + " " + actionType.name;
-			index++;
+
+			std::string actionInfo = std::to_string(index);
+			if (action.actionTypeID == -1)
+			{
+				if (action.actionTypeFlags == AbortContinuousAction)
+				{
+					//We need to find the continues action name that will abort
+					auto& sourceEntity =gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+					for (auto& continueAction : sourceEntity.continuousAction)
+					{
+						if(continueAction.continuousActionID==action.continuousActionID)
+						{
+							ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+							actionInfo += " Abort " + actionType.name;
+						}
+					}
+					
+				}					
+				else
+					actionInfo +=" SpecialAction";				
+			}
+			else
+			{
+				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				actionInfo += " " + actionType.name;			
+			}
+			
+			index++;			
 
 			if (ImGui::Button(actionInfo.c_str()))
 			{

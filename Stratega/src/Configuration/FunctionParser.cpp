@@ -225,6 +225,7 @@ namespace SGA
 
 		return FunctionParameter::createTechnologyTypeReference(targetIt->second);
 	}
+	
 
 	std::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
 	{
