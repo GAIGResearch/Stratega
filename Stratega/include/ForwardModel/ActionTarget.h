@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <variant>
 #include <Representation/Vector2.h>
 
@@ -52,7 +53,7 @@ namespace SGA
 		{
 			return targetType;
 		}
-		
+
 	private:
 		union Data
 		{

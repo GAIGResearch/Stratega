@@ -870,7 +870,31 @@ namespace SGA
 			else
 			{
 				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-				actionInfo += " " + actionType.name;			
+				actionInfo += " " + actionType.name;
+
+				//TODO Clean this :D IS TEMPORAL
+
+				for (auto& targetType : action.targets)
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition().x) + ",y:" + std::to_string((int)targetType.getPosition().y);
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(getPlayerID());
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					}
+					
+				}
 			}
 			
 			index++;			
