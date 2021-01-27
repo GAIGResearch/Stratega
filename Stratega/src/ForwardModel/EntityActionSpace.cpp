@@ -97,8 +97,8 @@ namespace SGA
 			}
 			else
 			{
-				/*auto targets = generateTargets(gameState, sourceEntity, actionType);
-				generateActions(gameState, sourceEntity, actionType, targets, bucket);*/
+				auto targets = generateTargets(gameState, player, actionType);
+				generateActions(gameState, player, actionType, targets, bucket);
 			}
 		}
 		
@@ -141,6 +141,40 @@ namespace SGA
 				
 		}
 	}
+
+	void EntityActionSpace::generateActions(GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket)
+	{
+		Action action;
+		action.actionTypeID = actionType.id;
+		action.ownerID = sourcePlayer.id;
+
+		action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+		action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+
+		if (actionType.isContinuous)
+			action.actionTypeFlags = ContinuousAction;
+
+		std::vector<Action> allActions;
+		for (const auto& target : targets)
+		{
+			action.targets[1] = target;
+			bool isValidAction = true;
+			for (const auto& condition : actionType.targetConditions)
+			{
+				if (!condition->isFullfilled(state, action.targets))
+				{
+					isValidAction = false;
+					break;
+				}
+			}
+
+			if (isValidAction)
+			{
+				actionBucket.emplace_back(action);
+			}
+
+		}
+	}
 	
 	std::vector<ActionTarget> EntityActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action)
 	{
@@ -151,6 +185,20 @@ namespace SGA
 			case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
 			case TargetType::ContinuousAction: return generateContinuousActionTargets(state,entity);
 			case TargetType::None: return {};
+		}
+
+		throw std::runtime_error("Tried generating action-targets for unknown target-type");
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generateTargets(const GameState& state, const Player& entity, const ActionType& action)
+	{
+		switch (action.actionTargets.type)
+		{
+		case TargetType::Position: return generatePositionTargets(state);
+		case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
+		case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
+		//case TargetType::ContinuousAction: return generateContinuousActionTargets(state, entity);
+		case TargetType::None: return {};
 		}
 
 		throw std::runtime_error("Tried generating action-targets for unknown target-type");
@@ -180,6 +228,29 @@ namespace SGA
 			{
 				if(isValidPos(x, y))
 					targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
+			}
+		}
+		return targets;
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState)
+	{
+		//TODO ONLY WHAT CAN SEE?
+		auto isValidPos = [&](float x, float y)
+		{
+			if (gameState.board.getTile(x, y).tileTypeID == -1)
+				return false;
+			else
+				return true;
+		};
+		
+		std::vector<ActionTarget> targets;		
+		for (auto x = 0; x <= gameState.board.getWidth()-1; x++)
+		{
+			for (auto y = 0; y <= gameState.board.getHeight()-1; y++)
+			{
+				if (isValidPos(x, y))
+				targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
 			}
 		}
 		return targets;

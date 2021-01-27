@@ -36,6 +36,10 @@ namespace SGA
 		{
 			return data.technologyID;
 		}
+		int getPlayerID() const
+		{
+			return data.playerID;
+		}
 		int getEntityID() const
 		{
 			return data.entityID;

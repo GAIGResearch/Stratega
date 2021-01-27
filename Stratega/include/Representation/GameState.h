@@ -128,6 +128,22 @@ namespace SGA
 			
 			return foundId;
 		}
+
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const
+		{
+			auto it = playerParameterTypes->find(id);
+			if (it != playerParameterTypes->end())
+			{
+				return it->second;
+			}
+			else
+			{
+				std::string s;
+				s.append("Tried accessing unknown player parameter ID ");
+				s.append(std::to_string(id));
+				throw std::runtime_error(s);
+			}
+		}
 		
 		Entity* getEntity(Vector2f pos, float maxDistance)
 		{
@@ -215,7 +231,7 @@ namespace SGA
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}
-
+				
 		ActionType& getActionType(int typeID)
 		{
 			return actionTypes->find(typeID)->second;

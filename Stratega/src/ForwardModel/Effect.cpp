@@ -112,8 +112,13 @@ namespace SGA
 		
 		if(targets[0].getType()==ActionTarget::EntityReference)
 		{
-			auto& executingEntity = (state, targets[0].getEntityConst(state));
+			auto& executingEntity = targets[0].getEntityConst(state);
 			playerID = executingEntity.ownerID;
+		}
+		else if (targets[0].getType() == ActionTarget::PlayerReference)
+		{
+			auto* executingPlayer = state.getPlayer(targets[0].getPlayerID());
+			playerID = executingPlayer->id;
 		}
 		
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);

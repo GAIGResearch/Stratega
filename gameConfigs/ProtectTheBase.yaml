@@ -10,7 +10,7 @@ Agents:
 Player:
     Actions: [SpawnFighterByPlayer]
     Parameters:
-        Gold: 5
+        Gold: 200
 
 Tiles:
     Plain:

@@ -289,27 +289,31 @@ namespace SGA
 						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
-						if (actionType.actionTargets == TargetType::Entity)
+						if(actionType.sourceType==ActionSourceType::Unit)
 						{
-							auto& entity = action.targets[0].getEntity(gameStateCopy);
-							if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
-								actionHumanUnitSelected.emplace_back(action);
+							if (actionType.actionTargets == TargetType::Entity)
+							{
+								auto& entity = action.targets[0].getEntity(gameStateCopy);
+								if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Position)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Technology)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::ContinuousAction)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
 						}
-						else if (actionType.actionTargets == TargetType::Position)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::Technology)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::ContinuousAction)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
+						
 
 					}
 				}
@@ -320,6 +324,19 @@ namespace SGA
 				actionHumanUnitSelected.clear();
 				selectedEntityID = -1;
 
+				for (const auto& action : actionsHumanCanPlay)
+				{
+					if (action.actionTypeID == -1)
+						continue;
+					
+					auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
+										
+					if (actionType.sourceType == ActionSourceType::Player)
+					{
+						actionHumanUnitSelected.emplace_back(action);
+					}		
+				}
+				
 				moving = true;
 				oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 			}

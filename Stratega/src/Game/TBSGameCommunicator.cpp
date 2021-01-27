@@ -39,7 +39,7 @@ namespace SGA
 		TBSGameState TBSGameCommunicator::getGameState() const
 		{
 			auto state = game->getStateCopy();
-			//state.applyFogOfWar(getPlayerID());
+			state.applyFogOfWar(getPlayerID());
 			return state;
 		}
 
