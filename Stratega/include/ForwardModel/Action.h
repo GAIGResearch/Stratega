@@ -14,9 +14,10 @@ namespace SGA
 	
 	enum ActionFlag
 	{
-		EndTickAction = 1 << 0,
-		ContinuousAction = 1 << 1,
-		AbortContinuousAction = 1 << 2
+		None = 1 << 0,
+		EndTickAction = 1 << 1,
+		ContinuousAction = 1 << 2,
+		AbortContinuousAction = 1 << 3
 	};
 	
 	struct Action
@@ -25,7 +26,8 @@ namespace SGA
 			actionTypeID(-1),
 			ownerID(0),
 			elapsedTicks(0),
-			continuousActionID(-1)		
+			continuousActionID(-1),
+			actionTypeFlags(None)
 		{
 			
 		}
