@@ -72,6 +72,7 @@ namespace SGA
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
+		static FunctionParameter createContinuousActionReference(ContinuousActionReference continuousActionReference);
 
 		Type getType() const;
 		

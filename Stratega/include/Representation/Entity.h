@@ -9,12 +9,6 @@ namespace SGA
 {
 	struct Entity
 	{
-		struct ActionInfo
-		{
-			int actionTypeID;
-			int lastExecutedTick;
-		};
-		
 		Entity():
 			typeID(0),
 			id(0),

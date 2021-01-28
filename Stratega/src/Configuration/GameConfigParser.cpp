@@ -20,13 +20,19 @@ namespace SGA
         parseAgents(configNode["Agents"], config);
         parseTileTypes(configNode["Tiles"], config);
         parseBoardGenerator(configNode["Board"], config);
-        parsePlayerParameters(configNode["PlayerParameters"], config);
+
+        parseEntities(configNode["Entities"], config);
+        parseEntityGroups(configNode["EntityGroups"], config);
+        parsePlayers(configNode["Player"], config);
+
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
+
+		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
         for (auto& type : config.entityTypes)
@@ -46,6 +52,13 @@ namespace SGA
             type.second.cost = parseCost(types[type.second.name]["Cost"], config);
         }
 		
+		//Assign player actions
+        auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+        for (const auto& actionName : actions)
+        {
+            config.playerActionIds.emplace_back(config.getActionID(actionName));
+        }	
+		    		
         return config;
 	}
 
@@ -257,8 +270,12 @@ namespace SGA
         targetType.type = node["Type"].as<TargetType::Type>();
         if (targetType.type == TargetType::Position)
         {
-            targetType.shapeType = node["Shape"].as<ShapeType>();
-            targetType.shapeSize = node["Size"].as<int>();
+        	if(node["Shape"].IsDefined())
+        	{
+
+                targetType.shapeType = node["Shape"].as<ShapeType>();
+                targetType.shapeSize = node["Size"].as<int>();
+        	}
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
@@ -409,8 +426,11 @@ namespace SGA
         }
 	}
 
-    void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const
+    void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
+
+		//Parse parameters
+        auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
 	}
 

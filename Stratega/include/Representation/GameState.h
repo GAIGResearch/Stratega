@@ -88,6 +88,7 @@ namespace SGA
 		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
+		virtual bool canExecuteAction(Player& player, ActionType& actionType);
 
 		const Entity* getEntityAt(const Vector2f& pos) const;
 		
@@ -130,6 +131,22 @@ namespace SGA
 			
 			return foundId;
 		}
+
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const
+		{
+			auto it = playerParameterTypes->find(id);
+			if (it != playerParameterTypes->end())
+			{
+				return it->second;
+			}
+			else
+			{
+				std::string s;
+				s.append("Tried accessing unknown player parameter ID ");
+				s.append(std::to_string(id));
+				throw std::runtime_error(s);
+			}
+		}
 		
 		Entity* getEntity(Vector2f pos, float maxDistance)
 		{
@@ -161,7 +178,7 @@ namespace SGA
 			return false;
 		}
 		
-		int addPlayer()
+		int addPlayer(std::vector<int> actionIds)
 		{
 			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
 			// Add parameters
@@ -169,6 +186,13 @@ namespace SGA
 			for(const auto& idParamPair : *playerParameterTypes)
 			{
 				player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			}
+
+			// Add actions
+			player.attachedActions.reserve(actionIds.size());
+			for (auto actionTypeID : actionIds)
+			{
+				player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 			}
 			
 			nextPlayerID++;
@@ -210,7 +234,7 @@ namespace SGA
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}
-
+				
 		ActionType& getActionType(int typeID)
 		{
 			return actionTypes->find(typeID)->second;

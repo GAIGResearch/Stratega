@@ -59,17 +59,30 @@ namespace SGA
 	{
 		if (parameterType == Type::ParameterReference)
 		{
-			auto& entity = getEntity(state, actionTargets);
-			const auto& entityType = state.getEntityType(entity.typeID);
-			const auto& param = entityType.getParameter(data.parameterData.parameterID);
-			return param;
+			if(actionTargets[data.argumentIndex].getType()==ActionTarget::EntityReference)
+			{
+				auto& entity = getEntity(state, actionTargets);
+
+				const auto& entityType = state.getEntityType(entity.typeID);
+				const auto& param = entityType.getParameter(data.parameterData.parameterID);
+				return param;
+			}
+			else if(actionTargets[data.argumentIndex].getType() == ActionTarget::PlayerReference)
+			{
+				auto& entity = getPlayer(state, actionTargets);
+			
+				const auto& param = state.getPlayerParameter(data.parameterData.parameterID);
+				return param;
+			}
+			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
 			const auto& param = state.playerParameterTypes->at(data.parameterData.parameterID);
 			return param;
 		}
-	
+
+		
 		throw std::runtime_error("Type not recognized");
 	}
 	
@@ -83,8 +96,18 @@ namespace SGA
 		if(parameterType == Type::ParameterReference)
 		{
 			const auto& param = getParameter(state, actionTargets);
-			auto& entity = getEntity(state, actionTargets);
-			return entity.parameters[param.index];
+			if (actionTargets[data.argumentIndex].getType() == ActionTarget::EntityReference)
+			{
+				auto& entity = getEntity(state, actionTargets);
+				return entity.parameters[param.index];
+			}
+			else if (actionTargets[data.argumentIndex].getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = getPlayer(state, actionTargets);
+				return player.parameters[param.index];
+			}
+
+			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
@@ -139,6 +162,11 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+		case Type::ParameterReference:
+		{
+			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID();
+			return *state.getPlayer(playerID);
+		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
 		{

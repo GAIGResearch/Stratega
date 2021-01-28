@@ -2,12 +2,13 @@
 
 namespace SGA
 {
-	std::vector<Action> EntityActionSpace::generateActions(GameState& gameState, int player)
+	std::vector<Action> EntityActionSpace::generateActions(GameState& gameState, int playerID)
 	{
 		std::vector<Action> bucket;
+		//Generate entities actions
 		for (auto& sourceEntity : gameState.entities)
 		{
-			if (sourceEntity.ownerID != player)
+			if (sourceEntity.ownerID != playerID)
 				continue;
 
 			
@@ -28,7 +29,8 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(player, sourceEntity.id, action.continuousActionID));
+							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.id, action.continuousActionID));
+
 						}
 					}
 				}
@@ -36,14 +38,12 @@ namespace SGA
 				if (!generateContinuousAction)
 					continue;
 				
-				// Check if this action can be executed
-				
+				// Check if this action can be executed		
 				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
 					continue;
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
-				
-				
+
 				// Generate all actions
 				if(actionType.actionTargets == TargetType::None)
 				{
@@ -58,8 +58,57 @@ namespace SGA
 			}
 		}
 
+
+		//Generate player actions
+		auto& player = *gameState.getPlayer(playerID);
+		for (const auto& actionInfo : player.attachedActions)
+		{
+			auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
+			bool generateContinuousAction = true;
+			//Check if action is continuos
+			if (actionType.isContinuous)
+			{
+				//Check if entity is already executing it
+				for (auto& action : player.continuousAction)
+				{
+					if (action.actionTypeID == actionType.id)
+					{
+						//This entity cant execute the action
+						generateContinuousAction = false;
+
+						//Give the posibility to abort it
+						bucket.emplace_back(Action::createAbortAction(player.id, action.continuousActionID));
+					}
+				}
+			}
+
+			if (!generateContinuousAction)
+				continue;
+			
+			// Check if this action can be executed
+			
+			if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				continue;
+			if (!gameState.canExecuteAction(player, actionType))
+				continue;
+
+			
+			// Generate all actions
+			if (actionType.actionTargets == TargetType::None)
+			{
+				// Self-actions do not have a target, only a source
+				bucket.emplace_back(generateSelfAction(player, actionType));
+			}
+			else
+			{
+				auto targets = generateTargets(gameState, player, actionType);
+				generateActions(gameState, player, actionType, targets, bucket);
+			}
+		}
+		
+		
 		//Generate EndTurnAction
-		bucket.emplace_back(Action::createEndAction(player));
+		bucket.emplace_back(Action::createEndAction(playerID));
 		return bucket;
 	}
 
@@ -93,7 +142,40 @@ namespace SGA
 			{
 				actionBucket.emplace_back(action);
 			}
-				
+		}
+	}
+
+	void EntityActionSpace::generateActions(GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket)
+	{
+		Action action;
+		action.actionTypeID = actionType.id;
+		action.ownerID = sourcePlayer.id;
+
+		action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+		action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+
+		if (actionType.isContinuous)
+			action.actionTypeFlags = ContinuousAction;
+
+		std::vector<Action> allActions;
+		for (const auto& target : targets)
+		{
+			action.targets[1] = target;
+			bool isValidAction = true;
+			for (const auto& condition : actionType.targetConditions)
+			{
+				if (!condition->isFullfilled(state, action.targets))
+				{
+					isValidAction = false;
+					break;
+				}
+			}
+
+			if (isValidAction)
+			{
+				actionBucket.emplace_back(action);
+			}
+
 		}
 	}
 	
@@ -107,6 +189,20 @@ namespace SGA
 			case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
 			case TargetType::ContinuousAction: return generateContinuousActionTargets(state,entity);
 			case TargetType::None: return {};
+		}
+
+		throw std::runtime_error("Tried generating action-targets for unknown target-type");
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generateTargets(const GameState& state, const Player& entity, const ActionType& action)
+	{
+		switch (action.actionTargets.type)
+		{
+		case TargetType::Position: return generatePositionTargets(state);
+		case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
+		case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
+		//case TargetType::ContinuousAction: return generateContinuousActionTargets(state, entity);
+		case TargetType::None: return {};
 		}
 
 		throw std::runtime_error("Tried generating action-targets for unknown target-type");
@@ -136,6 +232,29 @@ namespace SGA
 			{
 				if(isValidPos(x, y))
 					targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
+			}
+		}
+		return targets;
+	}
+
+	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState)
+	{
+		//TODO ONLY WHAT CAN SEE?
+		auto isValidPos = [&](float x, float y)
+		{
+			if (gameState.board.get(x, y).tileTypeID == -1)
+				return false;
+			else
+				return true;
+		};
+		
+		std::vector<ActionTarget> targets;		
+		for (auto x = 0; x <= gameState.board.getWidth()-1; x++)
+		{
+			for (auto y = 0; y <= gameState.board.getHeight()-1; y++)
+			{
+				if (isValidPos(x, y))
+				targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
 			}
 		}
 		return targets;
@@ -198,6 +317,14 @@ namespace SGA
 		Action selfAction;
 		selfAction.actionTypeID = actionType.id;
 		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
+		return selfAction;
+	}
+
+	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType)
+	{
+		Action selfAction;
+		selfAction.actionTypeID = actionType.id;
+		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };
 		return selfAction;
 	}
 

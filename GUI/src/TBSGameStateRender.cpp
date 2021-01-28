@@ -214,6 +214,8 @@ namespace SGA
 				std::vector<Action> actionsInTile;
 				for (const auto& action : actionHumanUnitSelected)
 				{
+					if (action.actionTypeID == -1)
+						continue;
 					ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 					if (actionType.sourceType == ActionSourceType::Unit)
 					{
@@ -278,43 +280,55 @@ namespace SGA
 						//SpecialActions like EndTurn and AbortContinunousAction
 						if (action.actionTypeID == -1)
 						{
-							if(action.actionTypeFlags==AbortContinuousAction)
+							if (action.actionTypeFlags == AbortContinuousAction)
 							{
-								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-									actionHumanUnitSelected.emplace_back(action);
+								if (action.targets[0].getType() == ActionTarget::EntityReference)
+									if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+										actionHumanUnitSelected.emplace_back(action);
 							}
 							continue;
 						}
 							
+													
 						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
-						if (actionType.actionTargets == TargetType::Entity)
+						if(actionType.sourceType==ActionSourceType::Unit)
+
 						{
-							auto& entity = action.targets[0].getEntity(gameStateCopy);
-							if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::Position)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::EntityType)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::Technology)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
+							if (actionType.actionTargets == TargetType::Entity)
+							{
+								auto& entity = action.targets[0].getEntity(gameStateCopy);
+								if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Position)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Technology)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::ContinuousAction)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::EntityType)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
 						}
 						else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
+
 
 					}
 				}
@@ -325,6 +339,29 @@ namespace SGA
 				actionHumanUnitSelected.clear();
 				selectedEntityID = -1;
 
+				
+				for (const auto& action : actionsHumanCanPlay)
+				{
+					//SpecialActions like EndTurn and AbortContinunousAction
+					if (action.actionTypeID == -1)
+					{
+						if (action.actionTypeFlags == AbortContinuousAction)
+						{
+							if (action.targets[0].getType() == ActionTarget::PlayerReference)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						continue;
+					}
+										
+					
+					auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
+										
+					if (actionType.sourceType == ActionSourceType::Player)
+					{
+						actionHumanUnitSelected.emplace_back(action);
+					}		
+				}
+				
 				moving = true;
 				oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 			}
@@ -840,16 +877,34 @@ namespace SGA
 			{
 				if (action.actionTypeFlags == AbortContinuousAction)
 				{
-					//We need to find the continues action name that will abort
-					auto& sourceEntity =gameStateCopy.getEntityConst(action.targets[0].getEntityID());
-					for (auto& continueAction : sourceEntity.continuousAction)
+					if(action.targets[0].getType()==ActionTarget::EntityReference)
 					{
-						if(continueAction.continuousActionID==action.continuousActionID)
+						//We need to find the continues action name that will abort
+						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						for (auto& continueAction : sourceEntity.continuousAction)
 						{
-							ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
-							actionInfo += " Abort " + actionType.name;
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
 						}
 					}
+					else
+					{
+						//We need to find the continues action name that will abort
+						auto& sourcePlayer = action.targets[0].getPlayer(gameStateCopy);
+						for (auto& continueAction : sourcePlayer.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+					
+
 					
 				}					
 				else
@@ -858,7 +913,32 @@ namespace SGA
 			else
 			{
 				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-				actionInfo += " " + actionType.name;			
+
+				actionInfo += " " + actionType.name;
+
+				//TODO Clean this :D IS TEMPORAL
+
+				for (auto& targetType : action.targets)
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition().x) + ",y:" + std::to_string((int)targetType.getPosition().y);
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(getPlayerID());
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					}					
+				}
+
 			}
 			
 			index++;			

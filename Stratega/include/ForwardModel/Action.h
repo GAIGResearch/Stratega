@@ -4,6 +4,12 @@
 
 namespace SGA
 {
+	struct ActionInfo
+	{
+		int actionTypeID;
+		int lastExecutedTick;
+	};
+	
 	class EntityForwardModel;
 	
 	enum ActionFlag
@@ -54,6 +60,17 @@ namespace SGA
 			a.actionTypeFlags = AbortContinuousAction;
 			a.continuousActionID = continuousActionID;
 			a.targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
+			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
+			return a;
+		}
+		
+		static Action createAbortAction(int playerID, int continuousActionID)
+		{
+			Action a;
+			a.ownerID = playerID;
+			a.actionTypeFlags = AbortContinuousAction;
+			a.continuousActionID = continuousActionID;
+			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
 			return a;
 		}
