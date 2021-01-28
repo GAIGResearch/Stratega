@@ -175,7 +175,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous]
+        Actions: [SpawnMiner,SpawnFighterContinuous, SpawnFighter ]
         Parameters:
             Gold: 500
 

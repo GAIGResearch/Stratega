@@ -212,6 +212,9 @@ namespace SGA
 	{
 		auto isValidPos = [&](float x, float y)
 		{
+			if (gameState.board.get(x, y).tileTypeID == -1)
+				return false;
+			
 			switch (shape)
 			{
 				case ShapeType::Square: return true;
