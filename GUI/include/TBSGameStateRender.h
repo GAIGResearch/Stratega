@@ -71,6 +71,81 @@ namespace SGA
 			game->addActionToExecute(action);
 		}
 
+		void updatePossibleActions()
+		{
+			actionHumanUnitSelected.clear();
+			
+			if (selectedActionType == -1)
+				return;
+			
+			//Check if we have selected a entity
+			//if not, we take the player actions
+			if(selectedEntityID!=-1)
+			{
+				auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+				if (selectedEntity->ownerID == gameStateCopy.currentPlayer)
+				{					
+					for (const auto& action : actionsHumanCanPlay)
+					{
+						//If is player unit action or globlal action(i.e End turn)
+
+						//SpecialActions like EndTurn and AbortContinunousAction
+						if (action.actionTypeID == -1)
+						{
+							if (action.actionTypeFlags == AbortContinuousAction)
+							{
+								if (action.targets[0].getType() == ActionTarget::EntityReference)
+									if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
+										actionHumanUnitSelected.emplace_back(action);
+							}
+							continue;
+						}
+							
+													
+						//Other actions
+						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
+						
+						if (actionType.id != selectedActionType)
+							continue;
+						if(actionType.sourceType==ActionSourceType::Unit)
+						{
+							if(action.targets[0].getEntityID()==selectedEntityID)
+							actionHumanUnitSelected.emplace_back(action);
+						}
+						else if (actionType.actionTargets == TargetType::ContinuousAction)
+						{
+							if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+					}
+				}
+			}
+			else
+			{
+				for (const auto& action : actionsHumanCanPlay)
+				{
+					//SpecialActions like EndTurn and AbortContinunousAction
+					if (action.actionTypeID == -1)
+					{
+						if (action.actionTypeFlags == AbortContinuousAction)
+						{
+							if (action.targets[0].getType() == ActionTarget::PlayerReference)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						continue;
+					}
+										
+					if (action.actionTypeID != selectedActionType)
+						continue;
+					
+					auto& actionType = gameStateCopy.getActionType(action.actionTypeID);										
+					if (actionType.sourceType == ActionSourceType::Player)
+					{
+						actionHumanUnitSelected.emplace_back(action);
+					}		
+				}
+			}
+		}
 	private:
 
 		//Game Data
@@ -111,6 +186,9 @@ namespace SGA
 		//to show all the action that can be played in that tile
 		bool showMultipleActions = false;
 		Vector2i multipleActionsSourceTile;
+
+		//Temp
+		int selectedActionType = -1;
 	};
 
 }
