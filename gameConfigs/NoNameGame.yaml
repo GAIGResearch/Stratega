@@ -45,7 +45,7 @@ Entities:
             StorageCapacity: 50
 
     Barracks:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/barracks.png
         LineOfSightRange: 3
         Requirements: [Discipline]
         Actions: [Spawn]
@@ -56,7 +56,7 @@ Entities:
             Health: 500
 
     MilitaryAcademy:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/military.png
         LineOfSightRange: 3
         Requirements: [Mathematics]
         Actions: [Spawn]
@@ -67,7 +67,7 @@ Entities:
             Health: 500
 
     Foundry:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/foundry.png
         LineOfSightRange: 2
         RequiredTechnology: Metallurgy
         Actions: []
@@ -77,7 +77,7 @@ Entities:
             Health: 300
             
     Workshop:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/storage.png
         LineOfSightRange: 2
         RequiredTechnology: Apprenticeship
         Actions: []
@@ -99,7 +99,7 @@ Entities:
             StorageCapacity: 50
 
     Settler:
-        Sprite: ../GUI/Assets/farmer.png
+        Sprite: ../GUI/Assets/settler.png
         LineOfSightRange: 2
         Actions: [Move, Settle]
         Cost:
@@ -137,7 +137,7 @@ Entities:
             Health: 150
             
     Archer:
-        Sprite: ../GUI/Assets/advanceCloseRange.png
+        Sprite: ../GUI/Assets/unit3New.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Archery
@@ -284,26 +284,6 @@ Actions:
         Effects:
             - "Spawn(Target, Source)"
             - "Remove(Source)"
-    #Build:
-    #    Type: PlayerAction
-    #    Cooldown: 1
-    #    Target: Building
-    #    Location: 
-    #        Shape: Square
-    #        Size: 1
-    #
-    #    Conditions:
-    #        - "HasResource(Target.Resource, Target.Cost)"
-    #        - "IsWalkable(Location)"
-    #        
-    #    OnActivate:
-    #        - "ModifyResource(Target.Resource, -Target.Cost)"
-    #    
-    #    DeactivateCondition:
-    #        - "ElapsedTime(Target.Time)"
-    #
-    #    OnDeactivate:
-    #        - "Build(Target, Location)"
             
 
 TechnologyTrees:

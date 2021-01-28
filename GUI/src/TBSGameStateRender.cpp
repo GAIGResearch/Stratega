@@ -78,9 +78,6 @@ namespace SGA
 		// TODO Depends on location of configuration file, how to prevent that?
 		assetCache.loadTexture("selected", "../GUI/Assets/selected.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
-
-		//TODO add new sprites
-		assetCache.loadTexture("building", "../GUI/Assets/buildingNEW.png");
 	}
 
 	void TBSGameStateRender::initializeView(sf::RenderWindow& window) const
