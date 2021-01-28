@@ -103,7 +103,7 @@ Entities:
         LineOfSightRange: 2
         Actions: [Move, Settle]
         Cost:
-            Prod: 1
+            Prod: 10
         Parameters:
             Speed: 2
             Health: 50
