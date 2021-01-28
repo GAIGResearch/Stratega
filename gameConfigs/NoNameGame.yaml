@@ -179,6 +179,7 @@ Entities:
 EntityGroups:
     Units: [Worker, Warrior, Archer, Catapult, Settler]
     Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult, Settler]
 
 Actions:
 
@@ -188,6 +189,7 @@ Actions:
         Cooldown: 1
         Target:
             Type: Entity
+            ValidTargets: Attackable
             Conditions:
                 - "InRange(Source, Target, Source.Range)"
         Effects:
