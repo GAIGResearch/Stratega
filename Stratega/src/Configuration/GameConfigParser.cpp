@@ -20,14 +20,11 @@ namespace SGA
         parseAgents(configNode["Agents"], config);
         parseTileTypes(configNode["Tiles"], config);
         parseBoardGenerator(configNode["Board"], config);
-
-        parseEntities(configNode["Entities"], config);
-        parseEntityGroups(configNode["EntityGroups"], config);
         parsePlayers(configNode["Player"], config);
-
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], config);
+		
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
@@ -283,12 +280,23 @@ namespace SGA
         }
         else if (targetType.type == TargetType::Technology)
         {
-            auto technologies = node["ValidTargets"].as<std::vector<std::string>>(std::vector<std::string>());
-
-        	//Assigne technology IDs to the technologytypes map
-            for (auto& technology : technologies)
+            auto techNode = node["ValidTargets"];
+        	if(techNode.IsScalar() && techNode.as<std::string>() == "All")
+        	{
+        		for(const auto& tree: config.technologyTreeCollection.technologyTreeTypes)
+        		{
+        			for(const auto& tech : tree.second.technologies)
+						targetType.technologyTypes.insert(tech.first);
+        		}
+        	}
+            else if(techNode.IsSequence())
             {
-                targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+                auto technologies = techNode.as<std::vector<std::string>>(std::vector<std::string>());
+                //Assigne technology IDs to the technologytypes map
+                for (auto& technology : technologies)
+                {
+                    targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+                }
             }
         }
         return targetType;
@@ -324,10 +332,13 @@ namespace SGA
 		// Parse Trigger
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);
-		for(const auto& nameEffectsPair : fmNode["Trigger"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>()))
+		for(const auto& trigger : fmNode["Trigger"].as<std::vector<YAML::Node>>(std::vector<YAML::Node>()))
 		{
-			if(nameEffectsPair.first == "OnTick")
+            auto map = trigger.as<std::map<std::string, YAML::Node>>();
+			if(map.find("OnTick") != map.end())
 			{
+                auto nameEffectsPair = *map.find("OnTick");
+				
                 context.targetIDs.emplace("Source", 0);
                 auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
                 auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
@@ -340,8 +351,10 @@ namespace SGA
 				// Add it to the fm
                 fm->onTickEffects.emplace_back(std::move(onTickEffect));
 			}
-            else if(nameEffectsPair.first == "OnSpawn")
+            else if(map.find("OnSpawn") != map.end())
             {
+                auto nameEffectsPair = *map.find("OnSpawn");
+            	
                 context.targetIDs.emplace("Source", 0);
                 auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
                 auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
@@ -356,7 +369,7 @@ namespace SGA
             }
             else
             {
-                std::cerr << "Unknown trigger with name " << nameEffectsPair.first << " will be ignored." << std::endl;
+                //std::cerr << "Unknown trigger with name " << nameEffectsPair.first << " will be ignored." << std::endl;
             }
 
             context.targetIDs.clear();

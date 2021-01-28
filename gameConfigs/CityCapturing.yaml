@@ -7,8 +7,9 @@ Agents:
     - RandomAgent
     - HumanAgent
 
-PlayerParameters:
-    Gold: 5
+Player:
+    Parameters:
+        Gold: 5
 
 Tiles:
     Plain:

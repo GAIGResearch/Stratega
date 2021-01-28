@@ -228,7 +228,7 @@ namespace SGA
 						}
 						else if(actionType.actionTargets.type == TargetType::Position)
 						{
-							if (action.targets[1].getPosition() == Vector2i(pos.x, pos.y))
+							if (action.targets[1].getPosition(gameStateCopy) == Vector2i(pos.x, pos.y))
 							{
 								actionsInTile.emplace_back(action);
 							}
@@ -606,7 +606,7 @@ namespace SGA
 					}
 					else if (actionType.actionTargets.type == TargetType::Position)
 					{
-						const Vector2f& targetPos = action.targets[1].getPosition();
+						const Vector2f& targetPos = action.targets[1].getPosition(*selectedGameStateCopy);
 
 						sf::CircleShape shape(15);
 						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
@@ -923,7 +923,7 @@ namespace SGA
 					switch (targetType.getType())
 					{
 					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition().x) + ",y:" + std::to_string((int)targetType.getPosition().y);
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
 						break;
 					case ActionTarget::EntityReference:
 						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
@@ -934,6 +934,8 @@ namespace SGA
 					case ActionTarget::TechnologyReference:
 						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
+					case ActionTarget::EntityTypeReference:
+						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
 					case ActionTarget::ContinuousActionReference:
 						break;
 					}					
@@ -1017,7 +1019,7 @@ namespace SGA
 					}
 					else if(actionType.actionTargets.type == TargetType::Position)
 					{
-						if (action.targets[1].getPosition() == multipleActionsSourceTile)
+						if (action.targets[1].getPosition(gameStateCopy) == multipleActionsSourceTile)
 						{
 							std::string actionInfo = std::to_string(index) + " " + actionType.name;
 							index++;

@@ -13,7 +13,7 @@ int main()
 	// Read Config
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
-	std::filesystem::path configPath2("../../../gameConfigs/ProtectTheBase.yaml");
+	std::filesystem::path configPath2("../../../gameConfigs/NoNameGame.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath2.string());
 	auto gameConfig = parser.parseFromFile(configPath2.string());
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
