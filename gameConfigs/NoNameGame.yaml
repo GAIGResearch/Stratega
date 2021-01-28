@@ -103,7 +103,7 @@ Entities:
         LineOfSightRange: 2
         Actions: [Move, Settle]
         Cost:
-            Prod: 20
+            Prod: 1
         Parameters:
             Speed: 2
             Health: 50
@@ -122,7 +122,7 @@ Entities:
             Health: 50
             
     Warrior:
-        Sprite: ../GUI/Assets/basicCloseRange.png
+        Sprite: ../GUI/Assets/unit2New.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
@@ -131,6 +131,7 @@ Entities:
         Parameters:
             Armor: 20
             Speed: 1
+            Range: 3
             WeaponStrength: 25
             Morale: 10
             Health: 150
