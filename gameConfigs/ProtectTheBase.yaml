@@ -129,7 +129,7 @@ Entities:
             Gold: 0
 
     Fighter:
-        Sprite: ../GUI/Assets/unit2New.png
+        Sprite: ../GUI/Assets/unit2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move]

@@ -87,6 +87,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: c
         LineOfSightRange: 5
+        CanSpawn: Units
         Actions: [Spawn]
 
     Conquerer:
@@ -100,7 +101,7 @@ Entities:
             Gold: 6
 
     Fighter:
-        Sprite: ../GUI/Assets/unit2New.png
+        Sprite: ../GUI/Assets/unit2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack]
@@ -137,7 +138,7 @@ ForwardModel:
         Unit: City
 
     Trigger:
-        OnTick:
+        - OnTick:
             ValidTargets: City
             Conditions:
                 - "IsPlayerEntity(Source)"

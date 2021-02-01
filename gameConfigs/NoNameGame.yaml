@@ -122,7 +122,7 @@ Entities:
             Health: 50
             
     Warrior:
-        Sprite: ../GUI/Assets/unit2New.png
+        Sprite: ../GUI/Assets/unit2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
@@ -137,7 +137,7 @@ Entities:
             Health: 150
             
     Archer:
-        Sprite: ../GUI/Assets/unit3New.png
+        Sprite: ../GUI/Assets/unit3.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Archery
@@ -153,7 +153,7 @@ Entities:
             Health: 100
             
     Catapult:
-        Sprite: ../GUI/Assets/unit4New.png
+        Sprite: ../GUI/Assets/unit4.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Engineering
