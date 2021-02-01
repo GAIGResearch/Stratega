@@ -15,29 +15,50 @@ namespace SGA
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
+		parseEntities(configNode["Entities"], config);
+        parseEntityGroups(configNode["EntityGroups"], config);
         parseAgents(configNode["Agents"], config);
         parseTileTypes(configNode["Tiles"], config);
         parseBoardGenerator(configNode["Board"], config);
+
         parseEntities(configNode["Entities"], config);
         parseEntityGroups(configNode["EntityGroups"], config);
-        parsePlayerParameters(configNode["PlayerParameters"], config);
+        parsePlayers(configNode["Player"], config);
+
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], config);
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
-		// Assign actions to entities
+
+		//Assign actions to entities
+        // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
         for (auto& type : config.entityTypes)
         {
+            // Assign actions to entities
             auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
                 type.second.actionIds.emplace_back(config.getActionID(actionName));
             }
+
+            // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
+            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
+            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
+            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+        	// Hardcoded cost information
+            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
         }
 		
+		//Assign player actions
+        auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+        for (const auto& actionName : actions)
+        {
+            config.playerActionIds.emplace_back(config.getActionID(actionName));
+        }	
+		    		
         return config;
 	}
 
@@ -88,6 +109,7 @@ namespace SGA
             type.id = idCounter++;
             type.name = nameConfigPair.first;
 			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
+			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
             type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
 			type.symbol = nameConfigPair.second["Symbol"].as<char>();
             config.tileTypes.emplace(type.id, std::move(type));
@@ -169,16 +191,9 @@ namespace SGA
             throw std::runtime_error("Cannot find definition for Actions");
         }
 
-        // ToDo Is this necessary? - Hardcode EndTurn
-        ActionType actionType;
-        actionType.id = 0;
-        actionType.name = "EndTurn";
-        actionType.sourceType = ActionSourceType::Player;
-        actionType.cooldownTicks = 0;
-        config.actionTypes.emplace(0, std::move(actionType));
-
         FunctionParser parser;
-        auto context = ParseContext::fromGameConfig(config);
+
+        auto context = ParseContext::fromGameConfig(config);      
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
@@ -202,6 +217,48 @@ namespace SGA
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
 
+            type.isContinuous = false;
+        	
+        	//Continuous Action Stuff
+            if (nameTypePair.second["TriggerComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+                auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+            }
+        	
+            if (nameTypePair.second["OnStart"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnStart, context);
+            }
+
+            if (nameTypePair.second["OnTick"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnTick, context);
+            }
+
+            if (nameTypePair.second["OnComplete"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnComplete, context);
+            }
+
+            if (nameTypePair.second["OnAbort"].IsDefined())
+            {
+                type.isContinuous = true;
+
+                auto effects = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effects, type.OnAbort, context);
+            }
+        	
             config.actionTypes.emplace(type.id, std::move(type));
             context.targetIDs.clear();
         }
@@ -213,10 +270,14 @@ namespace SGA
         targetType.type = node["Type"].as<TargetType::Type>();
         if (targetType.type == TargetType::Position)
         {
-            targetType.shapeType = node["Shape"].as<ShapeType>();
-            targetType.shapeSize = node["Size"].as<int>();
+        	if(node["Shape"].IsDefined())
+        	{
+
+                targetType.shapeType = node["Shape"].as<ShapeType>();
+                targetType.shapeSize = node["Size"].as<int>();
+        	}
         }
-        else if (targetType.type == TargetType::Entity)
+        else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
             targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
@@ -325,6 +386,7 @@ namespace SGA
                 newTechnology.id = technologyNextID++;
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
+                newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
@@ -364,8 +426,11 @@ namespace SGA
         }
 	}
 
-    void GameConfigParser::parsePlayerParameters(const YAML::Node& parametersNode, GameConfig& config) const
+    void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
+
+		//Parse parameters
+        auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
 	}
 
@@ -390,7 +455,6 @@ namespace SGA
             parameterBucket.insert({ param.id, std::move(param) });
         }
 	}
-
 
     std::unordered_set<EntityTypeID> GameConfigParser::parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const
 	{
@@ -432,4 +496,22 @@ namespace SGA
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
 	}
 
+    std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const
+	{
+        auto nameCostMap = costNode.as<std::map<std::string, double>>(std::map<std::string, double>());
+        std::unordered_map<ParameterID, double> idCostMap;
+
+		for(const auto& nameCostPair : nameCostMap)
+		{
+            auto it = config.parameters.find(nameCostPair.first);
+			if(it == config.parameters.end())
+			{
+                throw std::runtime_error("Could not find a parameter with the name " + nameCostPair.first);
+			}
+
+            idCostMap.emplace(it->second, nameCostPair.second);
+		}
+
+        return idCostMap;
+	}
 }

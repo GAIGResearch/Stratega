@@ -57,7 +57,7 @@ namespace SGA
 		{
 			waitForAction = true;
 
-			actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopy, getPlayerID());
+			actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
 			actionHumanUnitSelected.clear();
 		}
 

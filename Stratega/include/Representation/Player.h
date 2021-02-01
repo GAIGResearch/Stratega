@@ -1,5 +1,6 @@
 #pragma once
 #include <Representation/Parameter.h>
+#include <ForwardModel/Action.h>
 #include <unordered_map>
 #include <vector>
 namespace SGA
@@ -12,5 +13,9 @@ namespace SGA
 		double score;
 		bool canPlay;
 		std::vector<double> parameters;
+		std::vector<Action> continuousAction;
+
+		std::vector<ActionInfo> attachedActions;
+		const Parameter& getParameter(ParameterID id) const;
 	};
 }

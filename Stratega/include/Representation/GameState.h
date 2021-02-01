@@ -3,13 +3,16 @@
 #include <ForwardModel/ActionType.h>
 #include <Representation/Entity.h>
 #include <Representation/Player.h>
-#include <Representation/Board.h>
+#include <Representation/Grid2D.h>
 #include <Representation/TechnologyTree.h>
+#include <Representation/Tile.h>
+#include <Representation/TileType.h>
+
 namespace SGA
 {
 	struct GameState
 	{
-		GameState(Board&& board, const std::unordered_map<int, TileType>& tileTypes) :
+		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
 			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
@@ -40,12 +43,13 @@ namespace SGA
 			  tickLimit(-1),
 			  fogOfWarTile(-1,0,0),
 			  fogOfWarId(-1),
-			  board(0,0),
+			  board(0,0, fogOfWarTile),
 			  nextEntityID(0),
 			  nextPlayerID(0)
 		{
 		}
 
+		int continueActionNextID = 0;
 		//Rule of six
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;
@@ -75,7 +79,7 @@ namespace SGA
 		// Board information
 		Tile fogOfWarTile;
 		int fogOfWarId = -1;
-		Board board;
+		Grid2D<Tile> board;
 
 		// Player and unit information
 		std::vector<Entity> entities;
@@ -84,6 +88,7 @@ namespace SGA
 		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
+		virtual bool canExecuteAction(Player& player, ActionType& actionType);
 
 		const Entity* getEntityAt(const Vector2f& pos) const;
 		
@@ -126,6 +131,22 @@ namespace SGA
 			
 			return foundId;
 		}
+
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const
+		{
+			auto it = playerParameterTypes->find(id);
+			if (it != playerParameterTypes->end())
+			{
+				return it->second;
+			}
+			else
+			{
+				std::string s;
+				s.append("Tried accessing unknown player parameter ID ");
+				s.append(std::to_string(id));
+				throw std::runtime_error(s);
+			}
+		}
 		
 		Entity* getEntity(Vector2f pos, float maxDistance)
 		{
@@ -157,7 +178,7 @@ namespace SGA
 			return false;
 		}
 		
-		int addPlayer()
+		int addPlayer(std::vector<int> actionIds)
 		{
 			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
 			// Add parameters
@@ -165,6 +186,13 @@ namespace SGA
 			for(const auto& idParamPair : *playerParameterTypes)
 			{
 				player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			}
+
+			// Add actions
+			player.attachedActions.reserve(actionIds.size());
+			for (auto actionTypeID : actionIds)
+			{
+				player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 			}
 			
 			nextPlayerID++;
@@ -195,7 +223,7 @@ namespace SGA
 
 		bool isWalkable(const Vector2i& position)
 		{
-			Tile& targetTile = board.getTile(position.x, position.y);
+			Tile& targetTile = board.get(position.x, position.y);
 			Entity* targetUnit = getEntity(position);
 
 			return targetUnit == nullptr && targetTile.isWalkable;
@@ -206,7 +234,7 @@ namespace SGA
 		{
 			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 		}
-
+				
 		ActionType& getActionType(int typeID)
 		{
 			return actionTypes->find(typeID)->second;
@@ -265,28 +293,47 @@ namespace SGA
 
 		void applyFogOfWar(int playerID)
 		{
-			std::vector<std::pair<Vector2f, int>> entityData;
-			for(const auto& entity : getPlayerEntities(playerID))
+			Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
+			for(const auto* entity : getPlayerEntities(playerID))
 			{
-				entityData.emplace_back(entity->position, entity->lineOfSightRange);
+				// Compute maximum sized rectangle around entity
+				auto leftX = std::max<int>(0, entity->position.x - entity->lineOfSightRange);
+				auto rightX = std::min<int>(board.getWidth() - 1, entity->position.x + entity->lineOfSightRange);
+				auto leftY = std::max<int>(0, entity->position.y - entity->lineOfSightRange);
+				auto rightY = std::min<int>(board.getHeight() - 1, entity->position.y + entity->lineOfSightRange);
+
+				// Helper method for shadowcasting
+				auto rayCallback = [&](const Vector2i& pos) -> bool
+				{
+					if (entity->position.distance(pos) > entity->lineOfSightRange)
+					{
+						return true;
+					}
+					
+					visibilityMap[pos] = true;
+					return board[pos].blocksSight;
+				};
+				
+				// Shadowcasting
+				for (int x = leftX; x <= rightX; x++)
+				{
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, leftY }, rayCallback);
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, rightY }, rayCallback);
+				}
+				 
+				 
+				for (int y = leftY; y <= rightY; y++)
+				{
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ leftX, y}, rayCallback);
+					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ rightX, y}, rayCallback);
+				}
 			}
 			
-			// Helper method
-			auto isVisible = [&](const Vector2f& pos)
-			{
-				for (const auto& entry : entityData)
-				{
-					if (entry.first.distance(pos) <= entry.second)
-						return true;
-				}
-				return false;
-			};			
-
-			// Remove units that are not visible
+			// Remove entities that are not visible
 			auto it = entities.begin();
 			while (it != entities.end())
 			{
-				if (it->ownerID != playerID && !isVisible(it->position))
+				if(!visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
 				{
 					it = entities.erase(it);
 				}
@@ -301,9 +348,9 @@ namespace SGA
 			{
 				for (int x = 0; x < board.getWidth(); x++)
 				{
-					if (!isVisible(Vector2i(x, y)))
+					if (!visibilityMap.get(x, y))
 					{
-						auto& tile = board.getTile(x, y);
+						auto& tile = board.get(x, y);
 						tile = fogOfWarTile;
 						tile.position = Vector2i(x, y);
 					}

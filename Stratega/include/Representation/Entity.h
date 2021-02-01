@@ -9,12 +9,6 @@ namespace SGA
 {
 	struct Entity
 	{
-		struct ActionInfo
-		{
-			int actionTypeID;
-			int lastExecutedTick;
-		};
-		
 		Entity():
 			typeID(0),
 			id(0),
@@ -49,6 +43,8 @@ namespace SGA
 		double movementSpeed;
 		float collisionRadius;
 
+		//Continuous Action
+		std::vector<Action> continuousAction;
 		bool isNeutral() const;
 	};
 }

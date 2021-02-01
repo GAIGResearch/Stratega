@@ -11,6 +11,7 @@ namespace SGA
 	
 	class FunctionParameter
 	{
+	public:
 		enum class Type
 		{
 			Constant, // Values like 1, 1.5, etc
@@ -19,9 +20,10 @@ namespace SGA
 			EntityPlayerParameterReference, // References the parameter of an player indirectly. Like Source.Player.Gold, only works if Source is a entity
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
-			TechnologyTypeReference, // References TechnologyTypes defined in the Game 
+			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
 		};
 
+	private:
 		struct ParameterReference
 		{
 			ParameterID parameterID;
@@ -34,6 +36,18 @@ namespace SGA
 			}
 		};
 
+		struct ContinuousActionReference
+		{
+			int sourceEntity;
+			int actionID;
+
+			ContinuousActionReference(int sourceEntity, int actionID) :
+				sourceEntity(sourceEntity),
+				actionID(actionID)
+			{
+			}
+		};
+
 		union Data
 		{
 			double constValue;
@@ -41,6 +55,7 @@ namespace SGA
 			int argumentIndex;
 			int entityTypeID;
 			int technologyTypeID;
+			ContinuousActionReference continuousActionData;
 		};
 		
 		Type parameterType;
@@ -57,7 +72,10 @@ namespace SGA
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
+		static FunctionParameter createContinuousActionReference(ContinuousActionReference continuousActionReference);
 
+		Type getType() const;
+		
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -69,6 +87,7 @@ namespace SGA
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::unordered_map<ParameterID, double> getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 	};
 }

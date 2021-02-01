@@ -7,6 +7,11 @@ Agents:
     - RandomAgent
     - HumanAgent
 
+Player:
+    Actions: [SpawnFighterByPlayer, SpawnFighterContinuousByPlayer]
+    Parameters:
+        Gold: 200
+
 Tiles:
     Plain:
         Sprite: ../GUI/Assets/plain.png
@@ -21,6 +26,7 @@ Tiles:
         Sprite: ../GUI/Assets/rock.png
         Symbol: M
         IsWalkable: false
+        BlocksSight: true
     Forest:
         Sprite: ../GUI/Assets/forest.png
         Symbol: F
@@ -57,6 +63,64 @@ Actions:
         Effects:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
+
+    SpawnFighterByPlayer:
+        Type: PlayerAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Conditions:
+                - "IsWalkable(Target)"
+        Effects:
+            - "Spawn(Fighter, Target)"
+            - "ModifyResource(Source.Gold, -100)"
+
+    SpawnFighterContinuousByPlayer:
+        Type: PlayerAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Conditions:
+                - "IsWalkable(Target)"
+        #Continuous Stuff
+        TriggerComplete:
+            - "HasElapsedTick(10)"
+        OnStart:
+            - "ModifyResource(Source.Gold, -100)"
+        OnTick:
+            - "ModifyResource(Source.Gold, +10)"
+        OnComplete:
+            - "Spawn(Miner, Target)"
+        OnAbort:
+            - "ModifyResource(Source.Gold, -50)"
+
+    SpawnFighterContinuous:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResource(Source.Gold, 100)"
+        Target:
+            Type: Position
+            Shape: Square
+            Size: 1
+            Conditions:
+                - "IsWalkable(Target)"
+        #Continuous Stuff
+        TriggerComplete:
+            - "HasElapsedTick(10)"
+        OnStart:
+            - "ModifyResource(Source.Gold, -100)"
+        OnTick:
+            - "ModifyResource(Source.Gold, +10)"
+        OnComplete:
+            - "Spawn(Miner, Target)"
+        OnAbort:
+            - "ModifyResource(Source.Gold, -50)"
+
 
     # Attack Actions
     Attack:
@@ -111,9 +175,9 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter]
+        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous]
         Parameters:
-            Gold: 50
+            Gold: 500
 
     Miner:
         Sprite: ../GUI/Assets/farmer.png

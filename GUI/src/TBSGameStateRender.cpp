@@ -78,9 +78,6 @@ namespace SGA
 		// TODO Depends on location of configuration file, how to prevent that?
 		assetCache.loadTexture("selected", "../GUI/Assets/selected.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
-
-		//TODO add new sprites
-		assetCache.loadTexture("building", "../GUI/Assets/buildingNEW.png");
 	}
 
 	void TBSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -214,6 +211,8 @@ namespace SGA
 				std::vector<Action> actionsInTile;
 				for (const auto& action : actionHumanUnitSelected)
 				{
+					if (action.actionTypeID == -1)
+						continue;
 					ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 					if (actionType.sourceType == ActionSourceType::Unit)
 					{
@@ -275,24 +274,58 @@ namespace SGA
 					{
 						//If is player unit action or globlal action(i.e End turn)
 
+						//SpecialActions like EndTurn and AbortContinunousAction
+						if (action.actionTypeID == -1)
+						{
+							if (action.actionTypeFlags == AbortContinuousAction)
+							{
+								if (action.targets[0].getType() == ActionTarget::EntityReference)
+									if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+										actionHumanUnitSelected.emplace_back(action);
+							}
+							continue;
+						}
+							
+													
+						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
-						if (actionType.actionTargets == TargetType::Entity)
+						if(actionType.sourceType==ActionSourceType::Unit)
+
 						{
-							auto& entity = action.targets[0].getEntity(gameStateCopy);
-							if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
-								actionHumanUnitSelected.emplace_back(action);
+							if (actionType.actionTargets == TargetType::Entity)
+							{
+								auto& entity = action.targets[0].getEntity(gameStateCopy);
+								if (entity.id == unit->id/*action.sourceUnitID == unit->getUnitID() ||*/ /*(action.sourceUnitID == -1 &&*/ /*)*/)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Position)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::Technology)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::ContinuousAction)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
+							else if (actionType.actionTargets == TargetType::EntityType)
+							{
+								if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}
 						}
-						else if (actionType.actionTargets == TargetType::Position)
+						else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
 								actionHumanUnitSelected.emplace_back(action);
 						}
-						else if (actionType.actionTargets == TargetType::Technology)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == unit->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
+
 
 					}
 				}
@@ -303,6 +336,29 @@ namespace SGA
 				actionHumanUnitSelected.clear();
 				selectedEntityID = -1;
 
+				
+				for (const auto& action : actionsHumanCanPlay)
+				{
+					//SpecialActions like EndTurn and AbortContinunousAction
+					if (action.actionTypeID == -1)
+					{
+						if (action.actionTypeFlags == AbortContinuousAction)
+						{
+							if (action.targets[0].getType() == ActionTarget::PlayerReference)
+								actionHumanUnitSelected.emplace_back(action);
+						}
+						continue;
+					}
+										
+					
+					auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
+										
+					if (actionType.sourceType == ActionSourceType::Player)
+					{
+						actionHumanUnitSelected.emplace_back(action);
+					}		
+				}
+				
 				moving = true;
 				oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 			}
@@ -402,13 +458,13 @@ namespace SGA
 		else
 			selectedGameStateCopy = &gameStateCopy;
 
-		Board& board = selectedGameStateCopy->board;
+		auto& board = selectedGameStateCopy->board;
 
 		for (int y = 0; y < board.getHeight(); ++y)
 		{
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
-				auto& targetTile = board.getTile(x, y);
+				auto& targetTile = board.get(x, y);
 				int targetTypeId;
 
 				
@@ -419,7 +475,7 @@ namespace SGA
 					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
 					{
 						
-						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
 						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
 						newTile.setTexture(texture);
 						newTile.setColor(sf::Color(144, 161, 168));
@@ -528,6 +584,9 @@ namespace SGA
 		{
 			for (const auto& action : actionHumanUnitSelected)
 			{
+				if (action.actionTypeID == -1)
+					continue;
+				
 				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
@@ -697,8 +756,7 @@ namespace SGA
 			ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
 			ImGui::BeginChild("help", ImVec2(0, 80), true,child_flags);
 
-
-			for (auto & entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
+			for (auto& entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
 				auto entityType = gameStateCopy.getEntityType(entity->typeID);
@@ -753,7 +811,7 @@ namespace SGA
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
 			int entityTypeID = selectedEntity->typeID;
 
-			for (auto & actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
+			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.emplace_back(actionID);
 			}
@@ -761,7 +819,7 @@ namespace SGA
 
 
 		int elementNumber = 0;
-		for (auto & actionType : actionTypes)
+		for(auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
@@ -809,9 +867,77 @@ namespace SGA
 		int index = 0;
 		for (auto action : actionHumanUnitSelected)
 		{
-			ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-			std::string actionInfo = std::to_string(index) + " " + actionType.name;
-			index++;
+
+			std::string actionInfo = std::to_string(index);
+			if (action.actionTypeID == -1)
+			{
+				if (action.actionTypeFlags == AbortContinuousAction)
+				{
+					if(action.targets[0].getType()==ActionTarget::EntityReference)
+					{
+						//We need to find the continues action name that will abort
+						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						for (auto& continueAction : sourceEntity.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+					else
+					{
+						//We need to find the continues action name that will abort
+						auto& sourcePlayer = action.targets[0].getPlayer(gameStateCopy);
+						for (auto& continueAction : sourcePlayer.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+					
+
+					
+				}					
+				else
+					actionInfo +=" SpecialAction";				
+			}
+			else
+			{
+				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+
+				actionInfo += " " + actionType.name;
+
+				//TODO Clean this :D IS TEMPORAL
+
+				for (auto& targetType : action.targets)
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition().x) + ",y:" + std::to_string((int)targetType.getPosition().y);
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(getPlayerID());
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					}					
+				}
+
+			}
+			
+			index++;			
 
 			if (ImGui::Button(actionInfo.c_str()))
 			{

@@ -70,10 +70,6 @@ namespace SGA
 		assetCache.loadTexture("boxCollider", "../GUI/Assets/boxColliderFixed.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
 
-
-		//TODO add new sprites
-		assetCache.loadTexture("building", "../GUI/Assets/buildingNew.png");;
-
 		//Create new renderTexture
 		if (!renderMinimapTexture.create(2000, 2000))
 		{
@@ -430,13 +426,13 @@ namespace SGA
 		else
 			selectedGameStateCopy = &gameStateCopy;
 
-		SGA::Board& board = selectedGameStateCopy->board;
+		auto& board = selectedGameStateCopy->board;
 
 		for (int y = 0; y < board.getHeight(); ++y)
 		{
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
-				auto& targetTile = board.getTile(x, y);
+				auto& targetTile = board.get(x, y);
 				int targetTypeId;
 
 				if (fowSettings.renderType == Widgets::FogRenderType::Tiles || fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
@@ -446,7 +442,7 @@ namespace SGA
 					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
 					{
 
-						targetTypeId = gameStateCopy.board.getTile(x, y).tileTypeID;
+						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
 						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
 						newTile.setTexture(texture);
 						newTile.setColor(sf::Color(144, 161, 168));
@@ -736,12 +732,11 @@ namespace SGA
 		int numberOfEntities = selectedUnits.size();
 
 		std::unordered_set<int> actionTypes;
-		for (auto & entity : selectedUnits)
+		for (auto& entity : selectedUnits)
 		{
 			int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
 
-
-			for (auto & actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
+			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.insert(actionID);
 			}
@@ -749,7 +744,7 @@ namespace SGA
 
 
 		int elementNumber = 0;
-		for (auto & actionType : actionTypes)
+		for (auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
@@ -767,7 +762,8 @@ namespace SGA
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
 		elementNumber = 0;
-		for (auto & entity : selectedUnits)
+		
+		for (auto& entity : selectedUnits)
 		{
 			ImGui::PushID(elementNumber);
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();

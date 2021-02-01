@@ -11,11 +11,14 @@ namespace SGA
 		std::string description;
 		int id;
 		std::vector<int> parentIDs;
+		std::unordered_map<ParameterID, double> cost;
 	};
 
 	class TechnologyTreeType
 	{
 	public:
+		static const int UNDEFINED_TECHNOLOGY_ID = -1;
+		
 		std::string technologyTreeName;
 
 		//Data
@@ -26,7 +29,6 @@ namespace SGA
 		{
 			//Search technology in tree
 			auto it = technologies.find(technologyID);
-
 			if (it != technologies.end())
 				//We found the technology						
 				return it->second;
@@ -36,7 +38,6 @@ namespace SGA
 		{
 			//Search technology in tree
 			auto it = technologies.find(technologyID);
-
 			if (it != technologies.end())
 				//We found the technology						
 				return true;
@@ -80,7 +81,6 @@ namespace SGA
 		{
 			//Search if the technology is found in the list of researchedtechnologies
 			auto researchedPairList = researchedTechnologies.find(playerID);
-
 			for (auto& element : researchedPairList->second)
 			{
 				if (element==technologyID)
@@ -119,7 +119,6 @@ namespace SGA
 		{
 			//Get researched technologies of player
 			auto researchedPairList = researchedTechnologies.find(playerID);
-			
 			std::cout << "Researched " << technologyID << std::endl;
 			//Find technology index and add it to the researched list			
 			researchedPairList->second.emplace_back(technologyID);
