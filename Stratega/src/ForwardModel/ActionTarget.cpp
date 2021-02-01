@@ -34,11 +34,15 @@ namespace SGA
 	}
 
 	
-	Vector2f ActionTarget::getPosition() const
+	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{
 		if (targetType == Position)
 		{
 			return data.position;
+		}
+		else if(targetType == EntityReference)
+		{
+			return getEntity(const_cast<GameState&>(state)).position;
 		}
 		else
 		{

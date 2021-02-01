@@ -70,10 +70,6 @@ namespace SGA
 		assetCache.loadTexture("boxCollider", "../GUI/Assets/boxColliderFixed.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
 
-
-		//TODO add new sprites
-		assetCache.loadTexture("building", "../GUI/Assets/buildingNew.png");;
-
 		//Create new renderTexture
 		if (!renderMinimapTexture.create(2000, 2000))
 		{

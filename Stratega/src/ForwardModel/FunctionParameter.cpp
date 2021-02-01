@@ -43,6 +43,17 @@ namespace SGA
 		return parameterType;
 	}
 
+	// ToDo Remove this
+	const ActionTarget& FunctionParameter::getActionTarget(const std::vector<ActionTarget>& actionTargets) const
+	{
+		if(parameterType == Type::ArgumentReference)
+		{
+			return actionTargets[data.argumentIndex];
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
@@ -59,7 +70,7 @@ namespace SGA
 	{
 		if (parameterType == Type::ParameterReference)
 		{
-			if(actionTargets[data.argumentIndex].getType()==ActionTarget::EntityReference)
+			if(actionTargets[data.parameterData.argumentIndex].getType()==ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
 
@@ -67,7 +78,7 @@ namespace SGA
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
-			else if(actionTargets[data.argumentIndex].getType() == ActionTarget::PlayerReference)
+			else if(actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				auto& entity = getPlayer(state, actionTargets);
 			
@@ -96,12 +107,12 @@ namespace SGA
 		if(parameterType == Type::ParameterReference)
 		{
 			const auto& param = getParameter(state, actionTargets);
-			if (actionTargets[data.argumentIndex].getType() == ActionTarget::EntityReference)
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
 				return entity.parameters[param.index];
 			}
-			else if (actionTargets[data.argumentIndex].getType() == ActionTarget::PlayerReference)
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = getPlayer(state, actionTargets);
 				return player.parameters[param.index];
@@ -124,7 +135,7 @@ namespace SGA
 	{
 		if(parameterType == Type::ArgumentReference)
 		{
-			return actionTargets[data.argumentIndex].getPosition();
+			return actionTargets[data.argumentIndex].getPosition(state);
 		}
 		else
 		{
@@ -172,6 +183,10 @@ namespace SGA
 		{
 			auto& entity = getEntity(state, actionTargets);
 			return *state.getPlayer(entity.ownerID);
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getPlayer(state);
 		}
 		default:
 			throw std::runtime_error("Type not recognised");

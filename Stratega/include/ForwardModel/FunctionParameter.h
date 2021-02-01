@@ -75,6 +75,7 @@ namespace SGA
 		static FunctionParameter createContinuousActionReference(ContinuousActionReference continuousActionReference);
 
 		Type getType() const;
+		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;
 		
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
