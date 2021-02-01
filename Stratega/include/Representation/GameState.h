@@ -333,7 +333,7 @@ namespace SGA
 			auto it = entities.begin();
 			while (it != entities.end())
 			{
-				if(!visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
+				if(!board.isInBounds((static_cast<int>(it->position.x), static_cast<int>(it->position.y)))||!visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
 				{
 					it = entities.erase(it);
 				}

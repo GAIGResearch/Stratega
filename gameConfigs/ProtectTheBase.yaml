@@ -8,7 +8,6 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: [SpawnFighterByPlayer, SpawnFighterContinuousByPlayer]
     Parameters:
         Gold: 200
 
@@ -64,64 +63,6 @@ Actions:
             - "Spawn(Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
 
-    SpawnFighterByPlayer:
-        Type: PlayerAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Conditions:
-                - "IsWalkable(Target)"
-        Effects:
-            - "Spawn(Fighter, Target)"
-            - "ModifyResource(Source.Gold, -100)"
-
-    SpawnFighterContinuousByPlayer:
-        Type: PlayerAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Conditions:
-                - "IsWalkable(Target)"
-        #Continuous Stuff
-        TriggerComplete:
-            - "HasElapsedTick(10)"
-        OnStart:
-            - "ModifyResource(Source.Gold, -100)"
-        OnTick:
-            - "ModifyResource(Source.Gold, +10)"
-        OnComplete:
-            - "Spawn(Miner, Target)"
-        OnAbort:
-            - "ModifyResource(Source.Gold, -50)"
-
-    SpawnFighterContinuous:
-        Type: EntityAction
-        Cooldown: 1
-        Preconditions:
-            - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
-        #Continuous Stuff
-        TriggerComplete:
-            - "HasElapsedTick(10)"
-        OnStart:
-            - "ModifyResource(Source.Gold, -100)"
-        OnTick:
-            - "ModifyResource(Source.Gold, +10)"
-        OnComplete:
-            - "Spawn(Miner, Target)"
-        OnAbort:
-            - "ModifyResource(Source.Gold, -50)"
-
-
     # Attack Actions
     Attack:
         Type: EntityAction
@@ -175,7 +116,7 @@ Entities:
         Sprite: ../GUI/Assets/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnMiner, SpawnFighter, SpawnFighterContinuous]
+        Actions: [SpawnMiner, SpawnFighter]
         Parameters:
             Gold: 500
 

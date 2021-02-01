@@ -186,6 +186,35 @@ namespace  SGA
 					return false;
 			}
 		}
+		else if (sourceEntityParam.getType() == FunctionParameter::Type::ArgumentReference)
+		{
+			const auto& target = sourceEntityParam.getActionTarget(targets);
+			if (target.getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = target.getPlayer(const_cast<GameState&>(state));
+				const auto& cost = costParam.getCost(state, targets);
+
+				for (const auto& idCostPair : cost)
+				{
+					const auto& param = state.playerParameterTypes->at(idCostPair.first);
+					if (player.parameters[param.index] < idCostPair.second)
+						return false;
+				}
+			}
+			else if (target.getType() == ActionTarget::EntityReference)
+			{
+				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				const auto& cost = costParam.getCost(state, targets);
+
+				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+				for (const auto& idCostPair : cost)
+				{
+					const auto& param = sourceEntityType.parameters.at(idCostPair.first);
+					if (sourceEntity.parameters[param.index] < idCostPair.second)
+						return false;
+				}
+			}
+		}
 		else
 		{
 			const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);

@@ -48,13 +48,13 @@ namespace SGA
 		{
 			auto& tbsState = dynamic_cast<TBSGameState&>(state);
 			auto& entity = targets[0].getEntity(state);
-			auto newPos = targets[1].getPosition();
+			auto newPos = targets[1].getPosition(state);
 			tbsFM->moveEntity(tbsState, entity, newPos);
 		}
 		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
 		{
 			Entity& unit = targets[0].getEntity(state);
-			Vector2f targetPos = targets[1].getPosition();
+			Vector2f targetPos = targets[1].getPosition(state);
 
 			//Get end position of current path
 			Vector2f oldTargetPos(0, 0);
@@ -242,6 +242,33 @@ namespace SGA
 			{
 				const auto& param = state.playerParameterTypes->at(idCostPair.first);
 				player.parameters[param.index] -= idCostPair.second;
+			}
+		}
+		else if(sourceEntityParam.getType() == FunctionParameter::Type::ArgumentReference)
+		{
+			const auto& target = sourceEntityParam.getActionTarget(targets);
+			if(target.getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = target.getPlayer(state);
+				const auto& cost = costParam.getCost(state, targets);
+
+				for (const auto& idCostPair : cost)
+				{
+					const auto& param = state.playerParameterTypes->at(idCostPair.first);
+					player.parameters[param.index] -= idCostPair.second;
+				}
+			}
+			else if(target.getType() == ActionTarget::EntityReference)
+			{
+				auto& sourceEntity = target.getEntity(state);
+				const auto& cost = costParam.getCost(state, targets);
+
+				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+				for (const auto& idCostPair : cost)
+				{
+					const auto& param = sourceEntityType.parameters.at(idCostPair.first);
+					sourceEntity.parameters[param.index] -= idCostPair.second;
+				}
 			}
 		}
 		else
