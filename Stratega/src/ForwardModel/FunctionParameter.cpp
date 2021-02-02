@@ -175,7 +175,7 @@ namespace SGA
 		{
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID();
+			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
 			return *state.getPlayer(playerID);
 		}
 		case Type::EntityPlayerParameterReference:

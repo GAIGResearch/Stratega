@@ -52,10 +52,7 @@ namespace SGA
 		{
 			return data.technologyID;
 		}
-		int getPlayerID() const
-		{
-			return data.playerID;
-		}
+		int getPlayerID(const GameState& state) const;
 		int getEntityID() const
 		{
 			return data.entityID;

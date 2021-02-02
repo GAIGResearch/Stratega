@@ -106,21 +106,11 @@ namespace SGA
 	}
 
 	void SpawnUnit::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		// ToDo Is there a better way to do this?
+	{		
 		int playerID = -1;
-		
-		if(targets[0].getType()==ActionTarget::EntityReference)
-		{
-			auto& executingEntity = targets[0].getEntityConst(state);
-			playerID = executingEntity.ownerID;
-		}
-		else if (targets[0].getType() == ActionTarget::PlayerReference)
-		{
-			auto* executingPlayer = state.getPlayer(targets[0].getPlayerID());
-			playerID = executingPlayer->id;
-		}
-		
+
+		playerID = targets[0].getPlayerID(state);
+				
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
 		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
