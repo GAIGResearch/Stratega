@@ -76,7 +76,7 @@ namespace SGA
 		}
 
 		// TODO Depends on location of configuration file, how to prevent that?
-		assetCache.loadTexture("selected", "../GUI/Assets/selected.png");
+		assetCache.loadTexture("selected", "../GUI/Assets/Tiles/selected.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
 	}
 

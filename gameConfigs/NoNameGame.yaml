@@ -15,27 +15,27 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../GUI/Assets/plain.png
+        Sprite: ../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../GUI/Assets/water.png
+        Sprite: ../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../GUI/Assets/rock.png
+        Sprite: ../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../GUI/Assets/forest.png
+        Sprite: ../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
 Entities:
     City:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
@@ -45,7 +45,7 @@ Entities:
             StorageCapacity: 50
 
     Barracks:
-        Sprite: ../GUI/Assets/barracks.png
+        Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
         Requirements: [Discipline]
         Actions: [Spawn]
@@ -56,7 +56,7 @@ Entities:
             Health: 500
 
     MilitaryAcademy:
-        Sprite: ../GUI/Assets/military.png
+        Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
         Requirements: [Mathematics]
         Actions: [Spawn]
@@ -67,7 +67,7 @@ Entities:
             Health: 500
 
     Foundry:
-        Sprite: ../GUI/Assets/foundry.png
+        Sprite: ../GUI/Assets/Entities/foundry.png
         LineOfSightRange: 2
         RequiredTechnology: Metallurgy
         Actions: []
@@ -77,7 +77,7 @@ Entities:
             Health: 300
             
     Workshop:
-        Sprite: ../GUI/Assets/storage.png
+        Sprite: ../GUI/Assets/Entities/storage.png
         LineOfSightRange: 2
         RequiredTechnology: Apprenticeship
         Actions: []
@@ -87,7 +87,7 @@ Entities:
             Health: 300
 
     Storage:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/Entities/castle.png
         LineOfSightRange: 1
         RequiredTechnology: Pottery
         Actions: []
@@ -99,7 +99,7 @@ Entities:
             StorageCapacity: 50
 
     Settler:
-        Sprite: ../GUI/Assets/settler.png
+        Sprite: ../GUI/Assets/Entities/unit8.png
         LineOfSightRange: 2
         Actions: [Move, Settle]
         Cost:
@@ -109,7 +109,7 @@ Entities:
             Health: 50
 
     Worker:
-        Sprite: ../GUI/Assets/farmer.png
+        Sprite: ../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
@@ -122,7 +122,7 @@ Entities:
             Health: 50
             
     Warrior:
-        Sprite: ../GUI/Assets/unit2.png
+        Sprite: ../GUI/Assets/Entities/unit2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
@@ -137,7 +137,7 @@ Entities:
             Health: 150
             
     Archer:
-        Sprite: ../GUI/Assets/unit3.png
+        Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Archery
@@ -153,7 +153,7 @@ Entities:
             Health: 100
             
     Catapult:
-        Sprite: ../GUI/Assets/unit4.png
+        Sprite: ../GUI/Assets/Entities/unit4.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Engineering
@@ -169,7 +169,7 @@ Entities:
             Health: 60
 
     GoldVein:
-        Sprite: ../GUI/Assets/gold_chest.png
+        Sprite: ../GUI/Assets/Entities/gold_chest.png
         Symbol: g
         LineOfSightRange: 6
         Actions: []
