@@ -240,30 +240,6 @@ Actions:
             - "SpawnRandom(Source, Target)"
             - "PayCost(Source.Player, Target)"
     
-    #Spawn:
-    #    Type: EntityAction
-    #    Cooldown: 1
-    #    Target: Unit
-    #    Location: 
-    #        Shape: Square
-    #        Size: 1
-    #
-    #    Conditions:
-    #        - "HasResource(Target.Resource, Target.Cost)"
-    #        - "IsWalkable(Location)"
-    #
-    #    OnActivate:
-    #        - "ModifyResource(Target.Resource, -Target.Cost)"
-    #
-    #    DeactivateCondition:
-    #        - "ElapsedTime(Target.Time)"
-    #
-    #    OnDeactivate:
-    #        - "Spawn(Target, Location)"
-    #        
-    #    OnAbort:
-    #        - "ModifyResource(Target.Resource, Target.Cost)"
-
     Mine:
         Type: EntityAction
         Cooldown: 1
@@ -391,4 +367,3 @@ ForwardModel:
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"
-        
