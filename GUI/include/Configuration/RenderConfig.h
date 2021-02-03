@@ -1,8 +1,8 @@
 #pragma once
 #include <map>
 #include <string>
-#include <yaml-cpp/yaml.h>
-
+//#include <yaml-cpp/yaml.h>
+#include<Configuration/YamlHeaders.h>
 #include "TBSGameStateRender.h"
 #include "RTSGameStateRender.h"
 
@@ -12,7 +12,7 @@ namespace SGA
 
 	struct RenderConfig
 	{
-		std::map<std::string, std::string> unitSpritePaths;
+		std::map<std::string, std::string> entitySpritePaths;
 		std::map<std::string, std::string> tileSpritePaths;
 	};
 
@@ -29,13 +29,16 @@ namespace YAML
             if (!node.IsMap())
                 return false;
             
-        	for(const auto& unitNode : node["Units"])
+        	for(const auto& entityNode : node["Entities"])
         	{
-                auto unitName = unitNode.first.as<std::string>();
-                auto unitConfig = unitNode.second;
-                rhs.unitSpritePaths.emplace(unitName, unitConfig["Sprite"].as<std::string>());
+                auto entityName = entityNode.first.as<std::string>();
+                auto entityConfig = entityNode.second;
+                rhs.entitySpritePaths.emplace(entityName, entityConfig["Sprite"].as<std::string>());
         	}
-
+        	
+            //Add Fog of War tile
+            rhs.tileSpritePaths.emplace("FogOfWar", "../GUI/Assets/Tiles/notVisible.png");
+        	
             for (const auto& tileNode : node["Tiles"])
             {
                 auto tileName = tileNode.first.as<std::string>();

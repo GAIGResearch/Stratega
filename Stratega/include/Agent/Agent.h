@@ -1,7 +1,8 @@
 #pragma once
 #include <ForwardModel/TBSForwardModel.h>
-#include <Game/TBSGameCommunicator.h>
+#include <ForwardModel/RTSForwardModel.h>
 #include <Game/RTSGameCommunicator.h>
+#include <Game/TBSGameCommunicator.h>
 
 namespace SGA
 {
@@ -17,9 +18,14 @@ namespace SGA
 		}
 		virtual ~Agent() = default;
 		
-		virtual void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)=0;
-		virtual void runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
-		{	
+		virtual void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+		{
+			
+		}
+
+		virtual void runAbstractRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
+		{
+
 		}
 	};
 }

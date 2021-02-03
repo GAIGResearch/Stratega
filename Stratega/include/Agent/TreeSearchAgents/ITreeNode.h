@@ -1,10 +1,9 @@
 #pragma once
-#include <ForwardModel/ActionSpace.h>
 #include <Representation/TBSGameState.h>
 #include <ForwardModel/TBSForwardModel.h>
 
 namespace SGA
-{	
+{
 	template<typename NodeType>
 	class ITreeNode
 	{
@@ -12,12 +11,11 @@ namespace SGA
 		TBSGameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::unique_ptr<ActionSpace<Vector2i>> actionSpace;
+		std::vector<Action> actionSpace;
 		int childIndex = 0;
 		double value = 0;
 		
 	public:
-		
 		ITreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
 			ITreeNode(forwardModel, std::move(gameState), nullptr, 0)
 		{
@@ -29,7 +27,7 @@ namespace SGA
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();
 			
-			actionSpace = forwardModel.getActions(this->gameState);
+			actionSpace = forwardModel.generateActions(this->gameState);
 		}
 		
 		virtual ~ITreeNode() = default;
@@ -37,8 +35,8 @@ namespace SGA
 		virtual void print() const = 0;
 
 	protected:
-		bool ITreeNode::isFullyExpanded() const {
-			return children.size() >= actionSpace->count();
+		[[nodiscard]] bool isFullyExpanded() const {
+			return children.size() >= actionSpace.size();
 		}
 		
 		void printTree(const std::string& prefix, const ITreeNode<NodeType>* node, bool isLast, const std::string& actionName) const
@@ -85,8 +83,6 @@ namespace SGA
 			printTree("", this, true, "root");
 		};
 
-		
-	protected:
-		ITreeNode& operator=(const ITreeNode&) = default;
+		ITreeNode& operator=(const ITreeNode&) = delete;
 	};
 }

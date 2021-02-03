@@ -1,42 +1,21 @@
 #include <Representation/Player.h>
-
 namespace SGA
 {
-	TBSPlayer::TBSPlayer(TBSGameState& state, int playerID)
-		: state(state), playerID(playerID), score(0)
+	/*const SGA::Parameter& Player::getParameter(ParameterID id) const
 	{
-	}
-
-	
-	std::vector<TBSUnit*> TBSPlayer::getUnits() const
-	{
-		std::vector<TBSUnit*> unitsOfPlayer;
-		for (TBSUnit& unit : state.get().getUnits())
+		auto it = parameters.find(id);
+		if (it != parameters.end())
 		{
-			if (unit.getPlayerID() == this->playerID)
-			{
-				unitsOfPlayer.emplace_back(&unit);
-			}
+			return it->second;
 		}
-		return unitsOfPlayer;
-	}
-
-	RTSPlayer::RTSPlayer(RTSGameState& state, int playerID)
-		: state(state), playerID(playerID), score(0)
-	{
-	}
-
-
-	std::vector<RTSUnit*> RTSPlayer::getUnits() const
-	{
-		std::vector<RTSUnit*> unitsOfPlayer;
-		for (RTSUnit& unit : state.get().units)
+		else
 		{
-			if (unit.playerID == this->playerID)
-			{
-				unitsOfPlayer.emplace_back(&unit);
-			}
+			std::string s;
+			s.append("Tried accessing unknown parameter ID ");
+			s.append(std::to_string(id));
+			s.append("in entityType ");
+			s.append(name);
+			throw std::runtime_error(s);
 		}
-		return unitsOfPlayer;
-	}
+	}*/
 }

@@ -16,25 +16,26 @@ void GameRunner::runGames(int playerCount, int seed)
 	gameCount = 0;
 	std::mt19937 rngEngine(seed);
 	CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine);};
-	generateCombinations(config->agentNames.size(), playerCount, callback);
+	generateCombinations(config->agentParams.size(), playerCount, callback);
 }
 
 void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
 {
 	std::cout << "Initializing new game" << std::endl;
-	auto game = SGA::generateGameFromConfig(*config, rngEngine);
-	const std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	auto game = generateAbstractGameFromConfig(*config, rngEngine);
+	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	auto agents = config->generateAgents();
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << config->agentNames[agentAssignment[i]] << std::endl;
-		
-		auto agent = SGA::AgentFactory::get().createAgent(config->agentNames[agentAssignment[i]]);
+		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
+
+		auto agent = std::move(agents[agentAssignment[i]]);
 		if(agent == nullptr)
 		{
 			throw std::runtime_error("Human-agents are not allowed in arena mode.");
 		}
 		
-		if (config->gameType == "TBS")
+		if (config->gameType == SGA::ForwardModelType::TBS)
 		{
 			auto comm = std::make_unique<SGA::TBSGameCommunicator>(i);
 			comm->setAgent(std::move(agent));
@@ -50,11 +51,20 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
 			game->addCommunicator(std::move(comm));
-		}
+		}		
+	}
+
+	//Build Navmesh
+	if (config->gameType == SGA::ForwardModelType::RTS)
+	{
+		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
+		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
+		SGA::RTSGameState state = gameRTS.getStateCopy();
+		fm.buildNavMesh(state, SGA::NavigationConfig());
 	}
 
 	// Add logger
-	if(config->gameType == "TBS")
+	if(config->gameType == SGA::ForwardModelType::TBS)
 	{
 		game->addCommunicator(std::make_unique<TBSLogger>(dynamic_cast<SGA::TBSGame&>(*game)));
 	}
@@ -67,7 +77,7 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::Log::logValue("PlayerAssignment", config->agentNames[agentAssignment[i]]);
+		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
 
 	// Run the game
