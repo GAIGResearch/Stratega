@@ -217,63 +217,21 @@ namespace SGA
 	}
 
 	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), costParam(parameters[1])
+		: sourceParam(parameters[0]), costParam(parameters[1])
 	{
 	}
 
 	void PayCostEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		if (sourceEntityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		//Get cost of target, parameterlist to look up and the parameters of the source
+		const auto& cost = costParam.getCost(state, targets);
+		const auto& parameterLookUp = sourceParam.getParameterLookUp(state, targets);
+		auto& parameters = sourceParam.getParameterList(state, targets);
+
+		for (const auto& idCostPair : cost)
 		{
-			auto& player = sourceEntityParam.getPlayer(state, targets);
-			const auto& cost = costParam.getCost(state, targets);
-
-			for (const auto& idCostPair : cost)
-			{
-				const auto& param = state.playerParameterTypes->at(idCostPair.first);
-				player.parameters[param.index] -= idCostPair.second;
-			}
-		}
-		else if(sourceEntityParam.getType() == FunctionParameter::Type::ArgumentReference)
-		{
-			const auto& target = sourceEntityParam.getActionTarget(targets);
-			if(target.getType() == ActionTarget::PlayerReference)
-			{
-				auto& player = target.getPlayer(state);
-				const auto& cost = costParam.getCost(state, targets);
-
-				for (const auto& idCostPair : cost)
-				{
-					const auto& param = state.playerParameterTypes->at(idCostPair.first);
-					player.parameters[param.index] -= idCostPair.second;
-				}
-			}
-			else if(target.getType() == ActionTarget::EntityReference)
-			{
-				auto& sourceEntity = target.getEntity(state);
-				const auto& cost = costParam.getCost(state, targets);
-
-				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-				for (const auto& idCostPair : cost)
-				{
-					const auto& param = sourceEntityType.parameters.at(idCostPair.first);
-					sourceEntity.parameters[param.index] -= idCostPair.second;
-				}
-			}
-		}
-		else
-		{
-			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
-			const auto& cost = costParam.getCost(state, targets);
-
-			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-			for (const auto& idCostPair : cost)
-			{
-				const auto& param = sourceEntityType.parameters.at(idCostPair.first);
-				sourceEntity.parameters[param.index] -= idCostPair.second;
-			}
+			const auto& param = parameterLookUp.at(idCostPair.first);
+			parameters[param.index] -= idCostPair.second;
 		}
 	}
-
-
 }

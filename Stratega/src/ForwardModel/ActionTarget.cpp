@@ -99,7 +99,7 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing entity.");
+				throw std::runtime_error("A action-target contained an not existing player.");
 			}
 			return *player;
 		}
@@ -116,7 +116,7 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing entity.");
+				throw std::runtime_error("A action-target contained an not existing player.");
 			}
 			return *player;
 		}

@@ -168,65 +168,24 @@ namespace  SGA
 	}
 
 	CanAfford::CanAfford(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), costParam(parameters[1])
+		: sourceParam(parameters[0]), costParam(parameters[1])
 	{
 	}
 
 	bool CanAfford::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		if(sourceEntityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+
+		//Get cost of target, parameterlist to look up and the parameters of the source
+		const auto& cost = costParam.getCost(state, targets);
+		const auto& parameterLookUp = sourceParam.getParameterLookUp(state, targets);
+		auto& parameters = sourceParam.getParameterList(state, targets);
+
+		//Check if the source can pay the all the cost of the target
+		for (const auto& idCostPair : cost)
 		{
-			const auto& player = sourceEntityParam.getPlayer(state, targets);
-			const auto& cost = costParam.getCost(state, targets);
-
-			for (const auto& idCostPair : cost)
-			{
-				const auto& param = state.playerParameterTypes->at(idCostPair.first);
-				if (player.parameters[param.index] < idCostPair.second)
-					return false;
-			}
-		}
-		else if (sourceEntityParam.getType() == FunctionParameter::Type::ArgumentReference)
-		{
-			const auto& target = sourceEntityParam.getActionTarget(targets);
-			if (target.getType() == ActionTarget::PlayerReference)
-			{
-				auto& player = target.getPlayer(const_cast<GameState&>(state));
-				const auto& cost = costParam.getCost(state, targets);
-
-				for (const auto& idCostPair : cost)
-				{
-					const auto& param = state.playerParameterTypes->at(idCostPair.first);
-					if (player.parameters[param.index] < idCostPair.second)
-						return false;
-				}
-			}
-			else if (target.getType() == ActionTarget::EntityReference)
-			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
-				const auto& cost = costParam.getCost(state, targets);
-
-				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-				for (const auto& idCostPair : cost)
-				{
-					const auto& param = sourceEntityType.parameters.at(idCostPair.first);
-					if (sourceEntity.parameters[param.index] < idCostPair.second)
-						return false;
-				}
-			}
-		}
-		else
-		{
-			const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
-			const auto& cost = costParam.getCost(state, targets);
-
-			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-			for (const auto& idCostPair : cost)
-			{
-				const auto& param = sourceEntityType.parameters.at(idCostPair.first);
-				if (sourceEntity.parameters[param.index] < idCostPair.second)
-					return false;
-			}
+			const auto& param = parameterLookUp.at(idCostPair.first);
+			if (parameters[param.index] < idCostPair.second)
+				return false;
 		}
 
 		return true;
