@@ -1,10 +1,15 @@
 #include <Game/RTSGameCommunicator.h>
+#include <Agent/Agent.h>
 
 namespace SGA
 {
 	void RTSGameCommunicator::init()
 	{
-		thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), game->getForwardModel());
+		// Copy the forwardModel but ensure that it contains a different actionSpace instance
+		RTSForwardModel copy(game->getForwardModel());
+		copy.setActionSpace(copy.generateDefaultActionSpace());
+
+		thread = std::thread(&Agent::runAbstractRTS, std::ref(*agent), std::ref(*this), std::move(copy));
 	}
 
 	void RTSGameCommunicator::setGame(RTSGame& newGame)
@@ -17,14 +22,22 @@ namespace SGA
 		this->agent = std::move(agent);
 	}
 
-	void RTSGameCommunicator::executeAction(Action<Vector2f> action) const
+	bool RTSGameCommunicator::isMyTurn() const
 	{
-		game->addAction(action);
+		return game->running() /*&& game->getState().currentPlayer == getPlayerID() */ && !game->isGameOver();
+	}
+
+	void RTSGameCommunicator::executeAction(Action action) const
+	{
+		game->executeAction(action);
+		
 	}
 
 	RTSGameState RTSGameCommunicator::getGameState() const
 	{
-		return game->getStateCopy();
+		auto state = game->getStateCopy();
+		//state.applyFogOfWar(getPlayerID());
+		return state;
 	}
 
 	bool RTSGameCommunicator::isGameOver() const

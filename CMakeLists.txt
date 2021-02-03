@@ -5,10 +5,15 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("Stratega")
 
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+if (WIN32)
+    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()
 
-add_compile_options("/std:c++latest")
+
+set(COMPILER_FLAGS "")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
 
 # Include sub-projects.
 add_subdirectory("dependencies")

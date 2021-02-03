@@ -17,19 +17,19 @@ namespace SGA
 		virtual void run();
 		virtual void update(double deltaTime) = 0;
 		virtual void end() { endGame = true; };
-		virtual bool isGameOver() { return endGame; };
+		virtual bool isGameOver() const { return endGame; };
 
-		virtual void addCommunicator(std::unique_ptr<GameCommunicator> comm);
+		virtual void addCommunicator(std::shared_ptr<GameCommunicator> comm);
 
 		void stop() { isRunning = false; }
 		void resume() { isRunning = true; }
-		[[nodiscard]] bool running() const { return isRunning; }
+		[[nodiscard]] bool running() const { return isRunning && !endGame; }
 	protected:
 		bool endGame = false;
 		bool isRunning = true;
 
 		std::mt19937 rngEngine;
 		
-		std::vector<std::unique_ptr<GameCommunicator>> communicators;
+		std::vector<std::shared_ptr<GameCommunicator>> communicators;
 	};
 }

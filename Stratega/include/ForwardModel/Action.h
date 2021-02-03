@@ -1,43 +1,80 @@
 #pragma once
-#include <ForwardModel/ActionType.h>
-#include <Representation/Vector2.h>
+#include <vector>
+#include <ForwardModel/ActionTarget.h>
 
 namespace SGA
-{	template<class T>
-	class Action
+{
+	struct ActionInfo
 	{
-	public:
-		Action() = default;
-		Action(ActionType type,int playerID,int unitID=-1, T targetPos = T(0, 0), int targetID = -1)
+		int actionTypeID;
+		int lastExecutedTick;
+	};
+	
+	class EntityForwardModel;
+	
+	enum ActionFlag
+	{
+		None = 1 << 0,
+		EndTickAction = 1 << 1,
+		ContinuousAction = 1 << 2,
+		AbortContinuousAction = 1 << 3
+	};
+	
+	struct Action
+	{
+		Action():
+			actionTypeID(-1),
+			ownerID(0),
+			elapsedTicks(0),
+			continuousActionID(-1),
+			actionTypeFlags(None)
 		{
-			this->type = type;
-			this->playerID = playerID;
-			sourceUnitID = unitID;
-			targetPosition = targetPos;
-			targetUnitID = targetID;
+			
 		}
-
-		const ActionType& getType() const
-		{
-			return type;
-		}
-
-		const int& getSourceUnitID() const { return sourceUnitID; }
-		const int& getTargetUnitID() const  { return targetUnitID; }
-		const T& getTargetPosition() const { return targetPosition; }
-		const int getPlayerID() const { return playerID; }
-
-	private:
-		ActionType type;
-
-		//IDs
-		int targetUnitID;
-		int sourceUnitID;
-
-		T targetPosition;
-
-		int playerID;
 		
+		ActionFlag actionTypeFlags;
+		
+		int actionTypeID;
+		// Contains all targets involved in an action
+		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
+		// PlayerAction": Index 0 contains the target of the action
+		std::vector<ActionTarget> targets;
+		int ownerID;
+
+		int continuousActionID;
+		int elapsedTicks;
+		
+		void execute(GameState& state, const EntityForwardModel& fm) const;
+
+		static Action createEndAction(int playerID)
+		{
+			Action a;
+			a.actionTypeID = -1;
+			a.actionTypeFlags = EndTickAction;
+			a.ownerID = playerID;
+			return a;
+		}
+
+		static Action createAbortAction(int playerID,int entityID, int continuousActionID)
+		{
+			Action a;			
+			a.ownerID = playerID;			
+			a.actionTypeFlags = AbortContinuousAction;
+			a.continuousActionID = continuousActionID;
+			a.targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
+			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
+			return a;
+		}
+		
+		static Action createAbortAction(int playerID, int continuousActionID)
+		{
+			Action a;
+			a.ownerID = playerID;
+			a.actionTypeFlags = AbortContinuousAction;
+			a.continuousActionID = continuousActionID;
+			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
+			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
+			return a;
+		}
 	};
 }
-

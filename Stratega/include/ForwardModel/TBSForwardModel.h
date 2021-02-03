@@ -1,80 +1,196 @@
 #pragma once
+#include <ForwardModel/EntityForwardModel.h>
 #include <Representation/TBSGameState.h>
-#include <ForwardModel/Action.h>
-#include <ForwardModel/Effect.h>
-#include <ForwardModel/FMState.h>
-#include <Configuration/WinConditionType.h>
-#include <ForwardModel/ForwardModelBase.h>
-#include <ForwardModel/TBSActionSpace.h>
+#include <Representation/Player.h>
+#include <ForwardModel/EntityActionSpace.h>
 
-namespace SGA
+namespace  SGA
 {
-	class TBSForwardModel : public ForwardModelBase<TBSGameState, Action<Vector2i>>
+	class TBSForwardModel : public EntityForwardModel
 	{
 	public:
-		WinConditionType winCondition;
-		int unitTypeID;
-		
-		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action) const override;
-		void advanceGameState(TBSGameState& state, const std::vector<Action<Vector2i>>& action) const override {};
-		void advanceGameState(TBSGameState& state, const Action<Vector2i>& action, ActionSpace<Vector2i>& actionSpace) const;
-
-		std::unique_ptr<ActionSpace<Vector2i>> getActions(TBSGameState& state) const
+		void advanceGameState(TBSGameState& state, const Action& action) const
 		{
-			return std::unique_ptr<ActionSpace<Vector2i>>(generateActions(state));
+			
+			if(action.actionTypeFlags == EndTickAction)
+			{
+				endTurn(state);
+			}
+			else if(action.actionTypeFlags==AbortContinuousAction)
+			{
+
+				if(action.targets[0].getType()==ActionTarget::PlayerReference)
+				{
+					auto& sourcePlayer = action.targets[0].getPlayer(state);
+					int continuousActionID = action.targets[1].getContinuousActionID();
+
+					//Search continuousAction to abort
+					for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
+					{
+						if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
+						{
+							auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
+
+							//Execute OnAbort Effects				
+							for (auto& effect : actionType.OnAbort)
+							{
+								effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
+							}
+
+							//Remove continuous action
+							sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+							i--;
+						}
+					}
+				}
+				else
+				{
+					auto& sourceEntity = action.targets[0].getEntity(state);
+					int continuousActionID = action.targets[1].getContinuousActionID();
+
+					//Search continuousAction to abort
+					for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+					{
+						if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+						{
+							auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
+
+							//Execute OnAbort Effects				
+							for (auto& effect : actionType.OnAbort)
+							{
+								effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
+							}
+
+							//Remove continuous action
+							sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
+							i--;
+						}
+					}
+				}
+
+			}
+			else if(action.actionTypeFlags==ContinuousAction)
+			{
+				auto& actionType = state.getActionType(action.actionTypeID);
+				//If we are generating continuousAction we need to track them somehow
+				//Using ID for each action for example				
+				Action newAction = action;
+				newAction.continuousActionID = state.continueActionNextID++;
+				newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
+								
+				//If is continues we execute OnStart Effects
+				//and we add the action to the list of continuous actions
+				if (actionType.sourceType == ActionSourceType::Unit)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnStart)
+					{
+						effect->execute(state, *this, newAction.targets);
+					}
+
+					auto& executingEntity = newAction.targets[0].getEntity(state);
+					executingEntity.continuousAction.emplace_back(newAction);
+
+				}
+				else if (actionType.sourceType == ActionSourceType::Player)
+				{
+					auto& type = state.actionTypes->at(actionType.id);
+					for (auto& effect : type.OnStart)
+					{
+						effect->execute(state, *this, newAction.targets);
+					}
+
+					auto& executingPlayer = newAction.targets[0].getPlayer(state);
+					executingPlayer.continuousAction.emplace_back(newAction);
+				}
+
+			}
+			else
+			{
+				//Execute the action
+				executeAction(state, action);
+			}
+
+			//Remove entities
+			for (size_t i = 0; i < state.entities.size(); i++)
+			{
+				if (state.entities[i].shouldRemove)
+				{
+					state.entities.erase(state.entities.begin() + i);
+					i--;
+				}
+			}
+
+			//Check game is finished
+			state.isGameOver = checkGameIsFinished(state);
 		}
 
-		std::unique_ptr<ActionSpace<Vector2i>> getActions(TBSGameState& state, int playerID) const
+		void endTurn(TBSGameState& state) const
 		{
-			return std::unique_ptr<ActionSpace<Vector2i>>(generateActions(state, playerID));
+			// Find the next player who's still able to play
+			for (auto i = 1; i <= state.players.size(); i++)
+			{
+				int nextPlayerID = (state.currentPlayer + i) % state.players.size();
+				auto& targetPlayer = state.players[nextPlayerID];
+
+				// All players did play, we consider this as a tick
+				if (nextPlayerID == 0)
+				{
+					endTick(state);
+				}
+
+				if (targetPlayer.canPlay)
+				{
+					state.currentPlayer = nextPlayerID;
+					break;
+				}
+			}
+		}
+
+		virtual std::vector<Action> generateActions(TBSGameState& state) const
+		{
+			return (EntityActionSpace().generateActions(state, state.currentPlayer));
+		}
+
+		virtual std::vector<Action> generateActions(TBSGameState& state, int playerID) const
+		{
+			return (EntityActionSpace().generateActions(state, playerID));
+		}
+
+		virtual bool isValid(const TBSGameState& state, const Action& action) const { return true; }
+		
+		bool checkGameIsFinished(TBSGameState& state) const
+		{
+			if (state.currentTick >= state.tickLimit)
+				return true;
+
+			int numberPlayerCanPlay = 0;
+			int winnerID = -1;
+			for (Player& player : state.players)
+			{
+				if (player.canPlay && canPlayerPlay(state, player))
+				{
+					winnerID = player.id;
+					numberPlayerCanPlay++;
+				}
+				else
+				{
+					player.canPlay = false;
+				}
+			}
+
+			if (numberPlayerCanPlay <= 1)
+			{
+				state.winnerPlayerID=(winnerID);
+				return true;
+			}
+
+			return false;
 		}
 		
-		bool isValid(TBSGameState& state, const Action<Vector2i>& action) const;
-
-		void generateMoveActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateAttackActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generatePushActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateHealActions(TBSUnit& unit, ActionSpace<Vector2i>& actionBucket) const;
-		void generateEndOfTurnActions(TBSGameState& state, int playerID, ActionSpace<Vector2i>& actionBucket) const;
-		
-		bool executeMove(FMState& state, const Action<Vector2i>& action) const;
-		bool executeAttack(FMState& state, const Action<Vector2i>& action) const;
-		bool executePush(FMState& state, const Action<Vector2i>& action) const;
-		bool executeHeal(FMState& state, const Action<Vector2i>& action) const;
-		bool executeEndOfTurn(FMState& state, const Action<Vector2i>& action) const;
-
-		bool validateMove(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateAttack(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validatePush(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateHeal(TBSGameState& state, const Action<Vector2i>& action) const;
-		bool validateEndOfTurn(TBSGameState& state, const Action<Vector2i>& action) const;
-
-		// Utility methods for game logic
-		bool isWalkable(TBSGameState& state, const Vector2i& position) const;
-		void moveUnit(FMState& state, TBSUnit& u, Vector2i newPosition) const;
-		void killUnit(FMState& state, TBSUnit& u) const;
-		void damageUnit(FMState& state, TBSUnit& u, int damageAmount) const;
-		
-		void endTurn(FMState& state) const;
-		void initTurn(FMState& state) const;
-		bool checkGameIsFinished(TBSGameState& state) const;
-		bool canPlayerPlay(TBSPlayer& player) const;
-		
-		// Effect handling
-		void addOnTileEnterEffect(Effect&& effect);
-		void addUnitEndOfTurnEffect(Effect&& effect);
-		void executeEndOfTurnTrigger(FMState& state) const;
-		void executeOnEnterTileTrigger(FMState& state, TBSUnit& targetUnit) const;
-		bool isConditionFulfilled(const Effect& effect, TBSUnit& targetUnit) const;
-		void executeEffect(FMState& state, const Effect& effect, TBSUnit& targetUnit) const;
-
-		
-	private:
-		std::vector<Effect> unitEndOfTurnEffects;
-		std::vector<Effect> onTileEnterEffects;
-
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state) const override;
-		ActionSpace<Vector2i>* generateActions(TBSGameState& state, int playerID) const override;
-		
+		void moveEntity(TBSGameState& state, Entity& entity, Vector2f newPosition) const
+		{
+			entity.position = newPosition;
+		}
 	};
 }
