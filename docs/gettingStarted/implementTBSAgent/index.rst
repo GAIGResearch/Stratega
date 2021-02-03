@@ -55,7 +55,7 @@ Lastly, in line 14, we send our action to the game-runner to be executed. Since 
 
 
 ++++++++++++++++++++
-Testing the Agent
+Testing the agent
 ++++++++++++++++++++
 Currently, Stratega doesn't offer a programmatic way to test your agent. Instead, the agent has to be registered in the agent-factory to be specified in a configuration file.
 
