@@ -13,21 +13,21 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../GUI/Assets/plain.png
+        Sprite: ../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../GUI/Assets/water.png
+        Sprite: ../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../GUI/Assets/rock.png
+        Sprite: ../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../GUI/Assets/forest.png
+        Sprite: ../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
@@ -113,7 +113,7 @@ Actions:
 
 Entities:
     Base:
-        Sprite: ../GUI/Assets/castle.png
+        Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: b
         LineOfSightRange: 5
         Actions: [SpawnMiner, SpawnFighter]
@@ -121,7 +121,7 @@ Entities:
             Gold: 500
 
     Miner:
-        Sprite: ../GUI/Assets/farmer.png
+        Sprite: ../GUI/Assets/Entities/unit7.png
         Symbol: m
         LineOfSightRange: 4
         Actions: [Move, Mine, Deposit]
@@ -129,13 +129,13 @@ Entities:
             Gold: 0
 
     Fighter:
-        Sprite: ../GUI/Assets/unit2New.png
+        Sprite: ../GUI/Assets/Entities/unit2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move]
 
     GoldVein:
-        Sprite: ../GUI/Assets/gold_chest.png
+        Sprite: ../GUI/Assets/Entities/gold_chest.png
         Symbol: g
         LineOfSightRange: 6
         Actions: []

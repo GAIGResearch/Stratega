@@ -33,7 +33,20 @@ namespace SGA
 		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
 	}
 
-	
+	int ActionTarget::getPlayerID(const GameState& state) const
+	{
+		if (targetType == PlayerReference)
+		{
+			return data.playerID;
+		}
+		else if (targetType == EntityReference)
+		{
+			return getEntityConst(state).ownerID;
+		}
+		else
+			return -1;
+	}
+
 	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{
 		if (targetType == Position)
@@ -86,7 +99,7 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing entity.");
+				throw std::runtime_error("A action-target contained an not existing player.");
 			}
 			return *player;
 		}
@@ -103,7 +116,7 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing entity.");
+				throw std::runtime_error("A action-target contained an not existing player.");
 			}
 			return *player;
 		}

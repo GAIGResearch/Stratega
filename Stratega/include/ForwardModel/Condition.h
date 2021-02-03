@@ -106,7 +106,7 @@ namespace SGA
 
 	class CanAfford : public Condition
 	{
-		FunctionParameter sourceEntityParam;
+		FunctionParameter sourceParam;
 		FunctionParameter costParam;
 
 	public:

@@ -9,20 +9,20 @@ Agents:
 
 Tiles:
     Plain:
-        Sprite: ../GUI/Assets/plain.png
+        Sprite: ../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../GUI/Assets/water.png
+        Sprite: ../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../GUI/Assets/rock.png
+        Sprite: ../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../GUI/Assets/forest.png
+        Sprite: ../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -87,7 +87,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../GUI/Assets/unit2New.png
+        Sprite: ../GUI/Assets/Entities/unit2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -98,7 +98,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../GUI/Assets/unit4New.png
+        Sprite: ../GUI/Assets/Entities/unit4.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -109,7 +109,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../GUI/Assets/unit3New.png
+        Sprite: ../GUI/Assets/Entities/unit3.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
@@ -120,7 +120,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../GUI/Assets/unit1New.png
+        Sprite: ../GUI/Assets/Entities/unit1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
@@ -135,6 +135,6 @@ ForwardModel:
         Type: LastManStanding
         Unit: King
     Trigger:
-        OnTick:
+        - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"

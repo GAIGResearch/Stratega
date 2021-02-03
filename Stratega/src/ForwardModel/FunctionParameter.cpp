@@ -175,7 +175,7 @@ namespace SGA
 		{
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID();
+			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
 			return *state.getPlayer(playerID);
 		}
 		case Type::EntityPlayerParameterReference:
@@ -232,7 +232,7 @@ namespace SGA
 		
 	}
 
-	const std::unordered_map<ParameterID, double> FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const std::unordered_map<ParameterID, double>& FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if(parameterType == Type::ArgumentReference)
 		{
@@ -257,4 +257,92 @@ namespace SGA
 
 		throw std::runtime_error("Type not recognized");
 	}
+
+	std::vector<double>& FunctionParameter::getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (getType() == Type::EntityPlayerReference)
+		{
+			auto& player = getPlayer(state, actionTargets);
+			return player.parameters;
+
+		}
+		else if (getType() == Type::ArgumentReference)
+		{
+			const auto& target = getActionTarget(actionTargets);
+			if (target.getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = target.getPlayer(const_cast<GameState&>(state));
+				return player.parameters;
+			}
+			else if (target.getType() == ActionTarget::EntityReference)
+			{
+				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				return sourceEntity.parameters;
+			}
+		}
+		else
+		{
+			auto& sourceEntity = getEntity(state, actionTargets);
+			return sourceEntity.parameters;
+		}
+	}
+
+	const std::vector<double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (getType() == Type::EntityPlayerReference)
+		{
+			auto& player = getPlayer(state, actionTargets);
+			return player.parameters;
+
+		}
+		else if (getType() == Type::ArgumentReference)
+		{
+			const auto& target = getActionTarget(actionTargets);
+			if (target.getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = target.getPlayer(const_cast<GameState&>(state));
+				return player.parameters;
+			}
+			else if (target.getType() == ActionTarget::EntityReference)
+			{
+				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				return sourceEntity.parameters;
+			}
+		}
+		else
+		{
+			auto& sourceEntity = getEntity(state, actionTargets);
+			return sourceEntity.parameters;
+		}
+	}
+
+	const std::unordered_map<ParameterID, Parameter>& FunctionParameter::getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (getType() == Type::EntityPlayerReference)
+		{
+			return *state.playerParameterTypes;
+			
+		}
+		else if (getType() == Type::ArgumentReference)
+		{
+			const auto& target = getActionTarget(actionTargets);
+			if (target.getType() == ActionTarget::PlayerReference)
+			{
+				return *state.playerParameterTypes;
+			}
+			else if (target.getType() == ActionTarget::EntityReference)
+			{
+				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+				return sourceEntityType.parameters;
+			}
+		}
+		else
+		{
+			const auto& sourceEntity = getEntity(state, actionTargets);
+			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+			return sourceEntityType.parameters;
+		}
+	}
+
 }

@@ -39,10 +39,8 @@ namespace SGA
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
 		Entity& getEntity(GameState& state) const;
-
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
-
 		const EntityType& getEntityType(const GameState& state) const;
 
 
@@ -52,10 +50,7 @@ namespace SGA
 		{
 			return data.technologyID;
 		}
-		int getPlayerID() const
-		{
-			return data.playerID;
-		}
+		int getPlayerID(const GameState& state) const;
 		int getEntityID() const
 		{
 			return data.entityID;

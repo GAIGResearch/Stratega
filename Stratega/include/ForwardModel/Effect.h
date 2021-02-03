@@ -113,7 +113,7 @@ namespace SGA
 
 	class PayCostEffect : public Effect
 	{
-		FunctionParameter sourceEntityParam;
+		FunctionParameter sourceParam;
 		FunctionParameter costParam;
 
 	public:

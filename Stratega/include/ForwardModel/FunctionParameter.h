@@ -72,7 +72,6 @@ namespace SGA
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
-		static FunctionParameter createContinuousActionReference(ContinuousActionReference continuousActionReference);
 
 		Type getType() const;
 		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;
@@ -88,7 +87,9 @@ namespace SGA
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		const std::unordered_map<ParameterID, double> getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		
-	};
+		const std::unordered_map<ParameterID, double>& getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::unordered_map<ParameterID, Parameter>& getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		std::vector<double>& getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::vector<double>& getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+			};
 }
