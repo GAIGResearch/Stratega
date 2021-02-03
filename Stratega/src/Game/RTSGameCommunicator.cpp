@@ -9,7 +9,7 @@ namespace SGA
 		RTSForwardModel copy(game->getForwardModel());
 		copy.setActionSpace(copy.generateDefaultActionSpace());
 
-		thread = std::thread(&Agent::runAbstractRTS, std::ref(*agent), std::ref(*this), std::move(copy));
+		thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), std::move(copy));
 	}
 
 	void RTSGameCommunicator::setGame(RTSGame& newGame)

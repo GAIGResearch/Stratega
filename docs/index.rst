@@ -7,17 +7,12 @@ Stratega Docs
 ====================================
 
 .. image:: images/stratega.png
+   :alt: Stratega Example Image
 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Getting Started
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   gettingStarted/installation/index
+   gettingStarted/implementTBSAgent/index

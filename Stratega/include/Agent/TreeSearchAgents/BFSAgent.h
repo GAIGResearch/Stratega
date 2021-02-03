@@ -20,7 +20,7 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		void runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
 		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes);

@@ -9,7 +9,7 @@ namespace SGA
 		TBSForwardModel copy(game->getForwardModel());
 		copy.setActionSpace(copy.generateDefaultActionSpace());
 
-		thread = std::thread(&Agent::runAbstractTBS, std::ref(*agent), std::ref(*this), std::move(copy));
+		thread = std::thread(&Agent::runTBS, std::ref(*agent), std::ref(*this), std::move(copy));
 	}
 
 	void TBSGameCommunicator::setGame(TBSGame& newGame)
