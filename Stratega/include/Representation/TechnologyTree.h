@@ -28,7 +28,10 @@ namespace SGA
 		const TechnologyTreeNode& getTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
+
+
 			const auto& it = technologies.find(technologyID);
+
 
 			if (it != technologies.end())
 				//We found the technology						
@@ -38,6 +41,7 @@ namespace SGA
 		bool findTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
+
 			const auto& it = technologies.find(technologyID);
 
 			if (it != technologies.end())
@@ -122,7 +126,7 @@ namespace SGA
 		{
 			//Get researched technologies of player
 			const auto& researchedPairList = researchedTechnologies.find(playerID);
-			
+
 			std::cout << "Researched " << technologyID << std::endl;
 			//Find technology index and add it to the researched list			
 			researchedPairList->second.emplace_back(technologyID);
