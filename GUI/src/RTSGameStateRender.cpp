@@ -732,24 +732,24 @@ namespace SGA
 		int numberOfEntities = selectedUnits.size();
 
 		std::unordered_set<int> actionTypes;
+
 		for (auto& entity : selectedUnits)
 		{
 			int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
 
 			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
+
 			{
 				actionTypes.insert(actionID);
 			}
 		}
 
-
 		int elementNumber = 0;
-		for (auto& actionType : actionTypes)
+		for (auto &actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
 			{
-
 			}
 			if ((elementNumber++ % 4) < 3) ImGui::SameLine();
 			ImGui::PopID();
@@ -762,8 +762,8 @@ namespace SGA
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
 		elementNumber = 0;
-		
-		for (auto& entity : selectedUnits)
+
+		for (auto &entity : selectedUnits)
 		{
 			ImGui::PushID(elementNumber);
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();

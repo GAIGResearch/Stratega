@@ -401,6 +401,7 @@ namespace SGA
 			window.draw(sprite);
 		}
 
+
 		//Add selected tile
 		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
 
@@ -490,6 +491,7 @@ namespace SGA
 				
 				//Get source
 				if (actionType.actionTargets.type == TargetType::Entity)
+
 				{
 					const Entity& targetEntity = action.targets[1].getEntity(*selectedGameStateCopy);
 
@@ -512,6 +514,7 @@ namespace SGA
 					actionsSelectedEntity.emplace_back(shape);
 					shape.setFillColor(sf::Color::Green);
 				}
+
 				
 			}
 		}
@@ -599,6 +602,7 @@ namespace SGA
 		}
 	}
 
+
 	void TBSGameStateRender::createEntityInformation(sf::RenderWindow& window)
 	{
 		if(selectedEntityID!=-1)
@@ -656,7 +660,8 @@ namespace SGA
 			ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
 			ImGui::BeginChild("help", ImVec2(0, 80), true,child_flags);
 
-			for (auto& entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
+
+			for (auto &entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
 				auto entityType = gameStateCopy.getEntityType(entity->typeID);
@@ -711,7 +716,8 @@ namespace SGA
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
 			int entityTypeID = selectedEntity->typeID;
 
-			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
+
+			for (auto &actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.emplace_back(actionID);
 			}
@@ -727,7 +733,7 @@ namespace SGA
 
 		//Change selected actiontype 
 		int elementNumber = 0;
-		for(auto& actionType : actionTypes)
+		for(auto &actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
 

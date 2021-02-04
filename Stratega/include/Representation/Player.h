@@ -3,6 +3,7 @@
 #include <ForwardModel/Action.h>
 #include <unordered_map>
 #include <vector>
+
 namespace SGA
 {
 	struct Player
