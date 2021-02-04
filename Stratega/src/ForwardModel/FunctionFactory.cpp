@@ -4,6 +4,8 @@
 
 namespace SGA
 {
+
+	template<>
 	FunctionFactory<Condition>& FunctionFactory<Condition>::getDefaultFactory()
 	{
 		static FunctionFactory<Condition> factory;
@@ -21,6 +23,8 @@ namespace SGA
 		return factory;
 	}
 
+
+	template<>
 	FunctionFactory<Effect>& FunctionFactory<Effect>::getDefaultFactory()
 	{
 		static FunctionFactory<Effect> factory;
