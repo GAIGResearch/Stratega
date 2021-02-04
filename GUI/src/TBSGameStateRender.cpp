@@ -401,6 +401,7 @@ namespace SGA
 			window.draw(sprite);
 		}
 
+
 		//Add selected tile
 		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
 
@@ -490,6 +491,7 @@ namespace SGA
 				
 				//Get source
 				if (actionType.actionTargets.type == TargetType::Entity)
+
 				{
 					const Entity& targetEntity = action.targets[1].getEntity(*selectedGameStateCopy);
 
@@ -512,6 +514,7 @@ namespace SGA
 					actionsSelectedEntity.emplace_back(shape);
 					shape.setFillColor(sf::Color::Green);
 				}
+
 				
 			}
 		}
@@ -598,6 +601,7 @@ namespace SGA
 			ImGui::EndMainMenuBar();
 		}
 	}
+
 
 	void TBSGameStateRender::createEntityInformation(sf::RenderWindow& window)
 	{
@@ -711,6 +715,7 @@ namespace SGA
 		{
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
 			int entityTypeID = selectedEntity->typeID;
+
 
 			for (auto &actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
