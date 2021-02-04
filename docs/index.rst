@@ -9,6 +9,10 @@ Stratega Docs
 .. image:: images/stratega.png
    :alt: Stratega Example Image
 
+.. toctree::
+   :hidden:
+
+   self
 
 .. toctree::
    :maxdepth: 1
@@ -16,3 +20,7 @@ Stratega Docs
 
    gettingStarted/installation/index
    gettingStarted/implementTBSAgent/index
+
+
+.. doxygenstruct:: SGA::GameState
+	:members:

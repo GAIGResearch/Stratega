@@ -1,6 +1,7 @@
 ####################
 Installation
 ####################
+
 .. note::
     We currently do not offer any binaries. Instead, the source code has to be compiled manually. We are working on simplifying the installation of the framework.
 
