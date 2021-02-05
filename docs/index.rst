@@ -19,6 +19,7 @@ Stratega Docs
    :caption: About
 
    about/introduction/index
+   about/community/index
 
 .. toctree::
    :maxdepth: 1
@@ -39,7 +40,3 @@ Stratega Docs
 
    references/YAML/index
    references/CPP/index
-
-
-.. doxygenstruct:: SGA::GameState
-	:members:

@@ -11,8 +11,8 @@ The framework has been built with a focus of statistical forward planning (SFP) 
 For this purpose, agents can access and modify game states and use the forward model to simulate the game.
 Thanks to the ability to configure a wide range of games and access to the forward model, Stratega is perfectly suited for researching general game playing in complex games.
 
-######
+++++++
 Games
-######
+++++++
 Visit the :ref:`games-section <games>` to see games that have been configured using Stratega.
 If you want to know more about how to configure your own games, visit the :ref:`YAML-reference <yaml-reference>`.
