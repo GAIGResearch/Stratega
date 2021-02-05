@@ -16,10 +16,29 @@ Stratega Docs
 
 .. toctree::
    :maxdepth: 1
+   :caption: About
+
+   about/introduction/index
+
+.. toctree::
+   :maxdepth: 1
    :caption: Getting Started
 
    gettingStarted/installation/index
    gettingStarted/implementTBSAgent/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Games
+
+   games/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: References
+
+   references/YAML/index
+   references/CPP/index
 
 
 .. doxygenstruct:: SGA::GameState

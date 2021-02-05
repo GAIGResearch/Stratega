@@ -1,4 +1,4 @@
-# Add the cmake folder so the FindSphinx module is found
+# Add the cmake folder so the FindSphinx and FindDoxygen module is found
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 find_package(Doxygen REQUIRED)
@@ -35,6 +35,9 @@ set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 set(SPHINX_INDEX_FILE ${SPHINX_BUILD}/index.html)
 
+# Collect all .rst files
+file(GLOB_RECURSE DOCS_RST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.rst)
+
 # Only regenerate Sphinx when:
 # - Doxygen has rerun
 # - Our doc files have been updated
@@ -48,7 +51,7 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
                    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                    DEPENDS
                    # Other docs files you want to track should go here (or in some variable)
-                   ${CMAKE_CURRENT_SOURCE_DIR}/index.rst
+                   ${DOCS_RST_FILES}
                    ${DOXYGEN_INDEX_FILE}
                    MAIN_DEPENDENCY ${SPHINX_SOURCE}/conf.py
                    COMMENT "Generating documentation with Sphinx")
