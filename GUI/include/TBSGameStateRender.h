@@ -112,11 +112,11 @@ namespace SGA
 							if(action.targets[0].getEntityID()==selectedEntityID)
 							actionHumanUnitSelected.emplace_back(action);
 						}
-						else if (actionType.actionTargets == TargetType::ContinuousAction)
+						/*else if (actionType.actionTargets == TargetType::ContinuousAction)
 						{
 							if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
 								actionHumanUnitSelected.emplace_back(action);
-						}
+						}*/
 					}
 				}
 			}
