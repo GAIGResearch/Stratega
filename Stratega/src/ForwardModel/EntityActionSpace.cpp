@@ -43,17 +43,17 @@ namespace SGA
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
 
-				//// Generate all actions
-				//if(actionType.actionTargets.size() == 0/*TargetType::None*/)
-				//{
-				//	// Self-actions do not have a target, only a source
-				//	//bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
-				//}
-				//else
-				//{
+				// Generate all actions
+				if(actionType.actionTargets.size() == 0/*TargetType::None*/)
+				{
+					// Self-actions do not have a target, only a source
+					bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
+				}
+				else
+				{
 					auto targets = generateTargets(gameState, sourceEntity, actionType);
 					generateActions(gameState, sourceEntity, actionType, targets, bucket);
-				//}
+				}
 			}
 		}
 
@@ -113,7 +113,12 @@ namespace SGA
 
 	auto product(const std::vector<std::vector<ActionTarget>>& lists)
 	{
+		
 		std::vector<std::vector<ActionTarget>> result;
+
+		if (lists.size() == 0)
+			return result;
+		
 		if (std::find_if(std::begin(lists), std::end(lists),
 			[](auto e) -> bool { return e.size() == 0; }) != std::end(lists)) {
 			return result;
@@ -153,7 +158,23 @@ namespace SGA
 			if (actionType.isContinuous)
 				action.actionTypeFlags = ContinuousAction;
 
-			actionBucket.emplace_back(action);
+
+
+			bool isValidAction = true;
+			for (auto& actionTargetType : actionType.actionTargets)
+			for (const auto& condition : actionTargetType.second)
+			{
+				if (!condition->isFullfilled(state, action.targets))
+				{
+					isValidAction = false;
+					break;
+				}
+			}
+
+			if (isValidAction)
+			{
+				actionBucket.emplace_back(action);
+			}
 		}
 		
 		/*Action action;
@@ -187,8 +208,43 @@ namespace SGA
 		}*/
 	}
 
-	void EntityActionSpace::generateActions(GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<ActionTarget>& targets, std::vector<Action>& actionBucket)
+	void EntityActionSpace::generateActions(GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket)
 	{
+
+		for (auto& targetsProduct : product(targets))
+		{
+			Action action;
+			action.actionTypeID = actionType.id;
+			action.ownerID = sourcePlayer.id;
+			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+
+			for (auto& target : targetsProduct)
+			{
+				action.targets.emplace_back(target);
+			}
+
+			if (actionType.isContinuous)
+				action.actionTypeFlags = ContinuousAction;
+
+
+
+			bool isValidAction = true;
+			for (auto& actionTargetType : actionType.actionTargets)
+				for (const auto& condition : actionTargetType.second)
+				{
+					if (!condition->isFullfilled(state, action.targets))
+					{
+						isValidAction = false;
+						break;
+					}
+				}
+
+			if (isValidAction)
+			{
+				actionBucket.emplace_back(action);
+			}
+		}
+		
 		/*Action action;
 		action.actionTypeID = actionType.id;
 		action.ownerID = sourcePlayer.id;
@@ -225,7 +281,7 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
-		/*
+		
 		for (auto& type : action.actionTargets)
 		{
 			std::vector<ActionTarget> newTargets;
@@ -245,7 +301,7 @@ namespace SGA
 			}
 
 			targets.emplace_back(newTargets);
-		}*/
+		}
 		
 		return targets;
 		throw std::runtime_error("Tried generating action-targets for unknown target-type");

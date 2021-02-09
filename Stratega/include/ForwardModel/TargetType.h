@@ -33,5 +33,21 @@ namespace SGA
 		std::unordered_set<int> technologyTypes;
 
 		operator Type() const { return type; }
+
+		/*bool operator==(const TargetType& p) const
+		{
+			return type == p.type;
+		}*/
 	};
+
+	//class MyHashFunction {
+	//public:
+
+	//	// Use sum of lengths of first and last names 
+	//	// as hash function. 
+	//	size_t operator()(const TargetType& p) const
+	//	{
+	//		return p.first.length() + p.last.length();
+	//	}
+	//};
 }

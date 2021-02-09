@@ -197,7 +197,8 @@ namespace SGA
 			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
-			for(int dx = -1; dx <= 1; dx++)
+			fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, targets[2].getPosition(state));
+			/*for(int dx = -1; dx <= 1; dx++)
 			{
 				for (int dy = -1; dy <= 1; dy++)
 				{
@@ -208,7 +209,7 @@ namespace SGA
 					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, spawnPos);
 					return;
 				}
-			}
+			}*/
 		}
 		else
 		{

@@ -213,6 +213,9 @@ namespace SGA
 		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
 		        parser.parseFunctions(targetConditions, targetConditionsList, context);
 
+            	
+                type.actionTargets.emplace_back(newTarget, targetConditionsList);
+            	
                 //type.actionTargets[newTarget] = targetConditionsList;
             }
            /* type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
