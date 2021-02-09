@@ -4,7 +4,7 @@
 namespace SGA
 {
 	
-	void RHEAAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void RHEAAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
         while (!gameCommunicator.isGameOver())
         {
