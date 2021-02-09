@@ -128,14 +128,15 @@ namespace SGA
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
-					for (const auto& condition : actionType.targetConditions)
+					/*for (auto& targetType : actionType.actionTargets)
+					for (const auto& condition : targetType.second)
 					{
 						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
 						}
-					}
+					}*/
 
 					if (canExecute)
 					{
@@ -197,14 +198,15 @@ namespace SGA
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
-					for (const auto& condition : actionType.targetConditions)
+					/*for (auto& targetType : actionType.actionTargets)
+					for (const auto& condition : targetType.second)
 					{
 						if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
 						}
-					}
+					}*/
 
 					if (canExecute)
 					{

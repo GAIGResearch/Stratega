@@ -265,17 +265,17 @@ Actions:
                 Type: EntityType
                 ValidTargets: Units
                 Conditions:
-                    - "CanAfford(Source.Player, Target)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
 
-            #TargetPosition:
-            #    Type: Position
-            #    Shape: Circle
-            #    Size: 3
-            #    Conditions:                
-            #        - "IsInrange(Source, Target)"
-            #        - "IsWalkable(Source, Target)"
+            TargetPosition:
+                Type: Position
+                Shape: Circle
+                Size: 3
+                Conditions:                
+                    - "InRange(Source, TargetPosition)"
+                    - "IsWalkable(Source, TargetPosition)"
         Effects:
-            - "Spawn(Source, EntityTypeTarget)"
+            - "SpawnRandom(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
 
 #    #Build

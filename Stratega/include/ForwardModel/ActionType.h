@@ -20,11 +20,11 @@ namespace SGA
 
 		int cooldownTicks;
 
-		//std::unordered_map<TargetType,std::vector<ActionTarget>> actionTargets;
-		std::vector<TargetType> actionTargetsList;
+		//std::unordered_map<TargetType,std::vector<std::shared_ptr<Condition>>> actionTargets;
+		//std::vector<TargetType> actionTargetsList;
 		//TargetType actionTargets;
 		std::vector<std::shared_ptr<Condition>> preconditions;
-		std::vector<std::shared_ptr<Condition>> targetConditions;
+		//std::vector<std::shared_ptr<Condition>> targetConditions;
 		std::vector<std::shared_ptr<Effect>> effects;
 
 		//ContinuousAction

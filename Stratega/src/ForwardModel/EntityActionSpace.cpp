@@ -43,17 +43,17 @@ namespace SGA
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
 
-				// Generate all actions
-				if(actionType.actionTargetsList.size() == 0/*TargetType::None*/)
-				{
-					// Self-actions do not have a target, only a source
-					//bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
-				}
-				else
-				{
+				//// Generate all actions
+				//if(actionType.actionTargets.size() == 0/*TargetType::None*/)
+				//{
+				//	// Self-actions do not have a target, only a source
+				//	//bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
+				//}
+				//else
+				//{
 					auto targets = generateTargets(gameState, sourceEntity, actionType);
 					generateActions(gameState, sourceEntity, actionType, targets, bucket);
-				}
+				//}
 			}
 		}
 
@@ -225,19 +225,19 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
-		
-		for (auto& type : action.actionTargetsList)
+		/*
+		for (auto& type : action.actionTargets)
 		{
 			std::vector<ActionTarget> newTargets;
-			switch (type.type)
+			switch (type.first.type)
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, entity.position, type.shapeType, type.shapeSize);
+			case TargetType::Position: newTargets = generatePositionTargets(state, entity.position, type.first.shapeType, type.first.shapeSize);
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, type.groupEntityTypes);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.groupEntityTypes);
 				break;
-			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.groupEntityTypes);
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
 				break;
-			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.technologyTypes);
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
 				break;
 			case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
 				break;
@@ -245,7 +245,7 @@ namespace SGA
 			}
 
 			targets.emplace_back(newTargets);
-		}
+		}*/
 		
 		return targets;
 		throw std::runtime_error("Tried generating action-targets for unknown target-type");
