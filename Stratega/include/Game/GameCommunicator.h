@@ -12,6 +12,9 @@ namespace SGA
 			
 		}
 
+		/// <summary>
+		/// Returns the ID of the player that this communicator can control.
+		/// </summary>
 		int getPlayerID() const { return playerID; }
 		virtual void init() {};
 		virtual void close() {};
