@@ -58,52 +58,64 @@ namespace SGA
 		}
 
 
-		////Generate player actions
-		//auto& player = *gameState.getPlayer(playerID);
-		//for (const auto& actionInfo : player.attachedActions)
-		//{
-		//	auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
-		//	bool generateContinuousAction = true;
-		//	//Check if action is continuos
-		//	if (actionType.isContinuous)
-		//	{
-		//		//Check if entity is already executing it
-		//		for (auto& action : player.continuousAction)
-		//		{
-		//			if (action.actionTypeID == actionType.id)
-		//			{
-		//				//This entity cant execute the action
-		//				generateContinuousAction = false;
+		//Generate player actions
+		auto& player = *gameState.getPlayer(playerID);
+		for (const auto& actionInfo : player.attachedActions)
+		{
+			auto& actionType = gameState.getActionType(actionInfo.actionTypeID);
+			bool generateContinuousAction = true;
+			//Check if action is continuos
+			if (actionType.isContinuous)
+			{
+				//Check if entity is already executing it
+				for (auto& action : player.continuousAction)
+				{
+					if (action.actionTypeID == actionType.id)
+					{
+						//This entity cant execute the action
+						generateContinuousAction = false;
 
-		//				//Give the posibility to abort it
-		//				bucket.emplace_back(Action::createAbortAction(player.id, action.continuousActionID));
-		//			}
-		//		}
-		//	}
+						//Give the posibility to abort it
+						bucket.emplace_back(Action::createAbortAction(player.id, action.continuousActionID));
+					}
+				}
+			}
 
-		//	if (!generateContinuousAction)
-		//		continue;
-		//	
-		//	// Check if this action can be executed
-		//	
-		//	if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
-		//		continue;
-		//	if (!gameState.canExecuteAction(player, actionType))
-		//		continue;
+			if (!generateContinuousAction)
+				continue;
+			
+			// Check if this action can be executed
+			
+			if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				continue;
+			if (!gameState.canExecuteAction(player, actionType))
+				continue;
 
-		//	
-		//	//// Generate all actions
-		//	//if (actionType.actionTargets == TargetType::None)
-		//	//{
-		//	//	// Self-actions do not have a target, only a source
-		//	//	bucket.emplace_back(generateSelfAction(player, actionType));
-		//	//}
-		//	//else
-		//	//{
-		//		/*auto targets = generateTargets(gameState, player, actionType);
-		//		generateActions(gameState, player, actionType, targets, bucket);*/
-		//	//}
-		//}
+			
+			//// Generate all actions
+			//if (actionType.actionTargets == TargetType::None)
+			//{
+			//	// Self-actions do not have a target, only a source
+			//	bucket.emplace_back(generateSelfAction(player, actionType));
+			//}
+			//else
+			//{
+				/*auto targets = generateTargets(gameState, player, actionType);
+				generateActions(gameState, player, actionType, targets, bucket);*/
+			//}
+
+			// Generate all actions
+			if (actionType.actionTargets.size() == 0/*TargetType::None*/)
+			{
+				// Self-actions do not have a target, only a source
+				bucket.emplace_back(generateSelfAction(player, actionType));
+			}
+			else
+			{
+				auto targets = generateTargets(gameState, player, actionType);
+				generateActions(gameState, player, actionType, targets, bucket);
+			}
+		}
 		
 		
 		//Generate EndTurnAction
@@ -307,19 +319,45 @@ namespace SGA
 		throw std::runtime_error("Tried generating action-targets for unknown target-type");
 	}
 
-	//std::vector<ActionTarget> EntityActionSpace::generateTargets(const GameState& state, const Player& entity, const ActionType& action)
-	//{
-	//	//switch (action.actionTargets.type)
-	//	//{
-	//	//case TargetType::Position: return generatePositionTargets(state);
-	//	//case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
-	//	//case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
-	//	////case TargetType::ContinuousAction: return generateContinuousActionTargets(state, entity);
-	//	//case TargetType::None: return {};
-	//	//}
-	//	return {};
-	//	throw std::runtime_error("Tried generating action-targets for unknown target-type");
-	//}
+	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Player& entity, const ActionType& action)
+	{
+		//switch (action.actionTargets.type)
+		//{
+		//case TargetType::Position: return generatePositionTargets(state);
+		//case TargetType::Entity: return generateGroupTargets(state, action.actionTargets.groupEntityTypes);
+		//case TargetType::Technology: return generateTechnologyTargets(state, action.actionTargets.technologyTypes);
+		////case TargetType::ContinuousAction: return generateContinuousActionTargets(state, entity);
+		//case TargetType::None: return {};
+		//}
+
+		std::vector<std::vector<ActionTarget>> targets;
+
+
+		for (auto& type : action.actionTargets)
+		{
+			std::vector<ActionTarget> newTargets;
+			switch (type.first.type)
+			{
+			case TargetType::Position: newTargets = generatePositionTargets(state);
+				break;
+			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.groupEntityTypes);
+				break;
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
+				break;
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
+				break;
+			/*case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
+				break;*/
+			case TargetType::None: return {};
+			}
+
+			targets.emplace_back(newTargets);
+		}
+
+		return targets;
+		
+		throw std::runtime_error("Tried generating action-targets for unknown target-type");
+	}
 
 	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, ShapeType shape, int shapeSize)
 	{
