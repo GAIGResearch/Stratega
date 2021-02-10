@@ -196,43 +196,30 @@ namespace SGA
             ActionType type;
             type.id = config.actionTypes.size();
             type.name = nameTypePair.first;
+        	
             context.targetIDs.emplace("Source", 0);
-            //context.targetIDs.emplace("Target", 1);
-            int targets = 1;
+        	
         	//Parse all the targets
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;
-                context.targetIDs.emplace(target.first, targets++);
+                context.targetIDs.emplace(target.first, context.targetIDs.size());
                 newTarget = parseTargetType(target.second, config);
-                //type.actionTargetsList.emplace_back(newTarget);
-
-                std::vector<std::shared_ptr<Condition>> targetConditionsList;
             	
+                std::vector<std::shared_ptr<Condition>> targetConditionsList;            	
                 //// Parse target conditions
 		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-		        parser.parseFunctions(targetConditions, targetConditionsList, context);
-
-            	
+		        parser.parseFunctions(targetConditions, targetConditionsList, context);            	
                 type.actionTargets.emplace_back(newTarget, targetConditionsList);
-            	
-                //type.actionTargets[newTarget] = targetConditionsList;
             }
-           /* type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
-            type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
-            type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);*/
+        	
             type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
             type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
-            // Parse preconditions
-            
+        	
+            // Parse preconditions            
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(preconditions, type.preconditions, context);
 
-            //// Parse target conditions
-            
-            //auto targetConditions = nameTypePair.second["Target"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            //parser.parseFunctions(targetConditions, type.targetConditions, context);
-        	
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
