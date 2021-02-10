@@ -60,6 +60,7 @@ namespace SGA
 		// Type information
 		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
 		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
+		std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;

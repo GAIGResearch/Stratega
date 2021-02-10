@@ -8,7 +8,8 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: [Research]
+    Actions: [Research, Build]
+    CanSpawn: All
     Parameters:
         Gold: 0
         Prod: 5
@@ -39,7 +40,9 @@ Entities:
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
-        CanSpawn: [Worker, Settler]
+        CanSpawn: [Worker]
+        Cost:
+            Prod: 10
         Parameters:
             Health: 800
             StorageCapacity: 50
@@ -47,7 +50,7 @@ Entities:
     Barracks:
         Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
-        Requirements: [Discipline]
+        RequiredTechnology: Discipline
         Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
@@ -58,7 +61,7 @@ Entities:
     MilitaryAcademy:
         Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
-        Requirements: [Mathematics]
+        RequiredTechnology: Mathematics
         Actions: [Spawn]
         CanSpawn: [Catapult]
         Cost:
@@ -98,15 +101,6 @@ Entities:
             Health: 200
             StorageCapacity: 50
 
-    Settler:
-        Sprite: ../GUI/Assets/Entities/unit8.png
-        LineOfSightRange: 2
-        Actions: [Move, Settle]
-        Cost:
-            Prod: 10
-        Parameters:
-            Speed: 2
-            Health: 50
 
     Worker:
         Sprite: ../GUI/Assets/Entities/unit7.png
@@ -177,9 +171,9 @@ Entities:
             Gold: 200
 
 EntityGroups:
-    Units: [Worker, Warrior, Archer, Catapult, Settler]
+    Units: [Worker, Warrior, Archer, Catapult]
     Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
-    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult, Settler]
+    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult]
 
 Actions:
     # Attack Actions
@@ -227,21 +221,6 @@ Actions:
         OnComplete:
             - "Research(Source, Target)"
     
-
-    #Spawn
-#    Spawn:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: EntityType
-#            ValidTargets: Units
-#            Conditions:
-#                - "CanAfford(Source.Player, Target)"
-#                - "CanSpawn(Source, Target)"
-#        Effects:
-#            - "SpawnRandom(Source, Target)"
-#            - "PayCost(Source.Player, Target)"
-    
     Mine:
         Type: EntityAction
         Cooldown: 1
@@ -274,20 +253,31 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
         Effects:
-            - "SpawnRandom(Source, EntityTypeTarget, TargetPosition)"
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
 
     #Build
-    Settle:
-        Type: EntityAction
+    Build:
+        Type: PlayerAction
         Cooldown: 1
         Targets:
-            Target:
+            EntityTypeTarget:
                 Type: EntityType
                 ValidTargets: Buildings
+                Conditions:
+                    - "CanAfford(Source, EntityTypeTarget)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Circle
+                Size: 1
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+
         Effects:
-            - "Spawn(Target, Source)"
-            - "Remove(Source)"
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source, EntityTypeTarget)"
             
 
 TechnologyTrees:

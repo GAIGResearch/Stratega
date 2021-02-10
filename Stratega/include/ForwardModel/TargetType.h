@@ -1,7 +1,5 @@
 #pragma once
-#include <ForwardModel/ActionTarget.h>
 #include <ForwardModel/TargetType.h>
-#include <Representation/Vector2.h>
 
 #include <unordered_set>
 #include <vector>
@@ -34,20 +32,5 @@ namespace SGA
 
 		operator Type() const { return type; }
 
-		/*bool operator==(const TargetType& p) const
-		{
-			return type == p.type;
-		}*/
 	};
-
-	//class MyHashFunction {
-	//public:
-
-	//	// Use sum of lengths of first and last names 
-	//	// as hash function. 
-	//	size_t operator()(const TargetType& p) const
-	//	{
-	//		return p.first.length() + p.last.length();
-	//	}
-	//};
 }

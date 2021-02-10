@@ -455,6 +455,8 @@ namespace SGA
 		//Parse parameters
         auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
+
+       config.playerSpawnableTypes = parseEntityGroup(playerNode["CanSpawn"], config);
 	}
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const

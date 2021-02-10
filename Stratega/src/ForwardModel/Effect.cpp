@@ -197,8 +197,7 @@ namespace SGA
 			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
-			fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, targets[2].getPosition(state));
-			/*for(int dx = -1; dx <= 1; dx++)
+			for(int dx = -1; dx <= 1; dx++)
 			{
 				for (int dy = -1; dy <= 1; dy++)
 				{
@@ -209,7 +208,7 @@ namespace SGA
 					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, spawnPos);
 					return;
 				}
-			}*/
+			}
 		}
 		else
 		{
@@ -217,6 +216,29 @@ namespace SGA
 		}
 	}
 
+
+	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	{
+	}
+
+	void SpawnEntity::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		{
+			
+			int playerID = sourceEntityParam.getPlayerID(state, targets);
+			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+
+			fm.spawnEntity(state, targetEntityType, playerID, targets[2].getPosition(state));
+		}
+		else
+		{
+			throw std::runtime_error("SpawnEntity is only available in TBS-Games");
+		}
+	}
+
+	
 	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
 		: sourceParam(parameters[0]), costParam(parameters[1])
 	{

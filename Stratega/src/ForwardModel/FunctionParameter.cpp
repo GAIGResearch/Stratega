@@ -173,6 +173,7 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+			
 		case Type::ParameterReference:
 		{
 			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
@@ -193,6 +194,31 @@ namespace SGA
 		}
 	}
 
+
+	int FunctionParameter::getPlayerID(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ParameterReference:
+		{
+			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
+			return playerID;
+		}
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			auto& entity = getEntity(state, actionTargets);
+			return entity.ownerID;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getPlayerID(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+	
 	const Player& FunctionParameter::getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		return getPlayer(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
@@ -211,6 +237,30 @@ namespace SGA
 		}
 		
 		throw std::runtime_error("Type not recognised");
+	}
+
+	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ParameterReference:
+		{
+			auto playerID = actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
+			return playerID;
+		}
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			auto& entity = getEntityType(state, actionTargets);
+			return entity.spawnableEntityTypes;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getSpawneableEntities(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
 	}
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const

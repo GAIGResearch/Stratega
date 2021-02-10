@@ -125,6 +125,7 @@ namespace SGA
 
 				if (isComplete)
 				{
+					//TODO Should the action check the targetconditions before executing it?
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
@@ -195,6 +196,7 @@ namespace SGA
 
 				if (isComplete)
 				{
+					//TODO Should the action check the targetconditions before executing it?
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
