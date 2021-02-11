@@ -3,8 +3,8 @@
 #include <yaml-cpp/yaml.h>
 #include "FMEvaluator.h"
 
-#include <Configuration/GameConfig.h>
-#include "Configuration/GameConfigParser.h"
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Configuration/GameConfigParser.h>
 
 int main(int argc, char **argv)
 {
