@@ -21,7 +21,7 @@ namespace SGA
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
-			TimeReference // References TechnologyTypes defined in the Game,
+			TimeReference // References the Time for specific Entities or Technologies,
 		};
 
 	private:
