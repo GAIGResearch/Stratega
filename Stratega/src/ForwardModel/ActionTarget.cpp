@@ -126,12 +126,12 @@ namespace SGA
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.getEntityTypeConst(data.entityTypeID);
+			const auto& type = state.getEntityType(data.entityTypeID);
 			return type;
 		}
 		else if(targetType == EntityReference)
 		{
-			const auto& type = state.getEntityTypeConst(state.getEntityConst(data.entityID).typeID);
+			const auto& type = state.getEntityType(state.getEntityConst(data.entityID).typeID);
 			return type;
 		}
 		else

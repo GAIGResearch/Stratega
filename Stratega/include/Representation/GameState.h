@@ -105,23 +105,7 @@ namespace SGA
 				[&](Entity const& p) { return p.id == entityID; });
 		}
 
-		const EntityType& getEntityTypeConst(int entityTypeID) const
-		{
-			auto it = entityTypes->find(entityTypeID);
-			if (it != entityTypes->end())
-			{
-				return it->second;
-			}
-			else
-			{
-				std::string s;
-				s.append("Tried accessing unknown entity type with ID=");
-				s.append(std::to_string(entityTypeID));
-				throw std::runtime_error(s);
-			}
-		}
-
-		EntityType& getEntityType(int entityTypeID) const
+		const EntityType& getEntityType(int entityTypeID) const
 		{
 			auto it = entityTypes->find(entityTypeID);
 			if (it != entityTypes->end())
@@ -178,13 +162,13 @@ namespace SGA
 		
 		const Parameter& getParameterType(int entityTypeID, int globalParameterID) const
 		{
-			const auto& entityType = getEntityTypeConst(entityTypeID);
+			const auto& entityType = getEntityType(entityTypeID);
 			return entityType.parameters.find(globalParameterID)->second;
 		}
 		
 		bool checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
 		{
-			const auto& entityType = getEntityTypeConst(entityTypeID);
+			const auto& entityType = getEntityType(entityTypeID);
 			for (const auto& parameter : entityType.parameters)
 			{
 				if (parameter.second.name == parameterName)

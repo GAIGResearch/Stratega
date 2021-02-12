@@ -26,7 +26,7 @@ namespace SGA
 		//ID + technologynode
 		std::unordered_map<int, TechnologyTreeNode> technologies;
 
-		const TechnologyTreeNode& getTechnologyNodeConst(int technologyID)const
+		const TechnologyTreeNode& getTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
 			const auto& it = technologies.find(technologyID);
@@ -136,7 +136,7 @@ namespace SGA
 			for (const auto& technologyTreeType : technologyTreeTypes)
 			{
 				if(technologyTreeType.second.findTechnologyNode(technologyID))
-					return technologyTreeType.second.getTechnologyNodeConst(technologyID);
+					return technologyTreeType.second.getTechnologyNode(technologyID);
 			}
 		}
 

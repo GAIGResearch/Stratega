@@ -425,7 +425,7 @@ namespace SGA
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
 			//Check if entity have sprite
-			auto& entityType = selectedGameStateCopy->getEntityTypeConst(entity.typeID);
+			auto& entityType = selectedGameStateCopy->getEntityType(entity.typeID);
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
@@ -623,7 +623,7 @@ namespace SGA
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
 			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-			auto entityType = gameStateCopy.getEntityTypeConst(selectedEntity->typeID);
+			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
 			
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -664,7 +664,7 @@ namespace SGA
 			for (auto &entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = gameStateCopy.getEntityTypeConst(entity->typeID);
+				auto entityType = gameStateCopy.getEntityType(entity->typeID);
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -717,7 +717,7 @@ namespace SGA
 			int entityTypeID = selectedEntity->typeID;
 
 
-			for (auto &actionID : gameStateCopy.getEntityTypeConst(entityTypeID).actionIds)
+			for (auto &actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.emplace_back(actionID);
 			}
@@ -813,7 +813,7 @@ namespace SGA
 
 		for (auto& unit : units)
 		{
-			auto& type = gameStateCopy.getEntityTypeConst(unit.typeID);
+			auto& type = gameStateCopy.getEntityType(unit.typeID);
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -889,7 +889,7 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += gameStateCopy.getEntityTypeConst(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(getPlayerID());

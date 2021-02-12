@@ -102,7 +102,7 @@ namespace SGA
 			{
 				auto& entity = getEntity(state, actionTargets);
 
-				const auto& entityType = state.getEntityTypeConst(entity.typeID);
+				const auto& entityType = state.getEntityType(entity.typeID);
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
@@ -228,7 +228,7 @@ namespace SGA
 	{
 		if(parameterType == Type::EntityTypeReference)
 		{
-			return state.getEntityTypeConst(data.entityTypeID);
+			return state.getEntityType(data.entityTypeID);
 		}
 		if(parameterType == Type::ArgumentReference)
 		{
@@ -359,14 +359,14 @@ namespace SGA
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
-				const auto& sourceEntityType = state.getEntityTypeConst(sourceEntity.typeID);
+				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 				return sourceEntityType.parameters;
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			const auto& sourceEntityType = state.getEntityTypeConst(sourceEntity.typeID);
+			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 			return sourceEntityType.parameters;
 		}
 	}
