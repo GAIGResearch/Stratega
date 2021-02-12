@@ -21,6 +21,7 @@ namespace SGA
 		int requiredTechnologyID;
 		std::unordered_set<EntityTypeID> spawnableEntityTypes;
 		std::unordered_map<ParameterID, double> cost;
+		double continuousActionTime;
 		
 		float lineOfSight;
 		
