@@ -21,6 +21,7 @@ namespace SGA
 			ArgumentReference, // References an action-argument, like Source or Target. Can be used for example if you want to pass a position-target
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
+			TimeReference // References the Time for specific Entities or Technologies,
 		};
 
 	private:
@@ -69,6 +70,7 @@ namespace SGA
 		static FunctionParameter createArgumentReference(int argumentIndex);
 		static FunctionParameter createParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityPlayerReference(int argumentIndex);
+		static FunctionParameter createTimeReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
@@ -91,6 +93,7 @@ namespace SGA
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::unordered_map<ParameterID, double>& getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::unordered_map<ParameterID, Parameter>& getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double FunctionParameter::getTime(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		std::vector<double>& getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::vector<double>& getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 			};

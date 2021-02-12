@@ -43,6 +43,7 @@ Entities:
         CanSpawn: [Worker]
         Cost:
             Prod: 10
+
         Parameters:
             Health: 800
             StorageCapacity: 50
@@ -101,13 +102,13 @@ Entities:
             Health: 200
             StorageCapacity: 50
 
-
     Worker:
         Sprite: ../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: [Move, Mine]
+        Actions: []
         Cost:
             Prod: 5
+        Time: 5
         Parameters:
             ResourceCapacity: 10
             Armor: 5
@@ -118,7 +119,7 @@ Entities:
     Warrior:
         Sprite: ../GUI/Assets/Entities/unit2.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Bronze Working
         Cost:
             Prod: 10
@@ -133,7 +134,7 @@ Entities:
     Archer:
         Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Archery
         Cost:
             Prod: 15
@@ -149,7 +150,7 @@ Entities:
     Catapult:
         Sprite: ../GUI/Assets/Entities/unit4.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Engineering
         Cost:
             Prod: 20
@@ -203,6 +204,7 @@ Actions:
         Effects:
             - "Move(Source, Target)"
 
+
     #Research
     Research:
         Type: PlayerAction
@@ -215,7 +217,7 @@ Actions:
                     - "CanResearch(Source, Target)"
                     - "CanAfford(Source, Target)"
         TriggerComplete:
-            - "HasElapsedTick(3)"
+            - "HasElapsedTick(Target.Time)"
         OnStart:
             - "PayCost(Source, Target)"
         OnComplete:
@@ -278,7 +280,6 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
-            
 
 TechnologyTrees:
     SingleTree:
@@ -286,6 +287,7 @@ TechnologyTrees:
             Description: Base technology
             Cost:
                 Prod: 5
+            Time: 10
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]

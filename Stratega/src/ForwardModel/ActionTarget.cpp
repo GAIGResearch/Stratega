@@ -141,6 +141,11 @@ namespace SGA
 			const auto& type = state.getEntityType(data.entityTypeID);
 			return type;
 		}
+		else if(targetType == EntityReference)
+		{
+			const auto& type = state.getEntityType(state.getEntityConst(data.entityID).typeID);
+			return type;
+		}
 		else
 		{
 			throw std::runtime_error("Type not recognised");

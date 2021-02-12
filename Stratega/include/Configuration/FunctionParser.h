@@ -62,6 +62,7 @@ namespace SGA
 		std::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
+		std::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
