@@ -152,8 +152,8 @@ namespace SGA
 		}
 
 		auto targetName = names.value()[0];
-		auto playerName = names.value()[1];
-		if (playerName != "Time")
+		auto timeName = names.value()[1];
+		if (timeName != "Time")
 		{
 			ss.seekg(begin);
 			return {};
