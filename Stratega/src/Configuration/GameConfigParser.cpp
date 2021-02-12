@@ -151,6 +151,7 @@ namespace SGA
 
             parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
+            type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.id, std::move(type));
         }
     }

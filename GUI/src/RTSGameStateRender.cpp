@@ -247,7 +247,7 @@ namespace SGA
 					{
 						for (const auto& i : selectedUnits)
 						{
-							auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i)->typeID);
+							auto entityType = gameStateCopy.getEntityTypeConst(gameStateCopy.getEntity(i)->typeID);
 
 							//Move action
 							if (entityType.canExecuteAction(2))
@@ -473,7 +473,7 @@ namespace SGA
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
 			//Check if entity have sprite
-			auto entityType = selectedGameStateCopy->getEntityType(entity.typeID);
+			auto entityType = selectedGameStateCopy->getEntityTypeConst(entity.typeID);
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
@@ -737,7 +737,7 @@ namespace SGA
 		{
 			int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
 
-			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
+			for (auto& actionID : gameStateCopy.getEntityTypeConst(entityTypeID).actionIds)
 
 			{
 				actionTypes.insert(actionID);
@@ -769,7 +769,7 @@ namespace SGA
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 
 			//Check if entity have sprite
-			auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(entity)->typeID);
+			auto entityType = gameStateCopy.getEntityTypeConst(gameStateCopy.getEntity(entity)->typeID);
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -886,7 +886,7 @@ namespace SGA
 
 		for (auto& unit : units)
 		{
-			auto& type = gameStateCopy.getEntityType(unit.typeID);
+			auto& type = gameStateCopy.getEntityTypeConst(unit.typeID);
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());

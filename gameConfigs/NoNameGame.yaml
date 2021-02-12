@@ -38,7 +38,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: []
+        Actions: [Spawn]
         CanSpawn: [Worker, Settler]
         Time: 5
         Parameters:
@@ -115,6 +115,7 @@ Entities:
         Actions: []
         Cost:
             Prod: 5
+        Time: 5
         Parameters:
             ResourceCapacity: 10
             Armor: 5
@@ -228,18 +229,20 @@ Actions:
     
 
     #Spawn
-#    Spawn:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: EntityType
-#            ValidTargets: Units
-#            Conditions:
-#                - "CanAfford(Source.Player, Target)"
-#                - "CanSpawn(Source, Target)"
-#        Effects:
-#            - "SpawnRandom(Source, Target)"
-#            - "PayCost(Source.Player, Target)"
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Target:
+            Type: EntityType
+            ValidTargets: Units
+            Conditions:
+                - "CanAfford(Source.Player, Target)"
+                - "CanSpawn(Source, Target)"
+        TriggerComplete:
+            - "HasElapsedTick(Target.Time)"
+        OnComplete:
+            - "SpawnRandom(Source, Target)"
+            - "PayCost(Source.Player, Target)"
 #    
 #    Mine:
 #        Type: EntityAction

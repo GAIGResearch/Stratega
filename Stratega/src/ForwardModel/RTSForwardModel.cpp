@@ -243,7 +243,7 @@ namespace SGA
 				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
 					continue;
 
-				const auto& entityType = state.getEntityType(unit.typeID);
+				const auto& entityType = state.getEntityTypeConst(unit.typeID);
 
 				//Move action
 				if (!entityType.canExecuteAction(2))

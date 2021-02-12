@@ -122,11 +122,34 @@ namespace SGA
 		}
 	}
 
-	const EntityType& ActionTarget::getEntityType(const GameState& state) const
+	const EntityType& ActionTarget::getEntityTypeConst(const GameState& state) const
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.getEntityType(data.entityTypeID);
+			const auto& type = state.getEntityTypeConst(data.entityTypeID);
+			return type;
+		}
+		else if(targetType == EntityReference)
+		{
+			const auto& type = state.getEntityTypeConst(state.getEntityConst(data.entityID).typeID);
+			return type;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+
+	EntityType& ActionTarget::getEntityType(const GameState& state) const
+	{
+		if (targetType == EntityTypeReference)
+		{
+			auto& type = state.getEntityType(data.entityTypeID);
+			return type;
+		}
+		else if (targetType == EntityReference)
+		{
+			auto& type = state.getEntityType(state.getEntityConst(data.entityID).typeID);
 			return type;
 		}
 		else
