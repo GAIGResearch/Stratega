@@ -66,10 +66,32 @@ namespace SGA
 			case Type::Constant: return data.constValue;
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference: return getParameterValue(state, actionTargets);
-			case Type::TimeReference: return getParameterValue(state, actionTargets);
+			case Type::TimeReference: return getTime(state, actionTargets);
 			default:
 				throw std::runtime_error("Type not recognised");
 		}
+	}
+	
+	double FunctionParameter::getTime(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (parameterType == Type::TimeReference)
+		{
+			auto& target = actionTargets[data.argumentIndex];
+			if (target.getType() == ActionTarget::TechnologyReference)
+			{
+				auto technologyID = target.getTechnologyID();
+				return state.technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
+			}
+			else if (target.getType() == ActionTarget::EntityReference
+				|| target.getType() == ActionTarget::EntityTypeReference)
+			{
+				auto& entityType = target.getEntityType(state);
+				return entityType.continuousActionTime;
+			}
+
+		}
+		
+		throw std::runtime_error("Type not recognized");
 	}
 
 	const Parameter& FunctionParameter::getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -123,22 +145,6 @@ namespace SGA
 				auto& player = getPlayer(state, actionTargets);
 				return player.parameters[param.index];
 			}
-		}
-		else if(parameterType == Type::TimeReference)
-		{
-			auto& target = actionTargets[data.argumentIndex];
-			if(target.getType()==ActionTarget::TechnologyReference)
-			{
-				auto technologyID = target.getTechnologyID();
-				return state.technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
-			}
-			else if(target.getType() == ActionTarget::EntityReference
-				|| target.getType() == ActionTarget::EntityTypeReference)
-			{
-				auto& entityType = target.getEntityType(state);
-				return entityType.continuousActionTime;
-			}
-			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
@@ -227,7 +233,7 @@ namespace SGA
 		if(parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return actionTarget.getEntityTypeConst(state);
+			return actionTarget.getEntityType(state);
 		}
 		
 		throw std::runtime_error("Type not recognised");
@@ -239,11 +245,11 @@ namespace SGA
 		if (parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return state.technologyTreeCollection->getTechnologyConst(actionTarget.getTechnologyID());
+			return state.technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
 		}
 		else if (parameterType == Type::TechnologyTypeReference)
 		{	
-			return state.technologyTreeCollection->getTechnologyConst(data.technologyTypeID);
+			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
 		}
 		else
 		{

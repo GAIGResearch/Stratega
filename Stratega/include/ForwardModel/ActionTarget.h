@@ -41,9 +41,7 @@ namespace SGA
 		Entity& getEntity(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
-		const EntityType& getEntityTypeConst(const GameState& state) const;
-		EntityType& getEntityType(const GameState& state) const;
-
+		const EntityType& getEntityType(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;

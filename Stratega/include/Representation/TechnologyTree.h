@@ -29,21 +29,7 @@ namespace SGA
 		const TechnologyTreeNode& getTechnologyNodeConst(int technologyID)const
 		{
 			//Search technology in tree
-
-
 			const auto& it = technologies.find(technologyID);
-
-
-			if (it != technologies.end())
-				//We found the technology						
-				return it->second;
-		}
-
-		TechnologyTreeNode& getTechnologyNode(int technologyID)
-		{
-			//Search technology in tree
-			auto& it = technologies.find(technologyID);
-
 
 			if (it != technologies.end())
 				//We found the technology						
@@ -115,13 +101,13 @@ namespace SGA
 				return false;
 			
 			//Check if technology parents are researched		
-			const TechnologyTreeNode& technologyNode = getTechnologyConst(technologyID);
+			const TechnologyTreeNode& technologyNode = getTechnology(technologyID);
 
 			const std::vector<int>& parentsIDs = technologyNode.parentIDs;
 
 			for (auto& parent : parentsIDs)
 			{
-				const TechnologyTreeNode& technologyParentNode = getTechnologyConst(parent);
+				const TechnologyTreeNode& technologyParentNode = getTechnology(parent);
 
 				if (!isResearched(playerID, technologyParentNode.id))
 				{
@@ -144,23 +130,13 @@ namespace SGA
 			researchedPairList->second.emplace_back(technologyID);
 		}
 		
-		const TechnologyTreeNode& getTechnologyConst(int technologyID) const
+		const TechnologyTreeNode& getTechnology(int technologyID) const
 		{
 			//Search through technologytreetypes
 			for (const auto& technologyTreeType : technologyTreeTypes)
 			{
 				if(technologyTreeType.second.findTechnologyNode(technologyID))
 					return technologyTreeType.second.getTechnologyNodeConst(technologyID);
-			}
-		}
-
-		TechnologyTreeNode& getTechnology(int technologyID)
-		{
-			//Search through technologytreetypes
-			for (auto& technologyTreeType : technologyTreeTypes)
-			{
-				if (technologyTreeType.second.findTechnologyNode(technologyID))
-					return technologyTreeType.second.getTechnologyNode(technologyID);
 			}
 		}
 

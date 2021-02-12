@@ -895,10 +895,10 @@ namespace SGA
 						actionInfo += " Player: " + std::to_string(getPlayerID());
 						break;
 					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnologyConst(targetType.getTechnologyID()).name;
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
-						actionInfo += " Entity: " + targetType.getEntityTypeConst(gameStateCopy).name;
+						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
 					case ActionTarget::ContinuousActionReference:
 						break;
 					}					
