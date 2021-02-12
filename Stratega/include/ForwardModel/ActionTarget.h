@@ -43,7 +43,6 @@ namespace SGA
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
 
-
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;
 		int getTechnologyID()const

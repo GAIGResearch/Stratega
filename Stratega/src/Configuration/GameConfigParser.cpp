@@ -151,6 +151,7 @@ namespace SGA
 
             parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
+            type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.id, std::move(type));
         }
     }
@@ -400,6 +401,7 @@ namespace SGA
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
                 newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
+                newTechnology.continuousActionTime = nameTechPair.second["Time"].as<int>(0);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
