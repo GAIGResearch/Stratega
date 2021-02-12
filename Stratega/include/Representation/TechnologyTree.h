@@ -12,6 +12,7 @@ namespace SGA
 		int id;
 		std::vector<int> parentIDs;
 		std::unordered_map<ParameterID, double> cost;
+		double continuousActionTime;
 	};
 
 	class TechnologyTreeType
@@ -25,7 +26,7 @@ namespace SGA
 		//ID + technologynode
 		std::unordered_map<int, TechnologyTreeNode> technologies;
 
-		const TechnologyTreeNode& getTechnologyNode(int technologyID)const
+		const TechnologyTreeNode& getTechnologyNodeConst(int technologyID)const
 		{
 			//Search technology in tree
 
@@ -38,6 +39,17 @@ namespace SGA
 				return it->second;
 		}
 
+		TechnologyTreeNode& getTechnologyNode(int technologyID)
+		{
+			//Search technology in tree
+			auto& it = technologies.find(technologyID);
+
+
+			if (it != technologies.end())
+				//We found the technology						
+				return it->second;
+		}
+		
 		bool findTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
@@ -103,13 +115,13 @@ namespace SGA
 				return false;
 			
 			//Check if technology parents are researched		
-			const TechnologyTreeNode& technologyNode = getTechnology(technologyID);
+			const TechnologyTreeNode& technologyNode = getTechnologyConst(technologyID);
 
 			const std::vector<int>& parentsIDs = technologyNode.parentIDs;
 
 			for (auto& parent : parentsIDs)
 			{
-				const TechnologyTreeNode& technologyParentNode = getTechnology(parent);
+				const TechnologyTreeNode& technologyParentNode = getTechnologyConst(parent);
 
 				if (!isResearched(playerID, technologyParentNode.id))
 				{
@@ -132,12 +144,22 @@ namespace SGA
 			researchedPairList->second.emplace_back(technologyID);
 		}
 		
-		const TechnologyTreeNode& getTechnology(int technologyID) const
+		const TechnologyTreeNode& getTechnologyConst(int technologyID) const
 		{
 			//Search through technologytreetypes
 			for (const auto& technologyTreeType : technologyTreeTypes)
 			{
 				if(technologyTreeType.second.findTechnologyNode(technologyID))
+					return technologyTreeType.second.getTechnologyNodeConst(technologyID);
+			}
+		}
+
+		TechnologyTreeNode& getTechnology(int technologyID)
+		{
+			//Search through technologytreetypes
+			for (auto& technologyTreeType : technologyTreeTypes)
+			{
+				if (technologyTreeType.second.findTechnologyNode(technologyID))
 					return technologyTreeType.second.getTechnologyNode(technologyID);
 			}
 		}

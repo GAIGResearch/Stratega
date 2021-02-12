@@ -54,6 +54,7 @@ namespace SGA
 			if (((param = parseConstant(ss))) ||
 				((param = parseEntityPlayerReference(ss, context))) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
+				((param = parseTimeReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))) ||
@@ -139,6 +140,32 @@ namespace SGA
 		}
 
 		return FunctionParameter::createEntityPlayerReference(targetIt->second);
+	}
+
+	std::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 2);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetName = names.value()[0];
+		auto playerName = names.value()[1];
+		if (playerName != "Time")
+		{
+			ss.seekg(begin);
+			return {};
+		}
+		
+		auto targetIt = context.targetIDs.find(targetName);
+		if (targetIt == context.targetIDs.end())
+		{
+			throw std::runtime_error("Unknown action-target: " + targetName);
+		}
+
+		return FunctionParameter::createTimeReference(targetIt->second);
 	}
 
 	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const

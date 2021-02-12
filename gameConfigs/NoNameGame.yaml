@@ -38,8 +38,9 @@ Entities:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn]
+        Actions: []
         CanSpawn: [Worker, Settler]
+        Time: 5
         Parameters:
             Health: 800
             StorageCapacity: 50
@@ -48,7 +49,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
         Requirements: [Discipline]
-        Actions: [Spawn]
+        Actions: []
         CanSpawn: [Warrior, Archer]
         Cost:
             Prod: 20
@@ -59,7 +60,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
         Requirements: [Mathematics]
-        Actions: [Spawn]
+        Actions: []
         CanSpawn: [Catapult]
         Cost:
             Prod: 40
@@ -101,7 +102,7 @@ Entities:
     Settler:
         Sprite: ../GUI/Assets/Entities/unit8.png
         LineOfSightRange: 2
-        Actions: [Move, Settle]
+        Actions: []
         Cost:
             Prod: 10
         Parameters:
@@ -111,7 +112,7 @@ Entities:
     Worker:
         Sprite: ../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: [Move, Mine]
+        Actions: []
         Cost:
             Prod: 5
         Parameters:
@@ -124,7 +125,7 @@ Entities:
     Warrior:
         Sprite: ../GUI/Assets/Entities/unit2.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Bronze Working
         Cost:
             Prod: 10
@@ -139,7 +140,7 @@ Entities:
     Archer:
         Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Archery
         Cost:
             Prod: 15
@@ -155,7 +156,7 @@ Entities:
     Catapult:
         Sprite: ../GUI/Assets/Entities/unit4.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: []
         RequiredTechnology: Engineering
         Cost:
             Prod: 20
@@ -183,30 +184,30 @@ EntityGroups:
 
 Actions:
 
-    # Attack Actions
-    Attack:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: Attackable
-            Conditions:
-                - "InRange(Source, Target, Source.Range)"
-        Effects:
-            - "Attack(Target.Health, Source.WeaponStrength)"
-
-    # Move Actions
-    Move:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Circle
-            Size: 3 # Target.Speed
-            Conditions:
-                - "IsWalkable(Target)"
-        Effects:
-            - "Move(Source, Target)"
+#    # Attack Actions
+#    Attack:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: Entity
+#            ValidTargets: Attackable
+#            Conditions:
+#                - "InRange(Source, Target, Source.Range)"
+#        Effects:
+#            - "Attack(Target.Health, Source.WeaponStrength)"
+#
+#    # Move Actions
+#    Move:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: Position
+#            Shape: Circle
+#            Size: 3 # Target.Speed
+#            Conditions:
+#                - "IsWalkable(Target)"
+#        Effects:
+#            - "Move(Source, Target)"
 
     #Research
     Research:
@@ -219,7 +220,7 @@ Actions:
                 - "CanResearch(Source, Target)"
                 - "CanAfford(Source, Target)"
         TriggerComplete:
-            - "HasElapsedTick(3)"
+            - "HasElapsedTick(Target.Time)"
         OnStart:
             - "PayCost(Source, Target)"
         OnComplete:
@@ -227,41 +228,41 @@ Actions:
     
 
     #Spawn
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: EntityType
-            ValidTargets: Units
-            Conditions:
-                - "CanAfford(Source.Player, Target)"
-                - "CanSpawn(Source, Target)"
-        Effects:
-            - "SpawnRandom(Source, Target)"
-            - "PayCost(Source.Player, Target)"
-    
-    Mine:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: GoldVein
-            Conditions:
-                - "InRange(Source, Target, 1)"
-                - "HasResource(Target.Gold, 40)"
-        Effects:
-            - "Transfer(Target.Gold, Source.Player.Gold, 40)"
-
-    #Build
-    Settle:
-        Type: EntityAction
-        Cooldown: 1
-        Target:
-            Type: EntityType
-            ValidTargets: Buildings
-        Effects:
-            - "Spawn(Target, Source)"
-            - "Remove(Source)"
+#    Spawn:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: EntityType
+#            ValidTargets: Units
+#            Conditions:
+#                - "CanAfford(Source.Player, Target)"
+#                - "CanSpawn(Source, Target)"
+#        Effects:
+#            - "SpawnRandom(Source, Target)"
+#            - "PayCost(Source.Player, Target)"
+#    
+#    Mine:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: Entity
+#            ValidTargets: GoldVein
+#            Conditions:
+#                - "InRange(Source, Target, 1)"
+#                - "HasResource(Target.Gold, 40)"
+#        Effects:
+#            - "Transfer(Target.Gold, Source.Player.Gold, 40)"
+#
+#    #Build
+#    Settle:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: EntityType
+#            ValidTargets: Buildings
+#        Effects:
+#            - "Spawn(Target, Source)"
+#            - "Remove(Source)"
             
 
 TechnologyTrees:
@@ -270,6 +271,7 @@ TechnologyTrees:
             Description: Base technology
             Cost:
                 Prod: 5
+            Time: 10
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]

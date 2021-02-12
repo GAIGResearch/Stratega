@@ -400,6 +400,7 @@ namespace SGA
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
                 newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
+                newTechnology.continuousActionTime = nameTechPair.second["Time"].as<int>(0);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
