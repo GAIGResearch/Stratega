@@ -17,6 +17,5 @@ namespace SGA
 		std::vector<Action> continuousAction;
 
 		std::vector<ActionInfo> attachedActions;
-		const Parameter& getParameter(ParameterID id) const;
 	};
 }

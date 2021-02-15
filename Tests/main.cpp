@@ -1,7 +1,7 @@
 #include <iostream>
 #include <filesystem>
 #include <yaml-cpp/yaml.h>
-#include "FMEvaluator.h"
+#include <FMEvaluator.h>
 
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Configuration/GameConfigParser.h>
