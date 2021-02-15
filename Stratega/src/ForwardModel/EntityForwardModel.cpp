@@ -102,7 +102,8 @@ namespace SGA
 			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
 			{
 				auto& actionType = state.getActionType(state.entities[j].continuousAction[i].actionTypeID);
-
+				//Add one elapsed tick
+				state.entities[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
@@ -158,11 +159,6 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-
-
-
-				//Add one elapsed tick
-				state.entities[j].continuousAction[i].elapsedTicks++;
 			}		
 		}
 
@@ -172,7 +168,8 @@ namespace SGA
 			for (size_t i = 0; i < state.players[j].continuousAction.size(); i++)
 			{
 				auto& actionType = state.getActionType(state.players[j].continuousAction[i].actionTypeID);
-
+				//Add one elapsed tick
+				state.players[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Player)
 				{
@@ -229,11 +226,6 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-
-
-
-				//Add one elapsed tick
-				state.players[j].continuousAction[i].elapsedTicks++;
 				}				
 
 			}
