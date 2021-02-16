@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	bool GameState::canExecuteAction(Entity& entity, ActionType& actionType)
+	bool GameState::canExecuteAction(Entity& entity, const ActionType& actionType)
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
@@ -17,7 +17,7 @@ namespace SGA
 		return true;
 	}
 
-	bool GameState::canExecuteAction(Player& player, ActionType& actionType)
+	bool GameState::canExecuteAction(Player& player, const ActionType& actionType)
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)

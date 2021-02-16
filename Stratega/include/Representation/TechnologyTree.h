@@ -111,12 +111,9 @@ namespace SGA
 
 				if (!isResearched(playerID, technologyParentNode.id))
 				{
-					std::cout << "Can't research " << technologyNode.name << std::endl;
 					return false;
 				}
 			}
-
-			std::cout << "Can research " << technologyNode.name << std::endl;
 			return true;
 		}
 

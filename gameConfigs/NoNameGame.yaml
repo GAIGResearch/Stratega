@@ -1,5 +1,5 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -8,7 +8,7 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: [Research]
+    Actions: []
     Parameters:
         Gold: 0
         Prod: 5
@@ -38,7 +38,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn]
+        Actions: [Move]
         CanSpawn: [Worker, Settler]
         Time: 5
         Parameters:
@@ -197,52 +197,52 @@ Actions:
 #        Effects:
 #            - "Attack(Target.Health, Source.WeaponStrength)"
 #
-#    # Move Actions
-#    Move:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: Position
-#            Shape: Circle
-#            Size: 3 # Target.Speed
-#            Conditions:
-#                - "IsWalkable(Target)"
-#        Effects:
-#            - "Move(Source, Target)"
-
-    #Research
-    Research:
-        Type: PlayerAction
-        Cooldown: 0
-        Target:
-            Type: Technology
-            ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
-            Conditions:
-                - "CanResearch(Source, Target)"
-                - "CanAfford(Source, Target)"
-        TriggerComplete:
-            - "HasElapsedTick(Target.Time)"
-        OnStart:
-            - "PayCost(Source, Target)"
-        OnComplete:
-            - "Research(Source, Target)"
-    
-
-    #Spawn
-    Spawn:
+    # Move Actions
+    Move:
         Type: EntityAction
         Cooldown: 1
         Target:
-            Type: EntityType
-            ValidTargets: Units
+            Type: Position
+            Shape: Circle
+            Size: 3 # Target.Speed
             Conditions:
-                - "CanAfford(Source.Player, Target)"
-                - "CanSpawn(Source, Target)"
-        TriggerComplete:
-            - "HasElapsedTick(Target.Time)"
-        OnComplete:
-            - "SpawnRandom(Source, Target)"
-            - "PayCost(Source.Player, Target)"
+                - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+
+    #Research
+#    Research:
+#        Type: PlayerAction
+#        Cooldown: 0
+#        Target:
+#            Type: Technology
+#            ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+#            Conditions:
+#                - "CanResearch(Source, Target)"
+#                - "CanAfford(Source, Target)"
+#        TriggerComplete:
+#            - "HasElapsedTick(Target.Time)"
+#        OnStart:
+#            - "PayCost(Source, Target)"
+#        OnComplete:
+#            - "Research(Source, Target)"
+    
+
+    #Spawn
+#    Spawn:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Target:
+#            Type: EntityType
+#            ValidTargets: Units
+#            Conditions:
+#                - "CanAfford(Source.Player, Target)"
+#                - "CanSpawn(Source, Target)"
+#        TriggerComplete:
+#            - "HasElapsedTick(Target.Time)"
+#        OnComplete:
+#            - "SpawnRandom(Source, Target)"
+#            - "PayCost(Source.Player, Target)"
 #    
 #    Mine:
 #        Type: EntityAction

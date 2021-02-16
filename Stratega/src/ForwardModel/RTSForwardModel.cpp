@@ -17,12 +17,16 @@ namespace SGA
 			}
 		
 		}
+		else if (action.actionTypeFlags == AbortContinuousAction)
+		{
+			
+		}
 		else // Advance game
 		{
 			// Update what the units are doing
 			for (auto& unit : state.entities)
 			{
-				if (!unit.intendedAction.has_value())
+				if (unit.intendedAction.has_value())
 				{
 					unit.executingAction = unit.intendedAction;
 					unit.intendedAction = {};

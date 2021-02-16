@@ -88,7 +88,7 @@ namespace SGA
 					if (movementDistance <= movementSpeed) {
 						unit.position = targetPos;
 						//unit.executingAction.type = RTSActionType::None;
-						unit.executingAction = Action();
+						unit.executingAction = std::nullopt;
 						unit.path = Path();
 					}
 				}

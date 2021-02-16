@@ -8,6 +8,15 @@
 
 namespace SGA
 {
+	struct ActionsSettings
+	{
+		std::vector<Action> actionHumanUnitSelected;
+		std::vector<int> selectedTargets;
+		int actionTypeSelected = -1;
+		//Human player
+		std::unordered_set<int> selectedUnits;
+	};
+	
 	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
 	public:
@@ -15,7 +24,9 @@ namespace SGA
 
 		//Debug mode
 		bool drawDebug = false;
-
+		
+		ActionsSettings actionsSettings;
+		
 		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 		void render() override;
 
@@ -24,7 +35,7 @@ namespace SGA
 
 		bool isSelected(int unitID)
 		{
-			return selectedUnits.find(unitID) != selectedUnits.end();
+			return actionsSettings.selectedUnits.find(unitID) != actionsSettings.selectedUnits.end();
 		}
 
 	private:
@@ -80,8 +91,7 @@ namespace SGA
 		CircularBuffer<RTSGameState> gameStatesBuffer;
 		int gameStatesBufferRCurrentIndex = 0;
 
-		//Human player
-		std::unordered_set<int> selectedUnits;
+		
 
 		//Imgui
 		sf::Clock deltaClock;
@@ -98,6 +108,10 @@ namespace SGA
 		std::vector<sf::RectangleShape> healthBars;
 
 		sf::RenderTexture renderMinimapTexture;
+				
+		
+		void getWidgetResult(const GameState& state, ActionsSettings& settings);
 
+		
 	};
 }

@@ -44,23 +44,23 @@ namespace SGA
 
 	void EntityForwardModel::executeAction(GameState& state, const Action& action) const
 	{
-		action.execute(state, *this);
-
 		auto& actionType = state.getActionType(action.actionTypeID);
-		if(actionType.sourceType == ActionSourceType::Unit)
+		if (actionType.sourceType == ActionSourceType::Unit)
 		{
 			// Remember when the action was executed
 			auto& executingEntity = action.targets[0].getEntity(state);
 			// ToDo We should probably find a way to avoid this loop
-			for(auto& actionInfo : executingEntity.attachedActions)
+			for (auto& actionInfo : executingEntity.attachedActions)
 			{
-				if(actionInfo.actionTypeID == action.actionTypeID)
+				if (actionInfo.actionTypeID == action.actionTypeID)
 				{
 					actionInfo.lastExecutedTick = state.currentTick;
 					break;
 				}
 			}
 		}
+		
+		action.execute(state, *this);		
 	}
 
 	void EntityForwardModel::endTick(GameState& state) const

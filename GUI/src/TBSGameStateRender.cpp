@@ -213,7 +213,7 @@ namespace SGA
 					if (action.actionTypeID == -1||action.actionTypeID!=selectedActionType||action.actionTypeFlags==AbortContinuousAction|| action.targets.empty())
 						continue;
 					
-					ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+					const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 					
 					if (actionType.actionTargets.type == TargetType::Entity)
 					{
@@ -487,7 +487,7 @@ namespace SGA
 				if (action.actionTypeID == -1)
 					continue;
 				
-				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
+				const ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 				
 				//Get source
 				if (actionType.actionTargets.type == TargetType::Entity)
@@ -848,7 +848,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -861,7 +861,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -875,7 +875,7 @@ namespace SGA
 			}
 			else
 			{
-				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
 				actionInfo += " " + actionType.name;
 
@@ -961,7 +961,7 @@ namespace SGA
 			int index = 0;
 			for (auto action : actionHumanUnitSelected)
 			{
-				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
 					if (actionType.actionTargets.type == TargetType::Entity)
