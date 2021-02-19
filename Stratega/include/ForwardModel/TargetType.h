@@ -1,7 +1,5 @@
 #pragma once
-#include <ForwardModel/ActionTarget.h>
 #include <ForwardModel/TargetType.h>
-#include <Representation/Vector2.h>
 
 #include <unordered_set>
 #include <vector>
@@ -33,5 +31,6 @@ namespace SGA
 		std::unordered_set<int> technologyTypes;
 
 		operator Type() const { return type; }
+
 	};
 }

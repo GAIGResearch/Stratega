@@ -60,6 +60,7 @@ namespace SGA
 		// Type information
 		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
 		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
+		std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
 		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
@@ -145,6 +146,18 @@ namespace SGA
 			if (iterator != parameterIDLookup->end())
 				foundId = iterator->second;
 			
+			return foundId;
+		}
+
+		int getActionTypeID(std::string parameterName)
+		{
+			int foundId = -1;
+			for (const auto& element : *actionTypes)
+			{
+				if (element.second.name == parameterName)
+					return element.second.id;
+			}
+
 			return foundId;
 		}
 

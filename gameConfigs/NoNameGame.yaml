@@ -9,6 +9,7 @@ Agents:
 
 Player:
     Actions: []
+    CanSpawn: All
     Parameters:
         Gold: 0
         Prod: 5
@@ -32,15 +33,16 @@ Tiles:
         Sprite: ../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
-     
+
 Entities:
     City:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Move]
-        CanSpawn: [Worker, Settler]
-        Time: 5
+        Actions: [Spawn, Research]
+        CanSpawn: [Worker, Archer]
+        Cost:
+            Prod: 10
         Parameters:
             Health: 800
             StorageCapacity: 50
@@ -48,8 +50,8 @@ Entities:
     Barracks:
         Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
-        Requirements: [Discipline]
-        Actions: []
+        RequiredTechnology: Discipline
+        Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
             Prod: 20
@@ -59,8 +61,8 @@ Entities:
     MilitaryAcademy:
         Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
-        Requirements: [Mathematics]
-        Actions: []
+        RequiredTechnology: Mathematics
+        Actions: [Spawn]
         CanSpawn: [Catapult]
         Cost:
             Prod: 40
@@ -99,20 +101,10 @@ Entities:
             Health: 200
             StorageCapacity: 50
 
-    Settler:
-        Sprite: ../GUI/Assets/Entities/unit8.png
-        LineOfSightRange: 2
-        Actions: []
-        Cost:
-            Prod: 10
-        Parameters:
-            Speed: 2
-            Health: 50
-
     Worker:
         Sprite: ../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move]
         Cost:
             Prod: 5
         Time: 5
@@ -142,7 +134,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
         Actions: []
-        RequiredTechnology: Archery
+       # RequiredTechnology: Archery
         Cost:
             Prod: 15
         Parameters:
@@ -179,11 +171,37 @@ Entities:
             Gold: 200
 
 EntityGroups:
-    Units: [Worker, Warrior, Archer, Catapult, Settler]
+    Units: [Worker, Warrior, Archer, Catapult]
     Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
-    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult, Settler]
+    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult]
 
 Actions:
+    # Attack Actions
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Attackable
+                Conditions:
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Attack(Target.Health, Source.WeaponStrength)"
+
+    # Move Actions
+    Move:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3 # Target.Speed
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
 
 #    # Attack Actions
 #    Attack:
@@ -201,72 +219,112 @@ Actions:
     Move:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Circle
-            Size: 3 # Target.Speed
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3 # Target.Speed
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 
     #Research
-#    Research:
-#        Type: PlayerAction
-#        Cooldown: 0
-#        Target:
-#            Type: Technology
-#            ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
-#            Conditions:
-#                - "CanResearch(Source, Target)"
-#                - "CanAfford(Source, Target)"
-#        TriggerComplete:
-#            - "HasElapsedTick(Target.Time)"
-#        OnStart:
-#            - "PayCost(Source, Target)"
-#        OnComplete:
-#            - "Research(Source, Target)"
+    Research:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Technology
+                ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+                Conditions:
+                    - "CanResearch(Source.Player, Target)"
+                    - "CanAfford(Source.Player, Target)"
+        TriggerComplete:
+            - "HasElapsedTick(Target.Time)"
+        OnStart:
+            - "PayCost(Source.Player, Target)"
+        OnComplete:
+            - "Research(Source.Player, Target)"
+
     
+    Mine:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: GoldVein
+                Conditions:
+                    - "InRange(Source, Target, 1)"
+                    - "HasResource(Target.Gold, 40)"
+        Effects:
+            - "Transfer(Target.Gold, Source.Player.Gold, 40)"
 
     #Spawn
+    Spawn:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Units
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Circle
+                Size: 1
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+#            - "PayCost(Source.Player, EntityTypeTarget)"
+#    #Spawn
 #    Spawn:
 #        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: EntityType
-#            ValidTargets: Units
-#            Conditions:
-#                - "CanAfford(Source.Player, Target)"
-#                - "CanSpawn(Source, Target)"
-#        TriggerComplete:
-#            - "HasElapsedTick(Target.Time)"
-#        OnComplete:
-#            - "SpawnRandom(Source, Target)"
-#            - "PayCost(Source.Player, Target)"
-#    
-#    Mine:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: Entity
-#            ValidTargets: GoldVein
-#            Conditions:
-#                - "InRange(Source, Target, 1)"
-#                - "HasResource(Target.Gold, 40)"
-#        Effects:
-#            - "Transfer(Target.Gold, Source.Player.Gold, 40)"
+#        Cooldown: 0
+#        Targets:
+#            EntityTypeTarget:
+#                Type: EntityType
+#                ValidTargets: Units
+#                Conditions:
+#                    - "CanAfford(Source.Player, EntityTypeTarget)"
+#                    - "CanSpawn(Source, EntityTypeTarget)"
 #
-#    #Build
-#    Settle:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: EntityType
-#            ValidTargets: Buildings
+#            TargetPosition:
+#                Type: Position
+#                Shape: Circle
+#                Size: 1
+#                Conditions:
+#                    - "IsWalkable(TargetPosition)"
 #        Effects:
-#            - "Spawn(Target, Source)"
-#            - "Remove(Source)"
-            
+#            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+#            - "PayCost(Source.Player, EntityTypeTarget)"
+
+    #Build
+    Build:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Buildings
+                Conditions:
+                    - "CanAfford(Source, EntityTypeTarget)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Circle
+                Size: 1
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source, EntityTypeTarget)"
 
 TechnologyTrees:
     SingleTree:
@@ -274,7 +332,7 @@ TechnologyTrees:
             Description: Base technology
             Cost:
                 Prod: 5
-            Time: 10
+            Time: 1
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]

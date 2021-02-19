@@ -45,7 +45,6 @@ namespace SGA
 		void createWindowUnits();
 		void createWindowActions();
 		void createWindowPlayerParameters() const;
-		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
 		void createTopBar() const;
 		void createEntityInformation(sf::RenderWindow& window);
@@ -88,7 +87,6 @@ namespace SGA
 					for (const auto& action : actionsHumanCanPlay)
 					{
 						//If is player unit action or globlal action(i.e End turn)
-
 						//SpecialActions like EndTurn and AbortContinunousAction
 						if (action.actionTypeID == -1)
 						{
@@ -99,8 +97,7 @@ namespace SGA
 										actionHumanUnitSelected.emplace_back(action);
 							}
 							continue;
-						}
-							
+						}							
 													
 						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
@@ -112,10 +109,14 @@ namespace SGA
 							if(action.targets[0].getEntityID()==selectedEntityID)
 							actionHumanUnitSelected.emplace_back(action);
 						}
-						else if (actionType.actionTargets == TargetType::ContinuousAction)
+						else if (actionType.isContinuous /*== TargetType::ContinuousAction*/)
 						{
-							if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
-								actionHumanUnitSelected.emplace_back(action);
+							for (auto& targets : actionType.actionTargets)
+							{
+								if(targets.first == TargetType::ContinuousAction)
+								if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}							
 						}
 					}
 				}

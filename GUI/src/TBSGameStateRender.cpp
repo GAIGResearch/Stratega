@@ -213,25 +213,30 @@ namespace SGA
 					if (action.actionTypeID == -1||action.actionTypeID!=selectedActionType||action.actionTypeFlags==AbortContinuousAction|| action.targets.empty())
 						continue;
 					
+
 					const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-					
-					if (actionType.actionTargets.type == TargetType::Entity)
+
+					for (int i = 0; i < actionType.actionTargets.size(); ++i)
+
 					{
-						if (action.targets[1].getEntity(gameStateCopy).position == Vector2i(pos.x, pos.y))
+						if (actionType.actionTargets[i].first == TargetType::Entity)
 						{
-							//Play action directly
-							playAction(action);
+							if (action.targets[i+1].getEntity(gameStateCopy).position == Vector2i(pos.x, pos.y))
+							{
+								//Play action directly
+								playAction(action);
+							}
+						}
+						else if (actionType.actionTargets[i].first == TargetType::Position)
+						{
+							if (action.targets[i+1].getPosition(gameStateCopy) == Vector2f(pos.x, pos.y))
+							{
+								//Play action directly
+								playAction(action);
+
+							}
 						}
 					}
-					else if(actionType.actionTargets.type == TargetType::Position)
-					{
-						if (action.targets[1].getPosition(gameStateCopy) == Vector2f(pos.x, pos.y))
-						{
-							//Play action directly
-							playAction(action);
-
-						}
-					}					
 				}
 			}
 			else
@@ -490,32 +495,31 @@ namespace SGA
 				const ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
 				
 				//Get source
-				if (actionType.actionTargets.type == TargetType::Entity)
-
+				for (int i = 0; i < actionType.actionTargets.size(); ++i)
 				{
-					const Entity& targetEntity = action.targets[1].getEntity(*selectedGameStateCopy);
+					if (actionType.actionTargets[i].first.type == TargetType::Entity)
+					{
+						const Entity& targetEntity = action.targets[i+1].getEntity(*selectedGameStateCopy);
 
-					sf::CircleShape shape(15);
-					sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
-
-
-					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-					actionsSelectedEntity.emplace_back(shape);
-				}
-				else if (actionType.actionTargets.type == TargetType::Position)
-				{
-					const Vector2f& targetPos = action.targets[1].getPosition(gameStateCopy);
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
 
 
-					sf::CircleShape shape(15);
-					sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+					}
+					else if (actionType.actionTargets[i].first.type == TargetType::Position)
+					{
+						const Vector2f& targetPos = action.targets[i+1].getPosition(gameStateCopy);
 
-					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-					actionsSelectedEntity.emplace_back(shape);
-					shape.setFillColor(sf::Color::Green);
-				}
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
 
-				
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						shape.setFillColor(sf::Color::Green);
+					}
+				}		
 			}
 		}
 
@@ -531,7 +535,6 @@ namespace SGA
 		createWindowInfo();
 		createWindowUnits();
 		createWindowActions();
-		createWindowMultipleActions(window);
 		createWindowPlayerParameters();
 		
 		createEntityInformation(window);
@@ -947,62 +950,63 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
-	{
+	//void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
+	//{
 
-		if (showMultipleActions)
-		{
-			ImGui::SetNextWindowSize(ImVec2(100, 100), ImGuiCond_FirstUseEver);
-			ImGui::SetNextWindowPos(window.mapCoordsToPixel(toISO(multipleActionsSourceTile.x, multipleActionsSourceTile.y)));
-			ImGui::Begin("PlayAction");
-			ImGui::BeginChild("Scrolling");
-			ImGui::BeginGroup();
+	//	if (showMultipleActions)
+	//	{
+	//		ImGui::SetNextWindowSize(ImVec2(100, 100), ImGuiCond_FirstUseEver);
+	//		ImGui::SetNextWindowPos(window.mapCoordsToPixel(toISO(multipleActionsSourceTile.x, multipleActionsSourceTile.y)));
+	//		ImGui::Begin("PlayAction");
+	//		ImGui::BeginChild("Scrolling");
+	//		ImGui::BeginGroup();
 
-			int index = 0;
-			for (auto action : actionHumanUnitSelected)
-			{
-				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-				if (actionType.sourceType == ActionSourceType::Unit)
-				{
-					if (actionType.actionTargets.type == TargetType::Entity)
-					{
-						auto& entity = action.targets[1].getEntity(gameStateCopy);
+	//		int index = 0;
+	//		for (auto action : actionHumanUnitSelected)
+	//		{
+	//			const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+	//			if (actionType.sourceType == ActionSourceType::Unit)
+	//			{
+	//				if (actionType.actionTargets.type == TargetType::Entity)
+	//				{
+	//					auto& entity = action.targets[1].getEntity(gameStateCopy);
 
-						if (entity.position == multipleActionsSourceTile)
-						{
-							std::string actionInfo = std::to_string(index) + " " + actionType.name;
-							index++;
+	//					if (entity.position == multipleActionsSourceTile)
+	//					{
+	//						std::string actionInfo = std::to_string(index) + " " + actionType.name;
+	//						index++;
 
-							if (ImGui::Button(actionInfo.c_str()))
-							{
-								playAction(action);
-								break;
-							}
-						}
-					}
-					else if(actionType.actionTargets.type == TargetType::Position)
-					{
-						if (action.targets[1].getPosition(gameStateCopy) == multipleActionsSourceTile)
-						{
-							std::string actionInfo = std::to_string(index) + " " + actionType.name;
-							index++;
+	//						if (ImGui::Button(actionInfo.c_str()))
+	//						{
+	//							playAction(action);
+	//							break;
+	//						}
+	//					}
+	//				}
+	//				else if(actionType.actionTargets.type == TargetType::Position)
+	//				{
+	//					if (action.targets[1].getPosition(gameStateCopy) == multipleActionsSourceTile)
+	//					{
+	//						std::string actionInfo = std::to_string(index) + " " + actionType.name;
+	//						index++;
 
-							if (ImGui::Button(actionInfo.c_str()))
-							{
-								playAction(action);
-								break;
-							}
-						}
-					}
+	//						if (ImGui::Button(actionInfo.c_str()))
+	//						{
+	//							playAction(action);
+	//							break;
+	//						}
+	//					}
+	//				}
 
 
-				}
+	//			}
 
-			}
+	//		}
 
-			ImGui::EndGroup();
-			ImGui::EndChild();
-			ImGui::End();
-		}
-	}
+	//		ImGui::EndGroup();
+	//		ImGui::EndChild();
+	//		ImGui::End();
+	//	}
+	//}
+
 }

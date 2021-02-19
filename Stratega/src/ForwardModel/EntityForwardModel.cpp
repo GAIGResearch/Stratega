@@ -102,7 +102,8 @@ namespace SGA
 			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
 			{
 				auto& actionType = state.getActionType(state.entities[j].continuousAction[i].actionTypeID);
-
+				//Add one elapsed tick
+				state.entities[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Unit)
 				{
@@ -125,17 +126,19 @@ namespace SGA
 
 				if (isComplete)
 				{
+					//TODO Should the action check the targetconditions before executing it?
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
-					for (const auto& condition : actionType.targetConditions)
+					/*for (auto& targetType : actionType.actionTargets)
+					for (const auto& condition : targetType.second)
 					{
 						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
 						}
-					}
+					}*/
 
 					if (canExecute)
 					{
@@ -156,11 +159,6 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-
-
-
-				//Add one elapsed tick
-				state.entities[j].continuousAction[i].elapsedTicks++;
 			}		
 		}
 
@@ -170,7 +168,8 @@ namespace SGA
 			for (size_t i = 0; i < state.players[j].continuousAction.size(); i++)
 			{
 				auto& actionType = state.getActionType(state.players[j].continuousAction[i].actionTypeID);
-
+				//Add one elapsed tick
+				state.players[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Player)
 				{
@@ -194,17 +193,19 @@ namespace SGA
 
 				if (isComplete)
 				{
+					//TODO Should the action check the targetconditions before executing it?
 					//Check before we execute OnComplete Effects
 					//if the conditions continue being true
 					bool canExecute = true;
-					for (const auto& condition : actionType.targetConditions)
+					/*for (auto& targetType : actionType.actionTargets)
+					for (const auto& condition : targetType.second)
 					{
 						if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
 						}
-					}
+					}*/
 
 					if (canExecute)
 					{
@@ -225,11 +226,6 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-
-
-
-				//Add one elapsed tick
-				state.players[j].continuousAction[i].elapsedTicks++;
 				}				
 
 			}

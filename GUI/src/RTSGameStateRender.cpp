@@ -233,41 +233,27 @@ namespace SGA
 				// The user clicked somewhere
 				if (!actionsSettings.selectedUnits.empty())
 				{
-					auto* unit = gameStateCopy.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 1);
+					auto* unit = gameStateCopy.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
 					if (unit)
 					{
-						for (const auto& i : actionsSettings.selectedUnits)
-						{
-
-							//game->executeAction(SGA::RTSAction(SGA::RTSActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
-						}
+						//we click on someone
+					
 					}
 					else
 					{
-						for (const auto& i : actionsSettings.selectedUnits)
+						if(actionsSettings.waitingForPosition)
 						{
-							auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i)->typeID);
-
-							//Move action
-							if (entityType.canExecuteAction(2))
-							{
-								SGA::Action newAction;
-								newAction.actionTypeID = 2;
-								newAction.targets.emplace_back(ActionTarget::createEntityActionTarget(i));
-								//SGA::ActionTarget targetPos=SGA::ActionTarget(SGA::Vector2f(worldPos.x, worldPos.y));
-								newAction.targets.emplace_back(ActionTarget::createPositionActionTarget(SGA::Vector2f(worldPos.x, worldPos.y)));
-								newAction.ownerID = getPlayerID();
-								game->executeAction(newAction);
-
-							}
+							auto gridPos = toGrid(pos);
+							assignPosition(gameStateCopy, actionsSettings,{(float)gridPos.x,(float)gridPos.y} );
 						}
+						actionsSettings.selectedUnits.clear();
 					}
-
-					actionsSettings.selectedUnits.clear();
+					
 				}
 				else
 				{
+					actionsSettings.reset();
 					actionsSettings.selectedUnits.clear();
 					/*auto* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y));
 					if (unit != nullptr && unit->playerID == getPlayerID())
@@ -469,6 +455,49 @@ namespace SGA
 			renderMinimapTexture.draw(sprite);
 		}
 
+		//Draw possible actions
+		if(actionsSettings.waitingForPosition)
+		{
+			std::cout << "huie";
+
+			for (auto& possibleAction : actionsSettings.actionHumanSelected)
+			{
+				if (possibleAction.actionTypeID != actionsSettings.actionTypeSelected 
+					|| possibleAction.actionTypeID==-1)
+					continue;
+
+				const ActionType& actionType = selectedGameStateCopy->getActionType(possibleAction.actionTypeID);
+
+				//Get source
+				for (int i = 0; i < actionType.actionTargets.size(); ++i)
+				{
+					if (actionType.actionTargets[i].first.type == TargetType::Entity)
+					{
+						const Entity& targetEntity = possibleAction.targets[i + 1].getEntity(*selectedGameStateCopy);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						window.draw(shape);
+					}
+					else if (actionType.actionTargets[i].first.type == TargetType::Position)
+					{
+						const Vector2f& targetPos = possibleAction.targets[i + 1].getPosition(gameStateCopy);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						shape.setFillColor(sf::Color::Green);
+						window.draw(shape);
+					}
+				}
+			}
+		}
 		//Draw entities
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
@@ -692,6 +721,9 @@ namespace SGA
 	void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	{
 		/*ImGui::ShowDemoWindow();*/
+		
+		//TODO clean this
+		actionsSettings.actionHumanSelected= game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
 
 		createTopBar();
 		createWindowInfo(window);
@@ -699,154 +731,11 @@ namespace SGA
 		createWindowNavMesh();
 		createBottomBar(window);
 		createWindowFogOfWar();
-
-		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
-		ImGui::Begin("Actions");
-		ImGui::BeginChild("Scrolling");
-		ImGui::BeginGroup();
-
-		int index = 0;
-		auto actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
-		
-		for (auto action : actionsHumanCanPlay)
-		{
-
-			std::string actionInfo = std::to_string(index);
-			if (action.actionTypeID == -1)
-			{
-				if (action.actionTypeFlags == AbortContinuousAction)
-				{
-					if (action.targets[0].getType() == ActionTarget::EntityReference)
-					{
-						//We need to find the continues action name that will abort
-						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
-						for (auto& continueAction : sourceEntity.continuousAction)
-						{
-							if (continueAction.continuousActionID == action.continuousActionID)
-							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
-								actionInfo += " Abort " + actionType.name;
-							}
-						}
-					}
-					else
-					{
-						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.targets[0].getPlayer(gameStateCopy);
-						for (auto& continueAction : sourcePlayer.continuousAction)
-						{
-							if (continueAction.continuousActionID == action.continuousActionID)
-							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
-								actionInfo += " Abort " + actionType.name;
-							}
-						}
-					}
-
-
-
-				}
-				else
-					actionInfo += " SpecialAction";
-			}
-			else
-			{
-				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-
-				actionInfo += " " + actionType.name;
-
-				//TODO Clean this :D IS TEMPORAL
-
-				for (auto& targetType : action.targets)
-				{
-					switch (targetType.getType())
-					{
-					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
-						break;
-					case ActionTarget::EntityReference:
-						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
-						break;
-					case ActionTarget::PlayerReference:
-						actionInfo += " Player: " + std::to_string(getPlayerID());
-						break;
-					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
-						break;
-					case ActionTarget::EntityTypeReference:
-						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
-					case ActionTarget::ContinuousActionReference:
-						break;
-					}
-				}
-
-			}
-
-			index++;
-
-			if (ImGui::Button(actionInfo.c_str()))
-			{
-				game->executeAction(action);
-				//playAction(action);
-				break;
-			}
-		}
-
-		ImGui::EndGroup();
-
-		ImGui::EndChild();
-		ImGui::End();
+		createWindowPlayerParameters();
+		createWindowActionList();
 	}
 
-	void RTSGameStateRender::getWidgetResult(const GameState& state, ActionsSettings& settings)
-	{
-		//Check if the we have action type selected
-		if (settings.actionTypeSelected != -1)
-		{
-			//Selected
-			const ActionType& actionType = state.getActionType(settings.actionTypeSelected);
-
-			/*for (int i = 0; i < actionType.; ++i)
-			{
-				
-			}*/
-
-		}
-		else
-		{
-			//Display actionTypes
-			ImGui::Text("Actions");
-			int numberOfEntities = actionsSettings.selectedUnits.size();
-
-			std::unordered_set<int> actionTypes;
-
-			for (auto& entity : actionsSettings.selectedUnits)
-			{
-				int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
-
-				for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
-
-				{
-					actionTypes.insert(actionID);
-				}
-			}
-
-			int elementNumber = 0;
-			for (auto& actionType : actionTypes)
-			{
-				ImGui::PushID(elementNumber);
-				if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
-				{
-					actionsSettings.actionTypeSelected = actionType;
-				}
-				if ((elementNumber++ % 4) < 3) ImGui::SameLine();
-				ImGui::PopID();
-			}
-			
-		}
-	}
-
+	
 	void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
 	{
 		ImGuiWindowFlags window_flags = 0;
@@ -873,8 +762,12 @@ namespace SGA
 		ImGui::SetColumnWidth(1, 600.0f);
 		ImGui::SetColumnWidth(2, 250);
 		ImGui::Separator();
+		
+		//Ask widget to get		
+		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings);
 
-		getWidgetResult(gameStateCopy, actionsSettings);
+		if(!actionsToExecute.empty())
+			playAction(actionsToExecute);
 
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
@@ -1013,6 +906,107 @@ namespace SGA
 		ImGui::End();
 	}
 
+	void RTSGameStateRender::createWindowActionList()
+	{
+		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
+		ImGui::Begin("Actions");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		int index = 0;
+		auto actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
+
+		for (auto action : actionsHumanCanPlay)
+		{
+
+			std::string actionInfo = std::to_string(index);
+			if (action.actionTypeID == -1)
+			{
+				if (action.actionTypeFlags == AbortContinuousAction)
+				{
+					if (action.targets[0].getType() == ActionTarget::EntityReference)
+					{
+						//We need to find the continues action name that will abort
+						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						for (auto& continueAction : sourceEntity.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+					else
+					{
+						//We need to find the continues action name that will abort
+						auto& sourcePlayer = action.targets[0].getPlayer(gameStateCopy);
+						for (auto& continueAction : sourcePlayer.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+
+
+
+				}
+				else
+					actionInfo += " SpecialAction";
+			}
+			else
+			{
+				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+
+				actionInfo += " " + actionType.name;
+
+				//TODO Clean this :D IS TEMPORAL
+
+				for (auto& targetType : action.targets)
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(getPlayerID());
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::EntityTypeReference:
+						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					}
+				}
+
+			}
+
+			index++;
+
+			if (ImGui::Button(actionInfo.c_str()))
+			{
+				game->executeAction(action);
+				//playAction(action);
+				break;
+			}
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
+		ImGui::End();
+	}
+
 	void RTSGameStateRender::createWindowNavMesh()
 	{
 		ImGui::Begin("Debug Navigation");
@@ -1082,6 +1076,32 @@ namespace SGA
 			gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 		}
 
+		ImGui::End();
+	}
+
+	void RTSGameStateRender::createWindowPlayerParameters() const
+	{
+		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
+		ImGui::Begin("PlayerParameters");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
+		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		{
+			//Double to string with 2 precision				
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+			std::string valueParameter = stream.str();
+
+			std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+			ImGui::BulletText(parameterInfo.c_str());
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
 		ImGui::End();
 	}
 }

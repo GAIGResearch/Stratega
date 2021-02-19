@@ -86,6 +86,8 @@ namespace SGA
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		int getPlayerID(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const std::unordered_set<EntityTypeID>& getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

@@ -190,27 +190,37 @@ namespace SGA
         }
 
         FunctionParser parser;
-
+        
         auto context = ParseContext::fromGameConfig(config);      
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
             type.id = config.actionTypes.size();
             type.name = nameTypePair.first;
-            type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
+        	
+            context.targetIDs.emplace("Source", 0);
+        	
+        	//Parse all the targets
+            for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
+            {
+                TargetType newTarget;
+                context.targetIDs.emplace(target.first, context.targetIDs.size());
+                newTarget = parseTargetType(target.second, config);
+            	
+                std::vector<std::shared_ptr<Condition>> targetConditionsList;            	
+                //// Parse target conditions
+		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+		        parser.parseFunctions(targetConditions, targetConditionsList, context);            	
+                type.actionTargets.emplace_back(newTarget, targetConditionsList);
+            }
+        	
             type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
             type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
-
-            // Parse preconditions
-            context.targetIDs.emplace("Source", 0);
+        	
+            // Parse preconditions            
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(preconditions, type.preconditions, context);
 
-            // Parse target conditions
-            context.targetIDs.emplace("Target", 1);
-            auto targetConditions = nameTypePair.second["Target"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(targetConditions, type.targetConditions, context);
-        	
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.effects, context);
@@ -447,6 +457,8 @@ namespace SGA
 		//Parse parameters
         auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
+
+       config.playerSpawnableTypes = parseEntityGroup(playerNode["CanSpawn"], config);
 	}
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const

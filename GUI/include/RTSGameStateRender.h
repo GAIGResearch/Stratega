@@ -6,16 +6,10 @@
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
 
+#include <Widgets/ActionsController.h>
+
 namespace SGA
 {
-	struct ActionsSettings
-	{
-		std::vector<Action> actionHumanUnitSelected;
-		std::vector<int> selectedTargets;
-		int actionTypeSelected = -1;
-		//Human player
-		std::unordered_set<int> selectedUnits;
-	};
 	
 	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
@@ -24,8 +18,8 @@ namespace SGA
 
 		//Debug mode
 		bool drawDebug = false;
-		
-		ActionsSettings actionsSettings;
+
+		Widgets::ActionsSettings actionsSettings;
 		
 		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 		void render() override;
@@ -63,9 +57,20 @@ namespace SGA
 		void createBottomBar(sf::RenderWindow& window);
 		void createWindowInfo(sf::RenderWindow& window);
 		void createWindowUnits();
+		void createWindowActionList();
 		void createWindowNavMesh();
 		void createWindowFogOfWar();
-
+		void createWindowPlayerParameters() const;
+		
+		void playAction(std::vector<Action> actionsToPlay)
+		{
+			for (auto& element : actionsToPlay)
+			{
+				game->executeAction(element);
+			}
+			
+			actionsSettings.reset();
+		}
 	private:
 		//Game Data
 		RTSGame* game;
@@ -108,10 +113,5 @@ namespace SGA
 		std::vector<sf::RectangleShape> healthBars;
 
 		sf::RenderTexture renderMinimapTexture;
-				
-		
-		void getWidgetResult(const GameState& state, ActionsSettings& settings);
-
-		
 	};
 }

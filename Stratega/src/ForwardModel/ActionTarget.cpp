@@ -46,6 +46,18 @@ namespace SGA
 		else
 			return -1;
 	}
+	
+	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
+	{
+		if (targetType == PlayerReference)
+		{
+			return *state.playerSpawnableTypes;
+		}
+		else if (targetType == EntityReference)
+		{
+			return state.getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
+		}
+	}
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{

@@ -26,7 +26,6 @@ namespace SGA
 
 	class Attack : public Effect
 	{
-		/*FunctionParameter entityTarget;*/
 		FunctionParameter resourceReference;
 		FunctionParameter amount;
 	public:
@@ -59,6 +58,17 @@ namespace SGA
 
 	public:
 		SpawnEntityRandom(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
+	class SpawnEntity : public Effect
+	{
+		FunctionParameter sourceEntityParam;
+		FunctionParameter targetEntityTypeParam;
+
+	public:
+		SpawnEntity(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 

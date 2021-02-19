@@ -7,6 +7,7 @@
 #include <Game/Game.h>
 
 #include <Widgets/FogOfWarController.h>
+#include <Widgets/ActionsController.h>
 
 namespace SGA
 {
@@ -67,6 +68,7 @@ namespace SGA
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;
+		Widgets::ActionsSettings actionSettings;
 	};
 
 }

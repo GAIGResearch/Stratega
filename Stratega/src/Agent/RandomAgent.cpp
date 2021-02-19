@@ -30,7 +30,7 @@ namespace SGA
 				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
 				std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
 				int temp = actionDist(gameCommunicator.getRNGEngine());
-				gameCommunicator.executeAction(actions.at(actionDist(gameCommunicator.getRNGEngine())));
+				/*gameCommunicator.executeAction(actions.at(actionDist(gameCommunicator.getRNGEngine())));*/
 				lastExecution = std::chrono::high_resolution_clock::now();
 			}
 		}

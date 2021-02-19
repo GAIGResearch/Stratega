@@ -4,7 +4,94 @@ namespace SGA
 {
 	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action& action) const
 	{
-		if (!(action.actionTypeFlags==EndTickAction))
+		if (action.actionTypeFlags == AbortContinuousAction)
+		{
+		if (action.targets[0].getType() == ActionTarget::PlayerReference)
+		{
+			auto& sourcePlayer = action.targets[0].getPlayer(state);
+			int continuousActionID = action.targets[1].getContinuousActionID();
+
+			//Search continuousAction to abort
+			for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
+			{
+				if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
+				{
+					auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
+
+					//Execute OnAbort Effects				
+					for (auto& effect : actionType.OnAbort)
+					{
+						effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
+					}
+
+					//Remove continuous action
+					sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+					i--;
+				}
+			}
+		}
+		else
+		{
+			auto& sourceEntity = action.targets[0].getEntity(state);
+			int continuousActionID = action.targets[1].getContinuousActionID();
+
+			//Search continuousAction to abort
+			for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+			{
+				if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+				{
+					auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
+
+					//Execute OnAbort Effects				
+					for (auto& effect : actionType.OnAbort)
+					{
+						effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
+					}
+
+					//Remove continuous action
+					sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
+					i--;
+				}
+			}
+		}
+		}
+		else if (action.actionTypeFlags == ContinuousAction)
+		{
+		auto& actionType = state.getActionType(action.actionTypeID);
+		//If we are generating continuousAction we need to track them somehow
+		//Using ID for each action for example				
+		Action newAction = action;
+		newAction.continuousActionID = state.continueActionNextID++;
+		newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
+
+		//If is continues we execute OnStart Effects
+		//and we add the action to the list of continuous actions
+		if (actionType.sourceType == ActionSourceType::Unit)
+		{
+			auto& type = state.actionTypes->at(actionType.id);
+			for (auto& effect : type.OnStart)
+			{
+				effect->execute(state, *this, newAction.targets);
+			}
+
+			auto& executingEntity = newAction.targets[0].getEntity(state);
+			executingEntity.continuousAction.emplace_back(newAction);
+
+		}
+		else if (actionType.sourceType == ActionSourceType::Player)
+		{
+			auto& type = state.actionTypes->at(actionType.id);
+			for (auto& effect : type.OnStart)
+			{
+				effect->execute(state, *this, newAction.targets);
+			}
+
+			auto& executingPlayer = newAction.targets[0].getPlayer(state);
+			executingPlayer.continuousAction.emplace_back(newAction);
+		}
+
+		}
+		else if (!(action.actionTypeFlags==EndTickAction))
 		{
 			auto& actionType = state.getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Unit)
@@ -16,11 +103,7 @@ namespace SGA
 				sourceUnit.intendedAction = action;
 			}
 		
-		}
-		else if (action.actionTypeFlags == AbortContinuousAction)
-		{
-			
-		}
+		}		
 		else // Advance game
 		{
 			// Update what the units are doing
@@ -33,11 +116,16 @@ namespace SGA
 				}
 			}
 
-			for (auto& unit : state.entities)
+			for (int i = 0; i < state.entities.size(); ++i)
+			{
+				if (state.entities[i].executingAction.has_value())
+					executeAction(state, state.entities[i].executingAction.value());
+			}
+			/*for (auto& unit : state.entities)
 			{
 				if(unit.executingAction.has_value())
 					executeAction(state, unit.executingAction.value());
-			}
+			}*/
 			
 			resolveUnitCollisions(state);
 			resolveEnvironmentCollisions(state);
@@ -250,7 +338,8 @@ namespace SGA
 				const auto& entityType = state.getEntityType(unit.typeID);
 
 				//Move action
-				if (!entityType.canExecuteAction(2))
+				int moveActionID = state.getActionTypeID("Move");
+				if (!entityType.canExecuteAction(moveActionID))
 					continue;
 
 				auto dir = otherUnit.position - unit.position;
