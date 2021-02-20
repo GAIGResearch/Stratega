@@ -1,12 +1,12 @@
-#include <Agent/AgentFactory.h>
-#include <Agent/RandomAgent.h>
-#include <Agent/DoNothingAgent.h>
-#include <Agent/OSLAAgent.h>
-#include <Agent/TreeSearchAgents/BFSAgent.h>
-#include <Agent/RHEAAgent/RHEAAgent.h>
-#include <Agent/TreeSearchAgents/BeamSearchAgent.h>
-#include <Agent/TreeSearchAgents/DFSAgent.h>
-#include <Agent/TreeSearchAgents/MCTSAgent.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Agent/RandomAgent.h>
+#include <Stratega/Agent/DoNothingAgent.h>
+#include <Stratega/Agent/OSLAAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/MCTSAgent.h>
 
 namespace SGA
 {

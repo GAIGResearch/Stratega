@@ -1,4 +1,4 @@
-#include <Agent/Heuristic/StatSummary.h>
+#include <Stratega/Agent/Heuristic/StatSummary.h>
 #define INFINITY 100000000
 #include <cmath>
 

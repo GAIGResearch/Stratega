@@ -1,4 +1,4 @@
-#include <Game/RTSGame.h>
+#include <Stratega/Game/RTSGame.h>
 namespace SGA
 {
 	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)

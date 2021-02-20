@@ -1,4 +1,4 @@
-#include <Agent/TreeSearchAgents/MCTSParameters.h>
+#include <Stratega/Agent/TreeSearchAgents/MCTSParameters.h>
 
 #include <iostream>
 

@@ -1,5 +1,5 @@
 #include <TBSLogger.h>
-#include <Logging/Log.h>
+#include <Stratega/Logging/Log.h>
 
 void TBSLogger::close()
 {

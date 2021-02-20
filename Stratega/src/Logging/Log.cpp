@@ -1,5 +1,5 @@
-#include <Logging/Log.h>
-#include <Logging/LoggingScope.h>
+#include <Stratega/Logging/Log.h>
+#include <Stratega/Logging/LoggingScope.h>
 
 namespace SGA::Log
 {

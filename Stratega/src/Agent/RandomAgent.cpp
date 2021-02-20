@@ -1,5 +1,5 @@
 #include <random>
-#include <Agent/RandomAgent.h>
+#include <Stratega/Agent/RandomAgent.h>
 
 namespace SGA
 {

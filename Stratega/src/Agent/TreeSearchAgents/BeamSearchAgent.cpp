@@ -1,4 +1,4 @@
-#include <Agent/TreeSearchAgents/BeamSearchAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
 
 
 namespace SGA
