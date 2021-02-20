@@ -1,10 +1,10 @@
 #include <filesystem>
 #include <Configuration/RenderConfig.h>
-#include <Configuration/GameConfig.h>
-#include <Game/TBSGameCommunicator.h>
-#include <Configuration/YamlHeaders.h>
-#include <Game/TBSGame.h>
-#include "Configuration/GameConfigParser.h"
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Game/TBSGameCommunicator.h>
+#include <Stratega/Configuration/YamlHeaders.h>
+#include <Stratega/Game/TBSGame.h>
+#include <Stratega/Configuration/GameConfigParser.h>
 
 #include <GameStateRenderer.h>
 

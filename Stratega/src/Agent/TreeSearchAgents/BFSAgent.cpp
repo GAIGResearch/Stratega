@@ -1,4 +1,4 @@
-#include <Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
 
 namespace SGA
 {

@@ -1,5 +1,5 @@
-#include <Game/TBSGameCommunicator.h>
-#include <Agent/Agent.h>
+#include <Stratega/Game/TBSGameCommunicator.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {

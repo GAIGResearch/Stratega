@@ -1,4 +1,4 @@
-#include <Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
 
 
 namespace SGA

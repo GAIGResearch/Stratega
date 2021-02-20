@@ -1,4 +1,4 @@
-#include <Agent/DoNothingAgent.h>
+#include <Stratega/Agent/DoNothingAgent.h>
 
 namespace SGA
 {

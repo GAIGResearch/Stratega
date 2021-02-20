@@ -1,4 +1,4 @@
-#include <ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/EntityActionSpace.h>
 
 namespace SGA
 {

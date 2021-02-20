@@ -1,4 +1,4 @@
-#include <Agent/Heuristic/SimpleHeuristic.h>
+#include <Stratega/Agent/Heuristic/SimpleHeuristic.h>
 
 
 namespace SGA {

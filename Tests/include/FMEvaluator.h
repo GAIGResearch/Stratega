@@ -1,8 +1,8 @@
 #pragma once
 #include <random>
 #include <FMEvaluationResults.h>
-#include <ForwardModel/TBSForwardModel.h>
-#include <Configuration/GameConfig.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 typedef std::unique_ptr<SGA::TBSGameState> (*StateGenerator)(std::mt19937& rngEngine);
 

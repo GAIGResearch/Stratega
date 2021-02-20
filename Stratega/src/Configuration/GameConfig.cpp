@@ -1,5 +1,5 @@
-#include <Configuration/GameConfig.h>
-#include <Agent/AgentFactory.h>
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Agent/AgentFactory.h>
 
 namespace SGA
 {
