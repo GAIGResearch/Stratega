@@ -33,18 +33,28 @@ namespace SGA
 		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
 	}
 
+	int ActionTarget::getPlayerID() const
+	{
+		if (targetType == PlayerReference)
+		{
+			return data.playerID;
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+
 	int ActionTarget::getPlayerID(const GameState& state) const
 	{
 		if (targetType == PlayerReference)
 		{
 			return data.playerID;
 		}
-		else if (targetType == EntityReference)
+		else if(targetType == EntityReference)
 		{
-			return getEntityConst(state).ownerID;
+			return state.getEntityConst(data.entityID).ownerID;
 		}
-		else
-			return -1;
+
+		throw std::runtime_error("Type not recognised");
 	}
 	
 	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const

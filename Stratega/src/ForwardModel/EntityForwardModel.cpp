@@ -44,23 +44,112 @@ namespace SGA
 
 	void EntityForwardModel::executeAction(GameState& state, const Action& action) const
 	{
-		auto& actionType = state.getActionType(action.actionTypeID);
-		if (actionType.sourceType == ActionSourceType::Unit)
+		if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 		{
-			// Remember when the action was executed
-			auto& executingEntity = action.targets[0].getEntity(state);
-			// ToDo We should probably find a way to avoid this loop
-			for (auto& actionInfo : executingEntity.attachedActions)
+			if (action.targets[0].getType() == ActionTarget::PlayerReference)
 			{
-				if (actionInfo.actionTypeID == action.actionTypeID)
+				auto& sourcePlayer = action.targets[0].getPlayer(state);
+				int continuousActionID = action.targets[1].getContinuousActionID();
+
+				//Search continuousAction to abort
+				for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
 				{
-					actionInfo.lastExecutedTick = state.currentTick;
-					break;
+					if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
+					{
+						auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
+
+						//Execute OnAbort Effects				
+						for (auto& effect : actionType.OnAbort)
+						{
+							effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
+						}
+
+						//Remove continuous action
+						sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+						i--;
+					}
+				}
+			}
+			else
+			{
+				auto& sourceEntity = action.targets[0].getEntity(state);
+				int continuousActionID = action.targets[1].getContinuousActionID();
+
+				//Search continuousAction to abort
+				for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+				{
+					if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+					{
+						auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
+
+						//Execute OnAbort Effects				
+						for (auto& effect : actionType.OnAbort)
+						{
+							effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
+						}
+
+						//Remove continuous action
+						sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
+						i--;
+					}
 				}
 			}
 		}
-		
-		action.execute(state, *this);		
+		else if (action.actionTypeFlags == ActionFlag::ContinuousAction)
+		{
+			auto& actionType = state.getActionType(action.actionTypeID);
+			//If we are generating continuousAction we need to track them somehow
+			//Using ID for each action for example				
+			Action newAction = action;
+			newAction.continuousActionID = state.continueActionNextID++;
+			newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
+
+			//If is continues we execute OnStart Effects
+			//and we add the action to the list of continuous actions
+			if (actionType.sourceType == ActionSourceType::Unit)
+			{
+				auto& type = state.actionTypes->at(actionType.id);
+				for (auto& effect : type.OnStart)
+				{
+					effect->execute(state, *this, newAction.targets);
+				}
+
+				auto& executingEntity = newAction.targets[0].getEntity(state);
+				executingEntity.continuousAction.emplace_back(newAction);
+
+			}
+			else if (actionType.sourceType == ActionSourceType::Player)
+			{
+				auto& type = state.actionTypes->at(actionType.id);
+				for (auto& effect : type.OnStart)
+				{
+					effect->execute(state, *this, newAction.targets);
+				}
+
+				auto& executingPlayer = newAction.targets[0].getPlayer(state);
+				executingPlayer.continuousAction.emplace_back(newAction);
+			}
+		}
+		else
+		{
+			const auto& actionType = state.getActionType(action.actionTypeID);
+			if (actionType.sourceType == ActionSourceType::Unit)
+			{
+				// Remember when the action was executed
+				auto& executingEntity = action.targets[0].getEntity(state);
+				// ToDo We should probably find a way to avoid this loop
+				for (auto& actionInfo : executingEntity.attachedActions)
+				{
+					if (actionInfo.actionTypeID == action.actionTypeID)
+					{
+						actionInfo.lastExecutedTick = state.currentTick;
+						break;
+					}
+				}
+			}
+			
+			action.execute(state, *this);	
+		}
 	}
 
 	void EntityForwardModel::endTick(GameState& state) const

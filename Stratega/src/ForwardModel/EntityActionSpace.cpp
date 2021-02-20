@@ -150,7 +150,7 @@ namespace SGA
 			}
 
 			if (actionType.isContinuous)
-				action.actionTypeFlags = ContinuousAction;
+				action.actionTypeFlags = ActionFlag::ContinuousAction;
 
 			bool isValidAction = true;
 			for (auto& actionTargetType : actionType.actionTargets)
@@ -186,7 +186,7 @@ namespace SGA
 			}
 
 			if (actionType.isContinuous)
-				action.actionTypeFlags = ContinuousAction;
+				action.actionTypeFlags = ActionFlag::ContinuousAction;
 
 			bool isValidAction = true;
 			for (auto& actionTargetType : actionType.actionTargets)

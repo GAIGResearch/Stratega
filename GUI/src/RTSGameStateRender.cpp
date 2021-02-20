@@ -651,68 +651,62 @@ namespace SGA
 			}
 		}
 
-
-
 		//Draw paths of units
 		for (auto& unit : selectedGameStateCopy->entities)
 		{
-			if (unit.executingAction.has_value())
-				if (true/*unit.executingAction.type == SGA::RTSActionType::Move || unit.executingAction.type == SGA::RTSActionType::Attack*/)
+			//Check if has a valid path
+			if (unit.path.m_nstraightPath > 0)
+			{
+				//Draw path lines
+				for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
 				{
-					//Check if has a valid path
-					if (unit.path.m_nstraightPath > 0)
+					auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
+					auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+
+					//Adjust to sprites offset
+					v1.x += TILE_WIDTH_HALF;
+					v2.x += TILE_WIDTH_HALF;
+
+					sf::Vertex line[] =
 					{
-						//Draw path lines
-						for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
-						{
-							auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
-							auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+						sf::Vertex(v1),
+						sf::Vertex(v2)
+					};
 
-							//Adjust to sprites offset
-							v1.x += TILE_WIDTH_HALF;
-							v2.x += TILE_WIDTH_HALF;
-
-							sf::Vertex line[] =
-							{
-								sf::Vertex(v1),
-								sf::Vertex(v2)
-							};
-
-							window.draw(line, 2, sf::Lines);
-						}
-
-						//Draw path points
-						for (int i = 0; i < unit.path.m_nstraightPath; ++i)
-						{
-							sf::CircleShape pathCircle;
-							float v1 = unit.path.m_straightPath[i * 3];
-							float v2 = unit.path.m_straightPath[i * 3 + 2];
-
-							auto pos = toISO(v1, v2);
-							pathCircle.setPosition(pos);
-							pathCircle.setOrigin(10, 10);
-							pathCircle.setFillColor(sf::Color::Black);
-							pathCircle.setRadius(20);
-							pathCircle.move(TILE_WIDTH_HALF, 0);
-							window.draw(pathCircle);
-						}
-
-						////Paint Start and End circles
-						//sf::CircleShape temp;
-						//temp.setOrigin(10, 10);
-						//temp.setPosition(toISO(unit.position.x, unit.position.y));
-						//temp.move(TILE_WIDTH_HALF, 0);
-						//temp.setFillColor(sf::Color::Green);
-						//temp.setRadius(20);
-						//window.draw(temp);
-
-						//temp.setPosition(toISO(unit.executingAction.targetPosition.x, unit.executingAction.targetPosition.y));
-						//temp.move(TILE_WIDTH_HALF, 0);
-						//temp.setFillColor(sf::Color::Red);
-						//temp.setRadius(20);
-						//window.draw(temp);
-					}
+					window.draw(line, 2, sf::Lines);
 				}
+
+				//Draw path points
+				for (int i = 0; i < unit.path.m_nstraightPath; ++i)
+				{
+					sf::CircleShape pathCircle;
+					float v1 = unit.path.m_straightPath[i * 3];
+					float v2 = unit.path.m_straightPath[i * 3 + 2];
+
+					auto pos = toISO(v1, v2);
+					pathCircle.setPosition(pos);
+					pathCircle.setOrigin(10, 10);
+					pathCircle.setFillColor(sf::Color::Black);
+					pathCircle.setRadius(20);
+					pathCircle.move(TILE_WIDTH_HALF, 0);
+					window.draw(pathCircle);
+				}
+
+				////Paint Start and End circles
+				//sf::CircleShape temp;
+				//temp.setOrigin(10, 10);
+				//temp.setPosition(toISO(unit.position.x, unit.position.y));
+				//temp.move(TILE_WIDTH_HALF, 0);
+				//temp.setFillColor(sf::Color::Green);
+				//temp.setRadius(20);
+				//window.draw(temp);
+
+				//temp.setPosition(toISO(unit.executingAction.targetPosition.x, unit.executingAction.targetPosition.y));
+				//temp.move(TILE_WIDTH_HALF, 0);
+				//temp.setFillColor(sf::Color::Red);
+				//temp.setRadius(20);
+				//window.draw(temp);
+			}
 		}
 
 		renderMinimapTexture.display();
@@ -923,7 +917,7 @@ namespace SGA
 			std::string actionInfo = std::to_string(index);
 			if (action.actionTypeID == -1)
 			{
-				if (action.actionTypeFlags == AbortContinuousAction)
+				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 				{
 					if (action.targets[0].getType() == ActionTarget::EntityReference)
 					{

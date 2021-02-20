@@ -7,25 +7,13 @@
 
 namespace SGA
 {
-	class RTSAction
-	{
-		std::unordered_map<int, Action> entitiesAction;
-		std::vector<Action> playerAction;
-
-		//Add new action to the entities map or player list
-		void assignAction(Action newAction);
-
-		//Mix two rtsaction
-		void accumulate(RTSAction action);
-	};
-	
 	class Agent;
 	
 	class RTSGameCommunicator : public GameCommunicator
 	{
 	public:
 		RTSGameCommunicator(int playerID) :
-			GameCommunicator{ playerID }
+			GameCommunicator{ playerID }, game(nullptr)
 		{
 		}
 

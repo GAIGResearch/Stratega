@@ -12,6 +12,7 @@ namespace SGA
 		double accumulatedTimeUpdate = 0;
 		double accumulatedTimePrint = 0;
 		int executionCount = 0;
+		RTSAction nextAction;
 		
 	public:
 		Action actionToExecute;

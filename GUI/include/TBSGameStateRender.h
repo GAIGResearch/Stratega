@@ -90,7 +90,7 @@ namespace SGA
 						//SpecialActions like EndTurn and AbortContinunousAction
 						if (action.actionTypeID == -1)
 						{
-							if (action.actionTypeFlags == AbortContinuousAction)
+							if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 							{
 								if (action.targets[0].getType() == ActionTarget::EntityReference)
 									if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
@@ -128,7 +128,7 @@ namespace SGA
 					//SpecialActions like EndTurn and AbortContinunousAction
 					if (action.actionTypeID == -1)
 					{
-						if (action.actionTypeFlags == AbortContinuousAction)
+						if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 						{
 							if (action.targets[0].getType() == ActionTarget::PlayerReference)
 								actionHumanUnitSelected.emplace_back(action);

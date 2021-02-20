@@ -202,8 +202,7 @@ namespace SGA
 			
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
-			return *state.getPlayer(playerID);
+			return actionTargets[data.parameterData.argumentIndex].getPlayer(state);
 		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
@@ -225,15 +224,10 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
-		case Type::ParameterReference:
-		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
-			return playerID;
-		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
 		{
-			auto& entity = getEntity(state, actionTargets);
+			const auto& entity = getEntity(state, actionTargets);
 			return entity.ownerID;
 		}
 		case Type::ArgumentReference:
@@ -271,13 +265,12 @@ namespace SGA
 		{
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
-			return playerID;
+			return actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
 		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
 		{
-			auto& entity = getEntityType(state, actionTargets);
+			const auto& entity = getEntityType(state, actionTargets);
 			return entity.spawnableEntityTypes;
 		}
 		case Type::ArgumentReference:

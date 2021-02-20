@@ -87,8 +87,6 @@ namespace SGA
 				{
 					if (movementDistance - movementSpeed<=2) {
 						unit.position = targetPos;
-						//unit.executingAction.type = RTSActionType::None;
-						unit.executingAction = std::nullopt;
 						unit.path = Path();
 					}
 				}
@@ -98,21 +96,6 @@ namespace SGA
 				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
 			}
 		}
-	}
-
-	SpawnUnit::SpawnUnit(const std::vector<FunctionParameter>& parameters)
-		: entityTypeParam(parameters[0]), targetPositionParam(parameters[1])
-	{	
-	}
-
-	void SpawnUnit::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{		
-		int playerID = -1;
-
-		playerID = targets[0].getPlayerID(state);
-				
-		const auto& entityType = entityTypeParam.getEntityType(state, targets);
-		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
@@ -218,34 +201,16 @@ namespace SGA
 
 
 	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
 	{
 	}
 
 	void SpawnEntity::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
-		{
-			
-			int playerID = sourceEntityParam.getPlayerID(state, targets);
-			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
-
-			fm.spawnEntity(state, targetEntityType, playerID, targets[2].getPosition(state));
-		}
-		else
-		{
-			int unit = sourceEntityParam.getEntity(state, targets).id;
-
-			
-			
-			//throw std::runtime_error("SpawnEntity is only available in TBS-Games");
-			int playerID = sourceEntityParam.getPlayerID(state, targets);
-			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
-			fm.spawnEntity(state, targetEntityType, playerID, targets[2].getPosition(state));
-
-			state.getEntity(unit)->executingAction = std::nullopt;
-		}
-		
+		const auto& ownerID = spawnSource.getPlayerID(state, targets);
+		const auto& entityType = entityTypeParam.getEntityType(state, targets);
+		auto targetPosition = targetPositionParam.getPosition(state, targets);
+		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 
 	

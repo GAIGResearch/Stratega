@@ -210,7 +210,7 @@ namespace SGA
 				//Recollect each action in tile
 				for (const auto& action : actionHumanUnitSelected)
 				{
-					if (action.actionTypeID == -1||action.actionTypeID!=selectedActionType||action.actionTypeFlags==AbortContinuousAction|| action.targets.empty())
+					if (action.actionTypeID == -1||action.actionTypeID!=selectedActionType||action.actionTypeFlags== ActionFlag::AbortContinuousAction|| action.targets.empty())
 						continue;
 					
 
@@ -841,7 +841,7 @@ namespace SGA
 			std::string actionInfo = std::to_string(index);
 			if (action.actionTypeID == -1)
 			{
-				if (action.actionTypeFlags == AbortContinuousAction)
+				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 				{
 					if(action.targets[0].getType()==ActionTarget::EntityReference)
 					{

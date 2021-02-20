@@ -2,153 +2,92 @@
 
 namespace SGA
 {
-	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action& action) const
+	void RTSAction::assignActionOrReplace(Action newAction)
 	{
-		if (action.actionTypeFlags == AbortContinuousAction)
+		if(newAction.isEntityAction())
 		{
-		if (action.targets[0].getType() == ActionTarget::PlayerReference)
+			auto id = newAction.getSourceID();
+			entityActions.insert_or_assign(id, std::move(newAction));
+		}
+		else if(newAction.isPlayerAction())
 		{
-			auto& sourcePlayer = action.targets[0].getPlayer(state);
-			int continuousActionID = action.targets[1].getContinuousActionID();
-
-			//Search continuousAction to abort
-			for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
-			{
-				if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
-				{
-					auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
-
-					//Execute OnAbort Effects				
-					for (auto& effect : actionType.OnAbort)
-					{
-						effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
-					}
-
-					//Remove continuous action
-					sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
-					i--;
-				}
-			}
+			auto id = newAction.getSourceID();
+			playerActions.insert_or_assign(id, std::move(newAction));
 		}
 		else
 		{
-			auto& sourceEntity = action.targets[0].getEntity(state);
-			int continuousActionID = action.targets[1].getContinuousActionID();
-
-			//Search continuousAction to abort
-			for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
-			{
-				if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
-				{
-					auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
-
-					//Execute OnAbort Effects				
-					for (auto& effect : actionType.OnAbort)
-					{
-						effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
-					}
-
-					//Remove continuous action
-					sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
-					i--;
-				}
-			}
+			throw std::runtime_error("Tried assigning an unknown action-type to RTSAction");
 		}
-		}
-		else if (action.actionTypeFlags == ContinuousAction)
+	}
+
+	void RTSAction::merge(const RTSAction& action)
+	{
+		for(const auto& idActionPair : action.entityActions)
 		{
-		auto& actionType = state.getActionType(action.actionTypeID);
-		//If we are generating continuousAction we need to track them somehow
-		//Using ID for each action for example				
-		Action newAction = action;
-		newAction.continuousActionID = state.continueActionNextID++;
-		newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
-
-		//If is continues we execute OnStart Effects
-		//and we add the action to the list of continuous actions
-		if (actionType.sourceType == ActionSourceType::Unit)
-		{
-			auto& type = state.actionTypes->at(actionType.id);
-			for (auto& effect : type.OnStart)
-			{
-				effect->execute(state, *this, newAction.targets);
-			}
-
-			auto& executingEntity = newAction.targets[0].getEntity(state);
-			executingEntity.continuousAction.emplace_back(newAction);
-
+			entityActions.insert_or_assign(idActionPair.first, idActionPair.second);
 		}
-		else if (actionType.sourceType == ActionSourceType::Player)
+		for(const auto& idActionPair : action.playerActions)
 		{
-			auto& type = state.actionTypes->at(actionType.id);
-			for (auto& effect : type.OnStart)
-			{
-				effect->execute(state, *this, newAction.targets);
-			}
+			playerActions.insert_or_assign(idActionPair.first, idActionPair.second);
+		}
+	}
 
-			auto& executingPlayer = newAction.targets[0].getPlayer(state);
-			executingPlayer.continuousAction.emplace_back(newAction);
+	void RTSAction::clear()
+	{
+		entityActions.clear();
+		playerActions.clear();
+	}
+
+	Action* RTSAction::getEntityAction(int entityID)
+	{
+		auto it = entityActions.find(entityID);
+		return it == entityActions.end() ? nullptr : &it->second;
+	}
+
+	Action* RTSAction::getPlayerAction(int playerID)
+	{
+		auto it = playerActions.find(playerID);
+		return it == playerActions.end() ? nullptr : &it->second;
+	}
+
+	const std::unordered_map<int, Action>& RTSAction::getEntityActions() const
+	{
+		return entityActions;
+	}
+
+	const std::unordered_map<int, Action>& RTSAction::getPlayerActions() const
+	{
+		return playerActions;
+	}
+	
+	void RTSForwardModel::advanceGameState(RTSGameState& state, const RTSAction& action) const
+	{
+		for(const auto& idActionPair : action.getEntityActions())
+		{
+			executeAction(state, idActionPair.second);
 		}
 
-		}
-		else if (!(action.actionTypeFlags==EndTickAction))
+		for (const auto& idActionPair : action.getPlayerActions())
 		{
-			auto& actionType = state.getActionType(action.actionTypeID);
-			if (actionType.sourceType == ActionSourceType::Unit)
-			{
-				auto& sourceUnit = action.targets[0].getEntity(state);
-				/*if (sourceUnit == nullptr)
-					return;*/
-
-				sourceUnit.intendedAction = action;
-			}
+			executeAction(state, idActionPair.second);
+		}
 		
-		}		
-		else // Advance game
+		// Handle collisions
+		resolveUnitCollisions(state);
+		resolveEnvironmentCollisions(state);
+
+		// Remove Entities
+		for (size_t i = 0; i < state.entities.size(); i++)
 		{
-			// Update what the units are doing
-			for (auto& unit : state.entities)
+			if (state.entities[i].shouldRemove)
 			{
-				if (unit.intendedAction.has_value())
-				{
-					unit.executingAction = unit.intendedAction;
-					unit.intendedAction = {};
-				}
+				state.entities.erase(state.entities.begin() + i);
+				i -= 1;
 			}
-
-			for (int i = 0; i < state.entities.size(); ++i)
-			{
-				if (state.entities[i].executingAction.has_value())
-					executeAction(state, state.entities[i].executingAction.value());
-			}
-			/*for (auto& unit : state.entities)
-			{
-				if(unit.executingAction.has_value())
-					executeAction(state, unit.executingAction.value());
-			}*/
-			
-			resolveUnitCollisions(state);
-			resolveEnvironmentCollisions(state);
-
-			// Remove Entities
-			for (size_t i = 0; i < state.entities.size(); i++)
-			{
-				if (state.entities[i].shouldRemove)
-				{
-					state.entities.erase(state.entities.begin() + i);
-					i -= 1;
-				}
-			}
-
-			// Update cooldown
-			for (auto& unit : state.entities)
-			{
-				unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
-			}
-
-			endTick(state);
-			state.isGameOver = checkGameIsFinished(state);
 		}
+
+		endTick(state);
+		state.isGameOver = checkGameIsFinished(state);
 	}
 
 	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state) const
@@ -160,169 +99,6 @@ namespace SGA
 	{
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
-
-	//void RTSForwardModel::executeMove(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		unit.executingAction.type = RTSActionType::None;
-	//		return;
-	//	}
-
-	//	Vector2f targetPos = unit.executingAction.targetPosition;
-
-	//	//Get end position of current path
-	//	Vector2f oldTargetPos(0, 0);
-	//	oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
-	//	oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
-
-	//	//Check if path is empty or is a diferent path to the target pos
-	//	if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos) {
-
-	//		Path path = findPath(state.target, unit.position, targetPos);
-	//		unit.path = path;
-	//		unit.path.currentPathIndex++;
-	//	}
-
-	//	//Check if path has points to visit
-	//	if (unit.path.m_nstraightPath > 0)
-	//	{
-	//		//Assign the current path index as target
-	//		targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
-	//	}
-
-	//	auto movementDir = targetPos - unit.position;
-	//	auto movementDistance = movementDir.magnitude();
-	//	auto movementSpeed = unit.movementSpeed * deltaTime;
-	//	if (movementDistance <= movementSpeed)
-	//	{
-	//		unit.path.currentPathIndex++;
-	//		if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
-	//		{
-	//			if (movementDistance <= movementSpeed) {
-	//				unit.position = targetPos;
-	//				unit.executingAction.type = RTSActionType::None;
-	//				unit.path = Path();
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
-	//	}
-	//}
-
-	//void RTSForwardModel::executeAttack(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		if (unit.actionCooldown > 0)
-	//		{
-	//			unit.executingAction.type = RTSActionType::None;
-	//		}
-
-	//		unit.path = Path();
-	//		return;
-	//	}
-	//	if (unit.actionCooldown > 0)
-	//		return;
-
-	//	auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
-
-	//	//Update position of the action
-	//	unit.executingAction.targetPosition = targetUnit->position;
-
-	//	//If is in range attack, if not, move to to a closer position
-	//	if (unit.position.distance(targetUnit->position) <= unit.actionRange)
-	//	{
-	//		targetUnit->health -= unit.attackDamage;
-	//		if (targetUnit->health <= 0)
-	//		{
-	//			state.deadUnitIDs.emplace_back(targetUnit->unitID);
-	//			unit.executingAction.type = RTSActionType::None;
-	//			unit.path = Path();
-	//		}
-	//		unit.actionCooldown = unit.maxActionCooldown;
-	//	}
-	//	else
-	//	{
-	//		//Get end position of current path
-	//		Vector2f oldTargetPos(0, 0);
-
-	//		Vector2f targetPos = targetUnit->position;
-
-	//		//Check if path is empty
-	//		if (unit.path.m_nstraightPath > 0)
-	//		{
-	//			oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
-	//			oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
-
-	//			//Compare the path end with the target position
-	//			if (oldTargetPos != targetPos)
-	//			{
-	//				//Update the path
-	//				Path path = findPath(state.target, unit.position, targetPos);
-
-	//				unit.path = path;
-	//				unit.path.currentPathIndex++;
-	//			}
-	//		}
-	//		else
-	//		{
-	//			//Update the new path
-	//			Path path = findPath(state.target, unit.position, targetPos);
-
-	//			unit.path = path;
-	//			unit.path.currentPathIndex++;
-	//		}
-
-	//		//Check if path has points to visit
-
-	//		if (unit.path.m_nstraightPath > 0)
-	//		{
-	//			//Assign the current path index as target
-	//			targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
-
-	//			auto movementDir = targetPos - unit.position;
-	//			auto movementDistance = movementDir.magnitude();
-	//			auto movementSpeed = unit.movementSpeed * deltaTime;
-	//			if (movementDistance <= movementSpeed)
-	//			{
-	//				unit.path.currentPathIndex++;
-	//				if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
-	//				{
-	//					if (movementDistance <= movementSpeed)
-	//					{
-	//						unit.position = targetPos;
-	//						//unit.executingAction = nullptr;
-	//						unit.path = Path();
-	//					}
-	//				}
-	//			}
-	//			else
-	//			{
-	//				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//void RTSForwardModel::executeHeal(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		unit.executingAction.type = RTSActionType::None;
-	//		return;
-	//	}
-
-	//	auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
-	//	targetUnit->health += unit.healAmount;
-
-	//	if (targetUnit->health > targetUnit->maxHealth)
-	//		targetUnit->health = targetUnit->maxHealth;
-
-	//	unit.actionCooldown = unit.maxActionCooldown;
-	//}
 
 	void RTSForwardModel::resolveUnitCollisions(RTSGameState& state) const
 	{
