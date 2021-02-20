@@ -1,9 +1,9 @@
-#include <Agent/TreeSearchAgents/DFSAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
 
 
 namespace SGA
 {
-	void DFSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void DFSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

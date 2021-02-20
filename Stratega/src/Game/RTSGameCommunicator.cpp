@@ -1,5 +1,5 @@
-#include <Game/RTSGameCommunicator.h>
-#include <Agent/Agent.h>
+#include <Stratega/Game/RTSGameCommunicator.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {
@@ -9,7 +9,7 @@ namespace SGA
 		RTSForwardModel copy(game->getForwardModel());
 		copy.setActionSpace(copy.generateDefaultActionSpace());
 
-		thread = std::thread(&Agent::runAbstractRTS, std::ref(*agent), std::ref(*this), std::move(copy));
+		thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), std::move(copy));
 	}
 
 	void RTSGameCommunicator::setGame(RTSGame& newGame)

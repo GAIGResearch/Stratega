@@ -1,5 +1,5 @@
 #include <Configuration/RenderConfig.h>
-#include <Configuration/GameConfig.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 namespace SGA
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include <Game/GameCommunicator.h>
-#include <Logging/FileLogger.h>
-#include <Configuration/GameConfig.h>
+#include <Stratega/Game/GameCommunicator.h>
+#include <Stratega/Logging/FileLogger.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 class GameRunner
 {

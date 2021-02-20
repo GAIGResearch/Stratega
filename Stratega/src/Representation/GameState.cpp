@@ -1,9 +1,9 @@
-#include <Representation/GameState.h>
-#include <ForwardModel/Condition.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/Condition.h>
 
 namespace SGA
 {
-	bool GameState::canExecuteAction(Entity& entity, ActionType& actionType)
+	bool GameState::canExecuteAction(Entity& entity, const ActionType& actionType)
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
@@ -17,7 +17,7 @@ namespace SGA
 		return true;
 	}
 
-	bool GameState::canExecuteAction(Player& player, ActionType& actionType)
+	bool GameState::canExecuteAction(Player& player, const ActionType& actionType)
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)

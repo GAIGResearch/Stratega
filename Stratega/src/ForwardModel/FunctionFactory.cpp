@@ -1,6 +1,6 @@
-#include <ForwardModel/FunctionFactory.h>
-#include <ForwardModel/Condition.h>
-#include <ForwardModel/Effect.h>
+#include <Stratega/ForwardModel/FunctionFactory.h>
+#include <Stratega/ForwardModel/Condition.h>
+#include <Stratega/ForwardModel/Effect.h>
 
 namespace SGA
 {
@@ -31,7 +31,7 @@ namespace SGA
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
 		factory.registerFunction<Move>("Move");
-		factory.registerFunction<SpawnUnit>("Spawn");
+		factory.registerFunction<SpawnEntity>("SpawnEntity");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
 		factory.registerFunction<TransferEffect>("Transfer");
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");

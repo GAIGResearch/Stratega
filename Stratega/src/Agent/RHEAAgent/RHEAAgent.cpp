@@ -1,10 +1,10 @@
-#include <Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
 
 
 namespace SGA
 {
 	
-	void RHEAAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void RHEAAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
         while (!gameCommunicator.isGameOver())
         {

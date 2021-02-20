@@ -1,5 +1,5 @@
 #pragma once
-#include <Representation/GameState.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace SGA::Widgets
 {

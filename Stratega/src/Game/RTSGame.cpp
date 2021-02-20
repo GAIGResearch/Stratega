@@ -1,8 +1,8 @@
-#include <Game/RTSGame.h>
+#include <Stratega/Game/RTSGame.h>
 namespace SGA
 {
 	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
-		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
+		: Game(rngEngine), nextAction(), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
@@ -26,7 +26,8 @@ namespace SGA
 		{
 			//Execute
 			stateMutex.lock();
-			forwardModel.advanceGameState(*gameState, Action::createEndAction(-1));
+			forwardModel.advanceGameState(*gameState, nextAction);
+			nextAction.clear();
 
 			//Update navmesh if it needs to
 			if (shouldUpdateNavmesh)
@@ -70,11 +71,11 @@ namespace SGA
 
 	void RTSGame::executeAction(Action action)
 	{
-		if (action.actionTypeFlags==EndTickAction)
+		if (action.actionTypeFlags == ActionFlag::EndTickAction)
 			return;
 
 		std::lock_guard<std::mutex> stateGuard(stateMutex);
-		forwardModel.advanceGameState(*gameState, action);
+		nextAction.assignActionOrReplace(action);
 	}
 
 	

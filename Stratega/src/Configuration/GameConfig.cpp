@@ -1,5 +1,5 @@
-#include <Configuration/GameConfig.h>
-#include <Agent/AgentFactory.h>
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Agent/AgentFactory.h>
 
 namespace SGA
 {
@@ -65,7 +65,7 @@ namespace SGA
 		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
 		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
 		state->technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
-
+		state->playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{

@@ -51,11 +51,12 @@ Actions:
     Attack:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: All
-            Conditions:
-                - "InRange(Source, Target, Source.AttackRange)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                Conditions:
+                    - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
 
@@ -63,12 +64,13 @@ Actions:
         Type: EntityAction
         Preconditions:
             - "HasResource(Source.MovementPoints, 1)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Square
+                Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
             - "Move()"
             - "ModifyResource(Source.MovementPoints, -1)"
@@ -76,11 +78,12 @@ Actions:
     Heal:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: All
-            Conditions:
-                - "InRange(Source, Target, Source.HealRange)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
 

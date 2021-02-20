@@ -1,8 +1,8 @@
-#include <Agent/TreeSearchAgents/MCTSAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/MCTSAgent.h>
 
 namespace SGA
 {
-	void MCTSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void MCTSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 		while (!gameCommunicator.isGameOver())
@@ -52,7 +52,7 @@ namespace SGA
                     gameCommunicator.executeAction(bestAction);
 
                 	// return best action
-                    previousActionIndex = (bestAction.actionTypeFlags==EndTickAction) ? -1 : bestActionIndex;
+                    previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
                 }
 
 			}

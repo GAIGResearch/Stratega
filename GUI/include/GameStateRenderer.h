@@ -1,12 +1,13 @@
 #pragma once
-#include <Game/GameCommunicator.h>
+#include <Stratega/Game/GameCommunicator.h>
 #include <thread>
 #include <AssetCache.h>
 #include <mutex>
 #include <SFML/Graphics.hpp>
-#include <Game/Game.h>
+#include <Stratega/Game/Game.h>
 
 #include <Widgets/FogOfWarController.h>
+#include <Widgets/ActionsController.h>
 
 namespace SGA
 {
@@ -67,6 +68,7 @@ namespace SGA
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;
+		Widgets::ActionsSettings actionSettings;
 	};
 
 }
