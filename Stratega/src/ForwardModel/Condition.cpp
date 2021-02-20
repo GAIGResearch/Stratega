@@ -1,6 +1,6 @@
-#include <ForwardModel/Condition.h>
-#include <Representation/Entity.h>
-#include <Representation/GameState.h>
+#include <Stratega/ForwardModel/Condition.h>
+#include <Stratega/Representation/Entity.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace  SGA
 {

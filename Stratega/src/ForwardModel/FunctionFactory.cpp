@@ -1,6 +1,6 @@
-#include <ForwardModel/FunctionFactory.h>
-#include <ForwardModel/Condition.h>
-#include <ForwardModel/Effect.h>
+#include <Stratega/ForwardModel/FunctionFactory.h>
+#include <Stratega/ForwardModel/Condition.h>
+#include <Stratega/ForwardModel/Effect.h>
 
 namespace SGA
 {

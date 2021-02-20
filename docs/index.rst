@@ -7,17 +7,36 @@ Stratega Docs
 ====================================
 
 .. image:: images/stratega.png
-
+   :alt: Stratega Example Image
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :hidden:
 
+   self
 
+.. toctree::
+   :maxdepth: 1
+   :caption: About
 
-Indices and tables
-==================
+   about/introduction/index
+   about/community/index
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+   :caption: Getting Started
+
+   gettingStarted/installation/index
+   gettingStarted/implementTBSAgent/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Games
+
+   games/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: References
+
+   references/YAML/index
+   references/CPP/index

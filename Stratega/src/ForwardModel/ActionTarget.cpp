@@ -1,6 +1,6 @@
-#include <ForwardModel/ActionType.h>
-#include <Representation/Player.h>
-#include <Representation/GameState.h>
+#include <Stratega/ForwardModel/ActionType.h>
+#include <Stratega/Representation/Player.h>
+#include <Stratega/Representation/GameState.h>
 namespace SGA
 {
 	ActionTarget ActionTarget::createPositionActionTarget(Vector2f position)

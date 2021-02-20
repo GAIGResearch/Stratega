@@ -1,7 +1,7 @@
-#include <ForwardModel/Effect.h>
-#include <ForwardModel/EntityForwardModel.h>
-#include <ForwardModel/TBSForwardModel.h>
-#include <ForwardModel/RTSForwardModel.h>
+#include <Stratega/ForwardModel/Effect.h>
+#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 
 namespace SGA
 {

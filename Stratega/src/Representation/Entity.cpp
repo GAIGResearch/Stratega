@@ -1,5 +1,5 @@
-#include <Representation/Entity.h>
-#include <Representation/Player.h>
+#include <Stratega/Representation/Entity.h>
+#include <Stratega/Representation/Player.h>
 
 namespace SGA
 {

@@ -1,13 +1,13 @@
 #pragma once
 #include <GameStateRenderer.h>
-#include <Game/TBSGame.h>
-#include <Representation/TBSGameState.h>
+#include <Stratega/Game/TBSGame.h>
+#include <Stratega/Representation/TBSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <CircularBuffer.h>
 
-#include <ForwardModel/Action.h>
+#include <Stratega/ForwardModel/Action.h>
 
 namespace SGA
 {

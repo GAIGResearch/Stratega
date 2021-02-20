@@ -1,5 +1,5 @@
 #include <RTSGameStateRender.h>
-#include <ForwardModel/Action.h>
+#include <Stratega/ForwardModel/Action.h>
 #include <CircularBuffer.h>
 #include <imgui-SFML.h>
 #include <imgui.h>

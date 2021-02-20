@@ -1,10 +1,10 @@
-#include<Agent/AgentFactory.h>
-#include<Logging/Log.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Logging/Log.h>
 
-#include<GameRunner.h>
-#include<utils.h>
-#include<RTSLogger.h>
-#include<TBSLogger.h>
+#include <GameRunner.h>
+#include <utils.h>
+#include <RTSLogger.h>
+#include <TBSLogger.h>
 
 GameRunner::GameRunner(const SGA::GameConfig& config)
 	: config(&config), gameCount(0)

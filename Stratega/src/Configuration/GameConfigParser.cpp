@@ -1,7 +1,7 @@
-#include <Configuration/GameConfigParser.h>
-#include <Agent/AgentFactory.h>
-
-#include <Configuration/YamlHeaders.h>
+#include <Stratega/Configuration/GameConfigParser.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Configuration/WinConditionType.h>
+#include <Stratega/Configuration/YamlHeaders.h>
 
 namespace SGA
 {
@@ -329,7 +329,6 @@ namespace SGA
         {
             fm = std::make_unique<RTSForwardModel>();
         }
-
 
 		// Parse WinCondition
         auto winConditionNode = fmNode["WinCondition"];

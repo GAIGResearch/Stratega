@@ -1,6 +1,6 @@
-#include <ForwardModel/FunctionParameter.h>
+#include <Stratega/ForwardModel/FunctionParameter.h>
+#include <Stratega/Representation/GameState.h>
 
-#include <Representation/GameState.h>
 namespace SGA
 {
 	FunctionParameter FunctionParameter::createConstParameter(double constValue)

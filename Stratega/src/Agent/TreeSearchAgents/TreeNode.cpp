@@ -1,4 +1,4 @@
-#include <Agent/TreeSearchAgents/TreeNode.h>
+#include <Stratega/Agent/TreeSearchAgents/TreeNode.h>
 #include <iostream>
 #include <vector>
 

@@ -1,4 +1,4 @@
-#include <Agent/RHEAAgent/RHEAParams.h>
+#include <Stratega/Agent/RHEAAgent/RHEAParams.h>
 
 #include <iostream>
 

@@ -1,4 +1,4 @@
-#include <Agent/ActionScripts/RandomActionScript.h>
+#include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 
 namespace SGA
 {

@@ -1,8 +1,8 @@
-#include <Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
 
 namespace SGA
 {
-	void BFSAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BFSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
