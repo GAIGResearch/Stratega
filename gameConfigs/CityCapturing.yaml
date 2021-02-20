@@ -34,12 +34,13 @@ Actions:
     Spawn:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: EntityType
-            ValidTargets: Units
-            Conditions:
-                - "CanAfford(Source.Player, Target)"
-                - "CanSpawn(Source, Target)"
+        Targets:
+            Target:
+                Type: EntityType
+                ValidTargets: Units
+                Conditions:
+                    - "CanAfford(Source.Player, Target)"
+                    - "CanSpawn(Source, Target)"
         Effects:
             - "SpawnRandom(Source, Target)"
             - "PayCost(Source.Player, Target)"
@@ -48,22 +49,24 @@ Actions:
     Attack:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: [Conquerer, Fighter]
-            Conditions:
-                - "InRange(Source, Target, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Conquerer, Fighter]
+                Conditions:
+                    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
     # Capturing
     Capture:
         Type: EntityAction
-        Target:
-            Type: Entity
-            ValidTargets: City
-            Conditions:
-                - "InRange(Source, Target, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: City
+                Conditions:
+                    - "InRange(Source, Target, 1)"
         Effects:
             - "ChangeOwner(Target, Source.Player)"
             - "Remove(Source)"
@@ -72,12 +75,13 @@ Actions:
     Move:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Circle
-            Size: 3
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 

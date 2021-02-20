@@ -1,6 +1,6 @@
-#include <ForwardModel/FunctionParameter.h>
+#include <Stratega/ForwardModel/FunctionParameter.h>
+#include <Stratega/Representation/GameState.h>
 
-#include <Representation/GameState.h>
 namespace SGA
 {
 	FunctionParameter FunctionParameter::createConstParameter(double constValue)
@@ -199,10 +199,10 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+			
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
-			return *state.getPlayer(playerID);
+			return actionTargets[data.parameterData.argumentIndex].getPlayer(state);
 		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
@@ -219,6 +219,26 @@ namespace SGA
 		}
 	}
 
+
+	int FunctionParameter::getPlayerID(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			const auto& entity = getEntity(state, actionTargets);
+			return entity.ownerID;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getPlayerID(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+	
 	const Player& FunctionParameter::getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		return getPlayer(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
@@ -237,6 +257,29 @@ namespace SGA
 		}
 		
 		throw std::runtime_error("Type not recognised");
+	}
+
+	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ParameterReference:
+		{
+			return actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
+		}
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			const auto& entity = getEntityType(state, actionTargets);
+			return entity.spawnableEntityTypes;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getSpawneableEntities(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
 	}
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const

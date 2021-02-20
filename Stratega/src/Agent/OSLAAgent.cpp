@@ -1,9 +1,9 @@
-#include <Agent/OSLAAgent.h>
-#include <Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Agent/OSLAAgent.h>
+#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 
 namespace SGA
 {
-	void OSLAAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void OSLAAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

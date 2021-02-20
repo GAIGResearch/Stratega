@@ -1,4 +1,4 @@
-#include <Game/TBSGame.h>
+#include <Stratega/Game/TBSGame.h>
 #include <thread>
 
 namespace SGA

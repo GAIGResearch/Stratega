@@ -1,4 +1,4 @@
-#include <Game/Game.h>
+#include <Stratega/Game/Game.h>
 #include <chrono>
 
 namespace  SGA

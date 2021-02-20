@@ -1,4 +1,4 @@
-#include <ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {

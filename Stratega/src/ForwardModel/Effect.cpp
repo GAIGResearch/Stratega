@@ -1,7 +1,7 @@
-#include <ForwardModel/Effect.h>
-#include <ForwardModel/EntityForwardModel.h>
-#include <ForwardModel/TBSForwardModel.h>
-#include <ForwardModel/RTSForwardModel.h>
+#include <Stratega/ForwardModel/Effect.h>
+#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 
 namespace SGA
 {
@@ -85,10 +85,8 @@ namespace SGA
 				unit.path.currentPathIndex++;
 				if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
 				{
-					if (movementDistance <= movementSpeed) {
+					if (movementDistance - movementSpeed<=2) {
 						unit.position = targetPos;
-						//unit.executingAction.type = RTSActionType::None;
-						unit.executingAction = Action();
 						unit.path = Path();
 					}
 				}
@@ -98,21 +96,6 @@ namespace SGA
 				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
 			}
 		}
-	}
-
-	SpawnUnit::SpawnUnit(const std::vector<FunctionParameter>& parameters)
-		: entityTypeParam(parameters[0]), targetPositionParam(parameters[1])
-	{	
-	}
-
-	void SpawnUnit::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{		
-		int playerID = -1;
-
-		playerID = targets[0].getPlayerID(state);
-				
-		const auto& entityType = entityTypeParam.getEntityType(state, targets);
-		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
@@ -216,6 +199,21 @@ namespace SGA
 		}
 	}
 
+
+	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	{
+	}
+
+	void SpawnEntity::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& ownerID = spawnSource.getPlayerID(state, targets);
+		const auto& entityType = entityTypeParam.getEntityType(state, targets);
+		auto targetPosition = targetPositionParam.getPosition(state, targets);
+		fm.spawnEntity(state, entityType, ownerID, targetPosition);
+	}
+
+	
 	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
 		: sourceParam(parameters[0]), costParam(parameters[1])
 	{

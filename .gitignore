@@ -15,4 +15,5 @@ _deps
 cmake-build-debug/
 cmake-build-release/
 out/
+build/
 experiments/

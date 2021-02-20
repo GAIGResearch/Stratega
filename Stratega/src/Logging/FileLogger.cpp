@@ -1,7 +1,7 @@
-#include <Logging/FileLogger.h>
+#include <Stratega/Logging/FileLogger.h>
 #include <iostream>
 //#include <yaml-cpp/emitter.h>
-#include <Configuration/YamlHeaders.h>
+#include <Stratega/Configuration/YamlHeaders.h>
 
 namespace SGA
 {

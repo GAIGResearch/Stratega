@@ -1,5 +1,5 @@
 #include <RTSLogger.h>
-#include <Logging/Log.h>
+#include <Stratega/Logging/Log.h>
 
 void RTSLogger::close()
 {

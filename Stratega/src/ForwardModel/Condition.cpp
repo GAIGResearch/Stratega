@@ -1,6 +1,6 @@
-#include <ForwardModel/Condition.h>
-#include <Representation/Entity.h>
-#include <Representation/GameState.h>
+#include <Stratega/ForwardModel/Condition.h>
+#include <Stratega/Representation/Entity.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace  SGA
 {
@@ -147,19 +147,21 @@ namespace  SGA
 
 	bool CanSpawnCondition::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+		int playerID = sourceEntityParam.getPlayerID(state, targets);
+		//const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 		const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
 		// Check if we fullfill the technology-requirements for the target entity
 		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.technologyTreeCollection->isResearched(sourceEntity.ownerID, targetEntityType.requiredTechnologyID))
+			!state.technologyTreeCollection->isResearched(playerID, targetEntityType.requiredTechnologyID))
 		{
 			return false;
 		}
 		
 		// Check if we are allowed to spawn this entity
-		const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-		if(sourceEntityType.spawnableEntityTypes.find(targetEntityType.id) == sourceEntityType.spawnableEntityTypes.end())
+		//const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+		const auto& spawneableEntities = sourceEntityParam.getSpawneableEntities(state, targets);
+		if(spawneableEntities.find(targetEntityType.id) == spawneableEntities.end())
 		{
 			return false;
 		}

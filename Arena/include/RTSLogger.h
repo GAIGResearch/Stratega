@@ -1,6 +1,6 @@
 #pragma once
-#include <Game/GameCommunicator.h>
-#include <Game/RTSGame.h>
+#include <Stratega/Game/GameCommunicator.h>
+#include <Stratega/Game/RTSGame.h>
 
 class RTSLogger : public SGA::GameCommunicator
 {

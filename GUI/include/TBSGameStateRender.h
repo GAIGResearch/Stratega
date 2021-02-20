@@ -1,13 +1,13 @@
 #pragma once
 #include <GameStateRenderer.h>
-#include <Game/TBSGame.h>
-#include <Representation/TBSGameState.h>
+#include <Stratega/Game/TBSGame.h>
+#include <Stratega/Representation/TBSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <CircularBuffer.h>
 
-#include <ForwardModel/Action.h>
+#include <Stratega/ForwardModel/Action.h>
 
 namespace SGA
 {
@@ -45,7 +45,6 @@ namespace SGA
 		void createWindowUnits();
 		void createWindowActions();
 		void createWindowPlayerParameters() const;
-		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
 		void createTopBar() const;
 		void createEntityInformation(sf::RenderWindow& window);
@@ -88,19 +87,17 @@ namespace SGA
 					for (const auto& action : actionsHumanCanPlay)
 					{
 						//If is player unit action or globlal action(i.e End turn)
-
 						//SpecialActions like EndTurn and AbortContinunousAction
 						if (action.actionTypeID == -1)
 						{
-							if (action.actionTypeFlags == AbortContinuousAction)
+							if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 							{
 								if (action.targets[0].getType() == ActionTarget::EntityReference)
 									if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
 										actionHumanUnitSelected.emplace_back(action);
 							}
 							continue;
-						}
-							
+						}							
 													
 						//Other actions
 						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
@@ -112,10 +109,14 @@ namespace SGA
 							if(action.targets[0].getEntityID()==selectedEntityID)
 							actionHumanUnitSelected.emplace_back(action);
 						}
-						else if (actionType.actionTargets == TargetType::ContinuousAction)
+						else if (actionType.isContinuous /*== TargetType::ContinuousAction*/)
 						{
-							if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
-								actionHumanUnitSelected.emplace_back(action);
+							for (auto& targets : actionType.actionTargets)
+							{
+								if(targets.first == TargetType::ContinuousAction)
+								if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
+									actionHumanUnitSelected.emplace_back(action);
+							}							
 						}
 					}
 				}
@@ -127,7 +128,7 @@ namespace SGA
 					//SpecialActions like EndTurn and AbortContinunousAction
 					if (action.actionTypeID == -1)
 					{
-						if (action.actionTypeFlags == AbortContinuousAction)
+						if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 						{
 							if (action.targets[0].getType() == ActionTarget::PlayerReference)
 								actionHumanUnitSelected.emplace_back(action);

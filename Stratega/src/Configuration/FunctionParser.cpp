@@ -1,5 +1,5 @@
-#include <Configuration/FunctionParser.h>
-#include <Configuration/GameConfig.h>
+#include <Stratega/Configuration/FunctionParser.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 namespace SGA
 {

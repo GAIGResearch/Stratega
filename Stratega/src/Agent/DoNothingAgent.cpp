@@ -1,8 +1,8 @@
-#include <Agent/DoNothingAgent.h>
+#include <Stratega/Agent/DoNothingAgent.h>
 
 namespace SGA
 {
-	void DoNothingAgent::runAbstractTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void DoNothingAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

@@ -1,4 +1,4 @@
-#include <Representation/Player.h>
+#include <Stratega/Representation/Player.h>
 namespace SGA
 {
 	/*const SGA::Parameter& Player::getParameter(ParameterID id) const

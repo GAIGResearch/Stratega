@@ -1,6 +1,6 @@
-#include <ForwardModel/ActionType.h>
-#include <Representation/Player.h>
-#include <Representation/GameState.h>
+#include <Stratega/ForwardModel/ActionType.h>
+#include <Stratega/Representation/Player.h>
+#include <Stratega/Representation/GameState.h>
 namespace SGA
 {
 	ActionTarget ActionTarget::createPositionActionTarget(Vector2f position)
@@ -33,18 +33,40 @@ namespace SGA
 		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
 	}
 
+	int ActionTarget::getPlayerID() const
+	{
+		if (targetType == PlayerReference)
+		{
+			return data.playerID;
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+
 	int ActionTarget::getPlayerID(const GameState& state) const
 	{
 		if (targetType == PlayerReference)
 		{
 			return data.playerID;
 		}
+		else if(targetType == EntityReference)
+		{
+			return state.getEntityConst(data.entityID).ownerID;
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+	
+	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
+	{
+		if (targetType == PlayerReference)
+		{
+			return *state.playerSpawnableTypes;
+		}
 		else if (targetType == EntityReference)
 		{
-			return getEntityConst(state).ownerID;
+			return state.getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
 		}
-		else
-			return -1;
 	}
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const

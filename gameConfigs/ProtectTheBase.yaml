@@ -38,14 +38,15 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 50)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Square
+                Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
-            - "Spawn(Miner, Target)"
+            - "SpawnEntity(Source, Miner, Target)"
             - "ModifyResource(Source.Gold, -50)"
 
     SpawnFighter:
@@ -53,37 +54,40 @@ Actions:
         Cooldown: 1
         Preconditions:
             - "HasResource(Source.Gold, 100)"
-        Target:
-            Type: Position
-            Shape: Square
-            Size: 1
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Square
+                Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
-            - "Spawn(Fighter, Target)"
+            - "SpawnEntity(Source, Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
 
     # Attack Actions
     Attack:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: All
-            Conditions:
-                - "InRange(Source, Target, 10)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                Conditions:
+                    - "InRange(Source, Target, 10)"
         Effects:
 
     # Move Actions
     Move:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Circle
-            Size: 3
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 
@@ -91,23 +95,25 @@ Actions:
     Mine:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: GoldVein
-            Conditions:
-                - "InRange(Source, Target, 1)"
-                - "HasResource(Target.Gold, 40)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: GoldVein
+                Conditions:
+                    - "InRange(Source, Target, 1)"
+                    - "HasResource(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Gold, 40)"
 
     Deposit:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: Base
-            Conditions:
-                - "InRange(Source, Target, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Base
+                Conditions:
+                    - "InRange(Source, Target, 1)"
         Effects:
             - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
 

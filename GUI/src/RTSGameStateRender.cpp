@@ -1,5 +1,5 @@
 #include <RTSGameStateRender.h>
-#include <ForwardModel/Action.h>
+#include <Stratega/ForwardModel/Action.h>
 #include <CircularBuffer.h>
 #include <imgui-SFML.h>
 #include <imgui.h>
@@ -231,44 +231,30 @@ namespace SGA
 			if (movementDistance <= 10.0)
 			{
 				// The user clicked somewhere
-				if (!selectedUnits.empty())
+				if (!actionsSettings.selectedUnits.empty())
 				{
-					auto* unit = gameStateCopy.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 1);
+					auto* unit = gameStateCopy.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
 					if (unit)
 					{
-						for (const auto& i : selectedUnits)
-						{
-
-							//game->executeAction(SGA::RTSAction(SGA::RTSActionType::Attack, getPlayerID(), i, unit->position, unit->unitID));
-						}
+						//we click on someone
+					
 					}
 					else
 					{
-						for (const auto& i : selectedUnits)
+						if(actionsSettings.waitingForPosition)
 						{
-							auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(i)->typeID);
-
-							//Move action
-							if (entityType.canExecuteAction(2))
-							{
-								SGA::Action newAction;
-								newAction.actionTypeID = 2;
-								newAction.targets.emplace_back(ActionTarget::createEntityActionTarget(i));
-								//SGA::ActionTarget targetPos=SGA::ActionTarget(SGA::Vector2f(worldPos.x, worldPos.y));
-								newAction.targets.emplace_back(ActionTarget::createPositionActionTarget(SGA::Vector2f(worldPos.x, worldPos.y)));
-								newAction.ownerID = getPlayerID();
-								game->executeAction(newAction);
-
-							}
+							auto gridPos = toGrid(pos);
+							assignPosition(gameStateCopy, actionsSettings,{(float)gridPos.x,(float)gridPos.y} );
 						}
+						actionsSettings.selectedUnits.clear();
 					}
-
-					selectedUnits.clear();
+					
 				}
 				else
 				{
-					selectedUnits.clear();
+					actionsSettings.reset();
+					actionsSettings.selectedUnits.clear();
 					/*auto* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y));
 					if (unit != nullptr && unit->playerID == getPlayerID())
 						selectedUnits.emplace(unit->unitID);*/
@@ -289,7 +275,7 @@ namespace SGA
 					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 					{
 						if (unit.ownerID == getPlayerID())
-							selectedUnits.emplace(unit.id);
+							actionsSettings.selectedUnits.emplace(unit.id);
 					}
 				}
 			}
@@ -401,11 +387,11 @@ namespace SGA
 	void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
 		// Remove entities that do not exist anymore
-		for(auto i = selectedUnits.begin(); i != selectedUnits.end();)
+		for(auto i = actionsSettings.selectedUnits.begin(); i != actionsSettings.selectedUnits.end();)
 		{
 			if(gameStateCopy.getEntity(*i) == nullptr)
 			{
-				selectedUnits.erase(i);
+				actionsSettings.selectedUnits.erase(i);
 			}
 			else
 			{
@@ -469,6 +455,49 @@ namespace SGA
 			renderMinimapTexture.draw(sprite);
 		}
 
+		//Draw possible actions
+		if(actionsSettings.waitingForPosition)
+		{
+			std::cout << "huie";
+
+			for (auto& possibleAction : actionsSettings.actionHumanSelected)
+			{
+				if (possibleAction.actionTypeID != actionsSettings.actionTypeSelected 
+					|| possibleAction.actionTypeID==-1)
+					continue;
+
+				const ActionType& actionType = selectedGameStateCopy->getActionType(possibleAction.actionTypeID);
+
+				//Get source
+				for (int i = 0; i < actionType.actionTargets.size(); ++i)
+				{
+					if (actionType.actionTargets[i].first.type == TargetType::Entity)
+					{
+						const Entity& targetEntity = possibleAction.targets[i + 1].getEntity(*selectedGameStateCopy);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
+
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						window.draw(shape);
+					}
+					else if (actionType.actionTargets[i].first.type == TargetType::Position)
+					{
+						const Vector2f& targetPos = possibleAction.targets[i + 1].getPosition(gameStateCopy);
+
+						sf::CircleShape shape(15);
+						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
+
+						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						actionsSelectedEntity.emplace_back(shape);
+						shape.setFillColor(sf::Color::Green);
+						window.draw(shape);
+					}
+				}
+			}
+		}
 		//Draw entities
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
@@ -487,7 +516,7 @@ namespace SGA
 			entitySprites.emplace_back(newUnit);
 
 			//Change siloutte color with the players color
-			if(entity.isNeutral())
+			if(!entity.isNeutral())
 			{
 				outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
 				window.draw(newUnit, &outLineShadeR);
@@ -622,68 +651,62 @@ namespace SGA
 			}
 		}
 
-
-
 		//Draw paths of units
 		for (auto& unit : selectedGameStateCopy->entities)
 		{
-			if (unit.executingAction.has_value())
-				if (true/*unit.executingAction.type == SGA::RTSActionType::Move || unit.executingAction.type == SGA::RTSActionType::Attack*/)
+			//Check if has a valid path
+			if (unit.path.m_nstraightPath > 0)
+			{
+				//Draw path lines
+				for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
 				{
-					//Check if has a valid path
-					if (unit.path.m_nstraightPath > 0)
+					auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
+					auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+
+					//Adjust to sprites offset
+					v1.x += TILE_WIDTH_HALF;
+					v2.x += TILE_WIDTH_HALF;
+
+					sf::Vertex line[] =
 					{
-						//Draw path lines
-						for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
-						{
-							auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
-							auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+						sf::Vertex(v1),
+						sf::Vertex(v2)
+					};
 
-							//Adjust to sprites offset
-							v1.x += TILE_WIDTH_HALF;
-							v2.x += TILE_WIDTH_HALF;
-
-							sf::Vertex line[] =
-							{
-								sf::Vertex(v1),
-								sf::Vertex(v2)
-							};
-
-							window.draw(line, 2, sf::Lines);
-						}
-
-						//Draw path points
-						for (int i = 0; i < unit.path.m_nstraightPath; ++i)
-						{
-							sf::CircleShape pathCircle;
-							float v1 = unit.path.m_straightPath[i * 3];
-							float v2 = unit.path.m_straightPath[i * 3 + 2];
-
-							auto pos = toISO(v1, v2);
-							pathCircle.setPosition(pos);
-							pathCircle.setOrigin(10, 10);
-							pathCircle.setFillColor(sf::Color::Black);
-							pathCircle.setRadius(20);
-							pathCircle.move(TILE_WIDTH_HALF, 0);
-							window.draw(pathCircle);
-						}
-
-						////Paint Start and End circles
-						//sf::CircleShape temp;
-						//temp.setOrigin(10, 10);
-						//temp.setPosition(toISO(unit.position.x, unit.position.y));
-						//temp.move(TILE_WIDTH_HALF, 0);
-						//temp.setFillColor(sf::Color::Green);
-						//temp.setRadius(20);
-						//window.draw(temp);
-
-						//temp.setPosition(toISO(unit.executingAction.targetPosition.x, unit.executingAction.targetPosition.y));
-						//temp.move(TILE_WIDTH_HALF, 0);
-						//temp.setFillColor(sf::Color::Red);
-						//temp.setRadius(20);
-						//window.draw(temp);
-					}
+					window.draw(line, 2, sf::Lines);
 				}
+
+				//Draw path points
+				for (int i = 0; i < unit.path.m_nstraightPath; ++i)
+				{
+					sf::CircleShape pathCircle;
+					float v1 = unit.path.m_straightPath[i * 3];
+					float v2 = unit.path.m_straightPath[i * 3 + 2];
+
+					auto pos = toISO(v1, v2);
+					pathCircle.setPosition(pos);
+					pathCircle.setOrigin(10, 10);
+					pathCircle.setFillColor(sf::Color::Black);
+					pathCircle.setRadius(20);
+					pathCircle.move(TILE_WIDTH_HALF, 0);
+					window.draw(pathCircle);
+				}
+
+				////Paint Start and End circles
+				//sf::CircleShape temp;
+				//temp.setOrigin(10, 10);
+				//temp.setPosition(toISO(unit.position.x, unit.position.y));
+				//temp.move(TILE_WIDTH_HALF, 0);
+				//temp.setFillColor(sf::Color::Green);
+				//temp.setRadius(20);
+				//window.draw(temp);
+
+				//temp.setPosition(toISO(unit.executingAction.targetPosition.x, unit.executingAction.targetPosition.y));
+				//temp.move(TILE_WIDTH_HALF, 0);
+				//temp.setFillColor(sf::Color::Red);
+				//temp.setRadius(20);
+				//window.draw(temp);
+			}
 		}
 
 		renderMinimapTexture.display();
@@ -692,6 +715,9 @@ namespace SGA
 	void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	{
 		/*ImGui::ShowDemoWindow();*/
+		
+		//TODO clean this
+		actionsSettings.actionHumanSelected= game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
 
 		createTopBar();
 		createWindowInfo(window);
@@ -699,8 +725,11 @@ namespace SGA
 		createWindowNavMesh();
 		createBottomBar(window);
 		createWindowFogOfWar();
+		createWindowPlayerParameters();
+		createWindowActionList();
 	}
 
+	
 	void RTSGameStateRender::createBottomBar(sf::RenderWindow& window)
 	{
 		ImGuiWindowFlags window_flags = 0;
@@ -727,43 +756,18 @@ namespace SGA
 		ImGui::SetColumnWidth(1, 600.0f);
 		ImGui::SetColumnWidth(2, 250);
 		ImGui::Separator();
+		
+		//Ask widget to get		
+		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings);
 
-		ImGui::Text("Actions");
-		int numberOfEntities = selectedUnits.size();
-
-		std::unordered_set<int> actionTypes;
-
-		for (auto& entity : selectedUnits)
-		{
-			int entityTypeID = gameStateCopy.getEntity(entity)->typeID;
-
-			for (auto& actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
-
-			{
-				actionTypes.insert(actionID);
-			}
-		}
-
-		int elementNumber = 0;
-		for (auto &actionType : actionTypes)
-		{
-			ImGui::PushID(elementNumber);
-			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(50, 50)))
-			{
-			}
-			if ((elementNumber++ % 4) < 3) ImGui::SameLine();
-			ImGui::PopID();
-		}
-		for (int i = 0; i < actionTypes.size(); i++)
-		{
-
-		}
+		if(!actionsToExecute.empty())
+			playAction(actionsToExecute);
 
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
-		elementNumber = 0;
+		int elementNumber = 0;
 
-		for (auto &entity : selectedUnits)
+		for (auto &entity : actionsSettings.selectedUnits)
 		{
 			ImGui::PushID(elementNumber);
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
@@ -896,6 +900,107 @@ namespace SGA
 		ImGui::End();
 	}
 
+	void RTSGameStateRender::createWindowActionList()
+	{
+		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
+		ImGui::Begin("Actions");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		int index = 0;
+		auto actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
+
+		for (auto action : actionsHumanCanPlay)
+		{
+
+			std::string actionInfo = std::to_string(index);
+			if (action.actionTypeID == -1)
+			{
+				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+				{
+					if (action.targets[0].getType() == ActionTarget::EntityReference)
+					{
+						//We need to find the continues action name that will abort
+						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						for (auto& continueAction : sourceEntity.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+					else
+					{
+						//We need to find the continues action name that will abort
+						auto& sourcePlayer = action.targets[0].getPlayer(gameStateCopy);
+						for (auto& continueAction : sourcePlayer.continuousAction)
+						{
+							if (continueAction.continuousActionID == action.continuousActionID)
+							{
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								actionInfo += " Abort " + actionType.name;
+							}
+						}
+					}
+
+
+
+				}
+				else
+					actionInfo += " SpecialAction";
+			}
+			else
+			{
+				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+
+				actionInfo += " " + actionType.name;
+
+				//TODO Clean this :D IS TEMPORAL
+
+				for (auto& targetType : action.targets)
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(getPlayerID());
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::EntityTypeReference:
+						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					}
+				}
+
+			}
+
+			index++;
+
+			if (ImGui::Button(actionInfo.c_str()))
+			{
+				game->executeAction(action);
+				//playAction(action);
+				break;
+			}
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
+		ImGui::End();
+	}
+
 	void RTSGameStateRender::createWindowNavMesh()
 	{
 		ImGui::Begin("Debug Navigation");
@@ -965,6 +1070,32 @@ namespace SGA
 			gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 		}
 
+		ImGui::End();
+	}
+
+	void RTSGameStateRender::createWindowPlayerParameters() const
+	{
+		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
+		ImGui::Begin("PlayerParameters");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
+		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		{
+			//Double to string with 2 precision				
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+			std::string valueParameter = stream.str();
+
+			std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+			ImGui::BulletText(parameterInfo.c_str());
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
 		ImGui::End();
 	}
 }

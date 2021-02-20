@@ -1,5 +1,5 @@
-#include <Configuration/GameConfigParser.h>
-#include <Logging/Log.h>
+#include <Stratega/Configuration/GameConfigParser.h>
+#include <Stratega/Logging/Log.h>
 
 #include <GameRunner.h>
 #include <InputParser.h>

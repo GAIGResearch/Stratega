@@ -1,13 +1,16 @@
 #pragma once
 #include <GameStateRenderer.h>
-#include <Game/RTSGame.h>
-#include <Representation/RTSGameState.h>
+#include <Stratega/Game/RTSGame.h>
+#include <Stratega/Representation/RTSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
 
+#include <Widgets/ActionsController.h>
+
 namespace SGA
 {
+	
 	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
 	public:
@@ -16,6 +19,8 @@ namespace SGA
 		//Debug mode
 		bool drawDebug = false;
 
+		Widgets::ActionsSettings actionsSettings;
+		
 		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 		void render() override;
 
@@ -24,7 +29,7 @@ namespace SGA
 
 		bool isSelected(int unitID)
 		{
-			return selectedUnits.find(unitID) != selectedUnits.end();
+			return actionsSettings.selectedUnits.find(unitID) != actionsSettings.selectedUnits.end();
 		}
 
 	private:
@@ -52,9 +57,20 @@ namespace SGA
 		void createBottomBar(sf::RenderWindow& window);
 		void createWindowInfo(sf::RenderWindow& window);
 		void createWindowUnits();
+		void createWindowActionList();
 		void createWindowNavMesh();
 		void createWindowFogOfWar();
-
+		void createWindowPlayerParameters() const;
+		
+		void playAction(std::vector<Action> actionsToPlay)
+		{
+			for (auto& element : actionsToPlay)
+			{
+				game->executeAction(element);
+			}
+			
+			actionsSettings.reset();
+		}
 	private:
 		//Game Data
 		RTSGame* game;
@@ -80,8 +96,7 @@ namespace SGA
 		CircularBuffer<RTSGameState> gameStatesBuffer;
 		int gameStatesBufferRCurrentIndex = 0;
 
-		//Human player
-		std::unordered_set<int> selectedUnits;
+		
 
 		//Imgui
 		sf::Clock deltaClock;
@@ -98,6 +113,5 @@ namespace SGA
 		std::vector<sf::RectangleShape> healthBars;
 
 		sf::RenderTexture renderMinimapTexture;
-
 	};
 }
