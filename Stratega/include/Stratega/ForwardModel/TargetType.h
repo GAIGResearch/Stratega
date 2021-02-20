@@ -1,5 +1,5 @@
 #pragma once
-#include <ForwardModel/TargetType.h>
+#include <Stratega/ForwardModel/TargetType.h>
 
 #include <unordered_set>
 #include <vector>

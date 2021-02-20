@@ -1,9 +1,9 @@
 #include <Widgets/ActionsController.h>
 #include <imgui.h>
 
-#include <ForwardModel/TargetType.h>
-#include <ForwardModel/ActionType.h>
-#include <Representation/GameState.h>
+#include <Stratega/ForwardModel/TargetType.h>
+#include <Stratega/ForwardModel/ActionType.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace SGA::Widgets
 {

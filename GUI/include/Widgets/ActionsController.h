@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <ForwardModel/Action.h>
+#include <Stratega/ForwardModel/Action.h>
 
 namespace SGA::Widgets
 {
