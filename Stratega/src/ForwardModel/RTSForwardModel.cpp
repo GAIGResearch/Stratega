@@ -62,6 +62,10 @@ namespace SGA
 	
 	void RTSForwardModel::advanceGameState(RTSGameState& state, const RTSAction& action) const
 	{
+		moveEntities(state);
+		resolveEntityCollisions(state);
+		resolveEnvironmentCollisions(state);
+		
 		for(const auto& idActionPair : action.getEntityActions())
 		{
 			executeAction(state, idActionPair.second);
@@ -71,10 +75,6 @@ namespace SGA
 		{
 			executeAction(state, idActionPair.second);
 		}
-		
-		// Handle collisions
-		resolveUnitCollisions(state);
-		resolveEnvironmentCollisions(state);
 
 		// Remove Entities
 		for (size_t i = 0; i < state.entities.size(); i++)
@@ -100,7 +100,40 @@ namespace SGA
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
-	void RTSForwardModel::resolveUnitCollisions(RTSGameState& state) const
+	void RTSForwardModel::moveEntities(RTSGameState& state) const
+	{
+		for(auto& entity : state.entities)
+		{
+			if (entity.path.isEmpty())
+				continue;
+			
+			// Move to the next checkpoint in the path
+			auto targetPos = Vector2f(entity.path.m_straightPath[entity.path.currentPathIndex * 3], entity.path.m_straightPath[entity.path.currentPathIndex * 3 + 2]);
+
+			auto movementDir = targetPos - entity.position;
+			auto movementDistance = movementDir.magnitude();
+			auto movementSpeed = entity.movementSpeed * deltaTime;
+			if (movementDistance <= movementSpeed)
+			{
+				entity.path.currentPathIndex++;
+				// Did we reach the end of the path?
+				if (entity.path.m_nstraightPath <= entity.path.currentPathIndex)
+				{
+					// ToDo what the hell does this if-statement do
+					if (movementDistance - movementSpeed <= 2) {
+						entity.position = targetPos;
+						entity.path = Path();
+					}
+				}
+			}
+			else
+			{
+				entity.position = entity.position + (movementDir / movementDir.magnitude()) * movementSpeed;
+			}
+		}
+	}
+
+	void RTSForwardModel::resolveEntityCollisions(RTSGameState& state) const
 	{
 		for (auto& unit : state.entities)
 		{
