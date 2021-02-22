@@ -35,8 +35,10 @@ namespace SGA
 
 	class Move : public Effect
 	{
+		FunctionParameter entityParam;
+		FunctionParameter targetPositionParam;
 	public:
-		Move(const std::vector<FunctionParameter>& parameters) {};
+		Move(const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
