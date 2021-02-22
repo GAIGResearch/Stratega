@@ -119,8 +119,9 @@ namespace SGA
 				// Did we reach the end of the path?
 				if (entity.path.m_nstraightPath <= entity.path.currentPathIndex)
 				{
-					// ToDo what the hell does this if-statement do
-					if (movementDistance - movementSpeed <= 2) {
+					
+					if (movementDistance <= movementSpeed)
+					{
 						entity.position = targetPos;
 						entity.path = Path();
 					}
