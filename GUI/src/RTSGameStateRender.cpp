@@ -403,7 +403,8 @@ namespace SGA
 		entitySprites.clear();
 		unitsInfo.clear();
 		healthBars.clear();
-
+		entityInfo.clear();
+		actionsSelectedEntity.clear();
 		renderMinimapTexture.clear();
 
 		SGA::RTSGameState* selectedGameStateCopy;
@@ -458,8 +459,6 @@ namespace SGA
 		//Draw possible actions
 		if(actionsSettings.waitingForPosition)
 		{
-			std::cout << "huie";
-
 			for (auto& possibleAction : actionsSettings.actionHumanSelected)
 			{
 				if (possibleAction.actionTypeID != actionsSettings.actionTypeSelected 
