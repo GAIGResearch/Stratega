@@ -19,6 +19,9 @@ namespace SGA
 		int m_straightPathOptions = 0;
 		
 		int  currentPathIndex = 0;
+
+		bool isEmpty() const { return m_nstraightPath == 0; }
+		
 	};
 	
 }
