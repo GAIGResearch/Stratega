@@ -4,7 +4,9 @@ namespace SGA
 {
 	void MCTSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
-		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
+        //const auto processedForwardModel = forwardModel; // parameters_.preprocessForwardModel(&forwardModel);
+        bool initialized = false;
+
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
@@ -16,6 +18,12 @@ namespace SGA
                 const auto actionSpace = forwardModel.generateActions(gameState);
                 parameters_.PLAYER_ID = gameState.currentPlayer;
 				
+                if (initialized == false)
+                {
+                    initialized = true;
+                    parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(gameState);
+                }
+
                 // if there is just one action and we don't spent the time on continuing our search
                 // we just instantly return it
                 // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
@@ -38,12 +46,12 @@ namespace SGA
                     else
                     {
 						// start a new tree
-						rootNode = std::make_unique<MCTSNode>(*processedForwardModel, gameState);
+						rootNode = std::make_unique<MCTSNode>(forwardModel, gameState);
                     }
                 	
                     //params.printDetails();
                     parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
-                    rootNode->searchMCTS(*processedForwardModel, parameters_, gameCommunicator.getRNGEngine());
+                    rootNode->searchMCTS(forwardModel, parameters_, gameCommunicator.getRNGEngine());
                     //rootNode->printTree();
 
                 	// get and store best action
