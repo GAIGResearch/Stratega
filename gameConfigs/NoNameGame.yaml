@@ -51,8 +51,8 @@ Entities:
         Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
         RequiredTechnology: Discipline
-        Actions: [Spawn]
-        CanSpawn: [Warrior, Archer]
+        #Actions: [Spawn]
+        #CanSpawn: [Warrior, Archer]
         Cost:
             Prod: 20
         Parameters:
@@ -62,8 +62,8 @@ Entities:
         Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
         RequiredTechnology: Mathematics
-        Actions: [Spawn]
-        CanSpawn: [Catapult]
+        #Actions: [Spawn]
+        #CanSpawn: [Catapult]
         Cost:
             Prod: 40
         Parameters:
@@ -134,7 +134,7 @@ Entities:
         Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
         Actions: []
-       # RequiredTechnology: Archery
+        RequiredTechnology: Archery
         Cost:
             Prod: 15
         Parameters:
@@ -189,19 +189,19 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.WeaponStrength)"
 
-    # Move Actions
-    Move:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                Shape: Circle
-                Size: 3 # Target.Speed
-                Conditions:
-                    - "IsWalkable(Target)"
-        Effects:
-            - "Move(Source, Target)"
+#    # Move Actions
+#    Move:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Targets:
+#            Target:
+#                Type: Position
+#                Shape: Circle
+#                Size: 3 # Target.Speed
+#                Conditions:
+#                    - "IsWalkable(Target)"
+#        Effects:
+#            - "Move(Source, Target)"
 
 #    # Attack Actions
 #    Attack:
@@ -223,7 +223,7 @@ Actions:
             Target:
                 Type: Position
                 Shape: Circle
-                Size: 3 # Target.Speed
+                Size: 1 # Target.Speed
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -275,7 +275,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Circle
-                Size: 1
+                Size: 100
                 Conditions:
                     - "IsWalkable(TargetPosition)"
         Effects:
@@ -332,7 +332,7 @@ TechnologyTrees:
             Description: Base technology
             Cost:
                 Prod: 5
-            Time: 1
+            Time: 1000
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]

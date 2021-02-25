@@ -247,14 +247,29 @@ namespace SGA
 							auto gridPos = toGrid(pos);
 							assignPosition(gameStateCopy, actionsSettings,{(float)gridPos.x,(float)gridPos.y} );
 						}
-						actionsSettings.selectedUnits.clear();
+						else
+						{
+							actionsSettings.selectedUnits.clear();
+						}
+						
 					}
 					
 				}
 				else
 				{
-					actionsSettings.reset();
-					actionsSettings.selectedUnits.clear();
+					if (actionsSettings.waitingForPosition)
+					{
+						auto gridPos = toGrid(pos);
+						assignPosition(gameStateCopy, actionsSettings, { (float)gridPos.x,(float)gridPos.y });
+					}
+					else
+					{
+						actionsSettings.selectedUnits.clear();
+						actionsSettings.reset();
+					}
+					
+				/*	actionsSettings.reset();
+					actionsSettings.selectedUnits.clear();*/
 					/*auto* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y));
 					if (unit != nullptr && unit->playerID == getPlayerID())
 						selectedUnits.emplace(unit->unitID);*/
@@ -465,6 +480,21 @@ namespace SGA
 					|| possibleAction.actionTypeID==-1)
 					continue;
 
+				bool isSelected = false;
+				//Check if we have selected the owner of this action
+				for (auto entityID : actionsSettings.selectedUnits)
+				{
+					if (possibleAction.getSourceID() == entityID)
+					{
+						//It the same entity owner
+						isSelected = true;
+						break;
+					}
+				}
+
+				if (!isSelected || actionsSettings.selectedUnits.empty())
+					continue;
+				
 				const ActionType& actionType = selectedGameStateCopy->getActionType(possibleAction.actionTypeID);
 
 				//Get source
@@ -497,6 +527,7 @@ namespace SGA
 				}
 			}
 		}
+		
 		//Draw entities
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
@@ -757,7 +788,7 @@ namespace SGA
 		ImGui::Separator();
 		
 		//Ask widget to get		
-		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings);
+		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
 		if(!actionsToExecute.empty())
 			playAction(actionsToExecute);
