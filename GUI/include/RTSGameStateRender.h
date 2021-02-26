@@ -10,6 +10,8 @@
 
 namespace SGA
 {
+	struct GameConfig;
+	struct RenderConfig;
 	
 	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
@@ -21,7 +23,7 @@ namespace SGA
 
 		Widgets::ActionsSettings actionsSettings;
 		
-		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+		RTSGameStateRender(RTSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
 		void render() override;
 
 		// GameCommunicator functions
@@ -34,7 +36,7 @@ namespace SGA
 
 	private:
 		void init() override;
-		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
+		void init(const GameConfig& gameConfig, const RenderConfig& renderConfig);
 		void initializeView(sf::RenderWindow& window) const;
 		
 		void handleInput(sf::RenderWindow& window);

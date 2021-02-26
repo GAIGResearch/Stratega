@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <Stratega/Game/Game.h>
 
+#include <TileMap.h>
 #include <Widgets/FogOfWarController.h>
 #include <Widgets/ActionsController.h>
 
@@ -31,7 +32,7 @@ namespace SGA
 	public:
 		GameStateRenderer(int playerID) :
 			GameStateRenderBase{ playerID },
-			fowSettings{true, Widgets::FogRenderType::Fog, playerID == -1 ? 0 : playerID}
+			fowSettings{true, FogRenderType::Fog, playerID == -1 ? 0 : playerID}
 		{
 		}
 		virtual ~GameStateRenderer() = default;
@@ -58,13 +59,13 @@ namespace SGA
 
 		AssetCache assetCache;
 	protected:
-		//New render system(withoutlayers)
-		std::vector<sf::Sprite> mapSprites;
 		std::vector<sf::Sprite> entitySprites;
 		std::vector<sf::Text> entityInfo;
 		std::vector<sf::Sprite> overlaySprites;
 		std::vector<sf::CircleShape> actionsSelectedEntity;
 		std::vector<sf::Color> playerColors;
+
+		TileMap tileMap;
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;

@@ -5,16 +5,20 @@
 #include <sstream>
 #include <GridUtils.h>
 
+#include <Stratega/Configuration/GameConfig.h>
+#include <Configuration/RenderConfig.h>
+#include <Widgets/FogOfWarController.h>
+
 namespace SGA
 {
-	TBSGameStateRender::TBSGameStateRender(TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
+	TBSGameStateRender::TBSGameStateRender(TBSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID) :
 		GameStateRenderer{ playerID},
 		game(&game),
 		gameStateCopy(game.getState()),
 		gameStatesBuffer(50)
 	{
-		init(tileSprites, entitySpritePaths);
-
+		init(gameConfig, renderConfig);
+		
 		if (gameStateCopy.currentPlayer == getPlayerID())
 		{
 			std::cout << "Wait for GUI Action" << std::endl;
@@ -59,18 +63,22 @@ namespace SGA
 		}
 	}
 
-	void TBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
+	void TBSGameStateRender::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
 	{
 		//Need to activate the context before adding new textures
 		ctx.setActive(true);
 
+		tileMap.init(gameStateCopy, gameConfig, renderConfig);
+
 		//Load textures
-		for (const auto& idPathPair : tileSprites)
+		std::vector<std::string> paths;
+		for (const auto& namePathPair : renderConfig.tileSpritePaths)
 		{
-			assetCache.loadTexture("tile_" + std::to_string(idPathPair.first), idPathPair.second);
+			assetCache.loadTexture("tile_" + std::to_string(gameConfig.getTileID(namePathPair.first)), namePathPair.second);
+			paths.emplace_back(namePathPair.second);
 		}
 
-		for (const auto& namePathPair : entitySpritePaths)
+		for (const auto& namePathPair : renderConfig.entitySpritePaths)
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
@@ -350,82 +358,38 @@ namespace SGA
 		}
 		
 		//Draw Board
-		mapSprites.clear();
 		entitySprites.clear();
 		entityInfo.clear();
 		overlaySprites.clear();
 		actionsSelectedEntity.clear();
-
-		TBSGameState* selectedGameStateCopy;
+		
+		// Render Map
+		auto* selectedGameStateCopy = &gameStateCopy;
 		if (fowSettings.renderFogOfWar)
 			selectedGameStateCopy = &gameStateCopyFogOfWar;
-		else
-			selectedGameStateCopy = &gameStateCopy;
 
-		auto& board = selectedGameStateCopy->board;
-
-		for (int y = 0; y < board.getHeight(); ++y)
-		{
-			for (int x = 0; x < board.getWidth(); ++x)
-			{
-				auto& targetTile = board.get(x, y);
-				int targetTypeId;
-
-				
-				if (fowSettings.renderType == Widgets::FogRenderType::Tiles||fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
-				{
-					sf::Sprite newTile;
-					
-					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
-					{
-						
-						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-						newTile.setColor(sf::Color(144, 161, 168));
-					}						
-					else
-					{
-						targetTypeId = targetTile.tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-						
-					}				
-					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);					
-
-					newTile.setPosition(toISO(x, y));
-					newTile.setOrigin(origin);
-					mapSprites.emplace_back(newTile);
-				}
-
-			}
-		}
-
-		for (const auto& sprite : mapSprites)
-		{
-			window.draw(sprite);
-		}
-
-
+		tileMap.update(gameStateCopy, *selectedGameStateCopy, fowSettings.renderFogOfWar, fowSettings.renderType);
+		window.draw(tileMap);
+		
 		//Add selected tile
 		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
-
+		
 		if (selectedGameStateCopy->isInBounds(Vector2i(mouseGridPos.x, mouseGridPos.y)))
 		{
 			sf::Texture& texture = assetCache.getTexture("selected");
 			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 			sf::Sprite selectedTile(texture);
-
+		
 			selectedTile.setPosition(toISO(mouseGridPos.x, mouseGridPos.y));
 			selectedTile.setOrigin(origin);
 			overlaySprites.emplace_back(selectedTile);
 		}
-
+		
 		for (const auto& sprite : overlaySprites)
 		{
 			window.draw(sprite);
 		}
-
+		
 		//Draw entities
 		for (auto& entity : selectedGameStateCopy->entities)
 		{
@@ -439,7 +403,7 @@ namespace SGA
 			sf::Sprite newUnit(texture);
 			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
 			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
-
+		
 			newUnit.setOrigin(origin);
 			entitySprites.emplace_back(newUnit);
 		
@@ -459,7 +423,7 @@ namespace SGA
 			unitInfo.setFont(assetCache.getFont("font"));
 			std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
 			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
-
+		
 			for (size_t i = 0; i < entity.parameters.size(); i++)
 			{
 				// Create an output string stream
@@ -469,20 +433,20 @@ namespace SGA
 				// Set precision to 2 digits
 				streamObj3 << std::setprecision(2);
 				streamObj3 << entity.parameters[i];
-
+		
 				info += "/" + streamObj3.str();
 			}
-
+		
 			unitInfo.setString(info);
 			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
 			entityInfo.emplace_back(unitInfo);
 		}
-	
+		
 		for (const auto& info : entityInfo)
 		{
 			window.draw(info);
 		}
-
+		
 		//Draw selectedtile
 		//Add actions if we have actions to draw
 		if (actionHumanUnitSelected.size() > 0)
@@ -500,21 +464,21 @@ namespace SGA
 					if (actionType.actionTargets[i].first.type == TargetType::Entity)
 					{
 						const Entity& targetEntity = action.targets[i+1].getEntity(*selectedGameStateCopy);
-
+		
 						sf::CircleShape shape(15);
 						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
-
-
+		
+		
 						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
 						actionsSelectedEntity.emplace_back(shape);
 					}
 					else if (actionType.actionTargets[i].first.type == TargetType::Position)
 					{
 						const Vector2f& targetPos = action.targets[i+1].getPosition(gameStateCopy);
-
+		
 						sf::CircleShape shape(15);
 						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
-
+		
 						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
 						actionsSelectedEntity.emplace_back(shape);
 						shape.setFillColor(sf::Color::Green);
@@ -522,7 +486,7 @@ namespace SGA
 				}		
 			}
 		}
-
+		
 		for (const auto& sprite : actionsSelectedEntity)
 		{
 			window.draw(sprite);
@@ -572,7 +536,7 @@ namespace SGA
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Fog of War window");
 
-		if(fowController(gameStateCopy, fowSettings))
+		if(Widgets::fowController(gameStateCopy, fowSettings))
 		{
 			// Selected player changed -> Re-Apply FogOfWar
 			gameStateCopyFogOfWar = game->getStateCopy();
