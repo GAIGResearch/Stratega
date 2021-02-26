@@ -10,7 +10,7 @@ namespace SGA::Widgets
 		std::vector<ActionTarget> selectedTargets;
 		int actionTypeSelected = -1;
 		//Human player
-		std::unordered_set<int> selectedUnits;
+		std::unordered_set<int> selectedEntities;
 
 		bool waitingForPosition = false;
 
@@ -19,7 +19,7 @@ namespace SGA::Widgets
 			actionTypeSelected = -1;
 			selectedTargets.clear();
 			actionHumanSelected.clear();
-			selectedUnits.clear();
+			selectedEntities.clear();
 			waitingForPosition = false;
 		}
 	};

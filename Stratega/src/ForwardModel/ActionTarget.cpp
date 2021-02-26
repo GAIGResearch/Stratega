@@ -161,4 +161,20 @@ namespace SGA
 			throw std::runtime_error("Type not recognised");
 		}
 	}
+
+	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget> actionTargets)
+	{
+		bool isValid = true;
+		for (auto& actionTypeTargets : actionType.actionTargets)
+		{
+			for (auto& condition : actionTypeTargets.second)
+			{
+				if (!condition->isFullfilled(state, actionTargets))
+					isValid = false;
+			}
+		}
+		
+		return isValid;
+	}
+
 }

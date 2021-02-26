@@ -29,7 +29,7 @@ namespace SGA
 
 		bool isSelected(int unitID)
 		{
-			return actionsSettings.selectedUnits.find(unitID) != actionsSettings.selectedUnits.end();
+			return actionsSettings.selectedEntities.find(unitID) != actionsSettings.selectedEntities.end();
 		}
 
 	private:

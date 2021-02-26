@@ -10,7 +10,7 @@ namespace SGA::Widgets
 	std::vector<Action> getWidgetResult(GameState& state, ActionsSettings& settings, int playerID)
 	{
 		//Check if we have selected entities
-		if (!settings.selectedUnits.empty())
+		if (!settings.selectedEntities.empty())
 			return getEntityActions(state, settings, playerID);
 		else
 			return getPlayerActions(state, settings, playerID);
@@ -40,7 +40,7 @@ namespace SGA::Widgets
 						bool canSpawn = true;
 
 						//Check if any selectedEntity can spawn the targets
-						for (auto& entity : settings.selectedUnits)
+						for (auto& entity : settings.selectedEntities)
 						{
 							auto& entityType = state.getEntityType(state.getEntity(entity)->typeID);
 							if (entityType.spawnableEntityTypes.find(possibleActionType) == entityType.spawnableEntityTypes.end())
@@ -63,7 +63,7 @@ namespace SGA::Widgets
 							actionTargets.emplace_back(ActionTarget::createEntityTypeActionTarget(possibleActionType));
 
 							//Check if any of the selectedEntities fullfill the condition
-							for (auto& entity : settings.selectedUnits)
+							for (auto& entity : settings.selectedEntities)
 							{
 								actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
@@ -94,7 +94,7 @@ namespace SGA::Widgets
 					for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
 					{
 						//If player is researching abort action
-						for (auto& entityID : settings.selectedUnits)
+						for (auto& entityID : settings.selectedEntities)
 						{
 							for (auto& action : state.getEntity(entityID)->continuousAction)
 							{
@@ -132,7 +132,7 @@ namespace SGA::Widgets
 							actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 							actionTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
 							//Check if any of the selectedEntities fullfill the condition
-							for (auto& entity : settings.selectedUnits)
+							for (auto& entity : settings.selectedEntities)
 							{
 								actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
@@ -181,66 +181,40 @@ namespace SGA::Widgets
 				ImGui::PopStyleColor(3);
 			}
 			else
-			{
-				//Draw each action with the current selected action targets
-				int elementNumber = 0;
+			{				
+				//Verify the selected targets are valid			
+			
+				const ActionType& actionType = state.getActionType(settings.actionTypeSelected);
+				
+				//Generate action with the current selected settings
+				Action newAction;
+				
+				//Generate action targets + source
+				std::vector<ActionTarget> actionTargets;
+				actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
+				actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
-				for (auto& selectedAction : settings.actionHumanSelected)
+				newAction.targets = actionTargets;
+				newAction.actionTypeID = settings.actionTypeSelected;
+				newAction.ownerID = playerID;
+				
+				//Generate all action for each entity
+				for (auto& entityID : settings.selectedEntities)
 				{
-					if (selectedAction.targets.size() <= 1 || selectedAction.actionTypeID != settings.actionTypeSelected)
+					//Check if entityType can execute this
+					const EntityType& entityType = state.getEntityType(state.getEntity(entityID)->typeID);
+
+					if (!entityType.canExecuteAction(settings.actionTypeSelected))
 						continue;
+					
+					//The entity should be able to execute this action type
+					newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);
 
-					bool isSelected = false;
-
-					//Check if we have selected the owner of this action
-					for (auto entityID : settings.selectedUnits)
-					{
-						if (selectedAction.getSourceID() == entityID)
-						{
-							//It the same entity owner
-							isSelected = true;
-							break;
-						}
-					}
-
-					//Check if all the targets of the actions are the same as the selected targets
-					for (int i = 0; i < settings.selectedTargets.size(); ++i)
-					{
-						//Check if the selectedAction has lower amount of targets
-						if (selectedAction.targets.size() < settings.selectedTargets.size() + 1)
-						{
-							settings.reset();
-							isSelected = false;
-							break;
-						}
-						if (settings.selectedTargets[i] != selectedAction.targets[i + 1])
-						{
-							isSelected = false;
-						}
-					}
-
-
-
-					//Draw the action
-					if (isSelected)
-					{
-						actionsToExecute.emplace_back(selectedAction);
-					}
+					if(ActionTarget::isValid(state, actionType, newAction.targets))
+					actionsToExecute.emplace_back(newAction);
 				}
-
-
-				//Reset Button Style
-				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-
-				//Reset button
-				if (ImGui::Button("Reset", ImVec2(50, 50)))
-				{
-					settings.reset();
-				}
-
-				ImGui::PopStyleColor(3);
+				
+				settings.reset();
 			}
 
 		}
@@ -248,11 +222,11 @@ namespace SGA::Widgets
 		{
 			//Display actionTypes
 			ImGui::Text("Actions");
-			int numberOfEntities = settings.selectedUnits.size();
+			int numberOfEntities = settings.selectedEntities.size();
 
 			std::unordered_set<int> actionTypes;
 
-			for (auto& entity : settings.selectedUnits)
+			for (auto& entity : settings.selectedEntities)
 			{
 				int entityTypeID = state.getEntity(entity)->typeID;
 
@@ -347,7 +321,7 @@ namespace SGA::Widgets
 					for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
 					{
 						//If player is researching abort action
-						for (auto& entityID : settings.selectedUnits)
+						for (auto& entityID : settings.selectedEntities)
 						{
 							for (auto& action : state.getEntity(entityID)->continuousAction)
 							{
@@ -385,7 +359,7 @@ namespace SGA::Widgets
 							actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 							actionTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
 							//Check if any of the selectedEntities fullfill the condition
-							for (auto& entity : settings.selectedUnits)
+							for (auto& entity : settings.selectedEntities)
 							{
 								actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
@@ -500,7 +474,7 @@ namespace SGA::Widgets
 		{
 			//Display actionTypes
 			ImGui::Text("Select Action Type");
-			int numberOfEntities = settings.selectedUnits.size();
+			int numberOfEntities = settings.selectedEntities.size();
 
 			std::unordered_set<int> actionTypes;
 

@@ -231,7 +231,7 @@ namespace SGA
 			if (movementDistance <= 10.0)
 			{
 				// The user clicked somewhere
-				if (!actionsSettings.selectedUnits.empty())
+				if (!actionsSettings.selectedEntities.empty())
 				{
 					auto* unit = gameStateCopy.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
@@ -244,12 +244,13 @@ namespace SGA
 					{
 						if(actionsSettings.waitingForPosition)
 						{
-							auto gridPos = toGrid(pos);
+							//auto gridPos = toGrid(pos);
+							auto gridPos = toGridFloat(pos);
 							assignPosition(gameStateCopy, actionsSettings,{(float)gridPos.x,(float)gridPos.y} );
 						}
 						else
 						{
-							actionsSettings.selectedUnits.clear();
+							actionsSettings.selectedEntities.clear();
 						}
 						
 					}
@@ -264,7 +265,7 @@ namespace SGA
 					}
 					else
 					{
-						actionsSettings.selectedUnits.clear();
+						actionsSettings.selectedEntities.clear();
 						actionsSettings.reset();
 					}
 					
@@ -290,7 +291,7 @@ namespace SGA
 					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 					{
 						if (unit.ownerID == getPlayerID())
-							actionsSettings.selectedUnits.emplace(unit.id);
+							actionsSettings.selectedEntities.emplace(unit.id);
 					}
 				}
 			}
@@ -402,11 +403,11 @@ namespace SGA
 	void RTSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
 		// Remove entities that do not exist anymore
-		for(auto i = actionsSettings.selectedUnits.begin(); i != actionsSettings.selectedUnits.end();)
+		for(auto i = actionsSettings.selectedEntities.begin(); i != actionsSettings.selectedEntities.end();)
 		{
 			if(gameStateCopy.getEntity(*i) == nullptr)
 			{
-				actionsSettings.selectedUnits.erase(i);
+				actionsSettings.selectedEntities.erase(i);
 			}
 			else
 			{
@@ -482,7 +483,7 @@ namespace SGA
 
 				bool isSelected = false;
 				//Check if we have selected the owner of this action
-				for (auto entityID : actionsSettings.selectedUnits)
+				for (auto entityID : actionsSettings.selectedEntities)
 				{
 					if (possibleAction.getSourceID() == entityID)
 					{
@@ -492,7 +493,7 @@ namespace SGA
 					}
 				}
 
-				if (!isSelected || actionsSettings.selectedUnits.empty())
+				if (!isSelected || actionsSettings.selectedEntities.empty())
 					continue;
 				
 				const ActionType& actionType = selectedGameStateCopy->getActionType(possibleAction.actionTypeID);
@@ -797,7 +798,7 @@ namespace SGA
 		ImGui::Text("Entities");
 		int elementNumber = 0;
 
-		for (auto &entity : actionsSettings.selectedUnits)
+		for (auto &entity : actionsSettings.selectedEntities)
 		{
 			ImGui::PushID(elementNumber);
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();

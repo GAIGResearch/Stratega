@@ -39,13 +39,15 @@ Entities:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn, Research]
-        CanSpawn: [Worker, Archer]
+        Actions: [Spawn, Research, Build]
+        #CanSpawn: [Worker, Archer]
+        CanSpawn: All
         Cost:
             Prod: 10
         Parameters:
             Health: 800
             StorageCapacity: 50
+            Range: 6
 
     Barracks:
         Sprite: ../GUI/Assets/Entities/barracks.png
@@ -275,9 +277,11 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Circle
-                Size: 100
+                Size: 1
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "InRange(Source, TargetPosition, Source.Range)"
+
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
 #            - "PayCost(Source.Player, EntityTypeTarget)"
@@ -305,14 +309,14 @@ Actions:
 
     #Build
     Build:
-        Type: PlayerAction
+        Type: EntityAction
         Cooldown: 1
         Targets:
             EntityTypeTarget:
                 Type: EntityType
                 ValidTargets: Buildings
                 Conditions:
-                    - "CanAfford(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
                     - "CanSpawn(Source, EntityTypeTarget)"
 
             TargetPosition:
@@ -324,7 +328,7 @@ Actions:
 
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-            - "PayCost(Source, EntityTypeTarget)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
 
 TechnologyTrees:
     SingleTree:
@@ -388,8 +392,8 @@ Board:
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  .  .  F  F  F  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  F  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
         M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
         M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
