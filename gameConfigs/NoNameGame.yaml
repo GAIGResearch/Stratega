@@ -8,8 +8,8 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: []
-    CanSpawn: All
+    Actions: [Build]
+    CanSpawn: Buildings
     Parameters:
         Gold: 0
         Prod: 5
@@ -39,9 +39,8 @@ Entities:
         Sprite: ../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn, Research, Build]
-        #CanSpawn: [Worker, Archer]
-        CanSpawn: All
+        Actions: [Spawn]
+        CanSpawn: [Worker]
         Cost:
             Prod: 10
         Parameters:
@@ -53,8 +52,8 @@ Entities:
         Sprite: ../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
         RequiredTechnology: Discipline
-        #Actions: [Spawn]
-        #CanSpawn: [Warrior, Archer]
+        Actions: [Spawn]
+        CanSpawn: [Warrior, Archer]
         Cost:
             Prod: 20
         Parameters:
@@ -64,8 +63,8 @@ Entities:
         Sprite: ../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
         RequiredTechnology: Mathematics
-        #Actions: [Spawn]
-        #CanSpawn: [Catapult]
+        Actions: [Spawn]
+        CanSpawn: [Catapult]
         Cost:
             Prod: 40
         Parameters:
@@ -121,7 +120,7 @@ Entities:
     Warrior:
         Sprite: ../GUI/Assets/Entities/unit2.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
         Cost:
             Prod: 10
@@ -136,7 +135,7 @@ Entities:
     Archer:
         Sprite: ../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move, Attack]
         RequiredTechnology: Archery
         Cost:
             Prod: 15
@@ -152,7 +151,7 @@ Entities:
     Catapult:
         Sprite: ../GUI/Assets/Entities/unit4.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move, Attack]
         RequiredTechnology: Engineering
         Cost:
             Prod: 20
@@ -192,32 +191,19 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.WeaponStrength)"
 
-#    # Move Actions
-#    Move:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Targets:
-#            Target:
-#                Type: Position
-#                Shape: Circle
-#                Size: 3 # Target.Speed
-#                Conditions:
-#                    - "IsWalkable(Target)"
-#        Effects:
-#            - "Move(Source, Target)"
+    # Attack Actions
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Attackable
+                Conditions:
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Attack(Target.Health, Source.WeaponStrength)"
 
-#    # Attack Actions
-#    Attack:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: Entity
-#            ValidTargets: Attackable
-#            Conditions:
-#                - "InRange(Source, Target, Source.Range)"
-#        Effects:
-#            - "Attack(Target.Health, Source.WeaponStrength)"
-#
     # Move Actions
     Move:
         Type: EntityAction
@@ -286,38 +272,17 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
 #            - "PayCost(Source.Player, EntityTypeTarget)"
-#    #Spawn
-#    Spawn:
-#        Type: EntityAction
-#        Cooldown: 0
-#        Targets:
-#            EntityTypeTarget:
-#                Type: EntityType
-#                ValidTargets: Units
-#                Conditions:
-#                    - "CanAfford(Source.Player, EntityTypeTarget)"
-#                    - "CanSpawn(Source, EntityTypeTarget)"
-#
-#            TargetPosition:
-#                Type: Position
-#                Shape: Circle
-#                Size: 1
-#                Conditions:
-#                    - "IsWalkable(TargetPosition)"
-#        Effects:
-#            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-#            - "PayCost(Source.Player, EntityTypeTarget)"
 
     #Build
     Build:
-        Type: EntityAction
+        Type: PlayerAction
         Cooldown: 1
         Targets:
             EntityTypeTarget:
                 Type: EntityType
                 ValidTargets: Buildings
                 Conditions:
-                    - "CanAfford(Source.Player, EntityTypeTarget)"
+                    - "CanAfford(Source, EntityTypeTarget)"
                     - "CanSpawn(Source, EntityTypeTarget)"
 
             TargetPosition:
@@ -329,15 +294,15 @@ Actions:
 
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "PayCost(Source, EntityTypeTarget)"
 
 TechnologyTrees:
     SingleTree:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 5
-            Time: 1000
+                Prod: 1
+            Time: 2
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]

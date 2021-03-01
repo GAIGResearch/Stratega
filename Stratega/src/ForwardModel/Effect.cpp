@@ -28,17 +28,14 @@ namespace SGA
 	}
 	
 	void Attack::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		if(const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
-		{
-			auto& entity = resourceReference.getEntity(state, targets);
-			auto& targetResource = resourceReference.getParameterValue(state, targets);
-			auto amount = this->amount.getConstant(state, targets);
+	{		
+		auto& entity = resourceReference.getEntity(state, targets);
+		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto amount = this->amount.getConstant(state, targets);
 
-			targetResource -= amount;
-			if (targetResource <= 0)
-				entity.shouldRemove = true;
-		}
+		targetResource -= amount;
+		if (targetResource <= 0)
+			entity.shouldRemove = true;
 	}
 
 	Move::Move(const std::vector<FunctionParameter>& parameters)

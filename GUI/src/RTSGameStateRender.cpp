@@ -530,7 +530,7 @@ namespace SGA
 			}
 			unitInfo.setString(info);
 			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
+			window.draw(unitInfo);
 
 			//Check if entity have health
 			if (gameStateCopy.checkEntityHaveParameter(entity.typeID, "Health"))
