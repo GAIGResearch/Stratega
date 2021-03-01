@@ -196,6 +196,9 @@ namespace SGA::Widgets
 				//Generate action with the current selected settings
 				Action newAction;
 
+				if (actionType.isContinuous)
+					newAction.actionTypeFlags = ActionFlag::ContinuousAction;
+				
 				//Generate action targets + source
 				std::vector<ActionTarget> actionTargets;
 				actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
