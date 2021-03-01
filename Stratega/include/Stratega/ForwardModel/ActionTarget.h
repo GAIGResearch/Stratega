@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <unordered_set>
 #include <variant>
@@ -101,7 +100,7 @@ namespace SGA
 				}
 			}
 		}
-
+		
 		//Check if this action target is valid in the received gamestate
 		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget> actionTargets);
 

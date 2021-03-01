@@ -106,7 +106,7 @@ Entities:
     Worker:
         Sprite: ../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: [Move]
+        Actions: [Move, Mine]
         Cost:
             Prod: 5
         Time: 5
@@ -116,6 +116,7 @@ Entities:
             Speed: 1
             WeaponStrength: 5
             Health: 50
+            Range: 3
             
     Warrior:
         Sprite: ../GUI/Assets/Entities/unit2.png
@@ -258,7 +259,7 @@ Actions:
                 Type: Entity
                 ValidTargets: GoldVein
                 Conditions:
-                    - "InRange(Source, Target, 1)"
+                    - "InRange(Source, Target, 3)"
                     - "HasResource(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"

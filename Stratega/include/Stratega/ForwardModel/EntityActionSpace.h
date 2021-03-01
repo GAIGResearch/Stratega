@@ -5,6 +5,8 @@
 
 namespace SGA
 {
+	enum class ShapeType;
+
 	class EntityActionSpace : public IActionSpace<GameState, Action>
 	{
 	public:

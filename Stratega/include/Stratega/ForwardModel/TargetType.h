@@ -1,11 +1,12 @@
 #pragma once
-#include <Stratega/ForwardModel/TargetType.h>
-
 #include <unordered_set>
 #include <vector>
 
 namespace SGA
 {
+	class ActionTarget;
+	struct GameState;
+	
 	enum class ShapeType
 	{
 		Circle,
@@ -31,6 +32,9 @@ namespace SGA
 		std::unordered_set<int> technologyTypes;
 
 		operator Type() const { return type; }
+
+		//Check if is a valid target
+		bool isValid(const GameState& state, const ActionTarget& actionTarget) const;
 
 	};
 }

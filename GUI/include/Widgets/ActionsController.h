@@ -1,6 +1,16 @@
 #pragma once
+#include <unordered_set>
 #include <vector>
-#include <Stratega/ForwardModel/Action.h>
+
+//Forward declaration
+namespace SGA
+{
+	struct Action;
+	class ActionTarget;
+	struct GameState;
+	struct Vector2f;
+}
+
 
 namespace SGA::Widgets
 {
@@ -13,6 +23,7 @@ namespace SGA::Widgets
 		std::unordered_set<int> selectedEntities;
 
 		bool waitingForPosition = false;
+		bool waitingForEntity = false;
 
 		void reset()
 		{
@@ -28,12 +39,13 @@ namespace SGA::Widgets
 	/// Displays a widget for selecting the action
 	/// </summary>
 	/// <param name="state">The current GameState</param>
-	/// <param name="fowSettings">The settings that will use to draw the possible actions</param>
-	/// <returns></returns>
+	/// <param name="settings">The settings that will use to draw the possible actions</param>
+	/// <returns> The action result to execute</returns>
 	std::vector<Action> getWidgetResult(GameState& state, ActionsSettings& settings, int playerID);
 
 	std::vector<Action> getEntityActions(GameState& state, ActionsSettings& settings, int playerID);
 	std::vector<Action> getPlayerActions(GameState& state, ActionsSettings& settings, int playerID);
 	
 	void assignPosition(const GameState& state, ActionsSettings& settings, Vector2f position);
+	void assignEntity(const GameState& state, ActionsSettings& settings, int entity);
 }

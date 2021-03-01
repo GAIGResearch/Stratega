@@ -44,6 +44,9 @@ namespace SGA
 		gameStateCopyFogOfWar = game->getStateCopy();
 		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 
+		//Update actions
+		actionsSettings.actionHumanSelected = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
+
 		//Add state to buffer
 		gameStatesBuffer.add(gameStateCopy);
 		gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
@@ -224,7 +227,7 @@ namespace SGA
 			dragging = false;
 
 			sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-			auto worldPos = toGridFloat(pos);
+			auto worldPos = toGrid(pos);
 			auto movementDir = pos - oldPos;
 			auto movementDistance = std::sqrt(movementDir.x * movementDir.x + movementDir.y * movementDir.y);
 
@@ -238,15 +241,23 @@ namespace SGA
 					if (unit)
 					{
 						//we click on someone
+						if (actionsSettings.waitingForEntity)
+						{
+							auto gridPos = toGridFloat(pos);
+							assignEntity(gameStateCopy, actionsSettings, unit->id);
+						}
+						else
+						{
+							actionsSettings.selectedEntities.clear();
+						}
 					
 					}
 					else
 					{
 						if(actionsSettings.waitingForPosition)
 						{
-							//auto gridPos = toGrid(pos);
 							auto gridPos = toGridFloat(pos);
-							assignPosition(gameStateCopy, actionsSettings,{(float)gridPos.x,(float)gridPos.y} );
+							assignPosition(gameStateCopy, actionsSettings,{gridPos.x,gridPos.y});
 						}
 						else
 						{
@@ -420,7 +431,6 @@ namespace SGA
 		unitsInfo.clear();
 		healthBars.clear();
 		entityInfo.clear();
-		actionsSelectedEntity.clear();
 		renderMinimapTexture.clear();
 
 		SGA::RTSGameState* selectedGameStateCopy;
@@ -470,63 +480,6 @@ namespace SGA
 		{
 			window.draw(sprite);
 			renderMinimapTexture.draw(sprite);
-		}
-
-		//Draw possible actions
-		if(actionsSettings.waitingForPosition)
-		{
-			for (auto& possibleAction : actionsSettings.actionHumanSelected)
-			{
-				if (possibleAction.actionTypeID != actionsSettings.actionTypeSelected 
-					|| possibleAction.actionTypeID==-1)
-					continue;
-
-				bool isSelected = false;
-				//Check if we have selected the owner of this action
-				for (auto entityID : actionsSettings.selectedEntities)
-				{
-					if (possibleAction.getSourceID() == entityID)
-					{
-						//It the same entity owner
-						isSelected = true;
-						break;
-					}
-				}
-
-				if (!isSelected || actionsSettings.selectedEntities.empty())
-					continue;
-				
-				const ActionType& actionType = selectedGameStateCopy->getActionType(possibleAction.actionTypeID);
-
-				//Get source
-				for (int i = 0; i < actionType.actionTargets.size(); ++i)
-				{
-					if (actionType.actionTargets[i].first.type == TargetType::Entity)
-					{
-						const Entity& targetEntity = possibleAction.targets[i + 1].getEntity(*selectedGameStateCopy);
-
-						sf::CircleShape shape(15);
-						sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
-
-
-						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-						actionsSelectedEntity.emplace_back(shape);
-						window.draw(shape);
-					}
-					else if (actionType.actionTargets[i].first.type == TargetType::Position)
-					{
-						const Vector2f& targetPos = possibleAction.targets[i + 1].getPosition(gameStateCopy);
-
-						sf::CircleShape shape(15);
-						sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
-
-						shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-						actionsSelectedEntity.emplace_back(shape);
-						shape.setFillColor(sf::Color::Green);
-						window.draw(shape);
-					}
-				}
-			}
 		}
 		
 		//Draw entities
@@ -745,11 +698,7 @@ namespace SGA
 
 	void RTSGameStateRender::createHUD(sf::RenderWindow& window)
 	{
-		/*ImGui::ShowDemoWindow();*/
-		
-		//TODO clean this
-		actionsSettings.actionHumanSelected= game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
-
+		/*ImGui::ShowDemoWindow();*/		
 		createTopBar();
 		createWindowInfo(window);
 		createWindowUnits();

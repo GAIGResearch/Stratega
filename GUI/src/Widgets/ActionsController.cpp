@@ -4,6 +4,7 @@
 #include <Stratega/ForwardModel/TargetType.h>
 #include <Stratega/ForwardModel/ActionType.h>
 #include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/Action.h>
 
 namespace SGA::Widgets
 {
@@ -106,8 +107,6 @@ namespace SGA::Widgets
 									if (ImGui::Button("Abort", ImVec2(50, 50)))
 									{
 										actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->id, action.continuousActionID));
-										/*selectedActionType = -1;
-										updatePossibleActions();*/
 									}
 									ImGui::PopStyleColor(3);
 
@@ -160,8 +159,17 @@ namespace SGA::Widgets
 				}
 				case TargetType::Position:
 				{
+					ImGui::Text("Choose position");
 					//Need to receive a new position from the gui
 					settings.waitingForPosition = true;
+
+					break;
+				}
+				case TargetType::Entity:
+				{
+					ImGui::Text("Choose entity");
+					//Need to receive a new position from the gui
+					settings.waitingForEntity = true;
 
 					break;
 				}
@@ -182,13 +190,12 @@ namespace SGA::Widgets
 			}
 			else
 			{				
-				//Verify the selected targets are valid			
-			
+				//Verify the selected targets are valid						
 				const ActionType& actionType = state.getActionType(settings.actionTypeSelected);
 				
 				//Generate action with the current selected settings
 				Action newAction;
-				
+
 				//Generate action targets + source
 				std::vector<ActionTarget> actionTargets;
 				actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
@@ -221,7 +228,7 @@ namespace SGA::Widgets
 		else
 		{
 			//Display actionTypes
-			ImGui::Text("Actions");
+			ImGui::Text("Select action type");
 			int numberOfEntities = settings.selectedEntities.size();
 
 			std::unordered_set<int> actionTypes;
@@ -506,6 +513,13 @@ namespace SGA::Widgets
 		auto positionTarget = SGA::ActionTarget::createPositionActionTarget(position);
 
 		settings.selectedTargets.emplace_back(positionTarget);
+	}
+
+	void assignEntity(const GameState& state, ActionsSettings& settings, int entity)
+	{
+		auto entityTarget = SGA::ActionTarget::createEntityActionTarget(entity);
+
+		settings.selectedTargets.emplace_back(entityTarget);
 	}
 
 }

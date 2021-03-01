@@ -2,6 +2,9 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/EntityActionSpace.h>
 
+#include "Condition.h"
+#include "Effect.h"
+
 namespace SGA
 {
 	enum class WinConditionType

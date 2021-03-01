@@ -165,9 +165,16 @@ namespace SGA
 	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget> actionTargets)
 	{
 		bool isValid = true;
-		for (auto& actionTypeTargets : actionType.actionTargets)
+
+		for (int i = 0; i < actionType.actionTargets.size(); ++i)
+		
 		{
-			for (auto& condition : actionTypeTargets.second)
+			//Check valid targets
+			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1]))
+				return false;
+			
+			
+			for (auto& condition : actionType.actionTargets[i].second)
 			{
 				if (!condition->isFullfilled(state, actionTargets))
 					isValid = false;
