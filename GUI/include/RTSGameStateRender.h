@@ -111,9 +111,6 @@ namespace SGA
 
 		NavigationConfig config;
 
-		std::vector<sf::Text> unitsInfo;
-		std::vector<sf::RectangleShape> healthBars;
-
 		sf::RenderTexture renderMinimapTexture;
 	};
 }

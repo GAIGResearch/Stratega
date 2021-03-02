@@ -7,6 +7,7 @@
 #include <Stratega/Game/Game.h>
 
 #include <TileMap.h>
+#include <EntityRenderer.h>
 #include <Widgets/FogOfWarController.h>
 #include <Widgets/ActionsController.h>
 
@@ -59,13 +60,12 @@ namespace SGA
 
 		AssetCache assetCache;
 	protected:
-		std::vector<sf::Sprite> entitySprites;
-		std::vector<sf::Text> entityInfo;
 		std::vector<sf::Sprite> overlaySprites;
 		std::vector<sf::CircleShape> actionsSelectedEntity;
 		std::vector<sf::Color> playerColors;
 
 		TileMap tileMap;
+		EntityRenderer entityRenderer;
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;

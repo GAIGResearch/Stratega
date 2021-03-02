@@ -68,21 +68,15 @@ namespace SGA
 		//Need to activate the context before adding new textures
 		ctx.setActive(true);
 
+		entityRenderer.init(gameConfig, renderConfig);
 		tileMap.init(gameStateCopy, gameConfig, renderConfig);
 
-		//Load textures
-		std::vector<std::string> paths;
-		for (const auto& namePathPair : renderConfig.tileSpritePaths)
-		{
-			assetCache.loadTexture("tile_" + std::to_string(gameConfig.getTileID(namePathPair.first)), namePathPair.second);
-			paths.emplace_back(namePathPair.second);
-		}
-
+		// Load textures
 		for (const auto& namePathPair : renderConfig.entitySpritePaths)
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-
+		
 		// TODO Depends on location of configuration file, how to prevent that?
 		assetCache.loadTexture("selected", "../GUI/Assets/Tiles/selected.png");
 		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
@@ -358,8 +352,6 @@ namespace SGA
 		}
 		
 		//Draw Board
-		entitySprites.clear();
-		entityInfo.clear();
 		overlaySprites.clear();
 		actionsSelectedEntity.clear();
 		
@@ -391,61 +383,8 @@ namespace SGA
 		}
 		
 		//Draw entities
-		for (auto& entity : selectedGameStateCopy->entities)
-		{
-			//Check if entity have sprite
-			auto& entityType = selectedGameStateCopy->getEntityType(entity.typeID);
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(entityType.name);
-			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
-			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
-			sf::Sprite newUnit(texture);
-			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
-		
-			newUnit.setOrigin(origin);
-			entitySprites.emplace_back(newUnit);
-		
-			//Change siloutte color with the players color
-			if(!entity.isNeutral())
-			{
-				outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
-				window.draw(newUnit, &outLineShadeR);
-			}
-			else
-			{
-				window.draw(newUnit);
-			}
-			
-			//Add units text info
-			sf::Text unitInfo;
-			unitInfo.setFont(assetCache.getFont("font"));
-			std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
-			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
-		
-			for (size_t i = 0; i < entity.parameters.size(); i++)
-			{
-				// Create an output string stream
-				std::ostringstream streamObj3;
-				// Set Fixed -Point Notation
-				streamObj3 << std::fixed;
-				// Set precision to 2 digits
-				streamObj3 << std::setprecision(2);
-				streamObj3 << entity.parameters[i];
-		
-				info += "/" + streamObj3.str();
-			}
-		
-			unitInfo.setString(info);
-			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
-		}
-		
-		for (const auto& info : entityInfo)
-		{
-			window.draw(info);
-		}
+		entityRenderer.update(*selectedGameStateCopy);
+		window.draw(entityRenderer);
 		
 		//Draw selectedtile
 		//Add actions if we have actions to draw
