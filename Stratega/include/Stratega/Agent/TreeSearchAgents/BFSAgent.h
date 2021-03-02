@@ -3,6 +3,9 @@
 #include <Stratega/Agent/TreeSearchAgents/TreeNode.h>
 #include <Stratega/Agent/AgentParameters.h>
 
+#include <list>
+#include <memory>
+
 namespace SGA
 {
 	struct BFSParameters : public AgentParameters
