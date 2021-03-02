@@ -17,5 +17,15 @@ namespace SGA
 		std::vector<Action> continuousAction;
 
 		std::vector<ActionInfo> attachedActions;
+
+		bool canExecuteAction(int actionTypeID) const
+		{
+			for (const auto& actionType : attachedActions)
+			{
+				if (actionType.actionTypeID == actionTypeID)
+					return true;
+			}
+			return false;
+		}
 	};
 }

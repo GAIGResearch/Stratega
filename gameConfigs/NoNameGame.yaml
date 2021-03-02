@@ -8,7 +8,7 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: [Build]
+    Actions: [Build, Research]
     CanSpawn: Buildings
     Parameters:
         Gold: 0
@@ -58,6 +58,7 @@ Entities:
             Prod: 20
         Parameters:
             Health: 500
+            Range: 6
 
     MilitaryAcademy:
         Sprite: ../GUI/Assets/Entities/military.png
@@ -191,19 +192,6 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.WeaponStrength)"
 
-    # Attack Actions
-    Attack:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: Attackable
-                Conditions:
-                    - "InRange(Source, Target, Source.Range)"
-        Effects:
-            - "Attack(Target.Health, Source.WeaponStrength)"
-
     # Move Actions
     Move:
         Type: EntityAction
@@ -220,21 +208,21 @@ Actions:
 
     #Research
     Research:
-        Type: EntityAction
+        Type: PlayerAction
         Cooldown: 0
         Targets:
             Target:
                 Type: Technology
                 ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
                 Conditions:
-                    - "CanResearch(Source.Player, Target)"
-                    - "CanAfford(Source.Player, Target)"
+                    - "CanResearch(Source, Target)"
+                    - "CanAfford(Source, Target)"
         TriggerComplete:
             - "HasElapsedTick(Target.Time)"
         OnStart:
-            - "PayCost(Source.Player, Target)"
+            - "PayCost(Source, Target)"
         OnComplete:
-            - "Research(Source.Player, Target)"
+            - "Research(Source, Target)"
 
     
     Mine:
@@ -301,7 +289,7 @@ TechnologyTrees:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 1
+                Prod: 100
             Time: 2
         Discipline:
             Description: Enables barracks construction.

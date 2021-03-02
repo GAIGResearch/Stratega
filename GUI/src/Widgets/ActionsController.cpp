@@ -56,7 +56,7 @@ namespace SGA::Widgets
 						ImGui::PushID(elementNumber);
 						if (ImGui::Button(state.getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
 						{
-							bool canExecute = false;
+							bool canExecute = true;
 
 							std::vector<ActionTarget> actionTargets;
 							actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
@@ -71,9 +71,9 @@ namespace SGA::Widgets
 								//Check if we fullfil the conditions to spawn the entity
 								for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 								{
-									if (condition->isFullfilled(state, actionTargets))
+									if (!condition->isFullfilled(state, actionTargets))
 									{
-										canExecute = true;
+										canExecute = false;
 										break;
 									}
 
@@ -298,7 +298,7 @@ namespace SGA::Widgets
 						ImGui::PushID(elementNumber);
 						if (ImGui::Button(state.getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
 						{
-							bool canExecute = false;
+							bool canExecute = true;
 
 							std::vector<ActionTarget> actionTargets;
 							actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
@@ -308,9 +308,9 @@ namespace SGA::Widgets
 							//Check if player fullfil the conditions to spawn the entity
 							for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 							{
-								if (condition->isFullfilled(state, actionTargets))
+								if (!condition->isFullfilled(state, actionTargets))
 								{
-									canExecute = true;
+									canExecute = false;
 									break;
 								}
 							}
@@ -331,28 +331,23 @@ namespace SGA::Widgets
 					for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
 					{
 						//If player is researching abort action
-						for (auto& entityID : settings.selectedEntities)
+						for (auto& action : state.getPlayer(playerID)->continuousAction)
 						{
-							for (auto& action : state.getEntity(entityID)->continuousAction)
+							if (action.actionTypeID == settings.actionTypeSelected)
 							{
-								if (action.actionTypeID == settings.actionTypeSelected)
+								ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
+								ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
+								ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+								if (ImGui::Button("Abort", ImVec2(50, 50)))
 								{
-									ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-									ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-									ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-									if (ImGui::Button("Abort", ImVec2(50, 50)))
-									{
-										actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->id, action.continuousActionID));
-										/*selectedActionType = -1;
-										updatePossibleActions();*/
-									}
-									ImGui::PopStyleColor(3);
-
-									goto  FINISH;
-									break;
+									actionsToExecute.emplace_back(Action::createAbortAction(playerID, action.continuousActionID));
 								}
+								ImGui::PopStyleColor(3);
+
+								goto  FINISH;
+								break;
 							}
-						}
+						}						
 
 						//Check if the player can research the possible technologies
 						if (!state.technologyTreeCollection->canResearch(playerID, possibleTechnology))
@@ -365,25 +360,20 @@ namespace SGA::Widgets
 							bool canExecute = true;
 
 							std::vector<ActionTarget> actionTargets;
-							actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
+							actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 							actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 							actionTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
-							//Check if any of the selectedEntities fullfill the condition
-							for (auto& entity : settings.selectedEntities)
+
+							//Check if player fullfil the conditions to spawn the entity
+							for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 							{
-								actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
-
-								//Check if we fullfil the conditions to spawn the entity
-								for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
+								if (!condition->isFullfilled(state, actionTargets))
 								{
-									if (!condition->isFullfilled(state, actionTargets))
-									{
-										canExecute = false;
-										break;
-									}
-
+									canExecute = false;
+									break;
 								}
 							}
+							
 							if (canExecute)
 								settings.selectedTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
 						}
@@ -397,6 +387,7 @@ namespace SGA::Widgets
 				}
 				case TargetType::Position:
 				{
+					ImGui::Text("Choose position");
 					//Need to receive a new position from the gui
 					settings.waitingForPosition = true;
 
@@ -419,64 +410,31 @@ namespace SGA::Widgets
 			}
 			else
 			{
-				//Draw each action with the current selected action targets
-				int elementNumber = 0;
+			//Verify the selected targets are valid						
+			const ActionType& actionType = state.getActionType(settings.actionTypeSelected);
 
-				for (auto& selectedAction : settings.actionHumanSelected)
-				{
-					if (selectedAction.targets.size() <= 1 || selectedAction.actionTypeID != settings.actionTypeSelected)
-						continue;
+			//Generate action with the current selected settings
+			Action newAction;
 
-					bool isSelected = false;
+			if (actionType.isContinuous)
+				newAction.actionTypeFlags = ActionFlag::ContinuousAction;
 
-					//Check if we have selected the owner of this action
-					//for (auto entityID : settings.selectedUnits)
-					//{
-					//	if (selectedAction.getSourceID() == entityID)
-					//	{
-					//		//It the same entity owner
-					//		isSelected = true;
-					//		break;
-					//	}
-					//}
+			//Generate action targets + source
+			std::vector<ActionTarget> actionTargets;
+			actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
+			actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
-					//Check if all the targets of the actions are the same as the selected targets
-					for (int i = 0; i < settings.selectedTargets.size(); ++i)
-					{
-						//Check if the selectedAction has lower amount of targets
-						if (selectedAction.targets.size() < settings.selectedTargets.size() + 1)
-						{
-							settings.reset();
-							isSelected = false;
-							break;
-						}
-						
-						if (settings.selectedTargets[i] != selectedAction.targets[i + 1])
-						{
-							isSelected = false;
-						}
-					}
+			newAction.targets = actionTargets;
+			newAction.actionTypeID = settings.actionTypeSelected;
+			newAction.ownerID = playerID;
 
-					//Draw the action
-					if (isSelected)
-					{
-						actionsToExecute.emplace_back(selectedAction);
-					}
-				}
+			if (state.getPlayer(playerID)->canExecuteAction(settings.actionTypeSelected))
+			{
+				if (ActionTarget::isValid(state, actionType, newAction.targets))
+					actionsToExecute.emplace_back(newAction);
+			}
 
-
-				//Reset Button Style
-				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-
-				//Reset button
-				if (ImGui::Button("Reset", ImVec2(50, 50)))
-				{
-					settings.reset();
-				}
-
-				ImGui::PopStyleColor(3);
+			settings.reset();
 			}
 
 		}
