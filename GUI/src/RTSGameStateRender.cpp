@@ -45,7 +45,7 @@ namespace SGA
 		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
 
 		//Update actions
-		actionsSettings.actionHumanSelected = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
+		actionsSettings.actionsHumanPlayer = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
 
 		//Add state to buffer
 		gameStatesBuffer.add(gameStateCopy);

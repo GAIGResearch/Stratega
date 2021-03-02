@@ -162,7 +162,7 @@ namespace SGA
 		}
 	}
 
-	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget> actionTargets)
+	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
 	{
 		bool isValid = true;
 
@@ -183,5 +183,4 @@ namespace SGA
 		
 		return isValid;
 	}
-
 }
