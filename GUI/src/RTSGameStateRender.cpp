@@ -7,16 +7,19 @@
 #include <sstream>
 #include <GridUtils.h>
 
+#include <Configuration/RenderConfig.h>
+#include <Widgets/FogOfWarController.h>
+
 namespace SGA
 {
-	RTSGameStateRender::RTSGameStateRender(SGA::RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
+	RTSGameStateRender::RTSGameStateRender(SGA::RTSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID) :
 		GameStateRenderer{ playerID },
 		game(&game),
 		gameStateCopy(game.getStateCopy()),
 		gameStatesBuffer(50)
 	{
-		init(tileSprites, entitySpritePaths);
-
+		init(gameConfig, renderConfig);
+		
 		//Initialize Player colors
 		for (auto player : gameStateCopy.players)
 		{
@@ -49,22 +52,20 @@ namespace SGA
 		gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
 	}
 
-	void RTSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
+	void RTSGameStateRender::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
 	{
 		//Need to activate the context before adding new textures
 		ctx.setActive(true);
 
-		//Load textures
-		for (auto idPathPair : tileSprites)
-		{
-			assetCache.loadTexture("tile_" + std::to_string(idPathPair.first), idPathPair.second);
-		}
+		tileMap.init(gameStateCopy, gameConfig, renderConfig);
+		entityRenderer.init(gameConfig, renderConfig);
 
-		for (const auto& namePathPair : entitySpritePaths)
+		// Load textures
+		for (const auto& namePathPair : renderConfig.entitySpritePaths)
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-
+		
 		// TODO Depends on location of configuration file, how to prevent that?
 		assetCache.loadTexture("circleCollider", "../GUI/Assets/Tiles/circleCollider.png");
 		assetCache.loadTexture("boxCollider", "../GUI/Assets/Tiles/boxCollider.png");
@@ -398,63 +399,18 @@ namespace SGA
 				++i;
 			}
 		}
-		
-		mapSprites.clear();
-		entitySprites.clear();
-		unitsInfo.clear();
-		healthBars.clear();
 
 		renderMinimapTexture.clear();
 
-		SGA::RTSGameState* selectedGameStateCopy;
+		// Render Map
+		auto* selectedGameStateCopy = &gameStateCopy;
 		if (fowSettings.renderFogOfWar)
 			selectedGameStateCopy = &gameStateCopyFogOfWar;
-		else
-			selectedGameStateCopy = &gameStateCopy;
 
-		auto& board = selectedGameStateCopy->board;
-
-		for (int y = 0; y < board.getHeight(); ++y)
-		{
-			for (int x = 0; x < board.getWidth(); ++x)
-			{
-				auto& targetTile = board.get(x, y);
-				int targetTypeId;
-
-				if (fowSettings.renderType == Widgets::FogRenderType::Tiles || fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
-				{
-					sf::Sprite newTile;
-
-					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
-					{
-
-						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-						newTile.setColor(sf::Color(144, 161, 168));
-					}
-					else
-					{
-						targetTypeId = targetTile.tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-
-					}
-					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-
-					newTile.setPosition(toISO(x, y));
-					newTile.setOrigin(origin);
-					mapSprites.emplace_back(newTile);
-				}
-			}
-		}
-
-		for (const auto& sprite : mapSprites)
-		{
-			window.draw(sprite);
-			renderMinimapTexture.draw(sprite);
-		}
-
+		tileMap.update(gameStateCopy, gameStateCopyFogOfWar, fowSettings.renderFogOfWar, fowSettings.renderType);
+		window.draw(tileMap);
+		renderMinimapTexture.draw(tileMap);
+		
 		//Draw possible actions
 		if(actionsSettings.waitingForPosition)
 		{
@@ -498,93 +454,10 @@ namespace SGA
 				}
 			}
 		}
+
 		//Draw entities
-		for (auto& entity : selectedGameStateCopy->entities)
-		{
-			//Check if entity have sprite
-			auto entityType = selectedGameStateCopy->getEntityType(entity.typeID);
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(entityType.name);
-			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
-			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Sprite newUnit(texture);
-
-			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
-
-			newUnit.setOrigin(origin);
-			entitySprites.emplace_back(newUnit);
-
-			//Change siloutte color with the players color
-			if(!entity.isNeutral())
-			{
-				outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
-				window.draw(newUnit, &outLineShadeR);
-			}
-			else
-			{
-				window.draw(newUnit);
-			}
-
-			//Add units text info
-			sf::Text unitInfo;
-			unitInfo.setFont(assetCache.getFont("font"));
-			std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
-			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
-			for (size_t i = 0; i < entity.parameters.size(); i++)
-			{
-
-				// Create an output string stream
-				std::ostringstream streamObj3;
-				// Set Fixed -Point Notation
-				streamObj3 << std::fixed;
-				// Set precision to 2 digits
-				streamObj3 << std::setprecision(2);
-				streamObj3 << entity.parameters[i];
-
-				info += "/" + streamObj3.str();
-			}
-			unitInfo.setString(info);
-			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
-
-			//Check if entity have health
-			if (gameStateCopy.checkEntityHaveParameter(entity.typeID, "Health"))
-			{
-				int globalHealthID = selectedGameStateCopy->getParameterGlobalID("Health");
-
-				/*double& health = gameStateCopy.getParameterReference(entity.id, globalHealthID);
-				double maxHealth = gameStateCopy.getParameterType(entity.typeID, globalHealthID).maxValue;
-				*/
-				//Add temporal Health bar
-				//sf::RectangleShape background;
-				//sf::Vector2f backgroundSize(140, 35);
-				//sf::Vector2f fillSize(130, 25);
-
-				//int yOffset = -220;
-
-				//background.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				//background.setFillColor(sf::Color::Black);
-				//background.setSize(backgroundSize);
-				//background.setOrigin(backgroundSize.x / 2, backgroundSize.y / 2);
-				//healthBars.emplace_back(background);
-
-				//sf::RectangleShape fill;
-				//fill.setPosition(pos.x + TILE_WIDTH_HALF, pos.y + yOffset);
-				//fill.setFillColor(sf::Color::Red);
-				////Compute fill percentage
-				//float percentage = (float)health / (float)maxHealth;
-				//fill.setSize(sf::Vector2f(fillSize.x * percentage, fillSize.y));
-				//fill.setOrigin(fillSize.x / 2, fillSize.y / 2);
-				//healthBars.emplace_back(fill);
-			}
-		}
-
-		for (const auto& sprite : healthBars)
-		{
-			window.draw(sprite);
-			renderMinimapTexture.draw(sprite);
-		}
+		entityRenderer.update(*selectedGameStateCopy);
+		window.draw(entityRenderer);
 
 		//Check if units are selected
 		for (const auto& unit : selectedGameStateCopy->entities)
@@ -1063,7 +936,7 @@ namespace SGA
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Fog of War window");
 
-		if(fowController(gameStateCopy, fowSettings))
+		if(Widgets::fowController(gameStateCopy, fowSettings))
 		{
 			// Selected player changed -> Re-Apply FogOfWar
 			gameStateCopyFogOfWar = game->getStateCopy();

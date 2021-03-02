@@ -1,4 +1,5 @@
 #include <Widgets/FogOfWarController.h>
+#include <TileMap.h>
 #include <imgui.h>
 
 namespace SGA::Widgets
