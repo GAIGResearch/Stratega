@@ -222,10 +222,6 @@ namespace SGA
 					}					
 				}
 			}
-			/*else
-			{
-				actionsSettings.selectedEntities.clear();
-			}*/
 
 			Entity* selectedEntity = gameStateCopy.getEntity(Vector2f(pos.x, pos.y));
 
@@ -330,7 +326,6 @@ namespace SGA
 	{
 		//Draw Board
 		overlaySprites.clear();
-		actionsSelectedEntity.clear();
 		
 		// Render Map
 		auto* selectedGameStateCopy = &gameStateCopy;
@@ -362,11 +357,7 @@ namespace SGA
 		//Draw entities
 		entityRenderer.update(*selectedGameStateCopy);
 		window.draw(entityRenderer);
-		
-		for (const auto& sprite : actionsSelectedEntity)
-		{
-			window.draw(sprite);
-		}
+
 	}
 
 	void TBSGameStateRender::createHUD(sf::RenderWindow& window)

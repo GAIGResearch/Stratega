@@ -20,8 +20,6 @@ namespace SGA
 
 		//Debug mode
 		bool drawDebug = false;
-
-		
 		
 		RTSGameStateRender(RTSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
 		void render() override;
@@ -96,9 +94,7 @@ namespace SGA
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
 		CircularBuffer<RTSGameState> gameStatesBuffer;
-		int gameStatesBufferRCurrentIndex = 0;
-
-		
+		int gameStatesBufferRCurrentIndex = 0;		
 
 		//Imgui
 		sf::Clock deltaClock;

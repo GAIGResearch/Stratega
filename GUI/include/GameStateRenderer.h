@@ -64,7 +64,6 @@ namespace SGA
 		
 	protected:
 		std::vector<sf::Sprite> overlaySprites;
-		std::vector<sf::CircleShape> actionsSelectedEntity;
 		std::vector<sf::Color> playerColors;
 
 		TileMap tileMap;
