@@ -57,6 +57,9 @@ namespace SGA
 		sf::Context ctx;
 
 		AssetCache assetCache;
+
+		Widgets::ActionsSettings actionsSettings;
+		
 	protected:
 		//New render system(withoutlayers)
 		std::vector<sf::Sprite> mapSprites;

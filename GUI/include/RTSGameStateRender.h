@@ -19,7 +19,7 @@ namespace SGA
 		//Debug mode
 		bool drawDebug = false;
 
-		Widgets::ActionsSettings actionsSettings;
+		
 		
 		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
 		void render() override;

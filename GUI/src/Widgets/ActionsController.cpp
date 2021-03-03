@@ -73,7 +73,6 @@ namespace SGA::Widgets
 			{
 				verifyActionTargets(state, settings, playerID, actionsToExecute);
 			}
-
 		}
 		else
 		{
@@ -85,7 +84,7 @@ namespace SGA::Widgets
 
 	void getTechnologyType(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
-		if(settings.hasActionTypeSelected())
+		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
 			for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
@@ -215,7 +214,7 @@ namespace SGA::Widgets
 
 	void getEntityType(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType)
 	{
-		if(settings.hasActionTypeSelected())
+		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
 			for (auto& possibleActionType : actionType.actionTargets[settings.selectedTargets.size()].first.groupEntityTypes)

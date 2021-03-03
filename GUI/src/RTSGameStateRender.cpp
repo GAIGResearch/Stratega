@@ -262,10 +262,8 @@ namespace SGA
 						else
 						{
 							actionsSettings.selectedEntities.clear();
-						}
-						
+						}						
 					}
-					
 				}
 				else
 				{
@@ -279,12 +277,6 @@ namespace SGA
 						actionsSettings.selectedEntities.clear();
 						actionsSettings.reset();
 					}
-					
-				/*	actionsSettings.reset();
-					actionsSettings.selectedUnits.clear();*/
-					/*auto* unit = gameStateCopy.getUnit(SGA::Vector2f(worldPos.x, worldPos.y));
-					if (unit != nullptr && unit->playerID == getPlayerID())
-						selectedUnits.emplace(unit->unitID);*/
 				}
 			}
 			else

@@ -289,7 +289,7 @@ TechnologyTrees:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 100
+                Prod: 10
             Time: 2
         Discipline:
             Description: Enables barracks construction.
