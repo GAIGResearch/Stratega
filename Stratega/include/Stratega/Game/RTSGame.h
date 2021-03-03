@@ -49,7 +49,7 @@ namespace SGA
 	public:
 		//Navmesh Update
 		NavigationConfig navigationConfig;
-		bool shouldUpdateNavmesh;
+		bool shouldUpdateNavmesh=true;
 
 	};
 }

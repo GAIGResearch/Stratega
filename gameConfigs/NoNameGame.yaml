@@ -233,7 +233,7 @@ Actions:
                 Type: Entity
                 ValidTargets: GoldVein
                 Conditions:
-                    - "InRange(Source, Target, 3)"
+                    - "InRange(Source, Target, 2)"
                     - "HasResource(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
