@@ -20,16 +20,6 @@ namespace SGA
 	{
 		init(gameConfig, renderConfig);
 		
-		//Initialize Player colors
-		for (auto player : gameStateCopy.players)
-		{
-			int r = rand() % 255;
-			int g = rand() % 255;
-			int b = rand() % 255;
-
-			playerColors.emplace_back(sf::Color(r, g, b, 255));
-		}
-		
 		//Initialize gameStateFog and apply fog to it		
 		gameStateCopyFogOfWar = gameStateCopy;
 		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
@@ -58,7 +48,7 @@ namespace SGA
 		ctx.setActive(true);
 
 		tileMap.init(gameStateCopy, gameConfig, renderConfig);
-		entityRenderer.init(gameConfig, renderConfig);
+		entityRenderer.init(gameStateCopy, gameConfig, renderConfig);
 
 		// Load textures
 		for (const auto& namePathPair : renderConfig.entitySpritePaths)

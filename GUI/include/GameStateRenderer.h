@@ -22,9 +22,6 @@ namespace SGA
 		}
 		virtual ~GameStateRenderBase() = default;
 		virtual void render() = 0;
-		
-		//OutLine Shader
-		sf::Shader outLineShadeR;
 	};
 
 	template<typename GameState>
@@ -62,7 +59,6 @@ namespace SGA
 	protected:
 		std::vector<sf::Sprite> overlaySprites;
 		std::vector<sf::CircleShape> actionsSelectedEntity;
-		std::vector<sf::Color> playerColors;
 
 		TileMap tileMap;
 		EntityRenderer entityRenderer;
