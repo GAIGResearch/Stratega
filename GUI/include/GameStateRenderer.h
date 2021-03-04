@@ -64,6 +64,7 @@ namespace SGA
 		
 	protected:
 		std::vector<sf::Sprite> overlaySprites;
+		std::vector<sf::CircleShape> actionsShapes;
 		std::vector<sf::Color> playerColors;
 
 		TileMap tileMap;
@@ -71,7 +72,6 @@ namespace SGA
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;
-		Widgets::ActionsSettings actionSettings;
 	};
 
 }

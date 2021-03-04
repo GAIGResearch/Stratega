@@ -58,7 +58,7 @@ namespace YAML
                 return false;
             auto value = node.as<std::string>();
             if (value == "EntityAction")
-                rhs = SGA::ActionSourceType::Unit;
+                rhs = SGA::ActionSourceType::Entity;
             else if (value == "PlayerAction")
                 rhs = SGA::ActionSourceType::Player;
             else

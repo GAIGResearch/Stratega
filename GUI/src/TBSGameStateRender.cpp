@@ -335,7 +335,7 @@ namespace SGA
 		tileMap.update(gameStateCopy, *selectedGameStateCopy, fowSettings.renderFogOfWar, fowSettings.renderType);
 		window.draw(tileMap);
 		
-		//Add selected tile
+		//Add selected tileactionSettings.waitingForPosition
 		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
 		
 		if (selectedGameStateCopy->isInBounds(Vector2i(mouseGridPos.x, mouseGridPos.y)))
@@ -357,6 +357,96 @@ namespace SGA
 		//Draw entities
 		entityRenderer.update(*selectedGameStateCopy);
 		window.draw(entityRenderer);
+
+		//Draw possible actions
+		actionsShapes.clear();
+		if(actionsSettings.waitingForPosition)
+		{
+			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
+			{
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.actionTypeID == -1||possibleAction.actionTypeFlags==ActionFlag::ContinuousAction
+					||possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction
+					||possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					continue;
+
+				//Get source
+				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
+				
+				//Check the source and the selected entity is the same
+				if (actionType.sourceType == ActionSourceType::Entity)
+				{
+					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					if (entity.id != *actionsSettings.selectedEntities.begin())
+						continue;
+
+				}
+				
+				for (auto& actionTarget : possibleAction.targets)
+				{
+					if (actionTarget.getType() == ActionTarget::Position)
+					{
+						auto& position = actionTarget.getPosition(gameStateCopy);
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+
+						sf::Vector2f temp = toISO(position.x, position.y);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
+			}
+		}
+		else if (actionsSettings.waitingForEntity)
+		{
+			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
+			{
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction||
+					possibleAction.actionTypeID!=actionsSettings.actionTypeSelected)
+					continue;
+				
+				//Get source
+				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
+
+				//Check the source and the selected entity is the same
+				if(actionType.sourceType==ActionSourceType::Entity)
+				{
+					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					if (entity.id != *actionsSettings.selectedEntities.begin())
+						continue;
+
+				}
+				
+				//Avoid source entity
+				for (int i = 1; i < possibleAction.targets.size(); ++i)
+				{
+					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
+					{
+						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+
+						sf::Vector2f temp = toISO(position.x, position.y);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
+			}
+		}
 
 	}
 

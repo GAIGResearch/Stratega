@@ -106,7 +106,7 @@ namespace SGA
 
 			//If is continues we execute OnStart Effects
 			//and we add the action to the list of continuous actions
-			if (actionType.sourceType == ActionSourceType::Unit)
+			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				auto& type = state.actionTypes->at(actionType.id);
 				for (auto& effect : type.OnStart)
@@ -133,7 +133,7 @@ namespace SGA
 		else
 		{
 			const auto& actionType = state.getActionType(action.actionTypeID);
-			if (actionType.sourceType == ActionSourceType::Unit)
+			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				// Remember when the action was executed
 				auto& executingEntity = action.targets[0].getEntity(state);
@@ -208,7 +208,7 @@ namespace SGA
 				//Add one elapsed tick
 				state.entities[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
-				if (actionType.sourceType == ActionSourceType::Unit)
+				if (actionType.sourceType == ActionSourceType::Entity)
 				{
 					auto& type = state.actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
@@ -246,7 +246,7 @@ namespace SGA
 					if (canExecute)
 					{
 						//Execute OnComplete Effects
-						if (actionType.sourceType == ActionSourceType::Unit)
+						if (actionType.sourceType == ActionSourceType::Entity)
 						{
 							auto& type = state.actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
