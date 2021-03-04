@@ -358,8 +358,12 @@ namespace SGA::Widgets
 		newAction.targets = actionTargets;
 		newAction.actionTypeID = settings.actionTypeSelected;
 		newAction.ownerID = playerID;
-
-		if (state.getPlayer(playerID)->canExecuteAction(settings.actionTypeSelected))
+		
+		auto* player = state.getPlayer(playerID);
+		if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+			return;
+		
+		if (player->canExecuteAction(settings.actionTypeSelected))
 		{
 			if (ActionTarget::isValid(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
@@ -382,7 +386,11 @@ namespace SGA::Widgets
 		{
 			//Check if entityType can execute this
 			const EntityType& entityType = state.getEntityType(state.getEntity(entityID)->typeID);
+			const Entity* entity = state.getEntity(entityID);
 
+			// Check if this action can be executed		
+			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+				continue;
 			if (!entityType.canExecuteAction(settings.actionTypeSelected))
 				continue;
 

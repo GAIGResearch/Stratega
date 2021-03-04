@@ -147,6 +147,20 @@ namespace SGA
 					}
 				}
 			}
+			else
+			{
+				// Remember when the action was executed
+				auto& executingPlayer = action.targets[0].getPlayer(state);
+				// ToDo We should probably find a way to avoid this loop
+				for (auto& actionInfo : executingPlayer.attachedActions)
+				{
+					if (actionInfo.actionTypeID == action.actionTypeID)
+					{
+						actionInfo.lastExecutedTick = state.currentTick;
+						break;
+					}
+				}
+			}
 			
 			action.execute(state, *this);	
 		}

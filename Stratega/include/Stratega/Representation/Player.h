@@ -27,5 +27,14 @@ namespace SGA
 			}
 			return false;
 		}
+
+		const ActionInfo& getActionInfo(int actionTypeID) const
+		{
+			for (auto& actionInfo : attachedActions)
+			{
+				if (actionInfo.actionTypeID == actionTypeID)
+					return actionInfo;
+			}
+		}
 	};
 }
