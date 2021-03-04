@@ -11,15 +11,15 @@ namespace SGA
 	{
 		bool initialized;
 		sf::Vector2u spriteSize;
-		sf::Vector2i spriteCounts;
+		sf::Vector2u spriteCounts;
 		sf::Texture atlas;
+		int pixelGap;
 
-		sf::Vector2i currentPosition;
 		std::unordered_map<std::string, sf::Rect<int>> rectLookup;
 		
 	public:
-		TextureAtlas()
-			: initialized(false), spriteSize(), spriteCounts(), atlas(), currentPosition(0, 0)
+		TextureAtlas(int pixelGap = 0)
+			: initialized(false), spriteSize(), spriteCounts(), atlas(), pixelGap(pixelGap)
 		{
 		}
 
@@ -44,7 +44,12 @@ namespace SGA
 			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
 
 			// Create atlas
-			atlas.create(spriteSize.x * spriteCounts.x, spriteSize.y * spriteCounts.y);
+			auto width = spriteSize.x * spriteCounts.x + (spriteSize.x - 1) * pixelGap;
+			auto height = spriteSize.y * spriteCounts.y + (spriteSize.y - 1) * pixelGap;
+			atlas.create(width, height);
+
+			// Fill with sprites
+			sf::Vector2u currentPosition;
 			for (const auto& path : spritePaths)
 			{
 				// Load image
@@ -58,8 +63,8 @@ namespace SGA
 				}
 
 				// Insert the image into the atlas
-				auto startX = currentPosition.x * spriteSize.x;
-				auto startY = currentPosition.y * spriteSize.y;
+				auto startX = currentPosition.x * (spriteSize.x + pixelGap);
+				auto startY = currentPosition.y * (spriteSize.y + pixelGap);
 				atlas.update(image, startX, startY);
 				rectLookup.emplace(path, sf::Rect<int>(startX, startY, spriteSize.x, spriteSize.y));
 
