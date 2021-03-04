@@ -37,7 +37,7 @@ namespace YAML
         	}
         	
             //Add Fog of War tile
-            rhs.tileSpritePaths.emplace("FogOfWar", "../GUI/Assets/Tiles/notVisible.png");
+            rhs.tileSpritePaths.emplace("FogOfWar", "../../GUI/Assets/Tiles/notVisible.png");
         	
             for (const auto& tileNode : node["Tiles"])
             {

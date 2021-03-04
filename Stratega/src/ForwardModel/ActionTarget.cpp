@@ -166,11 +166,10 @@ namespace SGA
 	{
 		bool isValid = true;
 
-		for (int i = 0; i < actionType.actionTargets.size(); ++i)
-		
+		for (int i = 0; i < actionType.actionTargets.size(); ++i)		
 		{
 			//Check valid targets
-			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1]))
+			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1], actionTargets[0]))
 				return false;
 			
 			

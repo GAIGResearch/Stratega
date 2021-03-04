@@ -70,9 +70,9 @@ namespace SGA
 		}
 		
 		// TODO Depends on location of configuration file, how to prevent that?
-		assetCache.loadTexture("circleCollider", "../GUI/Assets/Tiles/circleCollider.png");
-		assetCache.loadTexture("boxCollider", "../GUI/Assets/Tiles/boxCollider.png");
-		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
+		assetCache.loadTexture("circleCollider", "../../GUI/Assets/Tiles/circleCollider.png");
+		assetCache.loadTexture("boxCollider", "../../GUI/Assets/Tiles/boxCollider.png");
+		assetCache.loadFont("font", "../../GUI/Assets/arial.ttf");
 
 		//Create new renderTexture
 		if (!renderMinimapTexture.create(2000, 2000))

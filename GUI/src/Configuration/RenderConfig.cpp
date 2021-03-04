@@ -5,7 +5,7 @@ namespace SGA
 {
 	std::unique_ptr<GameStateRenderBase> stateRendererFromConfig(Game& game, const RenderConfig& config, const GameConfig& gameConfig, int playerID)
 	{
-		std::string shaderFrag = "../GUI/Assets/OutLine.frag";
+		std::string shaderFrag = "../../GUI/Assets/OutLine.frag";
 		if(gameConfig.gameType == ForwardModelType::TBS)
 		{
 			std::unique_ptr<TBSGameStateRender>stateRenderer=std::make_unique<TBSGameStateRender>(dynamic_cast<TBSGame&>(game), gameConfig, config, playerID);

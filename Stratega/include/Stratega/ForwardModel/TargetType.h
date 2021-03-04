@@ -12,7 +12,8 @@ namespace SGA
 		Circle,
 		Square,
 		Cross,
-		Line
+		Line,
+		AllPositions
 	};
 
 	struct TargetType
@@ -34,7 +35,7 @@ namespace SGA
 		operator Type() const { return type; }
 
 		//Check if is a valid target
-		bool isValid(const GameState& state, const ActionTarget& actionTarget) const;
+		bool isValid(const GameState& state, const ActionTarget& actionTarget, const ActionTarget& sourceActionTarget) const;
 
 	};
 }

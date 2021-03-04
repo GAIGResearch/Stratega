@@ -78,8 +78,8 @@ namespace SGA
 		}
 		
 		// TODO Depends on location of configuration file, how to prevent that?
-		assetCache.loadTexture("selected", "../GUI/Assets/Tiles/selected.png");
-		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
+		assetCache.loadTexture("selected", "../../GUI/Assets/Tiles/selected.png");
+		assetCache.loadFont("font", "../../GUI/Assets/arial.ttf");
 	}
 
 	void TBSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -698,64 +698,5 @@ namespace SGA
 		ImGui::EndChild();
 		ImGui::End();
 	}
-
-	//void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
-	//{
-
-	//	if (showMultipleActions)
-	//	{
-	//		ImGui::SetNextWindowSize(ImVec2(100, 100), ImGuiCond_FirstUseEver);
-	//		ImGui::SetNextWindowPos(window.mapCoordsToPixel(toISO(multipleActionsSourceTile.x, multipleActionsSourceTile.y)));
-	//		ImGui::Begin("PlayAction");
-	//		ImGui::BeginChild("Scrolling");
-	//		ImGui::BeginGroup();
-
-	//		int index = 0;
-	//		for (auto action : actionHumanUnitSelected)
-	//		{
-	//			const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-	//			if (actionType.sourceType == ActionSourceType::Unit)
-	//			{
-	//				if (actionType.actionTargets.type == TargetType::Entity)
-	//				{
-	//					auto& entity = action.targets[1].getEntity(gameStateCopy);
-
-	//					if (entity.position == multipleActionsSourceTile)
-	//					{
-	//						std::string actionInfo = std::to_string(index) + " " + actionType.name;
-	//						index++;
-
-	//						if (ImGui::Button(actionInfo.c_str()))
-	//						{
-	//							playAction(action);
-	//							break;
-	//						}
-	//					}
-	//				}
-	//				else if(actionType.actionTargets.type == TargetType::Position)
-	//				{
-	//					if (action.targets[1].getPosition(gameStateCopy) == multipleActionsSourceTile)
-	//					{
-	//						std::string actionInfo = std::to_string(index) + " " + actionType.name;
-	//						index++;
-
-	//						if (ImGui::Button(actionInfo.c_str()))
-	//						{
-	//							playAction(action);
-	//							break;
-	//						}
-	//					}
-	//				}
-
-
-	//			}
-
-	//		}
-
-	//		ImGui::EndGroup();
-	//		ImGui::EndChild();
-	//		ImGui::End();
-	//	}
-	//}
 
 }

@@ -111,6 +111,8 @@ namespace YAML
                 rhs = SGA::ShapeType::Cross;
             else if (value == "Line")
                 rhs = SGA::ShapeType::Line;
+            else if (value == "AllPositions")
+                rhs = SGA::ShapeType::AllPositions;
             else
                 return false;
 

@@ -282,7 +282,7 @@ namespace SGA
         	{
 
                 targetType.shapeType = node["Shape"].as<ShapeType>();
-                targetType.shapeSize = node["Size"].as<int>();
+                targetType.shapeSize = node["Size"].as<int>(0);
         	}
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
