@@ -25,16 +25,6 @@ namespace SGA
 			waitForHumanToPlay();
 		}
 
-		//Initialize Player colors
-		for (const auto& player : gameStateCopy.players)
-		{
-			int r = rand() % 255;
-			int g = rand() % 255;
-			int b = rand() % 255;
-
-			playerColors.emplace_back(sf::Color(r, g, b, 255));
-		}
-
 		//Initialize gameStateFog and apply fog to it		
 		gameStateCopyFogOfWar = gameStateCopy;
 		gameStateCopyFogOfWar.applyFogOfWar(fowSettings.selectedPlayerID);
@@ -68,7 +58,7 @@ namespace SGA
 		//Need to activate the context before adding new textures
 		ctx.setActive(true);
 
-		entityRenderer.init(gameConfig, renderConfig);
+		entityRenderer.init(gameStateCopy, gameConfig, renderConfig);
 		tileMap.init(gameStateCopy, gameConfig, renderConfig);
 
 		// Load textures
