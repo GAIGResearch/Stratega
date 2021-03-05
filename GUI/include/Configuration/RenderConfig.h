@@ -12,6 +12,7 @@ namespace SGA
 
 	struct RenderConfig
 	{
+        std::string outlineShaderPath;
 		std::map<std::string, std::string> entitySpritePaths;
 		std::map<std::string, std::string> tileSpritePaths;
 	};
@@ -28,7 +29,10 @@ namespace YAML
         {
             if (!node.IsMap())
                 return false;
-            
+
+            // Hardcode shader Path
+            rhs.outlineShaderPath = "../../GUI/Assets/OutLine.frag";
+        	
         	for(const auto& entityNode : node["Entities"])
         	{
                 auto entityName = entityNode.first.as<std::string>();

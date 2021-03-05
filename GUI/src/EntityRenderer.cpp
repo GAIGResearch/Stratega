@@ -6,7 +6,14 @@
 
 namespace SGA
 {
-	void EntityRenderer::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
+	EntityRenderer::EntityRenderer()
+		: atlas(2)
+	{
+		
+	}
+
+	
+	void EntityRenderer::init(const GameState& initialState, const GameConfig& gameConfig, const RenderConfig& renderConfig)
 	{
 		// Initialise atlas
 		std::vector<std::string> filePaths;
@@ -19,6 +26,12 @@ namespace SGA
 
 		// Initialise vertex array
 		vertices.setPrimitiveType(sf::Quads);
+
+		// Initialise shader
+		outlineShader.loadFromFile(renderConfig.outlineShaderPath, sf::Shader::Fragment);
+		outlineShader.setUniform("texture", sf::Shader::CurrentTexture);
+		outlineShader.setUniform("outlineThickness", 1.4f);
+		outlineShader.setUniform("textureSize", sf::Glsl::Vec2(atlas.getAtlasTexture().getSize()));
 	}
 
 	void EntityRenderer::update(const GameState& state)
@@ -45,17 +58,23 @@ namespace SGA
 			quadPtr[1].texCoords = sf::Vector2f(rect.left + rect.width, rect.top);
 			quadPtr[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);
 			quadPtr[3].texCoords = sf::Vector2f(rect.left, rect.top + rect.height);
+
+			quadPtr[0].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
+			quadPtr[1].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
+			quadPtr[2].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
+			quadPtr[3].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
 		}
 	}
 
-	void SGA::EntityRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
+	void EntityRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		// apply the transform
 		states.transform *= getTransform();
-
+		
 		// apply the tileset texture
 		states.texture = &atlas.getAtlasTexture();
-
+		states.shader = &outlineShader;
+		
 		// draw the vertex array
 		target.draw(vertices, states);
 	}

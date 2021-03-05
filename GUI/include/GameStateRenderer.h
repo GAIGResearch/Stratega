@@ -22,9 +22,6 @@ namespace SGA
 		}
 		virtual ~GameStateRenderBase() = default;
 		virtual void render() = 0;
-		
-		//OutLine Shader
-		sf::Shader outLineShadeR;
 	};
 
 	template<typename GameState>
@@ -33,7 +30,7 @@ namespace SGA
 	public:
 		GameStateRenderer(int playerID) :
 			GameStateRenderBase{ playerID },
-			fowSettings{true, FogRenderType::Fog, playerID == -1 ? 0 : playerID}
+			fowSettings{true, FogRenderType::Tiles, playerID == -1 ? 0 : playerID}
 		{
 		}
 		virtual ~GameStateRenderer() = default;
@@ -64,8 +61,8 @@ namespace SGA
 		
 	protected:
 		std::vector<sf::Sprite> overlaySprites;
+		
 		std::vector<sf::CircleShape> actionsShapes;
-		std::vector<sf::Color> playerColors;
 
 		TileMap tileMap;
 		EntityRenderer entityRenderer;
