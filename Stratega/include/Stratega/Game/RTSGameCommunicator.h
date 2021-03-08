@@ -4,6 +4,7 @@
 #include <random>
 #include <thread>
 
+
 namespace SGA
 {
 	class Agent;
@@ -12,7 +13,7 @@ namespace SGA
 	{
 	public:
 		RTSGameCommunicator(int playerID) :
-			GameCommunicator{ playerID }
+			GameCommunicator{ playerID }, game(nullptr)
 		{
 		}
 
@@ -32,6 +33,7 @@ namespace SGA
 		void setRNGEngine(std::mt19937 engine) { rngEngine = engine; }
 
 		void executeAction(Action action) const;
+		void executeAction(RTSAction action) const;
 		bool isMyTurn() const;
 		RTSGameState getGameState() const;
 

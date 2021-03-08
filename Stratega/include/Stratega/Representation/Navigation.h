@@ -42,14 +42,17 @@ namespace SGA
 			m_agentMaxSlope = 45.0f;
 			m_regionMinSize = 8;
 			m_regionMergeSize = 20;
-			m_edgeMaxLen = 12.0f;
-			m_edgeMaxError = 1.3f;
-			m_vertsPerPoly = 6.0f;
+			m_edgeMaxLen = 0.5f;
+			m_edgeMaxError = 0.1f;
+			m_vertsPerPoly = 3.0f;
 			m_detailSampleDist = 6.0f;
 			m_detailSampleMaxError = 1.0f;
 			m_partitionType = SAMPLE_PARTITION_WATERSHED;
 
-			m_erodeWalkableArea = false;
+			m_erodeWalkableArea = true;
+			m_filterLowHangingObstacles = false;
+			m_filterLedgeSpans = false;
+			m_filterWalkableLowHeightSpans = false;
 		}
 
 		//Configuration
@@ -86,13 +89,16 @@ namespace SGA
 			m_agentMaxSlope = 45.0f;
 			m_regionMinSize = 8;
 			m_regionMergeSize = 20;
-			m_edgeMaxLen = 12.0f;
-			m_edgeMaxError = 1.3f;
-			m_vertsPerPoly = 6.0f;
+			m_edgeMaxLen = 0.5f;
+			m_edgeMaxError = 0.1f;
+			m_vertsPerPoly = 3.0f;
 			m_detailSampleDist = 6.0f;
 			m_detailSampleMaxError = 1.0f;
 			m_partitionType = SAMPLE_PARTITION_WATERSHED;
-			m_erodeWalkableArea = false;
+			m_erodeWalkableArea = true;
+			m_filterLowHangingObstacles = false;
+			m_filterLedgeSpans = false;
+			m_filterWalkableLowHeightSpans = false;
 		}
 	};
 	

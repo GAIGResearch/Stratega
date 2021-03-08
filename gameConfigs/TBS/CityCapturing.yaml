@@ -13,20 +13,20 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../GUI/Assets/Tiles/plain.png
+        Sprite: ../../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../GUI/Assets/Tiles/water.png
+        Sprite: ../../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../GUI/Assets/Tiles/rock.png
+        Sprite: ../../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../GUI/Assets/Tiles/forest.png
+        Sprite: ../../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
@@ -34,12 +34,13 @@ Actions:
     Spawn:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: EntityType
-            ValidTargets: Units
-            Conditions:
-                - "CanAfford(Source.Player, Target)"
-                - "CanSpawn(Source, Target)"
+        Targets:
+            Target:
+                Type: EntityType
+                ValidTargets: Units
+                Conditions:
+                    - "CanAfford(Source.Player, Target)"
+                    - "CanSpawn(Source, Target)"
         Effects:
             - "SpawnRandom(Source, Target)"
             - "PayCost(Source.Player, Target)"
@@ -48,22 +49,24 @@ Actions:
     Attack:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Entity
-            ValidTargets: [Conquerer, Fighter]
-            Conditions:
-                - "InRange(Source, Target, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Conquerer, Fighter]
+                Conditions:
+                    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
     # Capturing
     Capture:
         Type: EntityAction
-        Target:
-            Type: Entity
-            ValidTargets: City
-            Conditions:
-                - "InRange(Source, Target, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: City
+                Conditions:
+                    - "InRange(Source, Target, 1)"
         Effects:
             - "ChangeOwner(Target, Source.Player)"
             - "Remove(Source)"
@@ -72,26 +75,27 @@ Actions:
     Move:
         Type: EntityAction
         Cooldown: 1
-        Target:
-            Type: Position
-            Shape: Circle
-            Size: 3
-            Conditions:
-                - "IsWalkable(Target)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 
 
 Entities:
     City:
-        Sprite: ../GUI/Assets/Entities/castle.png
+        Sprite: ../../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         CanSpawn: Units
         Actions: [Spawn]
 
     Conquerer:
-        Sprite: ../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit7.png
         Symbol: s
         LineOfSightRange: 4
         Actions: [Move, Capture]
@@ -101,7 +105,7 @@ Entities:
             Gold: 6
 
     Fighter:
-        Sprite: ../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack]

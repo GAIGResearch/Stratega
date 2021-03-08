@@ -1,19 +1,18 @@
 #pragma once
-
 #include <string>
+#include <unordered_set>
 #include <variant>
 #include <Stratega/Representation/Vector2.h>
-
 
 
 namespace SGA
 {
 	struct GameState;
 	struct Entity;
-
 	class Player;
 	struct EntityType;
 	typedef int EntityTypeID;
+	struct ActionType;
 	
 	class ActionTarget
 	{	
@@ -42,7 +41,7 @@ namespace SGA
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
-
+		const std::unordered_set<EntityTypeID>& getSpawneableEntities(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;
@@ -50,6 +49,7 @@ namespace SGA
 		{
 			return data.technologyID;
 		}
+		int getPlayerID() const;
 		int getPlayerID(const GameState& state) const;
 		int getEntityID() const
 		{
@@ -63,6 +63,45 @@ namespace SGA
 		{
 			return targetType;
 		}
+
+		// Check if not equal
+		bool operator !=(const ActionTarget& other)
+		{
+			if (targetType != other.targetType)
+				return false;
+			else
+			{
+				switch (targetType)
+				{
+				case Position:
+
+					//if (static_cast<int>(data.position.x) == static_cast<int>(other.data.position.x) && static_cast<int>(data.position.y) == static_cast<int>(other.data.position.y))
+					
+					//return (static_cast<int>(data.position.x) == static_cast<int>(other.data.position.x) && static_cast<int>(data.position.y) == static_cast<int>(other.data.position.y));
+					
+					return Vector2i(data.position.x, data.position.y) != Vector2i(other.data.position.x, other.data.position.y);
+					break;
+				case EntityReference:
+					return data.entityID != other.data.entityID;
+					break;
+				case PlayerReference:
+					return data.playerID != other.data.playerID;
+					break;
+				case EntityTypeReference:
+					return data.entityTypeID != other.data.entityTypeID;
+					break;
+				case TechnologyReference:
+					return data.technologyID != other.data.technologyID;
+					break;
+				case ContinuousActionReference:
+					return data.continuousActionID != other.data.continuousActionID;
+					break;
+				}
+			}
+		}
+		
+		//Check if this action target is valid in the received gamestate
+		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 
 	private:
 		union Data

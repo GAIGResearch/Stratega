@@ -33,18 +33,40 @@ namespace SGA
 		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
 	}
 
+	int ActionTarget::getPlayerID() const
+	{
+		if (targetType == PlayerReference)
+		{
+			return data.playerID;
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+
 	int ActionTarget::getPlayerID(const GameState& state) const
 	{
 		if (targetType == PlayerReference)
 		{
 			return data.playerID;
 		}
+		else if(targetType == EntityReference)
+		{
+			return state.getEntityConst(data.entityID).ownerID;
+		}
+
+		throw std::runtime_error("Type not recognised");
+	}
+	
+	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
+	{
+		if (targetType == PlayerReference)
+		{
+			return *state.playerSpawnableTypes;
+		}
 		else if (targetType == EntityReference)
 		{
-			return getEntityConst(state).ownerID;
+			return state.getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
 		}
-		else
-			return -1;
 	}
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const
@@ -129,9 +151,35 @@ namespace SGA
 			const auto& type = state.getEntityType(data.entityTypeID);
 			return type;
 		}
+		else if(targetType == EntityReference)
+		{
+			const auto& type = state.getEntityType(state.getEntityConst(data.entityID).typeID);
+			return type;
+		}
 		else
 		{
 			throw std::runtime_error("Type not recognised");
 		}
+	}
+
+	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
+	{
+		bool isValid = true;
+
+		for (int i = 0; i < actionType.actionTargets.size(); ++i)		
+		{
+			//Check valid targets
+			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1], actionTargets[0]))
+				return false;
+			
+			
+			for (auto& condition : actionType.actionTargets[i].second)
+			{
+				if (!condition->isFullfilled(state, actionTargets))
+					isValid = false;
+			}
+		}
+		
+		return isValid;
 	}
 }

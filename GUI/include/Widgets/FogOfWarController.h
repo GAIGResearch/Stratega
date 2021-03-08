@@ -1,22 +1,20 @@
 #pragma once
 #include <Stratega/Representation/GameState.h>
 
+namespace SGA
+{
+	enum class FogRenderType;
+}
+
 namespace SGA::Widgets
 {
-	enum class FogRenderType
-	{
-		Nothing,
-		Fog,
-		Tiles
-	};
-	
 	struct FogOfWarSettings
 	{
 		bool renderFogOfWar = false;
-		FogRenderType renderType = FogRenderType::Nothing;
+		FogRenderType renderType;
 		int selectedPlayerID = -1;
 	};
-
+	
 	/// <summary>
 	/// Displays a widget for changing the render-settings of FogOfWar
 	/// </summary>

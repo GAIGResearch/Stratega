@@ -65,7 +65,8 @@ void FMEvaluator::runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm,
 
 		// Measure speed of action execution
 		std::uniform_int_distribution<int> actionDist(0, actionSpace.size() - 1);
-		const auto& action = *(actionDist(*rngEngine) + actionSpace.begin());
+		SGA::RTSAction action;
+		action.assignActionOrReplace(actionSpace[actionDist(*rngEngine)]);
 		auto executeActionStart = std::chrono::steady_clock::now();
 		fm.advanceGameState(state, action);
 		auto executeActionEnd = std::chrono::steady_clock::now();

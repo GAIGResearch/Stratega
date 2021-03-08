@@ -2,61 +2,92 @@
 
 namespace SGA
 {
-	void RTSForwardModel::advanceGameState(RTSGameState& state, const Action& action) const
+	void RTSAction::assignActionOrReplace(Action newAction)
 	{
-		if (!(action.actionTypeFlags==EndTickAction))
+		if(newAction.isEntityAction())
 		{
-			auto& actionType = state.getActionType(action.actionTypeID);
-			if (actionType.sourceType == ActionSourceType::Unit)
-			{
-				auto& sourceUnit = action.targets[0].getEntity(state);
-				/*if (sourceUnit == nullptr)
-					return;*/
+			auto id = newAction.getSourceID();
+			entityActions.insert_or_assign(id, std::move(newAction));
+		}
+		else if(newAction.isPlayerAction())
+		{
+			auto id = newAction.getSourceID();
+			playerActions.insert_or_assign(id, std::move(newAction));
+		}
+		else
+		{
+			throw std::runtime_error("Tried assigning an unknown action-type to RTSAction");
+		}
+	}
 
-				sourceUnit.intendedAction = action;
-			}
+	void RTSAction::merge(const RTSAction& action)
+	{
+		for(const auto& idActionPair : action.entityActions)
+		{
+			entityActions.insert_or_assign(idActionPair.first, idActionPair.second);
+		}
+		for(const auto& idActionPair : action.playerActions)
+		{
+			playerActions.insert_or_assign(idActionPair.first, idActionPair.second);
+		}
+	}
+
+	void RTSAction::clear()
+	{
+		entityActions.clear();
+		playerActions.clear();
+	}
+
+	Action* RTSAction::getEntityAction(int entityID)
+	{
+		auto it = entityActions.find(entityID);
+		return it == entityActions.end() ? nullptr : &it->second;
+	}
+
+	Action* RTSAction::getPlayerAction(int playerID)
+	{
+		auto it = playerActions.find(playerID);
+		return it == playerActions.end() ? nullptr : &it->second;
+	}
+
+	const std::unordered_map<int, Action>& RTSAction::getEntityActions() const
+	{
+		return entityActions;
+	}
+
+	const std::unordered_map<int, Action>& RTSAction::getPlayerActions() const
+	{
+		return playerActions;
+	}
+	
+	void RTSForwardModel::advanceGameState(RTSGameState& state, const RTSAction& action) const
+	{
+		moveEntities(state);
+		resolveEntityCollisions(state);
+		resolveEnvironmentCollisions(state);
 		
-		}
-		else // Advance game
+		for(const auto& idActionPair : action.getEntityActions())
 		{
-			// Update what the units are doing
-			for (auto& unit : state.entities)
-			{
-				if (!unit.intendedAction.has_value())
-				{
-					unit.executingAction = unit.intendedAction;
-					unit.intendedAction = {};
-				}
-			}
-
-			for (auto& unit : state.entities)
-			{
-				if(unit.executingAction.has_value())
-					executeAction(state, unit.executingAction.value());
-			}
-			
-			resolveUnitCollisions(state);
-			resolveEnvironmentCollisions(state);
-
-			// Remove Entities
-			for (size_t i = 0; i < state.entities.size(); i++)
-			{
-				if (state.entities[i].shouldRemove)
-				{
-					state.entities.erase(state.entities.begin() + i);
-					i -= 1;
-				}
-			}
-
-			// Update cooldown
-			for (auto& unit : state.entities)
-			{
-				unit.actionCooldown = std::max(0., unit.actionCooldown - deltaTime);
-			}
-
-			endTick(state);
-			state.isGameOver = checkGameIsFinished(state);
+			executeAction(state, idActionPair.second);
 		}
+
+		for (const auto& idActionPair : action.getPlayerActions())
+		{
+			executeAction(state, idActionPair.second);
+		}
+
+		// Remove Entities
+		for (size_t i = 0; i < state.entities.size(); i++)
+		{
+			if (state.entities[i].shouldRemove)
+			{
+				state.entities.erase(state.entities.begin() + i);
+				i -= 1;
+			}
+		}
+
+		endTick(state);
+		state.isGameOver = checkGameIsFinished(state);
 	}
 
 	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state) const
@@ -69,170 +100,37 @@ namespace SGA
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
-	//void RTSForwardModel::executeMove(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		unit.executingAction.type = RTSActionType::None;
-	//		return;
-	//	}
+	void RTSForwardModel::moveEntities(RTSGameState& state) const
+	{
+		for(auto& entity : state.entities)
+		{
+			if (entity.path.isEmpty())
+				continue;
+			
+			// Move to the next checkpoint in the path
+			auto targetPos = Vector2f(entity.path.m_straightPath[entity.path.currentPathIndex * 3], entity.path.m_straightPath[entity.path.currentPathIndex * 3 + 2]);
 
-	//	Vector2f targetPos = unit.executingAction.targetPosition;
+			auto movementDir = targetPos - entity.position;
+			auto movementDistance = movementDir.magnitude();
+			auto movementSpeed = entity.movementSpeed * deltaTime;
+			if (movementDistance <= movementSpeed)
+			{
+				entity.path.currentPathIndex++;
+				// Did we reach the end of the path?
+				if (entity.path.m_nstraightPath <= entity.path.currentPathIndex)
+				{
+						entity.position = targetPos;
+						entity.path = Path();
+				}
+			}
+			else
+			{
+				entity.position = entity.position + (movementDir / movementDir.magnitude()) * movementSpeed;
+			}
+		}
+	}
 
-	//	//Get end position of current path
-	//	Vector2f oldTargetPos(0, 0);
-	//	oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
-	//	oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
-
-	//	//Check if path is empty or is a diferent path to the target pos
-	//	if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos) {
-
-	//		Path path = findPath(state.target, unit.position, targetPos);
-	//		unit.path = path;
-	//		unit.path.currentPathIndex++;
-	//	}
-
-	//	//Check if path has points to visit
-	//	if (unit.path.m_nstraightPath > 0)
-	//	{
-	//		//Assign the current path index as target
-	//		targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
-	//	}
-
-	//	auto movementDir = targetPos - unit.position;
-	//	auto movementDistance = movementDir.magnitude();
-	//	auto movementSpeed = unit.movementSpeed * deltaTime;
-	//	if (movementDistance <= movementSpeed)
-	//	{
-	//		unit.path.currentPathIndex++;
-	//		if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
-	//		{
-	//			if (movementDistance <= movementSpeed) {
-	//				unit.position = targetPos;
-	//				unit.executingAction.type = RTSActionType::None;
-	//				unit.path = Path();
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
-	//	}
-	//}
-
-	//void RTSForwardModel::executeAttack(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		if (unit.actionCooldown > 0)
-	//		{
-	//			unit.executingAction.type = RTSActionType::None;
-	//		}
-
-	//		unit.path = Path();
-	//		return;
-	//	}
-	//	if (unit.actionCooldown > 0)
-	//		return;
-
-	//	auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
-
-	//	//Update position of the action
-	//	unit.executingAction.targetPosition = targetUnit->position;
-
-	//	//If is in range attack, if not, move to to a closer position
-	//	if (unit.position.distance(targetUnit->position) <= unit.actionRange)
-	//	{
-	//		targetUnit->health -= unit.attackDamage;
-	//		if (targetUnit->health <= 0)
-	//		{
-	//			state.deadUnitIDs.emplace_back(targetUnit->unitID);
-	//			unit.executingAction.type = RTSActionType::None;
-	//			unit.path = Path();
-	//		}
-	//		unit.actionCooldown = unit.maxActionCooldown;
-	//	}
-	//	else
-	//	{
-	//		//Get end position of current path
-	//		Vector2f oldTargetPos(0, 0);
-
-	//		Vector2f targetPos = targetUnit->position;
-
-	//		//Check if path is empty
-	//		if (unit.path.m_nstraightPath > 0)
-	//		{
-	//			oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
-	//			oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
-
-	//			//Compare the path end with the target position
-	//			if (oldTargetPos != targetPos)
-	//			{
-	//				//Update the path
-	//				Path path = findPath(state.target, unit.position, targetPos);
-
-	//				unit.path = path;
-	//				unit.path.currentPathIndex++;
-	//			}
-	//		}
-	//		else
-	//		{
-	//			//Update the new path
-	//			Path path = findPath(state.target, unit.position, targetPos);
-
-	//			unit.path = path;
-	//			unit.path.currentPathIndex++;
-	//		}
-
-	//		//Check if path has points to visit
-
-	//		if (unit.path.m_nstraightPath > 0)
-	//		{
-	//			//Assign the current path index as target
-	//			targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
-
-	//			auto movementDir = targetPos - unit.position;
-	//			auto movementDistance = movementDir.magnitude();
-	//			auto movementSpeed = unit.movementSpeed * deltaTime;
-	//			if (movementDistance <= movementSpeed)
-	//			{
-	//				unit.path.currentPathIndex++;
-	//				if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
-	//				{
-	//					if (movementDistance <= movementSpeed)
-	//					{
-	//						unit.position = targetPos;
-	//						//unit.executingAction = nullptr;
-	//						unit.path = Path();
-	//					}
-	//				}
-	//			}
-	//			else
-	//			{
-	//				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//void RTSForwardModel::executeHeal(RTSGameState2& state, RTSUnit& unit) const
-	//{
-	//	if (!unit.executingAction.validate(state.target))
-	//	{
-	//		unit.executingAction.type = RTSActionType::None;
-	//		return;
-	//	}
-
-	//	auto* targetUnit = unit.state.get().getUnit(unit.executingAction.targetUnitID);
-	//	targetUnit->health += unit.healAmount;
-
-	//	if (targetUnit->health > targetUnit->maxHealth)
-	//		targetUnit->health = targetUnit->maxHealth;
-
-	//	unit.actionCooldown = unit.maxActionCooldown;
-	//}
-
-	void RTSForwardModel::resolveUnitCollisions(RTSGameState& state) const
+	void RTSForwardModel::resolveEntityCollisions(RTSGameState& state) const
 	{
 		for (auto& unit : state.entities)
 		{
@@ -246,7 +144,8 @@ namespace SGA
 				const auto& entityType = state.getEntityType(unit.typeID);
 
 				//Move action
-				if (!entityType.canExecuteAction(2))
+				int moveActionID = state.getActionTypeID("Move");
+				if (!entityType.canExecuteAction(moveActionID))
 					continue;
 
 				auto dir = otherUnit.position - unit.position;
@@ -254,6 +153,9 @@ namespace SGA
 				{
 					auto penetrationDepth = unit.collisionRadius + otherUnit.collisionRadius - dir.magnitude();
 					pushDir = pushDir + dir.normalized() * 2 / (1 + penetrationDepth);
+					
+					//Soft collision
+					pushDir =pushDir/4;
 				}
 			}
 

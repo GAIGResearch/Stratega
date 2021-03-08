@@ -21,6 +21,7 @@ namespace SGA
         std::unique_ptr<EntityForwardModel> forwardModel;
     	// Players
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;
+        std::unordered_set<EntityTypeID> playerSpawnableTypes;
         std::vector<int> playerActionIds;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;

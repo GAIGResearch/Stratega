@@ -5,30 +5,24 @@
 #include <sstream>
 #include <GridUtils.h>
 
+#include <Stratega/Configuration/GameConfig.h>
+#include <Configuration/RenderConfig.h>
+#include <Widgets/FogOfWarController.h>
+
 namespace SGA
 {
-	TBSGameStateRender::TBSGameStateRender(TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID) :
+	TBSGameStateRender::TBSGameStateRender(TBSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID) :
 		GameStateRenderer{ playerID},
 		game(&game),
 		gameStateCopy(game.getState()),
 		gameStatesBuffer(50)
 	{
-		init(tileSprites, entitySpritePaths);
-
+		init(gameConfig, renderConfig);
+		
 		if (gameStateCopy.currentPlayer == getPlayerID())
 		{
 			std::cout << "Wait for GUI Action" << std::endl;
 			waitForHumanToPlay();
-		}
-
-		//Initialize Player colors
-		for (const auto& player : gameStateCopy.players)
-		{
-			int r = rand() % 255;
-			int g = rand() % 255;
-			int b = rand() % 255;
-
-			playerColors.emplace_back(sf::Color(r, g, b, 255));
 		}
 
 		//Initialize gameStateFog and apply fog to it		
@@ -59,25 +53,23 @@ namespace SGA
 		}
 	}
 
-	void TBSGameStateRender::init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths)
+	void TBSGameStateRender::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
 	{
 		//Need to activate the context before adding new textures
 		ctx.setActive(true);
 
-		//Load textures
-		for (const auto& idPathPair : tileSprites)
-		{
-			assetCache.loadTexture("tile_" + std::to_string(idPathPair.first), idPathPair.second);
-		}
+		entityRenderer.init(gameStateCopy, gameConfig, renderConfig);
+		tileMap.init(gameStateCopy, gameConfig, renderConfig);
 
-		for (const auto& namePathPair : entitySpritePaths)
+		// Load textures
+		for (const auto& namePathPair : renderConfig.entitySpritePaths)
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-
+		
 		// TODO Depends on location of configuration file, how to prevent that?
-		assetCache.loadTexture("selected", "../GUI/Assets/Tiles/selected.png");
-		assetCache.loadFont("font", "../GUI/Assets/arial.ttf");
+		assetCache.loadTexture("selected", "../../GUI/Assets/Tiles/selected.png");
+		assetCache.loadFont("font", "../../GUI/Assets/arial.ttf");
 	}
 
 	void TBSGameStateRender::initializeView(sf::RenderWindow& window) const
@@ -207,55 +199,41 @@ namespace SGA
 			//If selected unit we check if there is action in tile
 			if (((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 			{
-				//Recollect each action in tile
-				for (const auto& action : actionHumanUnitSelected)
+				if (actionsSettings.waitingForPosition)
 				{
-					if (action.actionTypeID == -1||action.actionTypeID!=selectedActionType||action.actionTypeFlags==AbortContinuousAction|| action.targets.empty())
-						continue;
-					
-					ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-					
-					if (actionType.actionTargets.type == TargetType::Entity)
+					assignPosition(gameStateCopy, actionsSettings, {(float) pos.x,(float)pos.y });
+				}
+				else
+				{
+					if(!actionsSettings.waitingForEntity)
 					{
-						if (action.targets[1].getEntity(gameStateCopy).position == Vector2i(pos.x, pos.y))
-						{
-							//Play action directly
-							playAction(action);
-						}
-					}
-					else if(actionType.actionTargets.type == TargetType::Position)
-					{
-						if (action.targets[1].getPosition(gameStateCopy) == Vector2f(pos.x, pos.y))
-						{
-							//Play action directly
-							playAction(action);
-
-						}
+						actionsSettings.selectedEntities.clear();
+						actionsSettings.actionTypeSelected = -1;
 					}					
+				}
+			}
+
+			Entity* selectedEntity = gameStateCopy.getEntity(Vector2f(pos.x, pos.y));
+
+			if (selectedEntity && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
+			{
+				//Assign selected unit
+				if (actionsSettings.waitingForEntity)
+				{
+					assignEntity(gameStateCopy, actionsSettings, selectedEntity->id);
+				}
+				else
+				{
+					//actionsSettings.selectedEntities.clear();
+
+					//Pick up entity
+					if (selectedEntity->ownerID == getPlayerID())
+						actionsSettings.selectedEntities.emplace(selectedEntity->id);
 				}
 			}
 			else
 			{
-				selectedEntityID = -1;
-			}
-
-			Entity* unit = gameStateCopy.getEntity(Vector2f(pos.x, pos.y));
-
-			if (unit && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
-			{
-				//Assign selected unit			
-				selectedEntityID = unit->id;
-
-				updatePossibleActions();
-			}
-			else
-			{
 				//Restart selected actions of unit and selected unit
-				actionHumanUnitSelected.clear();
-				selectedEntityID = -1;
-				selectedActionType = -1;
-				updatePossibleActions();
-				
 				moving = true;
 				oldPos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 			}
@@ -263,10 +241,7 @@ namespace SGA
 		if (event.mouseButton.button == sf::Mouse::Right)
 		{
 			if (waitForAction)
-			{
-				playAction(actionsHumanCanPlay[actionsHumanCanPlay.size() - 1]);
-			}
-
+				playAction(Action::createEndAction(getPlayerID()));
 		}
 	}
 	
@@ -339,190 +314,130 @@ namespace SGA
 
 	void TBSGameStateRender::drawLayers(sf::RenderWindow& window)
 	{
-		if(gameStateCopy.getEntity( selectedEntityID) == nullptr)
-		{
-			selectedEntityID = -1;
-		}
-		
 		//Draw Board
-		mapSprites.clear();
-		entitySprites.clear();
-		entityInfo.clear();
 		overlaySprites.clear();
-		actionsSelectedEntity.clear();
-
-		TBSGameState* selectedGameStateCopy;
+		
+		// Render Map
+		auto* selectedGameStateCopy = &gameStateCopy;
 		if (fowSettings.renderFogOfWar)
 			selectedGameStateCopy = &gameStateCopyFogOfWar;
-		else
-			selectedGameStateCopy = &gameStateCopy;
 
-		auto& board = selectedGameStateCopy->board;
-
-		for (int y = 0; y < board.getHeight(); ++y)
-		{
-			for (int x = 0; x < board.getWidth(); ++x)
-			{
-				auto& targetTile = board.get(x, y);
-				int targetTypeId;
-
-				
-				if (fowSettings.renderType == Widgets::FogRenderType::Tiles||fowSettings.renderType == Widgets::FogRenderType::Fog || targetTile.tileTypeID != -1)
-				{
-					sf::Sprite newTile;
-					
-					if (fowSettings.renderType == Widgets::FogRenderType::Tiles && targetTile.tileTypeID == -1)
-					{
-						
-						targetTypeId = gameStateCopy.board.get(x, y).tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-						newTile.setColor(sf::Color(144, 161, 168));
-					}						
-					else
-					{
-						targetTypeId = targetTile.tileTypeID;
-						sf::Texture& texture = assetCache.getTexture("tile_" + std::to_string(targetTypeId));
-						newTile.setTexture(texture);
-						
-					}				
-					sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);					
-
-					newTile.setPosition(toISO(x, y));
-					newTile.setOrigin(origin);
-					mapSprites.emplace_back(newTile);
-				}
-
-			}
-		}
-
-		for (const auto& sprite : mapSprites)
-		{
-			window.draw(sprite);
-		}
-
-
-		//Add selected tile
+		tileMap.update(gameStateCopy, *selectedGameStateCopy, fowSettings.renderFogOfWar, fowSettings.renderType);
+		window.draw(tileMap);
+		
+		//Add selected tileactionSettings.waitingForPosition
 		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
-
+		
 		if (selectedGameStateCopy->isInBounds(Vector2i(mouseGridPos.x, mouseGridPos.y)))
 		{
 			sf::Texture& texture = assetCache.getTexture("selected");
 			sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
 			sf::Sprite selectedTile(texture);
-
+		
 			selectedTile.setPosition(toISO(mouseGridPos.x, mouseGridPos.y));
 			selectedTile.setOrigin(origin);
 			overlaySprites.emplace_back(selectedTile);
 		}
-
+		
 		for (const auto& sprite : overlaySprites)
 		{
 			window.draw(sprite);
 		}
-
-		//Draw entities
-		for (auto& entity : selectedGameStateCopy->entities)
-		{
-			//Check if entity have sprite
-			auto& entityType = selectedGameStateCopy->getEntityType(entity.typeID);
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(entityType.name);
-			//sf::Vector2f origin(0, texture.getSize().y / 1.4);
-			//sf::Vector2f origin(TILE_ORIGIN_X, TILE_ORIGIN_Y);
-			sf::Vector2f origin(texture.getSize().x / 4, texture.getSize().y / 1.4);
-			sf::Sprite newUnit(texture);
-			sf::Vector2f pos = toISO(entity.position.x, entity.position.y);
-			newUnit.setPosition(pos.x /*+ TILE_WIDTH_HALF / 2*/, pos.y /*+ TILE_HEIGHT_HALF / 2*/);
-
-			newUnit.setOrigin(origin);
-			entitySprites.emplace_back(newUnit);
 		
-			//Change siloutte color with the players color
-			if(!entity.isNeutral())
-			{
-				outLineShadeR.setUniform("targetCol", sf::Glsl::Vec4(playerColors[entity.ownerID]));
-				window.draw(newUnit, &outLineShadeR);
-			}
-			else
-			{
-				window.draw(newUnit);
-			}
-			
-			//Add units text info
-			sf::Text unitInfo;
-			unitInfo.setFont(assetCache.getFont("font"));
-			std::string info = "PlayerID: " + std::to_string(entity.ownerID) + " ID: " + std::to_string(entity.id);
-			/*const auto& entityType=gameStateCopy.getEntityType(entity.typeID);*/
+		//Draw entities
+		entityRenderer.update(*selectedGameStateCopy);
+		window.draw(entityRenderer);
 
-			for (size_t i = 0; i < entity.parameters.size(); i++)
-			{
-				// Create an output string stream
-				std::ostringstream streamObj3;
-				// Set Fixed -Point Notation
-				streamObj3 << std::fixed;
-				// Set precision to 2 digits
-				streamObj3 << std::setprecision(2);
-				streamObj3 << entity.parameters[i];
-
-				info += "/" + streamObj3.str();
-			}
-
-			unitInfo.setString(info);
-			unitInfo.setPosition(toISO(entity.position.x, entity.position.y));
-			entityInfo.emplace_back(unitInfo);
-		}
-	
-		for (const auto& info : entityInfo)
+		//Draw possible actions
+		actionsShapes.clear();
+		if(actionsSettings.waitingForPosition)
 		{
-			window.draw(info);
-		}
-
-		//Draw selectedtile
-		//Add actions if we have actions to draw
-		if (actionHumanUnitSelected.size() > 0)
-		{
-			for (const auto& action : actionHumanUnitSelected)
+			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
-				if (action.actionTypeID == -1)
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.actionTypeID == -1||possibleAction.actionTypeFlags==ActionFlag::ContinuousAction
+					||possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction
+					||possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					continue;
+
+				//Get source
+				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
+				
+				//Check the source and the selected entity is the same
+				if (actionType.sourceType == ActionSourceType::Entity)
+				{
+					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					if (entity.id != *actionsSettings.selectedEntities.begin())
+						continue;
+
+				}
+				
+				for (auto& actionTarget : possibleAction.targets)
+				{
+					if (actionTarget.getType() == ActionTarget::Position)
+					{
+						auto& position = actionTarget.getPosition(gameStateCopy);
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+
+						sf::Vector2f temp = toISO(position.x, position.y);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
+			}
+		}
+		else if (actionsSettings.waitingForEntity)
+		{
+			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
+			{
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction||
+					possibleAction.actionTypeID!=actionsSettings.actionTypeSelected)
 					continue;
 				
-				ActionType& actionType = selectedGameStateCopy->getActionType(action.actionTypeID);
-				
 				//Get source
-				if (actionType.actionTargets.type == TargetType::Entity)
+				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
 
+				//Check the source and the selected entity is the same
+				if(actionType.sourceType==ActionSourceType::Entity)
 				{
-					const Entity& targetEntity = action.targets[1].getEntity(*selectedGameStateCopy);
+					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					if (entity.id != *actionsSettings.selectedEntities.begin())
+						continue;
 
-					sf::CircleShape shape(15);
-					sf::Vector2f temp = toISO(targetEntity.position.x, targetEntity.position.y);
-
-
-					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-					actionsSelectedEntity.emplace_back(shape);
 				}
-				else if (actionType.actionTargets.type == TargetType::Position)
-				{
-					const Vector2f& targetPos = action.targets[1].getPosition(gameStateCopy);
-
-
-					sf::CircleShape shape(15);
-					sf::Vector2f temp = toISO(targetPos.x, targetPos.y);
-
-					shape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
-					actionsSelectedEntity.emplace_back(shape);
-					shape.setFillColor(sf::Color::Green);
-				}
-
 				
+				//Avoid source entity
+				for (int i = 1; i < possibleAction.targets.size(); ++i)
+				{
+					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
+					{
+						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+
+						sf::Vector2f temp = toISO(position.x, position.y);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
 			}
 		}
 
-		for (const auto& sprite : actionsSelectedEntity)
-		{
-			window.draw(sprite);
-		}
 	}
 
 	void TBSGameStateRender::createHUD(sf::RenderWindow& window)
@@ -531,7 +446,6 @@ namespace SGA
 		createWindowInfo();
 		createWindowUnits();
 		createWindowActions();
-		createWindowMultipleActions(window);
 		createWindowPlayerParameters();
 		
 		createEntityInformation(window);
@@ -569,7 +483,7 @@ namespace SGA
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Fog of War window");
 
-		if(fowController(gameStateCopy, fowSettings))
+		if(Widgets::fowController(gameStateCopy, fowSettings))
 		{
 			// Selected player changed -> Re-Apply FogOfWar
 			gameStateCopyFogOfWar = game->getStateCopy();
@@ -605,7 +519,7 @@ namespace SGA
 
 	void TBSGameStateRender::createEntityInformation(sf::RenderWindow& window)
 	{
-		if(selectedEntityID!=-1)
+		if(!actionsSettings.selectedEntities.empty())
 		{
 			ImGuiWindowFlags window_flags = 0;
 			//window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -622,7 +536,7 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
+			auto* selectedEntity = gameStateCopy.getEntity(*actionsSettings.selectedEntities.begin());
 			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
 			
 			ImGui::Text(entityType.name.c_str());
@@ -670,7 +584,7 @@ namespace SGA
 
 				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
 				{
-					selectedEntityID = entity->id;
+					/*selectedEntityID = entity->id;*/
 				}
 				ImGui::SameLine();
 			}
@@ -709,93 +623,11 @@ namespace SGA
 
 		ImGui::Text("Actions");
 		
-		//Load selected entity action types	
-		std::vector<int> actionTypes;		
-		if(selectedEntityID!=-1)
-		{
-			auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-			int entityTypeID = selectedEntity->typeID;
+		//Ask widget to get		
+		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
-
-			for (auto &actionID : gameStateCopy.getEntityType(entityTypeID).actionIds)
-			{
-				actionTypes.emplace_back(actionID);
-			}
-		}
-		else
-		{
-			//Load player action types	
-			for (auto& attachedAction : gameStateCopy.getPlayer(getPlayerID())->attachedActions)
-			{
-				actionTypes.emplace_back(attachedAction.actionTypeID);
-			}
-		}
-
-		//Change selected actiontype 
-		int elementNumber = 0;
-		for(auto &actionType : actionTypes)
-		{
-			ImGui::PushID(elementNumber);
-
-			//Check if entity or player has running a continuous action of this type
-			if (selectedEntityID != -1)
-			{
-				auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-				for (auto& action : selectedEntity->continuousAction)
-				{
-					if(action.actionTypeID==actionType)
-					{
-						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-						if(ImGui::Button("Abort", ImVec2(100, 50)))
-						{
-							playAction(Action::createAbortAction(getPlayerID(),selectedEntityID,action.continuousActionID));
-							selectedActionType = -1;
-							updatePossibleActions();
-						}
-						ImGui::PopStyleColor(3);
-						
-						goto  FINISH;
-						break;
-					}
-				}
-			}
-			else
-			{
-				
-				for (auto& action : gameStateCopy.getPlayer(getPlayerID())->continuousAction)
-				{
-					if (action.actionTypeID == actionType)
-					{
-						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
-						if (ImGui::Button("Abort", ImVec2(100, 50)))
-						{
-							playAction(Action::createAbortAction(getPlayerID(), action.continuousActionID));
-							selectedActionType = -1;
-							updatePossibleActions();
-						}
-						ImGui::PopStyleColor(3);
-
-						goto  FINISH;
-						break;
-					}
-				}
-			}
-			
-			//We dont have the continuousAction
-			if (ImGui::Button(gameStateCopy.getActionType(actionType).name.c_str(), ImVec2(100, 50)))
-			{
-				selectedActionType = actionType;
-				updatePossibleActions();
-			}
-			FINISH:
-			
-			ImGui::SameLine();
-			ImGui::PopID();
-		}
+		if (!actionsToExecute.empty())
+			playAction(actionsToExecute.front());
 		
 		ImGui::Separator();
 		ImGui::End();
@@ -832,13 +664,13 @@ namespace SGA
 		ImGui::BeginGroup();
 
 		int index = 0;
-		for (auto action : actionHumanUnitSelected)
+		for (auto action : actionsSettings.actionsHumanPlayer)
 		{
 
 			std::string actionInfo = std::to_string(index);
 			if (action.actionTypeID == -1)
 			{
-				if (action.actionTypeFlags == AbortContinuousAction)
+				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 				{
 					if(action.targets[0].getType()==ActionTarget::EntityReference)
 					{
@@ -848,7 +680,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -861,7 +693,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -875,7 +707,7 @@ namespace SGA
 			}
 			else
 			{
-				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
 
 				actionInfo += " " + actionType.name;
 
@@ -947,62 +779,4 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void TBSGameStateRender::createWindowMultipleActions(sf::RenderWindow& window)
-	{
-
-		if (showMultipleActions)
-		{
-			ImGui::SetNextWindowSize(ImVec2(100, 100), ImGuiCond_FirstUseEver);
-			ImGui::SetNextWindowPos(window.mapCoordsToPixel(toISO(multipleActionsSourceTile.x, multipleActionsSourceTile.y)));
-			ImGui::Begin("PlayAction");
-			ImGui::BeginChild("Scrolling");
-			ImGui::BeginGroup();
-
-			int index = 0;
-			for (auto action : actionHumanUnitSelected)
-			{
-				ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
-				if (actionType.sourceType == ActionSourceType::Unit)
-				{
-					if (actionType.actionTargets.type == TargetType::Entity)
-					{
-						auto& entity = action.targets[1].getEntity(gameStateCopy);
-
-						if (entity.position == multipleActionsSourceTile)
-						{
-							std::string actionInfo = std::to_string(index) + " " + actionType.name;
-							index++;
-
-							if (ImGui::Button(actionInfo.c_str()))
-							{
-								playAction(action);
-								break;
-							}
-						}
-					}
-					else if(actionType.actionTargets.type == TargetType::Position)
-					{
-						if (action.targets[1].getPosition(gameStateCopy) == multipleActionsSourceTile)
-						{
-							std::string actionInfo = std::to_string(index) + " " + actionType.name;
-							index++;
-
-							if (ImGui::Button(actionInfo.c_str()))
-							{
-								playAction(action);
-								break;
-							}
-						}
-					}
-
-
-				}
-
-			}
-
-			ImGui::EndGroup();
-			ImGui::EndChild();
-			ImGui::End();
-		}
-	}
 }

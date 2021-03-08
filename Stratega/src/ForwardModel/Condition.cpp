@@ -84,10 +84,10 @@ namespace  SGA
 	bool InRange::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& source = sourceEntity.getEntity(state, targets);
-		const auto& target = targetEntity.getEntity(state, targets);
+		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
 
-		return source.position.distance(target.position) <= dist;
+		return source.position.distance(target) <= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::vector<FunctionParameter>& parameters)
@@ -147,19 +147,21 @@ namespace  SGA
 
 	bool CanSpawnCondition::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
-		const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
+		int playerID = sourceEntityParam.getPlayerID(state, targets);
+		//const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 		const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
 		// Check if we fullfill the technology-requirements for the target entity
 		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.technologyTreeCollection->isResearched(sourceEntity.ownerID, targetEntityType.requiredTechnologyID))
+			!state.technologyTreeCollection->isResearched(playerID, targetEntityType.requiredTechnologyID))
 		{
 			return false;
 		}
 		
 		// Check if we are allowed to spawn this entity
-		const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-		if(sourceEntityType.spawnableEntityTypes.find(targetEntityType.id) == sourceEntityType.spawnableEntityTypes.end())
+		//const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+		const auto& spawneableEntities = sourceEntityParam.getSpawneableEntities(state, targets);
+		if(spawneableEntities.find(targetEntityType.id) == spawneableEntities.end())
 		{
 			return false;
 		}

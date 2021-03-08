@@ -28,91 +28,45 @@ namespace SGA
 	}
 	
 	void Attack::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{
-		if(const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
-		{
-			auto& entity = resourceReference.getEntity(state, targets);
-			auto& targetResource = resourceReference.getParameterValue(state, targets);
-			auto amount = this->amount.getConstant(state, targets);
+	{		
+		auto& entity = resourceReference.getEntity(state, targets);
+		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto amount = this->amount.getConstant(state, targets);
 
-			targetResource -= amount;
-			if (targetResource <= 0)
-				entity.shouldRemove = true;
-		}
+		targetResource -= amount;
+		if (targetResource <= 0)
+			entity.shouldRemove = true;
 	}
 
+	Move::Move(const std::vector<FunctionParameter>& parameters)
+		: entityParam(parameters[0]), targetPositionParam(parameters[1])
+	{
+	}
 	
 	void Move::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
+		auto& entity = entityParam.getEntity(state, targets);
+		auto targetPosition = targetPositionParam.getPosition(state, targets);
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
-			auto& tbsState = dynamic_cast<TBSGameState&>(state);
-			auto& entity = targets[0].getEntity(state);
-			auto newPos = targets[1].getPosition(state);
-			tbsFM->moveEntity(tbsState, entity, newPos);
+			entity.position = { std::floor(targetPosition.x), std::floor(targetPosition.y) };
 		}
 		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
 		{
-			Entity& unit = targets[0].getEntity(state);
-			Vector2f targetPos = targets[1].getPosition(state);
-
 			//Get end position of current path
-			Vector2f oldTargetPos(0, 0);
-			oldTargetPos.x = unit.path.m_straightPath[(unit.path.m_nstraightPath - 1) * 3];
-			oldTargetPos.y = unit.path.m_straightPath[((unit.path.m_nstraightPath - 1) * 3) + 2];
+			Vector2f oldTargetPos;
+			oldTargetPos.x = entity.path.m_straightPath[(entity.path.m_nstraightPath - 1) * 3];
+			oldTargetPos.y = entity.path.m_straightPath[((entity.path.m_nstraightPath - 1) * 3) + 2];
 
-			//Check if path is empty or is a diferent path to the target pos
-			if (unit.path.m_nstraightPath == 0 || targetPos != oldTargetPos)
+			// Compute a new path if the entity doesn't have one or the new target is different from the old one
+			if (entity.path.isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
 			{
 				const auto& rtsState = dynamic_cast<RTSGameState&>(state);
-				Path path = rtsFM->findPath(rtsState, unit.position, targetPos);
-				unit.path = path;
-				unit.path.currentPathIndex++;
-			}
-
-			//Check if path has points to visit
-			if (unit.path.m_nstraightPath > 0)
-			{
-				//Assign the current path index as target
-				targetPos = Vector2f(unit.path.m_straightPath[unit.path.currentPathIndex * 3], unit.path.m_straightPath[unit.path.currentPathIndex * 3 + 2]);
-			}
-
-			auto movementDir = targetPos - unit.position;
-			auto movementDistance = movementDir.magnitude();
-			auto movementSpeed = unit.movementSpeed * rtsFM->deltaTime;
-			if (movementDistance <= movementSpeed)
-			{
-				unit.path.currentPathIndex++;
-				if (unit.path.m_nstraightPath <= unit.path.currentPathIndex)
-				{
-					if (movementDistance <= movementSpeed) {
-						unit.position = targetPos;
-						//unit.executingAction.type = RTSActionType::None;
-						unit.executingAction = Action();
-						unit.path = Path();
-					}
-				}
-			}
-			else
-			{
-				unit.position = unit.position + (movementDir / movementDir.magnitude()) * movementSpeed;
+				Path path = rtsFM->findPath(rtsState, entity.position, targetPosition);
+				entity.path = path;
+				entity.path.currentPathIndex++;
 			}
 		}
-	}
-
-	SpawnUnit::SpawnUnit(const std::vector<FunctionParameter>& parameters)
-		: entityTypeParam(parameters[0]), targetPositionParam(parameters[1])
-	{	
-	}
-
-	void SpawnUnit::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{		
-		int playerID = -1;
-
-		playerID = targets[0].getPlayerID(state);
-				
-		const auto& entityType = entityTypeParam.getEntityType(state, targets);
-		fm.spawnEntity(state, entityType, playerID, targetPositionParam.getPosition(state, targets));
 	}
 
 	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
@@ -216,6 +170,21 @@ namespace SGA
 		}
 	}
 
+
+	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	{
+	}
+
+	void SpawnEntity::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& ownerID = spawnSource.getPlayerID(state, targets);
+		const auto& entityType = entityTypeParam.getEntityType(state, targets);
+		auto targetPosition = targetPositionParam.getPosition(state, targets);
+		fm.spawnEntity(state, entityType, ownerID, targetPosition);
+	}
+
+	
 	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
 		: sourceParam(parameters[0]), costParam(parameters[1])
 	{

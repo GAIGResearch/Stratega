@@ -12,7 +12,7 @@ namespace SGA
 	
 	class EntityForwardModel;
 	
-	enum ActionFlag
+	enum class ActionFlag
 	{
 		None = 1 << 0,
 		EndTickAction = 1 << 1,
@@ -23,13 +23,12 @@ namespace SGA
 	struct Action
 	{
 		Action():
+			actionTypeFlags(ActionFlag::None),
 			actionTypeID(-1),
 			ownerID(0),
-			elapsedTicks(0),
 			continuousActionID(-1),
-			actionTypeFlags(None)
+			elapsedTicks(0)
 		{
-			
 		}
 		
 		ActionFlag actionTypeFlags;
@@ -46,11 +45,15 @@ namespace SGA
 		
 		void execute(GameState& state, const EntityForwardModel& fm) const;
 
+		[[nodiscard]] bool isEntityAction() const;
+		[[nodiscard]] bool isPlayerAction() const;
+		[[nodiscard]] int getSourceID() const;
+
 		static Action createEndAction(int playerID)
 		{
 			Action a;
 			a.actionTypeID = -1;
-			a.actionTypeFlags = EndTickAction;
+			a.actionTypeFlags = ActionFlag::EndTickAction;
 			a.ownerID = playerID;
 			return a;
 		}
@@ -59,7 +62,7 @@ namespace SGA
 		{
 			Action a;			
 			a.ownerID = playerID;			
-			a.actionTypeFlags = AbortContinuousAction;
+			a.actionTypeFlags = ActionFlag::AbortContinuousAction;
 			a.continuousActionID = continuousActionID;
 			a.targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
@@ -70,7 +73,7 @@ namespace SGA
 		{
 			Action a;
 			a.ownerID = playerID;
-			a.actionTypeFlags = AbortContinuousAction;
+			a.actionTypeFlags = ActionFlag::AbortContinuousAction;
 			a.continuousActionID = continuousActionID;
 			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));

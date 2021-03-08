@@ -12,6 +12,7 @@ namespace SGA
 		int id;
 		std::vector<int> parentIDs;
 		std::unordered_map<ParameterID, double> cost;
+		double continuousActionTime;
 	};
 
 	class TechnologyTreeType
@@ -28,16 +29,13 @@ namespace SGA
 		const TechnologyTreeNode& getTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
-
-
 			const auto& it = technologies.find(technologyID);
-
 
 			if (it != technologies.end())
 				//We found the technology						
 				return it->second;
 		}
-
+		
 		bool findTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
@@ -113,12 +111,9 @@ namespace SGA
 
 				if (!isResearched(playerID, technologyParentNode.id))
 				{
-					std::cout << "Can't research " << technologyNode.name << std::endl;
 					return false;
 				}
 			}
-
-			std::cout << "Can research " << technologyNode.name << std::endl;
 			return true;
 		}
 

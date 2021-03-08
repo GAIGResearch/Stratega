@@ -39,7 +39,7 @@ namespace SGA
 					gameCommunicator.executeAction(action);
 					
 					// remember latest action in case the search should be continued
-					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags==EndTickAction) ? bestActionIndex : -1;
+					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 				}
 			}

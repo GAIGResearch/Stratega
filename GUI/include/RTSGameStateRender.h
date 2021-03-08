@@ -6,8 +6,13 @@
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
 
+#include <Widgets/ActionsController.h>
+
 namespace SGA
 {
+	struct GameConfig;
+	struct RenderConfig;
+	
 	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
 	{
 	public:
@@ -15,8 +20,8 @@ namespace SGA
 
 		//Debug mode
 		bool drawDebug = false;
-
-		RTSGameStateRender(RTSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+		
+		RTSGameStateRender(RTSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
 		void render() override;
 
 		// GameCommunicator functions
@@ -24,12 +29,12 @@ namespace SGA
 
 		bool isSelected(int unitID)
 		{
-			return selectedUnits.find(unitID) != selectedUnits.end();
+			return actionsSettings.selectedEntities.find(unitID) != actionsSettings.selectedEntities.end();
 		}
 
 	private:
 		void init() override;
-		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
+		void init(const GameConfig& gameConfig, const RenderConfig& renderConfig);
 		void initializeView(sf::RenderWindow& window) const;
 		
 		void handleInput(sf::RenderWindow& window);
@@ -52,9 +57,20 @@ namespace SGA
 		void createBottomBar(sf::RenderWindow& window);
 		void createWindowInfo(sf::RenderWindow& window);
 		void createWindowUnits();
+		void createWindowActionList();
 		void createWindowNavMesh();
 		void createWindowFogOfWar();
-
+		void createWindowPlayerParameters() const;
+		
+		void playAction(std::vector<Action> actionsToPlay)
+		{
+			for (auto& element : actionsToPlay)
+			{
+				game->executeAction(element);
+			}
+			
+			actionsSettings.reset();
+		}
 	private:
 		//Game Data
 		RTSGame* game;
@@ -78,10 +94,7 @@ namespace SGA
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
 		CircularBuffer<RTSGameState> gameStatesBuffer;
-		int gameStatesBufferRCurrentIndex = 0;
-
-		//Human player
-		std::unordered_set<int> selectedUnits;
+		int gameStatesBufferRCurrentIndex = 0;		
 
 		//Imgui
 		sf::Clock deltaClock;
@@ -94,10 +107,6 @@ namespace SGA
 
 		NavigationConfig config;
 
-		std::vector<sf::Text> unitsInfo;
-		std::vector<sf::RectangleShape> healthBars;
-
 		sf::RenderTexture renderMinimapTexture;
-
 	};
 }

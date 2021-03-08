@@ -14,11 +14,7 @@ namespace SGA
 			id(0),
 			ownerID(0),
 			position(),
-		    intendedAction(),
-		    executingAction(),
 		    path(),
-		    actionCooldown(0),
-		    maxActionCooldown(1),
 		    movementSpeed(2),
 		    collisionRadius(0.5),
 			lineOfSightRange(5)
@@ -35,16 +31,21 @@ namespace SGA
 		float lineOfSightRange;
 
 		//RTS Stuff
-		std::optional<Action> intendedAction;
-		std::optional<Action> executingAction;
 		Path path;
-		double actionCooldown;
-		double maxActionCooldown;
 		double movementSpeed;
 		float collisionRadius;
 
 		//Continuous Action
 		std::vector<Action> continuousAction;
 		bool isNeutral() const;
+
+		const ActionInfo& getActionInfo(int actionTypeID) const
+		{
+			for (auto& actionInfo : attachedActions)
+			{
+				if (actionInfo.actionTypeID == actionTypeID)
+					return actionInfo;
+			}
+		}
 	};
 }

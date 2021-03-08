@@ -23,6 +23,11 @@ namespace SGA
 		return FunctionParameter(Type::EntityPlayerReference, { .argumentIndex = argumentIndex });
 	}
 
+	FunctionParameter FunctionParameter::createTimeReference(int argumentIndex)
+	{
+		return FunctionParameter(Type::TimeReference, { .argumentIndex = argumentIndex });
+	}
+
 	FunctionParameter FunctionParameter::createEntityPlayerParameterReference(ParameterReference ref)
 	{
 		return FunctionParameter(Type::EntityPlayerParameterReference, { .parameterData = ref });
@@ -61,9 +66,32 @@ namespace SGA
 			case Type::Constant: return data.constValue;
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference: return getParameterValue(state, actionTargets);
+			case Type::TimeReference: return getTime(state, actionTargets);
 			default:
 				throw std::runtime_error("Type not recognised");
 		}
+	}
+	
+	double FunctionParameter::getTime(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (parameterType == Type::TimeReference)
+		{
+			auto& target = actionTargets[data.argumentIndex];
+			if (target.getType() == ActionTarget::TechnologyReference)
+			{
+				auto technologyID = target.getTechnologyID();
+				return state.technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
+			}
+			else if (target.getType() == ActionTarget::EntityReference
+				|| target.getType() == ActionTarget::EntityTypeReference)
+			{
+				auto& entityType = target.getEntityType(state);
+				return entityType.continuousActionTime;
+			}
+
+		}
+		
+		throw std::runtime_error("Type not recognized");
 	}
 
 	const Parameter& FunctionParameter::getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -117,8 +145,6 @@ namespace SGA
 				auto& player = getPlayer(state, actionTargets);
 				return player.parameters[param.index];
 			}
-
-			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
@@ -173,10 +199,10 @@ namespace SGA
 	{
 		switch (parameterType)
 		{
+			
 		case Type::ParameterReference:
 		{
-			auto playerID = actionTargets[data.parameterData.argumentIndex].getPlayerID(state);
-			return *state.getPlayer(playerID);
+			return actionTargets[data.parameterData.argumentIndex].getPlayer(state);
 		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
@@ -193,6 +219,26 @@ namespace SGA
 		}
 	}
 
+
+	int FunctionParameter::getPlayerID(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			const auto& entity = getEntity(state, actionTargets);
+			return entity.ownerID;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getPlayerID(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
+	}
+	
 	const Player& FunctionParameter::getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		return getPlayer(const_cast<GameState&>(state), const_cast<std::vector<ActionTarget>&>(actionTargets));
@@ -211,6 +257,29 @@ namespace SGA
 		}
 		
 		throw std::runtime_error("Type not recognised");
+	}
+
+	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ParameterReference:
+		{
+			return actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
+		}
+		case Type::EntityPlayerParameterReference:
+		case Type::EntityPlayerReference:
+		{
+			const auto& entity = getEntityType(state, actionTargets);
+			return entity.spawnableEntityTypes;
+		}
+		case Type::ArgumentReference:
+		{
+			return actionTargets[data.argumentIndex].getSpawneableEntities(state);
+		}
+		default:
+			throw std::runtime_error("Type not recognised");
+		}
 	}
 
 	const TechnologyTreeNode& FunctionParameter::getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const

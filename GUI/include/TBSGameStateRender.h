@@ -11,10 +11,13 @@
 
 namespace SGA
 {
+	struct RenderConfig;
+	struct GameConfig;
+	
 	class TBSGameStateRender : public GameStateRenderer<TBSGameState>
 	{
 	public:
-		TBSGameStateRender(TBSGame& game, const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths, int playerID);
+		TBSGameStateRender(TBSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
 		void render() override;
 
 		// GameCommunicator functions
@@ -22,7 +25,7 @@ namespace SGA
 
 	private:
 		void init() override;
-		void init(const std::unordered_map<int, std::string>& tileSprites, const std::map<std::string, std::string>& entitySpritePaths);
+		void init(const GameConfig& gameConfig, const RenderConfig& renderConfig);
 		void initializeView(sf::RenderWindow& window) const;
 		
 		void handleInput(sf::RenderWindow& window);
@@ -45,7 +48,6 @@ namespace SGA
 		void createWindowUnits();
 		void createWindowActions();
 		void createWindowPlayerParameters() const;
-		void createWindowMultipleActions(sf::RenderWindow& window);
 		void createWindowFogOfWar();
 		void createTopBar() const;
 		void createEntityInformation(sf::RenderWindow& window);
@@ -56,96 +58,18 @@ namespace SGA
 		void waitForHumanToPlay()
 		{
 			waitForAction = true;
-
-			actionsHumanCanPlay = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
-			actionHumanUnitSelected.clear();
+			
+			//Update actions
+			actionsSettings.actionsHumanPlayer = game->getForwardModel().generateActions(gameStateCopyFogOfWar, getPlayerID());
 		}
 
 		void playAction(Action action)
 		{
 			waitForAction = false;
-			actionsHumanCanPlay.clear();
-			actionHumanUnitSelected.clear();
-			showMultipleActions = false;
-			
+			actionsSettings.reset();
 			game->addActionToExecute(action);
 		}
-
-		void updatePossibleActions()
-		{
-			actionHumanUnitSelected.clear();
-			
-			if (selectedActionType == -1)
-				return;
-			
-			//Check if we have selected a entity
-			//if not, we take the player actions
-			if(selectedEntityID!=-1)
-			{
-				auto* selectedEntity = gameStateCopy.getEntity(selectedEntityID);
-				if (selectedEntity->ownerID == gameStateCopy.currentPlayer)
-				{					
-					for (const auto& action : actionsHumanCanPlay)
-					{
-						//If is player unit action or globlal action(i.e End turn)
-
-						//SpecialActions like EndTurn and AbortContinunousAction
-						if (action.actionTypeID == -1)
-						{
-							if (action.actionTypeFlags == AbortContinuousAction)
-							{
-								if (action.targets[0].getType() == ActionTarget::EntityReference)
-									if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
-										actionHumanUnitSelected.emplace_back(action);
-							}
-							continue;
-						}
-							
-													
-						//Other actions
-						auto& actionType = gameStateCopy.getActionType(action.actionTypeID);
-						
-						if (actionType.id != selectedActionType)
-							continue;
-						if(actionType.sourceType==ActionSourceType::Unit)
-						{
-							if(action.targets[0].getEntityID()==selectedEntityID)
-							actionHumanUnitSelected.emplace_back(action);
-						}
-						else if (actionType.actionTargets == TargetType::ContinuousAction)
-						{
-							if (action.targets[0].getEntity(gameStateCopy).id == selectedEntity->id)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-					}
-				}
-			}
-			else
-			{
-				for (const auto& action : actionsHumanCanPlay)
-				{
-					//SpecialActions like EndTurn and AbortContinunousAction
-					if (action.actionTypeID == -1)
-					{
-						if (action.actionTypeFlags == AbortContinuousAction)
-						{
-							if (action.targets[0].getType() == ActionTarget::PlayerReference)
-								actionHumanUnitSelected.emplace_back(action);
-						}
-						continue;
-					}
-										
-					if (action.actionTypeID != selectedActionType)
-						continue;
-					
-					auto& actionType = gameStateCopy.getActionType(action.actionTypeID);										
-					if (actionType.sourceType == ActionSourceType::Player)
-					{
-						actionHumanUnitSelected.emplace_back(action);
-					}		
-				}
-			}
-		}
+		
 	private:
 
 		//Game Data
@@ -174,10 +98,6 @@ namespace SGA
 
 		//Human player
 		bool waitForAction = false;
-		std::vector<Action> actionsHumanCanPlay;
-
-		std::vector<Action> actionHumanUnitSelected;
-		int selectedEntityID=-1;
 
 		//Imgui
 		sf::Clock deltaClock;

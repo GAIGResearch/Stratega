@@ -4,7 +4,7 @@ namespace SGA
 {
 	enum class ActionSourceType
 	{
-		Unit,
+		Entity,
 		Player
 	};
 }

@@ -31,7 +31,7 @@ namespace SGA
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
 		factory.registerFunction<Move>("Move");
-		factory.registerFunction<SpawnUnit>("Spawn");
+		factory.registerFunction<SpawnEntity>("SpawnEntity");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
 		factory.registerFunction<TransferEffect>("Transfer");
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
