@@ -153,6 +153,9 @@ namespace SGA
 				{
 					auto penetrationDepth = unit.collisionRadius + otherUnit.collisionRadius - dir.magnitude();
 					pushDir = pushDir + dir.normalized() * 2 / (1 + penetrationDepth);
+					
+					//Soft collision
+					pushDir =pushDir/4;
 				}
 			}
 

@@ -30,7 +30,7 @@ namespace SGA
 	public:
 		GameStateRenderer(int playerID) :
 			GameStateRenderBase{ playerID },
-			fowSettings{true, FogRenderType::Fog, playerID == -1 ? 0 : playerID}
+			fowSettings{true, FogRenderType::Tiles, playerID == -1 ? 0 : playerID}
 		{
 		}
 		virtual ~GameStateRenderer() = default;
@@ -56,16 +56,19 @@ namespace SGA
 		sf::Context ctx;
 
 		AssetCache assetCache;
+
+		Widgets::ActionsSettings actionsSettings;
+		
 	protected:
 		std::vector<sf::Sprite> overlaySprites;
-		std::vector<sf::CircleShape> actionsSelectedEntity;
+		
+		std::vector<sf::CircleShape> actionsShapes;
 
 		TileMap tileMap;
 		EntityRenderer entityRenderer;
 		
 		bool isRendering = false;
 		Widgets::FogOfWarSettings fowSettings;
-		Widgets::ActionsSettings actionSettings;
 	};
 
 }

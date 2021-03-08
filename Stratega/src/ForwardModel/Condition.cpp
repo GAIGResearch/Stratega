@@ -84,10 +84,10 @@ namespace  SGA
 	bool InRange::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& source = sourceEntity.getEntity(state, targets);
-		const auto& target = targetEntity.getEntity(state, targets);
+		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
 
-		return source.position.distance(target.position) <= dist;
+		return source.position.distance(target) <= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::vector<FunctionParameter>& parameters)

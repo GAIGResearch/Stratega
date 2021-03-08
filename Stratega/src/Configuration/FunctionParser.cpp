@@ -85,7 +85,7 @@ namespace SGA
 
 		if (std::isdigit(ss.peek()))
 		{
-			int value;
+			float value;
 			ss >> value;
 			return FunctionParameter::createConstParameter(static_cast<double>(prefix == '-' ? -value : value));
 		}

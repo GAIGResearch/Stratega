@@ -39,7 +39,7 @@ namespace SGA
 			auto yCountF = xCountF * ratio;
 
 			// Since we don't want to split up a texture, turn the square into a slightly inaccurate rectangle
-			spriteCounts.x = static_cast<int>(xCountF);
+			spriteCounts.x = static_cast<int>(std::ceil(xCountF));
 			spriteCounts.y = static_cast<int>(std::ceil(yCountF));
 			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
 

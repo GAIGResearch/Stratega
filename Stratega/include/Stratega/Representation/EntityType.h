@@ -28,6 +28,5 @@ namespace SGA
 		const Parameter& getParameter(ParameterID id) const;
 		bool canExecuteAction(int actionTypeID) const;
 		Entity instantiateEntity(int entityID) const;
-
 	};
 }

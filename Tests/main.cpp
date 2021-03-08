@@ -8,7 +8,7 @@
 
 int main(int argc, char **argv)
 {
-    std::string filename = "../../../gameConfigs/KillTheKing.yaml";
+    std::string filename = "../../../gameConfigs/TBS/KillTheKing.yaml";
     if(argc > 1)
         filename = argv[1];
     else

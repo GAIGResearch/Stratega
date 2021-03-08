@@ -34,5 +34,14 @@ namespace SGA
 		std::vector<std::shared_ptr<Effect>> OnTick;
 		std::vector<std::shared_ptr<Effect>> OnComplete;
 		std::vector<std::shared_ptr<Effect>> OnAbort;
+
+		const std::vector<std::shared_ptr<Condition>>& getTargetConditions(const TargetType& searchingTarget) const
+		{
+			for (auto& actionTarget : actionTargets)
+			{
+				if (actionTarget.first == searchingTarget)
+					return actionTarget.second;
+			}
+		}
 	};
 }
