@@ -93,7 +93,7 @@ namespace SGA
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::unordered_map<ParameterID, double>& getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::unordered_map<ParameterID, Parameter>& getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		double FunctionParameter::getTime(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double getTime(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		std::vector<double>& getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::vector<double>& getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 			};

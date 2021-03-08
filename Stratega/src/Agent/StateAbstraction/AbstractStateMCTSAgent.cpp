@@ -84,7 +84,7 @@ namespace SGA
 					const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
 					auto bestAction = rootNode->actionSpace.at(bestActionIndex);
 
-					previousActionIndex = (bestAction.actionTypeFlags == EndTickAction) ? -1 : bestActionIndex;
+					previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
 					
 
 					// return best action
