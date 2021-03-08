@@ -38,5 +38,14 @@ namespace SGA
 		//Continuous Action
 		std::vector<Action> continuousAction;
 		bool isNeutral() const;
+
+		const ActionInfo& getActionInfo(int actionTypeID) const
+		{
+			for (auto& actionInfo : attachedActions)
+			{
+				if (actionInfo.actionTypeID == actionTypeID)
+					return actionInfo;
+			}
+		}
 	};
 }

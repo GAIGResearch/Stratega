@@ -31,7 +31,7 @@ namespace YAML
                 return false;
 
             // Hardcode shader Path
-            rhs.outlineShaderPath = "../GUI/Assets/OutLine.frag";
+            rhs.outlineShaderPath = "../../GUI/Assets/OutLine.frag";
         	
         	for(const auto& entityNode : node["Entities"])
         	{
@@ -41,7 +41,7 @@ namespace YAML
         	}
         	
             //Add Fog of War tile
-            rhs.tileSpritePaths.emplace("FogOfWar", "../GUI/Assets/Tiles/notVisible.png");
+            rhs.tileSpritePaths.emplace("FogOfWar", "../../GUI/Assets/Tiles/notVisible.png");
         	
             for (const auto& tileNode : node["Tiles"])
             {

@@ -58,7 +58,7 @@ namespace YAML
                 return false;
             auto value = node.as<std::string>();
             if (value == "EntityAction")
-                rhs = SGA::ActionSourceType::Unit;
+                rhs = SGA::ActionSourceType::Entity;
             else if (value == "PlayerAction")
                 rhs = SGA::ActionSourceType::Player;
             else
@@ -111,6 +111,8 @@ namespace YAML
                 rhs = SGA::ShapeType::Cross;
             else if (value == "Line")
                 rhs = SGA::ShapeType::Line;
+            else if (value == "AllPositions")
+                rhs = SGA::ShapeType::AllPositions;
             else
                 return false;
 

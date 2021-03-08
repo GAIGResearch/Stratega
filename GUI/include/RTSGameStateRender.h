@@ -20,8 +20,6 @@ namespace SGA
 
 		//Debug mode
 		bool drawDebug = false;
-
-		Widgets::ActionsSettings actionsSettings;
 		
 		RTSGameStateRender(RTSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
 		void render() override;
@@ -31,7 +29,7 @@ namespace SGA
 
 		bool isSelected(int unitID)
 		{
-			return actionsSettings.selectedUnits.find(unitID) != actionsSettings.selectedUnits.end();
+			return actionsSettings.selectedEntities.find(unitID) != actionsSettings.selectedEntities.end();
 		}
 
 	private:
@@ -96,9 +94,7 @@ namespace SGA
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
 		CircularBuffer<RTSGameState> gameStatesBuffer;
-		int gameStatesBufferRCurrentIndex = 0;
-
-		
+		int gameStatesBufferRCurrentIndex = 0;		
 
 		//Imgui
 		sf::Clock deltaClock;

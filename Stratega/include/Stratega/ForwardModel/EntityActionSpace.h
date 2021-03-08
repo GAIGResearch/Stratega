@@ -1,10 +1,12 @@
 #pragma once
 #include <Stratega/ForwardModel/IActionSpace.h>
 #include <Stratega/ForwardModel/Action.h>
-#include <Stratega/Representation/GameState.h> // ToDo remove this shiat
+#include <Stratega/Representation/GameState.h> //TODO remove this
 
 namespace SGA
 {
+	enum class ShapeType;
+
 	class EntityActionSpace : public IActionSpace<GameState, Action>
 	{
 	public:

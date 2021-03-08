@@ -8,105 +8,107 @@ Agents:
     - HumanAgent
 
 Player:
-    Actions: []
-    CanSpawn: All
+    Actions: [Build, Research]
+    CanSpawn: Buildings
     Parameters:
         Gold: 0
-        Prod: 5
+        Prod: 50
 
 Tiles:
     Plain:
-        Sprite: ../GUI/Assets/Tiles/plain.png
+        Sprite: ../../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../GUI/Assets/Tiles/water.png
+        Sprite: ../../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../GUI/Assets/Tiles/rock.png
+        Sprite: ../../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../GUI/Assets/Tiles/forest.png
+        Sprite: ../../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
 
 Entities:
     City:
-        Sprite: ../GUI/Assets/Entities/castle.png
+        Sprite: ../../GUI/Assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn, Research]
-        CanSpawn: [Worker, Archer]
+        Actions: [Spawn]
+        CanSpawn: [Worker]
         Cost:
-            Prod: 10
+            Prod: 100
         Parameters:
             Health: 800
             StorageCapacity: 50
+            Range: 6
 
     Barracks:
-        Sprite: ../GUI/Assets/Entities/barracks.png
+        Sprite: ../../GUI/Assets/Entities/barracks.png
         LineOfSightRange: 3
         RequiredTechnology: Discipline
         Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
-            Prod: 20
+            Prod: 200
         Parameters:
             Health: 500
+            Range: 6
 
     MilitaryAcademy:
-        Sprite: ../GUI/Assets/Entities/military.png
+        Sprite: ../../GUI/Assets/Entities/military.png
         LineOfSightRange: 3
         RequiredTechnology: Mathematics
         Actions: [Spawn]
         CanSpawn: [Catapult]
         Cost:
-            Prod: 40
+            Prod: 400
         Parameters:
             Health: 500
 
     Foundry:
-        Sprite: ../GUI/Assets/Entities/foundry.png
+        Sprite: ../../GUI/Assets/Entities/foundry.png
         LineOfSightRange: 2
         RequiredTechnology: Metallurgy
         Actions: []
         Cost:
-            Prod: 50
+            Prod: 500
         Parameters:
             Health: 300
             
     Workshop:
-        Sprite: ../GUI/Assets/Entities/storage.png
+        Sprite: ../../GUI/Assets/Entities/storage.png
         LineOfSightRange: 2
         RequiredTechnology: Apprenticeship
         Actions: []
         Cost:
-            Prod: 50
+            Prod: 500
         Parameters:
             Health: 300
 
     Storage:
-        Sprite: ../GUI/Assets/Entities/castle.png
+        Sprite: ../../GUI/Assets/Entities/castle.png
         LineOfSightRange: 1
         RequiredTechnology: Pottery
         Actions: []
         Cost:
-            Prod: 40
+            Prod: 400
         Parameters:
             Cost: 40
             Health: 200
             StorageCapacity: 50
 
     Worker:
-        Sprite: ../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: [Move]
+        Actions: [Move, Mine]
         Cost:
-            Prod: 5
+            Prod: 50
         Time: 5
         Parameters:
             ResourceCapacity: 10
@@ -114,14 +116,15 @@ Entities:
             Speed: 1
             WeaponStrength: 5
             Health: 50
+            Range: 3
             
     Warrior:
-        Sprite: ../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit2.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
         Cost:
-            Prod: 10
+            Prod: 100
         Parameters:
             Armor: 20
             Speed: 1
@@ -131,12 +134,12 @@ Entities:
             Health: 150
             
     Archer:
-        Sprite: ../GUI/Assets/Entities/unit3.png
+        Sprite: ../../GUI/Assets/Entities/unit3.png
         LineOfSightRange: 3
-        Actions: []
-       # RequiredTechnology: Archery
+        Actions: [Move, Attack]
+        RequiredTechnology: Archery
         Cost:
-            Prod: 15
+            Prod: 150
         Parameters:
             Armor: 15
             Speed: 1
@@ -147,12 +150,12 @@ Entities:
             Health: 100
             
     Catapult:
-        Sprite: ../GUI/Assets/Entities/unit4.png
+        Sprite: ../../GUI/Assets/Entities/unit4.png
         LineOfSightRange: 3
-        Actions: []
+        Actions: [Move, Attack]
         RequiredTechnology: Engineering
         Cost:
-            Prod: 20
+            Prod: 200
         Parameters:
             Armor: 10
             Speed: 1
@@ -163,7 +166,7 @@ Entities:
             Health: 60
 
     GoldVein:
-        Sprite: ../GUI/Assets/Entities/gold_chest.png
+        Sprite: ../../GUI/Assets/Entities/gold_chest.png
         Symbol: g
         LineOfSightRange: 6
         Actions: []
@@ -196,34 +199,7 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 3 # Target.Speed
-                Conditions:
-                    - "IsWalkable(Target)"
-        Effects:
-            - "Move(Source, Target)"
-
-#    # Attack Actions
-#    Attack:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Target:
-#            Type: Entity
-#            ValidTargets: Attackable
-#            Conditions:
-#                - "InRange(Source, Target, Source.Range)"
-#        Effects:
-#            - "Attack(Target.Health, Source.WeaponStrength)"
-#
-    # Move Actions
-    Move:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                Shape: Circle
-                Size: 3 # Target.Speed
+                Shape: AllPositions
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -231,21 +207,21 @@ Actions:
 
     #Research
     Research:
-        Type: EntityAction
+        Type: PlayerAction
         Cooldown: 0
         Targets:
             Target:
                 Type: Technology
-                ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+                ValidTargets: All
                 Conditions:
-                    - "CanResearch(Source.Player, Target)"
-                    - "CanAfford(Source.Player, Target)"
+                    - "CanResearch(Source, Target)"
+                    - "CanAfford(Source, Target)"
         TriggerComplete:
             - "HasElapsedTick(Target.Time)"
         OnStart:
-            - "PayCost(Source.Player, Target)"
+            - "PayCost(Source, Target)"
         OnComplete:
-            - "Research(Source.Player, Target)"
+            - "Research(Source, Target)"
 
     
     Mine:
@@ -256,7 +232,7 @@ Actions:
                 Type: Entity
                 ValidTargets: GoldVein
                 Conditions:
-                    - "InRange(Source, Target, 1)"
+                    - "InRange(Source, Target, 2)"
                     - "HasResource(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
@@ -271,37 +247,18 @@ Actions:
                 ValidTargets: Units
                 Conditions:
                     - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
 
             TargetPosition:
                 Type: Position
-                Shape: Circle
-                Size: 1
+                Shape: Square
+                Size: 2
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-#            - "PayCost(Source.Player, EntityTypeTarget)"
-#    #Spawn
-#    Spawn:
-#        Type: EntityAction
-#        Cooldown: 0
-#        Targets:
-#            EntityTypeTarget:
-#                Type: EntityType
-#                ValidTargets: Units
-#                Conditions:
-#                    - "CanAfford(Source.Player, EntityTypeTarget)"
-#                    - "CanSpawn(Source, EntityTypeTarget)"
-#
-#            TargetPosition:
-#                Type: Position
-#                Shape: Circle
-#                Size: 1
-#                Conditions:
-#                    - "IsWalkable(TargetPosition)"
-#        Effects:
-#            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-#            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
 
     #Build
     Build:
@@ -317,8 +274,7 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Circle
-                Size: 1
+                Shape: AllPositions
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -331,56 +287,56 @@ TechnologyTrees:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 5
-            Time: 1
+                Prod: 100
+            Time: 200
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]
             Cost:
-                Prod: 15
-            Time: 2
+                Prod: 150
+            Time: 200
         Pottery:
             Description: Allows to construct a Storage.
             Requirements: [Mining]
             Cost:
-                Prod: 10
-            Time: 2
+                Prod: 1000
+            Time: 200
         Mathematics:
             Description: Here you can build a military academy
             Requirements: [Mining]
             Cost:
-                Prod: 15
-            Time: 2
+                Prod: 1500
+            Time: 200
         Archery:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
-            Time: 5
+                Gold: 2000
+            Time: 500
         Bronze Working:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
-            Time: 5
+                Gold: 200
+            Time: 500
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost:
-                Gold: 30
-            Time: 5
+                Gold: 3000
+            Time: 500
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost:
-                Gold: 40
-            Time: 8
+                Gold: 4000
+            Time: 800
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost:
-                Gold: 30
-            Time: 5
+                Gold: 3000
+            Time: 500
             
 
 Board:
@@ -388,8 +344,8 @@ Board:
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  .  .  F  F  F  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  F  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
         M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
         M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
@@ -415,13 +371,13 @@ ForwardModel:
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Prod, 1)"
+                - "ModifyResource(Source.Player.Prod, 0.1)"
         - OnTick:
             ValidTargets: Workshop
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Prod, 2)"
+                - "ModifyResource(Source.Player.Prod, 0.2)"
         - OnTick:
             ValidTargets: Foundry
             Conditions:
@@ -429,4 +385,4 @@ ForwardModel:
                 - "HasResource(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
-                - "ModifyResource(Source.Player.Prod, 4)"
+                - "ModifyResource(Source.Player.Prod, 0.4)"

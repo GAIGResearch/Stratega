@@ -1,5 +1,4 @@
 #pragma once
-
 #include <string>
 #include <unordered_set>
 #include <variant>
@@ -10,10 +9,10 @@ namespace SGA
 {
 	struct GameState;
 	struct Entity;
-
 	class Player;
 	struct EntityType;
 	typedef int EntityTypeID;
+	struct ActionType;
 	
 	class ActionTarget
 	{	
@@ -100,6 +99,9 @@ namespace SGA
 				}
 			}
 		}
+		
+		//Check if this action target is valid in the received gamestate
+		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 
 	private:
 		union Data
