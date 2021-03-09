@@ -376,7 +376,7 @@ namespace SGA
 				{
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
-						auto& position = actionTarget.getPosition(gameStateCopy);
+						auto position = actionTarget.getPosition(gameStateCopy);
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 
@@ -420,7 +420,7 @@ namespace SGA
 				{
 					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
 					{
-						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+						auto position = possibleAction.targets[i].getPosition(gameStateCopy);
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 
