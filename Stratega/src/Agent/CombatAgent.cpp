@@ -7,15 +7,10 @@ namespace SGA
 		std::vector<Action> filteredActions;
 		for (const auto& a : actions)
 		{
-			if (a.isEntityAction() && a.targets[0].getEntityID() == unit.id)
-			{
-				
-			}
-			std::cout << std::endl;
-			/*if (a.sourceUnitID == unit.getUnitID())
+			if (a.actionTypeID != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.id)
 			{
 				filteredActions.emplace_back(a);
-			}*/
+			}
 		}
 		return filteredActions;
 	}
@@ -34,57 +29,64 @@ namespace SGA
 		return filteredActions;
 	}
 
-	std::vector<Entity*> CombatAgent::filterUnitsByReach(const std::vector<Entity*>& targetUnits, const Vector2i& pos) const
+	std::vector<Entity*> CombatAgent::filterUnitsByReach(const std::vector<Entity*>& targetUnits, const Vector2f& pos, GameState& currentState) const
 	{
 		std::vector<Entity*> units;
-		/*
+		
 		for (const auto& unit : targetUnits)
 		{
-			if (pos.manhattanDistance(unit->getPosition()) <= unit->getType().actionRange + unit->getType().movementRange)
+			if (pos.manhattanDistance(unit->position) <= getAttackRange(unit, currentState) + getMovementRange(unit, currentState));
 			{
 				units.emplace_back(unit);
 			}
 		}
-		*/
+		
 		return units;
 	}
 
-	std::vector<Action> CombatAgent::filterMovesInRange(const std::vector<SGA::Action>& moves, Vector2i position, int range) const
+	std::vector<Action> CombatAgent::filterMovesInRange(const std::vector<SGA::Action>& moves, Vector2f position, int range, GameState& gameState) const
 	{
 		std::vector<Action> filteredMoves;
-		/*
+		
 		for (const auto& move : moves)
 		{
-			if (move.targetPosition.manhattanDistance(position) <= range)
+			if (move.targets[1].getPosition(gameState).manhattanDistance(position) <= range)
 				filteredMoves.emplace_back(move);
 		}
-		*/
+		
 		return filteredMoves;
 	}
 
-	int CombatAgent::getPotentialHealing(const Vector2i& pos, const std::vector<Entity*>& potentialHealers) const
+	int CombatAgent::getPotentialHealing(std::vector<Action>& actions,  const Vector2f& pos, const std::vector<Entity*>& potentialHealers, GameState& gameState) const
 	{
-		auto healers = filterUnitsByReach(potentialHealers, pos);
+		auto healers = filterUnitsByReach(potentialHealers, pos, gameState);
 		auto heal = 0;
-		/*
+
+		auto healingActions = filterActionTypes(actions, "Heal");
+		
 		for (const auto* healer : healers)
 		{
 			// Check if the unit can heal
-			if (healer->getType().tbsActions.find(ActionType::Heal) != healer->getType().tbsActions.end())
-				heal += healer->getHealAmount();
+			for (auto const& healingAction : healingActions)
+			{
+				if (healingAction.targets[0].getEntityID() == healer->id)
+				{
+					heal += getHealAmount(healer, gameState);
+					break;
+				}
+			}
+
 		}
-		*/
+		
 		return heal;
 	}
 
-	bool CombatAgent::getMoveInRange(Entity& u, const Vector2i& pos, int range, const std::vector<Entity*>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket) const
-	{
-		return true;
-		/*
-		if (u.getPosition().manhattanDistance(pos) <= range)
+	bool CombatAgent::getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity*>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const
+	{		
+		if (u.position.manhattanDistance(pos) <= range)
 			return false;
 
-		auto inRangeMoves = filterMovesInRange(moves, pos, range);
+		auto inRangeMoves = filterMovesInRange(moves, pos, range, gameState);
 		bool foundAction = false;
 		if (inRangeMoves.empty())
 		{
@@ -93,7 +95,8 @@ namespace SGA
 			// Choose the best strategic position
 			for (const auto& move : moves)
 			{
-				auto dist = pos.manhattanDistance(move.targetPosition);
+				
+				auto dist = pos.manhattanDistance(move.targets[1].getPosition(gameState));
 				auto score = -dist;
 				if (score > bestScore)
 				{
@@ -109,7 +112,7 @@ namespace SGA
 			// Choose the best strategic position
 			for (const auto& move : inRangeMoves)
 			{
-				auto score = -getPotentialDamage(move.targetPosition, opponentUnits);
+				auto score = -getPotentialDamage(move.targets[1].getPosition(gameState), opponentUnits, gameState);
 				if (score > bestScore)
 				{
 					bestScore = score;
@@ -120,95 +123,146 @@ namespace SGA
 		}
 
 		return foundAction;
-		*/
+		
 	}
 
-	double CombatAgent::getPotentialDamage(const Vector2i& pos, const std::vector<Entity*>& potentialAttackers) const
+	double CombatAgent::getPotentialDamage(const Vector2f& pos, const std::vector<Entity*>& potentialAttackers, GameState& gameState) const
 	{
 		
-		auto attackers = filterUnitsByReach(potentialAttackers, pos);
+		auto attackers = filterUnitsByReach(potentialAttackers, pos, gameState);
 		double damage = 0;
-		/*
+		
 		for (const auto* attacker : attackers)
 		{
-			damage += attacker->getAttackDamage();
+			damage += getAttackDamage(attacker, gameState);
 		}
-		*/
+		
 		return damage;
 	}
 
-	double CombatAgent::getAttackScore(const Entity& target, const Action& attack, const std::vector<Entity*>& opponentUnits) const
+	double CombatAgent::getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity*>& opponentUnits, GameState& gameState) const
 	{
-		return 0;
-		/*
-		auto& state = target.state.get();
-		auto attackAmount = state.getUnit(attack.sourceUnitID)->getAttackDamage();
-		auto healAmount = getPotentialHealing(target.getPosition(), opponentUnits);
+		
+		auto attackAmount = getAttackDamage(&attack.targets[0].getEntity(gameState), gameState);
+		auto healAmount = getPotentialHealing(actions, target.position, opponentUnits, gameState);
 
-		if (attackAmount >= target.getHealthh())
+		if (attackAmount >= getHealth(&target, gameState))
 		{
 			// We can kill the unit immediatly
-			return unitScores.at(target.getUnitTypeID()) * 2;
+			//return unitScores.at(target.typeID) * 2;
 		}
 		else if (healAmount < attackAmount)
 		{
 			// We can kill the unit with an delay
-			int turnsToKill = std::min(4., std::ceil(target.getHealthh() / (attackAmount - healAmount)));
-			return unitScores.at(target.getUnitTypeID()) * (1. + 1. / (1. + turnsToKill));
+			int turnsToKill = std::min(4., std::ceil(getHealth(&target, gameState)/ (attackAmount - healAmount)));
+			//return unitScores.at(target.typeID) * (1. + 1. / (1. + turnsToKill));
 		}
 
 		// We can't kill the unit alone
-		return unitScores.at(target.getUnitTypeID()) * 0.5;
-		*/
+		//return unitScores.at(target.typeID) * 0.5;
+		return 0;
 	}
 
-	double CombatAgent::getHealScore(const Entity& target, const Action& heal, const std::vector<Entity*>& opponentUnits) const
+	double CombatAgent::getHealScore(std::vector<Action>& actions, const Entity& target, const Action& heal, const std::vector<Entity*>& opponentUnits, GameState& gameState) const
 	{
-		return 0;
-		/*
-		auto healAmount = target.state.get().getUnit(heal.sourceUnitID)->getHealAmount();
-		auto resultingHealth = std::min(target.getType().maxHealth, target.getHealthh() + healAmount);
-		auto potentialDamage = getPotentialDamage(target.getPosition(), opponentUnits);
+		auto healAmount = getHealAmount(&heal.targets[0].getEntity(gameState), gameState);
+		auto resultingHealth = std::min<double> (getMaxHealth(&target, gameState), getHealth(&target, gameState) + healAmount);
+		auto potentialDamage = getPotentialDamage(target.position, opponentUnits, gameState);
 
 		if (potentialDamage < 0.0001)
 		{
 			// The unit is in no immediate danger
-			return unitScores.at(target.getUnitTypeID()) * 0.5 * (resultingHealth - target.getHealthh()) / static_cast<double>(healAmount);
+			//return unitScores.at(target.typeID) * 0.5 * (resultingHealth - getHealth(&target, gameState)) / static_cast<double>(healAmount);
 		}
 		else if (potentialDamage > resultingHealth)
 		{
 			// The unit will die if the opponent wants it
-			return unitScores.at(target.getUnitTypeID()) * 0.2 * (resultingHealth - target.getHealthh()) / static_cast<double>(healAmount);
+			//return unitScores.at(target.typeID) * 0.2 * (resultingHealth - getHealth(&target, gameState)) / static_cast<double>(healAmount);
 		}
 		else if (healAmount >= potentialDamage)
 		{
 			// We can keep the unit alive forever
-			return 2 * unitScores.at(target.getUnitTypeID());
+			//return 2 * unitScores.at(target.typeID);
 		}
 		else
 		{
 			// We can delay the death
-			int turnsUntilDeath = std::min(4, static_cast<int>(std::ceil(target.getHealthh() / (potentialDamage - healAmount))));
-			return (1. + turnsUntilDeath / 4.) * unitScores.at(target.getUnitTypeID());
+			int turnsUntilDeath = std::min<int> (4, static_cast<int>(std::ceil(getHealth(&target, gameState) / (potentialDamage - healAmount))));
+			//return (1. + turnsUntilDeath / 4.) * unitScores.at(target.typeID);
 		}
-		*/
+		return 0;
 	}
 
-	double getRange(Entity* entity, TBSGameState& gamestate)
+	double CombatAgent::getMovementRange(const Entity* entity, GameState& gamestate) const
 	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "MovementPoints")
+			{
+				return entity->parameters[param.second.index];
+			}
+		}
+	}
+	
+	double CombatAgent::getHealth(const Entity* entity, GameState& gamestate) const
+	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "Health")
+			{
+				return entity->parameters[param.second.index];
+			}
+		}
+	}
+
+	double CombatAgent::getMaxHealth(const Entity* entity, GameState& gamestate) const
+	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "Health")
+			{
+				return param.second.maxValue;
+			}
+		}
+		return 0;
+	}
+
+	double CombatAgent::getAttackRange(const Entity* entity, GameState& gamestate) const
+	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "AttackRange")
+			{
+				return entity->parameters[param.second.index];
+			}
+		}
+		return 0;
+	}
+
+	double CombatAgent::getAttackDamage(const Entity* entity, GameState& gamestate) const
+	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "AttackDamage")
+			{
+				return entity->parameters[param.second.index];
+			}
+		}
+		return 0;
+	}
+
+	double CombatAgent::getHealAmount(const Entity* entity, GameState& gamestate) const
+	{
+		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		{
+			if (param.second.name == "AttackDamage")
+			{
+				return entity->parameters[param.second.index];
+			}
+		}
 		return 0;
 	}
 	
-	double getHealth(Entity* entity, TBSGameState& gamestate)
-	{
-		return 0;
-	}
-
-	double getMaxHealth(Entity* entity, TBSGameState& gamestate)
-	{
-		return 0;
-	}
-
 	void CombatAgent::playTurn(TBSGameCommunicator& communicator, TBSForwardModel& fm)
 	{
 		while (communicator.isMyTurn() && !communicator.isGameOver())
@@ -220,7 +274,6 @@ namespace SGA
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 			
-			currentGameState = &currentState;
 			
 
 			//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
@@ -257,7 +310,7 @@ namespace SGA
 						continue;
 
 					int dist = opp->position.manhattanDistance(ally->position);
-					int movesToSupport = dist / static_cast<double>(getRange(ally, currentState));
+					int movesToSupport = dist / static_cast<double>(getMovementRange(ally, currentState));
 					//avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
 				}
 				avgSupportScore /= opponentUnits.size();
@@ -268,7 +321,7 @@ namespace SGA
 				for (auto* attacker : myUnits)
 				{
 					int dist = opp->position.chebyshevDistance(attacker->position);
-					int movesToAttack = std::max(0, dist - static_cast<int>(getRange(attacker, currentState))) / getRange(attacker, currentState);
+					int movesToAttack = std::max(0, dist - static_cast<int>(getMovementRange(attacker, currentState))) / getMovementRange(attacker, currentState);
 					//avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
 				}
 				avgAttackScore /= myUnits.size() + 1;
@@ -299,12 +352,6 @@ namespace SGA
 				moveTarget = bestAttackTarget->position;
 			}
 
-			// Go through all units and return the first action that we deem good
-			// Since this function is called multiple times, we will eventually use up all available actions
-
-			// delete this
-			// until here
-
 			auto actions = fm.generateActions(currentState);
 			Action nextAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
 			bool foundAction = false;
@@ -315,17 +362,17 @@ namespace SGA
 				highestScore = std::numeric_limits<double>::lowest();
 				for (const auto& attack : filterActionTypes(subActions, "Attack"))
 				{
-					/*Entity& targetUnit = *currentState.getEntity(attack.targetPosition);
+					Entity& targetUnit = attack.targets[1].getEntity(currentState);
 					if (targetUnit.ownerID == communicator.getPlayerID())
 						continue; // No attackerino my own units
 
-					auto score = getAttackScore(targetUnit, attack, opponentUnits);
+					auto score = getAttackScore(actions, targetUnit, attack, opponentUnits, currentState);
 					if (score > highestScore)
 					{
 						highestScore = score;
 						nextAction = attack;
 						foundAction = true;
-					}*/
+					}
 				}
 
 				if (foundAction)
@@ -335,19 +382,19 @@ namespace SGA
 				highestScore = std::numeric_limits<double>::lowest();
 				for (const auto& heal : filterActionTypes(subActions, "Heal"))
 				{
-					/*Entity& targetUnit = *currentState.getEntity(heal.sourceUnitID);
+					Entity& targetUnit = heal.targets[0].getEntity(currentState);
 					if (targetUnit.ownerID != communicator.getPlayerID())
 						continue; // No healerino opponents units
 					if (getHealth(&targetUnit, currentState) >= getMaxHealth(&targetUnit, currentState))
 						continue; // Stop healing units that are already full, what is wrong with you
 
-					auto score = getHealScore(targetUnit, heal, opponentUnits);
+					auto score = getHealScore(actions, targetUnit, heal, opponentUnits, currentState);
 					if (score > highestScore)
 					{
 						highestScore = score;
 						nextAction = heal;
 						foundAction = true;
-					}*/
+					}
 				}
 
 				if (foundAction)
@@ -355,10 +402,10 @@ namespace SGA
 
 				// At last, try moving closer to the best attack target
 				auto moves = filterActionTypes(subActions, "Move");
-				/*if (getMoveInRange(*unit, moveTarget, unit->getType().actionRange, opponentUnits, moves, nextAction))
+				if (getMoveInRange(*unit, moveTarget, getAttackRange(unit, currentState), opponentUnits, moves, nextAction, currentState))
 				{
 					break;
-				}*/
+				}
 			}
 			
 			communicator.executeAction(nextAction);
@@ -369,7 +416,7 @@ namespace SGA
 	void CombatAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		auto currentState = gameCommunicator.getGameState();
-		//unitScores = UnitTypeEvaluator::getLinearSumEvaluation(currentState);
+		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(currentState);
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())

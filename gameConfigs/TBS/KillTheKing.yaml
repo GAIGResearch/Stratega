@@ -92,7 +92,7 @@ Entities:
     Warrior:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: w
-        LineOfSightRange: 6
+        LineOfSightRange: 600
         Actions: [Attack, Move]
         Parameters:
             Health: 200
@@ -103,7 +103,7 @@ Entities:
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit4.png
         Symbol: a
-        LineOfSightRange: 10
+        LineOfSightRange: 100
         Parameters:
             Health: 100
             AttackRange: 5
@@ -114,7 +114,7 @@ Entities:
     Healer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
         Symbol: h
-        LineOfSightRange: 4
+        LineOfSightRange: 400
         Parameters:
             Health: 40
             HealRange: 2
@@ -125,7 +125,7 @@ Entities:
     King:
         Sprite: ../../GUI/Assets/Entities/unit1.png
         Symbol: k
-        LineOfSightRange: 6
+        LineOfSightRange: 600
         Parameters:
             Health: 400
             AttackRange: 2
