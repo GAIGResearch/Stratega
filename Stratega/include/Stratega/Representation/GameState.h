@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <unordered_map>
 #include <unordered_set>
 #include <Stratega/Representation/Grid2D.h>
@@ -38,7 +39,8 @@ namespace SGA
 
 		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
 
-		
+		std::mt19937 rngEngine;
+
 		// Game information
 		bool isGameOver;
 		int winnerPlayerID;
@@ -105,5 +107,15 @@ namespace SGA
 		std::vector< Entity*> getPlayerEntities(int playerID);
 
 		void applyFogOfWar(int playerID);
+
+		void setRNGEngine(std::mt19937 engine)
+		{
+			rngEngine = engine;
+		}
+
+		const std::mt19937& getRNGEngine() const
+		{
+			return rngEngine;
+		}
 	};
 }

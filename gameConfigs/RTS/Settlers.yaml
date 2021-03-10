@@ -147,16 +147,16 @@ Entities:
         Parameters:
             Speed: 1
             Range: 3
-            WoodCutting: 1
-            BrickMaking: 1
-            LivestockFarming: 1
-            IronMining: 1
+            WoodCutting: 0.1
+            BrickMaking: 0.1
+            LivestockFarming: 0.1
+            IronMining: 0.1
             
     Builder:
         Sprite: ../../GUI/Assets/Entities/unit10.png
         LineOfSightRange: 3
-        CanSpawn: [Farm, Mine, Saw, Masonry, University]
-        Actions: [Move, BuildFarm, BuildMine, BuildSaw, BuildMansory, BuildUniversity]
+        CanSpawn: [Farm, Mine, Saw, Masonry, University, Outpost, GuardTower]
+        Actions: [Move, BuildFarm, BuildMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
         Cost:
         Parameters:
             Speed: 1
@@ -165,7 +165,7 @@ Entities:
     Spy:
         Sprite: ../../GUI/Assets/Entities/unit9.png
         LineOfSightRange: 5
-        Actions: [Move]
+        Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
         Cost:
         Parameters:
@@ -186,9 +186,36 @@ Entities:
 
 EntityGroups:
     Units: [Villager, Builder, Spy, Architect]
-    Buildings: [City, Farm, Mine, Outpost, GuardTower, University]
+    Buildings: [City, Farm, Mine, Outpost, GuardTower, University, Wonder]
+    Attackable: [Farm, Mine, Outpost, GuardTower, University, Wonder]
 
 Actions:
+    # Attack Actions
+    Sabotage:
+        Type: EntityAction
+        Cooldown: 100
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Attackable
+                Conditions:
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "AttackProbability(Target.Health, 1000, 50)"
+            - "Remove(Source)"
+
+    Attack:
+        Type: EntityAction
+        Cooldown: 100
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Spy
+                Conditions:
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "AttackProbability(Target.Health, 1000, 20)"
+
     # Move Actions
     Move:
         Type: EntityAction
@@ -228,7 +255,7 @@ Actions:
                 Type: Entity
                 ValidTargets: Mine
                 Conditions:
-                    - "InRange(Source, Target, 2)"
+                    - "InRange(Source, Target, 3)"
         Effects:
             - "ModifyResource(Source.Player.Iron, Source.IronMining)"
 
@@ -240,7 +267,7 @@ Actions:
                 Type: Entity
                 ValidTargets: Farm
                 Conditions:
-                    - "InRange(Source, Target, 2)"
+                    - "InRange(Source, Target, 3)"
         Effects:
             - "ModifyResource(Source.Player.Food, Source.LivestockFarming)"
 
@@ -252,7 +279,7 @@ Actions:
                 Type: Entity
                 ValidTargets: Saw
                 Conditions:
-                    - "InRange(Source, Target, 2)"
+                    - "InRange(Source, Target, 3)"
         Effects:
             - "ModifyResource(Source.Player.Wood, Source.WoodCutting)"
 
@@ -264,7 +291,7 @@ Actions:
                 Type: Entity
                 ValidTargets: Masonry
                 Conditions:
-                    - "InRange(Source, Target, 2)"
+                    - "InRange(Source, Target, 3)"
         Effects:
             - "ModifyResource(Source.Player.Bricks, Source.BrickMaking)"
 
@@ -283,7 +310,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -305,7 +332,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                    - "IsTileType(Forest)"
@@ -327,7 +354,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                    - "IsTileType(Forest)"
@@ -349,7 +376,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                    - "IsTileType(Forest)"
@@ -371,7 +398,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                    - "IsTileType(Forest)"
@@ -393,14 +420,55 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                    - "IsTileType(Forest)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
-            
+
+    BuildOutpost:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Outpost
+                Conditions:
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Square
+                Size: 4
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+        Effects:
+            - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+
+    BuildGuardTower:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: GuardTower
+                Conditions:
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Square
+                Size: 4
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+        Effects:
+            - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
 
     BuildWonder:
         Type: EntityAction
@@ -416,7 +484,7 @@ Actions:
             TargetPosition:
                 Type: Position
                 Shape: Square
-                Size: 2
+                Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 #                   - "IsTileType(Forest)"
@@ -646,7 +714,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, HeavyPlow)"
             Effects:
-                - "ModifyResource(Source.LivestockFarming, 0.6)"
+                - "ChangeResource(Source.LivestockFarming, 0.6)"
 
         - OnTick:
             ValidTargets: Villager
@@ -654,7 +722,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, CropRotation)"
             Effects:
-                - "ModifyResource(Source.LivestockFarming, 0.8)"
+                - "ChangeResource(Source.LivestockFarming, 0.8)"
         #Wood
         - OnTick:
             ValidTargets: Villager
@@ -662,7 +730,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, BowSaw)"
             Effects:
-                - "ModifyResource(Source.WoodCutting, 0.6)"
+                - "ChangeResource(Source.WoodCutting, 0.6)"
 
         - OnTick:
             ValidTargets: Villager
@@ -670,7 +738,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, TwoManSaw)"
             Effects:
-                - "ModifyResource(Source.WoodCutting, 0.8)"
+                - "ChangeResource(Source.WoodCutting, 0.8)"
         #Ore
         - OnTick:
             ValidTargets: Villager
@@ -678,7 +746,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, OreShaftMining)"
             Effects:
-                - "ModifyResource(Source.IronMining, 0.6)"
+                - "ChangeResource(Source.IronMining, 0.6)"
         #Clay
         - OnTick:
             ValidTargets: Villager
@@ -686,4 +754,4 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
-                - "ModifyResource(Source.BrickMaking, 0.6)"
+                - "ChangeResource(Source.BrickMaking, 0.6)"

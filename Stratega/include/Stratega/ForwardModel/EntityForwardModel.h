@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/EntityActionSpace.h>
 
@@ -37,6 +38,7 @@ namespace SGA
 		WinConditionType winCondition;
 		int targetUnitTypeID;
 
+				
 		virtual ~EntityForwardModel() = default;
 		EntityForwardModel()
 			: winCondition(WinConditionType::LastManStanding),

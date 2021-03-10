@@ -28,8 +28,10 @@ namespace SGA
 	FunctionFactory<Effect>& FunctionFactory<Effect>::getDefaultFactory()
 	{
 		static FunctionFactory<Effect> factory;
+		factory.registerFunction<ChangeResource>("ChangeResource");
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
+		factory.registerFunction<AttackProbability>("AttackProbability");
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnEntity>("SpawnEntity");
 		factory.registerFunction<SpawnEntityGrid>("SpawnEntityGrid");

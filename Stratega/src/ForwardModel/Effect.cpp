@@ -2,6 +2,7 @@
 #include <Stratega/ForwardModel/EntityForwardModel.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <random>
 
 namespace SGA
 {
@@ -20,6 +21,21 @@ namespace SGA
 		targetResource += amount;
 	}
 
+	ChangeResource::ChangeResource(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		amount(parameters.at(1))
+	{
+
+	}
+
+	void ChangeResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		double amount = this->amount.getConstant(state, targets);
+
+		targetResource = amount;
+	}
+	
 	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		amount(parameters.at(1))
@@ -36,6 +52,33 @@ namespace SGA
 		targetResource -= amount;
 		if (targetResource <= 0)
 			entity.shouldRemove = true;
+	}
+
+	AttackProbability::AttackProbability(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		amount(parameters.at(1)),
+		probability(parameters.at(2))
+	{
+
+	}
+	
+	void AttackProbability::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = resourceReference.getEntity(state, targets);
+		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto amount = this->amount.getConstant(state, targets);
+		auto probability = this->probability.getConstant(state, targets);
+		
+		std::uniform_int_distribution<unsigned int> distribution(0, 100);
+       
+		//Get chance to attack
+		if(distribution(state.rngEngine) > probability)
+		{
+			targetResource -= amount;
+			if (targetResource <= 0)
+				entity.shouldRemove = true;
+		}
+		
 	}
 
 	Move::Move(const std::vector<FunctionParameter>& parameters)

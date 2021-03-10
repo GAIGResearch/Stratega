@@ -24,6 +24,15 @@ namespace SGA
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class ChangeResource : public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+	public:
+		ChangeResource(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class Attack : public Effect
 	{
 		FunctionParameter resourceReference;
@@ -33,6 +42,16 @@ namespace SGA
 		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class AttackProbability : public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amount;
+		FunctionParameter probability;
+	public:
+		AttackProbability(const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class Move : public Effect
 	{
 		FunctionParameter entityParam;
