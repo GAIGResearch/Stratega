@@ -184,6 +184,21 @@ namespace SGA
 		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 
+	SpawnEntityGrid::SpawnEntityGrid(const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	{
+	}
+
+	void SpawnEntityGrid::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& ownerID = spawnSource.getPlayerID(state, targets);
+		const auto& entityType = entityTypeParam.getEntityType(state, targets);
+		auto targetPosition = targetPositionParam.getPosition(state, targets);
+		targetPosition.x = (int)targetPosition.x;
+		targetPosition.y = (int)targetPosition.y;
+		fm.spawnEntity(state, entityType, ownerID, targetPosition);
+	}
+
 	
 	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
 		: sourceParam(parameters[0]), costParam(parameters[1])

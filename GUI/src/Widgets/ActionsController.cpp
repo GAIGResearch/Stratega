@@ -388,12 +388,13 @@ namespace SGA::Widgets
 			const EntityType& entityType = state.getEntityType(state.getEntity(entityID)->typeID);
 			const Entity* entity = state.getEntity(entityID);
 
+			
+			if (!entityType.canExecuteAction(settings.actionTypeSelected))
+				continue;
 			// Check if this action can be executed		
 			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
 				continue;
-			if (!entityType.canExecuteAction(settings.actionTypeSelected))
-				continue;
-
+			
 			//The entity should be able to execute this action type
 			newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);
 
