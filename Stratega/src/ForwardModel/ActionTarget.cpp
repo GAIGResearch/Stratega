@@ -18,6 +18,11 @@ namespace SGA
 		return ActionTarget(EntityTypeReference, { .entityTypeID = entityTypeID });
 	}
 
+	ActionTarget ActionTarget::createTileTypeActionTarget(EntityTypeID tileTypeID)
+	{
+		return ActionTarget(TileTypeReference, { .tileTypeID = tileTypeID });
+	}
+	
 	ActionTarget ActionTarget::createPlayerActionTarget(int playerID)
 	{
 		return ActionTarget(Type::PlayerReference, { .playerID = playerID });
@@ -162,6 +167,18 @@ namespace SGA
 		}
 	}
 
+	const TileType& ActionTarget::getTileType(const GameState& state) const
+	{
+		if (targetType == TileTypeReference)
+		{
+			const auto& type = state.getTileType(data.entityTypeID);
+			return type;
+		}
+		else
+		{
+			throw std::runtime_error("Type not recognised");
+		}
+	}
 	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
 	{
 		bool isValid = true;

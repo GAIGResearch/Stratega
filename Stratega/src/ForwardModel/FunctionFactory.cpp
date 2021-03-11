@@ -12,6 +12,7 @@ namespace SGA
 		factory.registerFunction<HasResource>("HasResource");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
 		factory.registerFunction<IsResearched>("HasResearched");

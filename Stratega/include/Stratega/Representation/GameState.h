@@ -91,6 +91,12 @@ namespace SGA
 
 		bool isWalkable(const Vector2i& position);
 		
+		//bool isTile(const Vector2i& position, std::string tileName);
+		const TileType& getTileType(int tileTypeID) const
+		{
+			return tileTypes->find(tileTypeID)->second;
+		}
+		
 		bool isInBounds(Vector2i pos);
 				
 		const ActionType& getActionType(int typeID) const;

@@ -204,6 +204,13 @@ namespace SGA
 
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
+	
+	/*bool GameState::isTile(const Vector2i& position, std::string tileName)
+	{
+		Tile& targetTile = board.get(position.x, position.y);
+
+		return false;
+	}*/
 
 	bool GameState::isInBounds(Vector2i pos)
 	{

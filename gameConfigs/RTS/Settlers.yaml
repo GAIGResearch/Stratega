@@ -203,7 +203,6 @@ Actions:
         Effects:
             - "AttackProbability(Target.Health, 1000, 50)"
             - "Remove(Source)"
-
     Attack:
         Type: EntityAction
         Cooldown: 100
@@ -335,7 +334,7 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                    - "IsTileType(Forest)"
+                    - "IsTileType(TargetPosition, Ore)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -357,7 +356,7 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                    - "IsTileType(Forest)"
+                    - "IsTileType(TargetPosition,Animals)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -379,7 +378,7 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                    - "IsTileType(Forest)"
+                    - "IsTileType(TargetPosition, Plain)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -401,7 +400,7 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                    - "IsTileType(Forest)"
+                    - "IsTileType(TargetPosition, Clay)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -423,7 +422,7 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                    - "IsTileType(Forest)"
+                    - "IsTileType(TargetPosition, Forest)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
