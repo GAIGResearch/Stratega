@@ -43,6 +43,20 @@ namespace SGA
 		//Add state to buffer
 		gameStatesBuffer.add(gameStateCopy);
 		gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
+
+
+		//Execute actions
+		for (auto it = actionsToPlay.begin(); it != actionsToPlay.end();) {
+			if (!it->second.validate(gameStateCopyFogOfWar))
+			{
+				it = actionsToPlay.erase(it);
+			}
+			else
+			{
+				game->executeAction(it->second);
+				it++;
+			}
+		}
 	}
 
 	void RTSGameStateRender::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
@@ -594,8 +608,8 @@ namespace SGA
 		//Ask widget to get		
 		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
-		if(!actionsToExecute.empty())
-			playAction(actionsToExecute);
+		//if(!actionsToExecute.empty())
+			playActions(actionsToExecute);
 
 		ImGui::NextColumn();
 		ImGui::Text("Entities");

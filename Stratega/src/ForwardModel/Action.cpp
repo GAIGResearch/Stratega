@@ -13,6 +13,49 @@ namespace SGA
 		}
 	}
 
+	bool Action::validate(GameState& state) const
+	{
+		//Continuous or special action
+		if (actionTypeID==-1)
+			return true;
+		
+		//Check if source and targets are valid
+		if(isEntityAction())
+		{
+			auto entityID = targets.at(0).getEntityID();
+			auto* entity=state.getEntity(entityID);
+
+			auto& actionType = state.getActionType(actionTypeID);
+			
+			if(entity!=nullptr)
+			{
+				//Check preconditions
+				for (auto& precondition : actionType.preconditions)
+				{
+					if (!precondition->isFullfilled(state, targets))
+						return false;
+				}
+
+				//Check target conditions
+				for (auto& actionTarget : actionType.actionTargets)
+				{
+					for (auto& condition : actionTarget.second)
+					{
+						if (!condition->isFullfilled(state, targets))
+							return false;
+					}
+				}
+				
+				return true;
+			}
+			else
+			{
+				//Not found
+				return false;
+			}
+		}
+	}
+
 	bool Action::isEntityAction() const
 	{
 		return targets.at(0).getType() == ActionTarget::EntityReference;

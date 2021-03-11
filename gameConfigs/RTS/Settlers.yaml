@@ -11,7 +11,7 @@ Player:
     Actions: [Research]
     CanSpawn: Buildings
     Parameters:
-        Food: 200
+        Food: 500
         Gold: 0
         Iron: 50  
         Wood: 100
@@ -71,6 +71,10 @@ Entities:
         LineOfSightRange: 5
         Actions: []
         Cost:
+            Wood: 2000
+            Iron: 2000
+            Food: 2000
+            Bricks: 2000
         Parameters:
             Health: 200
             Range: 6
@@ -660,52 +664,27 @@ ForwardModel:
         Unit: City
 
     Trigger:
-#   #Global resource compsumption
-#       - OnTick:
-#           ValidTargets: Buildings
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Food, -0.01)"
-#       - OnTick:
-#           ValidTargets: Units
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Food, -0.02)"
-#
-#   #Entities resource production
-#       - OnTick:
-#           ValidTargets: Farm
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Food, +0.05)"
-#       - OnTick:
-#           ValidTargets: Mine
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Iron, +0.04)"
-#       - OnTick:
-#           ValidTargets: Saw
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Wood, +0.04)"
-#       - OnTick:
-#           ValidTargets: Masonry
-#           Conditions:
-#               - "IsPlayerEntity(Source)"
-#           Effects:
-#               - "ModifyResource(Source.Player.Bricks, +0.04)"
+   #Global resource compsumption
+        - OnTick:
+            ValidTargets: Buildings
+            Conditions:
+                - "IsPlayerEntity(Source)"
+            Effects:
+                - "ModifyResource(Source.Player.Food, -0.04)"
+        - OnTick:
+            ValidTargets: Units
+            Conditions:
+                - "IsPlayerEntity(Source)"
+            Effects:
+                - "ModifyResource(Source.Player.Food, -0.04)"
+
         - OnTick:
             ValidTargets: University
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Research, +0.6)"
-#Upgrade villagers resuorce collection
+    #Upgrade villagers resuorce collection
         #Food
         - OnTick:
             ValidTargets: Villager
@@ -713,7 +692,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, HeavyPlow)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.6)"
+                - "ChangeResource(Source.LivestockFarming, 0.2)"
 
         - OnTick:
             ValidTargets: Villager
@@ -721,7 +700,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, CropRotation)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.8)"
+                - "ChangeResource(Source.LivestockFarming, 0.3)"
         #Wood
         - OnTick:
             ValidTargets: Villager
@@ -729,7 +708,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, BowSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.6)"
+                - "ChangeResource(Source.WoodCutting, 0.2)"
 
         - OnTick:
             ValidTargets: Villager
@@ -737,7 +716,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, TwoManSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.8)"
+                - "ChangeResource(Source.WoodCutting, 0.3)"
         #Ore
         - OnTick:
             ValidTargets: Villager
@@ -745,7 +724,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, OreShaftMining)"
             Effects:
-                - "ChangeResource(Source.IronMining, 0.6)"
+                - "ChangeResource(Source.IronMining, 0.2)"
         #Clay
         - OnTick:
             ValidTargets: Villager
@@ -753,4 +732,4 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
-                - "ChangeResource(Source.BrickMaking, 0.6)"
+                - "ChangeResource(Source.BrickMaking, 0.2)"
