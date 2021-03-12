@@ -42,7 +42,7 @@ namespace SGA
 
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
-		Entity& getEntity(GameState& state) const;
+		Entity* getEntity(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
@@ -105,8 +105,11 @@ namespace SGA
 				}
 			}
 		}
+
+		//Check if action target is valid in the received gamestate
+		bool isValid(const GameState& state) const;		
 		
-		//Check if this action target is valid in the received gamestate
+		//Check if this action target is valid in thr action type and in the received gamestate
 		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 
 	private:

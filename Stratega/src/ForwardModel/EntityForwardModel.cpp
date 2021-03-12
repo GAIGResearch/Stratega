@@ -72,7 +72,7 @@ namespace SGA
 			}
 			else
 			{
-				auto& sourceEntity = action.targets[0].getEntity(state);
+				auto& sourceEntity = *action.targets[0].getEntity(state);
 				int continuousActionID = action.targets[1].getContinuousActionID();
 
 				//Search continuousAction to abort
@@ -114,7 +114,7 @@ namespace SGA
 					effect->execute(state, *this, newAction.targets);
 				}
 
-				auto& executingEntity = newAction.targets[0].getEntity(state);
+				auto& executingEntity = *newAction.targets[0].getEntity(state);
 				executingEntity.continuousAction.emplace_back(newAction);
 
 			}
@@ -136,7 +136,7 @@ namespace SGA
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				// Remember when the action was executed
-				auto& executingEntity = action.targets[0].getEntity(state);
+				auto& executingEntity = *action.targets[0].getEntity(state);
 				// ToDo We should probably find a way to avoid this loop
 				for (auto& actionInfo : executingEntity.attachedActions)
 				{

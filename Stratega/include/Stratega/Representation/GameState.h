@@ -65,7 +65,7 @@ namespace SGA
 		
 		Entity* getEntity(int entityID);
 
-		const Entity& getEntityConst(int entityID) const;
+		const Entity* getEntityConst(int entityID) const;
 
 		const EntityType& getEntityType(int entityTypeID) const;
 		

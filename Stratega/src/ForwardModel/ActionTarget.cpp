@@ -56,7 +56,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return state.getEntityConst(data.entityID).ownerID;
+			return state.getEntityConst(data.entityID)->ownerID;
 		}
 
 		throw std::runtime_error("Type not recognised");
@@ -82,7 +82,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return getEntity(const_cast<GameState&>(state)).position;
+			return getEntity(const_cast<GameState&>(state))->position;
 		}
 		else
 		{
@@ -94,7 +94,7 @@ namespace SGA
 	{
 		if (targetType == Type::EntityReference)
 		{
-			return state.getEntityConst(data.entityID);
+			return *state.getEntityConst(data.entityID);
 		}
 		else
 		{
@@ -102,16 +102,13 @@ namespace SGA
 		}
 	}
 
-	Entity& ActionTarget::getEntity(GameState& state) const
+	Entity* ActionTarget::getEntity(GameState& state) const
 	{
 		if (targetType == Type::EntityReference)
 		{
 			auto* entity = state.getEntity(data.entityID);
-			if (entity == nullptr)
-			{
-				throw std::runtime_error("A action-target contained an not existing entity.");
-			}
-			return *entity;
+		
+			return entity;
 		}
 		else
 		{
@@ -158,7 +155,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			const auto& type = state.getEntityType(state.getEntityConst(data.entityID).typeID);
+			const auto& type = state.getEntityType(state.getEntityConst(data.entityID)->typeID);
 			return type;
 		}
 		else
@@ -179,6 +176,19 @@ namespace SGA
 			throw std::runtime_error("Type not recognised");
 		}
 	}
+
+	bool ActionTarget::isValid(const GameState& state) const
+	{
+		switch (targetType)
+		{
+		case EntityReference:
+			return state.getEntityConst(data.entityID);
+			break;
+		default: return true;
+		}
+		return false;
+	}
+		
 	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
 	{
 		bool isValid = true;

@@ -366,7 +366,7 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
 
@@ -409,7 +409,7 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if(actionType.sourceType==ActionSourceType::Entity)
 				{
-					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
 
@@ -675,7 +675,7 @@ namespace SGA
 					if(action.targets[0].getType()==ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *gameStateCopy.getEntityConst(action.targets[0].getEntityID());
 						for (auto& continueAction : sourceEntity.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)

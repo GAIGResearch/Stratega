@@ -35,7 +35,14 @@ namespace SGA
 					if (!precondition->isFullfilled(state, targets))
 						return false;
 				}
-
+				
+				//Check if action targets are still valid in gamestate
+				for (auto& target : targets)
+				{
+					if (!target.isValid(state))
+						return false;
+				}
+				
 				//Check target conditions
 				for (auto& actionTarget : actionType.actionTargets)
 				{

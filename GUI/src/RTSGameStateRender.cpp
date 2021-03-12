@@ -770,7 +770,7 @@ namespace SGA
 					if (action.targets[0].getType() == ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *gameStateCopy.getEntityConst(action.targets[0].getEntityID());
 						for (auto& continueAction : sourceEntity.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)

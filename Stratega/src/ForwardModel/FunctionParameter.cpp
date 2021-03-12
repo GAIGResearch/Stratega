@@ -350,7 +350,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				return sourceEntity.parameters;
 			}
 		}
@@ -379,7 +379,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				return sourceEntity.parameters;
 			}
 		}
@@ -406,7 +406,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 				return sourceEntityType.parameters;
 			}
