@@ -807,7 +807,6 @@ namespace SGA
 				actionInfo += " " + actionType.name;
 
 				//TODO Clean this :D IS TEMPORAL
-
 				for (auto& targetType : action.targets)
 				{
 					switch (targetType.getType())

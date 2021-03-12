@@ -29,6 +29,10 @@ namespace SGA
 			
 			if(entity!=nullptr)
 			{
+				// Check if this action can be executed		
+				if (state.currentTick - entity->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
+					return false;
+				
 				//Check preconditions
 				for (auto& precondition : actionType.preconditions)
 				{
@@ -57,6 +61,11 @@ namespace SGA
 			}
 			else
 			{
+				// Check if this action can be executed		
+				auto* player = state.getPlayer(targets.at(0).getPlayerID());
+				if (state.currentTick - player->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
+					return true;
+				
 				//Not found
 				return false;
 			}

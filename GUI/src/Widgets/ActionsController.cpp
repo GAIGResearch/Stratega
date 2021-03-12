@@ -360,11 +360,13 @@ namespace SGA::Widgets
 		newAction.ownerID = playerID;
 		
 		auto* player = state.getPlayer(playerID);
-		if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
-			return;
 		
 		if (player->canExecuteAction(settings.actionTypeSelected))
 		{
+			
+			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+				return;
+			
 			if (ActionTarget::isValid(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
 		}
