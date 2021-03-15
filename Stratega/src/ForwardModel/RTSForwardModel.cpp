@@ -143,7 +143,7 @@ namespace SGA
 
 				const auto& entityType = state.getEntityType(unit.typeID);
 
-				//Move action
+				//Only affects enviroment collision if the entity can move
 				int moveActionID = state.getActionTypeID("Move");
 				if (!entityType.canExecuteAction(moveActionID))
 					continue;
@@ -175,6 +175,13 @@ namespace SGA
 			int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
 			int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
 
+			const auto& entityType = state.getEntityType(unit.typeID);
+			
+			//Only affects enviroment collision if the entity can move
+			int moveActionID = state.getActionTypeID("Move");
+			if (!entityType.canExecuteAction(moveActionID))
+				continue;
+			
 			Vector2f pushDir;
 			for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
 			{
@@ -198,6 +205,7 @@ namespace SGA
 
 					auto dir = dist.normalized() * penetrationDepth;
 					pushDir = pushDir + dir;
+					
 				}
 			}
 

@@ -135,8 +135,16 @@ Entities:
             Health: 800
             Range: 6
 
-    Mine:
+    IronMine:
         Sprite: ../../GUI/Assets/Entities/mine.png
+        LineOfSightRange: 3
+        Cost:
+        Parameters:
+            Health: 800
+            Range: 6
+
+    GoldMine:
+        Sprite: ../../GUI/Assets/Entities/mine2.png
         LineOfSightRange: 3
         Cost:
         Parameters:
@@ -146,7 +154,7 @@ Entities:
     Villager:
         Sprite: ../../GUI/Assets/Entities/unit7.png
         LineOfSightRange: 3
-        Actions: [Move, CutWood, MineIron, FarmLivestock, MakeBrick]
+        Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
         Parameters:
             Speed: 1
@@ -155,12 +163,13 @@ Entities:
             BrickMaking: 0.1
             LivestockFarming: 0.1
             IronMining: 0.1
+            GoldMining: 0.1
             
     Builder:
         Sprite: ../../GUI/Assets/Entities/unit10.png
         LineOfSightRange: 3
-        CanSpawn: [Farm, Mine, Saw, Masonry, University, Outpost, GuardTower]
-        Actions: [Move, BuildFarm, BuildMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
+        CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
+        Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
         Cost:
         Parameters:
             Speed: 1
@@ -190,8 +199,8 @@ Entities:
 
 EntityGroups:
     Units: [Villager, Builder, Spy, Architect]
-    Buildings: [City, Farm, Mine, Outpost, GuardTower, University, Wonder]
-    Attackable: [Farm, Mine, Outpost, GuardTower, University, Wonder]
+    Buildings: [City, Farm, IronMine, GoldMine, Outpost, GuardTower, University, Wonder]
+    Attackable: [Farm, IronMine, GoldMine, Outpost, GuardTower, University, Wonder]
 
 Actions:
     # Attack Actions
@@ -256,11 +265,23 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: Mine
+                ValidTargets: IronMine
                 Conditions:
                     - "InRange(Source, Target, 3)"
         Effects:
             - "ModifyResource(Source.Player.Iron, Source.IronMining)"
+
+    MineGold:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: GoldMine
+                Conditions:
+                    - "InRange(Source, Target, 3)"
+        Effects:
+            - "ModifyResource(Source.Player.Gold, Source.GoldMining)"
 
     FarmLivestock:
         Type: EntityAction
@@ -321,13 +342,13 @@ Actions:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
 
-    BuildMine:
+    BuildIronMine:
         Type: EntityAction
         Cooldown: 1
         Targets:
             EntityTypeTarget:
                 Type: EntityType
-                ValidTargets: Mine
+                ValidTargets: IronMine
                 Conditions:
                     - "CanAfford(Source.Player, EntityTypeTarget)"
                     - "CanSpawn(Source, EntityTypeTarget)"
@@ -339,6 +360,28 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Ore)"
+        Effects:
+            - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+
+    BuildGoldMine:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: GoldMine
+                Conditions:
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                Shape: Square
+                Size: 4
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, Gold)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -633,9 +676,9 @@ Board:
         W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M  M  M  M  M
         M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  G  G  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M
         M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  G  G  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M
-        M  M  M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M
-        M  M  M  M  M  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W
-        M  O  O  O  O  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W
+        M  M  M  M  M  O  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M
+        M  M  M  M  M  O  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W
+        M  M  M  M  M  O  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  M
@@ -662,6 +705,12 @@ ForwardModel:
     WinCondition:
         Type: UnitAlive
         Unit: City
+#       Type: HasUnit
+#       Unit: Wonder
+#    LoseCondition:
+#       Type: PlayerResource
+#       CompareSymbol: Lower
+#       Resource: Food
 
     Trigger:
    #Global resource compsumption
@@ -692,7 +741,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, HeavyPlow)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.2)"
+                - "ChangeResource(Source.LivestockFarming, 0.11)"
 
         - OnTick:
             ValidTargets: Villager
@@ -700,7 +749,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, CropRotation)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.3)"
+                - "ChangeResource(Source.LivestockFarming, 0.13)"
         #Wood
         - OnTick:
             ValidTargets: Villager
@@ -708,7 +757,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, BowSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.2)"
+                - "ChangeResource(Source.WoodCutting, 0.12)"
 
         - OnTick:
             ValidTargets: Villager
@@ -716,7 +765,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, TwoManSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.3)"
+                - "ChangeResource(Source.WoodCutting, 0.13)"
         #Ore
         - OnTick:
             ValidTargets: Villager
@@ -724,7 +773,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, OreShaftMining)"
             Effects:
-                - "ChangeResource(Source.IronMining, 0.2)"
+                - "ChangeResource(Source.IronMining, 0.125)"
         #Clay
         - OnTick:
             ValidTargets: Villager
@@ -732,4 +781,4 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
-                - "ChangeResource(Source.BrickMaking, 0.2)"
+                - "ChangeResource(Source.BrickMaking, 0.125)"
