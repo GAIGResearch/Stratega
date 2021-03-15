@@ -33,6 +33,7 @@ namespace SGA
 	void TBSGameStateRender::init()
 	{
 		GameStateRenderer::init();
+		actionsSettings.removeSelectedEntities = false;
 	}
 
 	void TBSGameStateRender::onGameStateAdvanced()

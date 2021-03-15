@@ -30,12 +30,16 @@ namespace SGA::Widgets
 		bool waitingForPosition = false;
 		bool waitingForEntity = false;
 
-		void reset(bool clearActions=true)
+
+		//Configuration
+		bool removeSelectedEntities = true;
+		
+		void reset()
 		{
 			actionTypeSelected = -1;
 			selectedTargets.clear();
 			
-			//if(clearActions)
+			if(removeSelectedEntities)
 				actionsHumanPlayer.clear();
 			
 			selectedEntities.clear();
