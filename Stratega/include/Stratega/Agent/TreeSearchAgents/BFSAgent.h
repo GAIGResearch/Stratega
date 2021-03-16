@@ -26,6 +26,6 @@ namespace SGA
 		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes);
 		int getBestActionIdx(TBSForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
-		void init(TBSForwardModel& forwardModel, TBSGameState& gameState);
+		void init(TBSForwardModel& forwardModel, GameState& gameState);
 	};
 }

@@ -1,7 +1,6 @@
 #pragma once
 #include <GameStateRenderer.h>
 #include <Stratega/Game/TBSGame.h>
-#include <Stratega/Representation/TBSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -14,7 +13,7 @@ namespace SGA
 	struct RenderConfig;
 	struct GameConfig;
 	
-	class TBSGameStateRender : public GameStateRenderer<TBSGameState>
+	class TBSGameStateRender : public GameStateRenderer<GameState>
 	{
 	public:
 		TBSGameStateRender(TBSGame& game, const GameConfig& gameConfig, const RenderConfig& renderConfig, int playerID);
@@ -76,8 +75,8 @@ namespace SGA
 		TBSGame* game;
 
 		//Current gamestate used to render
-		TBSGameState gameStateCopy;
-		TBSGameState gameStateCopyFogOfWar;
+		GameState gameStateCopy;
+		GameState gameStateCopyFogOfWar;
 
 		//Zoom
 		float zoomValue = 5;
@@ -93,7 +92,7 @@ namespace SGA
 
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
-		CircularBuffer<TBSGameState> gameStatesBuffer;
+		CircularBuffer<GameState> gameStatesBuffer;
 		int gameStatesBufferRCurrentIndex = 0;
 
 		//Human player

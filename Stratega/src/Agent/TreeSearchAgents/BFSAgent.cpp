@@ -53,7 +53,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="gameState">the current game-state</param>
-	void BFSAgent::init(TBSForwardModel& forwardModel, TBSGameState& gameState)
+	void BFSAgent::init(TBSForwardModel& forwardModel, GameState& gameState)
 	{
 		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)

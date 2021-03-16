@@ -1,7 +1,6 @@
 #pragma once
 #include <mutex>
 #include <Stratega/Game/Game.h>
-#include <Stratega/Representation/RTSGameState.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 namespace SGA
@@ -18,7 +17,7 @@ namespace SGA
 		Action actionToExecute;
 		bool hasActionToExecute = false;
 
-		RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
+		RTSGame(std::unique_ptr<GameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
 
 		void executeAction(Action action);
 		void update(double deltaTime) override;
@@ -32,15 +31,15 @@ namespace SGA
 		/// Use this only to access scalar-variables, because the state is continuously modified
 		/// For more complicated code use getStateCopy.
 		/// </summary>
-		const RTSGameState& getState() const;
-		RTSGameState getStateCopy();
+		const GameState& getState() const;
+		GameState getStateCopy();
 
 		[[nodiscard]] bool isUpdatingState() const { return updatingState && !isGameOver(); }
 
 	private:
 		bool updatingState = false;
 
-		std::unique_ptr<RTSGameState> gameState;
+		std::unique_ptr<GameState> gameState;
 		RTSForwardModel forwardModel;
 
 		std::mt19937 rngEngine;

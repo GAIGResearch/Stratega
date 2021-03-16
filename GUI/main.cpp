@@ -36,7 +36,7 @@ int main()
 			playerID++;
 			continue;
 		}
-		if (gameConfig.gameType == SGA::ForwardModelType::TBS)
+		if (gameConfig.gameType == SGA::GameType::TBS)
 		{
 			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));

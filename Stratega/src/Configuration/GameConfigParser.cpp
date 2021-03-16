@@ -9,7 +9,7 @@ namespace SGA
 	{
 		auto configNode = YAML::LoadFile(filePath);
         GameConfig config;
-        config.gameType = configNode["GameConfig"]["Type"].as<ForwardModelType>();
+        config.gameType = configNode["GameConfig"]["Type"].as<GameType>();
         config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
         config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
 
@@ -321,11 +321,11 @@ namespace SGA
         }
 		
         std::unique_ptr<EntityForwardModel> fm;
-		if(config.gameType == ForwardModelType::TBS)
+		if(config.gameType == GameType::TBS)
 		{
             fm = std::make_unique<TBSForwardModel>();
 		}
-        else if(config.gameType == ForwardModelType::RTS)
+        else if(config.gameType == GameType::RTS)
         {
             fm = std::make_unique<RTSForwardModel>();
         }

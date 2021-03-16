@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	void TBSForwardModel::advanceGameState(TBSGameState& state, const Action& action) const
+	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
 		if (action.actionTypeFlags == ActionFlag::EndTickAction)
 		{
@@ -28,7 +28,7 @@ namespace SGA
 		state.isGameOver = checkGameIsFinished(state);
 	}
 
-	void TBSForwardModel::endTurn(TBSGameState& state) const
+	void TBSForwardModel::endTurn(GameState& state) const
 	{
 		// Find the next player who's still able to play
 		for (auto i = 1; i <= state.players.size(); i++)
@@ -50,22 +50,22 @@ namespace SGA
 		}
 	}
 
-	std::vector<Action> TBSForwardModel::generateActions(TBSGameState& state) const
+	std::vector<Action> TBSForwardModel::generateActions(GameState& state) const
 	{
 		return (EntityActionSpace().generateActions(state, state.currentPlayer));
 	}
 
-	std::vector<Action> TBSForwardModel::generateActions(TBSGameState& state, int playerID) const
+	std::vector<Action> TBSForwardModel::generateActions(GameState& state, int playerID) const
 	{
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
-	bool TBSForwardModel::isValid(const TBSGameState& state, const Action& action) const
+	bool TBSForwardModel::isValid(const GameState& state, const Action& action) const
 	{
 		return true;
 	}
 
-	bool TBSForwardModel::checkGameIsFinished(TBSGameState& state) const
+	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{
 		if (state.currentTick >= state.tickLimit)
 			return true;

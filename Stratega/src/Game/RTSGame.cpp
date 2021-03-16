@@ -1,17 +1,17 @@
 #include <Stratega/Game/RTSGame.h>
 namespace SGA
 {
-	RTSGame::RTSGame(std::unique_ptr<RTSGameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
+	RTSGame::RTSGame(std::unique_ptr<GameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), nextAction(), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
-	const RTSGameState& RTSGame::getState() const
+	const GameState& RTSGame::getState() const
 	{
 		return *gameState;
 	}
 
-	RTSGameState RTSGame::getStateCopy()
+	GameState RTSGame::getStateCopy()
 	{
 		std::lock_guard<std::mutex> copyGuard(stateMutex);
 		return *gameState;

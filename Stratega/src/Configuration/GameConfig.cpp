@@ -24,15 +24,15 @@ namespace SGA
 	{
 		// Generate game
 		std::unique_ptr<Game> game;
-		if (config.gameType == ForwardModelType::TBS)
+		if (config.gameType == GameType::TBS)
 		{
-			auto gameState = std::unique_ptr<TBSGameState>(dynamic_cast<TBSGameState*>(config.generateGameState().release()));
+			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
 			auto fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
-		else if (config.gameType == ForwardModelType::RTS)
+		else if (config.gameType == GameType::RTS)
 		{
-			auto gameState = std::unique_ptr<RTSGameState>(dynamic_cast<RTSGameState*>(config.generateGameState().release()));
+			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
 			auto fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
 			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
@@ -47,17 +47,8 @@ namespace SGA
 	std::unique_ptr<GameState> GameConfig::generateGameState() const
 	{
 		// Initialize state
-		std::unique_ptr<GameState> state;
-		if(gameType == ForwardModelType::TBS)
-		{
-			state = std::make_unique<TBSGameState>();
-		}
-		else if(gameType == ForwardModelType::RTS)
-		{
-			state = std::make_unique<RTSGameState>();
-		}
-
-		// Assign data
+		std::unique_ptr<GameState> state = std::make_unique<GameState>();
+		state->gameType = gameType;
 		state->tickLimit = tickLimit;
 		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
 		state->tileTypes = std::make_shared<std::unordered_map<int, TileType>>(tileTypes);

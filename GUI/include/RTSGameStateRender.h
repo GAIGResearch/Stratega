@@ -1,7 +1,6 @@
 #pragma once
 #include <GameStateRenderer.h>
 #include <Stratega/Game/RTSGame.h>
-#include <Stratega/Representation/RTSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
@@ -13,7 +12,7 @@ namespace SGA
 	struct GameConfig;
 	struct RenderConfig;
 	
-	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
+	class RTSGameStateRender : public GameStateRenderer<GameState>
 	{
 	public:
 		sf::View view2;
@@ -76,8 +75,8 @@ namespace SGA
 		RTSGame* game;
 
 		//Current gamestate used to render
-		RTSGameState gameStateCopy;
-		RTSGameState gameStateCopyFogOfWar;
+		GameState gameStateCopy;
+		GameState gameStateCopyFogOfWar;
 		//Zoom
 		float zoomValue = 5;
 
@@ -93,7 +92,7 @@ namespace SGA
 
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
-		CircularBuffer<RTSGameState> gameStatesBuffer;
+		CircularBuffer<GameState> gameStatesBuffer;
 		int gameStatesBufferRCurrentIndex = 0;		
 
 		//Imgui

@@ -33,7 +33,7 @@ namespace SGA
 		
 	}
 
-	RTSGameState RTSGameCommunicator::getGameState() const
+	GameState RTSGameCommunicator::getGameState() const
 	{
 		auto state = game->getStateCopy();
 		//state.applyFogOfWar(getPlayerID());

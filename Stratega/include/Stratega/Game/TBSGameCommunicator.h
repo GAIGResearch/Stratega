@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Game/GameCommunicator.h>
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/Game/TBSGame.h>
 
 #include <random>
@@ -32,7 +32,7 @@ namespace SGA
 		/// <summary>
 		/// Queries the game state from the GameRunner and applies Fog of War.
 		/// </summary>
-		TBSGameState getGameState() const;
+		GameState getGameState() const;
 		/// <summary>
 		/// Checks if the game is over without querying a copy of the game state.
 		/// This function should be preferred over querying the game state and manually checking <see cref="SGA::GameState::isGameOver"/>.

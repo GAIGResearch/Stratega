@@ -31,17 +31,18 @@ namespace SGA
 namespace YAML
 {
     template<>
-    struct convert<SGA::ForwardModelType>
+    struct convert<SGA::GameType>
     {
-        static bool decode(const Node& node, SGA::ForwardModelType& rhs)
+        static bool decode(const Node& node, SGA::GameType& rhs)
         {
             if (!node.IsScalar())
                 return false;
+        	
             auto value = node.as<std::string>();
             if (value == "RTS")
-                rhs = SGA::ForwardModelType::RTS;
+                rhs = SGA::GameType::RTS;
             else if (value == "TBS")
-                rhs = SGA::ForwardModelType::TBS;
+                rhs = SGA::GameType::TBS;
             else
                 return false;
 
