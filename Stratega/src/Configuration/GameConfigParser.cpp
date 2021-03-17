@@ -1,6 +1,5 @@
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Configuration/WinConditionType.h>
 #include <Stratega/Configuration/YamlHeaders.h>
 
 namespace SGA
@@ -329,19 +328,36 @@ namespace SGA
         {
             fm = std::make_unique<RTSForwardModel>();
         }
-
-		// Parse WinCondition
-        auto winConditionNode = fmNode["WinCondition"];
-        fm->winCondition = winConditionNode["Type"].as<WinConditionType>(fm->winCondition);
-		if(fm->winCondition == WinConditionType::UnitAlive)
-		{
-            auto targetUnitName = winConditionNode["Unit"].as<std::string>();
-            fm->targetUnitTypeID = config.getEntityID(targetUnitName);
-		}
-
-		// Parse Trigger
+       
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+		
+		//Parse Win Conditions
+        auto winConditions = fmNode["WinConditions"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>());
+        
+        for (auto& winCondition : winConditions)
+        {
+            std::vector<std::shared_ptr<Condition>> conditionList;
+        	
+            auto conditions = winCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Condition>(conditions, conditionList, context);
+            fm->winConditions.emplace_back(conditionList);
+        }
+
+        //Parse Lose Conditions
+        auto loseConditions = fmNode["LoseConditions"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>());
+
+        for (auto& loseCondition : loseConditions)
+        {
+            std::vector<std::shared_ptr<Condition>> conditionList;
+
+            auto conditions = loseCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Condition>(conditions, conditionList, context);
+            fm->loseConditions.emplace_back(conditionList);
+        }
+		
+		// Parse Triggers
 		for(const auto& trigger : fmNode["Trigger"].as<std::vector<YAML::Node>>(std::vector<YAML::Node>()))
 		{
             auto map = trigger.as<std::map<std::string, YAML::Node>>();

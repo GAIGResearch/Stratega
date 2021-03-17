@@ -143,7 +143,7 @@ namespace SGA
 
 				const auto& entityType = state.getEntityType(unit.typeID);
 
-				//Move action
+				//Only affects enviroment collision if the entity can move
 				int moveActionID = state.getActionTypeID("Move");
 				if (!entityType.canExecuteAction(moveActionID))
 					continue;
@@ -175,6 +175,13 @@ namespace SGA
 			int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
 			int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
 
+			const auto& entityType = state.getEntityType(unit.typeID);
+			
+			//Only affects enviroment collision if the entity can move
+			int moveActionID = state.getActionTypeID("Move");
+			if (!entityType.canExecuteAction(moveActionID))
+				continue;
+			
 			Vector2f pushDir;
 			for (int x = startCheckPositionX; x <= endCheckPositionX; x++)
 			{
@@ -198,6 +205,7 @@ namespace SGA
 
 					auto dir = dist.normalized() * penetrationDepth;
 					pushDir = pushDir + dir;
+					
 				}
 			}
 
@@ -603,11 +611,21 @@ namespace SGA
 
 	bool RTSForwardModel::checkGameIsFinished(GameState& state) const
 	{
-		/*int numberPlayerCanPlay = 0;
+		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
 		for (Player& player : state.players)
 		{
-			if (player.canPlay && canPlayerPlay(player))
+			//Check if player won
+			if(player.canPlay && checkPlayerWon(state, player))
+			{
+				winnerID = player.id;
+				
+				state.winnerPlayerID = (winnerID);
+				return true;
+			}
+
+			//Check if player can play
+			if (player.canPlay && canPlayerPlay(state, player))
 			{
 				winnerID = player.id;
 				numberPlayerCanPlay++;
@@ -622,7 +640,7 @@ namespace SGA
 		{
 			state.winnerPlayerID = (winnerID);
 			return true;
-		}*/
+		}
 
 		return false;
 	}

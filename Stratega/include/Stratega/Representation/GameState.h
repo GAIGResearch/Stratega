@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <unordered_map>
 #include <unordered_set>
 #include <Stratega/Representation/Grid2D.h>
@@ -46,7 +47,10 @@ namespace SGA
 
 		// RTS related data
 		std::shared_ptr<Navigation> navigation;
-		
+
+		//Random engine
+		std::mt19937 rngEngine;
+
 		// Game information
 		GameType gameType;
 		bool isGameOver;
@@ -71,7 +75,7 @@ namespace SGA
 		
 		Entity* getEntity(int entityID);
 
-		const Entity& getEntityConst(int entityID) const;
+		const Entity* getEntityConst(int entityID) const;
 
 		const EntityType& getEntityType(int entityTypeID) const;
 		
@@ -97,6 +101,12 @@ namespace SGA
 
 		bool isWalkable(const Vector2i& position);
 		
+		//bool isTile(const Vector2i& position, std::string tileName);
+		const TileType& getTileType(int tileTypeID) const
+		{
+			return tileTypes->find(tileTypeID)->second;
+		}
+		
 		bool isInBounds(Vector2i pos);
 				
 		const ActionType& getActionType(int typeID) const;
@@ -114,6 +124,16 @@ namespace SGA
 
 		void applyFogOfWar(int playerID);
 
+		void setRNGEngine(std::mt19937 engine)
+		{
+			rngEngine = engine;
+		}
+
+		const std::mt19937& getRNGEngine() const
+		{
+			return rngEngine;
+		}
+		
 	private:
 		int nextPlayerID;
 		int nextEntityID;

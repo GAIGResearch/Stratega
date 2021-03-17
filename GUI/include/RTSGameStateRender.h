@@ -61,14 +61,21 @@ namespace SGA
 		void createWindowFogOfWar();
 		void createWindowPlayerParameters() const;
 		
-		void playAction(std::vector<Action> actionsToPlay)
+		void playActions(std::vector<Action> newActionsToPlay)
 		{
-			for (auto& element : actionsToPlay)
+			for (auto& element : newActionsToPlay)
 			{
-				game->executeAction(element);
+				//If continous or player action execute directly
+				if (element.actionTypeID == -1 || element.isPlayerAction())
+				{
+					game->executeAction(element);
+				}
+				else
+				{
+					//Add actions to list
+					actionsToPlay[element.getSourceID()] = element;
+				}
 			}
-			
-			actionsSettings.reset();
 		}
 	private:
 		//Game Data
@@ -107,5 +114,8 @@ namespace SGA
 		NavigationConfig config;
 
 		sf::RenderTexture renderMinimapTexture;
+
+		//Collect actions played by previous frame
+		std::unordered_map<int, Action> actionsToPlay;
 	};
 }

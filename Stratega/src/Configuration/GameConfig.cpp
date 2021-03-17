@@ -20,20 +20,24 @@ namespace SGA
 		return agents;
 	}
 	
-	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine )
 	{
+		std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+		
 		// Generate game
 		std::unique_ptr<Game> game;
 		if (config.gameType == GameType::TBS)
 		{
 			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
 			auto fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
+			//fm.setRNGEngine(std::mt19937(distribution(rngEngine)));
 			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
 		}
 		else if (config.gameType == GameType::RTS)
 		{
 			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
 			auto fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
+			//fm.setRNGEngine(std::mt19937(distribution(rngEngine)));
 			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
 		}
 		else
