@@ -67,7 +67,14 @@ namespace SGA
 		bool operator==(const Vector2f& other) const;
 		bool operator!=(const Vector2f& other) const;
 
-		Vector2f normalized() const { return *this / magnitude(); }
+		Vector2f normalized() const
+		{
+			const auto magnitudeValue = magnitude();
+			
+			//Check if result is different to 0
+			if (magnitudeValue <= 0) return *this;
+			return (*this) / magnitudeValue;
+		}
 		double distance(const Vector2f& other) const { float dx = other.x - x; float dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
 		float manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
 		float chebyshevDistance(const Vector2f& other) const { float dx = other.x - x; float dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }

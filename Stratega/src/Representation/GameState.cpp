@@ -47,10 +47,12 @@ namespace SGA
 		return iter == entities.end() ? nullptr : &*iter;
 	}
 
-	const Entity& GameState::getEntityConst(int entityID) const
+	const Entity* GameState::getEntityConst(int entityID) const
 	{
-		return *std::find_if(std::begin(entities), std::end(entities),
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.id == entityID; });
+		return iter == entities.end() ? nullptr : &*iter;
+
 	}
 
 	const EntityType& GameState::getEntityType(int entityTypeID) const

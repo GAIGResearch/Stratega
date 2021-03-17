@@ -44,6 +44,7 @@ namespace SGA
 		int elapsedTicks;
 		
 		void execute(GameState& state, const EntityForwardModel& fm) const;
+		bool validate(GameState& state) const;
 
 		[[nodiscard]] bool isEntityAction() const;
 		[[nodiscard]] bool isPlayerAction() const;
