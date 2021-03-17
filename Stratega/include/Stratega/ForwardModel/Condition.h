@@ -16,7 +16,17 @@ namespace SGA
 	
 		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
+	
+	class NoHasResource : public Condition
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter lowerBound;
+	public:
+		NoHasResource(const std::vector<FunctionParameter>& parameters);
 
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class HasResource : public Condition
 	{
 		FunctionParameter resourceReference;
@@ -103,6 +113,26 @@ namespace SGA
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class HasEntity : public Condition
+	{
+		FunctionParameter playerParam;
+		FunctionParameter entityTypeParam;
+
+	public:
+		HasEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class NoHasEntity : public Condition
+	{
+		FunctionParameter playerParam;
+		FunctionParameter entityTypeParam;
+
+	public:
+		NoHasEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
 	class CanSpawnCondition : public Condition
 	{

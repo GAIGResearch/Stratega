@@ -134,9 +134,10 @@ Entities:
         Actions: [Attack, Move]
 
 ForwardModel:
-    WinCondition:
-        Type: LastManStanding
-        Unit: King
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "NoHasEntity(Source, King)"
+
     Trigger:
         - OnTick:
             Effects:

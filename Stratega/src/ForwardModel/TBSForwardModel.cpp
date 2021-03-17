@@ -74,6 +74,15 @@ namespace SGA
 		int winnerID = -1;
 		for (Player& player : state.players)
 		{
+			//Check if player won
+			if (player.canPlay && checkPlayerWon(state, player))
+			{
+				winnerID = player.id;
+
+				state.winnerPlayerID = (winnerID);
+				return true;
+			}
+			
 			if (player.canPlay && canPlayerPlay(state, player))
 			{
 				winnerID = player.id;

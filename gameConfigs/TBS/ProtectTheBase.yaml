@@ -7,9 +7,6 @@ Agents:
     - RandomAgent
     - HumanAgent
 
-Player:
-    Parameters:
-        Gold: 200
 
 Tiles:
     Plain:
@@ -72,10 +69,11 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: All
+                ValidTargets: Attackable
                 Conditions:
                     - "InRange(Source, Target, 10)"
         Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
 
     # Move Actions
     Move:
@@ -125,6 +123,7 @@ Entities:
         Actions: [SpawnMiner, SpawnFighter]
         Parameters:
             Gold: 500
+            Health: 500
 
     Miner:
         Sprite: ../../GUI/Assets/Entities/unit7.png
@@ -133,12 +132,16 @@ Entities:
         Actions: [Move, Mine, Deposit]
         Parameters:
             Gold: 0
+            Health: 50
 
     Fighter:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: f
         LineOfSightRange: 6
-        Actions: [Move]
+        Parameters:
+            AttackDamage: 10
+            Health: 80
+        Actions: [Move, Attack]
 
     GoldVein:
         Sprite: ../../GUI/Assets/Entities/gold_chest.png
@@ -147,6 +150,9 @@ Entities:
         Actions: []
         Parameters:
             Gold: 200
+
+EntityGroups:
+    Attackable: [Base, Fighter, Miner]
 
 Board:
     GenerationType: Manual
@@ -170,5 +176,6 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
                    
 ForwardModel:
-    WinCondition:
-        Type: LastManStanding
+    LoseConditions: #If true: Player -> cant play
+        NoHasCity:
+        - "NoHasEntity(Source, Base)"

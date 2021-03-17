@@ -1,5 +1,5 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
 
@@ -235,7 +235,8 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: AllPositions
+                Shape: Circle
+                Size: 100 # Target.Speed
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:

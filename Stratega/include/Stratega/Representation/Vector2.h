@@ -69,10 +69,10 @@ namespace SGA
 
 		Vector2f normalized() const
 		{
-			auto magnitudeValue = magnitude();
+			const auto magnitudeValue = magnitude();
 			
 			//Check if result is different to 0
-			if (magnitudeValue == 0) return *this;
+			if (magnitudeValue <= 0) return *this;
 			return (*this) / magnitudeValue;
 		}
 		double distance(const Vector2f& other) const { float dx = other.x - x; float dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }

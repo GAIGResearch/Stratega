@@ -4,6 +4,20 @@
 
 namespace  SGA
 {
+	NoHasResource::NoHasResource(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		lowerBound(parameters.at(1))
+	{
+	}
+
+	bool NoHasResource::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto targetResource = resourceReference.getParameterValue(state, targets);
+		double lowerBound = this->lowerBound.getConstant(state,targets);
+		
+		return targetResource <= lowerBound;
+	}
+
 	HasResource::HasResource(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		lowerBound(parameters.at(1))
@@ -140,6 +154,50 @@ namespace  SGA
 		return state.technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
+	NoHasEntity::NoHasEntity(const std::vector<FunctionParameter>& parameters) :
+		playerParam(parameters[0]),
+		entityTypeParam(parameters[1])
+	{
+	}
+
+	bool NoHasEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto& entities = state.getPlayerEntities(targetPlayer.id);
+		
+		bool hasEntity = false;
+		for (auto& entity : entities)
+		{
+			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+				hasEntity = true;
+		}
+
+		return !hasEntity;
+	}
+	
+	HasEntity::HasEntity(const std::vector<FunctionParameter>& parameters) :
+		playerParam(parameters[0]),
+		entityTypeParam(parameters[1])
+	{
+	}
+
+	bool HasEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto& entities = state.getPlayerEntities(targetPlayer.id);
+
+		for (auto& entity : entities)
+		{
+			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+				return true;
+		}
+	
+		return false;
+	}
+
+	
 	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
 		technologyTypeParam(parameters[1])

@@ -9,7 +9,10 @@ namespace SGA
 	FunctionFactory<Condition>& FunctionFactory<Condition>::getDefaultFactory()
 	{
 		static FunctionFactory<Condition> factory;
+		factory.registerFunction<HasEntity>("HasEntity");
+		factory.registerFunction<NoHasEntity>("NoHasEntity");
 		factory.registerFunction<HasResource>("HasResource");
+		factory.registerFunction<NoHasResource>("NoHasResource");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsTile>("IsTileType");

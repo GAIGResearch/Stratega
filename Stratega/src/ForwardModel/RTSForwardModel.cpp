@@ -611,11 +611,21 @@ namespace SGA
 
 	bool RTSForwardModel::checkGameIsFinished(RTSGameState& state) const
 	{
-		/*int numberPlayerCanPlay = 0;
+		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
 		for (Player& player : state.players)
 		{
-			if (player.canPlay && canPlayerPlay(player))
+			//Check if player won
+			if(player.canPlay && checkPlayerWon(state, player))
+			{
+				winnerID = player.id;
+				
+				state.winnerPlayerID = (winnerID);
+				return true;
+			}
+
+			//Check if player can play
+			if (player.canPlay && canPlayerPlay(state, player))
 			{
 				winnerID = player.id;
 				numberPlayerCanPlay++;
@@ -630,7 +640,7 @@ namespace SGA
 		{
 			state.winnerPlayerID = (winnerID);
 			return true;
-		}*/
+		}
 
 		return false;
 	}

@@ -18,6 +18,8 @@ namespace SGA
 		//Continuous or special action
 		if (actionTypeID==-1)
 			return true;
+
+		auto& actionType = state.getActionType(actionTypeID);
 		
 		//Check if source and targets are valid
 		if(isEntityAction())
@@ -25,7 +27,7 @@ namespace SGA
 			auto entityID = targets.at(0).getEntityID();
 			auto* entity=state.getEntity(entityID);
 
-			auto& actionType = state.getActionType(actionTypeID);
+			
 			
 			if(entity!=nullptr)
 			{
@@ -59,16 +61,19 @@ namespace SGA
 				
 				return true;
 			}
-			else
-			{
-				// Check if this action can be executed		
-				auto* player = state.getPlayer(targets.at(0).getPlayerID());
-				if (state.currentTick - player->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
-					return true;
-				
-				//Not found
-				return false;
-			}
+
+			return false;
+			
+		}
+		else
+		{
+			// Check if this action can be executed		
+			auto* player = state.getPlayer(targets.at(0).getPlayerID());
+			if (state.currentTick - player->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
+				return true;
+
+			//Not found
+			return false;
 		}
 	}
 

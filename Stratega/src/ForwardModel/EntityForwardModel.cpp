@@ -7,39 +7,45 @@ namespace SGA
 		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
 			return true;
 
-		switch (winCondition)
+		//Check Lose conditions
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+		
+		for (auto& loseConditionType : loseConditions)
 		{
-		case WinConditionType::UnitAlive:
-		{
-			//player.getEntities();
-			bool hasKing = false;
-			for (auto& unit : state.getPlayerEntities(player.id))
+			for (auto& loseCondition : loseConditionType)
 			{
-				//Check if player has units
-				if (unit->typeID == targetUnitTypeID)
-				{
-					hasKing = true;
-				}
+				if (loseCondition->isFullfilled(state, targets))
+					return false;
 			}
-
-			if (!hasKing)
-			{
-				return false;
-			}
-
-			break;
-		}
-		case WinConditionType::LastManStanding:
-		{
-			if (state.getPlayerEntities(player.id).empty())
-			{
-				return false;
-			}
-			break;
-		}
 		}
 
 		return true;
+	}
+
+	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const
+	{
+		//if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+		//	return false;
+
+		//Check Win conditions
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+
+		bool playerWon = true;
+		for (auto& winConditionType : winConditions)
+		{
+			for (auto& winCondition : winConditionType)
+			{
+				if (!winCondition->isFullfilled(state, targets))
+					playerWon = false;
+			}
+
+			if (playerWon)
+				return true;
+		}
+
+		return false;
 	}
 
 	void EntityForwardModel::executeAction(GameState& state, const Action& action) const

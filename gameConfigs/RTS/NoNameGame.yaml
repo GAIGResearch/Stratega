@@ -361,9 +361,9 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
                    
 ForwardModel:
-    WinCondition:
-        Type: UnitAlive
-        Unit: City
+    LoseConditions: #If true: Player -> cant play
+        NoHasCity:
+        - "NoHasEntity(Source, City)"
 
     Trigger:
         - OnTick:
