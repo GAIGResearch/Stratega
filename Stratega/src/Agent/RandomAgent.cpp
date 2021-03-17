@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void RandomAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void RandomAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{
@@ -23,7 +23,7 @@ namespace SGA
 		}
 	}
 
-	void RandomAgent::runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
+	void RandomAgent::runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
 	{
 		auto lastExecution = std::chrono::high_resolution_clock::now();
 		while (!gameCommunicator.isGameOver())

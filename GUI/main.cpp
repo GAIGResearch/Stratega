@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
-#include <Stratega/Game/TBSGameCommunicator.h>
+#include <Stratega/Game/AgentGameCommunicator.h>
 #include <Stratega/Configuration/YamlHeaders.h>
 #include <Stratega/Game/TBSGame.h>
 #include <Stratega/Configuration/GameConfigParser.h>
@@ -39,7 +39,7 @@ int main()
 		}
 		if (gameConfig.gameType == SGA::GameType::TBS)
 		{
-			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(engine)));
@@ -47,7 +47,7 @@ int main()
 		}
 		else
 		{
-			std::unique_ptr<SGA::RTSGameCommunicator> comm = std::make_unique<SGA::RTSGameCommunicator>(playerID);
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(engine)));

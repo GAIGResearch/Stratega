@@ -37,7 +37,7 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 		
 		if (config->gameType == SGA::GameType::TBS)
 		{
-			auto comm = std::make_unique<SGA::TBSGameCommunicator>(i);
+			auto comm = std::make_unique<SGA::AgentGameCommunicator>(i);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
