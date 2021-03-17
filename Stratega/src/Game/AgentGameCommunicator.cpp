@@ -3,18 +3,23 @@
 
 namespace SGA
 {
-	AgentGameCommunicator::AgentGameCommunicator(int playerID):
-		GameCommunicator{playerID}, game(nullptr), rtsGame(nullptr)
+	AgentGameCommunicator::AgentGameCommunicator(int playerID, RTSGame& newGame, std::unique_ptr<Agent> newAgent, std::mt19937 newRngEngine) :
+		GameCommunicator{ playerID }, tbsGame(nullptr), rtsGame(&newGame), agent(std::move(newAgent)), rngEngine(newRngEngine)
+	{
+	}
+
+	AgentGameCommunicator::AgentGameCommunicator(int playerID, TBSGame& newGame, std::unique_ptr<Agent> newAgent, std::mt19937 newRngEngine) :
+		GameCommunicator{ playerID }, tbsGame(&newGame), rtsGame(nullptr), agent(std::move(newAgent)), rngEngine(newRngEngine)
 	{
 	}
 
 	void AgentGameCommunicator::init()
-	{
+	{		
 		//Initialize TBS Game
-		if(game)
+		if(tbsGame)
 		{
 			// Copy the forwardModel but ensure that it contains a different actionSpace instance
-			TBSForwardModel copy(game->getForwardModel());
+			TBSForwardModel copy(tbsGame->getForwardModel());
 			copy.setActionSpace(copy.generateDefaultActionSpace());
 
 			thread = std::thread(&Agent::runTBS, std::ref(*agent), std::ref(*this), std::move(copy));
@@ -41,31 +46,11 @@ namespace SGA
 		return rngEngine;
 	}
 
-	void AgentGameCommunicator::setGame(TBSGame& newGame)
-	{
-		this->game = &newGame;
-	}
-
-	void AgentGameCommunicator::setGame(RTSGame& newGame)
-	{
-		this->rtsGame = &newGame;
-	}
-
-	void AgentGameCommunicator::setAgent(std::unique_ptr<Agent> agent)
-	{
-		this->agent = std::move(agent);
-	}
-
-	void AgentGameCommunicator::setRNGEngine(std::mt19937 engine)
-	{
-		rngEngine = engine;
-	}
-
 	bool AgentGameCommunicator::isMyTurn() const
 	{
-		if(game)
+		if(tbsGame)
 		{
-			return game->running() && game->getState().currentPlayer == getPlayerID() && !game->isGameOver();
+			return tbsGame->running() && tbsGame->getState().currentPlayer == getPlayerID() && !tbsGame->isGameOver();
 		}
 		else
 		{
@@ -76,13 +61,13 @@ namespace SGA
 
 	void AgentGameCommunicator::executeAction(Action action) const
 	{
-		if(game)
+		if(tbsGame)
 		{
-			game->addActionToExecute(action);
+			tbsGame->addActionToExecute(action);
 			// The agent's thread only continues once the action has been executed
 			// This ensures that an agent is deterministic, otherwise it can happen that an agent works with an old gameState
 			// TODO Should this be done here?
-			while (game->isUpdatingState());
+			while (tbsGame->isUpdatingState());
 		}
 		else
 		{
@@ -92,9 +77,9 @@ namespace SGA
 
 	GameState AgentGameCommunicator::getGameState() const
 	{
-		if(game)
+		if(tbsGame)
 		{
-			auto state = game->getStateCopy();
+			auto state = tbsGame->getStateCopy();
 			state.applyFogOfWar(getPlayerID());
 			return state;
 		}
@@ -109,9 +94,9 @@ namespace SGA
 	
 	bool AgentGameCommunicator::isGameOver() const
 	{
-		if(game)
+		if(tbsGame)
 		{
-			return game->isGameOver();
+			return tbsGame->isGameOver();
 		}
 		else
 		{

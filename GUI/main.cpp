@@ -37,22 +37,25 @@ int main()
 			playerID++;
 			continue;
 		}
+	
 		if (gameConfig.gameType == SGA::GameType::TBS)
 		{
-			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID);
-			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(engine)));
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID,
+				dynamic_cast<SGA::TBSGame&>(*game),
+				std::move(agent),
+				std::mt19937(distribution(engine)));
+			
 			game->addCommunicator(std::move(comm));
 		}
 		else
 		{
-			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID);
-			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(engine)));
-			game->addCommunicator(std::move(comm));			
-		}
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID,
+				dynamic_cast<SGA::RTSGame&>(*game),
+				std::move(agent),
+				std::mt19937(distribution(engine)));
+			
+			game->addCommunicator(std::move(comm));
+		}		
 		
 		playerID++;
 	}

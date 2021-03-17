@@ -20,7 +20,10 @@ namespace SGA
 	{
 	public:
 		/// <param name="playerID">The ID of the player that the agent will be able to control.</param>
-		explicit AgentGameCommunicator(int playerID);
+		AgentGameCommunicator(int playerID, TBSGame& newGame, std::unique_ptr<Agent> newAgent, std::mt19937 newRngEngine);
+		
+		/// <param name="playerID">The ID of the player that the agent will be able to control.</param>
+		AgentGameCommunicator(int playerID, RTSGame& newGame, std::unique_ptr<Agent> newAgent, std::mt19937 newRngEngine);
 
 		void init() override;
 		void close() override;
@@ -63,13 +66,11 @@ namespace SGA
 		void setGame(RTSGame& newGame);
 		void setAgent(std::unique_ptr<Agent> agent);
 		void setRNGEngine(std::mt19937 engine);
-				
-		bool isRunning = false;
 
 		//TODO private
 
 	private:
-		TBSGame* game;
+		TBSGame* tbsGame;
 		RTSGame* rtsGame;
 		std::unique_ptr<Agent> agent;
 		std::mt19937 rngEngine;
