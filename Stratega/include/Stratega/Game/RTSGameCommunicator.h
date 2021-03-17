@@ -35,7 +35,7 @@ namespace SGA
 		void executeAction(Action action) const;
 		void executeAction(RTSAction action) const;
 		bool isMyTurn() const;
-		RTSGameState getGameState() const;
+		GameState getGameState() const;
 
 	private:
 		RTSGame* game;

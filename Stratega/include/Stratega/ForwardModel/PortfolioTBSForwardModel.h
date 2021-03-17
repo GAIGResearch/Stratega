@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/Agent/ActionScripts/BaseActionScript.h>
 
@@ -15,8 +15,8 @@ namespace SGA
 		{
 		}
 		
-		std::vector<Action> generateActions(TBSGameState& state) const override;
-		std::vector<Action> generateActions(TBSGameState& state, int playerID) const override;
+		std::vector<Action> generateActions(GameState& state) const override;
+		std::vector<Action> generateActions(GameState& state, int playerID) const override;
 
 	};
 }

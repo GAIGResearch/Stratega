@@ -56,15 +56,15 @@ namespace SGA
 			while (game->isUpdatingState());
 		}
 
-		TBSGameState TBSGameCommunicator::getGameState() const
-		{
-			auto state = game->getStateCopy();
-			state.applyFogOfWar(getPlayerID());
-			return state;
-		}
+	GameState TBSGameCommunicator::getGameState() const
+	{
+		auto state = game->getStateCopy();
+		state.applyFogOfWar(getPlayerID());
+		return state;
+	}
 
-		bool TBSGameCommunicator::isGameOver() const
-		{
-			return game->isGameOver();
-		}
+	bool TBSGameCommunicator::isGameOver() const
+	{
+		return game->isGameOver();
+	}
 }

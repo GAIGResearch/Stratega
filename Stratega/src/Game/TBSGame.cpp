@@ -3,17 +3,17 @@
 
 namespace SGA
 {
-	TBSGame::TBSGame(std::unique_ptr<TBSGameState> gameState, TBSForwardModel forwardModel, std::mt19937 rngEngine)
+	TBSGame::TBSGame(std::unique_ptr<GameState> gameState, TBSForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
-	const TBSGameState& TBSGame::getState() const
+	const GameState& TBSGame::getState() const
 	{
 		return *gameState;
 	}
 
-	TBSGameState TBSGame::getStateCopy()
+	GameState TBSGame::getStateCopy()
 	{
 		std::lock_guard<std::mutex> copyGuard(mutexGameState);
 		return *gameState;

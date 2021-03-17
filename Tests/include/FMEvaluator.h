@@ -4,7 +4,7 @@
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/Configuration/GameConfig.h>
 
-typedef std::unique_ptr<SGA::TBSGameState> (*StateGenerator)(std::mt19937& rngEngine);
+typedef std::unique_ptr<SGA::GameState> (*StateGenerator)(std::mt19937& rngEngine);
 
 class FMEvaluator
 {
@@ -15,8 +15,8 @@ public:
 	std::unique_ptr<FMEvaluationResults> evaluate(const SGA::GameConfig& config);
 
 private:
-	void runGameTBS(SGA::TBSGameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results);
-	void runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results);
+	void runGameTBS(SGA::GameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results);
+	void runGameRTS(SGA::GameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results);
 	
 	std::mt19937* rngEngine;
 };

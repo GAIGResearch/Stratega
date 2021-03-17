@@ -12,6 +12,6 @@ void TBSLogger::onGameStateAdvanced()
 	SGA::Log::logValue("ActivePlayer", this->game->getState().currentPlayer);
 
 	// ToDo getActions should accept const gameStates
-	auto actions = this->game->getForwardModel().generateActions(const_cast<SGA::TBSGameState&>(this->game->getState()));
+	auto actions = this->game->getForwardModel().generateActions(const_cast<SGA::GameState&>(this->game->getState()));
 	SGA::Log::logValue("ActionCount", actions.size());
 }

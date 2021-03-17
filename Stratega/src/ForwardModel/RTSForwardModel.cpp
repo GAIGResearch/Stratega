@@ -60,7 +60,7 @@ namespace SGA
 		return playerActions;
 	}
 	
-	void RTSForwardModel::advanceGameState(RTSGameState& state, const RTSAction& action) const
+	void RTSForwardModel::advanceGameState(GameState& state, const RTSAction& action) const
 	{
 		moveEntities(state);
 		resolveEntityCollisions(state);
@@ -90,17 +90,17 @@ namespace SGA
 		state.isGameOver = checkGameIsFinished(state);
 	}
 
-	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state) const
+	std::vector<Action> RTSForwardModel::generateActions(GameState& state) const
 	{
 		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
 	}
 
-	std::vector<Action> RTSForwardModel::generateActions(RTSGameState& state, int playerID) const
+	std::vector<Action> RTSForwardModel::generateActions(GameState& state, int playerID) const
 	{
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
-	void RTSForwardModel::moveEntities(RTSGameState& state) const
+	void RTSForwardModel::moveEntities(GameState& state) const
 	{
 		for(auto& entity : state.entities)
 		{
@@ -130,7 +130,7 @@ namespace SGA
 		}
 	}
 
-	void RTSForwardModel::resolveEntityCollisions(RTSGameState& state) const
+	void RTSForwardModel::resolveEntityCollisions(GameState& state) const
 	{
 		for (auto& unit : state.entities)
 		{
@@ -163,7 +163,7 @@ namespace SGA
 		}
 	}
 
-	void RTSForwardModel::resolveEnvironmentCollisions(RTSGameState& state) const
+	void RTSForwardModel::resolveEnvironmentCollisions(GameState& state) const
 	{
 		static float RECT_SIZE = 1;
 
@@ -213,7 +213,7 @@ namespace SGA
 		}
 	}
 
-	bool RTSForwardModel::buildNavMesh(RTSGameState& state, NavigationConfig config) const
+	bool RTSForwardModel::buildNavMesh(GameState& state, NavigationConfig config) const
 	{
 		auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -557,7 +557,7 @@ namespace SGA
 		return true;
 	}
 
-	Path RTSForwardModel::findPath(const RTSGameState& state, Vector2f startPos, Vector2f endPos) const
+	Path RTSForwardModel::findPath(const GameState& state, Vector2f startPos, Vector2f endPos) const
 	{
 		//Convert grid pos to 3D pos
 		float startPosV3[3];
@@ -609,7 +609,7 @@ namespace SGA
 		return path;
 	}
 
-	bool RTSForwardModel::checkGameIsFinished(RTSGameState& state) const
+	bool RTSForwardModel::checkGameIsFinished(GameState& state) const
 	{
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;

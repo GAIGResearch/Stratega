@@ -49,7 +49,7 @@ namespace SGA
     }
 
 
-    void RHEAAgent::initializePopulation(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::initializePopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // create params_.POP_SIZE new random individuals
         pop_.clear();
@@ -58,7 +58,7 @@ namespace SGA
         }
     }
 
-    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         std::vector<RHEAGenome> newPop;
 
@@ -84,7 +84,7 @@ namespace SGA
 
     bool sortByFitness(const RHEAGenome& i, const RHEAGenome& j) { return i.getValue() > j.getValue(); }
 
-    void RHEAAgent::rheaLoop(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::rheaLoop(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
         while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
@@ -94,7 +94,7 @@ namespace SGA
         sort(pop_.begin(), pop_.end(), sortByFitness);
     }
 
-    std::vector<RHEAGenome> RHEAAgent::nextGeneration(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::nextGeneration(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // placeholder for the next generation
         std::vector<RHEAGenome> newPop;
@@ -114,7 +114,7 @@ namespace SGA
         return newPop;
     }
 
-    RHEAGenome RHEAAgent::getNextGenerationIndividual(TBSForwardModel& forwardModel, TBSGameState& gameState, std::mt19937& randomGenerator)
+    RHEAGenome RHEAAgent::getNextGenerationIndividual(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         if (params_.POP_SIZE > 1)
         {

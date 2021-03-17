@@ -12,13 +12,17 @@
 #include <Stratega/Representation/TileType.h>
 namespace SGA
 {
+	enum class GameType
+	{
+		TBS,
+		RTS
+	};
+	
 	struct GameState
 	{
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
-
 		GameState();
 
-		int continueActionNextID = 0;
 		//Rule of six
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;
@@ -35,17 +39,25 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 		
 		//Technology tree
-		std::shared_ptr <TechnologyTreeCollection> technologyTreeCollection;		
-
+		std::shared_ptr<TechnologyTreeCollection> technologyTreeCollection;
 		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
 
+		// TBS related data
+		int currentPlayer;
+
+		// RTS related data
+		std::shared_ptr<Navigation> navigation;
+
+		//Random engine
 		std::mt19937 rngEngine;
 
 		// Game information
+		GameType gameType;
 		bool isGameOver;
 		int winnerPlayerID;
 		int currentTick;
 		int tickLimit;
+		int continueActionNextID = 0;
 		
 		// Board information
 		Tile fogOfWarTile;
@@ -55,8 +67,6 @@ namespace SGA
 		// Player and unit information
 		std::vector<Entity> entities;
 		std::vector<Player> players;
-		int nextEntityID;
-		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, const ActionType& actionType);
 		virtual bool canExecuteAction(Player& player, const ActionType& actionType);
@@ -123,5 +133,9 @@ namespace SGA
 		{
 			return rngEngine;
 		}
+		
+	private:
+		int nextPlayerID;
+		int nextEntityID;
 	};
 }
