@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
+	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState, MCTSNode* parent, const int childIndex) :
+	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -211,7 +211,7 @@ namespace SGA
 		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
 	}
 
-	bool MCTSNode::rolloutFinished(TBSGameState& rollerState, int depth, MCTSParameters& params)
+	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
 	{
 		if (depth >= params.ROLLOUT_LENGTH)      //rollout end condition.
 			return true;
@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, GameState& gameState, Action& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);

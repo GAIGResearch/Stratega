@@ -26,7 +26,7 @@ namespace SGA {
 
 		// rollout phase
 		double rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
-		static bool rolloutFinished(TBSGameState& rollerState, int depth, MCTSParameters& params);
+		static bool rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params);
 
 		// backpropagation phase
 		static void backUp(MCTSNode* node, double result);
@@ -37,12 +37,12 @@ namespace SGA {
 		// helper functions
 		static double normalize(double aValue, double aMin, double aMax);
 		static double noise(double input, double epsilon, double random);
-		void applyActionToGameState(TBSForwardModel& forwardModel, TBSGameState& gameState, Action& action, MCTSParameters& params) const;
+		void applyActionToGameState(TBSForwardModel& forwardModel, GameState& gameState, Action& action, MCTSParameters& params) const;
 		void setDepth(int depth);
 
 	public:
 		// Root Node Constructor
-		MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState);
+		MCTSNode(TBSForwardModel& forwardModel, GameState gameState);
 
 		//void setRootGameState(shared_ptr<TreeNode> root);
 		void searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
@@ -50,7 +50,7 @@ namespace SGA {
 		void print() const override;
 
 	private:
-		MCTSNode(TBSForwardModel& forwardModel, TBSGameState gameState, MCTSNode* parent, int childIndex);
+		MCTSNode(TBSForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex);
 		
 	};
 }

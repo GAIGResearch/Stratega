@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Action.h>
 
 namespace SGA {
@@ -15,8 +15,8 @@ namespace SGA {
 		BaseActionScript(BaseActionScript&&) = default;
 		BaseActionScript& operator=(BaseActionScript&&) = default;
 		
-		virtual Action getAction(TBSGameState& gameState, std::vector<Action>& actionSpace) const = 0;
-		virtual Action getActionForUnit(TBSGameState& gameState, std::vector<Action>& actionSpace, int unitID) const = 0;
+		virtual Action getAction(GameState& gameState, std::vector<Action>& actionSpace) const = 0;
+		virtual Action getActionForUnit(GameState& gameState, std::vector<Action>& actionSpace, int unitID) const = 0;
 		[[nodiscard]] virtual std::string toString() const = 0;
 		
 		friend std::ostream& operator<<(std::ostream& os, const BaseActionScript& dt)

@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 
 namespace SGA
@@ -8,7 +8,7 @@ namespace SGA
 	class ITreeNode
 	{
 	public:
-		TBSGameState gameState;
+		GameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
 		std::vector<Action> actionSpace;
@@ -16,13 +16,13 @@ namespace SGA
 		double value = 0;
 		
 	public:
-		ITreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
+		ITreeNode(TBSForwardModel& forwardModel, GameState gameState) :
 			ITreeNode(forwardModel, std::move(gameState), nullptr, 0)
 		{
 		}
 
 	
-		ITreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, NodeType* parent, const int childIndex) :
+		ITreeNode(TBSForwardModel& forwardModel, GameState gameState, NodeType* parent, const int childIndex) :
 			gameState(std::move(gameState)), parentNode(parent), childIndex(childIndex)
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();

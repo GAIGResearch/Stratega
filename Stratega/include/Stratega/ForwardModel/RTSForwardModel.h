@@ -1,7 +1,5 @@
 #pragma once
 #include <Stratega/ForwardModel/EntityForwardModel.h>
-#include <Stratega/Representation/RTSGameState.h>
-#include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/Path.h>
 
 #include <chrono>
@@ -13,7 +11,7 @@ namespace  SGA
 {
 	/// <summary>
 	/// A collection of action-assignments to entities and players in a game.
-	/// Executing this action with <see cref="SGA::RTSForwardModel::advanceGameState(RTSGameState&, const RTSAction&)"/> will advance the game by one tick.
+	/// Executing this action with <see cref="SGA::RTSForwardModel::advanceGameState(GameState&, const RTSAction&)"/> will advance the game by one tick.
 	/// </summary>
 	class RTSAction
 	{
@@ -66,18 +64,18 @@ namespace  SGA
 		{
 		}
 
-		void advanceGameState(RTSGameState& state, const RTSAction& action) const;
+		void advanceGameState(GameState& state, const RTSAction& action) const;
 
-		std::vector<Action> generateActions(RTSGameState& state) const;
-		std::vector<Action> generateActions(RTSGameState& state, int playerID) const;
+		std::vector<Action> generateActions(GameState& state) const;
+		std::vector<Action> generateActions(GameState& state, int playerID) const;
 
-		void moveEntities(RTSGameState& state) const;
-		void resolveEntityCollisions(RTSGameState& state) const;
-		void resolveEnvironmentCollisions(RTSGameState& state) const;
+		void moveEntities(GameState& state) const;
+		void resolveEntityCollisions(GameState& state) const;
+		void resolveEnvironmentCollisions(GameState& state) const;
 
-		bool buildNavMesh(RTSGameState& state, NavigationConfig config) const;
-		Path findPath(const RTSGameState& state, Vector2f startPos, Vector2f endPos) const;
+		bool buildNavMesh(GameState& state, NavigationConfig config) const;
+		Path findPath(const GameState& state, Vector2f startPos, Vector2f endPos) const;
 
-		bool checkGameIsFinished(RTSGameState& state) const;
+		bool checkGameIsFinished(GameState& state) const;
 	};
 }

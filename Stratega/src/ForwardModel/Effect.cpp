@@ -103,8 +103,7 @@ namespace SGA
 			// Compute a new path if the entity doesn't have one or the new target is different from the old one
 			if (entity.path.isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
 			{
-				const auto& rtsState = dynamic_cast<RTSGameState&>(state);
-				Path path = rtsFM->findPath(rtsState, entity.position, targetPosition);
+				Path path = rtsFM->findPath(state, entity.position, targetPosition);
 				entity.path = path;
 				entity.path.currentPathIndex++;
 			}

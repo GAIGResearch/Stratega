@@ -3,16 +3,15 @@
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/FunctionParser.h>
-#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Representation/TechnologyTree.h>
 namespace SGA
 {
     struct GameConfig
     {
     	// Game information
-        ForwardModelType gameType;
+        GameType gameType;
         int tickLimit = 100;
         int numPlayers = -1;
     	// Other stuff
