@@ -30,7 +30,6 @@ namespace SGA::Widgets
 		bool waitingForPosition = false;
 		bool waitingForEntity = false;
 
-
 		//Configuration
 		bool removeSelectedEntities = true;
 		
@@ -38,7 +37,7 @@ namespace SGA::Widgets
 		{
 			actionTypeSelected = -1;
 			selectedTargets.clear();
-			
+
 			if(removeSelectedEntities)
 				actionsHumanPlayer.clear();
 			

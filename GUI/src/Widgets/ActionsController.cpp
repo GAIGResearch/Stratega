@@ -244,6 +244,7 @@ namespace SGA::Widgets
 					actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 					actionTargets.emplace_back(ActionTarget::createEntityTypeActionTarget(possibleActionType));
 
+
 					//Check if any of the selectedEntities fullfill the condition
 					for (auto& entity : settings.selectedEntities)
 					{
@@ -365,8 +366,8 @@ namespace SGA::Widgets
 		{
 			
 			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
-				return;
-			
+				return;			
+
 			if (ActionTarget::isValid(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
 		}
@@ -395,8 +396,8 @@ namespace SGA::Widgets
 				continue;
 			// Check if this action can be executed		
 			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
-				continue;
-			
+				continue;			
+
 			//The entity should be able to execute this action type
 			newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);
 

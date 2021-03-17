@@ -78,7 +78,6 @@ namespace SGA
 			if (targetResource <= 0)
 				entity.shouldRemove = true;
 		}
-		
 	}
 
 	Move::Move(const std::vector<FunctionParameter>& parameters)

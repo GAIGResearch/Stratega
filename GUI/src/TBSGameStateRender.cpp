@@ -367,10 +367,11 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
+
 					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
+
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
-
 				}
 				
 				for (auto& actionTarget : possibleAction.targets)
@@ -378,6 +379,7 @@ namespace SGA
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
 						auto& position = actionTarget.getPosition(gameStateCopy);
+
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 
@@ -411,9 +413,9 @@ namespace SGA
 				if(actionType.sourceType==ActionSourceType::Entity)
 				{
 					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
+
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
-
 				}
 				
 				//Avoid source entity
@@ -422,6 +424,7 @@ namespace SGA
 					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
 					{
 						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 

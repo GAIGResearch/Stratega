@@ -237,6 +237,7 @@ Actions:
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 0.1)"
 
+
     #Spawn
     Spawn:
         Type: EntityAction
