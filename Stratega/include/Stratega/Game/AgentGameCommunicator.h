@@ -59,15 +59,7 @@ namespace SGA
 		void executeAction(Action action) const;
 
 		//TODO 
-		void executeAction(RTSAction action) const;
-		
-		//TODO private
-		void setGame(TBSGame& newGame);
-		void setGame(RTSGame& newGame);
-		void setAgent(std::unique_ptr<Agent> agent);
-		void setRNGEngine(std::mt19937 engine);
-
-		//TODO private
+		void executeAction(RTSAction action) const;	
 
 	private:
 		TBSGame* tbsGame;
