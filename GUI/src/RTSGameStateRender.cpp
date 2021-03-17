@@ -43,6 +43,19 @@ namespace SGA
 		//Add state to buffer
 		gameStatesBuffer.add(gameStateCopy);
 		gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
+
+		//Execute actions
+		for (auto it = actionsToPlay.begin(); it != actionsToPlay.end();) {
+			if (!it->second.validate(gameStateCopyFogOfWar))
+			{
+				it = actionsToPlay.erase(it);
+			}
+			else
+			{
+				game->executeAction(it->second);
+				it++;
+			}
+		}
 	}
 
 	void RTSGameStateRender::init(const GameConfig& gameConfig, const RenderConfig& renderConfig)
@@ -594,8 +607,7 @@ namespace SGA
 		//Ask widget to get		
 		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
-		if(!actionsToExecute.empty())
-			playAction(actionsToExecute);
+		playActions(actionsToExecute);
 
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
@@ -622,17 +634,6 @@ namespace SGA
 		ImGui::NextColumn();
 
 		ImGui::Text("Minimap");
-
-		/*renderMinimapTexture.get.create(window.getSize().x, window.getSize().y);
-		texture.update(window);*/
-
-	/*	sf::Sprite sprite;
-
-		sprite.setTexture(renderMinimapTexture.getTexture());
-
-		sprite.scale(0.1, -0.1);
-		sprite.rotate(20);*/
-		//ImGui::Image(renderMinimapTexture.getTexture(), sf::Vector2f(250, 250));
 
 		ImGui::NextColumn();
 
@@ -756,7 +757,7 @@ namespace SGA
 					if (action.targets[0].getType() == ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *gameStateCopy.getEntityConst(action.targets[0].getEntityID());
 						for (auto& continueAction : sourceEntity.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
@@ -793,7 +794,6 @@ namespace SGA
 				actionInfo += " " + actionType.name;
 
 				//TODO Clean this :D IS TEMPORAL
-
 				for (auto& targetType : action.targets)
 				{
 					switch (targetType.getType())

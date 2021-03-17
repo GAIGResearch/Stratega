@@ -21,7 +21,11 @@ namespace SGA
 			}
 			
 		}
-		
+
+		for (const auto& tileType : config.tileTypes)
+		{
+			context.tileTypeIDs.emplace(tileType.second.name, tileType.first);
+		}
 		return context;
 	}
 
@@ -58,6 +62,7 @@ namespace SGA
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))) ||
+				((param = parseTileTypeReference(ss, context))) ||
 				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -234,6 +239,25 @@ namespace SGA
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
+	std::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetIt = context.tileTypeIDs.find(names.value()[0]);
+		if (targetIt == context.tileTypeIDs.end())
+		{
+			ss.seekg(begin); // Set back to start
+			return {};
+		}
+
+		return FunctionParameter::createTileTypeReference(targetIt->second);
+	}
+	
 	std::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();

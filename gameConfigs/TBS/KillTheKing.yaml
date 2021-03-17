@@ -63,7 +63,7 @@ Actions:
     Move:
         Type: EntityAction
         Preconditions:
-            - "HasResource(Source.MovementPoints, 1)"
+            - "ResourceGreater(Source.MovementPoints, 1)"
         Targets:
             Target:
                 Type: Position
@@ -134,9 +134,10 @@ Entities:
         Actions: [Attack, Move]
 
 ForwardModel:
-    WinCondition:
-        Type: LastManStanding
-        Unit: King
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "NoHasEntity(Source, King)"
+
     Trigger:
         - OnTick:
             Effects:
