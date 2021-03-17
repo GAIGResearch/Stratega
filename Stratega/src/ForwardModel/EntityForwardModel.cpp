@@ -25,20 +25,27 @@ namespace SGA
 
 	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const
 	{
-		//if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
-		//	return false;
+		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+			return false;
 
 		//Check Win conditions
 		std::vector<ActionTarget> targets;
 		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
 
-		bool playerWon = true;
+		//Check win condition types
 		for (auto& winConditionType : winConditions)
 		{
+			bool playerWon = true;
+			
+			//Check condition list
 			for (auto& winCondition : winConditionType)
 			{
 				if (!winCondition->isFullfilled(state, targets))
+				{
 					playerWon = false;
+					break;
+				}
+					
 			}
 
 			if (playerWon)
