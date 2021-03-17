@@ -17,22 +17,22 @@ namespace SGA
 		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
 	
-	class NoHasResource : public Condition
+	class ResourceLower : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBound;
 	public:
-		NoHasResource(const std::vector<FunctionParameter>& parameters);
+		ResourceLower(const std::vector<FunctionParameter>& parameters);
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
-	class HasResource : public Condition
+	class ResourceGreater : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBound;
 	public:
-		HasResource(const std::vector<FunctionParameter>& parameters);
+		ResourceGreater(const std::vector<FunctionParameter>& parameters);
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};

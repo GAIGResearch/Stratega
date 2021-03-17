@@ -63,7 +63,7 @@ Actions:
     Move:
         Type: EntityAction
         Preconditions:
-            - "HasResource(Source.MovementPoints, 1)"
+            - "ResourceGreater(Source.MovementPoints, 1)"
         Targets:
             Target:
                 Type: Position

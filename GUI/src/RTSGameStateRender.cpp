@@ -44,7 +44,6 @@ namespace SGA
 		gameStatesBuffer.add(gameStateCopy);
 		gameStatesBufferRCurrentIndex = gameStatesBuffer.getFront();
 
-
 		//Execute actions
 		for (auto it = actionsToPlay.begin(); it != actionsToPlay.end();) {
 			if (!it->second.validate(gameStateCopyFogOfWar))
@@ -608,8 +607,7 @@ namespace SGA
 		//Ask widget to get		
 		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
-		//if(!actionsToExecute.empty())
-			playActions(actionsToExecute);
+		playActions(actionsToExecute);
 
 		ImGui::NextColumn();
 		ImGui::Text("Entities");
@@ -636,17 +634,6 @@ namespace SGA
 		ImGui::NextColumn();
 
 		ImGui::Text("Minimap");
-
-		/*renderMinimapTexture.get.create(window.getSize().x, window.getSize().y);
-		texture.update(window);*/
-
-	/*	sf::Sprite sprite;
-
-		sprite.setTexture(renderMinimapTexture.getTexture());
-
-		sprite.scale(0.1, -0.1);
-		sprite.rotate(20);*/
-		//ImGui::Image(renderMinimapTexture.getTexture(), sf::Vector2f(250, 250));
 
 		ImGui::NextColumn();
 

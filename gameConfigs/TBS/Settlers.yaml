@@ -709,7 +709,7 @@ ForwardModel:
 
     LoseConditions: #If true: Player -> cant play
         HasResource:
-        - "NoHasResource(Source.Food, 0)"
+        - "LowerResource(Source.Food, 0)"
 
     Trigger:
    #Global resource compsumption

@@ -34,7 +34,7 @@ Actions:
         Type: EntityAction
         Cooldown: 1
         Preconditions:
-            - "HasResource(Source.Gold, 50)"
+            - "ResourceGreater(Source.Gold, 50)"
         Targets:
             Target:
                 Type: Position
@@ -50,7 +50,7 @@ Actions:
         Type: EntityAction
         Cooldown: 1
         Preconditions:
-            - "HasResource(Source.Gold, 100)"
+            - "ResourceGreater(Source.Gold, 100)"
         Targets:
             Target:
                 Type: Position
@@ -99,7 +99,7 @@ Actions:
                 ValidTargets: GoldVein
                 Conditions:
                     - "InRange(Source, Target, 1)"
-                    - "HasResource(Target.Gold, 40)"
+                    - "ResourceGreater(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Gold, 40)"
 

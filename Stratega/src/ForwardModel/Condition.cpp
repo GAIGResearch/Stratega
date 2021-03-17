@@ -4,13 +4,13 @@
 
 namespace  SGA
 {
-	NoHasResource::NoHasResource(const std::vector<FunctionParameter>& parameters) :
+	ResourceLower::ResourceLower(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		lowerBound(parameters.at(1))
 	{
 	}
 
-	bool NoHasResource::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceLower::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = this->lowerBound.getConstant(state,targets);
@@ -18,13 +18,13 @@ namespace  SGA
 		return targetResource <= lowerBound;
 	}
 
-	HasResource::HasResource(const std::vector<FunctionParameter>& parameters) :
+	ResourceGreater::ResourceGreater(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		lowerBound(parameters.at(1))
 	{
 	}
 
-	bool HasResource::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceGreater::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = this->lowerBound.getConstant(state,targets);

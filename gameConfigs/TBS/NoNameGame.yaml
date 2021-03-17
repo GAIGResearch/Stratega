@@ -234,7 +234,7 @@ Actions:
                 ValidTargets: GoldVein
                 Conditions:
                     - "InRange(Source, Target, 2)"
-                    - "HasResource(Target.Gold, 40)"
+                    - "ResourceGreater(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
 
@@ -383,7 +383,7 @@ ForwardModel:
             ValidTargets: Foundry
             Conditions:
                 - "IsPlayerEntity(Source)"
-                - "HasResource(Source.Player.Gold, 2)"
+                - "ResourceGreater(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"

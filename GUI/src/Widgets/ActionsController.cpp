@@ -41,7 +41,6 @@ namespace SGA::Widgets
 			}
 		}
 
-
 		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
@@ -244,7 +243,6 @@ namespace SGA::Widgets
 					actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 					actionTargets.emplace_back(ActionTarget::createEntityTypeActionTarget(possibleActionType));
 
-
 					//Check if any of the selectedEntities fullfill the condition
 					for (auto& entity : settings.selectedEntities)
 					{
@@ -258,7 +256,6 @@ namespace SGA::Widgets
 								canExecute = false;
 								break;
 							}
-
 						}
 					}
 					if (canExecute)
@@ -363,8 +360,7 @@ namespace SGA::Widgets
 		auto* player = state.getPlayer(playerID);
 		
 		if (player->canExecuteAction(settings.actionTypeSelected))
-		{
-			
+		{			
 			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
 				return;			
 

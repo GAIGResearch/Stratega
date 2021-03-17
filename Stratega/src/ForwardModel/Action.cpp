@@ -26,9 +26,7 @@ namespace SGA
 		{
 			auto entityID = targets.at(0).getEntityID();
 			auto* entity=state.getEntity(entityID);
-
-			
-			
+						
 			if(entity!=nullptr)
 			{
 				// Check if this action can be executed		
