@@ -22,7 +22,7 @@ namespace SGA
 		{
 		}
 		
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 		double evaluateRollout(TBSForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
 		void applyActionToGameState(const TBSForwardModel& forwardModel, GameState& gameState, const Action& action);
