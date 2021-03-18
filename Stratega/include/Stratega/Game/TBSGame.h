@@ -1,7 +1,7 @@
 #pragma once
 #include <mutex>
 #include <Stratega/Game/Game.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <random>
 
 namespace SGA

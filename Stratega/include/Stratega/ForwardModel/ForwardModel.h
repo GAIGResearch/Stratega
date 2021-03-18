@@ -9,9 +9,9 @@ namespace  SGA
 	struct GameState;
 
 	/// <summary>
-/// A collection of action-assignments to entities and players in a game.
-/// Executing this action with <see cref="SGA::RTSForwardModel::advanceGameState(GameState&, const RTSAction&)"/> will advance the game by one tick.
-/// </summary>
+	/// A collection of action-assignments to entities and players in a game.
+	/// Executing this action with <see cref="SGA::RTSForwardModel::advanceGameState(GameState&, const RTSAction&)"/> will advance the game by one tick.
+	/// </summary>
 	class RTSAction
 	{
 		std::unordered_map<int, Action> entityActions;

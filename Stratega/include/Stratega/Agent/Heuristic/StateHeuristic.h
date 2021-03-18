@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {

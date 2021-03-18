@@ -1,7 +1,7 @@
 #pragma once
 #include <Stratega/Agent/RHEAAgent/RHEAParams.h>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <iostream>
 #include <random>

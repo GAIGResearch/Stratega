@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Agent/ActionScripts/BaseActionScript.h>
 
 namespace SGA

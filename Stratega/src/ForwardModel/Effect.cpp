@@ -1,6 +1,6 @@
 #include <Stratega/ForwardModel/Effect.h>
 #include <Stratega/ForwardModel/EntityForwardModel.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <random>
 
 namespace SGA
