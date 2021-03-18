@@ -19,7 +19,7 @@ namespace SGA
 		if(tbsGame)
 		{
 			// Copy the forwardModel but ensure that it contains a different actionSpace instance
-			TBSForwardModel copy(tbsGame->getForwardModel());
+			ForwardModel copy(tbsGame->getForwardModel());
 			copy.setActionSpace(copy.generateDefaultActionSpace());
 
 			thread = std::thread(&Agent::runTBS, std::ref(*agent), std::ref(*this), std::move(copy));
@@ -29,7 +29,7 @@ namespace SGA
 		if(rtsGame)
 		{
 			// Copy the forwardModel but ensure that it contains a different actionSpace instance
-			RTSForwardModel copy2(rtsGame->getForwardModel());
+			ForwardModel copy2(rtsGame->getForwardModel());
 			copy2.setActionSpace(copy2.generateDefaultActionSpace());
 
 			thread = std::thread(&Agent::runRTS, std::ref(*agent), std::ref(*this), std::move(copy2));

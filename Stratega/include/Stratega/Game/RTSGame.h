@@ -1,7 +1,7 @@
 #pragma once
 #include <mutex>
 #include <Stratega/Game/Game.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <random>
 namespace SGA
 {
@@ -17,14 +17,14 @@ namespace SGA
 		Action actionToExecute;
 		bool hasActionToExecute = false;
 
-		RTSGame(std::unique_ptr<GameState> gameState, RTSForwardModel forwardModel, std::mt19937 engine);
+		RTSGame(std::unique_ptr<GameState> gameState, ForwardModel forwardModel, std::mt19937 engine);
 
 		void executeAction(Action action);
 		void update(double deltaTime) override;
 		void close() override;
 		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
 		
-		const RTSForwardModel& getForwardModel() const { return forwardModel; }
+		const ForwardModel& getForwardModel() const { return forwardModel; }
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.
@@ -40,7 +40,7 @@ namespace SGA
 		bool updatingState = false;
 
 		std::unique_ptr<GameState> gameState;
-		RTSForwardModel forwardModel;
+		ForwardModel forwardModel;
 
 		std::mt19937 rngEngine;
 

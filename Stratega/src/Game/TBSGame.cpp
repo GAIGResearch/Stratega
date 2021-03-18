@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	TBSGame::TBSGame(std::unique_ptr<GameState> gameState, TBSForwardModel forwardModel, std::mt19937 rngEngine)
+	TBSGame::TBSGame(std::unique_ptr<GameState> gameState, ForwardModel forwardModel, std::mt19937 rngEngine)
 		: Game(rngEngine), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}

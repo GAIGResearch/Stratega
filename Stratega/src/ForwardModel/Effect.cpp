@@ -1,7 +1,6 @@
 #include <Stratega/ForwardModel/Effect.h>
 #include <Stratega/ForwardModel/EntityForwardModel.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 
 namespace SGA
@@ -89,12 +88,13 @@ namespace SGA
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
-		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		if (state.gameType==GameType::TBS)
 		{
 			entity.position = { std::floor(targetPosition.x), std::floor(targetPosition.y) };
 		}
-		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
+		else
 		{
+			const auto* rtsFM = dynamic_cast<const ForwardModel*>(&fm);
 			//Get end position of current path
 			Vector2f oldTargetPos;
 			oldTargetPos.x = entity.path.m_straightPath[(entity.path.m_nstraightPath - 1) * 3];
@@ -187,7 +187,7 @@ namespace SGA
 
 	void SpawnEntityRandom::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		if (const auto* tbsFM = dynamic_cast<const ForwardModel*>(&fm))
 		{
 			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);

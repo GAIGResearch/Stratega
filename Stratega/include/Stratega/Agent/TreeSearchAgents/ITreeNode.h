@@ -16,13 +16,13 @@ namespace SGA
 		double value = 0;
 		
 	public:
-		ITreeNode(TBSForwardModel& forwardModel, GameState gameState) :
+		ITreeNode(ForwardModel& forwardModel, GameState gameState) :
 			ITreeNode(forwardModel, std::move(gameState), nullptr, 0)
 		{
 		}
 
 	
-		ITreeNode(TBSForwardModel& forwardModel, GameState gameState, NodeType* parent, const int childIndex) :
+		ITreeNode(ForwardModel& forwardModel, GameState gameState, NodeType* parent, const int childIndex) :
 			gameState(std::move(gameState)), parentNode(parent), childIndex(childIndex)
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();

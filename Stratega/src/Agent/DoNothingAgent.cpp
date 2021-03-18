@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	void DoNothingAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void DoNothingAgent::runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

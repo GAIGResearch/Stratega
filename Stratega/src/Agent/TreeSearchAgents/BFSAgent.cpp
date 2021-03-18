@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	void BFSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BFSAgent::runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
@@ -53,7 +53,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="gameState">the current game-state</param>
-	void BFSAgent::init(TBSForwardModel& forwardModel, GameState& gameState)
+	void BFSAgent::init(ForwardModel& forwardModel, GameState& gameState)
 	{
 		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
@@ -83,7 +83,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="openNodes">list of known open nodes</param>
-	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
+	void BFSAgent::search(ForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
 	{
 		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 		
@@ -162,7 +162,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same model as it has been used for the search</param>
 	/// <returns>index of the best child node</returns>
-	int BFSAgent::getBestActionIdx(TBSForwardModel& forwardModel)
+	int BFSAgent::getBestActionIdx(ForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
 		StateHeuristic* heuristic = parameters_.OBJECTIVE.get();

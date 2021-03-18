@@ -20,12 +20,12 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel) override;
 
 	private:
-		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes);
-		int getBestActionIdx(TBSForwardModel& forwardModel);
+		void search(ForwardModel& forwardModel, std::list<TreeNode*>& openNodes);
+		int getBestActionIdx(ForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
-		void init(TBSForwardModel& forwardModel, GameState& gameState);
+		void init(ForwardModel& forwardModel, GameState& gameState);
 	};
 }

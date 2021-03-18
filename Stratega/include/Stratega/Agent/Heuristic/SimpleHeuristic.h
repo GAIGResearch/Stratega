@@ -15,14 +15,14 @@ namespace SGA {
 		int const LOOSE_BOOST = 100000;
 
 	private:
-		int score(const TBSForwardModel& forwardModel, GameState& gameState, int playerToScore) const;
+		int score(const ForwardModel& forwardModel, GameState& gameState, int playerToScore) const;
 		double calculateGridVisiblePercentage(GameState& gameState) const;
 
 	public:
 		SimpleHeuristic(int playerID, int numberOfPlayers);
 		~SimpleHeuristic();
 
-		double evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, const int playerID) override;
+		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override;
 	};
 
 }

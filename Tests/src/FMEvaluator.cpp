@@ -12,7 +12,7 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 	{
 		if(config.gameType == SGA::GameType::TBS)
 		{
-			auto* fm = dynamic_cast<SGA::TBSForwardModel*>(config.forwardModel.get());
+			auto* fm = dynamic_cast<SGA::ForwardModel*>(config.forwardModel.get());
 			auto state = config.generateGameState();
 			runGameTBS(*dynamic_cast<SGA::GameState*>(state.get()), *fm, *results);
 		}
@@ -30,7 +30,7 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 	return std::move(results);
 }
 
-void FMEvaluator::runGameTBS(SGA::GameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results)
+void FMEvaluator::runGameTBS(SGA::GameState& state, SGA::ForwardModel& fm, FMEvaluationResults& results)
 {
 	while(results.size() < StepCount && !state.isGameOver)
 	{

@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void DFSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void DFSAgent::runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{
@@ -48,7 +48,7 @@ namespace SGA
 		}		
 	}
 
-	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
+	double DFSAgent::evaluateRollout(ForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
 		if (depth == maxDepth || gameState.isGameOver)
@@ -76,7 +76,7 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, GameState& gameState, const Action& action)
+	void DFSAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action)
 	{
 		remainingForwardModelCalls--;
 		const int playerID = gameState.currentPlayer;

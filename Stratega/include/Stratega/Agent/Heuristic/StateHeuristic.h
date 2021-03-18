@@ -8,7 +8,7 @@ namespace SGA
 	public:
 		virtual ~StateHeuristic() = 0;
 
-		virtual double evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, const int playerID) { return 0; };
+		virtual double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) { return 0; };
 	};
 
 

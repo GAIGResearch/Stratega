@@ -320,14 +320,8 @@ namespace SGA
         }
 		
         std::unique_ptr<EntityForwardModel> fm;
-		if(config.gameType == GameType::TBS)
-		{
-            fm = std::make_unique<TBSForwardModel>();
-		}
-        else if(config.gameType == GameType::RTS)
-        {
-            fm = std::make_unique<RTSForwardModel>();
-        }
+		
+        fm = std::make_unique<ForwardModel>();
        
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);

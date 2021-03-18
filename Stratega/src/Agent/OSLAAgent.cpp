@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void OSLAAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void OSLAAgent::runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel)
 	{
 		while (!gameCommunicator.isGameOver())
 		{

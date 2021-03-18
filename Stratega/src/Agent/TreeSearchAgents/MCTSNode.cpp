@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState) :
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState))
 	{
 	}
 
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex) :
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex)
 	{
 	}
@@ -57,7 +57,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
 		int numIterations = 0;
 		bool stop = false;
 		int prevCallCount = params.REMAINING_FM_CALLS;
@@ -85,7 +85,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		MCTSNode* cur = this;
 
@@ -102,7 +102,7 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
@@ -191,7 +191,7 @@ namespace SGA
 		return children[which].get();
 	}
 
-	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
 			auto gsCopy(gameState);
@@ -220,7 +220,7 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, GameState& gameState, Action& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& gameState, Action& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
 		forwardModel.advanceGameState(gameState, action);

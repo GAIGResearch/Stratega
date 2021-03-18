@@ -2,7 +2,6 @@
 #include <mutex>
 #include <Stratega/Game/Game.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 
 namespace SGA
@@ -13,7 +12,7 @@ namespace SGA
 		Action actionToExecute;
 		bool hasActionToExecute = false;
 
-		TBSGame(std::unique_ptr<GameState> gameState, TBSForwardModel forwardModel, std::mt19937 engine);
+		TBSGame(std::unique_ptr<GameState> gameState, ForwardModel forwardModel, std::mt19937 engine);
 
 		void executeAction(Action action);
 		void update(double deltaTime) override;
@@ -21,7 +20,7 @@ namespace SGA
 		bool isGameOver() const override { return Game::isGameOver() || gameState->isGameOver; }
 		void addActionToExecute(Action action);
 
-		const TBSForwardModel& getForwardModel() const { return forwardModel; }
+		const ForwardModel& getForwardModel() const { return forwardModel; }
 
 		/// <summary>
 		/// Returns a reference to the internal gameState.
@@ -37,7 +36,7 @@ namespace SGA
 		volatile bool updatingState = false;
 
 		std::unique_ptr<GameState> gameState;
-		TBSForwardModel forwardModel;
+		ForwardModel forwardModel;
 
 		std::mt19937 rngEngine;
 

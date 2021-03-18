@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void BeamSearchAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void BeamSearchAgent::runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 
@@ -29,7 +29,7 @@ namespace SGA
 		}
 	}
 
-	Action BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
+	Action BeamSearchAgent::beamSearch(ForwardModel& forwardModel, TreeNode& root)
 	{
 		parameters_.PLAYER_ID = root.gameState.currentPlayer;
 
@@ -71,7 +71,7 @@ namespace SGA
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel& forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::simulate(ForwardModel& forwardModel, TreeNode& node)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		

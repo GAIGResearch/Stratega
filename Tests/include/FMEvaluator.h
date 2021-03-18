@@ -15,7 +15,7 @@ public:
 	std::unique_ptr<FMEvaluationResults> evaluate(const SGA::GameConfig& config);
 
 private:
-	void runGameTBS(SGA::GameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results);
+	void runGameTBS(SGA::GameState& state, SGA::ForwardModel& fm, FMEvaluationResults& results);
 	void runGameRTS(SGA::GameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results);
 	
 	std::mt19937* rngEngine;

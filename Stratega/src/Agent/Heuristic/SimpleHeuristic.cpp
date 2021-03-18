@@ -12,7 +12,7 @@ namespace SGA {
 	{
 	}
 
-	double SimpleHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, const int playerID)
+	double SimpleHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID)
 	{
 		std::vector<double> scores = std::vector<double>(numberOfPlayers);
 		double myScore = 0.0;
@@ -33,7 +33,7 @@ namespace SGA {
 		return scoreDiff + visCount * 10;
 	}
 
-	int SimpleHeuristic::score(const TBSForwardModel& forwardModel, GameState& gameState, int playerToScore) const
+	int SimpleHeuristic::score(const ForwardModel& forwardModel, GameState& gameState, int playerToScore) const
 	{
 		auto actions = forwardModel.generateActions(gameState);
 		const int numAvailableActions = actions.size();

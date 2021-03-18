@@ -26,16 +26,16 @@ namespace SGA
 		{
 		}
 
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(AgentGameCommunicator& gameCommunicator, ForwardModel forwardModel) override;
 
 	private:
-		std::vector<RHEAGenome> shiftPopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		void initializePopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> shiftPopulation(ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void initializePopulation(ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		void rheaLoop(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void rheaLoop(ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		std::vector<RHEAGenome> nextGeneration(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		RHEAGenome getNextGenerationIndividual(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> nextGeneration(ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		RHEAGenome getNextGenerationIndividual(ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 		std::vector<RHEAGenome> tournamentSelection();
 	};
 	
