@@ -1,13 +1,11 @@
 #pragma once
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Game/RTSGameCommunicator.h>
-#include <Stratega/Game/TBSGameCommunicator.h>
+#include <Stratega/Game/AgentGameCommunicator.h>
 
 namespace SGA
 {
-	class TBSGameCommunicator;
-	class RTSGameCommunicator;
+	class AgentGameCommunicator;
 	
 	class Agent
 	{
@@ -18,12 +16,12 @@ namespace SGA
 		}
 		virtual ~Agent() = default;
 		
-		virtual void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+		virtual void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 		{
 			
 		}
 
-		virtual void runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
+		virtual void runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
 		{
 
 		}

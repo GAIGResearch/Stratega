@@ -33,6 +33,7 @@ namespace SGA
 	void TBSGameStateRender::init()
 	{
 		GameStateRenderer::init();
+		actionsSettings.removeSelectedEntities = false;
 	}
 
 	void TBSGameStateRender::onGameStateAdvanced()
@@ -366,10 +367,11 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+
+					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
+
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
-
 				}
 				
 				for (auto& actionTarget : possibleAction.targets)
@@ -377,6 +379,7 @@ namespace SGA
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
 						auto& position = actionTarget.getPosition(gameStateCopy);
+
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 
@@ -409,10 +412,10 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if(actionType.sourceType==ActionSourceType::Entity)
 				{
-					auto& entity = possibleAction.targets[0].getEntity(gameStateCopy);
+					auto& entity = *possibleAction.targets[0].getEntity(gameStateCopy);
+
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
-
 				}
 				
 				//Avoid source entity
@@ -421,6 +424,7 @@ namespace SGA
 					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
 					{
 						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 
@@ -675,7 +679,7 @@ namespace SGA
 					if(action.targets[0].getType()==ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = gameStateCopy.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *gameStateCopy.getEntityConst(action.targets[0].getEntityID());
 						for (auto& continueAction : sourceEntity.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)

@@ -9,9 +9,13 @@ namespace SGA
 	FunctionFactory<Condition>& FunctionFactory<Condition>::getDefaultFactory()
 	{
 		static FunctionFactory<Condition> factory;
-		factory.registerFunction<HasResource>("HasResource");
+		factory.registerFunction<HasEntity>("HasEntity");
+		factory.registerFunction<NoHasEntity>("NoHasEntity");
+		factory.registerFunction<ResourceGreater>("ResourceGreater");
+		factory.registerFunction<ResourceLower>("ResourceLower");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
 		factory.registerFunction<IsResearched>("HasResearched");
@@ -28,10 +32,13 @@ namespace SGA
 	FunctionFactory<Effect>& FunctionFactory<Effect>::getDefaultFactory()
 	{
 		static FunctionFactory<Effect> factory;
+		factory.registerFunction<ChangeResource>("ChangeResource");
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
+		factory.registerFunction<AttackProbability>("AttackProbability");
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnEntity>("SpawnEntity");
+		factory.registerFunction<SpawnEntityGrid>("SpawnEntityGrid");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
 		factory.registerFunction<TransferEffect>("Transfer");
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");

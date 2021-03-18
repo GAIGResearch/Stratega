@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 #include <unordered_map>
 #include <unordered_set>
 #include <Stratega/Representation/Grid2D.h>
@@ -11,13 +12,17 @@
 #include <Stratega/Representation/TileType.h>
 namespace SGA
 {
+	enum class GameType
+	{
+		TBS,
+		RTS
+	};
+	
 	struct GameState
 	{
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
-
 		GameState();
 
-		int continueActionNextID = 0;
 		//Rule of six
 		virtual ~GameState() = default;
 		GameState(const GameState& other) = default;
@@ -34,16 +39,25 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 		
 		//Technology tree
-		std::shared_ptr <TechnologyTreeCollection> technologyTreeCollection;		
-
+		std::shared_ptr<TechnologyTreeCollection> technologyTreeCollection;
 		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
 
-		
+		// TBS related data
+		int currentPlayer;
+
+		// RTS related data
+		std::shared_ptr<Navigation> navigation;
+
+		//Random engine
+		std::mt19937 rngEngine;
+
 		// Game information
+		GameType gameType;
 		bool isGameOver;
 		int winnerPlayerID;
 		int currentTick;
 		int tickLimit;
+		int continueActionNextID = 0;
 		
 		// Board information
 		Tile fogOfWarTile;
@@ -53,8 +67,6 @@ namespace SGA
 		// Player and unit information
 		std::vector<Entity> entities;
 		std::vector<Player> players;
-		int nextEntityID;
-		int nextPlayerID;
 
 		virtual bool canExecuteAction(Entity& entity, const ActionType& actionType);
 		virtual bool canExecuteAction(Player& player, const ActionType& actionType);
@@ -63,7 +75,7 @@ namespace SGA
 		
 		Entity* getEntity(int entityID);
 
-		const Entity& getEntityConst(int entityID) const;
+		const Entity* getEntityConst(int entityID) const;
 
 		const EntityType& getEntityType(int entityTypeID) const;
 		
@@ -89,6 +101,12 @@ namespace SGA
 
 		bool isWalkable(const Vector2i& position);
 		
+		//bool isTile(const Vector2i& position, std::string tileName);
+		const TileType& getTileType(int tileTypeID) const
+		{
+			return tileTypes->find(tileTypeID)->second;
+		}
+		
 		bool isInBounds(Vector2i pos);
 				
 		const ActionType& getActionType(int typeID) const;
@@ -105,5 +123,19 @@ namespace SGA
 		std::vector< Entity*> getPlayerEntities(int playerID);
 
 		void applyFogOfWar(int playerID);
+
+		void setRNGEngine(std::mt19937 engine)
+		{
+			rngEngine = engine;
+		}
+
+		const std::mt19937& getRNGEngine() const
+		{
+			return rngEngine;
+		}
+		
+	private:
+		int nextPlayerID;
+		int nextEntityID;
 	};
 }

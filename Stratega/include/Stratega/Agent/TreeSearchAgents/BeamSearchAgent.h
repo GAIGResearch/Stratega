@@ -17,7 +17,7 @@ namespace SGA
 		BeamSearchParameters parameters_ = BeamSearchParameters();
 
 	public:
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:	
 		Action beamSearch(TBSForwardModel& forwardModel, TreeNode& root);

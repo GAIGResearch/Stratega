@@ -9,6 +9,7 @@ namespace SGA
 		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
 		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
+		currentPlayer(0),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -28,6 +29,7 @@ namespace SGA
 		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
 		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
+		currentPlayer(0),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -47,10 +49,12 @@ namespace SGA
 		return iter == entities.end() ? nullptr : &*iter;
 	}
 
-	const Entity& GameState::getEntityConst(int entityID) const
+	const Entity* GameState::getEntityConst(int entityID) const
 	{
-		return *std::find_if(std::begin(entities), std::end(entities),
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.id == entityID; });
+		return iter == entities.end() ? nullptr : &*iter;
+
 	}
 
 	const EntityType& GameState::getEntityType(int entityTypeID) const
@@ -305,7 +309,7 @@ namespace SGA
 		auto it = entities.begin();
 		while (it != entities.end())
 		{
-			if (!board.isInBounds((static_cast<int>(it->position.x), static_cast<int>(it->position.y))) || !visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
+			if (!board.isInBounds(static_cast<int>(it->position.x), static_cast<int>(it->position.y)) || !visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
 			{
 				it = entities.erase(it);
 			}

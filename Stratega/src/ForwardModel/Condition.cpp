@@ -4,13 +4,27 @@
 
 namespace  SGA
 {
-	HasResource::HasResource(const std::vector<FunctionParameter>& parameters) :
+	ResourceLower::ResourceLower(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		lowerBound(parameters.at(1))
 	{
 	}
 
-	bool HasResource::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceLower::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto targetResource = resourceReference.getParameterValue(state, targets);
+		double lowerBound = this->lowerBound.getConstant(state,targets);
+		
+		return targetResource <= lowerBound;
+	}
+
+	ResourceGreater::ResourceGreater(const std::vector<FunctionParameter>& parameters) :
+		resourceReference(parameters.at(0)),
+		lowerBound(parameters.at(1))
+	{
+	}
+
+	bool ResourceGreater::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = this->lowerBound.getConstant(state,targets);
@@ -101,6 +115,20 @@ namespace  SGA
 		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
 	}
 
+	IsTile::IsTile(const std::vector<FunctionParameter>& parameters)
+		: targetPosition(parameters[0]),
+		targetTile(parameters[1])
+	{
+	}
+	
+	bool IsTile::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		const TileType& tileType = targetTile.getTileType(state, targets);
+		//Check if target tile is same as the tile
+		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).tileTypeID==tileType.id;
+	}
+
 	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)
 		: targetParam(parameters[0])
 	{
@@ -126,6 +154,50 @@ namespace  SGA
 		return state.technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
+	NoHasEntity::NoHasEntity(const std::vector<FunctionParameter>& parameters) :
+		playerParam(parameters[0]),
+		entityTypeParam(parameters[1])
+	{
+	}
+
+	bool NoHasEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto& entities = state.getPlayerEntities(targetPlayer.id);
+		
+		bool hasEntity = false;
+		for (auto& entity : entities)
+		{
+			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+				hasEntity = true;
+		}
+
+		return !hasEntity;
+	}
+	
+	HasEntity::HasEntity(const std::vector<FunctionParameter>& parameters) :
+		playerParam(parameters[0]),
+		entityTypeParam(parameters[1])
+	{
+	}
+
+	bool HasEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto& entities = state.getPlayerEntities(targetPlayer.id);
+
+		for (auto& entity : entities)
+		{
+			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+				return true;
+		}
+	
+		return false;
+	}
+
+	
 	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
 		technologyTypeParam(parameters[1])

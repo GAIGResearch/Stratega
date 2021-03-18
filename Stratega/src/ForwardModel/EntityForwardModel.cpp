@@ -7,39 +7,52 @@ namespace SGA
 		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
 			return true;
 
-		switch (winCondition)
+		//Check Lose conditions
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+		
+		for (auto& loseConditionType : loseConditions)
 		{
-		case WinConditionType::UnitAlive:
-		{
-			//player.getEntities();
-			bool hasKing = false;
-			for (auto& unit : state.getPlayerEntities(player.id))
+			for (auto& loseCondition : loseConditionType)
 			{
-				//Check if player has units
-				if (unit->typeID == targetUnitTypeID)
-				{
-					hasKing = true;
-				}
+				if (loseCondition->isFullfilled(state, targets))
+					return false;
 			}
-
-			if (!hasKing)
-			{
-				return false;
-			}
-
-			break;
-		}
-		case WinConditionType::LastManStanding:
-		{
-			if (state.getPlayerEntities(player.id).empty())
-			{
-				return false;
-			}
-			break;
-		}
 		}
 
 		return true;
+	}
+
+	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const
+	{
+		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+			return false;
+
+		//Check Win conditions
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+
+		//Check win condition types
+		for (auto& winConditionType : winConditions)
+		{
+			bool playerWon = true;
+			
+			//Check condition list
+			for (auto& winCondition : winConditionType)
+			{
+				if (!winCondition->isFullfilled(state, targets))
+				{
+					playerWon = false;
+					break;
+				}
+					
+			}
+
+			if (playerWon)
+				return true;
+		}
+
+		return false;
 	}
 
 	void EntityForwardModel::executeAction(GameState& state, const Action& action) const
@@ -72,7 +85,7 @@ namespace SGA
 			}
 			else
 			{
-				auto& sourceEntity = action.targets[0].getEntity(state);
+				auto& sourceEntity = *action.targets[0].getEntity(state);
 				int continuousActionID = action.targets[1].getContinuousActionID();
 
 				//Search continuousAction to abort
@@ -114,7 +127,7 @@ namespace SGA
 					effect->execute(state, *this, newAction.targets);
 				}
 
-				auto& executingEntity = newAction.targets[0].getEntity(state);
+				auto& executingEntity = *newAction.targets[0].getEntity(state);
 				executingEntity.continuousAction.emplace_back(newAction);
 
 			}
@@ -136,7 +149,7 @@ namespace SGA
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				// Remember when the action was executed
-				auto& executingEntity = action.targets[0].getEntity(state);
+				auto& executingEntity = *action.targets[0].getEntity(state);
 				// ToDo We should probably find a way to avoid this loop
 				for (auto& actionInfo : executingEntity.attachedActions)
 				{

@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
-#include <Stratega/Game/TBSGameCommunicator.h>
+#include <Stratega/Game/AgentGameCommunicator.h>
 #include <Stratega/Configuration/YamlHeaders.h>
 #include <Stratega/Game/TBSGame.h>
 #include <Stratega/Configuration/GameConfigParser.h>
@@ -13,7 +13,8 @@ int main()
 	// Read Config
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
-	std::filesystem::path configPath("../../../gameConfigs/TBS/NoNameGame.yaml");
+	
+	std::filesystem::path configPath("../../../gameConfigs/RTS/Settlers.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath.string());
 	auto gameConfig = parser.parseFromFile(configPath.string());
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
@@ -36,22 +37,25 @@ int main()
 			playerID++;
 			continue;
 		}
-		if (gameConfig.gameType == SGA::ForwardModelType::TBS)
+	
+		if (gameConfig.gameType == SGA::GameType::TBS)
 		{
-			std::unique_ptr<SGA::TBSGameCommunicator> comm = std::make_unique<SGA::TBSGameCommunicator>(playerID);
-			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(engine)));
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID,
+				dynamic_cast<SGA::TBSGame&>(*game),
+				std::move(agent),
+				std::mt19937(distribution(engine)));
+			
 			game->addCommunicator(std::move(comm));
 		}
 		else
 		{
-			std::unique_ptr<SGA::RTSGameCommunicator> comm = std::make_unique<SGA::RTSGameCommunicator>(playerID);
-			comm->setAgent(std::move(agent));
-			comm->setGame(dynamic_cast<SGA::RTSGame&>(*game));
-			comm->setRNGEngine(std::mt19937(distribution(engine)));
-			game->addCommunicator(std::move(comm));			
-		}
+			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID,
+				dynamic_cast<SGA::RTSGame&>(*game),
+				std::move(agent),
+				std::mt19937(distribution(engine)));
+			
+			game->addCommunicator(std::move(comm));
+		}		
 		
 		playerID++;
 	}

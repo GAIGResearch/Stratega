@@ -16,13 +16,23 @@ namespace SGA
 	
 		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
 	};
-
-	class HasResource : public Condition
+	
+	class ResourceLower : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBound;
 	public:
-		HasResource(const std::vector<FunctionParameter>& parameters);
+		ResourceLower(const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class ResourceGreater : public Condition
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter lowerBound;
+	public:
+		ResourceGreater(const std::vector<FunctionParameter>& parameters);
 
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
@@ -64,6 +74,16 @@ namespace SGA
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class IsTile : public Condition
+	{
+		FunctionParameter targetPosition;
+		FunctionParameter targetTile;
+
+	public:
+		IsTile(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class IsPlayerEntity : public Condition
 	{
 		FunctionParameter targetParam;
@@ -93,6 +113,26 @@ namespace SGA
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class HasEntity : public Condition
+	{
+		FunctionParameter playerParam;
+		FunctionParameter entityTypeParam;
+
+	public:
+		HasEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class NoHasEntity : public Condition
+	{
+		FunctionParameter playerParam;
+		FunctionParameter entityTypeParam;
+
+	public:
+		NoHasEntity(const std::vector<FunctionParameter>& parameters);
+		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
 	class CanSpawnCondition : public Condition
 	{

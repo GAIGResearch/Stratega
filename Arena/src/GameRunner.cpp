@@ -35,9 +35,9 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 			throw std::runtime_error("Human-agents are not allowed in arena mode.");
 		}
 		
-		if (config->gameType == SGA::ForwardModelType::TBS)
+		if (config->gameType == SGA::GameType::TBS)
 		{
-			auto comm = std::make_unique<SGA::TBSGameCommunicator>(i);
+			auto comm = std::make_unique<SGA::AgentGameCommunicator>(i);
 			comm->setAgent(std::move(agent));
 			comm->setGame(dynamic_cast<SGA::TBSGame&>(*game));
 			comm->setRNGEngine(std::mt19937(distribution(rngEngine)));
@@ -55,16 +55,16 @@ void GameRunner::runGame(const std::vector<int>& agentAssignment, std::mt19937 r
 	}
 
 	//Build Navmesh
-	if (config->gameType == SGA::ForwardModelType::RTS)
+	if (config->gameType == SGA::GameType::RTS)
 	{
 		auto& gameRTS = dynamic_cast<SGA::RTSGame&>(*game);
 		const SGA::RTSForwardModel& fm = gameRTS.getForwardModel();
-		SGA::RTSGameState state = gameRTS.getStateCopy();
+		SGA::GameState state = gameRTS.getStateCopy();
 		fm.buildNavMesh(state, SGA::NavigationConfig());
 	}
 
 	// Add logger
-	if(config->gameType == SGA::ForwardModelType::TBS)
+	if(config->gameType == SGA::GameType::TBS)
 	{
 		game->addCommunicator(std::make_unique<TBSLogger>(dynamic_cast<SGA::TBSGame&>(*game)));
 	}

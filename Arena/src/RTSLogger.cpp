@@ -14,7 +14,7 @@ void RTSLogger::onGameStateAdvanced()
 		int playerID = state.players[i].id;
 		SGA::LoggingScope playerScope("Player" + std::to_string(playerID));
 		// ToDo getActions should accept const gameStates
-		auto actions = game->getForwardModel().generateActions(const_cast<SGA::RTSGameState&>(state), playerID);
+		auto actions = game->getForwardModel().generateActions(const_cast<SGA::GameState&>(state), playerID);
 		SGA::Log::logValue("ActionCount", actions.size());
 	}
 }

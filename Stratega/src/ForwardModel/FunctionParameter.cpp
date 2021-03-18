@@ -38,6 +38,11 @@ namespace SGA
 		return FunctionParameter(Type::EntityTypeReference, { .entityTypeID = entityTypeID});
 	}
 
+	FunctionParameter FunctionParameter::createTileTypeReference(int tileTypeID)
+	{
+		return FunctionParameter(Type::TileTypeReference, { .tileTypeID = tileTypeID });
+	}
+
 	FunctionParameter FunctionParameter::createTechnologyTypeReference(int technologyTypeID)
 	{
 		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
@@ -345,7 +350,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				return sourceEntity.parameters;
 			}
 		}
@@ -374,7 +379,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				return sourceEntity.parameters;
 			}
 		}
@@ -401,7 +406,7 @@ namespace SGA
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 				return sourceEntityType.parameters;
 			}
@@ -412,6 +417,17 @@ namespace SGA
 			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 			return sourceEntityType.parameters;
 		}
+	}
+
+	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		
+		if (parameterType == Type::TileTypeReference)
+		{
+			return state.getTileType(data.tileTypeID);
+		}
+
+		throw std::runtime_error("Type not recognised");
 	}
 
 }

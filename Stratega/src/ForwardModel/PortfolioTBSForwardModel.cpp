@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-	std::vector<Action> PortfolioTBSForwardModel::generateActions(TBSGameState& state) const
+	std::vector<Action> PortfolioTBSForwardModel::generateActions(GameState& state) const
 	{
 		auto actionSpace = TBSForwardModel::generateActions(state, state.currentPlayer);
 
@@ -18,7 +18,7 @@ namespace SGA
 		return portfolioActionSpace;
 	}
 
-	std::vector<Action> PortfolioTBSForwardModel::generateActions(TBSGameState& state, int playerID) const
+	std::vector<Action> PortfolioTBSForwardModel::generateActions(GameState& state, int playerID) const
 	{
 		return TBSForwardModel::generateActions(state, playerID);
 	}

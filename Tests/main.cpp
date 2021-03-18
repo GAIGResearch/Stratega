@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	SGA::GameConfigParser parser;
 	auto gameConfig = parser.parseFromFile(configPath.string());
 
-	std::cout << "Passed game is a " << (gameConfig.gameType == SGA::ForwardModelType::TBS ? "TBS" : "RTS") << " game" << std::endl;
+	std::cout << "Passed game is a " << (gameConfig.gameType == SGA::GameType::TBS ? "TBS" : "RTS") << " game" << std::endl;
 	
 	FMEvaluator evaluator(rngEngine);
 	auto results = evaluator.evaluate(gameConfig);

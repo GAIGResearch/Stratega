@@ -41,7 +41,6 @@ namespace SGA::Widgets
 			}
 		}
 
-
 		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
@@ -257,7 +256,6 @@ namespace SGA::Widgets
 								canExecute = false;
 								break;
 							}
-
 						}
 					}
 					if (canExecute)
@@ -360,11 +358,12 @@ namespace SGA::Widgets
 		newAction.ownerID = playerID;
 		
 		auto* player = state.getPlayer(playerID);
-		if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
-			return;
 		
 		if (player->canExecuteAction(settings.actionTypeSelected))
-		{
+		{			
+			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+				return;			
+
 			if (ActionTarget::isValid(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
 		}
@@ -388,11 +387,12 @@ namespace SGA::Widgets
 			const EntityType& entityType = state.getEntityType(state.getEntity(entityID)->typeID);
 			const Entity* entity = state.getEntity(entityID);
 
-			// Check if this action can be executed		
-			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
-				continue;
+			
 			if (!entityType.canExecuteAction(settings.actionTypeSelected))
 				continue;
+			// Check if this action can be executed		
+			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+				continue;			
 
 			//The entity should be able to execute this action type
 			newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);

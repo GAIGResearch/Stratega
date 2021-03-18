@@ -4,6 +4,8 @@
 #include <variant>
 #include <Stratega/Representation/Vector2.h>
 
+#include "Stratega/Representation/TileType.h"
+
 
 namespace SGA
 {
@@ -12,6 +14,8 @@ namespace SGA
 	class Player;
 	struct EntityType;
 	typedef int EntityTypeID;
+	typedef int TileTypeID;
+
 	struct ActionType;
 	
 	class ActionTarget
@@ -24,7 +28,8 @@ namespace SGA
 			PlayerReference,
 			EntityTypeReference,
 			TechnologyReference,
-			ContinuousActionReference
+			ContinuousActionReference,
+			TileTypeReference
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
@@ -33,14 +38,16 @@ namespace SGA
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
 		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 		static ActionTarget createEntityTypeActionTarget(EntityTypeID entityTypeID);
+		static ActionTarget createTileTypeActionTarget(TileTypeID entityTypeID);
 
 
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
-		Entity& getEntity(GameState& state) const;
+		Entity* getEntity(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
+		const TileType& getTileType(const GameState& state) const;
 		const std::unordered_set<EntityTypeID>& getSpawneableEntities(const GameState& state) const;
 
 		//RAW Values
@@ -103,6 +110,9 @@ namespace SGA
 		//Check if this action target is valid in the received gamestate
 		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 
+		//Check if action target is valid in the received gamestate
+		bool isValid(const GameState& state) const;		
+
 	private:
 		union Data
 		{
@@ -110,6 +120,7 @@ namespace SGA
 			int entityID;
 			int playerID;
 			EntityTypeID entityTypeID;
+			TileTypeID tileTypeID;
 			int technologyID;
 			int continuousActionID;
 		};

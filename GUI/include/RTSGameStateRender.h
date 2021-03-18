@@ -1,7 +1,6 @@
 #pragma once
 #include <GameStateRenderer.h>
 #include <Stratega/Game/RTSGame.h>
-#include <Stratega/Representation/RTSGameState.h>
 #include <SFML/Window/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <CircularBuffer.h>
@@ -13,7 +12,7 @@ namespace SGA
 	struct GameConfig;
 	struct RenderConfig;
 	
-	class RTSGameStateRender : public GameStateRenderer<RTSGameState>
+	class RTSGameStateRender : public GameStateRenderer<GameState>
 	{
 	public:
 		sf::View view2;
@@ -62,22 +61,29 @@ namespace SGA
 		void createWindowFogOfWar();
 		void createWindowPlayerParameters() const;
 		
-		void playAction(std::vector<Action> actionsToPlay)
+		void playActions(std::vector<Action> newActionsToPlay)
 		{
-			for (auto& element : actionsToPlay)
+			for (auto& element : newActionsToPlay)
 			{
-				game->executeAction(element);
+				//If continous or player action execute directly
+				if (element.actionTypeID == -1 || element.isPlayerAction())
+				{
+					game->executeAction(element);
+				}
+				else
+				{
+					//Add actions to list
+					actionsToPlay[element.getSourceID()] = element;
+				}
 			}
-			
-			actionsSettings.reset();
 		}
 	private:
 		//Game Data
 		RTSGame* game;
 
 		//Current gamestate used to render
-		RTSGameState gameStateCopy;
-		RTSGameState gameStateCopyFogOfWar;
+		GameState gameStateCopy;
+		GameState gameStateCopyFogOfWar;
 		//Zoom
 		float zoomValue = 5;
 
@@ -93,7 +99,7 @@ namespace SGA
 
 		//Drawing gameState Buffer
 		bool drawGameStateBuffer = false;
-		CircularBuffer<RTSGameState> gameStatesBuffer;
+		CircularBuffer<GameState> gameStatesBuffer;
 		int gameStatesBufferRCurrentIndex = 0;		
 
 		//Imgui
@@ -108,5 +114,8 @@ namespace SGA
 		NavigationConfig config;
 
 		sf::RenderTexture renderMinimapTexture;
+
+		//Collect actions played by previous frame
+		std::unordered_map<int, Action> actionsToPlay;
 	};
 }

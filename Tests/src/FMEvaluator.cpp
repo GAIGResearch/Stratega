@@ -10,27 +10,27 @@ std::unique_ptr<FMEvaluationResults> FMEvaluator::evaluate(const SGA::GameConfig
 	auto results = std::make_unique<FMEvaluationResults>();
 	while(results->size() < StepCount)
 	{
-		if(config.gameType == SGA::ForwardModelType::TBS)
+		if(config.gameType == SGA::GameType::TBS)
 		{
 			auto* fm = dynamic_cast<SGA::TBSForwardModel*>(config.forwardModel.get());
 			auto state = config.generateGameState();
-			runGameTBS(*dynamic_cast<SGA::TBSGameState*>(state.get()), *fm, *results);
+			runGameTBS(*dynamic_cast<SGA::GameState*>(state.get()), *fm, *results);
 		}
 		else
 		{
 			auto* fm = dynamic_cast<SGA::RTSForwardModel*>(config.forwardModel.get());
 			auto state = config.generateGameState();
 			//Build Navmesh
-			fm->buildNavMesh(*dynamic_cast<SGA::RTSGameState*>(state.get()), SGA::NavigationConfig());
+			fm->buildNavMesh(*dynamic_cast<SGA::GameState*>(state.get()), SGA::NavigationConfig());
 			
-			runGameRTS(*dynamic_cast<SGA::RTSGameState*>(state.get()), *fm, *results);
+			runGameRTS(*dynamic_cast<SGA::GameState*>(state.get()), *fm, *results);
 		}
 	}
 
 	return std::move(results);
 }
 
-void FMEvaluator::runGameTBS(SGA::TBSGameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results)
+void FMEvaluator::runGameTBS(SGA::GameState& state, SGA::TBSForwardModel& fm, FMEvaluationResults& results)
 {
 	while(results.size() < StepCount && !state.isGameOver)
 	{
@@ -52,7 +52,7 @@ void FMEvaluator::runGameTBS(SGA::TBSGameState& state, SGA::TBSForwardModel& fm,
 	}
 }
 
-void FMEvaluator::runGameRTS(SGA::RTSGameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results)
+void FMEvaluator::runGameRTS(SGA::GameState& state, SGA::RTSForwardModel& fm, FMEvaluationResults& results)
 {
 	while (results.size() < StepCount && !state.isGameOver)
 	{
