@@ -27,3 +27,6 @@ add_subdirectory("Tests")
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")
 endif()
+
+pybind11_add_module(example bindings/python/example.cpp)
+target_link_libraries(example PUBLIC Stratega)
