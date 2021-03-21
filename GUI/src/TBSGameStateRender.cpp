@@ -327,7 +327,7 @@ namespace SGA
 		window.draw(tileMap);
 		
 		//Add selected tileactionSettings.waitingForPosition
-		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
+		sf::Vector2i mouseGridPos = toGrid(currentMousePos);
 		
 		if (selectedGameStateCopy->isInBounds(Vector2i(mouseGridPos.x, mouseGridPos.y)))
 		{
@@ -469,8 +469,8 @@ namespace SGA
 		std::string fpsInfo = "FPS: " + std::to_string(0);
 		ImGui::Text(fpsInfo.c_str());
 
-		std::string mousePosInfo = "IMGUI: " + std::to_string((int)ImGui::GetMousePos().x) + "," + std::to_string((int)ImGui::GetMousePos().y) +
-			" SFML: " + std::to_string((int)currentMousePos.x) + "," + std::to_string((int)currentMousePos.y);
+		std::string mousePosInfo = "IMGUI: " + std::to_string(static_cast<int>(ImGui::GetMousePos().x)) + "," + std::to_string(static_cast<int>(ImGui::GetMousePos().y)) +
+			" SFML: " + std::to_string(static_cast<int>(currentMousePos.x)) + "," + std::to_string(static_cast<int>(currentMousePos.y));
 		ImGui::Text(mousePosInfo.c_str());
 
 		if (ImGui::Button("Close Game"))
@@ -537,7 +537,7 @@ namespace SGA
 			window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 			ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
-			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+			ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
 			auto* selectedEntity = gameStateCopy.getEntity(*actionsSettings.selectedEntities.begin());
@@ -618,7 +618,7 @@ namespace SGA
 		
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2((window.getSize().x/2), window.getSize().y/1.1),ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2(window.getSize().x / 2.f, window.getSize().y / 1.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
@@ -735,6 +735,7 @@ namespace SGA
 						break;
 					case ActionTarget::EntityTypeReference:
 						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
+						break;
 					case ActionTarget::ContinuousActionReference:
 						break;
 					}					

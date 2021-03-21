@@ -23,7 +23,7 @@ namespace SGA
 		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
 	private:
-		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes);
+		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes);
 		int getBestActionIdx(TBSForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
 		void init(TBSForwardModel& forwardModel, GameState& gameState);

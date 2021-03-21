@@ -60,7 +60,7 @@ namespace SGA
 		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
-	bool TBSForwardModel::isValid(const GameState& state, const Action& action) const
+	bool TBSForwardModel::isValid(const GameState& /*state*/, const Action& /*action*/) const
 	{
 		return true;
 	}

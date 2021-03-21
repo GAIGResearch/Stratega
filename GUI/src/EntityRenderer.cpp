@@ -39,7 +39,7 @@ namespace SGA
 		// Ensure the vertex array has the correct size
 		vertices.resize(4 * state.entities.size());
 
-		for(int i = 0; i < state.entities.size(); i++)
+		for(size_t i = 0; i < state.entities.size(); i++)
 		{
 			const auto& entity = state.entities.at(i);
 			auto* quadPtr = &vertices[i * 4];

@@ -50,14 +50,14 @@ namespace SGA
 		void endTick(GameState& state) const;
 		void spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const;
 
-		std::unique_ptr<EntityActionSpace> generateDefaultActionSpace()
+		std::unique_ptr<EntityActionSpace> generateDefaultActionSpace() const
 		{
 			return std::make_unique<EntityActionSpace>();
 		}
 		
-		void setActionSpace(std::unique_ptr<EntityActionSpace> actionSpace)
+		void setActionSpace(std::unique_ptr<EntityActionSpace> newActionSpace)
 		{
-			this->actionSpace = std::move(actionSpace);
+			this->actionSpace = std::move(newActionSpace);
 		}
 	};
 

@@ -10,20 +10,15 @@ namespace SGA
 	class Agent
 	{
 	public:
-		Agent()
-		{
-			
-		}
+		Agent() = default;
 		virtual ~Agent() = default;
 		
-		virtual void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+		virtual void runTBS(AgentGameCommunicator&, TBSForwardModel)
 		{
-			
 		}
 
-		virtual void runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
+		virtual void runRTS(AgentGameCommunicator&, RTSForwardModel)
 		{
-
 		}
 	};
 }

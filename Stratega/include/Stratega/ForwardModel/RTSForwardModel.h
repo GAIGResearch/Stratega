@@ -57,7 +57,7 @@ namespace  SGA
 	class RTSForwardModel : public EntityForwardModel
 	{
 	public:
-		float deltaTime;
+		double deltaTime;
 		
 		RTSForwardModel()
 			: deltaTime(1. / 60.)

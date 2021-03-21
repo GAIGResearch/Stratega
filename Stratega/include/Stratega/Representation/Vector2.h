@@ -54,9 +54,9 @@ namespace SGA
 	{
 	public:
 		Vector2f();
-		Vector2f(float x, float y);
-		Vector2f(const Vector2i& pos) : Vector2f(pos.x, pos.y) {}
-		Vector2f(float value);
+		Vector2f(double x, double y);
+		explicit Vector2f(double value);
+		explicit Vector2f(Vector2i v);
 
 		template<typename Value>
 		Vector2f operator* (Value v) const { return Vector2f(x * v, y * v); }
@@ -67,7 +67,7 @@ namespace SGA
 		bool operator==(const Vector2f& other) const;
 		bool operator!=(const Vector2f& other) const;
 
-		Vector2f normalized() const
+		[[nodiscard]] Vector2f normalized() const
 		{
 			const auto magnitudeValue = magnitude();
 			
@@ -75,15 +75,15 @@ namespace SGA
 			if (magnitudeValue <= 0) return *this;
 			return (*this) / magnitudeValue;
 		}
-		double distance(const Vector2f& other) const { float dx = other.x - x; float dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
-		float manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
-		float chebyshevDistance(const Vector2f& other) const { float dx = other.x - x; float dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
+		[[nodiscard]] double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
+		[[nodiscard]] double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
+		[[nodiscard]] double chebyshevDistance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
 
 
-		double magnitude() const { return std::sqrt(x * x + y * y); }
+		[[nodiscard]] double magnitude() const { return std::sqrt(x * x + y * y); }
 		
-		float x;
-		float y;
+		double x;
+		double y;
 	};
 
 	inline Vector2f::Vector2f()
@@ -92,17 +92,23 @@ namespace SGA
 		y = 0;
 	}
 
-	inline Vector2f::Vector2f(float x, float y)
+	inline Vector2f::Vector2f(double x, double y)
 	{
 		this->x = x;
 		this->y = y;
 	}
 
-	inline Vector2f::Vector2f(float value)
+	inline Vector2f::Vector2f(double value)
 	{
 		x = value;
 		y = value;
 	}
+
+	inline Vector2f::Vector2f(Vector2i v)
+		: x(v.x), y(v.y)
+	{
+	}
+
 
 	inline bool Vector2f::operator==(const Vector2f& other) const {
 		return x == other.x && y == other.y;
@@ -119,7 +125,7 @@ namespace std
 	template <>
 	struct hash<SGA::Vector2i>
 	{
-		std::size_t operator()(const SGA::Vector2i& v) const
+		std::size_t operator()(const SGA::Vector2i& v) const noexcept
 		{
 			using std::hash;
 			// Not the best hashcode, but we do not expect large values

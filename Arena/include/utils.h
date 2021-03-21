@@ -4,7 +4,7 @@
 #include <vector>
 
 typedef std::function<void(const std::vector<int>& combination)> CallbackFn;
-void generateCombinationsImpl(int choices, std::vector<int>& comb, size_t index, std::unordered_set<int>& used, CallbackFn callback)
+inline void generateCombinationsImpl(size_t choices, std::vector<int>& comb, size_t index, std::unordered_set<int>& used, CallbackFn callback)
 {
 	if (index == comb.size())
 	{
@@ -12,7 +12,7 @@ void generateCombinationsImpl(int choices, std::vector<int>& comb, size_t index,
 		return;
 	}
 
-	for (int i = 0; i < choices; i++)
+	for (int i = 0; i < static_cast<int>(choices); i++)
 	{
 		if (used.find(i) != used.end())
 			continue;
@@ -24,7 +24,7 @@ void generateCombinationsImpl(int choices, std::vector<int>& comb, size_t index,
 	}
 }
 
-void generateCombinations(int choices, int k, CallbackFn callback)
+inline void generateCombinations(size_t choices, size_t k, CallbackFn callback)
 {
 	std::vector<int> combinationBucket(k);
 	std::unordered_set<int> used;

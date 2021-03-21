@@ -90,7 +90,7 @@ namespace SGA
 		state.isGameOver = checkGameIsFinished(state);
 	}
 
-	std::vector<Action> RTSForwardModel::generateActions(GameState& state) const
+	std::vector<Action> RTSForwardModel::generateActions(GameState& /*state*/) const
 	{
 		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
 	}
@@ -170,10 +170,10 @@ namespace SGA
 		// Collision
 		for (auto& unit : state.entities)
 		{
-			int startCheckPositionX = std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE);
-			int endCheckPositionX = std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE);
-			int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
-			int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
+			int startCheckPositionX = static_cast<int>(std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE));
+			int endCheckPositionX = static_cast<int>(std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE));
+			int startCheckPositionY = static_cast<int>(std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE));
+			int endCheckPositionY = static_cast<int>(std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE));
 
 			const auto& entityType = state.getEntityType(unit.typeID);
 			
@@ -192,8 +192,8 @@ namespace SGA
 						continue;
 
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
-					auto fx = static_cast<float>(x);
-					auto fy = static_cast<float>(y);
+					auto fx = static_cast<double>(x);
+					auto fy = static_cast<double>(y);
 					auto nearestX = std::max(fx, std::min(unit.position.x, fx + RECT_SIZE));
 					auto nearestY = std::max(fy, std::min(unit.position.y, fy + RECT_SIZE));
 					auto dist = unit.position - Vector2f(nearestX, nearestY);
@@ -223,9 +223,8 @@ namespace SGA
 
 		//Get size from current board
 		auto& board = state.board;
-		float width = board.getWidth();
-		float height = board.getHeight();
-		float cellSize = 1;
+		float width = static_cast<float>(board.getWidth());
+		float height = static_cast<float>(board.getHeight());
 
 		state.navigation->cleanup();
 
@@ -288,20 +287,18 @@ namespace SGA
 		}
 
 		// Where hf is a reference to an heightfield object.
-		const float* orig = state.navigation->m_solid->bmin;
-		const float cs = state.navigation->m_solid->cs;
-		const float ch = state.navigation->m_solid->ch;
+		// const float* orig = state.navigation->m_solid->bmin;
+		// const float cs = state.navigation->m_solid->cs;
+		// const float ch = state.navigation->m_solid->ch;
 		const int w = state.navigation->m_solid->width;
 		const int h = state.navigation->m_solid->height;
 
 
-		for (float x = 0; x < w; x++)
+		for (auto x = 0; x < w; x++)
 		{
-			for (float y = 0; y < h; y++)
+			for (auto y = 0; y < h; y++)
 			{
-				int pos = (y * width + x);
 				auto& tile = board.get(x, y);
-
 				if (tile.isWalkable)
 					rcAddSpan(&state.navigation->m_ctx, *state.navigation->m_solid, x, y, 0, 5, RC_WALKABLE_AREA, 0);
 			}
@@ -561,14 +558,14 @@ namespace SGA
 	{
 		//Convert grid pos to 3D pos
 		float startPosV3[3];
-		startPosV3[0] = startPos.x;
+		startPosV3[0] = static_cast<float>(startPos.x);
 		startPosV3[1] = 0;
-		startPosV3[2] = startPos.y;
+		startPosV3[2] = static_cast<float>(startPos.y);
 
 		float endPosV3[3];
-		endPosV3[0] = endPos.x;
+		endPosV3[0] = static_cast<float>(endPos.x);
 		endPosV3[1] = 0;
-		endPosV3[2] = endPos.y;
+		endPosV3[2] = static_cast<float>(endPos.y);
 
 		//Start and end polys
 		dtPolyRef startRef;
@@ -576,7 +573,6 @@ namespace SGA
 
 		//Polys found in search
 		dtPolyRef m_polys[MAX_POLYS];
-		dtPolyRef m_parent[MAX_POLYS];
 		int m_npolys;
 
 		//Find nearest poly
