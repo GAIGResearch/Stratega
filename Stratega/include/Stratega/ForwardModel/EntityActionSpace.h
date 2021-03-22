@@ -10,7 +10,7 @@ namespace SGA
 	class EntityActionSpace : public IActionSpace<GameState, Action>
 	{
 	public:
-		std::vector<Action> generateActions(GameState& gameState) override { return {}; }
+		std::vector<Action> generateActions(GameState&) override { return {}; }
 		std::vector<Action> generateActions(GameState& gameState, int player);
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Entity& entity, const ActionType& action);
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Player& entity, const ActionType& action);

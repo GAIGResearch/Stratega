@@ -14,7 +14,7 @@ namespace SGA
 				// Generate all available actions
 				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
 				// Uniformly sample a action
-				std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
+				std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 				auto actionIndex = actionDist(gameCommunicator.getRNGEngine());
 				auto action = actions.at(actionIndex);
 				// Send action to the game-runner
@@ -34,8 +34,7 @@ namespace SGA
 			{
 				auto state = gameCommunicator.getGameState();
 				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
-				std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
-				int temp = actionDist(gameCommunicator.getRNGEngine());
+				//std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
 				/*gameCommunicator.executeAction(actions.at(actionDist(gameCommunicator.getRNGEngine())));*/
 				lastExecution = std::chrono::high_resolution_clock::now();
 			}

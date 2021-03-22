@@ -113,8 +113,6 @@ namespace SGA
 			}
 			else if(actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
-				auto& entity = getPlayer(state, actionTargets);
-			
 				const auto& param = state.getPlayerParameter(data.parameterData.parameterID);
 				return param;
 			}
@@ -359,6 +357,8 @@ namespace SGA
 			auto& sourceEntity = getEntity(state, actionTargets);
 			return sourceEntity.parameters;
 		}
+
+		throw std::runtime_error("Type not recognized");
 	}
 
 	const std::vector<double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -385,9 +385,11 @@ namespace SGA
 		}
 		else
 		{
-			auto& sourceEntity = getEntity(state, actionTargets);
+			const auto& sourceEntity = getEntity(state, actionTargets);
 			return sourceEntity.parameters;
 		}
+
+		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
 	}
 
 	const std::unordered_map<ParameterID, Parameter>& FunctionParameter::getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -397,14 +399,14 @@ namespace SGA
 			return *state.playerParameterTypes;
 			
 		}
-		else if (getType() == Type::ArgumentReference)
+		if (getType() == Type::ArgumentReference)
 		{
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
 				return *state.playerParameterTypes;
 			}
-			else if (target.getType() == ActionTarget::EntityReference)
+			if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
@@ -417,9 +419,11 @@ namespace SGA
 			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 			return sourceEntityType.parameters;
 		}
+
+		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
 	}
 
-	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& /*actionTargets*/) const
 	{
 		
 		if (parameterType == Type::TileTypeReference)
