@@ -22,9 +22,9 @@ namespace SGA
 				else
 				{
 
-					double bestHeuristicValue = -std::numeric_limits<double>::max();
-					int bestActionIndex = 0;
-					const int playerID = gameState.currentPlayer;
+					auto bestHeuristicValue = -std::numeric_limits<double>::max();
+					size_t bestActionIndex = 0;
+					auto playerID = gameState.currentPlayer;
 
 					for (size_t i = 0; i < actionSpace.size(); i++)
 					{

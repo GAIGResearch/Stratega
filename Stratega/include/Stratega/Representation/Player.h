@@ -18,7 +18,7 @@ namespace SGA
 
 		std::vector<ActionInfo> attachedActions;
 
-		bool canExecuteAction(int actionTypeID) const
+		[[nodiscard]] bool canExecuteAction(int actionTypeID) const
 		{
 			for (const auto& actionType : attachedActions)
 			{
@@ -28,13 +28,15 @@ namespace SGA
 			return false;
 		}
 
-		const ActionInfo& getActionInfo(int actionTypeID) const
+		[[nodiscard]] const ActionInfo& getActionInfo(int actionTypeID) const
 		{
-			for (auto& actionInfo : attachedActions)
+			for (const auto& actionInfo : attachedActions)
 			{
 				if (actionInfo.actionTypeID == actionTypeID)
 					return actionInfo;
 			}
+
+			throw std::runtime_error("Tried accessing action with unknown actionType");
 		}
 	};
 }

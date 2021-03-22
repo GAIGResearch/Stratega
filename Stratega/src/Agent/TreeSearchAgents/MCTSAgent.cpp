@@ -47,7 +47,7 @@ namespace SGA
                     //rootNode->printTree();
 
                 	// get and store best action
-                    const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
+                    auto bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
                     auto bestAction = rootNode->actionSpace.at(bestActionIndex);
                     gameCommunicator.executeAction(bestAction);
 

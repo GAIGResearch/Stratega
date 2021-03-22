@@ -9,10 +9,10 @@ namespace SGA
 	{
 		std::string name;
 		std::string description;
-		int id;
+		int id = -1;
 		std::vector<int> parentIDs;
 		std::unordered_map<ParameterID, double> cost;
-		double continuousActionTime;
+		double continuousActionTime = 0;
 	};
 
 	class TechnologyTreeType
@@ -26,17 +26,18 @@ namespace SGA
 		//ID + technologynode
 		std::unordered_map<int, TechnologyTreeNode> technologies;
 
-		const TechnologyTreeNode& getTechnologyNode(int technologyID)const
+		[[nodiscard]] const TechnologyTreeNode& getTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
 			const auto& it = technologies.find(technologyID);
-
 			if (it != technologies.end())
 				//We found the technology						
 				return it->second;
+
+			throw std::runtime_error("Tried accessing technology with unknown id " + std::to_string(technologyID));
 		}
 		
-		bool findTechnologyNode(int technologyID)const
+		[[nodiscard]] bool findTechnologyNode(int technologyID)const
 		{
 			//Search technology in tree
 
@@ -49,7 +50,7 @@ namespace SGA
 				return false;
 		}
 
-		int getTechnologyNodeID(std::string technologyName)const
+		[[nodiscard]] int getTechnologyNodeID(const std::string& technologyName)const
 		{
 			//Search through technologies
 			for (const auto& technology : technologies)
@@ -57,9 +58,11 @@ namespace SGA
 				if (technology.second.name == technologyName)
 					return technology.second.id;
 			}
+
+			throw std::runtime_error("Tried accessing technology with unknown name " + technologyName);
 		}
 
-		bool haveTechnologyNode(std::string technologyName)const
+		[[nodiscard]] bool haveTechnologyNode(const std::string& technologyName)const
 		{
 			//Search through technologies
 			for (const auto& technology : technologies)
@@ -127,7 +130,7 @@ namespace SGA
 			researchedPairList->second.emplace_back(technologyID);
 		}
 		
-		const TechnologyTreeNode& getTechnology(int technologyID) const
+		[[nodiscard]] const TechnologyTreeNode& getTechnology(int technologyID) const
 		{
 			//Search through technologytreetypes
 			for (const auto& technologyTreeType : technologyTreeTypes)
@@ -135,15 +138,19 @@ namespace SGA
 				if(technologyTreeType.second.findTechnologyNode(technologyID))
 					return technologyTreeType.second.getTechnologyNode(technologyID);
 			}
+
+			throw std::runtime_error("Tried accessing technology tree with unknown id " + std::to_string(technologyID));
 		}
 
-		int getTechnologyTypeID(std::string technologyName) const
+		[[nodiscard]] int getTechnologyTypeID(const std::string& technologyName) const
 		{
 			for (const auto& technologyTreeType : technologyTreeTypes)
 			{
 				if (technologyTreeType.second.haveTechnologyNode(technologyName))
 					return technologyTreeType.second.getTechnologyNodeID(technologyName);
 			}
+
+			throw std::runtime_error("Tried accessing technology with unknown name " + technologyName);
 		}
 	};
 

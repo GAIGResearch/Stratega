@@ -82,22 +82,22 @@ namespace SGA
 	/// Store nodes that represent leaves and have been completely expanded into knownLeaves.
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
-	/// <param name="openNodes">list of known open nodes</param>
-	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& openNodes)
+	/// <param name="nodes">list of known open nodes</param>
+	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes)
 	{
 		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 		
 		while (parameters_.REMAINING_FM_CALLS > 0)
 		{
 			TreeNode* child = nullptr;
-			while (child == nullptr && !openNodes.empty())
+			while (child == nullptr && !nodes.empty())
 			{
-				TreeNode* currentNode = openNodes.front();
+				TreeNode* currentNode = nodes.front();
 				child = currentNode->expand(forwardModel, parameters_);
 				if (child == nullptr)
 				{
-					openNodes.pop_front();	// node cannot be further expanded
-					if (openNodes.empty())	// all nodes have been explored
+					nodes.pop_front();	// node cannot be further expanded
+					if (nodes.empty())	// all nodes have been explored
 						break;
 				}
 				else
@@ -109,7 +109,7 @@ namespace SGA
 					}
 					else
 					{
-						openNodes.push_back(child);
+						nodes.push_back(child);
 					}
 				}
 			}

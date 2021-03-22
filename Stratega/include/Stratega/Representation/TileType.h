@@ -6,8 +6,8 @@ namespace SGA
 	struct TileType
 	{
 		std::string name;
-		char symbol;
-		int id;
+		char symbol = '\0';
+		int id = -1;
 		bool isWalkable = true;
 		bool blocksSight = false;
 		bool isDefaultTile = false;

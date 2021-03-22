@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
@@ -11,7 +11,7 @@ namespace SGA
     struct GameConfig
     {
     	// Game information
-        GameType gameType;
+        GameType gameType = GameType::TBS;
         int tickLimit = 100;
         int numPlayers = -1;
     	// Other stuff
@@ -38,7 +38,7 @@ namespace SGA
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
         std::unique_ptr<GameState> generateGameState() const;
     	
-        int getNumberOfPlayers() const;
+        size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;

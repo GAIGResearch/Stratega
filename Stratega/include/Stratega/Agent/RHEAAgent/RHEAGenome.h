@@ -27,8 +27,8 @@ namespace SGA {
 
 		void mutate(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator);
 
-		double getValue() const { return value; };
-		void setValue(const double value) { this->value = value; };
+		[[nodiscard]] double getValue() const { return value; };
+		void setValue(double newValue) { this->value = newValue; };
 
 		void shift(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params);
 		void toString() const;

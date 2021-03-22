@@ -1,8 +1,7 @@
 #pragma once
 #include <map>
 #include <string>
-//#include <yaml-cpp/yaml.h>
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 #include "TBSGameStateRender.h"
 #include "RTSGameStateRender.h"
 

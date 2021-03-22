@@ -1,8 +1,8 @@
 #include <Stratega/Representation/EntityType.h>
 #include <Stratega/ForwardModel/Action.h>
-const SGA::Parameter& SGA::EntityType::getParameter(ParameterID id) const
+const SGA::Parameter& SGA::EntityType::getParameter(ParameterID parameterID) const
 {
-	auto it = parameters.find(id);
+	auto it = parameters.find(parameterID);
 	if (it != parameters.end())
 	{
 		return it->second;
@@ -11,7 +11,7 @@ const SGA::Parameter& SGA::EntityType::getParameter(ParameterID id) const
 	{
 		std::string s;
 		s.append("Tried accessing unknown parameter ID ");
-		s.append(std::to_string(id));
+		s.append(std::to_string(parameterID));
 		s.append("in entityType ");
 		s.append(name);
 		throw std::runtime_error(s);
@@ -20,9 +20,9 @@ const SGA::Parameter& SGA::EntityType::getParameter(ParameterID id) const
 
 bool SGA::EntityType::canExecuteAction(int actionTypeID) const
 {
-	for (const auto& id : actionIds)
+	for (const auto& actionID : actionIds)
 	{
-		if (id == actionTypeID)
+		if (actionID == actionTypeID)
 			return true;
 	}
 	return false;

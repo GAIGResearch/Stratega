@@ -1,8 +1,9 @@
 #include <filesystem>
+#include <yaml-cpp/yaml.h>
+
 #include <Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Game/AgentGameCommunicator.h>
-#include <Stratega/Configuration/YamlHeaders.h>
 #include <Stratega/Game/TBSGame.h>
 #include <Stratega/Configuration/GameConfigParser.h>
 

@@ -20,7 +20,7 @@ namespace SGA
 	class ResourceLower : public Condition
 	{
 		FunctionParameter resourceReference;
-		FunctionParameter lowerBound;
+		FunctionParameter lowerBoundParameter;
 	public:
 		ResourceLower(const std::vector<FunctionParameter>& parameters);
 
@@ -30,7 +30,7 @@ namespace SGA
 	class ResourceGreater : public Condition
 	{
 		FunctionParameter resourceReference;
-		FunctionParameter lowerBound;
+		FunctionParameter lowerBoundParameter;
 	public:
 		ResourceGreater(const std::vector<FunctionParameter>& parameters);
 
@@ -39,7 +39,7 @@ namespace SGA
 	
 	class HasElapsedTime : public Condition
 	{
-		FunctionParameter lowerBound;
+		FunctionParameter lowerBoundParameter;
 	public:
 		HasElapsedTime(const std::vector<FunctionParameter>& parameters);
 

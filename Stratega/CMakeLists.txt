@@ -24,8 +24,8 @@ get_target_property(YAML_CPP_INCLUDE_DIRECTORIES yaml-cpp INCLUDE_DIRECTORIES)
 install(DIRECTORY ${YAML_CPP_INCLUDE_DIRECTORIES} DESTINATION .)
 
 
-# ToDo disable yaml-cpp warnings so we can enable this
-#target_compile_options(Stratega PRIVATE
-#  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-#  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Werror>
-#)
+target_compile_options(Stratega PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
+)
+string(REGEX REPLACE "/W3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
