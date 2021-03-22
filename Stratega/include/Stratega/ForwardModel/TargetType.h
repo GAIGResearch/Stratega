@@ -20,7 +20,7 @@ namespace SGA
 	{
 		enum Type { None, Position, EntityType, Entity, Technology, ContinuousAction};
 		
-		Type type;
+		Type type = Type::None;
 
 		// Specific variables for targetType=Position
 		ShapeType shapeType;

@@ -17,7 +17,7 @@ namespace SGA
 
 		template<typename InputIterator>
 		Grid2D(size_t width, InputIterator begin, InputIterator end)
-			: width(width), height(-1), grid(begin, end)
+			: width(width), height(0), grid(begin, end)
 		{
 			if(grid.size() % width != 0)
 			{
@@ -39,11 +39,11 @@ namespace SGA
 		reference get(int x, int y) { return grid[y * width + x]; }
 		const_reference get(int x, int y) const { return grid[y * width + x]; }
 
-		int getWidth() const { return width; }
-		int getHeight() const { return height; }
+		[[nodiscard]] size_t getWidth() const { return width; }
+		[[nodiscard]] size_t getHeight() const { return height; }
 		
-		bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
-		bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
+		[[nodiscard]] bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
+		[[nodiscard]] bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
 
 		/// <summary>
 		/// Visits all positions from start to end using Bresenhams's line algorithm.

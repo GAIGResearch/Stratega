@@ -87,7 +87,7 @@ namespace SGA
 
 		const SGA::Parameter& getPlayerParameter(ParameterID id) const;
 		
-		Entity* getEntity(Vector2f pos, float maxDistance);
+		Entity* getEntity(Vector2f pos, double maxDistance);
 		
 		const Parameter& getParameterType(int entityTypeID, int globalParameterID) const;
 		

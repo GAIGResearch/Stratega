@@ -110,6 +110,7 @@ namespace SGA
 			m_chf(0),
 			m_cset(0),
 			m_pmesh(0),
+			m_cfg(),
 			m_dmesh(0),
 			m_navMesh(0),
 			m_navQuery(0)
@@ -121,7 +122,7 @@ namespace SGA
 			m_polyPickExt[0] = 2;
 			m_polyPickExt[1] = 2;
 			m_polyPickExt[2] = 2;
-			
+
 			config.resetSettings();
 		}
 

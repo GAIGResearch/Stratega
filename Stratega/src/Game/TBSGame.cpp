@@ -19,7 +19,7 @@ namespace SGA
 		return *gameState;
 	}
 
-	void TBSGame::update(double deltaTime)
+	void TBSGame::update(double /*deltaTime*/)
 	{
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 		if (hasActionToExecute)

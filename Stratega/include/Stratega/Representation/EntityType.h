@@ -23,7 +23,7 @@ namespace SGA
 		std::unordered_map<ParameterID, double> cost;
 		double continuousActionTime;
 		
-		float lineOfSight;
+		double lineOfSight;
 		
 		const Parameter& getParameter(ParameterID id) const;
 		bool canExecuteAction(int actionTypeID) const;

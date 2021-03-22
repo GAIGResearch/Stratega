@@ -102,12 +102,12 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& /*randomGenerator*/)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
-		childIndex = children.size();
+		childIndex = static_cast<int>(children.size());
 		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
 
 		// generate child node and add it to the tree
@@ -154,9 +154,9 @@ namespace SGA
 		int which = -1;
 		double bestValue = iAmMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
 
-		for (int i = 0; i < children.size(); ++i) {
+		for (size_t i = 0; i < children.size(); ++i) {
 			if ((iAmMoving && childValues[i] > bestValue) || (!iAmMoving && childValues[i] < bestValue)) {
-				which = i;
+				which = static_cast<int>(i);
 				bestValue = childValues[i];
 			}
 		}
@@ -183,9 +183,9 @@ namespace SGA
 				std::cout << "\t" << childValues[i] << "\n";
 			std::cout << "; selected: " << which << "\n";
 			std::cout << "; isFullyExpanded: " << isFullyExpanded() << "\n";
-			std::uniform_int_distribution<> distrib(0, children.size() - 1);
+			std::uniform_int_distribution<size_t> distrib(0, children.size() - 1);
 
-			which = distrib(randomGenerator);
+			which = static_cast<int>(distrib(randomGenerator));
 		}
 
 		return children[which].get();
@@ -201,7 +201,7 @@ namespace SGA
 				auto actions = forwardModel.generateActions(gsCopy);
 				if (actions.size() == 0)
 					break;
-				std::uniform_int_distribution<> randomDistribution(0, actions.size() - 1);
+				std::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
 				thisDepth++;
 			}
@@ -220,22 +220,22 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, GameState& gameState, Action& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params) const
 	{
 		params.REMAINING_FM_CALLS--;
-		forwardModel.advanceGameState(gameState, action);
-		while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
+		forwardModel.advanceGameState(targetGameState, action);
+		while (targetGameState.currentPlayer != params.PLAYER_ID && !targetGameState.isGameOver)
 		{
 			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
 			{
 				params.REMAINING_FM_CALLS--;
-				auto actionSpace = forwardModel.generateActions(gameState);
-				auto opAction = params.opponentModel->getAction(gameState, actionSpace);
-				forwardModel.advanceGameState(gameState, opAction);
+				auto actions = forwardModel.generateActions(targetGameState);
+				auto opAction = params.opponentModel->getAction(targetGameState, actions);
+				forwardModel.advanceGameState(targetGameState, opAction);
 			}
 			else // skip opponent turn
 			{
-				forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
+				forwardModel.advanceGameState(targetGameState, Action::createEndAction(targetGameState.currentPlayer));
 			}
 		}
 	}
@@ -293,7 +293,7 @@ namespace SGA
 				childValue = noise(childValue, params.EPSILON, params.doubleDistribution_(randomGenerator));     //break ties randomly
 				if (childValue > bestValue) {
 					bestValue = childValue;
-					selected = i;
+					selected = static_cast<int>(i);
 				}
 			}
 		}
@@ -324,7 +324,7 @@ namespace SGA
 				childValue = noise(childValue, params.EPSILON, params.doubleDistribution_(randomGenerator));     //break ties randomly
 				if (childValue > bestValue) {
 					bestValue = childValue;
-					selected = i;
+					selected = static_cast<int>(i);
 				}
 			}
 		}

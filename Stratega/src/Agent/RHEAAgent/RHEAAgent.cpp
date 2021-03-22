@@ -49,7 +49,7 @@ namespace SGA
     }
 
 
-    void RHEAAgent::initializePopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::initializePopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937&)
     {
         // create params_.POP_SIZE new random individuals
         pop_.clear();

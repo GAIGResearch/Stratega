@@ -10,6 +10,7 @@ namespace SGA
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
 		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
 		currentPlayer(0),
+		gameType(GameType::TBS),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -30,6 +31,7 @@ namespace SGA
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
 		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
 		currentPlayer(0),
+		gameType(GameType::TBS),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -128,7 +130,7 @@ namespace SGA
 		}
 	}
 
-	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
+	Entity* GameState::getEntity(Vector2f pos, double maxDistance)
 	{
 		for (auto& unit : entities)
 		{
@@ -204,7 +206,7 @@ namespace SGA
 	bool GameState::isWalkable(const Vector2i& position)
 	{
 		Tile& targetTile = board.get(position.x, position.y);
-		Entity* targetUnit = getEntity(position);
+		Entity* targetUnit = getEntity(Vector2f(position));
 
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
@@ -273,15 +275,15 @@ namespace SGA
 		for (const auto* entity : getPlayerEntities(playerID))
 		{
 			// Compute maximum sized rectangle around entity
-			auto leftX = std::max<int>(0, entity->position.x - entity->lineOfSightRange);
-			auto rightX = std::min<int>(board.getWidth() - 1, entity->position.x + entity->lineOfSightRange);
-			auto leftY = std::max<int>(0, entity->position.y - entity->lineOfSightRange);
-			auto rightY = std::min<int>(board.getHeight() - 1, entity->position.y + entity->lineOfSightRange);
+			auto leftX = std::max<int>(0, static_cast<int>(entity->position.x - entity->lineOfSightRange));
+			auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity->position.x + entity->lineOfSightRange));
+			auto leftY = std::max<int>(0, static_cast<int>(entity->position.y - entity->lineOfSightRange));
+			auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity->position.y + entity->lineOfSightRange));
 
 			// Helper method for shadowcasting
 			auto rayCallback = [&](const Vector2i& pos) -> bool
 			{
-				if (entity->position.distance(pos) > entity->lineOfSightRange)
+				if (entity->position.distance(Vector2f(pos)) > entity->lineOfSightRange)
 				{
 					return true;
 				}
@@ -291,17 +293,18 @@ namespace SGA
 			};
 
 			// Shadowcasting
+			Vector2i pos(static_cast<int>(entity->position.x), static_cast<int>(entity->position.y));
 			for (int x = leftX; x <= rightX; x++)
 			{
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, leftY }, rayCallback);
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, rightY }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ x, leftY }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ x, rightY }, rayCallback);
 			}
 
 
 			for (int y = leftY; y <= rightY; y++)
 			{
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ leftX, y }, rayCallback);
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ rightX, y }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ leftX, y }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ rightX, y }, rayCallback);
 			}
 		}
 
