@@ -1,6 +1,6 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Agent/AgentFactory.h>
-
+#include <Stratega/Representation/GameState.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -54,14 +54,21 @@ namespace SGA
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
 		state->gameType = gameType;
 		state->tickLimit = tickLimit;
-		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
-		state->tileTypes = std::make_shared<std::unordered_map<int, TileType>>(tileTypes);
-		state->playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
-		state->entityGroups = entityGroups;
-		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
-		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
-		state->technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
-		state->playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
+
+		//GameInfo
+		GameInfo gameInfo;		
+		gameInfo.entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
+		gameInfo.tileTypes = std::make_shared<std::unordered_map<int, TileType>>(tileTypes);
+		gameInfo.playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
+		gameInfo.entityGroups = entityGroups;
+		gameInfo.actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
+		gameInfo.parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
+		gameInfo.technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
+		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
+
+		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
+
+		
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
@@ -70,8 +77,8 @@ namespace SGA
 
 		// Create some lookups for initializing the board and entities
 		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &tileTypes.begin()->second;
-		for(const auto& idTilePair : tileTypes)
+		const auto* defaultTile = &state->gameInfo->tileTypes->begin()->second;
+		for(const auto& idTilePair : *state->gameInfo->tileTypes)
 		{
 			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
 			if (idTilePair.second.isDefaultTile)
@@ -79,7 +86,7 @@ namespace SGA
 		}
 
 		std::unordered_map<char, const EntityType*> entityLookup;
-		for(const auto& idEntityPair : entityTypes)
+		for(const auto& idEntityPair : *state->gameInfo->entityTypes)
 		{
 			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
 		}
@@ -151,7 +158,7 @@ namespace SGA
 		}
 		
 		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
-
+		
 		return std::move(state);
 	}
 

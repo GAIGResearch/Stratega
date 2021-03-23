@@ -4,11 +4,12 @@
 namespace SGA
 {
 	GameState::GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
+	    /*
 		parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 		entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
-		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
+		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),*/
 		currentPlayer(0),
 		isGameOver(false),
 		winnerPlayerID(-1),
@@ -24,11 +25,11 @@ namespace SGA
 	}
 
 	GameState::GameState()
-		: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
+		:/* parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
 		entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
 		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
 		tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
-		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
+		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),*/
 		currentPlayer(0),
 		isGameOver(false),
 		winnerPlayerID(-1),
@@ -56,78 +57,7 @@ namespace SGA
 		return iter == entities.end() ? nullptr : &*iter;
 
 	}
-
-	const EntityType& GameState::getEntityType(int entityTypeID) const
-	{
-		auto it = entityTypes->find(entityTypeID);
-		if (it != entityTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown entity type with ID=");
-			s.append(std::to_string(entityTypeID));
-			throw std::runtime_error(s);
-		}
-	}
-
-	const ActionType& GameState::getActionTypeConst(int actionTypeID)
-	{
-		auto it = actionTypes->find(actionTypeID);
-		if (it != actionTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown action type with ID=");
-			s.append(std::to_string(actionTypeID));
-			throw std::runtime_error(s);
-		}
-	}
-
-	int GameState::getParameterGlobalID(std::string parameterName)
-	{
-		int foundId = -1;
-		auto  iterator = parameterIDLookup->find(parameterName);
-
-		if (iterator != parameterIDLookup->end())
-			foundId = iterator->second;
-
-		return foundId;
-	}
-
-	int GameState::getActionTypeID(std::string parameterName)
-	{
-		int foundId = -1;
-		for (const auto& element : *actionTypes)
-		{
-			if (element.second.name == parameterName)
-				return element.second.id;
-		}
-
-		return foundId;
-	}
-
-	const SGA::Parameter& GameState::getPlayerParameter(ParameterID id) const
-	{
-		auto it = playerParameterTypes->find(id);
-		if (it != playerParameterTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown player parameter ID ");
-			s.append(std::to_string(id));
-			throw std::runtime_error(s);
-		}
-	}
-
+	
 	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
 	{
 		for (auto& unit : entities)
@@ -140,30 +70,12 @@ namespace SGA
 		return nullptr;
 	}
 
-	const Parameter& GameState::getParameterType(int entityTypeID, int globalParameterID) const
-	{
-		const auto& entityType = getEntityType(entityTypeID);
-		return entityType.parameters.find(globalParameterID)->second;
-	}
-
-	bool GameState::checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
-	{
-		const auto& entityType = getEntityType(entityTypeID);
-		for (const auto& parameter : entityType.parameters)
-		{
-			if (parameter.second.name == parameterName)
-				return true;
-		}
-
-		return false;
-	}
-
 	int GameState::addPlayer(std::vector<int> actionIds)
 	{
 		auto& player = players.emplace_back(Player{ nextPlayerID, 0, true });
 		// Add parameters
-		player.parameters.resize(playerParameterTypes->size());
-		for (const auto& idParamPair : *playerParameterTypes)
+		player.parameters.resize(gameInfo->playerParameterTypes->size());
+		for (const auto& idParamPair : *gameInfo->playerParameterTypes)
 		{
 			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
 		}
@@ -212,11 +124,6 @@ namespace SGA
 	bool GameState::isInBounds(Vector2i pos)
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-	}
-
-	const ActionType& GameState::getActionType(int typeID) const
-	{
-		return actionTypes->find(typeID)->second;
 	}
 
 	bool GameState::isInBounds(Vector2f pos) const
