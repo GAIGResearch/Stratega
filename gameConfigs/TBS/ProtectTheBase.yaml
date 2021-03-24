@@ -179,3 +179,18 @@ ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasCity:
         - "NoHasEntity(Source, Base)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move:
+            - "Move"
+        Gather:
+            - "Mine"
+            - "Deposit"
+        Spawn:
+            - "SpawnFighter"
+            - "SpawnMiner"
+        Attack:
+            - "Attack"

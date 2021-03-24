@@ -142,3 +142,13 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move:
+            - "Move"
+        Heal:
+            - "Heal"
+        Attack:
+            - "Attack"

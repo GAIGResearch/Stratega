@@ -148,4 +148,15 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, 1)"
-        
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move:
+            - "Move"
+        Spawn:
+            - "Spawn"
+        Attack:
+            - "Attack"
+            - "Capture"
