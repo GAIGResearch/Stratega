@@ -65,7 +65,7 @@ namespace SGA
 		gameInfo.parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
 		gameInfo.technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
 		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
-		gameInfo.yamlString = yamlPath;
+		gameInfo.yamlPath = yamlPath;
 		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories);
 		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
 

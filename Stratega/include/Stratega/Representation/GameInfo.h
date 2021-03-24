@@ -17,7 +17,7 @@ namespace SGA
 	struct GameInfo
 	{
 		//Yaml
-		std::string yamlString;
+		std::string yamlPath;
 		
         //Type information
         std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
