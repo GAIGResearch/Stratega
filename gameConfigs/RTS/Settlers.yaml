@@ -216,6 +216,7 @@ Actions:
         Effects:
             - "AttackProbability(Target.Health, 1000, 50)"
             - "Remove(Source)"
+
     Attack:
         Type: EntityAction
         Cooldown: 100
@@ -533,7 +534,6 @@ Actions:
                 Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-#                   - "IsTileType(Forest)"
         TriggerComplete:
             - "HasElapsedTick(200)"
         OnStart:
@@ -731,7 +731,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Research, +0.6)"
-    #Upgrade villagers resuorce collection
+    #Upgrade villagers resource collection
         #Food
         - OnTick:
             ValidTargets: Villager
@@ -780,3 +780,32 @@ ForwardModel:
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
                 - "ChangeResource(Source.BrickMaking, 0.125)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move:
+            - "Move"
+        Research:
+            - "Research"
+        Gather:
+            - "MineIron"
+            - "MineGold"
+            - "FarmLivestock"
+            - "CutWood"
+            - "MakeBrick"
+        Spawn:
+            - "Spawn"
+            - "BuildIronMine"
+            - "BuildGoldMine"
+            - "BuildFarm"
+            - "BuildUniversity"
+            - "BuildMansory"
+            - "BuildSaw"
+            - "BuildOutpost"
+            - "BuildGuardTower"
+            - "BuildWonder"
+        Attack:
+            - "Sabotage"
+            - "Attack"

@@ -5,16 +5,12 @@
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Configuration/FunctionParser.h>
 #include <Stratega/Representation/TechnologyTree.h>
+#include <Stratega/Representation/GameDescription.h>
+
 namespace SGA
 {
     struct GameConfig
     {
-        //GameConfig() = default;
-        //GameConfig(const GameConfig& other) = default;
-        //GameConfig(GameConfig&& other) noexcept = default;
-        //GameConfig& operator=(const GameConfig& other) = default;
-        //GameConfig& operator=(GameConfig&& other) noexcept = default;
-    	
     	// Game information
         GameType gameType=GameType::TBS;
         int tickLimit = 100;
@@ -47,6 +43,9 @@ namespace SGA
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
         std::unique_ptr<GameState> generateGameState() const;
 
+    	//ActionCategories
+        std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+    	
     	//Base utilities
         int getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;

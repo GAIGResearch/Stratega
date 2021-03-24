@@ -1,8 +1,15 @@
+#include "..\..\include\Stratega\Representation\GameInfo.h"
+#include "..\..\include\Stratega\Representation\GameInfo.h"
 #include <Stratega/Representation/GameInfo.h>
 #include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {
+	GameDescription& GameInfo::getGameDescription() const
+	{
+		return *gameDescription;
+	}
+	
 	const EntityType& GameInfo::getEntityType(int entityTypeID) const
 	{
 		auto it = entityTypes->find(entityTypeID);

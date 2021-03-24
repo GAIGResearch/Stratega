@@ -2,6 +2,7 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <Stratega/Representation/GameDescription.h>
 
 namespace SGA
 {
@@ -15,7 +16,7 @@ namespace SGA
 	
 	struct GameInfo
 	{
-        // Type information
+        //Type information
         std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
         std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
         std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
@@ -23,10 +24,15 @@ namespace SGA
         std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
         std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 
-        ////Technology tree
+        //Technology tree
         std::shared_ptr<TechnologyTreeCollection> technologyTreeCollection;
         std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
 
+		//GameDescription
+		std::shared_ptr <GameDescription> gameDescription;
+
+		GameDescription& getGameDescription() const;
+		
 		//Entities
 		const EntityType& getEntityType(int entityTypeID) const;
 

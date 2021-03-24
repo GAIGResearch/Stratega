@@ -17,12 +17,14 @@ namespace SGA
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
         void parsePlayers(const YAML::Node& parametersNode, GameConfig& config) const;
         void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
+		void parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const;
 
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
+		ActionCategory parseActionCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
 		
 	};
@@ -94,7 +96,7 @@ namespace YAML
             return true;
         }
     };
-
+	
     template<>
     struct convert<SGA::ShapeType>
     {

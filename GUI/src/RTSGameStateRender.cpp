@@ -225,7 +225,7 @@ namespace SGA
 		if (event.mouseButton.button == sf::Mouse::Middle) {
 			moving = false;
 		}
-
+		
 		if (event.mouseButton.button == sf::Mouse::Left && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 		{
 			dragging = false;

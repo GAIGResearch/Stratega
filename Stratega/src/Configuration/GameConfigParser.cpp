@@ -1,3 +1,5 @@
+#include "..\..\include\Stratega\Configuration\GameConfigParser.h"
+#include "..\..\include\Stratega\Configuration\GameConfigParser.h"
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Configuration/YamlHeaders.h>
@@ -27,6 +29,8 @@ namespace SGA
         parseActions(configNode["Actions"], config);
         parseForwardModel(configNode["ForwardModel"], config);
 
+        if (configNode["GameDescription"].IsDefined())
+			parseActionCategories(configNode["GameDescription"], config);
 
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
@@ -312,6 +316,28 @@ namespace SGA
         return targetType;
     }
 
+    ActionCategory GameConfigParser::parseActionCategory(const std::string& name) const
+    {
+        ActionCategory actionCategory;
+              
+        if (name == "Attack")
+            actionCategory = SGA::ActionCategory::Attack;
+        else if (name == "Heal")
+            actionCategory = SGA::ActionCategory::Heal;
+        else if (name == "Research")
+            actionCategory = SGA::ActionCategory::Research;
+        else if (name == "Gather")
+            actionCategory = SGA::ActionCategory::Gather;
+        else if (name == "Move")
+            actionCategory = SGA::ActionCategory::Move;
+        else if (name == "Spawn")
+            actionCategory = SGA::ActionCategory::Spawn;
+        else
+            throw std::runtime_error("Cannot find action category");
+		
+        return actionCategory;
+    }
+
 	void GameConfigParser::parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const
 	{
         if (!fmNode.IsDefined())
@@ -465,6 +491,29 @@ namespace SGA
             config.technologyTreeCollection.researchedTechnologies[i] = {};
         }
 	}
+
+    void GameConfigParser::parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const
+    {
+        //Parse Actions
+        auto actionsNode = gameDescription["Actions"];
+        auto types = actionsNode.as<std::map<std::string, YAML::Node>>();
+
+        for (auto& type : types)
+        {
+        	// Parse action category
+            auto category = parseActionCategory(type.first);
+
+            // Assign actiontypes 
+            std::vector<int> actionTypes;        	
+            auto actions = type.second.as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : actions)
+            {
+                actionTypes.emplace_back(config.getActionID(actionName));
+            }
+
+            config.actionCategories[category] = actionTypes;
+        }		
+    }
 
     void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{

@@ -66,6 +66,7 @@ namespace SGA
 		gameInfo.technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
 		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
 
+		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories);
 		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
 
 		
