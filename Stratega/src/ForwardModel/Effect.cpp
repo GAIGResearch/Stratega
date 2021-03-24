@@ -176,7 +176,7 @@ namespace SGA
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
-		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
+		state.gameInfo->technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)

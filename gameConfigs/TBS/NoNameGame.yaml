@@ -387,3 +387,13 @@ ForwardModel:
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Research: [Research]
+        Gather: [Mine]
+        Spawn: [Spawn, Build]
+        Attack: [Attack]

@@ -150,7 +150,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 		
-		return state.technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
+		return state.gameInfo->technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
 	NoHasEntity::NoHasEntity(const std::vector<FunctionParameter>& parameters) :
@@ -208,7 +208,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 
-		return state.technologyTreeCollection->canResearch(targetPlayer.id, targetTechnology.id);
+		return state.gameInfo->technologyTreeCollection->canResearch(targetPlayer.id, targetTechnology.id);
 	}
 
 	CanSpawnCondition::CanSpawnCondition(const std::vector<FunctionParameter>& parameters)
@@ -224,7 +224,7 @@ namespace  SGA
 
 		// Check if we fullfill the technology-requirements for the target entity
 		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.technologyTreeCollection->isResearched(playerID, targetEntityType.requiredTechnologyID))
+			!state.gameInfo->technologyTreeCollection->isResearched(playerID, targetEntityType.requiredTechnologyID))
 		{
 			return false;
 		}

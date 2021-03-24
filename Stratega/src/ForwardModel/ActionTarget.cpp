@@ -66,11 +66,11 @@ namespace SGA
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.playerSpawnableTypes;
+			return *state.gameInfo->playerSpawnableTypes;
 		}
 		else if (targetType == EntityReference)
 		{
-			return state.getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
+			return state.gameInfo->getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
 		}
 
 		throw std::runtime_error("Type not recognised");
@@ -154,12 +154,12 @@ namespace SGA
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.getEntityType(data.entityTypeID);
+			const auto& type = state.gameInfo->getEntityType(data.entityTypeID);
 			return type;
 		}
 		else if(targetType == EntityReference)
 		{
-			const auto& type = state.getEntityType(state.getEntityConst(data.entityID)->typeID);
+			const auto& type = state.gameInfo->getEntityType(state.getEntityConst(data.entityID)->typeID);
 			return type;
 		}
 		else
@@ -172,7 +172,7 @@ namespace SGA
 	{
 		if (targetType == TileTypeReference)
 		{
-			const auto& type = state.getTileType(data.entityTypeID);
+			const auto& type = state.gameInfo->getTileType(data.entityTypeID);
 			return type;
 		}
 		else
