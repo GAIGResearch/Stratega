@@ -14,6 +14,6 @@ namespace SGA {
 		std::cout << "\tPRIORITIZE_ROOT= " << PRIORITIZE_ROOT << "\n";
 		std::cout << "\tMAX_FM_CALLS= " << MAX_FM_CALLS << "\n";
 		std::cout << "\tEPSILON = " << EPSILON << "\n";
-		std::cout << "\PLAYER_ID = " << PLAYER_ID << "\n";
+		std::cout << "\tPLAYER_ID = " << PLAYER_ID << "\n";
 	}
 }

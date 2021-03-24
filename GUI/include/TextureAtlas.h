@@ -15,7 +15,7 @@ namespace SGA
 		sf::Texture atlas;
 		int pixelGap;
 
-		std::unordered_map<std::string, sf::Rect<int>> rectLookup;
+		std::unordered_map<std::string, sf::Rect<float>> rectLookup;
 		
 	public:
 		TextureAtlas(int pixelGap = 0)
@@ -39,8 +39,8 @@ namespace SGA
 			auto yCountF = xCountF * ratio;
 
 			// Since we don't want to split up a texture, turn the square into a slightly inaccurate rectangle
-			spriteCounts.x = static_cast<int>(std::ceil(xCountF));
-			spriteCounts.y = static_cast<int>(std::ceil(yCountF));
+			spriteCounts.x = static_cast<unsigned int>(std::ceil(xCountF));
+			spriteCounts.y = static_cast<unsigned int>(std::ceil(yCountF));
 			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
 
 			// Create atlas
@@ -66,7 +66,7 @@ namespace SGA
 				auto startX = currentPosition.x * (spriteSize.x + pixelGap);
 				auto startY = currentPosition.y * (spriteSize.y + pixelGap);
 				atlas.update(image, startX, startY);
-				rectLookup.emplace(path, sf::Rect<int>(startX, startY, spriteSize.x, spriteSize.y));
+				rectLookup.emplace(path, sf::Rect<float>(static_cast<float>(startX), static_cast<float>(startY), static_cast<float>(spriteSize.x), static_cast<float>(spriteSize.y)));
 
 				// Update position
 				currentPosition.x++;
@@ -81,7 +81,7 @@ namespace SGA
 		}
 
 		const sf::Texture& getAtlasTexture() const { assert(initialized); return atlas; }
-		sf::Rect<int> getSpriteRect(std::string spritePath) const { assert(initialized); return rectLookup.at(spritePath); }
+		sf::Rect<float> getSpriteRect(const std::string& spritePath) const { assert(initialized); return rectLookup.at(spritePath); }
 		sf::Vector2u getSpriteSize() const { assert(initialized); return spriteSize; }
 	};
 }

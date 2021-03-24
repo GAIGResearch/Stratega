@@ -7,12 +7,12 @@ namespace SGA
 	
 	struct Parameter
 	{
-		ParameterID id;
+		ParameterID id = -1;
 		std::string name;
-		int index;
+		int index = -1;
 
-		double defaultValue;
-		double minValue;
-		double maxValue;
+		double defaultValue = 0;
+		double minValue = 0;
+		double maxValue = 0;
 	};
 }

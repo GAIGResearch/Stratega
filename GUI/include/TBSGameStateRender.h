@@ -82,7 +82,7 @@ namespace SGA
 		float zoomValue = 5;
 
 		//Mouse Information
-		Vector2f currentMousePos;
+		sf::Vector2f currentMousePos;
 		sf::Vector2f oldPos;
 		bool moving = false;
 

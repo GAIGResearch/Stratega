@@ -85,12 +85,12 @@ namespace SGA
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
 		{
-			prefix = ss.get();
+			ss.get(prefix);
 		}
 
 		if (std::isdigit(ss.peek()))
 		{
-			float value;
+			double value;
 			ss >> value;
 			return FunctionParameter::createConstParameter(static_cast<double>(prefix == '-' ? -value : value));
 		}
@@ -318,7 +318,7 @@ namespace SGA
 		std::string text;
 		while (std::isalpha(ss.peek()))
 		{
-			text.push_back(ss.get());
+			text.push_back(static_cast<char>(ss.get()));
 		}
 
 		if (text.empty())

@@ -6,39 +6,40 @@ namespace  SGA
 {
 	ResourceLower::ResourceLower(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		lowerBound(parameters.at(1))
+		lowerBoundParameter(parameters.at(1))
 	{
 	}
 
 	bool ResourceLower::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
-		double lowerBound = this->lowerBound.getConstant(state,targets);
+		double lowerBound = lowerBoundParameter.getConstant(state,targets);
 		
 		return targetResource <= lowerBound;
 	}
 
 	ResourceGreater::ResourceGreater(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		lowerBound(parameters.at(1))
+		lowerBoundParameter(parameters.at(1))
 	{
 	}
 
 	bool ResourceGreater::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
-		double lowerBound = this->lowerBound.getConstant(state,targets);
+		double lowerBound = lowerBoundParameter.getConstant(state,targets);
 		
 		return targetResource >= lowerBound;
 	}
 
 	HasElapsedTime::HasElapsedTime(const std::vector<FunctionParameter>& parameters) :
-		lowerBound(parameters.at(0))
+		lowerBoundParameter(parameters.at(0))
 	{
 	}
 
 	bool HasElapsedTime::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
+		double lowerBound = lowerBoundParameter.getConstant(state, targets);
 		if(targets[0].getType()==ActionTarget::EntityReference)
 		{
 			auto& sourceEntity = targets[0].getEntityConst(state);
@@ -49,7 +50,6 @@ namespace  SGA
 				{
 					//We reached the action
 					//Tick amount
-					double lowerBound = this->lowerBound.getConstant(state, targets);
 					if (action.elapsedTicks >= lowerBound)
 						return true;
 				}
@@ -65,7 +65,6 @@ namespace  SGA
 				{
 					//We reached the action
 					//Tick amount
-					double lowerBound = this->lowerBound.getConstant(state, targets);
 					if (action.elapsedTicks >= lowerBound)
 						return true;
 				}
@@ -75,7 +74,7 @@ namespace  SGA
 		return false;
 	}
 	
-	SamePlayer::SamePlayer(const std::vector<FunctionParameter>& parameters)
+	SamePlayer::SamePlayer(const std::vector<FunctionParameter>& /*parameters*/)
 	{
 		
 	}
@@ -164,7 +163,7 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto& entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.id);
 		
 		bool hasEntity = false;
 		for (auto& entity : entities)
@@ -186,7 +185,7 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto& entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.id);
 
 		for (auto& entity : entities)
 		{

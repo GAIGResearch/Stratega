@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
@@ -12,7 +12,8 @@ namespace SGA
     struct GameConfig
     {
     	// Game information
-        GameType gameType=GameType::TBS;
+        GameType gameType = GameType::TBS;
+
         int tickLimit = 100;
         int numPlayers = -1;
     	
@@ -46,8 +47,9 @@ namespace SGA
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
     	
+
     	//Base utilities
-        int getNumberOfPlayers() const;
+        size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;

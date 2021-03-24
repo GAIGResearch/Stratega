@@ -1,6 +1,6 @@
 #pragma once
 #include <random>
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/AgentParameters.h>

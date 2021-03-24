@@ -34,13 +34,13 @@ namespace SGA
 		
 		while (gsCopy.currentPlayer != agentParameters.PLAYER_ID && !gsCopy.isGameOver)
 		{
-			auto actionSpace = forwardModel.generateActions(gsCopy);
-			auto opAction = agentParameters.OPPONENT_MODEL->getAction(gsCopy, actionSpace);
+			auto actions = forwardModel.generateActions(gsCopy);
+			auto opAction = agentParameters.OPPONENT_MODEL->getAction(gsCopy, actions);
 			forwardModel.advanceGameState(gsCopy, opAction);
 			agentParameters.REMAINING_FM_CALLS--;
 		}
 		
-		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, children.size())));
+		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, static_cast<int>(children.size()))));
 		return children[children.size()-1].get();
 	}
 
