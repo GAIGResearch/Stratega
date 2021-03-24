@@ -184,13 +184,7 @@ ForwardModel:
 GameDescription:
     Type: CombatGame
     Actions:
-        Move:
-            - "Move"
-        Gather:
-            - "Mine"
-            - "Deposit"
-        Spawn:
-            - "SpawnFighter"
-            - "SpawnMiner"
-        Attack:
-            - "Attack"
+        Move: [Move]
+        Gather: [Mine, Deposit]
+        Spawn: [SpawnFighter, SpawnMiner]
+        Attack: [Attack]

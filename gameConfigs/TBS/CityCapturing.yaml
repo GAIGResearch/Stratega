@@ -153,10 +153,6 @@ ForwardModel:
 GameDescription:
     Type: CombatGame
     Actions:
-        Move:
-            - "Move"
-        Spawn:
-            - "Spawn"
-        Attack:
-            - "Attack"
-            - "Capture"
+        Move: [Move]
+        Spawn: [Spawn]
+        Attack: [Attack, Capture]

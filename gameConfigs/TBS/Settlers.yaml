@@ -786,27 +786,8 @@ ForwardModel:
 GameDescription:
     Type: CombatGame
     Actions:
-        Move:
-            - "Move"
-        Research:
-            - "Research"
-        Gather:
-            - "MineIron"
-            - "MineGold"
-            - "FarmLivestock"
-            - "CutWood"
-            - "MakeBrick"
-        Spawn:
-            - "Spawn"
-            - "BuildIronMine"
-            - "BuildGoldMine"
-            - "BuildFarm"
-            - "BuildUniversity"
-            - "BuildMansory"
-            - "BuildSaw"
-            - "BuildOutpost"
-            - "BuildGuardTower"
-            - "BuildWonder"
-        Attack:
-            - "Sabotage"
-            - "Attack"
+        Move: [Move]
+        Research: [Research]
+        Gather: [MineIron, MineGold, FarmLivestock, CutWood, MakeBrick]
+        Spawn: [Spawn, BuildIronMine, BuildGoldMine, BuildFarm, BuildUniversity, BuildMansory, BuildSaw, BuildOutpost, BuildGuardTower, BuildWonder]
+        Attack: [Sabotage, Attack]

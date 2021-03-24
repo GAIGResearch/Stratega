@@ -146,9 +146,6 @@ ForwardModel:
 GameDescription:
     Type: CombatGame
     Actions:
-        Move:
-            - "Move"
-        Heal:
-            - "Heal"
-        Attack:
-            - "Attack"
+        Move: [Move]
+        Heal: [Heal]
+        Attack: [Attack]

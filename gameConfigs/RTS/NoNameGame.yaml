@@ -392,14 +392,8 @@ ForwardModel:
 GameDescription:
     Type: CombatGame
     Actions:
-        Move:
-            - "Move"
-        Research:
-            - "Research"
-        Gather:
-            - "Mine"
-        Spawn:
-            - "Spawn"
-            - "Build"
-        Attack:
-            - "Attack"
+        Move: [Move]
+        Research: [Research]
+        Gather: [Mine]
+        Spawn: [Spawn, Build]
+        Attack: [Attack]
