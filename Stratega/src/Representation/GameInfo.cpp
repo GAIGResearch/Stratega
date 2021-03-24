@@ -1,5 +1,3 @@
-#include "..\..\include\Stratega\Representation\GameInfo.h"
-#include "..\..\include\Stratega\Representation\GameInfo.h"
 #include <Stratega/Representation/GameInfo.h>
 #include <Stratega/Agent/Agent.h>
 

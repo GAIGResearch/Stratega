@@ -46,8 +46,10 @@ namespace SGA
 
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
-    	
 
+    	//Yaml path
+        std::string yamlPath;
+    	
     	//Base utilities
         size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;

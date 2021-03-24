@@ -1,5 +1,3 @@
-#include "..\..\include\Stratega\Configuration\GameConfigParser.h"
-#include "..\..\include\Stratega\Configuration\GameConfigParser.h"
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <yaml-cpp/yaml.h>
@@ -10,6 +8,7 @@ namespace SGA
 	{
 		auto configNode = YAML::LoadFile(filePath);
         GameConfig config;
+        config.yamlPath = filePath;
         config.gameType = configNode["GameConfig"]["Type"].as<GameType>();
         config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
         config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
