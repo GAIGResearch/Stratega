@@ -709,7 +709,7 @@ ForwardModel:
 
     LoseConditions: #If true: Player -> cant play
         HasResource:
-        - "LowerResource(Source.Food, 0)"
+        - "ResourceLower(Source.Food, 0)"
 
     Trigger:
    #Global resource compsumption
@@ -781,3 +781,13 @@ ForwardModel:
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
                 - "ChangeResource(Source.BrickMaking, 0.125)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Research: [Research]
+        Gather: [MineIron, MineGold, FarmLivestock, CutWood, MakeBrick]
+        Spawn: [Spawn, BuildIronMine, BuildGoldMine, BuildFarm, BuildUniversity, BuildMansory, BuildSaw, BuildOutpost, BuildGuardTower, BuildWonder]
+        Attack: [Sabotage, Attack]

@@ -85,7 +85,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::TechnologyReference)
 			{
 				auto technologyID = target.getTechnologyID();
-				return state.technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
+				return state.gameInfo->technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
 			}
 			else if (target.getType() == ActionTarget::EntityReference
 				|| target.getType() == ActionTarget::EntityTypeReference)
@@ -107,20 +107,21 @@ namespace SGA
 			{
 				auto& entity = getEntity(state, actionTargets);
 
-				const auto& entityType = state.getEntityType(entity.typeID);
+				const auto& entityType = state.gameInfo->getEntityType(entity.typeID);
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
 			else if(actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
-				const auto& param = state.getPlayerParameter(data.parameterData.parameterID);
+				const auto& param = state.gameInfo->getPlayerParameter(data.parameterData.parameterID);
+
 				return param;
 			}
 			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
-			const auto& param = state.playerParameterTypes->at(data.parameterData.parameterID);
+			const auto& param = state.gameInfo->playerParameterTypes->at(data.parameterData.parameterID);
 			return param;
 		}
 
@@ -251,7 +252,7 @@ namespace SGA
 	{
 		if(parameterType == Type::EntityTypeReference)
 		{
-			return state.getEntityType(data.entityTypeID);
+			return state.gameInfo->getEntityType(data.entityTypeID);
 		}
 		if(parameterType == Type::ArgumentReference)
 		{
@@ -291,11 +292,11 @@ namespace SGA
 		if (parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return state.technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
+			return state.gameInfo->technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
 		}
 		else if (parameterType == Type::TechnologyTypeReference)
 		{	
-			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
+			return state.gameInfo->technologyTreeCollection->getTechnology(data.technologyTypeID);
 		}
 		else
 		{
@@ -396,7 +397,7 @@ namespace SGA
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{
-			return *state.playerParameterTypes;
+			return *state.gameInfo->playerParameterTypes;
 			
 		}
 		if (getType() == Type::ArgumentReference)
@@ -404,19 +405,19 @@ namespace SGA
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
-				return *state.playerParameterTypes;
+				return *state.gameInfo->playerParameterTypes;
 			}
 			if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+				const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
 				return sourceEntityType.parameters;
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+			const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
 			return sourceEntityType.parameters;
 		}
 
@@ -428,7 +429,7 @@ namespace SGA
 		
 		if (parameterType == Type::TileTypeReference)
 		{
-			return state.getTileType(data.tileTypeID);
+			return state.gameInfo->getTileType(data.tileTypeID);
 		}
 
 		throw std::runtime_error("Type not recognised");

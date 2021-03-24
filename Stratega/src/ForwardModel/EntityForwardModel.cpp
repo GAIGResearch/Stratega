@@ -69,7 +69,7 @@ namespace SGA
 				{
 					if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
 					{
-						auto& actionType = state.getActionType(sourcePlayer.continuousAction[i].actionTypeID);
+						auto& actionType = state.gameInfo->getActionType(sourcePlayer.continuousAction[i].actionTypeID);
 
 						//Execute OnAbort Effects				
 						for (auto& effect : actionType.OnAbort)
@@ -93,7 +93,7 @@ namespace SGA
 				{
 					if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
 					{
-						auto& actionType = state.getActionType(sourceEntity.continuousAction[i].actionTypeID);
+						auto& actionType = state.gameInfo->getActionType(sourceEntity.continuousAction[i].actionTypeID);
 
 						//Execute OnAbort Effects				
 						for (auto& effect : actionType.OnAbort)
@@ -110,7 +110,7 @@ namespace SGA
 		}
 		else if (action.actionTypeFlags == ActionFlag::ContinuousAction)
 		{
-			auto& actionType = state.getActionType(action.actionTypeID);
+			auto& actionType = state.gameInfo->getActionType(action.actionTypeID);
 			//If we are generating continuousAction we need to track them somehow
 			//Using ID for each action for example				
 			Action newAction = action;
@@ -121,7 +121,7 @@ namespace SGA
 			//and we add the action to the list of continuous actions
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
-				auto& type = state.actionTypes->at(actionType.id);
+				auto& type = state.gameInfo->actionTypes->at(actionType.id);
 				for (auto& effect : type.OnStart)
 				{
 					effect->execute(state, *this, newAction.targets);
@@ -133,7 +133,7 @@ namespace SGA
 			}
 			else if (actionType.sourceType == ActionSourceType::Player)
 			{
-				auto& type = state.actionTypes->at(actionType.id);
+				auto& type = state.gameInfo->actionTypes->at(actionType.id);
 				for (auto& effect : type.OnStart)
 				{
 					effect->execute(state, *this, newAction.targets);
@@ -145,7 +145,7 @@ namespace SGA
 		}
 		else
 		{
-			const auto& actionType = state.getActionType(action.actionTypeID);
+			const auto& actionType = state.gameInfo->getActionType(action.actionTypeID);
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				// Remember when the action was executed
@@ -217,13 +217,13 @@ namespace SGA
 		{
 			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
 			{
-				auto& actionType = state.getActionType(state.entities[j].continuousAction[i].actionTypeID);
+				auto& actionType = state.gameInfo->getActionType(state.entities[j].continuousAction[i].actionTypeID);
 				//Add one elapsed tick
 				state.entities[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& type = state.actionTypes->at(actionType.id);
+					auto& type = state.gameInfo->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
 						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
@@ -261,7 +261,7 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.sourceType == ActionSourceType::Entity)
 						{
-							auto& type = state.actionTypes->at(actionType.id);
+							auto& type = state.gameInfo->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
 								effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
@@ -283,13 +283,13 @@ namespace SGA
 		{
 			for (size_t i = 0; i < state.players[j].continuousAction.size(); i++)
 			{
-				auto& actionType = state.getActionType(state.players[j].continuousAction[i].actionTypeID);
+				auto& actionType = state.gameInfo->getActionType(state.players[j].continuousAction[i].actionTypeID);
 				//Add one elapsed tick
 				state.players[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Player)
 				{
-					auto& type = state.actionTypes->at(actionType.id);
+					auto& type = state.gameInfo->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
 						effect->execute(state, *this, state.players[j].continuousAction[i].targets);
@@ -328,7 +328,7 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.sourceType == ActionSourceType::Player)
 						{
-							auto& type = state.actionTypes->at(actionType.id);
+							auto& type = state.gameInfo->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
 								effect->execute(state, *this, state.players[j].continuousAction[i].targets);

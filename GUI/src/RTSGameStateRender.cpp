@@ -225,7 +225,7 @@ namespace SGA
 		if (event.mouseButton.button == sf::Mouse::Middle) {
 			moving = false;
 		}
-
+		
 		if (event.mouseButton.button == sf::Mouse::Left && ((fowSettings.renderFogOfWar && (getPlayerID() == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 		{
 			dragging = false;
@@ -619,7 +619,7 @@ namespace SGA
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 
 			//Check if entity have sprite
-			auto entityType = gameStateCopy.getEntityType(gameStateCopy.getEntity(entity)->typeID);
+			auto entityType = gameStateCopy.gameInfo->getEntityType(gameStateCopy.getEntity(entity)->typeID);
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -706,7 +706,7 @@ namespace SGA
 
 		for (auto& unit : units)
 		{
-			auto& type = gameStateCopy.getEntityType(unit.typeID);
+			auto& type = gameStateCopy.gameInfo->getEntityType(unit.typeID);
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -743,7 +743,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -756,7 +756,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -770,7 +770,7 @@ namespace SGA
 			}
 			else
 			{
-				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				const ActionType& actionType = gameStateCopy.gameInfo->getActionType(action.actionTypeID);
 
 				actionInfo += " " + actionType.name;
 
@@ -783,13 +783,13 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						actionInfo += gameStateCopy.gameInfo->getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(getPlayerID());
 						break;
 					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						actionInfo += " Technology: " + gameStateCopy.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
 						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
@@ -898,7 +898,7 @@ namespace SGA
 		ImGui::BeginGroup();
 
 		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
-		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		for (const auto& parameter : *gameStateCopy.gameInfo->playerParameterTypes)
 		{
 			//Double to string with 2 precision				
 			std::stringstream stream;

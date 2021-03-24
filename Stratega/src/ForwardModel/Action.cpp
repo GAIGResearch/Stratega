@@ -6,7 +6,7 @@ namespace SGA
 {
 	void Action::execute(GameState& state, const EntityForwardModel& fm) const
 	{
-		auto& type = state.actionTypes->at(actionTypeID);
+		auto& type = state.gameInfo->actionTypes->at(actionTypeID);
 		for (auto& effect : type.effects)
 		{
 			effect->execute(state,fm, targets);
@@ -19,7 +19,7 @@ namespace SGA
 		if (actionTypeID==-1)
 			return true;
 
-		auto& actionType = state.getActionType(actionTypeID);
+		auto& actionType = state.gameInfo->getActionType(actionTypeID);
 		
 		//Check if source and targets are valid
 		if(isEntityAction())
