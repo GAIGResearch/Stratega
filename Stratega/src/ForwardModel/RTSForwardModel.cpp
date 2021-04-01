@@ -2,78 +2,20 @@
 
 namespace SGA
 {
-	void RTSAction::assignActionOrReplace(Action newAction)
+	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		if(newAction.isEntityAction())
-		{
-			auto id = newAction.getSourceID();
-			entityActions.insert_or_assign(id, std::move(newAction));
-		}
-		else if(newAction.isPlayerAction())
-		{
-			auto id = newAction.getSourceID();
-			playerActions.insert_or_assign(id, std::move(newAction));
-		}
-		else
-		{
-			throw std::runtime_error("Tried assigning an unknown action-type to RTSAction");
-		}
+		advanceGameState(state, { action });
 	}
 
-	void RTSAction::merge(const RTSAction& action)
-	{
-		for(const auto& idActionPair : action.entityActions)
-		{
-			entityActions.insert_or_assign(idActionPair.first, idActionPair.second);
-		}
-		for(const auto& idActionPair : action.playerActions)
-		{
-			playerActions.insert_or_assign(idActionPair.first, idActionPair.second);
-		}
-	}
-
-	void RTSAction::clear()
-	{
-		entityActions.clear();
-		playerActions.clear();
-	}
-
-	Action* RTSAction::getEntityAction(int entityID)
-	{
-		auto it = entityActions.find(entityID);
-		return it == entityActions.end() ? nullptr : &it->second;
-	}
-
-	Action* RTSAction::getPlayerAction(int playerID)
-	{
-		auto it = playerActions.find(playerID);
-		return it == playerActions.end() ? nullptr : &it->second;
-	}
-
-	const std::unordered_map<int, Action>& RTSAction::getEntityActions() const
-	{
-		return entityActions;
-	}
-
-	const std::unordered_map<int, Action>& RTSAction::getPlayerActions() const
-	{
-		return playerActions;
-	}
-	
-	void RTSForwardModel::advanceGameState(GameState& state, const RTSAction& action) const
+	void RTSForwardModel::advanceGameState(GameState& state, const std::vector<Action>& actions) const
 	{
 		moveEntities(state);
 		resolveEntityCollisions(state);
 		resolveEnvironmentCollisions(state);
-		
-		for(const auto& idActionPair : action.getEntityActions())
-		{
-			executeAction(state, idActionPair.second);
-		}
 
-		for (const auto& idActionPair : action.getPlayerActions())
+		for(const auto& action : actions)
 		{
-			executeAction(state, idActionPair.second);
+			executeAction(state, action);
 		}
 
 		// Remove Entities
@@ -86,18 +28,12 @@ namespace SGA
 			}
 		}
 
+		moveEntities(state);
+		resolveEntityCollisions(state);
+		resolveEnvironmentCollisions(state);
+
 		endTick(state);
 		state.isGameOver = checkGameIsFinished(state);
-	}
-
-	std::vector<Action> RTSForwardModel::generateActions(GameState& /*state*/) const
-	{
-		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
-	}
-
-	std::vector<Action> RTSForwardModel::generateActions(GameState& state, int playerID) const
-	{
-		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
 	void RTSForwardModel::moveEntities(GameState& state) const

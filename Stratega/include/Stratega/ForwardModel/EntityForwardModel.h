@@ -42,7 +42,11 @@ namespace SGA
 		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
 						
 		virtual ~EntityForwardModel() = default;
-		EntityForwardModel() = default;
+		EntityForwardModel();
+		virtual void advanceGameState(GameState& state, const Action& action) const = 0;
+		virtual void advanceGameState(GameState& state, const std::vector<Action>& action) const = 0;
+		[[nodiscard]] std::vector<Action> generateActions(const GameState& state, int playerID) const;
+		virtual void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const;
 		
 		bool canPlayerPlay(const GameState& state, Player& player) const;
 		bool checkPlayerWon(const GameState& state, Player& player) const;
