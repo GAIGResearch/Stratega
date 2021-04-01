@@ -13,7 +13,7 @@ namespace SGA
 			return std::vector<int>();
 	}
 
-	const std::vector<ActionType> GameDescription::getActionTypes(ActionCategory category, const GameInfo& state) const
+	const std::vector<ActionType> GameDescription::getActionTypes(ActionCategory category, const GameInfo& gameInfo) const
 	{
 		auto it = actionTypes.find(category);
 		if (it != actionTypes.end())
@@ -21,7 +21,7 @@ namespace SGA
 			std::vector<ActionType> actionTypes;
 			for (auto& actionTypeID : it->second)
 			{
-				actionTypes.emplace_back(state.getActionType(actionTypeID));
+				actionTypes.emplace_back(gameInfo.getActionType(actionTypeID));
 			}
 
 			return actionTypes;
