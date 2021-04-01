@@ -17,7 +17,7 @@ namespace SGA
 		RTS
 	};
 	
-	struct GameState
+	struct GameState final
 	{
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
 		GameState();
@@ -58,8 +58,8 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
-		virtual bool canExecuteAction(Entity& entity, const ActionType& actionType);
-		virtual bool canExecuteAction(Player& player, const ActionType& actionType);
+		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
+		bool canExecuteAction(const Player& player, const ActionType& actionType) const;
 
 		//Entities
 		const Entity* getEntityAt(const Vector2f& pos) const;
