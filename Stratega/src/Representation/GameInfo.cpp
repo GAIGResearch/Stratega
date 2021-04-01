@@ -51,12 +51,12 @@ namespace SGA
 		return foundId;
 	}
 
-	int GameInfo::getActionTypeID(std::string parameterName)
+	int GameInfo::getActionTypeID(std::string actionName)
 	{
 		int foundId = -1;
 		for (const auto& element : *actionTypes)
 		{
-			if (element.second.name == parameterName)
+			if (element.second.name == actionName)
 				return element.second.id;
 		}
 

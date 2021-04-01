@@ -11,12 +11,12 @@ Player:
     Actions: [Research]
     CanSpawn: Buildings
     Parameters:
-        Food: 500
+        Food: 800
         Gold: 0
-        Iron: 50  
-        Wood: 100
-        Bricks: 50
-        Research: 10000
+        Iron: 500
+        Wood: 500
+        Bricks: 500
+        Research: 200
 
 Tiles:
     Plain:
@@ -85,6 +85,10 @@ Entities:
         RequiredTechnology: Education
         Actions: []
         Cost:
+            Food: 50
+            Iron: 50  
+            Wood: 100
+            Bricks: 50
         Parameters:
             Health: 200
             Range: 6
@@ -95,6 +99,10 @@ Entities:
         RequiredTechnology: BasicStructure
         Actions: []
         Cost:
+            Food: 20
+            Iron: 10
+            Wood: 50
+            Bricks: 20
         Parameters:
             Health: 200
             Range: 7
@@ -106,6 +114,10 @@ Entities:
         RequiredTechnology: GuardTower
         Actions: []
         Cost:
+            Food: 30
+            Iron: 20
+            Wood: 70
+            Bricks: 40
         Parameters:
             Health: 200
             Range: 6
@@ -115,6 +127,10 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/farm.png
         LineOfSightRange: 3
         Cost:
+            Food: 50
+            Iron: 40
+            Wood: 50
+            Bricks: 60
         Parameters:
             Health: 800
             Range: 6
@@ -123,6 +139,9 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/masonry.png
         LineOfSightRange: 3
         Cost:
+            Iron: 40
+            Wood: 50
+            Bricks: 100
         Parameters:
             Health: 800
             Range: 6
@@ -131,6 +150,10 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/saw.png
         LineOfSightRange: 3
         Cost:
+            Food: 50
+            Iron: 40
+            Wood: 100
+            Bricks: 50
         Parameters:
             Health: 800
             Range: 6
@@ -139,6 +162,10 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/mine.png
         LineOfSightRange: 3
         Cost:
+            Food: 50
+            Iron: 100
+            Wood: 50
+            Bricks: 50
         Parameters:
             Health: 800
             Range: 6
@@ -147,6 +174,10 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/mine2.png
         LineOfSightRange: 3
         Cost:
+            Food: 100
+            Iron: 100
+            Wood: 100
+            Bricks: 100
         Parameters:
             Health: 800
             Range: 6
@@ -156,13 +187,14 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
+            Food: 50
         Parameters:
             Speed: 1
             Range: 3
-            WoodCutting: 0.1
-            BrickMaking: 0.1
+            WoodCutting: 0.05
+            BrickMaking: 0.05
             LivestockFarming: 0.1
-            IronMining: 0.1
+            IronMining: 0.05
             GoldMining: 0.1
             
     Builder:
@@ -171,6 +203,7 @@ Entities:
         CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
         Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
         Cost:
+            Food: 60
         Parameters:
             Speed: 1
             Range: 6
@@ -181,6 +214,7 @@ Entities:
         Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
         Cost:
+            Food: 150
         Parameters:
             Health: 20
             Speed: 1
@@ -193,6 +227,7 @@ Entities:
         CanSpawn: [Wonder]
         Actions: [Move, BuildWonder]
         Cost:
+            Food: 200
         Parameters:
             Speed: 1
             Range: 6
@@ -241,24 +276,6 @@ Actions:
                     - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
-
-    #Research
-    Research:
-        Type: PlayerAction
-        Cooldown: 0
-        Targets:
-            Target:
-                Type: Technology
-                ValidTargets: All
-                Conditions:
-                    - "CanResearch(Source, Target)"
-                    - "CanAfford(Source, Target)"
-        TriggerComplete:
-            - "HasElapsedTick(Target.Time)"
-        OnStart:
-            - "PayCost(Source, Target)"
-        OnComplete:
-            - "Research(Source, Target)"
 
     MineIron:
         Type: EntityAction
@@ -755,7 +772,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, BowSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.12)"
+                - "ChangeResource(Source.WoodCutting, 0.06)"
 
         - OnTick:
             ValidTargets: Villager
@@ -763,7 +780,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, TwoManSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.13)"
+                - "ChangeResource(Source.WoodCutting, 0.08)"
         #Ore
         - OnTick:
             ValidTargets: Villager
@@ -771,7 +788,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, OreShaftMining)"
             Effects:
-                - "ChangeResource(Source.IronMining, 0.125)"
+                - "ChangeResource(Source.IronMining, 0.08)"
         #Clay
         - OnTick:
             ValidTargets: Villager
@@ -779,7 +796,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
-                - "ChangeResource(Source.BrickMaking, 0.125)"
+                - "ChangeResource(Source.BrickMaking, 0.08)"
 
 #Action categories
 GameDescription:
