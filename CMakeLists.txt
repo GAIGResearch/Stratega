@@ -30,6 +30,6 @@ if(STRATEGA_BUILD_DOCS)
 endif()
 
 if(STRATEGA_BUILD_BINDINGS)
-    pybind11_add_module(example bindings/python/example.cpp)
-    target_link_libraries(example PUBLIC Stratega)
+    pybind11_add_module(stratega bindings/python/python.cpp)
+    target_link_libraries(stratega PUBLIC Stratega)
 endif()

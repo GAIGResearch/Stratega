@@ -14,10 +14,10 @@ namespace SGA
 			id(0),
 			ownerID(0),
 			position(),
+		    lineOfSightRange(5),
 		    path(),
 		    movementSpeed(2),
-		    collisionRadius(0.5),
-			lineOfSightRange(5)
+			collisionRadius(0.5)
 		{
 		}
 

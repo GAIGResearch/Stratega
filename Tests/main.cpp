@@ -18,12 +18,11 @@ int main(int argc, char **argv)
 	std::mt19937 rngEngine(0ll);
 
 	// Read Config
-	SGA::GameConfigParser parser;
-	auto gameConfig = parser.parseFromFile(configPath.string());
+	auto gameConfig = SGA::loadConfigFromYAML(configPath.string());
 
-	std::cout << "Passed game is a " << (gameConfig.gameType == SGA::GameType::TBS ? "TBS" : "RTS") << " game" << std::endl;
+	std::cout << "Passed game is a " << (gameConfig->gameType == SGA::GameType::TBS ? "TBS" : "RTS") << " game" << std::endl;
 	
 	FMEvaluator evaluator(rngEngine);
-	auto results = evaluator.evaluate(gameConfig);
+	auto results = evaluator.evaluate(*gameConfig);
 	std::cout << "FPS: " << results->computeFPS() << std::endl;
 }

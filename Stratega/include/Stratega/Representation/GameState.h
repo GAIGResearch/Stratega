@@ -22,13 +22,6 @@ namespace SGA
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
 		GameState();
 
-		//Rule of six
-		virtual ~GameState() = default;
-		GameState(const GameState& other) = default;
-		GameState(GameState&& other) noexcept = default;
-		GameState& operator=(const GameState& other) = default;
-		GameState& operator=(GameState&& other) noexcept = default;
-
 		// Game Info
 		std::shared_ptr<GameInfo> gameInfo;
 		
