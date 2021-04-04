@@ -16,6 +16,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
 
 option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
+option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." ON)
 
 # Include sub-projects.
 add_subdirectory("dependencies")
@@ -26,4 +27,9 @@ add_subdirectory("Tests")
 
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")
+endif()
+
+if(STRATEGA_BUILD_BINDINGS)
+    pybind11_add_module(stratega bindings/python/python.cpp)
+    target_link_libraries(stratega PUBLIC Stratega)
 endif()

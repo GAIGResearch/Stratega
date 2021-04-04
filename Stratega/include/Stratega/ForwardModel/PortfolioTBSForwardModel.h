@@ -15,8 +15,7 @@ namespace SGA
 		{
 		}
 		
-		std::vector<Action> generateActions(GameState& state) const override;
-		std::vector<Action> generateActions(GameState& state, int playerID) const override;
+		void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const override;
 
 	};
 }

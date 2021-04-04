@@ -2,6 +2,23 @@
 
 namespace SGA
 {
+	EntityForwardModel::EntityForwardModel()
+		: actionSpace(generateDefaultActionSpace())
+	{
+	}
+	
+	std::vector<Action> EntityForwardModel::generateActions(const GameState& state, int playerID) const
+	{
+		std::vector<Action> actionBucket;
+		generateActions(state, playerID, actionBucket);
+		return actionBucket;
+	}
+
+	void EntityForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
+	{
+		actionBucket = actionSpace->generateActions(state, playerID);
+	}
+	
 	bool EntityForwardModel::canPlayerPlay(const GameState& state, Player& player) const
 	{
 		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)

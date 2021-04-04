@@ -11,7 +11,7 @@ namespace SGA
 		double accumulatedTimeUpdate = 0;
 		double accumulatedTimePrint = 0;
 		int executionCount = 0;
-		RTSAction nextAction;
+		std::vector<Action> actions;
 		
 	public:
 		Action actionToExecute;

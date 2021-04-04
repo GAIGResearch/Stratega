@@ -15,20 +15,20 @@ int main()
 	std::mt19937 engine(0ll);
 	SGA::GameConfigParser parser;
 	
-	std::filesystem::path configPath("../../../gameConfigs/RTS/Settlers.yaml");
+	std::filesystem::path configPath("../../../gameConfigs/TBS/CityCapturing.yaml");
 	auto yamlConfig = YAML::LoadFile(configPath.string());
-	auto gameConfig = parser.parseFromFile(configPath.string());
+	auto gameConfig = SGA::loadConfigFromYAML(configPath.string());
 	auto renderConfig = yamlConfig.as<SGA::RenderConfig>();
 	
 	//// Initialize the game
-	auto game = SGA::generateAbstractGameFromConfig(gameConfig, engine);
+	auto game = SGA::generateAbstractGameFromConfig(*gameConfig, engine);
 	int playerID = 0;
 	int humanPlayerID=-1;
-	auto agents = gameConfig.generateAgents();
+	auto agents = gameConfig->generateAgents();
 	
 	std::uniform_int_distribution<unsigned int> distribution(0,std::numeric_limits<unsigned int>::max());
 
-	for(size_t i = 0; i < gameConfig.getNumberOfPlayers(); i++)
+	for(size_t i = 0; i < gameConfig->getNumberOfPlayers(); i++)
 	{
 		auto agent = std::move(agents[i]);
 		// This is a human player, treat is as an non existing agent. The Renderer will handle it
@@ -39,7 +39,7 @@ int main()
 			continue;
 		}
 	
-		if (gameConfig.gameType == SGA::GameType::TBS)
+		if (gameConfig->gameType == SGA::GameType::TBS)
 		{
 			std::unique_ptr<SGA::AgentGameCommunicator> comm = std::make_unique<SGA::AgentGameCommunicator>(playerID,
 				dynamic_cast<SGA::TBSGame&>(*game),
@@ -65,7 +65,7 @@ int main()
 	// We change the current_path to load sprites relative to the folder containing the configuration file
 	auto tmp = std::filesystem::current_path();
 	current_path(absolute(configPath.parent_path()));
-	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, gameConfig, humanPlayerID));
+	auto stateRenderer = std::shared_ptr<SGA::GameStateRenderBase>(stateRendererFromConfig(*game, renderConfig, *gameConfig, humanPlayerID));
 	
 	current_path(tmp);
 	game->addCommunicator(stateRenderer);

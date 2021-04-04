@@ -2,7 +2,7 @@
 namespace SGA
 {
 	RTSGame::RTSGame(std::unique_ptr<GameState> gameState, RTSForwardModel forwardModel, std::mt19937 rngEngine)
-		: Game(rngEngine), nextAction(), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
+		: Game(rngEngine), actions(), gameState(std::move(gameState)), forwardModel(std::move(forwardModel))
 	{
 	}
 
@@ -26,8 +26,8 @@ namespace SGA
 		{
 			//Execute
 			stateMutex.lock();
-			forwardModel.advanceGameState(*gameState, nextAction);
-			nextAction.clear();
+			forwardModel.advanceGameState(*gameState, actions);
+			actions.clear();
 
 			//Update navmesh if it needs to
 			if (shouldUpdateNavmesh)
@@ -75,7 +75,7 @@ namespace SGA
 			return;
 
 		std::lock_guard<std::mutex> stateGuard(stateMutex);
-		nextAction.assignActionOrReplace(action);
+		actions.emplace_back(action);
 	}
 
 	
