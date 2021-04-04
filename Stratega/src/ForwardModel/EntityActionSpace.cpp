@@ -2,11 +2,11 @@
 
 namespace SGA
 {
-	std::vector<Action> EntityActionSpace::generateActions(GameState& gameState, int playerID)
+	std::vector<Action> EntityActionSpace::generateActions(const GameState& gameState, int playerID) const
 	{
 		std::vector<Action> bucket;
 		//Generate entities actions
-		for (auto& sourceEntity : gameState.entities)
+		for (const auto& sourceEntity : gameState.entities)
 		{
 			if (sourceEntity.ownerID != playerID)
 				continue;
@@ -138,7 +138,7 @@ namespace SGA
 		return result;
 	}
 	
-	void EntityActionSpace::generateActions( GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket)
+	void EntityActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{		
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
@@ -173,7 +173,7 @@ namespace SGA
 		}
 	}
 
-	void EntityActionSpace::generateActions(GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket)
+	void EntityActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{
 
 		for (auto& targetsProduct : productActionTargets(targets))
@@ -209,7 +209,7 @@ namespace SGA
 		}
 	}
 	
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action)
+	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 		
@@ -237,7 +237,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action)
+	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
@@ -263,7 +263,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, ShapeType shape, int shapeSize)
+	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, ShapeType shape, int shapeSize) const
 	{
 		auto isValidPos = [&](int x, int y)
 		{
@@ -295,7 +295,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState)
+	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState) const
 	{
 		//TODO ONLY WHAT CAN SEE?
 		auto isValidPos = [&](int x, int y)
@@ -317,7 +317,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs)
+	std::vector<ActionTarget> EntityActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		for(const auto& entityTypeID : entityTypeIDs)
@@ -328,7 +328,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs)
+	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		for (const auto& entity : gameState.entities)
@@ -341,7 +341,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs)
+	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		
@@ -358,7 +358,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity)
+	std::vector<ActionTarget> EntityActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -369,7 +369,7 @@ namespace SGA
 		return targets;
 	}
 	
-	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType)
+	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
 		Action selfAction;
 		selfAction.actionTypeID = actionType.id;
@@ -377,7 +377,7 @@ namespace SGA
 		return selfAction;
 	}
 
-	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType)
+	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
 		Action selfAction;
 		selfAction.actionTypeID = actionType.id;

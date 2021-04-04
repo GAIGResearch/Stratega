@@ -235,7 +235,7 @@ namespace SGA
 		fogOfWarId = playerID;
 	}
 	
-	bool GameState::canExecuteAction(Entity& entity, const ActionType& actionType)
+	bool GameState::canExecuteAction(const Entity& entity, const ActionType& actionType) const
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
@@ -249,7 +249,7 @@ namespace SGA
 		return true;
 	}
 
-	bool GameState::canExecuteAction(Player& player, const ActionType& actionType)
+	bool GameState::canExecuteAction(const Player& player, const ActionType& actionType) const
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)

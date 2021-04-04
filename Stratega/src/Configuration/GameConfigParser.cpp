@@ -4,58 +4,65 @@
 
 namespace SGA
 {
-	GameConfig GameConfigParser::parseFromFile(const std::string& filePath) const
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath)
+    {
+        GameConfigParser parser;
+        return parser.parseFromFile(filePath);
+    }
+
+	
+	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
 	{
 		auto configNode = YAML::LoadFile(filePath);
-        GameConfig config;
-        config.yamlPath = filePath;
-        config.gameType = configNode["GameConfig"]["Type"].as<GameType>();
-        config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
-        config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
+        auto config = std::make_unique<GameConfig>();
+        config->yamlPath = filePath;
+        config->gameType = configNode["GameConfig"]["Type"].as<GameType>();
+        config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
+        config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(configNode["Entities"], config);
-        parseEntityGroups(configNode["EntityGroups"], config);
-        parseAgents(configNode["Agents"], config);
-        parseTileTypes(configNode["Tiles"], config);
-        parseBoardGenerator(configNode["Board"], config);
-        parsePlayers(configNode["Player"], config);
+		parseEntities(configNode["Entities"], *config);
+        parseEntityGroups(configNode["EntityGroups"], *config);
+        parseAgents(configNode["Agents"], *config);
+        parseTileTypes(configNode["Tiles"], *config);
+        parseBoardGenerator(configNode["Board"], *config);
+        parsePlayers(configNode["Player"], *config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
-			parseTechnologyTrees(configNode["TechnologyTrees"], config);
+			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
 		
-        parseActions(configNode["Actions"], config);
-        parseForwardModel(configNode["ForwardModel"], config);
+        parseActions(configNode["Actions"], *config);
+        parseForwardModel(configNode["ForwardModel"], *config);
 
         if (configNode["GameDescription"].IsDefined())
-			parseActionCategories(configNode["GameDescription"], config);
+			parseActionCategories(configNode["GameDescription"], *config);
 
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
-        for (auto& type : config.entityTypes)
+        for (auto& type : config->entityTypes)
         {
             // Assign actions to entities
             auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
-                type.second.actionIds.emplace_back(config.getActionID(actionName));
+                type.second.actionIds.emplace_back(config->getActionID(actionName));
             }
 
             // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
+            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], *config);
             auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
-            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name);
         	// Hardcoded cost information
-            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
+            type.second.cost = parseCost(types[type.second.name]["Cost"], *config);
         }
 		
 		//Assign player actions
         auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
         for (const auto& actionName : actions)
         {
-            config.playerActionIds.emplace_back(config.getActionID(actionName));
+            config->playerActionIds.emplace_back(config->getActionID(actionName));
         }	
 		    		
         return config;

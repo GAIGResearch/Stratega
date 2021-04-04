@@ -17,17 +17,10 @@ namespace SGA
 		RTS
 	};
 	
-	struct GameState
+	struct GameState final
 	{
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
 		GameState();
-
-		//Rule of six
-		virtual ~GameState() = default;
-		GameState(const GameState& other) = default;
-		GameState(GameState&& other) noexcept = default;
-		GameState& operator=(const GameState& other) = default;
-		GameState& operator=(GameState&& other) noexcept = default;
 
 		// Game Info
 		std::shared_ptr<GameInfo> gameInfo;
@@ -58,8 +51,8 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
-		virtual bool canExecuteAction(Entity& entity, const ActionType& actionType);
-		virtual bool canExecuteAction(Player& player, const ActionType& actionType);
+		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
+		bool canExecuteAction(const Player& player, const ActionType& actionType) const;
 
 		//Entities
 		const Entity* getEntityAt(const Vector2f& pos) const;

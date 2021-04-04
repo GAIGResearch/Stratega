@@ -3,10 +3,12 @@
 
 namespace SGA
 {
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath);
+	
 	class GameConfigParser
 	{
 	public:
-		GameConfig parseFromFile(const std::string& filePath) const;
+		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath) const;
 
 		void parseAgents(const YAML::Node& agentsNode, GameConfig& config) const;
 		void parseTileTypes(const YAML::Node& tilesNode, GameConfig& config) const;
