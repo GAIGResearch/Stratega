@@ -5,7 +5,7 @@
 namespace SGA
 {
 
-	double AbstractHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, int playerID)
+	double AbstractHeuristic::evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, int playerID)
 	{
 		double score = 0.0;
 

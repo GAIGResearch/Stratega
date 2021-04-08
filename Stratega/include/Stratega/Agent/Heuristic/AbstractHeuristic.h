@@ -10,7 +10,7 @@ namespace SGA
 		std::map<std::string, int> maxValue;
 
 	public:
-		AbstractHeuristic(std::map<std::string, int> attributeWeights, TBSGameState& gameState) : attributeWeights(attributeWeights)
+		AbstractHeuristic(std::map<std::string, int> attributeWeights, GameState& gameState) : attributeWeights(attributeWeights)
 		{
 			for (const auto entry : attributeWeights) {
 				const std::string parameterName = entry.first;
@@ -25,7 +25,7 @@ namespace SGA
 			}
 		};
 
-		AbstractHeuristic(TBSGameState& gameState)
+		AbstractHeuristic(GameState& gameState)
 		{
 			for (const auto entityType : *gameState.entityTypes) {
 				for (const auto parameter : entityType.second.parameters) {
@@ -45,7 +45,7 @@ namespace SGA
 			}
 		}
 
-		double evaluateGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const int playerID) override;
+		double evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, const int playerID) override;
 		static std::string getName() { return "AbstractHeuristic"; }
 	};
 }
