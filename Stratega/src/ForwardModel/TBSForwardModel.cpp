@@ -1,17 +1,29 @@
+#include <cassert>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {
-	void TBSForwardModel::advanceGameState(GameState& state, const std::vector<Action>& actions) const
+	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
-		for(const auto& action : actions)
+		assert(actions.getAssignmentCount() == 1);
+		for(const auto& action : actions.getEntityActions())
 		{
-			advanceGameState(state, action);
+			advanceGameState(state, action.second);
+			return;
+		}
+		for (const auto& action : actions.getPlayerActions())
+		{
+			advanceGameState(state, action.second);
+			return;
 		}
 	}
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
+# if NDEBUG
+		assert(action.isValid(state))
+#endif
+		
 		if (action.actionTypeFlags == ActionFlag::EndTickAction)
 		{
 			endTurn(state);

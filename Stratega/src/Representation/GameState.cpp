@@ -112,7 +112,7 @@ namespace SGA
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
 
-	bool GameState::isInBounds(Vector2i pos)
+	bool GameState::isInBounds(Vector2i pos) const
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 	}

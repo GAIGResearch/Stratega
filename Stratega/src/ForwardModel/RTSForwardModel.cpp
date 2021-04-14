@@ -4,18 +4,27 @@ namespace SGA
 {
 	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		advanceGameState(state, { action });
+		static ActionAssignment assignmentCache;
+		assignmentCache.clear();
+		assignmentCache.assignActionOrReplace(action);
+		
+		advanceGameState(state, assignmentCache);
 	}
 
-	void RTSForwardModel::advanceGameState(GameState& state, const std::vector<Action>& actions) const
+	void RTSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
 		moveEntities(state);
 		resolveEntityCollisions(state);
 		resolveEnvironmentCollisions(state);
 
-		for(const auto& action : actions)
+		for (const auto& action : actions.getPlayerActions())
 		{
-			executeAction(state, action);
+			executeAction(state, action.second);
+		}
+		
+		for(const auto& action : actions.getEntityActions())
+		{
+			executeAction(state, action.second);
 		}
 
 		// Remove Entities
@@ -124,7 +133,7 @@ namespace SGA
 				for (int y = startCheckPositionY; y <= endCheckPositionY; y++)
 				{
 					// Everything outside bounds is considered as un-walkable tiles
-					if (state.isInBounds({ x, y }) && state.board.get(x, y).isWalkable)
+					if (state.isInBounds(Vector2i{ x, y }) && state.board.get(x, y).isWalkable)
 						continue;
 
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response

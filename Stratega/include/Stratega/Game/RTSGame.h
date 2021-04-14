@@ -11,7 +11,7 @@ namespace SGA
 		double accumulatedTimeUpdate = 0;
 		double accumulatedTimePrint = 0;
 		int executionCount = 0;
-		std::vector<Action> actions;
+		ActionAssignment actions;
 		
 	public:
 		Action actionToExecute;

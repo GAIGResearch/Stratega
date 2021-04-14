@@ -2,6 +2,7 @@
 #include <random>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionAssignment.h>
 
 #include "Condition.h"
 #include "Effect.h"
@@ -44,7 +45,7 @@ namespace SGA
 		virtual ~EntityForwardModel() = default;
 		EntityForwardModel();
 		virtual void advanceGameState(GameState& state, const Action& action) const = 0;
-		virtual void advanceGameState(GameState& state, const std::vector<Action>& action) const = 0;
+		virtual void advanceGameState(GameState& state, const ActionAssignment& action) const = 0;
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state, int playerID) const;
 		virtual void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const;
 		

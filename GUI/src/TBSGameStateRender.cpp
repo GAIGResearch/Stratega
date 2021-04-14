@@ -151,13 +151,13 @@ namespace SGA
 
 			switch (event.type)
 			{
-			case sf::Event::Closed: {windowClosed(event, view, window); break; }
-			case sf::Event::MouseWheelScrolled: { mouseScrolled(event, view, window); break; }
-			case sf::Event::MouseButtonReleased: { mouseButtonReleased(event, view, window); break; }
-			case sf::Event::MouseButtonPressed: { mouseButtonPressed(event, view, window); break; }
-			case sf::Event::MouseMoved: {/* Ignore mouse movement unless a button is pressed*/ mouseMoved(event, view, window); 	break; }
-			case sf::Event::KeyPressed: {keyPressed(event, view, window); break;	}
-			default:  break;
+				case sf::Event::Closed: {windowClosed(event, view, window); break; }
+				case sf::Event::MouseWheelScrolled: { mouseScrolled(event, view, window); break; }
+				case sf::Event::MouseButtonReleased: { mouseButtonReleased(event, view, window); break; }
+				case sf::Event::MouseButtonPressed: { mouseButtonPressed(event, view, window); break; }
+				case sf::Event::MouseMoved: {/* Ignore mouse movement unless a button is pressed*/ mouseMoved(event, view, window); 	break; }
+				case sf::Event::KeyPressed: {keyPressed(event, view, window); break;	}
+				default:  break;
 			}
 
 		}

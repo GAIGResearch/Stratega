@@ -20,7 +20,7 @@ namespace  SGA
 		}
 
 		void advanceGameState(GameState& state, const Action& action) const override;
-		void advanceGameState(GameState& state, const std::vector<Action>& action) const override;
+		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 		
 		void moveEntities(GameState& state) const;
 		void resolveEntityCollisions(GameState& state) const;

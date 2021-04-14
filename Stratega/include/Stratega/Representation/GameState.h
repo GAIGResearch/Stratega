@@ -71,7 +71,7 @@ namespace SGA
 		//Grid
 		bool isWalkable(const Vector2i& position);
 		
-		bool isInBounds(Vector2i pos);		
+		bool isInBounds(Vector2i pos) const;	
 
 		bool isInBounds(Vector2f pos) const;
 

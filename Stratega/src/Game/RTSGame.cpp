@@ -75,7 +75,7 @@ namespace SGA
 			return;
 
 		std::lock_guard<std::mutex> stateGuard(stateMutex);
-		actions.emplace_back(action);
+		actions.assignActionOrReplace(action);
 	}
 
 	
