@@ -5,7 +5,7 @@
 namespace SGA
 {
 	//Forward declaration
-	class GameInfo;
+	struct GameInfo;
 	
 	enum class ActionCategory
 	{
