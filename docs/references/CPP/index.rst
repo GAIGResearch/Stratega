@@ -20,10 +20,10 @@ C++ Reference
 .. doxygenstruct:: SGA::GameState
    :members:
 
-   .. doxygenstruct:: SGA::Entity
+.. doxygenstruct:: SGA::Entity
    :members:
 
-   .. doxygenstruct:: SGA::EntityType
+.. doxygenstruct:: SGA::EntityType
    :members:
 
 
@@ -40,3 +40,20 @@ C++ Reference
    :members:
 
 .. doxygenclass:: SGA::Path
+
+
+.. doxygenstruct:: SGA::Action
+   :members:
+
+.. doxygenstruct:: SGA::ActionInfo
+   :members:
+
+.. doxygenstruct:: SGA::ActionType
+   :members:
+
+.. doxygenclass:: SGA::ActionTarget
+   :members:
+
+.. doxygenenum:: SGA::ActionSourceType
+
+.. doxygenenum:: SGA::ActionFlag

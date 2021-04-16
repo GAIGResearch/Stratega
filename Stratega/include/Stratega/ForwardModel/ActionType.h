@@ -11,7 +11,13 @@
 namespace SGA
 {
 	class Condition;
-	
+
+	/// <summary>
+	/// Contains the definition an action. Which type is the source <see cref="SGA::ActionSourceType"/>, a set effects,
+	/// preconditions and a list of action targets linked to their target conditions.
+	/// If the action is continuous it will have a set of effects as events:
+	/// OnStart, OnTick, OnComplete, OnAbort and the list of conditions that triggers the completed action.
+	/// </summary>
 	struct ActionType
 	{
 		std::string name;
@@ -35,6 +41,10 @@ namespace SGA
 		std::vector<std::shared_ptr<Effect>> OnComplete;
 		std::vector<std::shared_ptr<Effect>> OnAbort;
 
+
+		/// <summary>
+		/// Returns a list of conditions linked to the searched target.
+		/// </summary>
 		const std::vector<std::shared_ptr<Condition>>& getTargetConditions(const TargetType& searchingTarget) const
 		{
 			for (auto& actionTarget : actionTargets)
