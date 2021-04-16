@@ -27,16 +27,16 @@ C++ Reference
    :members:
 
 
-.. doxygenstruct:: SGA::EntityActionSpace
+.. doxygenclass:: SGA::EntityActionSpace
    :members:
 
-.. doxygenstruct:: SGA::ForwardModelEntity
+.. doxygenclass:: SGA::ForwardModelEntity
    :members:
 
-.. doxygenstruct:: SGA::RTSForwardModel
+.. doxygenclass:: SGA::RTSForwardModel
    :members:
 
-.. doxygenstruct:: SGA::TBSForwardModel
+.. doxygenclass:: SGA::TBSForwardModel
    :members:
 
-.. doxygenstruct:: SGA::Path
+.. doxygenclass:: SGA::Path
