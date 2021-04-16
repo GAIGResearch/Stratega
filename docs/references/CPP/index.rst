@@ -30,7 +30,7 @@ C++ Reference
 .. doxygenclass:: SGA::EntityActionSpace
    :members:
 
-.. doxygenclass:: SGA::ForwardModelEntity
+.. doxygenclass:: SGA::EntityForwardModel
    :members:
 
 .. doxygenclass:: SGA::RTSForwardModel
