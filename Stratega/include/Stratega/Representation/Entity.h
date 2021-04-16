@@ -11,7 +11,7 @@ namespace SGA
 	/// Is an object that interacts with the game and responds to player input or other entities.
 	/// This entity can be assigned to a player performing a set of actions per tick/turn.
 	/// It has a list of parameters that store real values.
-	/// If the agent wants to check the type definition of the entity<see cref="SGA::EntityType"/> it can search it using the assigned typeID.
+	/// If the player wants to check the <see cref="SGA::EntityType"/> it can search it using the assigned typeID.
 	/// </summary>
 	struct Entity
 	{

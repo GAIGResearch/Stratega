@@ -55,7 +55,7 @@ namespace SGA
 		std::vector<Player> players;
 
 		/// <summary>
-		/// Checks if a entity can execute a given actionType
+		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
 		/// <param name="entity">The entity that will be analyzed</param>
 		/// <returns>A boolean indicating if the player can execute the action type</returns>
