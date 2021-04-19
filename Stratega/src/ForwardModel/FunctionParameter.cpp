@@ -85,7 +85,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::TechnologyReference)
 			{
 				auto technologyID = target.getTechnologyID();
-				return state.technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
+				return state.gameInfo->technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
 			}
 			else if (target.getType() == ActionTarget::EntityReference
 				|| target.getType() == ActionTarget::EntityTypeReference)
@@ -107,22 +107,21 @@ namespace SGA
 			{
 				auto& entity = getEntity(state, actionTargets);
 
-				const auto& entityType = state.getEntityType(entity.typeID);
+				const auto& entityType = state.gameInfo->getEntityType(entity.typeID);
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
 			else if(actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
-				auto& entity = getPlayer(state, actionTargets);
-			
-				const auto& param = state.getPlayerParameter(data.parameterData.parameterID);
+				const auto& param = state.gameInfo->getPlayerParameter(data.parameterData.parameterID);
+
 				return param;
 			}
 			
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
-			const auto& param = state.playerParameterTypes->at(data.parameterData.parameterID);
+			const auto& param = state.gameInfo->playerParameterTypes->at(data.parameterData.parameterID);
 			return param;
 		}
 
@@ -253,7 +252,7 @@ namespace SGA
 	{
 		if(parameterType == Type::EntityTypeReference)
 		{
-			return state.getEntityType(data.entityTypeID);
+			return state.gameInfo->getEntityType(data.entityTypeID);
 		}
 		if(parameterType == Type::ArgumentReference)
 		{
@@ -293,11 +292,11 @@ namespace SGA
 		if (parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return state.technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
+			return state.gameInfo->technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
 		}
 		else if (parameterType == Type::TechnologyTypeReference)
 		{	
-			return state.technologyTreeCollection->getTechnology(data.technologyTypeID);
+			return state.gameInfo->technologyTreeCollection->getTechnology(data.technologyTypeID);
 		}
 		else
 		{
@@ -359,6 +358,8 @@ namespace SGA
 			auto& sourceEntity = getEntity(state, actionTargets);
 			return sourceEntity.parameters;
 		}
+
+		throw std::runtime_error("Type not recognized");
 	}
 
 	const std::vector<double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -385,46 +386,50 @@ namespace SGA
 		}
 		else
 		{
-			auto& sourceEntity = getEntity(state, actionTargets);
+			const auto& sourceEntity = getEntity(state, actionTargets);
 			return sourceEntity.parameters;
 		}
+
+		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
 	}
 
 	const std::unordered_map<ParameterID, Parameter>& FunctionParameter::getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{
-			return *state.playerParameterTypes;
+			return *state.gameInfo->playerParameterTypes;
 			
 		}
-		else if (getType() == Type::ArgumentReference)
+		if (getType() == Type::ArgumentReference)
 		{
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
-				return *state.playerParameterTypes;
+				return *state.gameInfo->playerParameterTypes;
 			}
-			else if (target.getType() == ActionTarget::EntityReference)
+			if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+				const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
 				return sourceEntityType.parameters;
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
+			const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
 			return sourceEntityType.parameters;
 		}
+
+		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
 	}
 
-	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& /*actionTargets*/) const
 	{
 		
 		if (parameterType == Type::TileTypeReference)
 		{
-			return state.getTileType(data.tileTypeID);
+			return state.gameInfo->getTileType(data.tileTypeID);
 		}
 
 		throw std::runtime_error("Type not recognised");

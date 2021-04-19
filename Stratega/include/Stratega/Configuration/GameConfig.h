@@ -1,23 +1,29 @@
 #pragma once
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/FunctionParser.h>
 #include <Stratega/Representation/TechnologyTree.h>
+#include <Stratega/Representation/GameDescription.h>
+
 namespace SGA
 {
     struct GameConfig
     {
     	// Game information
-        GameType gameType;
+        GameType gameType = GameType::TBS;
+
         int tickLimit = 100;
         int numPlayers = -1;
+    	
     	// Other stuff
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::unordered_map<int, TileType> tileTypes;
+
+    	//ForwardModel
         std::unique_ptr<EntityForwardModel> forwardModel;
+    	
     	// Players
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;
         std::unordered_set<EntityTypeID> playerSpawnableTypes;
@@ -30,15 +36,22 @@ namespace SGA
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation
         std::string boardString;
-        int defaultTileTypeID;
+        int defaultTileTypeID=-1;
 
-    	//Technology tree
+    	// Technology tree
         TechnologyTreeCollection technologyTreeCollection;
-    	
+            	
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
         std::unique_ptr<GameState> generateGameState() const;
+
+    	//ActionCategories
+        std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+
+    	//Yaml path
+        std::string yamlPath;
     	
-        int getNumberOfPlayers() const;
+    	//Base utilities
+        size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;

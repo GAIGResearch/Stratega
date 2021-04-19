@@ -66,12 +66,14 @@ namespace SGA
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.playerSpawnableTypes;
+			return *state.gameInfo->playerSpawnableTypes;
 		}
 		else if (targetType == EntityReference)
 		{
-			return state.getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
+			return state.gameInfo->getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
 		}
+
+		throw std::runtime_error("Type not recognised");
 	}
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const
@@ -144,18 +146,20 @@ namespace SGA
 			}
 			return *player;
 		}
+
+		throw std::runtime_error("Type not recognised");
 	}
 
 	const EntityType& ActionTarget::getEntityType(const GameState& state) const
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.getEntityType(data.entityTypeID);
+			const auto& type = state.gameInfo->getEntityType(data.entityTypeID);
 			return type;
 		}
 		else if(targetType == EntityReference)
 		{
-			const auto& type = state.getEntityType(state.getEntityConst(data.entityID)->typeID);
+			const auto& type = state.gameInfo->getEntityType(state.getEntityConst(data.entityID)->typeID);
 			return type;
 		}
 		else
@@ -168,7 +172,7 @@ namespace SGA
 	{
 		if (targetType == TileTypeReference)
 		{
-			const auto& type = state.getTileType(data.entityTypeID);
+			const auto& type = state.gameInfo->getTileType(data.entityTypeID);
 			return type;
 		}
 		else
@@ -186,21 +190,19 @@ namespace SGA
 			break;
 		default: return true;
 		}
-		return false;
 	}
 		
 	bool ActionTarget::isValid(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
 	{
-		bool isValid = true;
-
-		for (int i = 0; i < actionType.actionTargets.size(); ++i)		
+		auto isValid = true;
+		for (size_t i = 0; i < actionType.actionTargets.size(); ++i)		
 		{
 			//Check valid targets
 			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1], actionTargets[0]))
 				return false;
 			
 			
-			for (auto& condition : actionType.actionTargets[i].second)
+			for (const auto& condition : actionType.actionTargets[i].second)
 			{
 				if (!condition->isFullfilled(state, actionTargets))
 					isValid = false;

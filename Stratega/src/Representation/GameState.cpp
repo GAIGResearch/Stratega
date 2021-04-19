@@ -4,12 +4,8 @@
 namespace SGA
 {
 	GameState::GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
-		parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
-		entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
-		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
-		tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
-		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
 		currentPlayer(0),
+		gameType(GameType::TBS),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -23,13 +19,9 @@ namespace SGA
 	{
 	}
 
-	GameState::GameState()
-		: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
-		entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
-		actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
-		tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
-		technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
+	GameState::GameState() :
 		currentPlayer(0),
+		gameType(GameType::TBS),
 		isGameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -57,77 +49,6 @@ namespace SGA
 
 	}
 
-	const EntityType& GameState::getEntityType(int entityTypeID) const
-	{
-		auto it = entityTypes->find(entityTypeID);
-		if (it != entityTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown entity type with ID=");
-			s.append(std::to_string(entityTypeID));
-			throw std::runtime_error(s);
-		}
-	}
-
-	const ActionType& GameState::getActionTypeConst(int actionTypeID)
-	{
-		auto it = actionTypes->find(actionTypeID);
-		if (it != actionTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown action type with ID=");
-			s.append(std::to_string(actionTypeID));
-			throw std::runtime_error(s);
-		}
-	}
-
-	int GameState::getParameterGlobalID(std::string parameterName)
-	{
-		int foundId = -1;
-		auto  iterator = parameterIDLookup->find(parameterName);
-
-		if (iterator != parameterIDLookup->end())
-			foundId = iterator->second;
-
-		return foundId;
-	}
-
-	int GameState::getActionTypeID(std::string parameterName)
-	{
-		int foundId = -1;
-		for (const auto& element : *actionTypes)
-		{
-			if (element.second.name == parameterName)
-				return element.second.id;
-		}
-
-		return foundId;
-	}
-
-	const SGA::Parameter& GameState::getPlayerParameter(ParameterID id) const
-	{
-		auto it = playerParameterTypes->find(id);
-		if (it != playerParameterTypes->end())
-		{
-			return it->second;
-		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown player parameter ID ");
-			s.append(std::to_string(id));
-			throw std::runtime_error(s);
-		}
-	}
-
 	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
 	{
 		for (auto& unit : entities)
@@ -140,30 +61,12 @@ namespace SGA
 		return nullptr;
 	}
 
-	const Parameter& GameState::getParameterType(int entityTypeID, int globalParameterID) const
-	{
-		const auto& entityType = getEntityType(entityTypeID);
-		return entityType.parameters.find(globalParameterID)->second;
-	}
-
-	bool GameState::checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
-	{
-		const auto& entityType = getEntityType(entityTypeID);
-		for (const auto& parameter : entityType.parameters)
-		{
-			if (parameter.second.name == parameterName)
-				return true;
-		}
-
-		return false;
-	}
-
 	int GameState::addPlayer(std::vector<int> actionIds)
 	{
 		auto& player = players.emplace_back(Player{ nextPlayerID, 0, true });
 		// Add parameters
-		player.parameters.resize(playerParameterTypes->size());
-		for (const auto& idParamPair : *playerParameterTypes)
+		player.parameters.resize(gameInfo->playerParameterTypes->size());
+		for (const auto& idParamPair : *gameInfo->playerParameterTypes)
 		{
 			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
 		}
@@ -204,7 +107,7 @@ namespace SGA
 	bool GameState::isWalkable(const Vector2i& position)
 	{
 		Tile& targetTile = board.get(position.x, position.y);
-		Entity* targetUnit = getEntity(position);
+		Entity* targetUnit = getEntity(Vector2f(position));
 
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
@@ -212,11 +115,6 @@ namespace SGA
 	bool GameState::isInBounds(Vector2i pos)
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-	}
-
-	const ActionType& GameState::getActionType(int typeID) const
-	{
-		return actionTypes->find(typeID)->second;
 	}
 
 	bool GameState::isInBounds(Vector2f pos) const
@@ -273,15 +171,15 @@ namespace SGA
 		for (const auto* entity : getPlayerEntities(playerID))
 		{
 			// Compute maximum sized rectangle around entity
-			auto leftX = std::max<int>(0, entity->position.x - entity->lineOfSightRange);
-			auto rightX = std::min<int>(board.getWidth() - 1, entity->position.x + entity->lineOfSightRange);
-			auto leftY = std::max<int>(0, entity->position.y - entity->lineOfSightRange);
-			auto rightY = std::min<int>(board.getHeight() - 1, entity->position.y + entity->lineOfSightRange);
+			auto leftX = std::max<int>(0, static_cast<int>(entity->position.x - entity->lineOfSightRange));
+			auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity->position.x + entity->lineOfSightRange));
+			auto leftY = std::max<int>(0, static_cast<int>(entity->position.y - entity->lineOfSightRange));
+			auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity->position.y + entity->lineOfSightRange));
 
 			// Helper method for shadowcasting
 			auto rayCallback = [&](const Vector2i& pos) -> bool
 			{
-				if (entity->position.distance(pos) > entity->lineOfSightRange)
+				if (entity->position.distance(Vector2f(pos)) > entity->lineOfSightRange)
 				{
 					return true;
 				}
@@ -291,17 +189,18 @@ namespace SGA
 			};
 
 			// Shadowcasting
+			Vector2i pos(static_cast<int>(entity->position.x), static_cast<int>(entity->position.y));
 			for (int x = leftX; x <= rightX; x++)
 			{
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, leftY }, rayCallback);
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, rightY }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ x, leftY }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ x, rightY }, rayCallback);
 			}
 
 
 			for (int y = leftY; y <= rightY; y++)
 			{
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ leftX, y }, rayCallback);
-				visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ rightX, y }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ leftX, y }, rayCallback);
+				visibilityMap.bresenhamRay(pos, Vector2i{ rightX, y }, rayCallback);
 			}
 		}
 
@@ -336,7 +235,7 @@ namespace SGA
 		fogOfWarId = playerID;
 	}
 	
-	bool GameState::canExecuteAction(Entity& entity, const ActionType& actionType)
+	bool GameState::canExecuteAction(const Entity& entity, const ActionType& actionType) const
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
@@ -350,7 +249,7 @@ namespace SGA
 		return true;
 	}
 
-	bool GameState::canExecuteAction(Player& player, const ActionType& actionType)
+	bool GameState::canExecuteAction(const Player& player, const ActionType& actionType) const
 	{
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)

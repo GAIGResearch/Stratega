@@ -2,78 +2,20 @@
 
 namespace SGA
 {
-	void RTSAction::assignActionOrReplace(Action newAction)
+	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		if(newAction.isEntityAction())
-		{
-			auto id = newAction.getSourceID();
-			entityActions.insert_or_assign(id, std::move(newAction));
-		}
-		else if(newAction.isPlayerAction())
-		{
-			auto id = newAction.getSourceID();
-			playerActions.insert_or_assign(id, std::move(newAction));
-		}
-		else
-		{
-			throw std::runtime_error("Tried assigning an unknown action-type to RTSAction");
-		}
+		advanceGameState(state, { action });
 	}
 
-	void RTSAction::merge(const RTSAction& action)
-	{
-		for(const auto& idActionPair : action.entityActions)
-		{
-			entityActions.insert_or_assign(idActionPair.first, idActionPair.second);
-		}
-		for(const auto& idActionPair : action.playerActions)
-		{
-			playerActions.insert_or_assign(idActionPair.first, idActionPair.second);
-		}
-	}
-
-	void RTSAction::clear()
-	{
-		entityActions.clear();
-		playerActions.clear();
-	}
-
-	Action* RTSAction::getEntityAction(int entityID)
-	{
-		auto it = entityActions.find(entityID);
-		return it == entityActions.end() ? nullptr : &it->second;
-	}
-
-	Action* RTSAction::getPlayerAction(int playerID)
-	{
-		auto it = playerActions.find(playerID);
-		return it == playerActions.end() ? nullptr : &it->second;
-	}
-
-	const std::unordered_map<int, Action>& RTSAction::getEntityActions() const
-	{
-		return entityActions;
-	}
-
-	const std::unordered_map<int, Action>& RTSAction::getPlayerActions() const
-	{
-		return playerActions;
-	}
-	
-	void RTSForwardModel::advanceGameState(GameState& state, const RTSAction& action) const
+	void RTSForwardModel::advanceGameState(GameState& state, const std::vector<Action>& actions) const
 	{
 		moveEntities(state);
 		resolveEntityCollisions(state);
 		resolveEnvironmentCollisions(state);
-		
-		for(const auto& idActionPair : action.getEntityActions())
-		{
-			executeAction(state, idActionPair.second);
-		}
 
-		for (const auto& idActionPair : action.getPlayerActions())
+		for(const auto& action : actions)
 		{
-			executeAction(state, idActionPair.second);
+			executeAction(state, action);
 		}
 
 		// Remove Entities
@@ -86,18 +28,12 @@ namespace SGA
 			}
 		}
 
+		moveEntities(state);
+		resolveEntityCollisions(state);
+		resolveEnvironmentCollisions(state);
+
 		endTick(state);
 		state.isGameOver = checkGameIsFinished(state);
-	}
-
-	std::vector<Action> RTSForwardModel::generateActions(GameState& state) const
-	{
-		throw std::runtime_error("Can't generate actions without an playerID for RTS-Games");
-	}
-
-	std::vector<Action> RTSForwardModel::generateActions(GameState& state, int playerID) const
-	{
-		return (EntityActionSpace().generateActions(state, playerID));
 	}
 
 	void RTSForwardModel::moveEntities(GameState& state) const
@@ -141,10 +77,10 @@ namespace SGA
 				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
 					continue;
 
-				const auto& entityType = state.getEntityType(unit.typeID);
+				const auto& entityType = state.gameInfo->getEntityType(unit.typeID);
 
 				//Only affects enviroment collision if the entity can move
-				int moveActionID = state.getActionTypeID("Move");
+				int moveActionID = state.gameInfo->getActionTypeID("Move");
 				if (!entityType.canExecuteAction(moveActionID))
 					continue;
 
@@ -170,15 +106,15 @@ namespace SGA
 		// Collision
 		for (auto& unit : state.entities)
 		{
-			int startCheckPositionX = std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE);
-			int endCheckPositionX = std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE);
-			int startCheckPositionY = std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE);
-			int endCheckPositionY = std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE);
+			int startCheckPositionX = static_cast<int>(std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE));
+			int endCheckPositionX = static_cast<int>(std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE));
+			int startCheckPositionY = static_cast<int>(std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE));
+			int endCheckPositionY = static_cast<int>(std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE));
 
-			const auto& entityType = state.getEntityType(unit.typeID);
+			const auto& entityType = state.gameInfo->getEntityType(unit.typeID);
 			
 			//Only affects enviroment collision if the entity can move
-			int moveActionID = state.getActionTypeID("Move");
+			int moveActionID = state.gameInfo->getActionTypeID("Move");
 			if (!entityType.canExecuteAction(moveActionID))
 				continue;
 			
@@ -192,8 +128,8 @@ namespace SGA
 						continue;
 
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
-					auto fx = static_cast<float>(x);
-					auto fy = static_cast<float>(y);
+					auto fx = static_cast<double>(x);
+					auto fy = static_cast<double>(y);
 					auto nearestX = std::max(fx, std::min(unit.position.x, fx + RECT_SIZE));
 					auto nearestY = std::max(fy, std::min(unit.position.y, fy + RECT_SIZE));
 					auto dist = unit.position - Vector2f(nearestX, nearestY);
@@ -223,9 +159,8 @@ namespace SGA
 
 		//Get size from current board
 		auto& board = state.board;
-		float width = board.getWidth();
-		float height = board.getHeight();
-		float cellSize = 1;
+		float width = static_cast<float>(board.getWidth());
+		float height = static_cast<float>(board.getHeight());
 
 		state.navigation->cleanup();
 
@@ -288,20 +223,18 @@ namespace SGA
 		}
 
 		// Where hf is a reference to an heightfield object.
-		const float* orig = state.navigation->m_solid->bmin;
-		const float cs = state.navigation->m_solid->cs;
-		const float ch = state.navigation->m_solid->ch;
+		// const float* orig = state.navigation->m_solid->bmin;
+		// const float cs = state.navigation->m_solid->cs;
+		// const float ch = state.navigation->m_solid->ch;
 		const int w = state.navigation->m_solid->width;
 		const int h = state.navigation->m_solid->height;
 
 
-		for (float x = 0; x < w; x++)
+		for (auto x = 0; x < w; x++)
 		{
-			for (float y = 0; y < h; y++)
+			for (auto y = 0; y < h; y++)
 			{
-				int pos = (y * width + x);
 				auto& tile = board.get(x, y);
-
 				if (tile.isWalkable)
 					rcAddSpan(&state.navigation->m_ctx, *state.navigation->m_solid, x, y, 0, 5, RC_WALKABLE_AREA, 0);
 			}
@@ -561,14 +494,14 @@ namespace SGA
 	{
 		//Convert grid pos to 3D pos
 		float startPosV3[3];
-		startPosV3[0] = startPos.x;
+		startPosV3[0] = static_cast<float>(startPos.x);
 		startPosV3[1] = 0;
-		startPosV3[2] = startPos.y;
+		startPosV3[2] = static_cast<float>(startPos.y);
 
 		float endPosV3[3];
-		endPosV3[0] = endPos.x;
+		endPosV3[0] = static_cast<float>(endPos.x);
 		endPosV3[1] = 0;
-		endPosV3[2] = endPos.y;
+		endPosV3[2] = static_cast<float>(endPos.y);
 
 		//Start and end polys
 		dtPolyRef startRef;
@@ -576,7 +509,6 @@ namespace SGA
 
 		//Polys found in search
 		dtPolyRef m_polys[MAX_POLYS];
-		dtPolyRef m_parent[MAX_POLYS];
 		int m_npolys;
 
 		//Find nearest poly

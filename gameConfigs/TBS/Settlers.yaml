@@ -242,24 +242,6 @@ Actions:
         Effects:
             - "Move(Source, Target)"
 
-    #Research
-    Research:
-        Type: PlayerAction
-        Cooldown: 0
-        Targets:
-            Target:
-                Type: Technology
-                ValidTargets: All
-                Conditions:
-                    - "CanResearch(Source, Target)"
-                    - "CanAfford(Source, Target)"
-        TriggerComplete:
-            - "HasElapsedTick(Target.Time)"
-        OnStart:
-            - "PayCost(Source, Target)"
-        OnComplete:
-            - "Research(Source, Target)"
-
     MineIron:
         Type: EntityAction
         Cooldown: 1
@@ -709,7 +691,7 @@ ForwardModel:
 
     LoseConditions: #If true: Player -> cant play
         HasResource:
-        - "LowerResource(Source.Food, 0)"
+        - "ResourceLower(Source.Food, 0)"
 
     Trigger:
    #Global resource compsumption
@@ -781,3 +763,13 @@ ForwardModel:
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
                 - "ChangeResource(Source.BrickMaking, 0.125)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Research: [Research]
+        Gather: [MineIron, MineGold, FarmLivestock, CutWood, MakeBrick]
+        Spawn: [Spawn, BuildIronMine, BuildGoldMine, BuildFarm, BuildUniversity, BuildMansory, BuildSaw, BuildOutpost, BuildGuardTower, BuildWonder]
+        Attack: [Sabotage, Attack]

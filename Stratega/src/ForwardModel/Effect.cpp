@@ -8,46 +8,46 @@ namespace SGA
 {
 	ModifyResource::ModifyResource(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amount(parameters.at(1))
+		amountParameter(parameters.at(1))
 	{
 
 	}
 	
-	void ModifyResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void ModifyResource::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
-		double amount = this->amount.getConstant(state, targets);
+		auto amount = amountParameter.getConstant(state, targets);
 
 		targetResource += amount;
 	}
 
 	ChangeResource::ChangeResource(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amount(parameters.at(1))
+		amountParameter(parameters.at(1))
 	{
 
 	}
 
-	void ChangeResource::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void ChangeResource::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
-		double amount = this->amount.getConstant(state, targets);
+		double amount = amountParameter.getConstant(state, targets);
 
 		targetResource = amount;
 	}
 	
 	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amount(parameters.at(1))
+		amountParameter(parameters.at(1))
 	{
 
 	}
 	
-	void Attack::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Attack::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
-		auto amount = this->amount.getConstant(state, targets);
+		auto amount = amountParameter.getConstant(state, targets);
 
 		targetResource -= amount;
 		if (targetResource <= 0)
@@ -56,18 +56,18 @@ namespace SGA
 
 	AttackProbability::AttackProbability(const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amount(parameters.at(1)),
-		probability(parameters.at(2))
+		amountParameter(parameters.at(1)),
+		probabilityParameter(parameters.at(2))
 	{
 
 	}
 	
-	void AttackProbability::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void AttackProbability::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
-		auto amount = this->amount.getConstant(state, targets);
-		auto probability = this->probability.getConstant(state, targets);
+		auto amount = amountParameter.getConstant(state, targets);
+		auto probability = probabilityParameter.getConstant(state, targets);
 		
 		std::uniform_int_distribution<unsigned int> distribution(0, 100);
        
@@ -115,7 +115,7 @@ namespace SGA
 	{
 	}
 
-	void SetToMaximum::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SetToMaximum::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& param = targetResource.getParameter(state, targets);
 		auto& paramValue = targetResource.getParameterValue(state, targets);
@@ -128,10 +128,9 @@ namespace SGA
 	{
 	}
 
-	void TransferEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void TransferEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& sourceType = sourceParam.getParameter(state, targets);
-		const auto& targetType = targetParam.getParameter(state, targets);
 		auto& sourceValue = sourceParam.getParameterValue(state, targets);
 		auto& targetValue = targetParam.getParameterValue(state, targets);
 		auto amount = amountParam.getConstant(state, targets);
@@ -150,7 +149,7 @@ namespace SGA
 	{
 	}
 	
-	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
@@ -162,7 +161,7 @@ namespace SGA
 	{
 	}
 
-	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		targetEntity.shouldRemove = true;
@@ -174,10 +173,10 @@ namespace SGA
 	{
 	}
 
-	void ResearchTechnology::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void ResearchTechnology::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
-		state.technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
+		state.gameInfo->technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)
@@ -200,7 +199,7 @@ namespace SGA
 					if (!state.isInBounds(spawnPos)) continue;
 					if (!state.isWalkable(spawnPos)) continue;
 
-					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, spawnPos);
+					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, Vector2f(spawnPos.x, spawnPos.y));
 					return;
 				}
 			}
@@ -246,7 +245,7 @@ namespace SGA
 	{
 	}
 
-	void PayCostEffect::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void PayCostEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		//Get cost of target, parameterlist to look up and the parameters of the source
 		const auto& cost = costParam.getCost(state, targets);

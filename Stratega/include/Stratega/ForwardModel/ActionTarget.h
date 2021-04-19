@@ -11,7 +11,7 @@ namespace SGA
 {
 	struct GameState;
 	struct Entity;
-	class Player;
+	struct Player;
 	struct EntityType;
 	typedef int EntityTypeID;
 	typedef int TileTypeID;
@@ -69,42 +69,6 @@ namespace SGA
 		Type getType() const
 		{
 			return targetType;
-		}
-
-		// Check if not equal
-		bool operator !=(const ActionTarget& other)
-		{
-			if (targetType != other.targetType)
-				return false;
-			else
-			{
-				switch (targetType)
-				{
-				case Position:
-
-					//if (static_cast<int>(data.position.x) == static_cast<int>(other.data.position.x) && static_cast<int>(data.position.y) == static_cast<int>(other.data.position.y))
-					
-					//return (static_cast<int>(data.position.x) == static_cast<int>(other.data.position.x) && static_cast<int>(data.position.y) == static_cast<int>(other.data.position.y));
-					
-					return Vector2i(data.position.x, data.position.y) != Vector2i(other.data.position.x, other.data.position.y);
-					break;
-				case EntityReference:
-					return data.entityID != other.data.entityID;
-					break;
-				case PlayerReference:
-					return data.playerID != other.data.playerID;
-					break;
-				case EntityTypeReference:
-					return data.entityTypeID != other.data.entityTypeID;
-					break;
-				case TechnologyReference:
-					return data.technologyID != other.data.technologyID;
-					break;
-				case ContinuousActionReference:
-					return data.continuousActionID != other.data.continuousActionID;
-					break;
-				}
-			}
 		}
 		
 		//Check if this action target is valid in the received gamestate

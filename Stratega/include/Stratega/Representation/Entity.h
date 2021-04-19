@@ -14,10 +14,10 @@ namespace SGA
 			id(0),
 			ownerID(0),
 			position(),
+		    lineOfSightRange(5),
 		    path(),
 		    movementSpeed(2),
-		    collisionRadius(0.5),
-			lineOfSightRange(5)
+			collisionRadius(0.5)
 		{
 		}
 
@@ -28,12 +28,12 @@ namespace SGA
 		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
 		bool shouldRemove=false;
-		float lineOfSightRange;
+		double lineOfSightRange;
 
 		//RTS Stuff
 		Path path;
 		double movementSpeed;
-		float collisionRadius;
+		double collisionRadius;
 
 		//Continuous Action
 		std::vector<Action> continuousAction;
@@ -46,6 +46,8 @@ namespace SGA
 				if (actionInfo.actionTypeID == actionTypeID)
 					return actionInfo;
 			}
+
+			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
 	};
 }

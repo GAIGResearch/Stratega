@@ -40,7 +40,7 @@ void FMEvaluator::runGameTBS(SGA::GameState& state, SGA::TBSForwardModel& fm, FM
 		auto getActionsEnd = std::chrono::steady_clock::now();
 
 		// Measure speed of action execution
-		std::uniform_int_distribution<int> actionDist(0, actionSpace.size() - 1);
+		std::uniform_int_distribution<size_t> actionDist(0, actionSpace.size() - 1);
 		const auto& action = *(actionDist(*rngEngine) + actionSpace.begin());
 		auto executeActionStart = std::chrono::steady_clock::now();
 		fm.advanceGameState(state, action);
@@ -56,19 +56,19 @@ void FMEvaluator::runGameRTS(SGA::GameState& state, SGA::RTSForwardModel& fm, FM
 {
 	while (results.size() < StepCount && !state.isGameOver)
 	{
-		std::uniform_int_distribution<int> playerDist(0, state.players.size());
+		std::uniform_int_distribution<size_t> playerDist(0, state.players.size());
 		
 		// Measure getActions speed
 		auto getActionsStart = std::chrono::steady_clock::now();
-		auto actionSpace = fm.generateActions(state, playerDist(*rngEngine));
+		auto actionSpace = fm.generateActions(state, static_cast<int>(playerDist(*rngEngine)));
 		auto getActionsEnd = std::chrono::steady_clock::now();
 
 		// Measure speed of action execution
-		std::uniform_int_distribution<int> actionDist(0, actionSpace.size() - 1);
-		SGA::RTSAction action;
-		action.assignActionOrReplace(actionSpace[actionDist(*rngEngine)]);
+		std::uniform_int_distribution<size_t> actionDist(0, actionSpace.size() - 1);
+		std::vector<SGA::Action> actions;
+		actions.emplace_back(actionSpace[actionDist(*rngEngine)]);
 		auto executeActionStart = std::chrono::steady_clock::now();
-		fm.advanceGameState(state, action);
+		fm.advanceGameState(state, actions);
 		auto executeActionEnd = std::chrono::steady_clock::now();
 
 		// Store results

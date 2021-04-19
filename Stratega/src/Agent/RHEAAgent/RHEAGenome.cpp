@@ -115,7 +115,6 @@ namespace SGA {
             }
             else
             {
-                int chosenPortfolio;
                 const bool useParent1First = doubleDistribution_(randomGenerator) < 0.5;
                 RHEAGenome& from = useParent1First ? parent1 : parent2;
                 // check the first parent and choose portfolio if available

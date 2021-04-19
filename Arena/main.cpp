@@ -22,12 +22,11 @@ int main(int argc, char** argv)
 	}
 	
 	// Read Config
-	SGA::GameConfigParser configParser;
-	auto gameConfig = configParser.parseFromFile(configPath);
+	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	// Run games
 	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
-	GameRunner runner(gameConfig);
+	GameRunner runner(*gameConfig);
 	runner.runGames(playerCount, seed);
 	
 	return 0;

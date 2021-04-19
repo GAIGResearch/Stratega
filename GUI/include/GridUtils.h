@@ -25,22 +25,22 @@ static sf::Vector2f toISO(int x, int y)
 	auto isoX  = (x - y) * TILE_WIDTH_HALF;
 	auto isoY  = (x + y) * TILE_HEIGHT_HALF;
 
-	return sf::Vector2f(isoX, isoY);
+	return sf::Vector2f(static_cast<float>(isoX), static_cast<float>(isoY));
 }
 
-static sf::Vector2f toISO(float x, float y)
+static sf::Vector2f toISO(double x, double y)
 {
 	auto isoX = (x - y) * TILE_WIDTH_HALF;
 	auto isoY = (x + y) * TILE_HEIGHT_HALF;
 
-	return sf::Vector2f(isoX, isoY);
+	return sf::Vector2f(static_cast<float>(isoX), static_cast<float>(isoY));
 }
 static sf::Vector2f toGridFloat(sf::Vector2f vec)
 {
 	auto x = ((vec.x - TILE_WIDTH_HALF) / TILE_WIDTH_HALF + vec.y / TILE_HEIGHT_HALF) / 2;
 	auto y = (vec.y / TILE_HEIGHT_HALF - (vec.x - TILE_WIDTH_HALF) / TILE_WIDTH_HALF) / 2;
 
-	return sf::Vector2f((x), (y));
+	return sf::Vector2f(x, y);
 }
 
 static sf::Vector2i toGrid(sf::Vector2f vec)

@@ -9,8 +9,8 @@ namespace SGA {
 	public:
 		RandomActionScript() : BaseActionScript() {};
 
-		Action getAction(GameState& gameState, std::vector<Action>& actionSpace) const override;
-		Action getActionForUnit(GameState& gameState, std::vector<Action>& actionSpace, int unitID) const override;
+		Action getAction(const GameState& gameState, std::vector<Action>& actionSpace) const override;
+		Action getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int unitID) const override;
 		[[nodiscard]] std::string toString() const override { return "RandomActionScript"; };
 	};
 }

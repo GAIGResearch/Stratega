@@ -1,58 +1,68 @@
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <yaml-cpp/yaml.h>
 
 namespace SGA
 {
-	GameConfig GameConfigParser::parseFromFile(const std::string& filePath) const
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath)
+    {
+        GameConfigParser parser;
+        return parser.parseFromFile(filePath);
+    }
+
+	
+	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
 	{
 		auto configNode = YAML::LoadFile(filePath);
-        GameConfig config;
-        config.gameType = configNode["GameConfig"]["Type"].as<GameType>();
-        config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
-        config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
+        auto config = std::make_unique<GameConfig>();
+        config->yamlPath = filePath;
+        config->gameType = configNode["GameConfig"]["Type"].as<GameType>();
+        config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
+        config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(configNode["Entities"], config);
-        parseEntityGroups(configNode["EntityGroups"], config);
-        parseAgents(configNode["Agents"], config);
-        parseTileTypes(configNode["Tiles"], config);
-        parseBoardGenerator(configNode["Board"], config);
-        parsePlayers(configNode["Player"], config);
+		parseEntities(configNode["Entities"], *config);
+        parseEntityGroups(configNode["EntityGroups"], *config);
+        parseAgents(configNode["Agents"], *config);
+        parseTileTypes(configNode["Tiles"], *config);
+        parseBoardGenerator(configNode["Board"], *config);
+        parsePlayers(configNode["Player"], *config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
-			parseTechnologyTrees(configNode["TechnologyTrees"], config);
+			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
 		
-        parseActions(configNode["Actions"], config);
-        parseForwardModel(configNode["ForwardModel"], config);
+        parseActions(configNode["Actions"], *config);
+        parseForwardModel(configNode["ForwardModel"], *config);
 
+        if (configNode["GameDescription"].IsDefined())
+			parseActionCategories(configNode["GameDescription"], *config);
 
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
-        for (auto& type : config.entityTypes)
+        for (auto& type : config->entityTypes)
         {
             // Assign actions to entities
             auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
-                type.second.actionIds.emplace_back(config.getActionID(actionName));
+                type.second.actionIds.emplace_back(config->getActionID(actionName));
             }
 
             // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
+            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], *config);
             auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
-            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name);
         	// Hardcoded cost information
-            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
+            type.second.cost = parseCost(types[type.second.name]["Cost"], *config);
         }
 		
 		//Assign player actions
         auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
         for (const auto& actionName : actions)
         {
-            config.playerActionIds.emplace_back(config.getActionID(actionName));
+            config->playerActionIds.emplace_back(config->getActionID(actionName));
         }	
 		    		
         return config;
@@ -92,12 +102,12 @@ namespace SGA
         auto idCounter = -1;
 
         //Add fog of war tile
-        TileType type;
-        type.id = idCounter++;
-        type.name = "FogOfWar";
-        type.isWalkable = false;
-        type.symbol = '_';
-        config.tileTypes.emplace(type.id, std::move(type));
+        TileType fogOfWarType;
+        fogOfWarType.id = idCounter++;
+        fogOfWarType.name = "FogOfWar";
+        fogOfWarType.isWalkable = false;
+        fogOfWarType.symbol = '_';
+        config.tileTypes.emplace(fogOfWarType.id, std::move(fogOfWarType));
 
 		for(const auto& nameConfigPair : tileConfigs)
 		{
@@ -145,8 +155,8 @@ namespace SGA
             EntityType type;
             type.name = nameTypePair.first;
             type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
-            type.id = config.entityTypes.size();
-            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
+            type.id = static_cast<int>(config.entityTypes.size());
+            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<double>();
 
             parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
@@ -194,7 +204,7 @@ namespace SGA
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
-            type.id = config.actionTypes.size();
+            type.id = static_cast<int>(config.actionTypes.size());
             type.name = nameTypePair.first;
         	
             context.targetIDs.emplace("Source", 0);
@@ -238,32 +248,32 @@ namespace SGA
             {
                 type.isContinuous = true;
 
-                auto effects = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnStart, context);
+                auto effectStrings = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.OnStart, context);
             }
 
             if (nameTypePair.second["OnTick"].IsDefined())
             {
                 type.isContinuous = true;
 
-                auto effects = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnTick, context);
+                auto effectStrings = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.OnTick, context);
             }
 
             if (nameTypePair.second["OnComplete"].IsDefined())
             {
                 type.isContinuous = true;
 
-                auto effects = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnComplete, context);
+                auto effectStrings = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.OnComplete, context);
             }
 
             if (nameTypePair.second["OnAbort"].IsDefined())
             {
                 type.isContinuous = true;
 
-                auto effects = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnAbort, context);
+                auto effectStrings = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.OnAbort, context);
             }
         	
             config.actionTypes.emplace(type.id, std::move(type));
@@ -310,6 +320,28 @@ namespace SGA
             }
         }
         return targetType;
+    }
+
+    ActionCategory GameConfigParser::parseActionCategory(const std::string& name) const
+    {
+        ActionCategory actionCategory;
+              
+        if (name == "Attack")
+            actionCategory = SGA::ActionCategory::Attack;
+        else if (name == "Heal")
+            actionCategory = SGA::ActionCategory::Heal;
+        else if (name == "Research")
+            actionCategory = SGA::ActionCategory::Research;
+        else if (name == "Gather")
+            actionCategory = SGA::ActionCategory::Gather;
+        else if (name == "Move")
+            actionCategory = SGA::ActionCategory::Move;
+        else if (name == "Spawn")
+            actionCategory = SGA::ActionCategory::Spawn;
+        else
+            throw std::runtime_error("Cannot find action category");
+		
+        return actionCategory;
     }
 
 	void GameConfigParser::parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const
@@ -431,7 +463,7 @@ namespace SGA
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
 
-            config.technologyTreeCollection.technologyTreeTypes[config.technologyTreeCollection.technologyTreeTypes.size()] = technologyTreeType;
+            config.technologyTreeCollection.technologyTreeTypes[static_cast<int>(config.technologyTreeCollection.technologyTreeTypes.size())] = technologyTreeType;
         }
 
 
@@ -443,8 +475,8 @@ namespace SGA
             {
 
             	//Search the technology tree in the config yaml
-                auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
-                auto techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
+                auto typeMap = techtreeNode.as<std::map<std::string, YAML::Node>>();
+                auto techTreeTypeYaml = typeMap[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
                 //Find the technology
                 auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
@@ -460,11 +492,34 @@ namespace SGA
         }
         
 		//Initialize researched list for each player
-        for (size_t i = 0; i < config.agentParams.size(); i++)
+        for (int i = 0; i < static_cast<int>(config.agentParams.size()); i++)
         {
             config.technologyTreeCollection.researchedTechnologies[i] = {};
         }
 	}
+
+    void GameConfigParser::parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const
+    {
+        //Parse Actions
+        auto actionsNode = gameDescription["Actions"];
+        auto types = actionsNode.as<std::map<std::string, YAML::Node>>();
+
+        for (auto& type : types)
+        {
+        	// Parse action category
+            auto category = parseActionCategory(type.first);
+
+            // Assign actiontypes 
+            std::vector<int> actionTypes;        	
+            auto actions = type.second.as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : actions)
+            {
+                actionTypes.emplace_back(config.getActionID(actionName));
+            }
+
+            config.actionCategories[category] = actionTypes;
+        }		
+    }
 
     void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
@@ -493,7 +548,7 @@ namespace SGA
             param.minValue = 0;
             param.maxValue = nameParamPair.second;
             param.defaultValue = param.maxValue;
-            param.index = parameterBucket.size();
+            param.index = static_cast<int>(parameterBucket.size());
             parameterBucket.insert({ param.id, std::move(param) });
         }
 	}

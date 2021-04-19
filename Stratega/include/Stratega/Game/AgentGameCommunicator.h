@@ -58,9 +58,6 @@ namespace SGA
 		/// <param name="action">The action that should be executed.</param>
 		void executeAction(Action action) const;
 
-		//TODO 
-		void executeAction(RTSAction action) const;	
-
 	private:
 		TBSGame* tbsGame;
 		RTSGame* rtsGame;

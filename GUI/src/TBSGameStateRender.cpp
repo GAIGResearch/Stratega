@@ -327,7 +327,7 @@ namespace SGA
 		window.draw(tileMap);
 		
 		//Add selected tileactionSettings.waitingForPosition
-		sf::Vector2i mouseGridPos = toGrid(sf::Vector2f(currentMousePos.x, currentMousePos.y));
+		sf::Vector2i mouseGridPos = toGrid(currentMousePos);
 		
 		if (selectedGameStateCopy->isInBounds(Vector2i(mouseGridPos.x, mouseGridPos.y)))
 		{
@@ -362,7 +362,7 @@ namespace SGA
 					continue;
 
 				//Get source
-				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = gameStateCopy.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
 				
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
@@ -407,7 +407,7 @@ namespace SGA
 					continue;
 				
 				//Get source
-				const auto& actionType = gameStateCopy.getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = gameStateCopy.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
 
 				//Check the source and the selected entity is the same
 				if(actionType.sourceType==ActionSourceType::Entity)
@@ -469,8 +469,8 @@ namespace SGA
 		std::string fpsInfo = "FPS: " + std::to_string(0);
 		ImGui::Text(fpsInfo.c_str());
 
-		std::string mousePosInfo = "IMGUI: " + std::to_string((int)ImGui::GetMousePos().x) + "," + std::to_string((int)ImGui::GetMousePos().y) +
-			" SFML: " + std::to_string((int)currentMousePos.x) + "," + std::to_string((int)currentMousePos.y);
+		std::string mousePosInfo = "IMGUI: " + std::to_string(static_cast<int>(ImGui::GetMousePos().x)) + "," + std::to_string(static_cast<int>(ImGui::GetMousePos().y)) +
+			" SFML: " + std::to_string(static_cast<int>(currentMousePos.x)) + "," + std::to_string(static_cast<int>(currentMousePos.y));
 		ImGui::Text(mousePosInfo.c_str());
 
 		if (ImGui::Button("Close Game"))
@@ -537,11 +537,11 @@ namespace SGA
 			window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 			ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
-			ImGui::SetNextWindowPos(ImVec2((0), window.getSize().y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+			ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
 			auto* selectedEntity = gameStateCopy.getEntity(*actionsSettings.selectedEntities.begin());
-			auto entityType = gameStateCopy.getEntityType(selectedEntity->typeID);
+			auto entityType = gameStateCopy.gameInfo->getEntityType(selectedEntity->typeID);
 			
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -582,7 +582,7 @@ namespace SGA
 			for (auto &entity : gameStateCopy.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = gameStateCopy.getEntityType(entity->typeID);
+				auto entityType = gameStateCopy.gameInfo->getEntityType(entity->typeID);
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -618,7 +618,7 @@ namespace SGA
 		
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2((window.getSize().x/2), window.getSize().y/1.1),ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2(window.getSize().x / 2.f, window.getSize().y / 1.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
@@ -649,7 +649,7 @@ namespace SGA
 
 		for (auto& unit : units)
 		{
-			auto& type = gameStateCopy.getEntityType(unit.typeID);
+			auto& type = gameStateCopy.gameInfo->getEntityType(unit.typeID);
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -684,7 +684,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -697,7 +697,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = gameStateCopy.getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = gameStateCopy.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -711,7 +711,7 @@ namespace SGA
 			}
 			else
 			{
-				const ActionType& actionType = gameStateCopy.getActionType(action.actionTypeID);
+				const ActionType& actionType = gameStateCopy.gameInfo->getActionType(action.actionTypeID);
 
 				actionInfo += " " + actionType.name;
 
@@ -725,16 +725,17 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(gameStateCopy).x) + ",y:" + std::to_string((int)targetType.getPosition(gameStateCopy).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += gameStateCopy.getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
+						actionInfo += gameStateCopy.gameInfo->getEntityType(gameStateCopy.getEntity(targetType.getEntityID())->typeID).name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(getPlayerID());
 						break;
 					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + gameStateCopy.technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						actionInfo += " Technology: " + gameStateCopy.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
 						actionInfo += " Entity: " + targetType.getEntityType(gameStateCopy).name;
+						break;
 					case ActionTarget::ContinuousActionReference:
 						break;
 					}					
@@ -766,7 +767,7 @@ namespace SGA
 		ImGui::BeginGroup();
 
 		const auto* player = gameStateCopy.getPlayer(fowSettings.selectedPlayerID);
-		for (const auto& parameter : *gameStateCopy.playerParameterTypes)
+		for (const auto& parameter : *gameStateCopy.gameInfo->playerParameterTypes)
 		{
 			//Double to string with 2 precision				
 			std::stringstream stream;
