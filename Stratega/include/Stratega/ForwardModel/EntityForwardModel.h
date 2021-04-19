@@ -29,7 +29,15 @@ namespace SGA
 	};
 
 	/// <summary>
-	/// TestError
+	/// Is the driving component of Stratega, with a provided gamestate it can generate a new set of available
+	/// actions thanks to the <see cref="SGA::EntityActionSpace"/>.
+	/// The returned actions store the action type and a list of sources and targets the action will be applied to.
+	/// Each <see cref="SGA::RTSForwardModel"/> and <see cref="SGA::TBSForwardModel"/> by default contains the definition of how to advance the game
+	/// and other utilities methods used in each specific game type.
+	/// When a player provides the forward model an action and a gamestate, it first checks the type of action
+	/// and after it updates the action info before executing the action.
+	/// The forward models can be extended by implementing forward model abstractions, can be useful for reducing the games
+	/// complexity and ease the training and decision-making process of AI agents. 
 	/// </summary>
 	class EntityForwardModel
 	{
