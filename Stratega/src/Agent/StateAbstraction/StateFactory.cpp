@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	AbstractState StateFactory::createAbstractState(TBSGameState& tbsState)
+	AbstractState StateFactory::createAbstractState(GameState& tbsState)
 	{
 		AbstractState state = AbstractState();
 

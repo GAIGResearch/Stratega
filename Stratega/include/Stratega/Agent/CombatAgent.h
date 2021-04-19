@@ -10,7 +10,7 @@ namespace SGA
 	class CombatAgent : public Agent
 	{
 	public:
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 	private:
 		UnitTypeStrengthLookup unitScores;
 		std::map<int, std::string> actionTypeIDToActionTypeString;
@@ -21,7 +21,7 @@ namespace SGA
 		/// <summary>
 		/// Plays actions until the agent's turn is over
 		/// </summary>
-		void playTurn(TBSGameCommunicator& communicator, TBSForwardModel& fm);
+		void playTurn(AgentGameCommunicator& communicator, TBSForwardModel& fm);
 
 		/// <summary>
 		/// Filters out all moves that are not within the specified radius.

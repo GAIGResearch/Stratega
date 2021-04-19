@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <Stratega/Agent/StateAbstraction/AbstractState.h>
 #include <string>
 #include <iostream>
@@ -25,7 +25,7 @@ namespace SGA
 		StateFactoryConfiguration config;
 
 	public:
-		StateFactory(TBSGameState& tbs, StateFactoryConfiguration _config = StateFactoryConfiguration()) : config(_config)
+		StateFactory(GameState& tbs, StateFactoryConfiguration _config = StateFactoryConfiguration()) : config(_config)
 		{
 			for (auto entry : *tbs.parameterIDLookup) {
 				if (!config.insertEntityParameters.contains(entry.first))
@@ -33,7 +33,7 @@ namespace SGA
 			}
 		}
 
-		AbstractState createAbstractState(TBSGameState& tbsState);
+		AbstractState createAbstractState(GameState& tbsState);
 
 		friend std::ostream& operator<<(std::ostream& os, const StateFactory& dt)
 		{

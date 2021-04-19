@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	void AbstractStateMCTSAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void AbstractStateMCTSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		//const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 		while (!gameCommunicator.isGameOver())
@@ -95,7 +95,7 @@ namespace SGA
 		}
 	}
 
-	void AbstractStateMCTSAgent::runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
+	void AbstractStateMCTSAgent::runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
 	{
 		auto lastExecution = std::chrono::high_resolution_clock::now();
 		while (!gameCommunicator.isGameOver())

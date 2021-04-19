@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
+#include <Stratega/Representation/GameState.h>
 #include <vector>
 #include <string>
 

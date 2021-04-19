@@ -23,6 +23,7 @@ add_subdirectory("Stratega")
 add_subdirectory("Arena")
 add_subdirectory("GUI")
 add_subdirectory("Tests")
+add_subdirectory("Optimization")
 
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")

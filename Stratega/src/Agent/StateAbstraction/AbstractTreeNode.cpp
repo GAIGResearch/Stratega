@@ -5,12 +5,12 @@
 namespace SGA
 {
 
-	AbstractTreeNode::AbstractTreeNode(TBSForwardModel& forwardModel, AbstractState abstractState, TBSGameState gameState) :
+	AbstractTreeNode::AbstractTreeNode(TBSForwardModel& forwardModel, AbstractState abstractState, GameState gameState) :
 		IAbstractTreeNode<AbstractTreeNode>(forwardModel, std::move(abstractState), std::move(gameState))
 	{
 	}
 
-	AbstractTreeNode::AbstractTreeNode(TBSForwardModel& forwardModel, AbstractState abstractState, TBSGameState gameState, AbstractTreeNode* parent, const int childIndex) :
+	AbstractTreeNode::AbstractTreeNode(TBSForwardModel& forwardModel, AbstractState abstractState, GameState gameState, AbstractTreeNode* parent, const int childIndex) :
 		IAbstractTreeNode<AbstractTreeNode>(forwardModel, std::move(abstractState), std::move(gameState), parent, childIndex)
 	{
 	}

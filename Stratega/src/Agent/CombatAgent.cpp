@@ -143,7 +143,7 @@ namespace SGA
 	double CombatAgent::getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity*>& opponentUnits, GameState& gameState) const
 	{
 		
-		auto attackAmount = getAttackDamage(&attack.targets[0].getEntity(gameState), gameState);
+		auto attackAmount = getAttackDamage(attack.targets[0].getEntity(gameState), gameState);
 		auto healAmount = getPotentialHealing(actions, target.position, opponentUnits, gameState);
 
 		if (attackAmount >= getHealth(&target, gameState))
@@ -165,7 +165,7 @@ namespace SGA
 
 	double CombatAgent::getHealScore(std::vector<Action>& actions, const Entity& target, const Action& heal, const std::vector<Entity*>& opponentUnits, GameState& gameState) const
 	{
-		auto healAmount = getHealAmount(&heal.targets[0].getEntity(gameState), gameState);
+		auto healAmount = getHealAmount(heal.targets[0].getEntity(gameState), gameState);
 		auto resultingHealth = std::min<double> (getMaxHealth(&target, gameState), getHealth(&target, gameState) + healAmount);
 		auto potentialDamage = getPotentialDamage(target.position, opponentUnits, gameState);
 
@@ -263,7 +263,7 @@ namespace SGA
 		return 0;
 	}
 	
-	void CombatAgent::playTurn(TBSGameCommunicator& communicator, TBSForwardModel& fm)
+	void CombatAgent::playTurn(AgentGameCommunicator& communicator, TBSForwardModel& fm)
 	{
 		while (communicator.isMyTurn() && !communicator.isGameOver())
 		{
@@ -362,7 +362,7 @@ namespace SGA
 				highestScore = std::numeric_limits<double>::lowest();
 				for (const auto& attack : filterActionTypes(subActions, "Attack"))
 				{
-					Entity& targetUnit = attack.targets[1].getEntity(currentState);
+					Entity& targetUnit = *attack.targets[1].getEntity(currentState);
 					if (targetUnit.ownerID == communicator.getPlayerID())
 						continue; // No attackerino my own units
 
@@ -382,7 +382,7 @@ namespace SGA
 				highestScore = std::numeric_limits<double>::lowest();
 				for (const auto& heal : filterActionTypes(subActions, "Heal"))
 				{
-					Entity& targetUnit = heal.targets[0].getEntity(currentState);
+					Entity& targetUnit = *heal.targets[0].getEntity(currentState);
 					if (targetUnit.ownerID != communicator.getPlayerID())
 						continue; // No healerino opponents units
 					if (getHealth(&targetUnit, currentState) >= getMaxHealth(&targetUnit, currentState))
@@ -413,7 +413,7 @@ namespace SGA
 		}
 	}
 
-	void CombatAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	void CombatAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
 		auto currentState = gameCommunicator.getGameState();
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(currentState);
