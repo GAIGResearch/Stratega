@@ -25,6 +25,6 @@ add_subdirectory("sfml")
 add_subdirectory("yaml-cpp")
 add_subdirectory("imgui")
 add_subdirectory("recastNavigation")
-add_subdirectory("pybind11")
+#add_subdirectory("pybind11")
 # ----- END: Fetch dependencies -----
 message(STATUS "Fetching third party libraries - done")

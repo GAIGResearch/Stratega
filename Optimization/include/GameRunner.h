@@ -1,7 +1,7 @@
 #pragma once
-#include <Game/GameCommunicator.h>
-#include <Logging/FileLogger.h>
-#include <Configuration/GameConfig.h>
+#include <Stratega/Game/GameCommunicator.h>
+#include <Stratega/Logging/FileLogger.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 class GameRunner
 {
@@ -10,7 +10,7 @@ public:
 
 	void runGames(int playerCount, int seed);
 	void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
-	
+
 private:
 	const SGA::GameConfig* config;
 	int gameCount;

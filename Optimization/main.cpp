@@ -21,8 +21,8 @@ int main(int argc, char** argv)
 	auto seed = parser.getCmdOption<int>("-seed", 0);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
-	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/PushManiaOptimization.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 1);
+	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
+	auto agent = parser.getCmdOption<int>("-agent", 0);
 
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	if (configPath.empty())
@@ -43,13 +43,9 @@ int main(int argc, char** argv)
 	std::unique_ptr<SGA::Evaluator> evaluator;
 	switch(agent){
 		case 0: evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
-			std::vector<int> {1, 10, 100},
-			std::vector<int> {1, 3, 5, 10},
-			std::vector<float> {0.1, 0.5, 0.9},
-			std::vector<int> {3, 5, 10},
 			std::vector<bool> {false, true},
 			std::vector<bool> {false, true},
-			gameConfig
+			gameConfig.get()
 			);
 		break;
 	}

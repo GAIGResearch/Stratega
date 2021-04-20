@@ -195,7 +195,7 @@ namespace SGA
 
 	double CombatAgent::getMovementRange(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "MovementPoints")
 			{
@@ -206,7 +206,7 @@ namespace SGA
 	
 	double CombatAgent::getHealth(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "Health")
 			{
@@ -217,7 +217,7 @@ namespace SGA
 
 	double CombatAgent::getMaxHealth(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "Health")
 			{
@@ -229,7 +229,7 @@ namespace SGA
 
 	double CombatAgent::getAttackRange(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "AttackRange")
 			{
@@ -241,7 +241,7 @@ namespace SGA
 
 	double CombatAgent::getAttackDamage(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "AttackDamage")
 			{
@@ -253,7 +253,7 @@ namespace SGA
 
 	double CombatAgent::getHealAmount(const Entity* entity, GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
 		{
 			if (param.second.name == "AttackDamage")
 			{
@@ -268,7 +268,7 @@ namespace SGA
 		while (communicator.isMyTurn() && !communicator.isGameOver())
 		{
 			auto currentState = communicator.getGameState();
-			for (const auto a : *currentState.actionTypes)
+			for (const auto a : *currentState.gameInfo->actionTypes)
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.name;
 			}

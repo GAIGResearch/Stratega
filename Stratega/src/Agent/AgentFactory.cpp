@@ -70,7 +70,7 @@ namespace SGA
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
-		factory.registerAgent<AbstractStateMCTSAgent>("AbstractStateMCTSAgent");
+		factory.registerAgent<AbstractStateMCTSAgent, AbstractMCTSParameters>("AbstractStateMCTSAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
 
 		return factory;

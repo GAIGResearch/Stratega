@@ -1,9 +1,10 @@
 #pragma once
 #include <random>
-#include <Stratega/Configuration/YamlHeaders.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/AgentParameters.h>
+
+#include <yaml-cpp/yaml.h>
 
 
 namespace SGA
@@ -25,5 +26,27 @@ namespace SGA
 		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<RandomActionScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
 		void printDetails() const;
+	};
+}
+
+namespace YAML
+{
+	template<>
+	struct convert<SGA::AbstractMCTSParameters>
+	{
+		static bool decode(const Node& node, SGA::AbstractMCTSParameters& rhs)
+		{
+			rhs.K = node["K"].as<double>(rhs.K);
+			rhs.ROLLOUT_LENGTH = node["RolloutLength"].as<int>(rhs.ROLLOUT_LENGTH);
+			rhs.ROLLOUTS_ENABLED = node["EnableRollouts"].as<bool>(rhs.ROLLOUTS_ENABLED);
+			rhs.FORCE_TURN_END = node["ForceTurnEnd"].as<bool>(rhs.FORCE_TURN_END);
+			rhs.PRIORITIZE_ROOT = node["PrioritizeRoot"].as<bool>(rhs.PRIORITIZE_ROOT);
+			rhs.EPSILON = node["Epsilon"].as<bool>(rhs.EPSILON);
+			rhs.CONTINUE_PREVIOUS_SEARCH = node["ContinuePreviousSearch"].as<bool>(rhs.CONTINUE_PREVIOUS_SEARCH);
+			
+			rhs.MAX_FM_CALLS = node["FmCalls"].as<int>(rhs.MAX_FM_CALLS);
+			rhs.REMAINING_FM_CALLS = rhs.MAX_FM_CALLS;
+			return true;
+		}
 	};
 }

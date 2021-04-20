@@ -28,7 +28,7 @@ namespace SGA
 				double sum = 0;
 
 				for (auto entity : gameState.entities) {
-					const auto& entityType = gameState.getEntityType(entity.typeID);
+					const auto& entityType = gameState.gameInfo->getEntityType(entity.typeID);
 					for (const auto& parameter : entityType.parameters)
 					{
 						if (parameter.second.name == parameterName)

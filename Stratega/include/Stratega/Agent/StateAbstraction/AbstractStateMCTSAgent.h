@@ -18,6 +18,12 @@ namespace SGA
 		int playerTurn = -1;
 	
 	public:
+
+		AbstractStateMCTSAgent(AbstractMCTSParameters&& params) :
+			Agent{}, parameters_(std::move(params))
+		{
+		}
+		
 		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 		void runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel) override;
 	};

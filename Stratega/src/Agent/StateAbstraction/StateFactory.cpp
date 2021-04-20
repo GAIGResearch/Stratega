@@ -37,7 +37,7 @@ namespace SGA
 				std::vector<double> parameterValues;
 				//int globalParameterID = tbsState.getParameterGlobalID(entry.first);
 				for (auto entity : tbsState.entities) {
-					const auto& entityType = tbsState.getEntityType(entity.typeID);
+					const auto& entityType = tbsState.gameInfo->getEntityType(entity.typeID);
 					for (const auto& parameter : entityType.parameters)
 					{
 						if (parameter.second.name == entry.first)

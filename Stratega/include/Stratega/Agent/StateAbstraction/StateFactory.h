@@ -25,9 +25,15 @@ namespace SGA
 		StateFactoryConfiguration config;
 
 	public:
-		StateFactory(GameState& tbs, StateFactoryConfiguration _config = StateFactoryConfiguration()) : config(_config)
+		StateFactory(StateFactoryConfiguration _config) : config(_config)
 		{
-			for (auto entry : *tbs.parameterIDLookup) {
+			
+		}
+		
+		StateFactory(GameState& tbs)
+		{
+			config = StateFactoryConfiguration();
+			for (auto entry : *tbs.gameInfo->parameterIDLookup) {
 				if (!config.insertEntityParameters.contains(entry.first))
 						config.insertEntityParameters[entry.first] = false;
 			}

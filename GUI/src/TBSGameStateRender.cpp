@@ -378,7 +378,7 @@ namespace SGA
 				{
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
-						auto& position = actionTarget.getPosition(gameStateCopy);
+						auto position = actionTarget.getPosition(gameStateCopy);
 
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
@@ -423,7 +423,7 @@ namespace SGA
 				{
 					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
 					{
-						auto& position = possibleAction.targets[i].getPosition(gameStateCopy);
+						auto position = possibleAction.targets[i].getPosition(gameStateCopy);
 
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
@@ -627,12 +627,15 @@ namespace SGA
 
 		ImGui::Text("Actions");
 		
-		//Ask widget to get		
-		auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
+		//Ask widget to get
+		if (getPlayerID() != -1)
+		{
+			auto actionsToExecute = getWidgetResult(gameStateCopy, actionsSettings, getPlayerID());
 
-		if (!actionsToExecute.empty())
-			playAction(actionsToExecute.front());
-		
+			if (!actionsToExecute.empty())
+				playAction(actionsToExecute.front());
+		}
+			
 		ImGui::Separator();
 		ImGui::End();
 	}

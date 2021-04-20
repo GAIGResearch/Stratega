@@ -15,24 +15,19 @@ namespace SGA
     class AbstractGameStateMCTSEvaluator : public Evaluator
     {
     private:
-        std::vector<int> _popSizeCandidates;
-        std::vector<int> _individualLengthCandidates;
-        std::vector<float> _mutationRateCandidates;
-        std::vector<int> _tournamentSize;
-        std::vector<bool> _elitism;
-        std::vector<bool> _continueSearch;
+        std::vector<bool> insertMap;
+        std::vector<bool> insertPositions;
+        std::vector<std::string> parameterNames;
+
         const SGA::GameConfig* config;
         std::mt19937 rngEngine = std::mt19937(0);
         const std::vector<std::unique_ptr<Agent>> agents;
 
     public:
-        AbstractGameStateMCTSEvaluator(std::vector<int> popSizeCandidates,
-            std::vector<int> individualLengthCandidates,
-            std::vector<float> mutationRateCandidates,
-            std::vector<int> tournamentSize,
-            std::vector<bool> elitism,
-            std::vector<bool> continueSearch,
-            SGA::GameConfig& config
+        AbstractGameStateMCTSEvaluator(
+            std::vector<bool> inserMap,
+            std::vector<bool> insertPositions,
+            GameConfig* config
         );
     
         std::vector<float> evaluate(std::vector<int> point, int nSamples) override;

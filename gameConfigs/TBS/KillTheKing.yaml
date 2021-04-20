@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - RandomAgent
-    - CombatAgent
+    - AbstractStateMCTSAgent
 
 Tiles:
     Plain:
