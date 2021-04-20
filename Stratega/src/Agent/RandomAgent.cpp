@@ -17,6 +17,7 @@ namespace SGA
 				std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 				auto actionIndex = actionDist(gameCommunicator.getRNGEngine());
 				auto action = actions.at(actionIndex);
+				std::cout << "Random " << actionIndex << std::endl;
 				// Send action to the game-runner
 				gameCommunicator.executeAction(action);
 			}

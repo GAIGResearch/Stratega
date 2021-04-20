@@ -299,6 +299,7 @@ namespace SGA
 				if (children[i]->nVisits > highestVisitCount) {
 					mostVisitedStates.clear();
 					mostVisitedStates.push_back(i);
+					highestVisitCount = children[i]->nVisits;
 				}
 				else if (children[i]->nVisits == highestVisitCount)
 				{
@@ -369,7 +370,7 @@ namespace SGA
 					candidate_actions.push_back(i);
 				}
 			}
-			auto randDist = std::uniform_int_distribution<int>(0, candidate_actions.size());
+			auto randDist = std::uniform_int_distribution<int>(0, candidate_actions.size()-1);
 			int randomIndex = randDist(randomGenerator);
 			return candidate_actions[randomIndex];
 		}

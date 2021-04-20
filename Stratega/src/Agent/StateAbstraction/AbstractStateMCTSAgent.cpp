@@ -85,7 +85,7 @@ namespace SGA
 					auto bestAction = rootNode->actionSpace.at(bestActionIndex);
 
 					previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
-					
+					std::cout << "MCTS " << bestActionIndex << "; tree size:" << rootNode->children.size() << std::endl;
 
 					// return best action
 					gameCommunicator.executeAction(bestAction);
