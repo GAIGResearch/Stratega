@@ -1,16 +1,15 @@
 ###############
-City Capturing
+Protect the Base
 ###############
 
 .. code-block:: c++
 
-/gameConfigs/TBS/CityCapturing.yaml
+    /gameConfigs/TBS/ProtectTheBase.yaml
 
 ++++++++++++++++++++
 Description
 ++++++++++++++++++++
 
-Simple combat TBS game with basic rules. Two players should fight for conquering all the cities of the map.
 
 ++++++++++++++++++++
 YAML
@@ -26,9 +25,6 @@ Agents:
     - RandomAgent
     - HumanAgent
 
-Player:
-    Parameters:
-        Gold: 5
 
 Tiles:
     Plain:
@@ -44,25 +40,45 @@ Tiles:
         Sprite: ../../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
+        BlocksSight: true
     Forest:
         Sprite: ../../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
 Actions:
-    Spawn:
+    # Spawn Actions
+    SpawnMiner:
         Type: EntityAction
         Cooldown: 1
+        Preconditions:
+            - "ResourceGreater(Source.Gold, 50)"
         Targets:
             Target:
-                Type: EntityType
-                ValidTargets: Units
+                Type: Position
+                Shape: Square
+                Size: 1
                 Conditions:
-                    - "CanAfford(Source.Player, Target)"
-                    - "CanSpawn(Source, Target)"
+                    - "IsWalkable(Target)"
         Effects:
-            - "SpawnRandom(Source, Target)"
-            - "PayCost(Source.Player, Target)"
+            - "SpawnEntity(Source, Miner, Target)"
+            - "ModifyResource(Source.Gold, -50)"
+
+    SpawnFighter:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "ResourceGreater(Source.Gold, 100)"
+        Targets:
+            Target:
+                Type: Position
+                Shape: Square
+                Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "SpawnEntity(Source, Fighter, Target)"
+            - "ModifyResource(Source.Gold, -100)"
 
     # Attack Actions
     Attack:
@@ -71,24 +87,11 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: [Conquerer, Fighter]
+                ValidTargets: Attackable
                 Conditions:
-                    - "InRange(Source, Target, 1)"
+                    - "InRange(Source, Target, 10)"
         Effects:
-            - "Attack(Target.Health, 25)"
-
-    # Capturing
-    Capture:
-        Type: EntityAction
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: City
-                Conditions:
-                    - "InRange(Source, Target, 1)"
-        Effects:
-            - "ChangeOwner(Target, Source.Player)"
-            - "Remove(Source)"
+            - "Attack(Target.Health, Source.AttackDamage)"
 
     # Move Actions
     Move:
@@ -104,74 +107,102 @@ Actions:
         Effects:
             - "Move(Source, Target)"
 
+    # Resource Actions
+    Mine:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: GoldVein
+                Conditions:
+                    - "InRange(Source, Target, 1)"
+                    - "ResourceGreater(Target.Gold, 40)"
+        Effects:
+            - "Transfer(Target.Gold, Source.Gold, 40)"
+
+    Deposit:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Base
+                Conditions:
+                    - "InRange(Source, Target, 1)"
+        Effects:
+            - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
 
 Entities:
-    City:
+    Base:
         Sprite: ../../GUI/Assets/Entities/castle.png
-        Symbol: c
+        Symbol: b
         LineOfSightRange: 5
-        CanSpawn: Units
-        Actions: [Spawn]
-
-    Conquerer:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
-        Symbol: s
-        LineOfSightRange: 4
-        Actions: [Move, Capture]
+        Actions: [SpawnMiner, SpawnFighter]
         Parameters:
-            Health: 25
-        Cost:
-            Gold: 6
+            Gold: 500
+            Health: 500
+
+    Miner:
+        Sprite: ../../GUI/Assets/Entities/unit7.png
+        Symbol: m
+        LineOfSightRange: 4
+        Actions: [Move, Mine, Deposit]
+        Parameters:
+            Gold: 0
+            Health: 50
 
     Fighter:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: f
         LineOfSightRange: 6
-        Actions: [Move, Attack]
         Parameters:
-            Health: 100
-        Cost:
-            Gold: 5
+            AttackDamage: 10
+            Health: 80
+        Actions: [Move, Attack]
+
+    GoldVein:
+        Sprite: ../../GUI/Assets/Entities/gold_chest.png
+        Symbol: g
+        LineOfSightRange: 6
+        Actions: []
+        Parameters:
+            Gold: 200
 
 EntityGroups:
-    Units: [Fighter, Conquerer]
+    Attackable: [Base, Fighter, Miner]
 
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-        M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  b1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  g  .  .  g  g  g  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  g  .  .  .  .  g  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  b0 .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  M  M  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasCity:
-        - "NoHasEntity(Source, City)"
-
-    Trigger:
-        - OnTick:
-            ValidTargets: City
-            Conditions:
-                - "IsPlayerEntity(Source)"
-            Effects:
-                - "ModifyResource(Source.Player.Gold, 1)"
+        - "NoHasEntity(Source, Base)"
 
 #Action categories
 GameDescription:
     Type: CombatGame
     Actions:
         Move: [Move]
-        Spawn: [Spawn]
-        Attack: [Attack, Capture]
+        Gather: [Mine, Deposit]
+        Spawn: [SpawnFighter, SpawnMiner]
+        Attack: [Attack]

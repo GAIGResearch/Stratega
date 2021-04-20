@@ -1,177 +1,170 @@
 ###############
-City Capturing
+Kill the king
 ###############
 
 .. code-block:: c++
 
-/gameConfigs/TBS/CityCapturing.yaml
+    /gameConfigs/TBS/KillTheKing.yaml
 
 ++++++++++++++++++++
 Description
 ++++++++++++++++++++
 
-Simple combat TBS game with basic rules. Two players should fight for conquering all the cities of the map.
+
 
 ++++++++++++++++++++
 YAML
 ++++++++++++++++++++
 .. code-block:: yaml
 
-GameConfig:
-    Type: TBS
-    ActionTimer: 10s
-    RoundLimit: 100
+    GameConfig:
+        Type: TBS
+        ActionTimer: 10s
+        RoundLimit: 100
 
-Agents:
-    - RandomAgent
-    - HumanAgent
+    Agents:
+        - RandomAgent
+        - HumanAgent
 
-Player:
-    Parameters:
-        Gold: 5
+    Tiles:
+        Plain:
+            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Symbol: .
+            IsWalkable: true
+            DefaultTile: true
+        Water:
+            Sprite: ../../GUI/Assets/Tiles/water.png
+            Symbol: W
+            IsWalkable: false
+        Mountain:
+            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Symbol: M
+            IsWalkable: false
+        Forest:
+            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Symbol: F
+            IsWalkable: true
+        
+    Board:
+        GenerationType: Manual
+        Layout: |-
+            M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+            M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+            M  .  .  a1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+            M  .  a1 k1 h1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+            M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+            M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+            M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+            M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+            M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+            M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+            M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+            M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+            M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
-Tiles:
-    Plain:
-        Sprite: ../../GUI/Assets/Tiles/plain.png
-        Symbol: .
-        IsWalkable: true
-        DefaultTile: true
-    Water:
-        Sprite: ../../GUI/Assets/Tiles/water.png
-        Symbol: W
-        IsWalkable: false
-    Mountain:
-        Sprite: ../../GUI/Assets/Tiles/rock.png
-        Symbol: M
-        IsWalkable: false
-    Forest:
-        Sprite: ../../GUI/Assets/Tiles/forest.png
-        Symbol: F
-        IsWalkable: true
-     
-Actions:
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: EntityType
-                ValidTargets: Units
-                Conditions:
-                    - "CanAfford(Source.Player, Target)"
-                    - "CanSpawn(Source, Target)"
-        Effects:
-            - "SpawnRandom(Source, Target)"
-            - "PayCost(Source.Player, Target)"
-
-    # Attack Actions
-    Attack:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: [Conquerer, Fighter]
-                Conditions:
-                    - "InRange(Source, Target, 1)"
-        Effects:
-            - "Attack(Target.Health, 25)"
-
-    # Capturing
-    Capture:
-        Type: EntityAction
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: City
-                Conditions:
-                    - "InRange(Source, Target, 1)"
-        Effects:
-            - "ChangeOwner(Target, Source.Player)"
-            - "Remove(Source)"
-
-    # Move Actions
-    Move:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                Shape: Circle
-                Size: 3
-                Conditions:
-                    - "IsWalkable(Target)"
-        Effects:
-            - "Move(Source, Target)"
-
-
-Entities:
-    City:
-        Sprite: ../../GUI/Assets/Entities/castle.png
-        Symbol: c
-        LineOfSightRange: 5
-        CanSpawn: Units
-        Actions: [Spawn]
-
-    Conquerer:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
-        Symbol: s
-        LineOfSightRange: 4
-        Actions: [Move, Capture]
-        Parameters:
-            Health: 25
-        Cost:
-            Gold: 6
-
-    Fighter:
-        Sprite: ../../GUI/Assets/Entities/unit2.png
-        Symbol: f
-        LineOfSightRange: 6
-        Actions: [Move, Attack]
-        Parameters:
-            Health: 100
-        Cost:
-            Gold: 5
-
-EntityGroups:
-    Units: [Fighter, Conquerer]
-
-Board:
-    GenerationType: Manual
-    Layout: |-
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-        M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-                   
-ForwardModel:
-    LoseConditions: #If true: Player -> cant play
-        NoHasCity:
-        - "NoHasEntity(Source, City)"
-
-    Trigger:
-        - OnTick:
-            ValidTargets: City
-            Conditions:
-                - "IsPlayerEntity(Source)"
-            Effects:
-                - "ModifyResource(Source.Player.Gold, 1)"
-
-#Action categories
-GameDescription:
-    Type: CombatGame
     Actions:
-        Move: [Move]
-        Spawn: [Spawn]
-        Attack: [Attack, Capture]
+        Attack:
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: All
+                    Conditions:
+                        - "InRange(Source, Target, Source.AttackRange)"
+            Effects:
+                - "Attack(Target.Health, Source.AttackDamage)"
+
+        Move:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreater(Source.MovementPoints, 1)"
+            Targets:
+                Target:
+                    Type: Position
+                    Shape: Square
+                    Size: 1
+                    Conditions:
+                        - "IsWalkable(Target)"
+            Effects:
+                - "Move(Source, Target)"
+                - "ModifyResource(Source.MovementPoints, -1)"
+
+        Heal:
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: All
+                    Conditions:
+                        - "InRange(Source, Target, Source.HealRange)"
+            Effects:
+                - "ModifyResource(Target.Health, Source.HealAmount)"
+
+
+    Entities:
+        Warrior:
+            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Symbol: w
+            LineOfSightRange: 6
+            Actions: [Attack, Move]
+            Parameters:
+                Health: 200
+                AttackRange: 2
+                AttackDamage: 100
+                MovementPoints: 2
+
+        Archer:
+            Sprite: ../../GUI/Assets/Entities/unit4.png
+            Symbol: a
+            LineOfSightRange: 10
+            Parameters:
+                Health: 100
+                AttackRange: 5
+                AttackDamage: 10
+                MovementPoints: 2
+            Actions: [Attack, Move]
+
+        Healer:
+            Sprite: ../../GUI/Assets/Entities/unit3.png
+            Symbol: h
+            LineOfSightRange: 4
+            Parameters:
+                Health: 40
+                HealRange: 2
+                HealAmount: 10
+                MovementPoints: 5
+            Actions: [Heal, Move]
+
+        King:
+            Sprite: ../../GUI/Assets/Entities/unit1.png
+            Symbol: k
+            LineOfSightRange: 6
+            Parameters:
+                Health: 400
+                AttackRange: 2
+                AttackDamage: 100
+                MovementPoints: 1
+            Actions: [Attack, Move]
+
+    ForwardModel:
+        LoseConditions: #If true: Player -> cant play
+            NoHasKing:
+            - "NoHasEntity(Source, King)"
+
+        Trigger:
+            - OnTick:
+                Effects:
+                    - "SetToMaximum(Source.MovementPoints)"
+    #Action categories
+    GameDescription:
+        Type: CombatGame
+        Actions:
+            Move: [Move]
+            Heal: [Heal]
+            Attack: [Attack]
