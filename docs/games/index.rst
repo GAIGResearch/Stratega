@@ -8,6 +8,10 @@ Turn-based
     :hidden:
 
     cityCapturing/index
+    killTheKing/index
+    noNameGame/index
+    protectTheBase/index
+    settlers/index
 
 
 
@@ -17,3 +21,6 @@ Real-time
 
 .. toctree::
     :hidden:
+
+    noNameGame/index
+    settlers/index

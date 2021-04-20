@@ -10,6 +10,9 @@ C++ Reference
 .. doxygenclass:: SGA::AgentGameCommunicator
    :members:
 
+.. doxygenclass:: SGA::Agent
+   :members:
+
 
 .. doxygenstruct:: SGA::GameDescription
    :members:

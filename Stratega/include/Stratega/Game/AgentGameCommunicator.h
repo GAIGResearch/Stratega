@@ -41,13 +41,13 @@ namespace SGA
 		
 		/// <summary>
 		/// Checks if the game is over without querying a copy of the game state.
-		/// This function should be preferred over querying the game state and manually checking <see cref="SGA::GameState::isGameOver"/>.
+		/// This function should be preferred over querying the game state and manually checking <see cref="SGA::GameState::isGameOver"/> .
 		/// </summary>
 		bool isGameOver() const;
 		
 		/// <summary>
 		/// Checks if it's the agent's turn.
-		/// This function should be preferred over querying the game state and manually checking <see cref = "SGA::GameState::currentPlayer" / >.
+		/// This function should be preferred over querying the game state and manually checking <see cref = "SGA::GameState::currentPlayer"/ > .
 		/// </summary>
 		bool isMyTurn() const;
 

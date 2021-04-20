@@ -13,7 +13,7 @@ namespace SGA
 	class Condition;
 
 	/// <summary>
-	/// Contains the definition an action. Which type is the source <see cref="SGA::ActionSourceType"/>, a set effects,
+	/// Contains the definition of an action. Which type is the source <see cref="SGA::ActionSourceType"/> , a set effects,
 	/// preconditions and a list of action targets linked to their target conditions.
 	/// If the action is continuous it will have a set of effects as events:
 	/// OnStart, OnTick, OnComplete, OnAbort and the list of conditions that triggers the completed action.
