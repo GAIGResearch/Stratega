@@ -8,7 +8,7 @@ Kill the king
 
 .. only:: html
 
-   .. figure:: images/killTheKing.gif
+   .. figure:: ../../images/killTheKing.gif
 
 ++++++++++++++++++++
 Description

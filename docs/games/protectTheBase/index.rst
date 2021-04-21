@@ -8,7 +8,7 @@ Protect the Base
 
 .. only:: html
 
-   .. figure:: images/protectTheBase.gif
+   .. figure:: ../../images/protectTheBase.gif
 ++++++++++++++++++++
 Description
 ++++++++++++++++++++

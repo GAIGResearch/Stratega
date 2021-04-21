@@ -9,7 +9,7 @@ Settlers
 
 .. only:: html
 
-   .. figure:: images/settlersRTS.gif
+   .. figure:: ../../images/settlersRTS.gif
 
 ++++++++++++++++++++
 Description
