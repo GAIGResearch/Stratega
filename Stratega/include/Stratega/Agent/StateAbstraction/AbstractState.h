@@ -37,7 +37,8 @@ namespace SGA
 			if (state1.stateDescription.size() > state2.stateDescription.size())
 				return false;
 
-			/*for (int x = 0; x < state1.stateDescription.size(); x++) {
+			/*
+			 *for (int x = 0; x < state1.stateDescription.size(); x++) {
 				if (state1.stateDescription[x] == state2.stateDescription[x])
 					continue;
 				return state1.stateDescription[x] < state2.stateDescription[x];
@@ -69,8 +70,9 @@ namespace SGA
 							return false;
 					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 			
 

@@ -109,6 +109,10 @@ namespace SGA
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
 		int actionIndex = actionToChildIndex.size();
+		if (actionIndex == actionSpace.size()-1)
+		{
+			//std::cout << "here";
+		}
 		
 		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(actionIndex), params);
 
@@ -211,6 +215,10 @@ namespace SGA
 
 			which = distrib(randomGenerator);
 		}
+		if (which == children.size()-1)
+		{
+			//std::cout << "here";
+		}
 
 		return children[which].get();
 	}
@@ -292,7 +300,7 @@ namespace SGA
 		// due to multiple actions yielding the same state
 		std::vector<int> mostVisitedStates;
 		int highestVisitCount = -1;
-		for (size_t i = 0; i < children.size(); i++) {
+		for (size_t i = 0; i < children.size()-1; i++) {
 
 			if (children[i] != nullptr)
 			{

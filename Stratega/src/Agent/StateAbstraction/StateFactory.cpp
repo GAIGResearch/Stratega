@@ -6,6 +6,8 @@ namespace SGA
 	AbstractState StateFactory::createAbstractState(GameState& tbsState)
 	{
 		AbstractState state = AbstractState();
+		std::vector<double> stateInfo = { static_cast<double>(tbsState.currentPlayer), static_cast<double>(tbsState.currentTick) };
+		state.addAttribute("StateInfo", stateInfo);
 
 		if (config.insertMap)
 		{

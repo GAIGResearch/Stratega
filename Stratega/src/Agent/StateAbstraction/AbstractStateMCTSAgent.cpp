@@ -16,13 +16,7 @@ namespace SGA
 				if (parameters_.STATE_FACTORY == nullptr)
 				{
 					parameters_.STATE_FACTORY = std::make_unique<StateFactory>(state);
-					auto testconfig = std::map<std::string, int>();
-					for (const auto entry : parameters_.STATE_FACTORY->config.insertEntityParameters) 
-					{	
-						testconfig[entry.first] = 1;
-					}
-					
-					parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(testconfig, state);
+					parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
 				}
 
 				
@@ -46,39 +40,29 @@ namespace SGA
 				}
 				else
 				{
-					/*
+					
 					if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
 					{
 						// in case of deterministic games we know which move has been done by us
 						// reuse the tree from the previous iteration
-						rootNode = std::move(rootNode->children.at(previousActionIndex));
+						rootNode = std::move(rootNode->children[rootNode->actionToChildIndex[previousActionIndex]]);
+						//rootNode = std::move(rootNode->children.at(previousActionIndex));
 						rootNode->parentNode = nullptr;	// release parent
 						rootNode->setDepth(0);
 					}
 					else
 					{
 						// start a new tree
-						rootNode = std::make_unique<AbstractMCTSNode>(*processedForwardModel, gameState);
+						auto abstractState = parameters_.STATE_FACTORY->createAbstractState(gameState);
+						auto gameStateCopy(gameState);
+						rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, abstractState, gameState);
+						//rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, gameState);
 					}
-					*/
-					auto abstractState = parameters_.STATE_FACTORY->createAbstractState(gameState);
-					auto gameStateCopy(gameState);
-					rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, abstractState, gameState);
-
-					/*
-					// test expansion
-					while (!rootNode->isFullyExpanded())
-					{
-						rootNode->expand(forwardModel, parameters_, gameCommunicator.getRNGEngine());
-					}
-					rootNode->print();
-					auto bestAction = actionSpace[0];
-					*/
 					
 					//params.printDetails();
 					parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 					rootNode->searchMCTS(forwardModel, parameters_, gameCommunicator.getRNGEngine());
-					//rootNode->printTree();
+					rootNode->printTree();
 
 					// get and store best action
 					const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());

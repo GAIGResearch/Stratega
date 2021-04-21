@@ -149,13 +149,13 @@ namespace SGA
 		if (attackAmount >= getHealth(&target, gameState))
 		{
 			// We can kill the unit immediatly
-			//return unitScores.at(target.typeID) * 2;
+			return unitScores.at(target.typeID) * 2;
 		}
 		else if (healAmount < attackAmount)
 		{
 			// We can kill the unit with an delay
 			int turnsToKill = std::min(4., std::ceil(getHealth(&target, gameState)/ (attackAmount - healAmount)));
-			//return unitScores.at(target.typeID) * (1. + 1. / (1. + turnsToKill));
+			return unitScores.at(target.typeID) * (1. + 1. / (1. + turnsToKill));
 		}
 
 		// We can't kill the unit alone
@@ -182,13 +182,13 @@ namespace SGA
 		else if (healAmount >= potentialDamage)
 		{
 			// We can keep the unit alive forever
-			//return 2 * unitScores.at(target.typeID);
+			return 2 * unitScores.at(target.typeID);
 		}
 		else
 		{
 			// We can delay the death
 			int turnsUntilDeath = std::min<int> (4, static_cast<int>(std::ceil(getHealth(&target, gameState) / (potentialDamage - healAmount))));
-			//return (1. + turnsUntilDeath / 4.) * unitScores.at(target.typeID);
+			return (1. + turnsUntilDeath / 4.) * unitScores.at(target.typeID);
 		}
 		return 0;
 	}
@@ -311,7 +311,7 @@ namespace SGA
 
 					int dist = opp->position.manhattanDistance(ally->position);
 					int movesToSupport = dist / static_cast<double>(getMovementRange(ally, currentState));
-					//avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
+					avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
 				}
 				avgSupportScore /= opponentUnits.size();
 
@@ -322,7 +322,7 @@ namespace SGA
 				{
 					int dist = opp->position.chebyshevDistance(attacker->position);
 					int movesToAttack = std::max(0, dist - static_cast<int>(getMovementRange(attacker, currentState))) / getMovementRange(attacker, currentState);
-					//avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
+					avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
 				}
 				avgAttackScore /= myUnits.size() + 1;
 
@@ -406,6 +406,13 @@ namespace SGA
 				{
 					break;
 				}
+			}
+			if (nextAction.actionTypeFlags == ActionFlag::EndTickAction)
+			{
+				std::cout << "Combat Agent " << "end round" << std::endl;
+			} else
+			{
+				std::cout << "Combat Agent " << "does something" << std::endl;
 			}
 			
 			communicator.executeAction(nextAction);

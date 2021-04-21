@@ -32,13 +32,14 @@ namespace SGA
 		
 		StateFactory(GameState& tbs)
 		{
-			bool flip = true;
+			//bool flip = true;
 			config = StateFactoryConfiguration();
 			for (auto entry : *tbs.gameInfo->parameterIDLookup) {
 				if (!config.insertEntityParameters.contains(entry.first))
 				{
-					config.insertEntityParameters[entry.first] = flip;
-					flip = !flip;
+					config.insertEntityParameters[entry.first] = true;
+					//config.insertEntityParameters[entry.first] = flip;
+					//flip = !flip;
 				}
 			}
 		}

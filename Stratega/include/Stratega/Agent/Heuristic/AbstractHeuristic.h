@@ -27,11 +27,17 @@ namespace SGA
 
 		AbstractHeuristic(GameState& gameState)
 		{
-			for (const auto entityType : *gameState.gameInfo->entityTypes) {
+ 			for (const auto entityType : *gameState.gameInfo->entityTypes) {
 				for (const auto parameter : entityType.second.parameters) {
 					if (!attributeWeights.contains(parameter.second.name))
 					{
-						attributeWeights[parameter.second.name] = 1;
+						if (parameter.second.name == "Health")
+						{
+							attributeWeights[parameter.second.name] = 10;
+						} else
+						{
+							attributeWeights[parameter.second.name] = 1;
+						}
 						maxValue[parameter.second.name] = parameter.second.maxValue;
 					}
 					else 
