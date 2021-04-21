@@ -10,7 +10,8 @@ City Capturing
 Description
 ++++++++++++++++++++
 
-Simple combat TBS game with basic rules. Two players should fight for conquering all the cities of the map.
+Simple combat TBS game with basic rules. Two players should fight to conquer all the cities of the map.
+Use fighters to kill the enemy conquers and defend your city.
 
 ++++++++++++++++++++
 YAML

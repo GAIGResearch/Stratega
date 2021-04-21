@@ -7,10 +7,18 @@ Settlers
     /gameConfigs/TBS/Settlers.yaml
     /gameConfigs/RTS/Settlers.yaml
 
+.. only:: html
+
+   .. figure:: images/settlersRTS.gif
+
 ++++++++++++++++++++
 Description
 ++++++++++++++++++++
 
+Is the most complex combat TBS and RTS game that Stratega has until now. 
+This game has two different technology trees, one focused in enabling the user to spawn more entities and the second one to increase the resource gathering.
+Research is the key to win the game, either by spawning a spy and sabotage the enemy or building a wonder.
+Try to dont starve, each entity consume food!!
 
 ++++++++++++++++++++
 YAML

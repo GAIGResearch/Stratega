@@ -6,11 +6,17 @@ Kill the king
 
     /gameConfigs/TBS/KillTheKing.yaml
 
+.. only:: html
+
+   .. figure:: images/killTheKing.gif
+
 ++++++++++++++++++++
 Description
 ++++++++++++++++++++
 
-
+Simple combat TBS game with basic rules. Two players should fight to kill the enemy king.
+In this game the player has a fixed number of entities and cant spawn anymore. Use your warriors and archer to attack the enemies, each player has one healer and one king.
+Choose your strategy wisely, would you attack his king or defend yours?
 
 ++++++++++++++++++++
 YAML

@@ -11,7 +11,9 @@ No Name Game
 Description
 ++++++++++++++++++++
 
-
+Complex combat TBS and RTS game. Two players should fight and destroy the city of the opponent.
+This game have only one technology tree focused in enabling the spawn of new structures and units.
+There are two resources used to spawn new sructures or units, production points and gold. Gold can be mined from mine deposits and production points are produced by cities.
 
 ++++++++++++++++++++
 YAML
