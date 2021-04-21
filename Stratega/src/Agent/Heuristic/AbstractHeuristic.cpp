@@ -12,9 +12,9 @@ namespace SGA
 		if (gameState.isGameOver)
 		{
 			if (gameState.winnerPlayerID == playerID)
-				score -= 1000;	// since this score should be minimized we need to deduct points for winning
+				score += 1000;	// since this score should be minimized we need to deduct points for winning
 			else
-				score += 1000;
+				score -= 1000;
 		}
 
 		for (auto entry : attributeWeights)
