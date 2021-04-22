@@ -2,10 +2,15 @@
 No Name Game
 ###############
 
+Yaml paths:
 .. code-block:: c++
 
     /gameConfigs/TBS/NoNameGame.yaml
     /gameConfigs/RTS/NoNameGame.yaml
+
+.. only:: html
+
+   .. figure:: ../../images/noNameGameTBS.gif
 
 ++++++++++++++++++++
 Description

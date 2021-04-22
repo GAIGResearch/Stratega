@@ -2,6 +2,7 @@
 Settlers
 ###############
 
+Yaml paths:
 .. code-block:: c++
 
     /gameConfigs/TBS/Settlers.yaml

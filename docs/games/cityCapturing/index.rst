@@ -2,9 +2,14 @@
 City Capturing
 ###############
 
+Yaml paths:
 .. code-block:: c++
 
     /gameConfigs/TBS/CityCapturing.yaml
+
+.. only:: html
+
+   .. figure:: ../../images/cityCapturingTBS.gif
 
 ++++++++++++++++++++
 Description

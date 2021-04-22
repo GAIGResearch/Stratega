@@ -2,13 +2,14 @@
 Kill the king
 ###############
 
+Yaml paths:
 .. code-block:: c++
 
     /gameConfigs/TBS/KillTheKing.yaml
 
 .. only:: html
 
-   .. figure:: ../../images/killTheKing.gif
+   .. figure:: ../../images/killTheKingTBS.gif
 
 ++++++++++++++++++++
 Description
