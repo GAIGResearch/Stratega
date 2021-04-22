@@ -27,6 +27,15 @@ Stratega Docs
 
    gettingStarted/installation/index
    gettingStarted/implementTBSAgent/index
+   gettingStarted/implementRTSAgent/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Structure
+
+   structure/overview/index
+   structure/gamestate/index
+   structure/forwardModelAndActions/index
 
 .. toctree::
    :maxdepth: 1

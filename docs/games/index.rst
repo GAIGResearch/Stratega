@@ -1,11 +1,13 @@
 .. _games:
 
-Stratega inclused a set of predefined games for RTS and TBS mode.
+Stratega include a set of predefined games for RTS and TBS mode.
 These games are already implemented in the framework, you can find them in the gameConfigs folder.
 
 ***********
 Turn-based
 ***********
+
+A turn-based strategy (TBS) game is a strategy game where players take turns when playing.
 
 .. toctree::
     :hidden:
@@ -22,6 +24,8 @@ Turn-based
 Real-time
 ***********
 
+Real-time strategy (RTS) games allow for all players to simultaneously play the game in "real-time".
+
 .. toctree::
     :hidden:
 
@@ -29,7 +33,7 @@ Real-time
     settlers/index
 
 .. list-table:: Current games
-    :widths: 10 5 10 10
+    :widths: 10 5 10 10 10
     :header-rows: 1
     :stub-columns: 1
 
