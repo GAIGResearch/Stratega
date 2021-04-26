@@ -3,6 +3,7 @@ Protect the Base
 ###############
 
 Yaml paths:
+
 .. code-block:: c++
 
     /gameConfigs/TBS/ProtectTheBase.yaml

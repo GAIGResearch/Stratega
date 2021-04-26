@@ -3,6 +3,7 @@ No Name Game
 ###############
 
 Yaml paths:
+
 .. code-block:: c++
 
     /gameConfigs/TBS/NoNameGame.yaml

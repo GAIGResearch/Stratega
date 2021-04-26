@@ -3,6 +3,7 @@ Kill the king
 ###############
 
 Yaml paths:
+
 .. code-block:: c++
 
     /gameConfigs/TBS/KillTheKing.yaml

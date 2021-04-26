@@ -3,7 +3,7 @@ Forward Models and Actions
 #############
 
 The forward model is the driving component of this framework.
-Being provided with a game-state it will generate an ActionSpace object.
+Being provided with a game-state it can generate a new set of available actions thanks to the ActionSpace object.
 It handles the efficient creation of available actions and updates the set of actions after the game-state has been updated.
 Returned action objects store the type of action, the executing unit and the target tile.
 Nevertheless, they do not include the action's logic which remains part of the forward model.

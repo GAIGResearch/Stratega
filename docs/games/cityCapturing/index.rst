@@ -3,6 +3,7 @@ City Capturing
 ###############
 
 Yaml paths:
+
 .. code-block:: c++
 
     /gameConfigs/TBS/CityCapturing.yaml
@@ -21,6 +22,7 @@ Use fighters to kill the enemy conquers and defend your city.
 ++++++++++++++++++++
 YAML
 ++++++++++++++++++++
+
 .. code-block:: yaml
 
     GameConfig:

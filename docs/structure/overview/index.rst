@@ -2,10 +2,10 @@
 Overview
 #############
 
-.. image:: images/strategaStructure.png
-   :alt: Stratega Structure
-
 The Stratega framework mainly consists of 4 parts, i.e. the game-runner, rendering, agents, and configuration.
+
+.. image:: ../../images/strategaStructure.png
+   :alt: Stratega Structure
 
 The core of the framework is the game-runner, whose sole purpose is to run games and provide information about the game. The framework provides two game-runners, one for turn-based and one for RTS-games.
 The agents are responsible for controlling the actions of a player in the game state. 
