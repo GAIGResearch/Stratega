@@ -36,6 +36,8 @@ Stratega Docs
    structure/overview/index
    structure/gamestate/index
    structure/forwardModelAndActions/index
+   structure/configuration/index
+   structure/gui/index
 
 .. toctree::
    :maxdepth: 1
