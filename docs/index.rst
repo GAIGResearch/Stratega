@@ -27,7 +27,7 @@ Stratega Docs
 
    gettingStarted/installation/index
 
-   .. toctree::
+.. toctree::
    :maxdepth: 1
    :caption: Tutorials
 
