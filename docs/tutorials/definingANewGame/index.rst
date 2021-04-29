@@ -2,8 +2,12 @@
 Defining a new game
 ################################
 
-In this tutorial we are going to define a game from scratch using the yaml configurations.
+In this tutorial we are going to define a game from scratch using Stratega yaml configurations.
 The objective is to create a game of combat type, in which a humar player fights a random agent.
+
+.. only:: html
+
+   .. figure:: ../../images/tutorialGame.gif
 
 .. code-block:: yaml
 
@@ -18,6 +22,7 @@ The objective is to create a game of combat type, in which a humar player fights
 
 Lets starts with the type of game and the type of agents
 
+
 .. code-block:: yaml
 
     Player:
@@ -25,6 +30,7 @@ Lets starts with the type of game and the type of agents
             SpawnPoints: 5
 
 Next, the parameters of the players.
+
 
 .. code-block:: yaml
 
@@ -43,9 +49,8 @@ Next, the parameters of the players.
             Symbol: M
             IsWalkable: false
      
-The next step is defininf the tile our map will use. In this case a plain, water and mountain tiles.
-We want the water and mountain tiles to not be walkable, then change the IsWalkable bool to false. Dont forget to write the symbol because it will be used later to write by hand the map.
-
+The next step is defining the tiles our map will use. In this case a plain, water and mountain tile.
+We want the water and mountain tiles to not be walkable, then we have to change the IsWalkable bool to false. Dont forget to write the symbol because it will be used later to write by hand the map.
 
 
 .. code-block:: yaml
@@ -73,6 +78,7 @@ We want the water and mountain tiles to not be walkable, then change the IsWalka
 Is time to define the entities, every entity needs a sprite path, symbol and a LineOfSightRange value (used to generate the fog).
 For this game we only need two simple entities, the city will be an entity that the player should protect and the fighter used to attack the enemy.
 
+
 .. code-block:: yaml
      
     Board:
@@ -97,6 +103,7 @@ For this game we only need two simple entities, the city will be an entity that 
 
 Once we have defined the entities and tiles, we can define the map using the symbols of both of them.
 Note that the number attached to a entity symbolaze the player owner of the entity. (If you want a neutral entity, dont add any number)
+
 
 .. code-block:: yaml
 
@@ -143,9 +150,10 @@ Note that the number attached to a entity symbolaze the player owner of the enti
             Effects:
                 - "Move(Source, Target)"
 
-We are almost done, we need to add the actions. We only need three actions: Move, Attack and Spawn. An action defines the inteaction between entities and player.
+We are almost done, we need to add the actions. We only need three actions: Move, Attack and Spawn. An action defines the interaction between entities and player.
 
-    .. code-block:: yaml
+
+.. code-block:: yaml
                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
@@ -162,7 +170,7 @@ We are almost done, we need to add the actions. We only need three actions: Move
 
 
 The last part is defining the lose/win conditions and the triggers. In this game we only have one simple rule, the player that lose his city will lose.
-There is only one trigger to increment the number of spawn points of the player.
+There is only one trigger to increment the number of spawn points of the player every turn.
 
 ++++++++++++++++++++
 Full yaml
