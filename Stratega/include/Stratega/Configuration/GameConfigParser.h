@@ -28,7 +28,7 @@ namespace SGA
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
-		
+        void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<std::string, std::string>& mapList) const;
 	};
 }
 

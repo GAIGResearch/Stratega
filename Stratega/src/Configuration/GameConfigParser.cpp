@@ -1,6 +1,7 @@
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <yaml-cpp/yaml.h>
+#include <fstream>
 
 namespace SGA
 {
@@ -130,8 +131,49 @@ namespace SGA
 		}
 
         if (boardNode["GenerationType"].as<std::string>() == "Manual")
-        {
-            config.boardString = boardNode["Layout"].as<std::string>();
+        {    
+            std::unordered_map<std::string, std::string> mapList;
+
+            //Check if user defines multiple maps
+            if (boardNode["Maps"].IsDefined())
+            {
+                if(boardNode["Maps"].IsScalar())
+                {
+                    auto path = boardNode["Maps"].as<std::string>();
+                    //Check if is path
+                    std::ifstream file(path);
+                    if (file)
+                    {
+                        std::cout << "The file exist" << std::endl;
+
+                        //Lets read the yaml file
+                        auto mapsConfig = YAML::LoadFile(path);
+
+                        //Read maps
+                        if (mapsConfig["Maps"].IsDefined())
+                        {
+                            parseMaps(mapsConfig, mapList);
+                        }
+                    }
+                }                
+                else
+                {
+                    parseMaps(boardNode, mapList);
+                }
+            }
+
+            std::string boardString = boardNode["Layout"].as<std::string>();
+        	//Check if user choose one from the loaded maps
+            auto it =mapList.find(boardString);
+        	if(it!=mapList.end())
+			{
+        		//Found map
+                boardString = it->second;        		
+			}
+
+        	//Assign map
+            config.boardString = boardString;
+        	
         	// Remove whitespaces but keep newLines
             config.boardString.erase(std::remove_if(config.boardString.begin(), config.boardString.end(), 
                 [](char x) { return x != '\n' && std::isspace(x); }), config.boardString.end());
@@ -611,4 +653,17 @@ namespace SGA
 
         return idCostMap;
 	}
+
+	void GameConfigParser::parseMaps(const YAML::Node& node, std::unordered_map<std::string, std::string>& mapList) const
+	{
+        //Read the multiple maps in this file
+        auto mapsLayout = node["Maps"].as<std::map<std::string, YAML::Node>>();
+
+        //Read maps
+        for (auto& map : mapsLayout)
+        {
+            mapList[map.first] = map.second.as<std::string>();
+        }
+	}
+
 }
