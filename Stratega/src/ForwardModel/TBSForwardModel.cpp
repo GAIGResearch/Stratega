@@ -20,10 +20,6 @@ namespace SGA
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-# if NDEBUG
-		assert(action.isValid(state))
-#endif
-		
 		if (action.actionTypeFlags == ActionFlag::EndTickAction)
 		{
 			endTurn(state);

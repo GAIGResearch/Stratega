@@ -1,5 +1,5 @@
-#include <Widgets/FogOfWarController.h>
-#include <TileMap.h>
+#include <Stratega/GUI/Widgets/FogOfWarController.h>
+#include <Stratega/GUI/TileMap.h>
 #include <imgui.h>
 
 namespace SGA::Widgets

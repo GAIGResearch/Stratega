@@ -20,7 +20,7 @@ namespace SGA
         void parsePlayers(const YAML::Node& parametersNode, GameConfig& config) const;
         void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
 		void parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const;
-
+        void parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const;
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
@@ -28,6 +28,7 @@ namespace SGA
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
+        std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
 		
 	};
 }

@@ -1,17 +1,23 @@
-#include <NewGameStateRenderer.h>
-#include <GridUtils.h>
-#include <Configuration/RenderConfig.h>
+#include <Stratega/GUI/TBSGameRenderer.h>
+#include <Stratega/GUI/GridUtils.h>
+#include <Stratega/Configuration/RenderConfig.h>
+#include <Stratega/Configuration/GameConfig.h>
 
+#include <SFML/Window.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include <sstream>
 
+#include "../../../dependencies/imgui/imgui-SFML.h"
+
 namespace SGA
 {
-	NewGameStateRenderer::NewGameStateRenderer()
-		: window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+	TBSGameRenderer::TBSGameRenderer()
+		: state(),
+		  fowState(),
+		  selectedAction(),
+		  window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(0),
-		  currentMode(InteractiveMode::Disabled),
 		  fowSettings(),
 		  zoomValue(5.f),
 		  dragging(false)
@@ -23,51 +29,40 @@ namespace SGA
 		// Initialize View
 		sf::View view = window.getView();
 		view.setCenter(window.getSize().x / 2., window.getSize().y / 2.);
-		view.setSize(window.getDefaultView().getSize()); // Reset the size	
+		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
 	}
 
-	void NewGameStateRenderer::init(const GameState& initialState, const GameConfig& gameConfig, const RenderConfig& renderConfig)
+	void TBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
 	{
 		// Load textures
-		for (const auto& namePathPair : renderConfig.entitySpritePaths)
+		for (const auto& namePathPair : gameConfig.renderConfig->entitySpritePaths)
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-		
-		assetCache.loadTexture("selected", "../../GUI/Assets/Tiles/selected.png");
-		assetCache.loadFont("font", "../../GUI/Assets/arial.ttf");
 
-		tileMap.init(initialState, gameConfig, renderConfig);
-		entityRenderer.init(initialState, gameConfig, renderConfig);
+		assetCache.loadTexture("selected", "./GUI/Assets/Tiles/selected.png");
+		assetCache.loadFont("font", "./GUI/Assets/arial.ttf");
+
+		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
+		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);
 
 		ImGui::SFML::Init(window);
+
+		update(initialState);
 	}
 
-	
-	void NewGameStateRenderer::update(const GameState& state)
+
+	void TBSGameRenderer::update(const GameState& state)
 	{
-		handleInput(state);
-		if(currentMode == InteractiveMode::Disabled)
-		{
-			auto stateCopy(state);
-			stateCopy.applyFogOfWar(pointOfViewPlayerID);
-			render(state, stateCopy);
-		}
-		else if(fowSettings.renderFogOfWar)
-		{
-			auto stateCopy(state);
-			stateCopy.applyFogOfWar(fowSettings.selectedPlayerID);
-			render(state, stateCopy);
-		}
-		else
-		{
-			render(state, state);
-		}
+		this->state = state;
+		this->fowState = state;
+		this->fowState.applyFogOfWar(fowSettings.selectedPlayerID);
+		selectedAction.reset();
 	}
 
-	void NewGameStateRenderer::handleInput(const GameState& state)
+	void TBSGameRenderer::handleInput(const GameState& state)
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
@@ -90,17 +85,19 @@ namespace SGA
 		}
 	}
 
-	void NewGameStateRenderer::render(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::render()
 	{
+		handleInput(state);
+		
 		window.clear();
-		renderLayers(originalState, fowState);
+		renderLayers(state, fowState);
 		ImGui::SFML::Update(window, deltaClock.restart());
-		createHUD(originalState, fowState);
+		createHUD(state, fowState);
 		ImGui::SFML::Render(window);
 		window.display();
 	}
 
-	void NewGameStateRenderer::renderLayers(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::renderLayers(const GameState& originalState, const GameState& fowState)
 	{
 		tileMap.update(originalState, fowState, fowSettings.renderFogOfWar, fowSettings.renderType);
 		window.draw(tileMap);
@@ -212,8 +209,8 @@ namespace SGA
 			}
 		}
 	}
-	
-	void NewGameStateRenderer::mouseScrolled(const sf::Event& event)
+
+	void TBSGameRenderer::mouseScrolled(const sf::Event& event)
 	{
 		// Determine the scroll direction and adjust the zoom level
 		if (event.mouseWheelScroll.delta <= -1)
@@ -227,7 +224,7 @@ namespace SGA
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
 	}
-	void NewGameStateRenderer::mouseButtonReleased(const sf::Event& event)
+	void TBSGameRenderer::mouseButtonReleased(const sf::Event& event)
 	{
 		// Mouse button is released, no longer move
 		if (event.mouseButton.button == sf::Mouse::Left)
@@ -235,7 +232,7 @@ namespace SGA
 			dragging = false;
 		}
 	}
-	void NewGameStateRenderer::mouseButtonPressed(const sf::Event& event, const GameState& state)
+	void TBSGameRenderer::mouseButtonPressed(const sf::Event& event, const GameState& state)
 	{
 		// Mouse button is pressed, get the position and set moving as active
 		if (event.mouseButton.button == sf::Mouse::Left)
@@ -282,14 +279,13 @@ namespace SGA
 				oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 			}
 		}
-		//if (event.mouseButton.button == sf::Mouse::Right)
-		//{
-		//	if (waitForAction)
-		//		playAction(Action::createEndAction(getPlayerID()));
-		//}
+		if (event.mouseButton.button == sf::Mouse::Right)
+		{
+			selectedAction = Action::createEndAction(pointOfViewPlayerID);
+		}
 	}
 
-	void NewGameStateRenderer::mouseMoved(const sf::Event& event)
+	void TBSGameRenderer::mouseMoved(const sf::Event& event)
 	{
 		if (!dragging)
 			return;
@@ -308,7 +304,7 @@ namespace SGA
 		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 	}
 
-	void NewGameStateRenderer::createHUD(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createHUD(const GameState& originalState, const GameState& fowState)
 	{
 		createWindowInfo(originalState, fowState);
 		createWindowUnits(originalState, fowState);
@@ -319,11 +315,11 @@ namespace SGA
 		createActionBar(originalState, fowState);
 	}
 
-	void NewGameStateRenderer::createWindowInfo(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowInfo(const GameState& originalState, const GameState& fowState)
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
-		
+
 		ImGui::Begin("Info window");
 		std::string text = "Tick:" + std::to_string(originalState.currentTick);
 		ImGui::Text(text.c_str());
@@ -332,17 +328,17 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::createWindowFogOfWar(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowFogOfWar(const GameState& originalState, const GameState& fowState)
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
-		
+
 		ImGui::Begin("Fog of War window");
 		fowController(originalState, fowSettings);
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::createEntityInformation(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createEntityInformation(const GameState& originalState, const GameState& fowState)
 	{
 		if (!actionsSettings.selectedEntities.empty())
 		{
@@ -382,7 +378,7 @@ namespace SGA
 			int parameterIndex = 0;
 			for (const auto& parameter : entityType.parameters)
 			{
-				//Double to string with 2 precision				
+				//Double to string with 2 precision
 				std::stringstream stream;
 				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
 				std::string valueParameter = stream.str();
@@ -423,7 +419,7 @@ namespace SGA
 
 	}
 
-	void NewGameStateRenderer::createActionBar(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createActionBar(const GameState& originalState, const GameState& fowState)
 	{
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -448,17 +444,18 @@ namespace SGA
 
 		ImGui::Text("Actions");
 
-		//Ask widget to get		
+		//Ask widget to get
 		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(originalState), actionsSettings, pointOfViewPlayerID);
-
-		//if (!actionsToExecute.empty())
-		//	playAction(actionsToExecute.front());
+		if (!actionsToExecute.empty())
+		{
+			selectedAction = actionsToExecute.front();
+		}
 
 		ImGui::Separator();
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::createWindowUnits(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowUnits(const GameState& originalState, const GameState& fowState)
 	{
 		ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
@@ -478,7 +475,7 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::createWindowActions(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowActions(const GameState& originalState, const GameState& fowState)
 	{
 		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
@@ -565,7 +562,7 @@ namespace SGA
 
 			if (ImGui::Button(actionInfo.c_str()))
 			{
-				//playAction(action);
+				selectedAction = action;
 				break;
 			}
 		}
@@ -576,7 +573,7 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::createWindowPlayerParameters(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowPlayerParameters(const GameState& originalState, const GameState& fowState)
 	{
 		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
@@ -587,7 +584,7 @@ namespace SGA
 		const auto* player = originalState.getPlayer(fowSettings.selectedPlayerID);
 		for (const auto& parameter : *originalState.gameInfo->playerParameterTypes)
 		{
-			//Double to string with 2 precision				
+			//Double to string with 2 precision
 			std::stringstream stream;
 			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
 			std::string valueParameter = stream.str();
@@ -602,13 +599,27 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void NewGameStateRenderer::setInteractiveMode(InteractiveMode mode)
-	{
-		currentMode = mode;
-	}
-
-	void NewGameStateRenderer::setPlayerPointOfView(int playerID)
+	void TBSGameRenderer::setPlayerPointOfView(int playerID)
 	{
 		pointOfViewPlayerID = playerID;
+		fowSettings.selectedPlayerID = playerID;
+		update(state);
 	}
+
+	ActionAssignment TBSGameRenderer::getPlayerActions()
+	{
+		ActionAssignment returnValue;
+		if(isActionAvailable())
+		{
+			returnValue.assignActionOrReplace(selectedAction.value());
+		}
+		return returnValue;
+	}
+
+	bool TBSGameRenderer::isActionAvailable() const
+	{
+		return selectedAction.has_value();
+	}
+
+
 }

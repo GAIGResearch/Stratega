@@ -1,8 +1,8 @@
-#include <EntityRenderer.h>
-#include <Configuration/RenderConfig.h>
+#include <Stratega/GUI/EntityRenderer.h>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
 
-#include <GridUtils.h>
+#include <Stratega/GUI/GridUtils.h>
 
 namespace SGA
 {

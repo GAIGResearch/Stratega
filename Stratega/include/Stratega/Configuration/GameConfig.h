@@ -4,6 +4,7 @@
 #include <string>
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Configuration/FunctionParser.h>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
 
@@ -11,6 +12,9 @@ namespace SGA
 {
     struct GameConfig
     {
+        // Rendering - ToDo Split renderConfig and move into dedicated parts (Tile, Entity, etc)
+        std::unique_ptr<RenderConfig> renderConfig;
+    	
     	// Game information
         GameType gameType = GameType::TBS;
 

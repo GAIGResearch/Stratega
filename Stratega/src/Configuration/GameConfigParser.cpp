@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <yaml-cpp/yaml.h>
@@ -63,7 +64,10 @@ namespace SGA
         for (const auto& actionName : actions)
         {
             config->playerActionIds.emplace_back(config->getActionID(actionName));
-        }	
+        }
+
+    	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
+        parseRenderConfig(configNode, *config);
 		    		
         return config;
 	}
@@ -521,6 +525,31 @@ namespace SGA
         }		
     }
 
+    void GameConfigParser::parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const
+    {
+        config.renderConfig = std::make_unique<RenderConfig>();
+
+        // Hardcode shader Path
+        config.renderConfig->outlineShaderPath = "./GUI/Assets/OutLine.frag";
+
+        for (const auto& entityNode : configNode["Entities"])
+        {
+            auto entityName = entityNode.first.as<std::string>();
+            auto entityConfig = entityNode.second;
+            config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
+        }
+
+        //Add Fog of War tile
+        config.renderConfig->tileSpritePaths.emplace("FogOfWar", "./GUI/Assets/Tiles/notVisible.png");
+
+        for (const auto& tileNode : configNode["Tiles"])
+        {
+            auto tileName = tileNode.first.as<std::string>();
+            auto tileConfig = tileNode.second;
+            config.renderConfig->tileSpritePaths.emplace(tileName, parseFilePath(tileConfig["Sprite"], config));
+        }
+    }
+
     void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
 
@@ -611,4 +640,21 @@ namespace SGA
 
         return idCostMap;
 	}
+
+    std::string GameConfigParser::parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const
+    {
+        if (!pathNode.IsScalar())
+            throw std::runtime_error("Received a invalid file-path");
+    	
+        using namespace std::filesystem;
+
+        path filePath = pathNode.as<std::string>();
+    	// Convert path to an absolute path relative to the path of the configuration file
+        auto tmp = current_path();
+        current_path(canonical(path(config.yamlPath).parent_path()));
+        filePath = canonical(filePath);
+        current_path(tmp);
+
+        return filePath.string();
+    }
 }

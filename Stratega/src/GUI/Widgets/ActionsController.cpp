@@ -1,10 +1,10 @@
-#include <Widgets/ActionsController.h>
-#include <imgui.h>
-
+#include <Stratega/GUI/Widgets/ActionsController.h>
 #include <Stratega/ForwardModel/TargetType.h>
 #include <Stratega/ForwardModel/ActionType.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Action.h>
+
+#include <imgui.h>
 
 namespace SGA::Widgets
 {

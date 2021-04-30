@@ -1,9 +1,8 @@
-#include <TileMap.h>
-#include <GridUtils.h>
-
+#include <Stratega/GUI/TileMap.h>
+#include <Stratega/GUI/GridUtils.h>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
-#include <Configuration/RenderConfig.h>
 
 namespace SGA
 {

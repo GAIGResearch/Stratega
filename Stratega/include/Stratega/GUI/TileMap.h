@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <TextureAtlas.h>
+#include <Stratega/GUI/TextureAtlas.h>
 #include <unordered_map>
 
 namespace SGA

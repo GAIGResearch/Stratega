@@ -1,5 +1,5 @@
 #include <string>
-#include <AssetCache.h>
+#include <Stratega/GUI/AssetCache.h>
 
 
 void AssetCache::loadTexture(std::string name, std::string fileName) {
