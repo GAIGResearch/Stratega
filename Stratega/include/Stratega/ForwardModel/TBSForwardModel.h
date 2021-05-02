@@ -10,7 +10,8 @@ namespace  SGA
 	public:
 		void advanceGameState(GameState& state, const Action& action) const override;
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
-
+		std::unique_ptr<EntityForwardModel> clone() const override;
+		
 		using EntityForwardModel::generateActions;
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
 		

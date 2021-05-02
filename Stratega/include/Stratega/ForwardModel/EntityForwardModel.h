@@ -48,6 +48,7 @@ namespace SGA
 		virtual void advanceGameState(GameState& state, const ActionAssignment& action) const = 0;
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state, int playerID) const;
 		virtual void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const;
+		virtual std::unique_ptr<EntityForwardModel> clone() const = 0;
 		
 		bool canPlayerPlay(const GameState& state, Player& player) const;
 		bool checkPlayerWon(const GameState& state, Player& player) const;

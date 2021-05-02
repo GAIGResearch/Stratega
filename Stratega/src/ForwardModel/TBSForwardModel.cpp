@@ -113,4 +113,9 @@ namespace SGA
 
 		return false;
 	}
+
+	std::unique_ptr<EntityForwardModel> TBSForwardModel::clone() const
+	{
+		return std::make_unique<TBSForwardModel>(*this);
+	}
 }

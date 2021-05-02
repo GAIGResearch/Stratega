@@ -6,6 +6,6 @@ namespace SGA
 	class OSLAAgent : public Agent
 	{
 	public:
-		ActionAssignment computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
 	};
 }

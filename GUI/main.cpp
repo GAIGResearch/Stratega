@@ -20,8 +20,8 @@ int main()
 		}
 	}
 	
-	SGA::TBSGameRunner gameRunner(std::move(gameConfig));
-	gameRunner.play(agents);
+	SGA::TBSGameRunner gameRunner(*gameConfig);
+	gameRunner.run(agents);
 	
     return 0;
 }

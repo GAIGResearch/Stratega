@@ -2,62 +2,18 @@
 #include <cassert>
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
+#include <Stratega/GUI/TBSGameRenderer.h>
 
 namespace SGA
 {
-	TBSGameRunner::TBSGameRunner(std::unique_ptr<GameConfig> config)
-		: config(std::move(config))
+	TBSGameRunner::TBSGameRunner(const GameConfig& config)
+		: GameRunner(config)
 	{
-		reset();
 	}
 
-
-	void TBSGameRunner::reset()
+	void TBSGameRunner::playInternal(std::vector<std::unique_ptr<Agent>>& agents, int /*humanIndex*/)
 	{
-		currentState = config->generateGameState();
-		// ToDo Copy
-		forwardModel = std::move(config->forwardModel);
-	}
-
-	void TBSGameRunner::step(const ActionAssignment& actions)
-	{
-		// ToDo
-		// assert(actions.validate(currentState))
-		forwardModel->advanceGameState(*currentState, actions);
-		if(renderer != nullptr)
-		{
-			renderer->update(*currentState);
-		}
-	}
-
-	void TBSGameRunner::render()
-	{
-		ensureRendererInitialized();
-		renderer->render();
-		// ToDo
-	}
-
-	void TBSGameRunner::play(std::vector<std::unique_ptr<Agent>>& agents)
-	{
-		assert(agents.size() == currentState->players.size());
-
-		// Check if a player is controlled by an human
-		int humanIndex = GameRenderer::NO_PLAYER_ID;
-		for(int i = 0; i < agents.size(); i++)
-		{
-			if (agents[i] == nullptr)
-			{
-				if(humanIndex != GameRenderer::NO_PLAYER_ID)
-				{
-					throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
-				}
-				humanIndex = i;
-			}
-		}
-
-		ensureRendererInitialized();
-		renderer->setPlayerPointOfView(humanIndex);
-		
+		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
 		while(!currentState->isGameOver)
 		{
@@ -65,12 +21,12 @@ namespace SGA
 			auto& currentAgent = agents[currentState->currentPlayer];
 			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
-				agentThread.startComputing(*currentAgent, *currentState);
+				agentThread.startComputing(*currentAgent, *currentState, *forwardModel);
 				// Render
 				auto startTime = std::chrono::high_resolution_clock::now();
 				while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(40))
 				{
-					renderer->render();
+					tbsRenderer->render();
 				}
 				// Collect action - ToDO verify that the agent didnt crash/hit time limit
 				auto results = agentThread.join();
@@ -78,11 +34,11 @@ namespace SGA
 			}
 			else // Wait for the GUI to return an action
 			{
-				while (!renderer->isActionAvailable())
+				while (!tbsRenderer->isActionAvailable())
 				{
 					renderer->render();
 				}
-				nextAction = renderer->getPlayerActions();
+				nextAction = tbsRenderer->getPlayerActions();
 			}
 
 			// Step
@@ -91,23 +47,14 @@ namespace SGA
 		}
 	}
 
-	void TBSGameRunner::run(std::vector<std::unique_ptr<Agent>>& agents)
+	void TBSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents)
 	{
-		assert(agents.size() == currentState->players.size());
-	}
-
-	void TBSGameRunner::ensureRendererInitialized()
-	{
-		if(renderer == nullptr)
+		while (!currentState->isGameOver)
 		{
-			renderer = std::make_unique<TBSGameRenderer>();
-			renderer->init(*currentState, *config);
+			auto& currentAgent = agents[currentState->currentPlayer];
+			auto results = runAgent(*currentAgent, *currentState, *forwardModel);
+			// ToDO verify that the agent didnt crash/hit time limit
+			forwardModel->advanceGameState(*currentState, results.actions);
 		}
 	}
-
-	const GameState& TBSGameRunner::getGameState() const
-	{
-		return *currentState;
-	}
-
 }

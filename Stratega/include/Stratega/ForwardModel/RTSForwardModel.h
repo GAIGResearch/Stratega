@@ -21,6 +21,7 @@ namespace  SGA
 
 		void advanceGameState(GameState& state, const Action& action) const override;
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
+		std::unique_ptr<EntityForwardModel> clone() const override;
 		
 		void moveEntities(GameState& state) const;
 		void resolveEntityCollisions(GameState& state) const;

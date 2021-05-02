@@ -56,6 +56,7 @@ namespace SGA
 			a.actionTypeID = -1;
 			a.actionTypeFlags = ActionFlag::EndTickAction;
 			a.ownerID = playerID;
+			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 			return a;
 		}
 

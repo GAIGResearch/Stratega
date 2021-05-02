@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment DFSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
 		if (state.gameType != GameType::TBS)
 		{
@@ -25,7 +25,7 @@ namespace SGA
 			{
 				auto gsCopy(state);
 				forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-				const double value = evaluateRollout(dynamic_cast<TBSForwardModel&>(forwardModel), state, 1, getPlayerID());
+				const double value = evaluateRollout(dynamic_cast<const TBSForwardModel&>(forwardModel), state, 1, getPlayerID());
 				if (value > bestHeuristicValue)
 				{
 					bestHeuristicValue = value;
@@ -41,7 +41,7 @@ namespace SGA
 		}
 	}
 
-	double DFSAgent::evaluateRollout(TBSForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
+	double DFSAgent::evaluateRollout(const TBSForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
 		if (depth == maxDepth || gameState.isGameOver)

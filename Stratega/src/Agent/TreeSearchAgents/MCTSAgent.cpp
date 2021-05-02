@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-    ActionAssignment MCTSAgent::computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs)
+    ActionAssignment MCTSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
     {
         if (state.gameType != GameType::TBS)
         {
@@ -10,7 +10,7 @@ namespace SGA
         }
     	
     	// ToDo Move preprocessing to init
-        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<TBSForwardModel*>(&forwardModel));
+        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
 
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
         parameters_.PLAYER_ID = getPlayerID();

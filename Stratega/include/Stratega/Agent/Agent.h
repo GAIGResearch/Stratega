@@ -12,8 +12,8 @@ namespace SGA
 		Agent();
 		virtual ~Agent() = default;
 		
-		virtual void init(GameState initialState, EntityForwardModel& forwardModel, long timeBudgetMs);
-		virtual ActionAssignment computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs) = 0;
+		virtual void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs);
+		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) = 0;
 
 		int getPlayerID();
 		void setPlayerID(int playerID);
