@@ -26,25 +26,27 @@ namespace SGA
 		bool isActionAvailable() const;
 		
 	private:
-		void handleInput(const GameState& state);
-		void renderLayers(const GameState& originalState, const GameState& fowState);
+		void updateFow();
+		void handleInput();
+		void renderLayers();
 
 		// Event Handling
 		void mouseScrolled(const sf::Event& event);
 		void mouseButtonReleased(const sf::Event& event);
-		void mouseButtonPressed(const sf::Event& event, const GameState& state);
+		void mouseButtonPressed(const sf::Event& event);
 		void mouseMoved(const sf::Event& event);
 
 		// ImGUI
-		void createHUD(const GameState& originalState, const GameState& fowState);
-		void createWindowInfo(const GameState& originalState, const GameState& fowState);
-		void createWindowUnits(const GameState& originalState, const GameState& fowState);
-		void createWindowActions(const GameState& originalState, const GameState& fowState);
-		void createWindowPlayerParameters(const GameState& originalState, const GameState& fowState);
-		void createWindowFogOfWar(const GameState& originalState, const GameState& fowState);
-		void createEntityInformation(const GameState& originalState, const GameState& fowState);
-		void createActionBar(const GameState& originalState, const GameState& fowState);
+		void createHUD();
+		void createWindowInfo();
+		void createWindowUnits();
+		void createWindowActions();
+		void createWindowPlayerParameters();
+		void createWindowFogOfWar();
+		void createEntityInformation();
+		void createActionBar();
 
+		const GameConfig* config;
 		GameState state;
 		GameState fowState;
 		std::optional<Action> selectedAction;

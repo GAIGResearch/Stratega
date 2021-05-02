@@ -8,12 +8,11 @@
 #include <imgui.h>
 #include <sstream>
 
-#include "../../../dependencies/imgui/imgui-SFML.h"
-
 namespace SGA
 {
 	TBSGameRenderer::TBSGameRenderer()
-		: state(),
+		: config(nullptr),
+		  state(),
 		  fowState(),
 		  selectedAction(),
 		  window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
@@ -36,6 +35,8 @@ namespace SGA
 
 	void TBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
 	{
+		config = &gameConfig;
+		
 		// Load textures
 		for (const auto& namePathPair : gameConfig.renderConfig->entitySpritePaths)
 		{
@@ -57,12 +58,14 @@ namespace SGA
 	void TBSGameRenderer::update(const GameState& state)
 	{
 		this->state = state;
-		this->fowState = state;
-		this->fowState.applyFogOfWar(fowSettings.selectedPlayerID);
+		updateFow();
 		selectedAction.reset();
+
+		// Update available actions
+		actionsSettings.actionsHumanPlayer = config->forwardModel->generateActions(fowState, pointOfViewPlayerID);
 	}
 
-	void TBSGameRenderer::handleInput(const GameState& state)
+	void TBSGameRenderer::handleInput()
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
@@ -77,7 +80,7 @@ namespace SGA
 				//case sf::Event::Closed: {windowClosed(event); break; }
 				case sf::Event::MouseWheelScrolled: { mouseScrolled(event); break; }
 				case sf::Event::MouseButtonReleased: { mouseButtonReleased(event); break; }
-				case sf::Event::MouseButtonPressed: { mouseButtonPressed(event, state); break; }
+				case sf::Event::MouseButtonPressed: { mouseButtonPressed(event); break; }
 				case sf::Event::MouseMoved: { mouseMoved(event); 	break; }
 				//case sf::Event::KeyPressed: {keyPressed(event); break;	}
 				default:  break;
@@ -87,19 +90,19 @@ namespace SGA
 
 	void TBSGameRenderer::render()
 	{
-		handleInput(state);
+		handleInput();
 		
 		window.clear();
-		renderLayers(state, fowState);
+		renderLayers();
 		ImGui::SFML::Update(window, deltaClock.restart());
-		createHUD(state, fowState);
+		createHUD();
 		ImGui::SFML::Render(window);
 		window.display();
 	}
 
-	void TBSGameRenderer::renderLayers(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::renderLayers()
 	{
-		tileMap.update(originalState, fowState, fowSettings.renderFogOfWar, fowSettings.renderType);
+		tileMap.update(state, fowState, fowSettings.renderFogOfWar, fowSettings.renderType);
 		window.draw(tileMap);
 
 		//Add selected tileactionSettings.waitingForPosition
@@ -117,7 +120,7 @@ namespace SGA
 		}
 
 		//Draw entities
-		entityRenderer.update(fowState);
+		entityRenderer.update(fowSettings.renderFogOfWar ? fowState : state);
 		window.draw(entityRenderer);
 
 		//Draw possible actions
@@ -133,11 +136,11 @@ namespace SGA
 					continue;
 
 				//Get source
-				const auto& actionType = originalState.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& entity = *possibleAction.targets[0].getEntity(const_cast<GameState&>(originalState));
+					auto& entity = *possibleAction.targets[0].getEntity(state);
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
@@ -146,7 +149,7 @@ namespace SGA
 				{
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
-						auto position = actionTarget.getPosition(originalState);
+						auto position = actionTarget.getPosition(state);
 
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
@@ -175,12 +178,12 @@ namespace SGA
 					continue;
 
 				//Get source
-				const auto& actionType = originalState.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
 
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& entity = *possibleAction.targets[0].getEntity(const_cast<GameState&>(originalState));
+					auto& entity = *possibleAction.targets[0].getEntity(state);
 					if (entity.id != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
@@ -190,7 +193,7 @@ namespace SGA
 				{
 					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
 					{
-						auto position = possibleAction.targets[i].getPosition(originalState);
+						auto position = possibleAction.targets[i].getPosition(state);
 
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
@@ -232,7 +235,7 @@ namespace SGA
 			dragging = false;
 		}
 	}
-	void TBSGameRenderer::mouseButtonPressed(const sf::Event& event, const GameState& state)
+	void TBSGameRenderer::mouseButtonPressed(const sf::Event& event)
 	{
 		// Mouse button is pressed, get the position and set moving as active
 		if (event.mouseButton.button == sf::Mouse::Left)
@@ -304,41 +307,44 @@ namespace SGA
 		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 	}
 
-	void TBSGameRenderer::createHUD(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createHUD()
 	{
-		createWindowInfo(originalState, fowState);
-		createWindowUnits(originalState, fowState);
-		createWindowActions(originalState, fowState);
-		createWindowPlayerParameters(originalState, fowState);
-		createEntityInformation(originalState, fowState);
-		createWindowFogOfWar(originalState, fowState);
-		createActionBar(originalState, fowState);
+		createWindowInfo();
+		createWindowUnits();
+		createWindowActions();
+		createWindowPlayerParameters();
+		createEntityInformation();
+		createWindowFogOfWar();
+		createActionBar();
 	}
 
-	void TBSGameRenderer::createWindowInfo(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowInfo()
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 
 		ImGui::Begin("Info window");
-		std::string text = "Tick:" + std::to_string(originalState.currentTick);
+		std::string text = "Tick:" + std::to_string(state.currentTick);
 		ImGui::Text(text.c_str());
-		text = "Current Player : " + std::to_string(originalState.currentPlayer);
+		text = "Current Player : " + std::to_string(state.currentPlayer);
 		ImGui::Text(text.c_str());
 		ImGui::End();
 	}
 
-	void TBSGameRenderer::createWindowFogOfWar(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowFogOfWar()
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 
 		ImGui::Begin("Fog of War window");
-		fowController(originalState, fowSettings);
+		if(fowController(state, fowSettings))
+		{
+			updateFow();
+		}
 		ImGui::End();
 	}
 
-	void TBSGameRenderer::createEntityInformation(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createEntityInformation()
 	{
 		if (!actionsSettings.selectedEntities.empty())
 		{
@@ -357,8 +363,8 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			auto* selectedEntity = originalState.getEntityConst(*actionsSettings.selectedEntities.begin());
-			auto entityType = originalState.gameInfo->getEntityType(selectedEntity->typeID);
+			auto* selectedEntity = state.getEntityConst(*actionsSettings.selectedEntities.begin());
+			auto entityType = state.gameInfo->getEntityType(selectedEntity->typeID);
 
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -396,10 +402,10 @@ namespace SGA
 			ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
 
 
-			for (auto& entity : originalState.getPlayerEntities(fowSettings.selectedPlayerID))
+			for (auto& entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = originalState.gameInfo->getEntityType(entity->typeID);
+				auto entityType = state.gameInfo->getEntityType(entity->typeID);
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -419,7 +425,7 @@ namespace SGA
 
 	}
 
-	void TBSGameRenderer::createActionBar(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createActionBar()
 	{
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -445,7 +451,7 @@ namespace SGA
 		ImGui::Text("Actions");
 
 		//Ask widget to get
-		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(originalState), actionsSettings, pointOfViewPlayerID);
+		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(state), actionsSettings, pointOfViewPlayerID);
 		if (!actionsToExecute.empty())
 		{
 			selectedAction = actionsToExecute.front();
@@ -455,7 +461,7 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void TBSGameRenderer::createWindowUnits(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowUnits()
 	{
 		ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
@@ -463,9 +469,9 @@ namespace SGA
 
 		ImGui::BeginChild("Scrolling");
 
-		for (auto& unit : originalState.entities)
+		for (auto& unit : state.entities)
 		{
-			auto& type = originalState.gameInfo->getEntityType(unit.typeID);
+			auto& type = state.gameInfo->getEntityType(unit.typeID);
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -475,7 +481,7 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void TBSGameRenderer::createWindowActions(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowActions()
 	{
 		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
@@ -495,12 +501,12 @@ namespace SGA
 					if (action.targets[0].getType() == ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = *originalState.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
 						for (auto& continueAction : sourceEntity.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = originalState.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -508,12 +514,12 @@ namespace SGA
 					else
 					{
 						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.targets[0].getPlayer(const_cast<GameState&>(originalState));
+						auto& sourcePlayer = action.targets[0].getPlayer(const_cast<GameState&>(state));
 						for (auto& continueAction : sourcePlayer.continuousAction)
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = originalState.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -527,7 +533,7 @@ namespace SGA
 			}
 			else
 			{
-				const ActionType& actionType = originalState.gameInfo->getActionType(action.actionTypeID);
+				const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
 
 				actionInfo += " " + actionType.name;
 
@@ -537,19 +543,19 @@ namespace SGA
 					switch (targetType.getType())
 					{
 					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition(originalState).x) + ",y:" + std::to_string((int)targetType.getPosition(originalState).y);
+						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += originalState.gameInfo->getEntityType(originalState.getEntityConst(targetType.getEntityID())->typeID).name;
+						actionInfo += state.gameInfo->getEntityType(state.getEntityConst(targetType.getEntityID())->typeID).name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
 						break;
 					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + originalState.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
-						actionInfo += " Entity: " + targetType.getEntityType(originalState).name;
+						actionInfo += " Entity: " + targetType.getEntityType(state).name;
 						break;
 					case ActionTarget::ContinuousActionReference:
 						break;
@@ -573,7 +579,7 @@ namespace SGA
 		ImGui::End();
 	}
 
-	void TBSGameRenderer::createWindowPlayerParameters(const GameState& originalState, const GameState& fowState)
+	void TBSGameRenderer::createWindowPlayerParameters()
 	{
 		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
@@ -581,8 +587,8 @@ namespace SGA
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
-		const auto* player = originalState.getPlayer(fowSettings.selectedPlayerID);
-		for (const auto& parameter : *originalState.gameInfo->playerParameterTypes)
+		const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
+		for (const auto& parameter : *state.gameInfo->playerParameterTypes)
 		{
 			//Double to string with 2 precision
 			std::stringstream stream;
@@ -621,5 +627,9 @@ namespace SGA
 		return selectedAction.has_value();
 	}
 
-
+	void TBSGameRenderer::updateFow()
+	{
+		fowState = state;
+		fowState.applyFogOfWar(fowSettings.selectedPlayerID);
+	}
 }

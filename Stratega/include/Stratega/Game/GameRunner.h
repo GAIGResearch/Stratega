@@ -37,4 +37,6 @@ namespace SGA
 		std::unique_ptr<GameState> currentState;
 		const GameConfig* config;
 	};
+
+	std::unique_ptr<GameRunner> createGameRunner(const GameConfig& config);
 }

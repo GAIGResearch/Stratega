@@ -1,5 +1,4 @@
 #pragma once
-#include <cassert>
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/GUI/TBSGameRenderer.h>

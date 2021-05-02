@@ -3,10 +3,10 @@
 
 namespace SGA
 {
-	class TBSGameRunner final : public GameRunner
+	class RTSGameRunner final : public GameRunner
 	{
 	public:
-		explicit TBSGameRunner(const GameConfig& config);
+		explicit RTSGameRunner(const GameConfig& config);
 
 	protected:
 		void runInternal(std::vector<std::unique_ptr<Agent>>& agents) override;

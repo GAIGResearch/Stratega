@@ -1,8 +1,9 @@
-#include <Stratega/Game/GamerRunner.h>
+#include <cassert>
+#include <Stratega/Game/GameRunner.h>
+#include <Stratega/Game/TBSGameRunner.h>
+#include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/EntityForwardModel.h>
-// ToDo we shouldn't need to include configuration
-#include <cassert>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/GUI/GameRenderer.h>
 
@@ -50,7 +51,10 @@ namespace SGA
 			{
 				throw std::runtime_error("No player can be controlled by a human in an arena.");
 			}
-			agents[i]->setPlayerID(i);
+			else
+			{
+				agents[i]->setPlayerID(i);
+			}
 		}
 
 		runInternal(agents);
@@ -97,6 +101,19 @@ namespace SGA
 		}
 	}
 
+	std::unique_ptr<GameRunner> createGameRunner(const GameConfig& config)
+	{
+		if (config.gameType == GameType::TBS)
+		{
+			return std::make_unique<TBSGameRunner>(config);
+		}
+		if (config.gameType == GameType::RTS)
+		{
+			return std::make_unique<RTSGameRunner>(config);
+		}
 
+		assert(false);
+		return nullptr;
+	}
 
 }

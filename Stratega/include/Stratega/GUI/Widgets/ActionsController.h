@@ -57,6 +57,11 @@ namespace SGA::Widgets
 		{
 			return !selectedEntities.empty();
 		}
+
+		bool isSelected(int unitID)
+		{
+			return selectedEntities.find(unitID) != selectedEntities.end();
+		}
 	};
 	
 	/// <summary>
