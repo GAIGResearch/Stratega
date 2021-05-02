@@ -1,6 +1,8 @@
 #include <filesystem>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <yaml-cpp/yaml.h>
 
 namespace SGA

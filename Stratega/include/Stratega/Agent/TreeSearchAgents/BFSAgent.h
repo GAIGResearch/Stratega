@@ -20,7 +20,7 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		ActionAssignment computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
 		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes);

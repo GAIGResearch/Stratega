@@ -1,5 +1,6 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
+#include <thread>
 
 namespace SGA
 {

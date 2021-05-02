@@ -52,5 +52,12 @@ namespace SGA
 		
 		[[nodiscard]] const std::unordered_map<int, Action>& getEntityActions() const;
 		[[nodiscard]] const std::unordered_map<int, Action>& getPlayerActions() const;
+
+		/// <summary>
+		/// Constructs a ActionAssignment from a single action, useful for TBS-Games.
+		/// </summary>
+		/// <param name="a">The action that should be contained in the ActionAssignment.</param>
+		/// <returns>An ActionAssignment containing a single assignment.</returns>
+		static ActionAssignment fromSingleAction(Action a);
 	};
 }

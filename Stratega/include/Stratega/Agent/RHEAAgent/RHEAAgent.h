@@ -26,7 +26,7 @@ namespace SGA
 		{
 		}
 
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+		ActionAssignment computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
 		std::vector<RHEAGenome> shiftPopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);

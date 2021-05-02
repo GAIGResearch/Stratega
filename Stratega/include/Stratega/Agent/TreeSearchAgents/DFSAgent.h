@@ -21,8 +21,8 @@ namespace SGA
 			_stateHeuristic()
 		{
 		}
-		
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+
+		ActionAssignment computeAction(GameState state, EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 		double evaluateRollout(TBSForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
 		void applyActionToGameState(const TBSForwardModel& forwardModel, GameState& gameState, const Action& action);

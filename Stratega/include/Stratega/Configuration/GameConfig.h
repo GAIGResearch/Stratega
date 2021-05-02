@@ -61,6 +61,4 @@ namespace SGA
         int getActionID(const std::string& name) const;
         int getTechnologyID(const std::string& name) const;
     };
-	
-    std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }

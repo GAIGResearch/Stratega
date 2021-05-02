@@ -64,4 +64,12 @@ namespace SGA
 	{
 		return playerActions;
 	}
+
+	ActionAssignment ActionAssignment::fromSingleAction(Action a)
+	{
+		ActionAssignment assignment;
+		assignment.assignActionOrReplace(a);
+		return assignment;
+	}
+
 }
