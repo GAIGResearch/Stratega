@@ -57,6 +57,7 @@ namespace SGA
 			}
 		}
 
+		initializeAgents(agents);
 		runInternal(agents);
 	}
 
@@ -82,9 +83,24 @@ namespace SGA
 			}
 		}
 
+		initializeAgents(agents);
 		ensureRendererInitialized();
 		renderer->setPlayerPointOfView(humanIndex);
 		playInternal(agents, humanIndex);
+	}
+
+	void GameRunner::initializeAgents(std::vector<std::unique_ptr<Agent>>& agents)
+	{
+		// ToDo we have to catch exceptions + check the timeBudget -> can we reuse code for running an Agent somehow?
+		for(auto& agent : agents)
+		{
+			if(agent != nullptr)
+			{
+				auto stateCopy(*currentState);
+				stateCopy.applyFogOfWar(agent->getPlayerID());
+				agent->init(std::move(stateCopy), *forwardModel, 1000);
+			}
+		}
 	}
 
 	const GameState& GameRunner::getGameState() const

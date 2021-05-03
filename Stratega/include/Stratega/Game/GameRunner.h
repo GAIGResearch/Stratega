@@ -27,6 +27,7 @@ namespace SGA
 		[[nodiscard]] const GameState& getGameState() const;
 
 	protected:
+		void initializeAgents(std::vector<std::unique_ptr<Agent>>& agents);
 		void ensureRendererInitialized();
 
 		virtual void runInternal(std::vector<std::unique_ptr<Agent>>& agents) = 0;
