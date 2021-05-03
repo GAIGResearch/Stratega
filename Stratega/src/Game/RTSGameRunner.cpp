@@ -51,7 +51,7 @@ namespace SGA
 		}
 	}
 
-	void RTSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents)
+	void RTSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer)
 	{
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver)
@@ -76,7 +76,7 @@ namespace SGA
 
 			// Step
 			forwardModel->advanceGameState(*currentState, nextAction);
-			renderer->update(*currentState);
+			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
 	}
 

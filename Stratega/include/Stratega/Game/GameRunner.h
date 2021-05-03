@@ -7,6 +7,7 @@
 #include <Stratega/ForwardModel/ActionAssignment.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
+#include <Stratega/Game/GameObserver.h>
 
 namespace SGA
 {
@@ -14,6 +15,9 @@ namespace SGA
 	
 	class GameRunner
 	{
+	private:
+		static inline GameObserver* defaultObserver = new GameObserver();
+		
 	public:
 		explicit GameRunner(const GameConfig& config);
 		virtual ~GameRunner() = default;
@@ -21,7 +25,7 @@ namespace SGA
 		void reset();
 		void step(const ActionAssignment& actions);
 		void render();
-		void run(std::vector<std::unique_ptr<Agent>>& agents);
+		void run(std::vector<std::unique_ptr<Agent>>& agents, GameObserver* observer = nullptr);
 		void play(std::vector<std::unique_ptr<Agent>>& agents);
 
 		[[nodiscard]] const GameState& getGameState() const;
@@ -30,7 +34,7 @@ namespace SGA
 		void initializeAgents(std::vector<std::unique_ptr<Agent>>& agents);
 		void ensureRendererInitialized();
 
-		virtual void runInternal(std::vector<std::unique_ptr<Agent>>& agents) = 0;
+		virtual void runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<std::unique_ptr<Agent>>& agents, int humanIndex) = 0;
 		
 		std::unique_ptr<EntityForwardModel> forwardModel;

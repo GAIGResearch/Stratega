@@ -11,6 +11,10 @@ namespace SGA
 	public:
 		Agent();
 		virtual ~Agent() = default;
+		Agent(const Agent& other) = delete;
+		Agent(Agent&& other) noexcept = delete;
+		Agent& operator=(const Agent& other) = delete;
+		Agent& operator=(Agent&& other) noexcept = delete;
 		
 		virtual void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs);
 		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) = 0;

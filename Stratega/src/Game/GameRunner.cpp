@@ -19,7 +19,6 @@ namespace SGA
 	void GameRunner::reset()
 	{
 		currentState = config->generateGameState();
-		// ToDo Copy
 		forwardModel = config->forwardModel->clone();
 	}
 
@@ -40,9 +39,13 @@ namespace SGA
 		renderer->render();
 	}
 
-	void GameRunner::run(std::vector<std::unique_ptr<Agent>>& agents)
+	void GameRunner::run(std::vector<std::unique_ptr<Agent>>& agents, GameObserver* observer)
 	{
 		assert(agents.size() == currentState->players.size());
+		if(observer == nullptr)
+		{
+			observer = defaultObserver;
+		}
 		
 		// Check that no player is controlled by a human
 		for (int i = 0; i < agents.size(); i++)
@@ -58,7 +61,9 @@ namespace SGA
 		}
 
 		initializeAgents(agents);
-		runInternal(agents);
+		observer->onGameStarted(*currentState, *forwardModel);
+		runInternal(agents, *observer);
+		observer->onGameFinished(*currentState, *forwardModel);
 	}
 
 	void GameRunner::play(std::vector<std::unique_ptr<Agent>>& agents)

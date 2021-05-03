@@ -52,7 +52,7 @@ namespace SGA
 		}
 	}
 
-	void TBSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents)
+	void TBSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer)
 	{
 		while (!currentState->isGameOver)
 		{
@@ -60,6 +60,7 @@ namespace SGA
 			auto results = runAgent(*currentAgent, *currentState, *forwardModel);
 			// ToDO verify that the agent didnt crash/hit time limit
 			forwardModel->advanceGameState(*currentState, results.actions);
+			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
 	}
 }
