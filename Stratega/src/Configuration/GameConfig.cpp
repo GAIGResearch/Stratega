@@ -1,6 +1,7 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -129,8 +130,14 @@ namespace SGA
 				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
 			}
 		}
-		
 		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
+
+		// Initialize Pathfinding
+		if(gameType == GameType::RTS)
+		{
+			auto* rtsFM = dynamic_cast<SGA::RTSForwardModel*>(forwardModel.get());
+			rtsFM->buildNavMesh(*state, NavigationConfig{});
+		}
 		
 		return std::move(state);
 	}
