@@ -134,12 +134,13 @@ namespace SGA
         {    
             std::unordered_map<std::string, std::string> mapList;
 
-            //Check if user defines multiple maps
+            //Check if user has defined multiple maps
             if (boardNode["Maps"].IsDefined())
             {
                 if(boardNode["Maps"].IsScalar())
                 {
                     auto path = boardNode["Maps"].as<std::string>();
+                	
                     //Check if is path
                     std::ifstream file(path);
                     if (file)
@@ -153,6 +154,10 @@ namespace SGA
                         if (mapsConfig["Maps"].IsDefined())
                         {
                             parseMaps(mapsConfig, mapList);
+                        }
+                        else
+                        {
+                            throw std::runtime_error("Cannot find definition for the maps");
                         }
                     }
                 }                
