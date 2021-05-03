@@ -20,6 +20,7 @@ namespace SGA
 		virtual void render() = 0;
 		virtual void setPlayerPointOfView(int playerID) = 0;
 		virtual ActionAssignment getPlayerActions() = 0;
+		virtual bool isGameEndRequested() = 0;
 	};
 
 	std::unique_ptr<GameRenderer> createRenderer(GameType type);

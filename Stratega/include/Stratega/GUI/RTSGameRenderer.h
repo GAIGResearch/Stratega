@@ -22,7 +22,8 @@ namespace SGA
 		void render() override;
 		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
-
+		bool isGameEndRequested() override;
+		
 	private:
 		void handleInput();
 		void renderLayers();
@@ -50,6 +51,7 @@ namespace SGA
 		GameState fowState;
 		const GameConfig* config;
 		ActionAssignment assignment;
+		bool endGameRequested = false;
 
 		bool drawDebug = false;
 		

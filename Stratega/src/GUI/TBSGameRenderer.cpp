@@ -77,7 +77,7 @@ namespace SGA
 
 			switch (event.type)
 			{
-				//case sf::Event::Closed: {windowClosed(event); break; }
+				case sf::Event::Closed: {endGameRequested = true;; break; }
 				case sf::Event::MouseWheelScrolled: { mouseScrolled(event); break; }
 				case sf::Event::MouseButtonReleased: { mouseButtonReleased(event); break; }
 				case sf::Event::MouseButtonPressed: { mouseButtonPressed(event); break; }
@@ -631,5 +631,10 @@ namespace SGA
 	{
 		fowState = state;
 		fowState.applyFogOfWar(fowSettings.selectedPlayerID);
+	}
+
+	bool TBSGameRenderer::isGameEndRequested()
+	{
+		return endGameRequested;
 	}
 }

@@ -11,7 +11,7 @@ namespace SGA
 	void RTSGameRunner::playInternal(std::vector<std::unique_ptr<Agent>>& agents, int /*humanIndex*/)
 	{
 		std::vector<AgentThread> threads(agents.size());
-		while (!currentState->isGameOver)
+		while (!currentState->isGameOver && !renderer->isGameEndRequested())
 		{
 			// Run agents
 			for(size_t i = 0; i < agents.size(); i++)

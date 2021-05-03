@@ -33,11 +33,17 @@ namespace SGA
 			}
 			else // Wait for the GUI to return an action
 			{
-				while (!tbsRenderer->isActionAvailable())
+				while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
 				{
 					renderer->render();
 				}
 				nextAction = tbsRenderer->getPlayerActions();
+			}
+
+			// Stop game immediately
+			if (renderer->isGameEndRequested())
+			{
+				break;
 			}
 
 			// Step

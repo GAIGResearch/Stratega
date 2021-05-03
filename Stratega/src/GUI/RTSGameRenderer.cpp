@@ -105,7 +105,7 @@ namespace SGA
 
 			switch (event.type)
 			{
-			case sf::Event::Closed: {/*windowClosed(event, view, window); */ break; }
+			case sf::Event::Closed: {endGameRequested = true; break; }
 			case sf::Event::MouseWheelScrolled: { mouseScrolled(event, view, window); break; }
 			case sf::Event::MouseButtonReleased: { mouseButtonReleased(event, view, window); break; }
 			case sf::Event::MouseButtonPressed: { mouseButtonPressed(event, view, window); break; }
@@ -775,4 +775,10 @@ namespace SGA
 	{
 		return assignment;
 	}
+
+	bool RTSGameRenderer::isGameEndRequested()
+	{
+		return endGameRequested;
+	}
+
 }

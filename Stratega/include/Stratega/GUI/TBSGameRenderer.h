@@ -24,6 +24,7 @@ namespace SGA
 		ActionAssignment getPlayerActions() override;
 
 		bool isActionAvailable() const;
+		bool isGameEndRequested() override;
 		
 	private:
 		void updateFow();
@@ -50,6 +51,7 @@ namespace SGA
 		GameState state;
 		GameState fowState;
 		std::optional<Action> selectedAction;
+		bool endGameRequested = false;
 		
 		sf::RenderWindow window;
 		sf::Clock deltaClock;
