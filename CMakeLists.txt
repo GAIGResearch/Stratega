@@ -21,9 +21,7 @@ option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages.
 # Include sub-projects.
 add_subdirectory("dependencies")
 add_subdirectory("Stratega")
-add_subdirectory("Arena")
 add_subdirectory("GUI")
-add_subdirectory("Tests")
 
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")
