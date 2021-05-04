@@ -5,7 +5,8 @@ namespace SGA
 {
 	void AbstractStateMCTSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
-		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
+		const auto preprocessedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
+		
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
@@ -31,7 +32,7 @@ namespace SGA
 				// we just instantly return it
 				// todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
 				
-				auto actionSpace = forwardModel.generateActions(state);
+				auto actionSpace = preprocessedForwardModel->generateActions(state);
 				if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
 				{
 					gameCommunicator.executeAction(actionSpace.at(0));
@@ -55,7 +56,7 @@ namespace SGA
 						// start a new tree
 						auto abstractState = parameters_.STATE_FACTORY->createAbstractState(gameState);
 						auto gameStateCopy(gameState);
-						rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, abstractState, gameState);
+						rootNode = std::make_unique<AbstractMCTSNode>(*preprocessedForwardModel, abstractState, gameState);
 						//rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, gameState);
 					}
 					
