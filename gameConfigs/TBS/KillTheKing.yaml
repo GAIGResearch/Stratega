@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - AbstractStateMCTSAgent
-    - CombatAgent
+    - RandomAgent
+    - HumanAgent
 
 Tiles:
     Plain:
@@ -29,18 +29,23 @@ Tiles:
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  .  .  .  .  .  .  .  M
-        M  .  a1 .  .  .  .  .  .  .  M
-        M  a1 k1 a1 .  .  .  .  .  .  M
-        M  .  a1 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  M  M
-        M  M  M  .  .  .  .  .  .  W  W
-        M  .  .  .  .  .  .  .  a0 .  M
-        M  .  .  .  .  .  .  a0 k0 a0 M
-        M  M  M  .  .  .  .  .  a0 .  M
-        M  .  .  .  .  .  .  .  .  .  M
-        M  M  M  M  M  M  M  M  M  M  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  a1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  a1 k1 h1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
     Attack:
@@ -87,7 +92,7 @@ Entities:
     Warrior:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: w
-        LineOfSightRange: 600
+        LineOfSightRange: 6
         Actions: [Attack, Move]
         Parameters:
             Health: 200
@@ -98,10 +103,10 @@ Entities:
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit4.png
         Symbol: a
-        LineOfSightRange: 100
+        LineOfSightRange: 10
         Parameters:
             Health: 100
-            AttackRange: 3
+            AttackRange: 5
             AttackDamage: 10
             MovementPoints: 2
         Actions: [Attack, Move]
@@ -109,7 +114,7 @@ Entities:
     Healer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
         Symbol: h
-        LineOfSightRange: 400
+        LineOfSightRange: 4
         Parameters:
             Health: 40
             HealRange: 2
@@ -120,11 +125,11 @@ Entities:
     King:
         Sprite: ../../GUI/Assets/Entities/unit1.png
         Symbol: k
-        LineOfSightRange: 600
+        LineOfSightRange: 6
         Parameters:
             Health: 400
             AttackRange: 2
-            AttackDamage: 1
+            AttackDamage: 100
             MovementPoints: 1
         Actions: [Attack, Move]
 
