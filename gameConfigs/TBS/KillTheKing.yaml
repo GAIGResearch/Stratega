@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
+    - ScriptedAgent
     - CombatAgent
-    - AbstractStateMCTSAgent
 
 Tiles:
     Plain:
@@ -103,7 +103,7 @@ Entities:
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit4.png
         Symbol: a
-        LineOfSightRange: 10
+        LineOfSightRange: 1000
         Parameters:
             Health: 100
             AttackRange: 5
