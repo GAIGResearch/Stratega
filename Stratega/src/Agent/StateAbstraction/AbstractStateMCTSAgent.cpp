@@ -5,7 +5,7 @@ namespace SGA
 {
 	void AbstractStateMCTSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
 	{
-		//const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
+		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
 		while (!gameCommunicator.isGameOver())
 		{
 			if (gameCommunicator.isMyTurn())
