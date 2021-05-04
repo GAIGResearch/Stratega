@@ -62,7 +62,7 @@ namespace SGA
 					//params.printDetails();
 					parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 					rootNode->searchMCTS(forwardModel, parameters_, gameCommunicator.getRNGEngine());
-					rootNode->printTree();
+					//rootNode->printTree();
 
 					// get and store best action
 					const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());

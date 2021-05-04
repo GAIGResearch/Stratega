@@ -12,7 +12,7 @@ namespace SGA
 		if (gameState.isGameOver)
 		{
 			if (gameState.winnerPlayerID == playerID)
-				score += 1000;	// since this score should be minimized we need to deduct points for winning
+				score += 1000;	// this score needs to be maximized. so winning gives you 1000 points, but in a fog of war game, this will never trigger
 			else
 				score -= 1000;
 		}
@@ -33,13 +33,19 @@ namespace SGA
 					{
 						if (parameter.second.name == parameterName)
 						{
+							// (u * x) / ((u*(x-minValue[parameterName])-x+maxValue[parameterName])
+							const double x = entity.parameters[parameter.second.index];
+							const double u = attributeUValues[parameterName];
+							double URQValue = (u * x) / (u * (x - minValue[parameterName]) - x + maxValue[parameterName]);
+							//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
+							
 							if (entity.ownerID == playerID) {
-								const double val = (entity.parameters[parameter.second.index] / maxValue[parameterName]) * parameterWeight;
+								const double val = URQValue * parameterWeight;
 								parameterValues.push_back(val);
 								sum += val;
 							}
 							else {
-								const double val = (entity.parameters[parameter.second.index] / maxValue[parameterName]) * -parameterWeight;
+								const double val = URQValue * -parameterWeight;
 								parameterValues.push_back(val);
 								sum += val;
 							}

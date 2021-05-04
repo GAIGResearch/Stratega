@@ -29,18 +29,18 @@ Tiles:
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  M  M  M  M  M M  M
-        M  .  .  .  .  .  .  .  . .  M
-        M  .  .  .  .  .  .  .  . .  M
-        M  .  .  a1 .  .  .  .  . .  M
-        M  .  a1 k1 a1 .  .  .  . .  M
-        M  .  .  a1 .  M  .  .  . M  M
-        M  M  M  .  .  .  .  .  . W  W
-        M  .  .  .  .  .  a0 .  . .  M
-        M  .  .  .  .  a0 k0 a0 . .  M
-        M  M  M  .  .  .  a0 .  . .  M
-        M  .  .  .  .  .  .  .  . .  M
-        M  M  M  M  M  M  M  M  M M  M
+        M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  .  a1 .  .  .  .  .  .  .  M
+        M  a1 k1 a1 .  .  .  .  .  .  M
+        M  .  a1 .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M  M
+        M  M  M  .  .  .  .  .  .  W  W
+        M  .  .  .  .  .  .  .  a0 .  M
+        M  .  .  .  .  .  .  a0 k0 a0 M
+        M  M  M  .  .  .  .  .  a0 .  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
     Attack:
@@ -101,7 +101,7 @@ Entities:
         LineOfSightRange: 100
         Parameters:
             Health: 100
-            AttackRange: 5
+            AttackRange: 3
             AttackDamage: 10
             MovementPoints: 2
         Actions: [Attack, Move]

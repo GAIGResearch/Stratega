@@ -6,11 +6,16 @@ namespace SGA
 	class AbstractHeuristic : public StateHeuristic
 	{
 	private:
-		std::map<std::string, int> attributeWeights;
+		std::map<std::string, double> attributeWeights;
+		std::map<std::string, double> attributeUValues;
 		std::map<std::string, int> maxValue;
+		std::map<std::string, int> minValue;
 
 	public:
-		AbstractHeuristic(std::map<std::string, int> attributeWeights, GameState& gameState) : attributeWeights(attributeWeights)
+		AbstractHeuristic(std::map<std::string, double>& attributeWeights,
+			std::map<std::string, double>& attributeUValues,
+			GameState& gameState)
+		: attributeWeights(std::move(attributeWeights)), attributeUValues(std::move(attributeUValues))
 		{
 			for (const auto entry : attributeWeights) {
 				const std::string parameterName = entry.first;
@@ -19,6 +24,9 @@ namespace SGA
 					for (const auto parameter : entityType.second.parameters) {
 						if (parameter.second.name == parameterName && parameter.second.maxValue > maxValue[parameterName]) {
 							maxValue[parameterName] = parameter.second.maxValue;
+						}
+						if (parameter.second.name == parameterName && parameter.second.minValue < minValue[parameterName]) {
+							minValue[parameterName] = parameter.second.minValue;
 						}
 					}
 				}
@@ -34,11 +42,14 @@ namespace SGA
 						if (parameter.second.name == "Health")
 						{
 							attributeWeights[parameter.second.name] = 10;
+							attributeUValues[parameter.second.name] = 5.0;
 						} else
 						{
 							attributeWeights[parameter.second.name] = 1;
+							attributeUValues[parameter.second.name] = 1;
 						}
 						maxValue[parameter.second.name] = parameter.second.maxValue;
+						minValue[parameter.second.name] = parameter.second.minValue;
 					}
 					else 
 					{
@@ -46,9 +57,14 @@ namespace SGA
 						{
 							maxValue[parameter.second.name] = parameter.second.maxValue;
 						}
+						if (parameter.second.minValue < minValue[parameter.second.name])
+						{
+							minValue[parameter.second.name] = parameter.second.minValue;
+						}
 					}
 				}
 			}
+			attributeWeights["MovementPoints"] = 0;
 		}
 
 		double evaluateGameState(const TBSForwardModel& forwardModel, GameState& gameState, const int playerID) override;
