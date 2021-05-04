@@ -43,6 +43,7 @@ namespace SGA
 
 	void AgentThread::startComputing(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel)
 	{
+		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);
 		computing = true;
 
