@@ -90,6 +90,7 @@ namespace SGA
 		entities.emplace_back(std::move(instance));
 
 		nextEntityID++;
+		printEntityInfo(nextEntityID - 1);
 		return instance.id;
 	}
 
@@ -275,4 +276,18 @@ namespace SGA
 
 		return nullptr;
 	}
+
+	void GameState::printStateInfo()
+	{
+		std::cout << "---------[StateInfo]---------" << std::endl;
+		std::cout << "Number of entities: " << entities.size() << std::endl;
+
+		//Print entities
+		for (auto& entity : entities)
+		{
+			std::cout << "[OwnerID]" <<entity.ownerID << std::endl;			
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.typeID).name << " [entityID]: "<<entity.id<< std::endl;
+		}
+	}
+
 }

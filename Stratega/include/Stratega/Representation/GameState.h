@@ -103,6 +103,62 @@ namespace SGA
 		{
 			return rngEngine;
 		}
+
+		//Print state info
+
+		void printStateInfo();
+
+		void printBoard()
+		{
+			std::string map;
+			std::cout << "---------[Board]---------" << std::endl;
+			for (int y = 0; y < board.getHeight(); ++y)
+			{
+				for (int x = 0; x < board.getWidth(); ++x)
+				{
+					//Get tile type
+					map+=  gameInfo->getTileType(board.get(x, y).tileTypeID).symbol + "  ";
+				}
+				std::cout << std::endl;
+			}
+
+			for (int y = 0; y < board.getHeight(); ++y)
+			{
+				for (int x = 0; x < board.getWidth(); ++x)
+				{
+					//Get tile type
+					map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol + "  ";
+				}
+				std::cout << std::endl;
+			}
+		}
+
+		//Print info
+		void printEntityInfo(int entityID)
+		{
+			std::cout << "---------[EntityInfo]---------" << std::endl;
+			auto* entity = getEntity(entityID);
+
+			if(entity)
+			{
+				std::cout << "[OwnerID]: " << entity->id << std::endl;
+				std::cout << "	[type]: " << gameInfo->getEntityType(entity->typeID).name << std::endl;
+				std::cout << "	[position]: " << entity->position.x<<","<<entity->position.y << std::endl;
+				std::cout << "	[parameters]: " << std::endl;
+
+				int parameterID=0;
+				auto& entityType = gameInfo->getEntityType(entity->typeID);
+				for (auto& parameter : entity->parameters)
+				{
+					std::cout << "		["<<entityType.parameters.find(parameterID++)->second.name<<"]: " << parameter << std::endl;
+				}
+				
+			}
+			else
+			{
+				std::cout << "EntityNotfound"<<std::endl;
+			}
+		}
 		
 	private:
 		int nextPlayerID;
