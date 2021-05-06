@@ -6,6 +6,9 @@ namespace SGA
 {
 	enum class ShapeType;
 
+	/// <summary>
+	/// Test
+	/// </summary>
 	class EntityActionSpace
 	{
 	public:

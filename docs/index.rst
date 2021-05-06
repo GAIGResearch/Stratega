@@ -26,7 +26,28 @@ Stratega Docs
    :caption: Getting Started
 
    gettingStarted/installation/index
-   gettingStarted/implementTBSAgent/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   tutorials/implementTBSAgent/index
+   tutorials/implementTBSAgent/index
+   tutorials/definingANewGame/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Structure
+
+   structure/overview/index
+   structure/gamestate/index
+   structure/action/index
+   structure/forwardModelAndActions/index
+   structure/configuration/index
+   structure/gui/index
+   structure/arena/index
+   structure/logging/index
+
 
 .. toctree::
    :maxdepth: 1

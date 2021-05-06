@@ -17,7 +17,11 @@ namespace SGA
 	typedef int TileTypeID;
 
 	struct ActionType;
-	
+
+	/// <summary>
+	/// Used by <see cref="SGA::Action"/> to reference any possible type of target available in Stratega.
+	/// It contains a union of different types of data.
+	/// </summary>
 	class ActionTarget
 	{	
 	public:
