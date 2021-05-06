@@ -254,7 +254,7 @@ A tick in turn-based games is equivalent to all players having played once, or i
 
 
 And we are done! Below you can see the full definition of the YAML file.
-Feel free to experiment and have a look at the YAML-Documentation to see what else Stratega can do!
+Feel free to experiment and have a look at the :ref:`YAML-Documentation <yaml-reference>`. to see what else Stratega can do!
 
 ++++++++++++++++++++
 Full yaml
