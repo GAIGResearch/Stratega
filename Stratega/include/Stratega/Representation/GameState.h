@@ -117,20 +117,26 @@ namespace SGA
 				for (int x = 0; x < board.getWidth(); ++x)
 				{
 					//Get tile type
-					map+=  gameInfo->getTileType(board.get(x, y).tileTypeID).symbol + "  ";
+					map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol;
+					map+="  ";
 				}
-				std::cout << std::endl;
+				map += "\n";
+				//std::cout << std::endl;
 			}
 
-			for (int y = 0; y < board.getHeight(); ++y)
+			
+			for (auto& entity : entities)
 			{
-				for (int x = 0; x < board.getWidth(); ++x)
+				auto& pos = entity.position;
+				
+				map[pos.y * board.getWidth() + pos.x*4] = '-';
+				
+				/*if(entity.isNeutral())
 				{
-					//Get tile type
-					map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol + "  ";
-				}
-				std::cout << std::endl;
+					
+				}*/
 			}
+			std::cout << map;
 		}
 
 		//Print info
