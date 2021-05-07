@@ -119,7 +119,7 @@ EntityGroups:
 
 Board:
     GenerationType: Manual
-    #Path or definition here of multiple maps
+    #Path or definition of multiple maps
     Maps: ../../../gameConfigs/TBS/maps.yaml
     #Maps:
     #    Map1: |-
@@ -155,7 +155,7 @@ Board:
     #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
     #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-    Layout: Map1
+    Layout: Map2
     #Layout: |-
     #    M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
@@ -164,8 +164,8 @@ Board:
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #    M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-    #    M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
-    #    M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+    #    M  .  .  .  .  .  W  W  .  W  W  .  .  c  .  .  M
+    #    M  .  .  .  .  .  .  W  c  W  .  .  .  .  .  .  M
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M

@@ -2,6 +2,7 @@
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -66,71 +67,34 @@ namespace SGA
 		}
 
 		// Configure board and spawn entities
-		auto x = 0;
-		auto y = 0;
-		auto width = -1;
 		std::vector<Tile> tiles;
-		for(size_t i = 0; i < boardString.size(); i++)
+		
+		//Switch to selected level
+		auto& selectedLevelDefinition = levelDefinitions.find(selectedLevel);
+		if(selectedLevelDefinition==levelDefinitions.end())
 		{
-			auto c = boardString[i];
-			if(c == '\n')
-			{
-				y++;
-				if(width == -1)
-				{
-					width = x;
-				}
-				else if (x != width)
-				{
-					throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
-				}
-				
-				x = 0;
-				continue;
-			}
-
-			auto entityIt = entityLookup.find(c);
-			auto tileIt = tileLookup.find(c);
-			if(entityIt != entityLookup.end())
-			{
-				// Check if the entity was assigned to an player, we only look for players with ID 0-9
-				auto ownerID = Player::NEUTRAL_PLAYER_ID;
-				if(i < boardString.size() - 1 && std::isdigit(boardString[i + 1]))
-				{
-					ownerID = static_cast<int>(boardString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
-					if(playerIDs.find(ownerID) == playerIDs.end())
-					{
-						throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
-					}
-					i++;
-				}
-
-				state->addEntity(*entityIt->second, ownerID, Vector2f(x, y));
-				// Since an entity occupied this position, we will place the default tile here
-				tiles.emplace_back(defaultTile->toTile(x, y));
-			}
-			else if(tileIt != tileLookup.end())
-			{
-				tiles.emplace_back(tileIt->second->toTile(x, y));
-			}
-			else
-			{
-				throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
-			}
-
-			x++;
+			throw std::runtime_error("Selected level definition not found");
 		}
 
-		// Sometimes there is a newLine at the end of the string, and sometimes not
-		if(boardString[boardString.size() - 1] != '\n')
+		auto& board = selectedLevelDefinition->second.board;
+
+		//Instance Tiles
+		for (size_t y = 0; y < board.getHeight(); y++)
 		{
-			y++;
-			if (x != width)
+			for (size_t x = 0; x < board.getWidth(); x++)
 			{
-				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+				tiles.emplace_back(board.get(x,y)->toTile(x, y));
 			}
 		}
-		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
+
+		//Instance Entities
+		for (auto& entity : selectedLevelDefinition->second.entityPlacements)
+		{
+			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
+		}
+		
+		//Assign board to state
+		state->board = Grid2D<Tile>(board.getWidth(), tiles.begin(), tiles.end());
 
 		// Initialize Pathfinding
 		if(gameType == GameType::RTS)

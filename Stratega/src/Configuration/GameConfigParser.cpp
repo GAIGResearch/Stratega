@@ -30,7 +30,7 @@ namespace SGA
         parseEntityGroups(configNode["EntityGroups"], *config);
         parseAgents(configNode["Agents"], *config);
         parseTileTypes(configNode["Tiles"], *config);
-        parseBoardGenerator(configNode["Board"], *config);
+        
         parsePlayers(configNode["Player"], *config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
@@ -71,7 +71,9 @@ namespace SGA
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);
-		    		
+
+    	//Parse last the boards after adding the actions to entities
+        parseBoardGenerator(configNode["Board"], *config);
         return config;
 	}
 
@@ -138,7 +140,7 @@ namespace SGA
 
         if (boardNode["GenerationType"].as<std::string>() == "Manual")
         {    
-            std::unordered_map<std::string, std::string> mapList;
+            std::unordered_map<int, LevelDefinition> levelDefinitions;
 
             //Check if user has defined multiple maps
             if (boardNode["Maps"].IsDefined())
@@ -159,7 +161,7 @@ namespace SGA
                         //Read maps
                         if (mapsConfig["Maps"].IsDefined())
                         {
-                            parseMaps(mapsConfig, mapList);
+                            parseMaps(mapsConfig, levelDefinitions, config);
                         }
                         else
                         {
@@ -169,25 +171,32 @@ namespace SGA
                 }                
                 else
                 {
-                    parseMaps(boardNode, mapList);
+                    parseMaps(boardNode, levelDefinitions, config);
                 }
             }
 
             std::string boardString = boardNode["Layout"].as<std::string>();
         	//Check if user choose one from the loaded maps
-            auto it =mapList.find(boardString);
-        	if(it!=mapList.end())
-			{
-        		//Found map
-                boardString = it->second;        		
-			}
+            bool found = false;
+            int indexMap=0;
+            for (auto& levelDefinition : levelDefinitions)
+            {
+	            if(levelDefinition.second.name==boardString)
+	            {
+                    found = true;
+                    config.selectedLevel = indexMap;
+	            }
+                indexMap++;
+            }
 
-        	//Assign map
-            config.boardString = boardString;
-        	
-        	// Remove whitespaces but keep newLines
-            config.boardString.erase(std::remove_if(config.boardString.begin(), config.boardString.end(), 
-                [](char x) { return x != '\n' && std::isspace(x); }), config.boardString.end());
+        	if(!found)
+        	{
+                //Parse definition
+                parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
+                config.selectedLevel = levelDefinitions.size() - 1;
+        	}       
+     	
+            config.levelDefinitions = levelDefinitions;
         }
         else
         {
@@ -707,15 +716,125 @@ namespace SGA
         return filePath.string();
     }
 	
-	void GameConfigParser::parseMaps(const YAML::Node& node, std::unordered_map<std::string, std::string>& mapList) const
+	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const
 	{
         //Read the multiple maps in this file
-        auto mapsLayout = node["Maps"].as<std::map<std::string, YAML::Node>>();
+        auto mapsLayout = mapsLayouts["Maps"].as<std::map<std::string, YAML::Node>>();
 
         //Read maps
         for (auto& map : mapsLayout)
         {
-            mapList[map.first] = map.second.as<std::string>();
+            parseLevelDefinition(map.second, map.first, levelDefinitions, config);
         }
 	}
+
+    void GameConfigParser::parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName,
+        std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const
+    {
+        std::string mapString = mapLayout.as<std::string>();
+    	
+        // Remove whitespaces but keep newLines
+        mapString.erase(std::remove_if(mapString.begin(), mapString.end(),
+            [](char x) { return x != '\n' && std::isspace(x); }), mapString.end());    	
+        
+    	//Types
+        std::vector<std::shared_ptr<TileType>> tileTypes;
+        std::vector<EntityPlacement> entityPlacements;
+    	
+    	// Create some lookups for initializing the board and entities
+        std::unordered_map<char, const TileType*> tileLookup;
+        const auto* defaultTile = &config.tileTypes.begin()->second;
+        for (const auto& idTilePair : config.tileTypes)
+        {
+            tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
+            if (idTilePair.second.isDefaultTile)
+                defaultTile = &idTilePair.second;
+        }
+
+        std::unordered_map<char, const EntityType*> entityLookup;
+        for (const auto& idEntityPair : config.entityTypes)
+        {
+            entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+        }
+    	
+        // Configure new level definition and entity placements
+        auto x = 0;
+        auto y = 0;
+        auto width = -1;
+
+        for (size_t i = 0; i < mapString.size(); i++)
+        {
+            auto c = mapString[i];
+            if (c == '\n')
+            {
+                y++;
+                if (width == -1)
+                {
+                    width = x;
+                }
+                else if (x != width)
+                {
+                    throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+                }
+
+                x = 0;
+                continue;
+            }
+
+            auto entityIt = entityLookup.find(c);
+            auto tileIt = tileLookup.find(c);
+            if (entityIt != entityLookup.end())
+            {
+                // Check if the entity was assigned to an player, we only look for players with ID 0-9
+                auto ownerID = Player::NEUTRAL_PLAYER_ID;
+                if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
+                {
+                    ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
+                    if (ownerID>=config.getNumberOfPlayers())
+                    {
+                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
+                    }
+                    i++;
+                }
+
+                EntityPlacement newEntity;
+                newEntity.position = Vector2f(x, y);
+                newEntity.ownerID = ownerID;
+                newEntity.entityType = std::make_shared<EntityType>(*entityIt->second);
+                entityPlacements.emplace_back(newEntity);
+            	
+                // Since an entity occupied this position, we will place the default tile here
+                tileTypes.emplace_back(std::make_shared<TileType>(*defaultTile));
+            }
+            else if (tileIt != tileLookup.end())
+            {                
+                tileTypes.emplace_back(std::make_shared<TileType>(*tileIt->second));
+            }
+            else
+            {
+                throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
+            }
+
+            x++;
+        }
+
+        // Sometimes there is a newLine at the end of the string, and sometimes not
+        if (mapString[mapString.size() - 1] != '\n')
+        {
+            y++;
+            if (x != width)
+            {
+                throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+            }
+        }   	
+       
+    	
+        //Assign grid and entity placements
+        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(width, tileTypes.begin(), tileTypes.end()));
+        newLevel.name = mapName;
+        newLevel.boardString = mapString;
+
+    	//Add new level definition
+        levelDefinitions.emplace(levelDefinitions.size(), newLevel);
+    }
 }

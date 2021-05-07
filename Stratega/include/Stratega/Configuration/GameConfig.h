@@ -7,9 +7,10 @@
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
-
 namespace SGA
 {
+    class LevelDefinition;
+	
     struct GameConfig
     {
         // Rendering - ToDo Split renderConfig and move into dedicated parts (Tile, Entity, etc)
@@ -39,8 +40,10 @@ namespace SGA
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation
-        std::string boardString;
+        //std::string boardString;
         int defaultTileTypeID=-1;
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+        int selectedLevel;
 
     	// Technology tree
         TechnologyTreeCollection technologyTreeCollection;

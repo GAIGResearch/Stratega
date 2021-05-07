@@ -1,8 +1,10 @@
 #pragma once
 #include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Representation/LevelDefinition.h>
 
 namespace SGA
 {
+	
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath);
 	
 	class GameConfigParser
@@ -29,7 +31,8 @@ namespace SGA
 		ActionCategory parseActionCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
         std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
-        void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<std::string, std::string>& mapList) const;
+        void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const;
+        void parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const;
 	};
 }
 
