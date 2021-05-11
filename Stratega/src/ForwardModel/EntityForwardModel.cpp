@@ -11,6 +11,10 @@ namespace SGA
 	{
 		std::vector<Action> actionBucket;
 		generateActions(state, playerID, actionBucket);
+		for (auto& element : actionBucket)
+		{
+			state.printActionInfo(element);
+		}
 		return actionBucket;
 	}
 
