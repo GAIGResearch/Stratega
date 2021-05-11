@@ -6,16 +6,22 @@
 #include <utils.h>
 
 Arena::Arena(const SGA::GameConfig& config)
-	: config(&config), runner(createGameRunner(config)), gameCount(0)
+	: config(&config), runner(createGameRunner(config)), gameBattle(0)
 {
 }
 
-void Arena::runGames(int playerCount, int seed)
+void Arena::runGames(int playerCount, int seed, int gamesNumber)
 {
-	gameCount = 0;
-	std::mt19937 rngEngine(seed);
-	CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine);};
-	generateCombinations(config->agentParams.size(), playerCount, callback);
+	for (int i = 0; i < gamesNumber; ++i)
+	{
+		gameCount = i;
+		gameBattle = 0;
+		std::mt19937 rngEngine(seed+i);
+		std::cout << "Seed " << seed + i<<std::endl;
+		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
+		generateCombinations(config->agentParams.size(), playerCount, callback);
+	}
+	
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
@@ -38,8 +44,9 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	}
 
 	// Initialize logging
-	gameCount++;
+	gameBattle++;
 	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
+	SGA::Log::logSingleValue("Battle", std::to_string(gameBattle));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
