@@ -90,7 +90,6 @@ namespace SGA
 		entities.emplace_back(std::move(instance));
 
 		nextEntityID++;
-		printEntityInfo(nextEntityID - 1);
 		return instance.id;
 	}
 

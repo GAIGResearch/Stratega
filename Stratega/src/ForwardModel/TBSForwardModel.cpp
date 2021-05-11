@@ -43,9 +43,6 @@ namespace SGA
 
 	void TBSForwardModel::endTurn(GameState& state) const
 	{
-		state.printStateInfo();
-		state.printBoard();
-		state.printBoard(state.currentPlayer);
 		// Find the next player who's still able to play
 		for (auto i = 1; i <= state.players.size(); i++)
 		{
