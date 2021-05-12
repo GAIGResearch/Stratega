@@ -5,16 +5,17 @@
 namespace SGA
 {
 	
-    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath);
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& fileMapsPath="");
 	
 	class GameConfigParser
 	{
 	public:
-		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath) const;
+		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath, const std::string& fileMapsPath) const;
 
 		void parseAgents(const YAML::Node& agentsNode, GameConfig& config) const;
 		void parseTileTypes(const YAML::Node& tilesNode, GameConfig& config) const;
-		void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const;
+		//If the method received a maps path, it will load them from the path instead of the game yaml
+		void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config, const std::string& fileMapsPath) const;
 		void parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const;
         void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;

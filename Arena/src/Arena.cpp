@@ -5,19 +5,30 @@
 #include <Arena.h>
 #include <utils.h>
 
-Arena::Arena(const SGA::GameConfig& config)
+Arena::Arena(SGA::GameConfig& config)
 	: config(&config), runner(createGameRunner(config)), gameBattle(0)
 {
 }
 
-void Arena::runGames(int playerCount, int seed, int gamesNumber)
+void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 {
-	for (int i = 0; i < gamesNumber; ++i)
+	mapCount = 0;
+	currSeed = seed;
+	
+	for (int i = 0; i < gamesNumber*mapNumber; ++i)
 	{
 		gameCount = i;
 		gameBattle = 0;
-		std::mt19937 rngEngine(seed+i);
-		std::cout << "Seed " << seed + i<<std::endl;
+		
+		//Change map after playing all gamesNumber in each map
+		if(i% gamesNumber ==0&&i!=0)
+		{
+			mapCount++;
+			config->selectedLevel = mapCount;
+		}
+		currSeed=seed+i;
+		std::mt19937 rngEngine(currSeed);
+		std::cout << "Using Seed: " << currSeed<<std::endl;
 		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 		generateCombinations(config->agentParams.size(), playerCount, callback);
 	}
@@ -46,7 +57,9 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	// Initialize logging
 	gameBattle++;
 	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
+	SGA::Log::logSingleValue("Map", std::to_string(mapCount));
 	SGA::Log::logSingleValue("Battle", std::to_string(gameBattle));
+	SGA::Log::logSingleValue("Seed", std::to_string(currSeed));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);

@@ -8,14 +8,14 @@
 
 namespace SGA
 {
-    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath)
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& fileMapsPath)
     {
         GameConfigParser parser;
-        return parser.parseFromFile(filePath);
+        return parser.parseFromFile(filePath, fileMapsPath);
     }
 
 	
-	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
+	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath, const std::string& fileMapsPath) const
 	{
 		auto configNode = YAML::LoadFile(filePath);
         auto config = std::make_unique<GameConfig>();
@@ -73,7 +73,7 @@ namespace SGA
         parseRenderConfig(configNode, *config);
 
     	//Parse last the boards after adding the actions to entities
-        parseBoardGenerator(configNode["Board"], *config);
+        parseBoardGenerator(configNode["Board"], *config, fileMapsPath);
         return config;
 	}
 
@@ -131,77 +131,109 @@ namespace SGA
 		}
 	}
 
-    void GameConfigParser::parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const
+    void GameConfigParser::parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config, const std::string& fileMapsPath) const
 	{
-		if(!boardNode.IsDefined())
+		if(!boardNode.IsDefined()&& fileMapsPath.empty())
 		{
             throw std::runtime_error("Cannot find definition for the Board");
 		}
-
-        if (boardNode["GenerationType"].as<std::string>() == "Manual")
-        {    
-            std::unordered_map<int, LevelDefinition> levelDefinitions;
-
-            //Check if user has defined multiple maps
-            if (boardNode["Maps"].IsDefined())
+    	
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+    	
+        //Load maps from file
+    	if(fileMapsPath.empty())
+    	{
+            if (boardNode["GenerationType"].as<std::string>() == "Manual")
             {
-                if(boardNode["Maps"].IsScalar())
+                
+
+                //Check if user has defined multiple maps
+                if (boardNode["Maps"].IsDefined())
                 {
-                    auto path = boardNode["Maps"].as<std::string>();
-                	
-                    //Check if is path
-                    std::ifstream file(path);
-                    if (file)
+                    if (boardNode["Maps"].IsScalar())
                     {
-                        std::cout << "The file exist" << std::endl;
+                        auto path = boardNode["Maps"].as<std::string>();
 
-                        //Lets read the yaml file
-                        auto mapsConfig = YAML::LoadFile(path);
+                        //Check if is path
+                        std::ifstream file(path);
+                        if (file)
+                        {
+                            std::cout << "The file exist" << std::endl;
 
-                        //Read maps
-                        if (mapsConfig["Maps"].IsDefined())
-                        {
-                            parseMaps(mapsConfig, levelDefinitions, config);
-                        }
-                        else
-                        {
-                            throw std::runtime_error("Cannot find definition for the maps");
+                            //Lets read the yaml file
+                            auto mapsConfig = YAML::LoadFile(path);
+
+                            //Read maps
+                            if (mapsConfig["Maps"].IsDefined())
+                            {
+                                parseMaps(mapsConfig, levelDefinitions, config);
+                            }
+                            else
+                            {
+                                throw std::runtime_error("Cannot find definition for the maps");
+                            }
                         }
                     }
-                }                
-                else
-                {
-                    parseMaps(boardNode, levelDefinitions, config);
+                    else
+                    {
+                        parseMaps(boardNode, levelDefinitions, config);
+                    }
                 }
-            }
 
-            std::string boardString = boardNode["Layout"].as<std::string>();
-        	//Check if user choose one from the loaded maps
-            bool found = false;
-            int indexMap=0;
-            for (auto& levelDefinition : levelDefinitions)
+                std::string boardString = boardNode["Layout"].as<std::string>();
+                //Check if user choose one from the loaded maps
+                bool found = false;
+                int indexMap = 0;
+                for (auto& levelDefinition : levelDefinitions)
+                {
+                    if (levelDefinition.second.name == boardString)
+                    {
+                        found = true;
+                        config.selectedLevel = indexMap;
+                    }
+                    indexMap++;
+                }
+
+                if (!found)
+                {
+                    //Parse definition
+                    parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
+                    config.selectedLevel = levelDefinitions.size() - 1;
+                }
+
+                config.levelDefinitions = levelDefinitions;
+            }
+            else
             {
-	            if(levelDefinition.second.name==boardString)
-	            {
-                    found = true;
-                    config.selectedLevel = indexMap;
-	            }
-                indexMap++;
+                throw std::runtime_error("Unknown board-generation type " + boardNode["GenerationType"].as<std::string>());
             }
-
-        	if(!found)
-        	{
-                //Parse definition
-                parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
-                config.selectedLevel = levelDefinitions.size() - 1;
-        	}       
-     	
-            config.levelDefinitions = levelDefinitions;
-        }
+    	}
         else
         {
-            throw std::runtime_error("Unknown board-generation type " + boardNode["GenerationType"].as<std::string>());
+	        //Load maps from a different path
+            //Check if is path
+            std::ifstream file(fileMapsPath);
+            if (file)
+            {
+                std::cout << "The file exist" << std::endl;
+
+                //Lets read the yaml file
+                auto mapsConfig = YAML::LoadFile(fileMapsPath);
+
+                //Read maps
+                if (mapsConfig["Maps"].IsDefined())
+                {
+                    parseMaps(mapsConfig, levelDefinitions, config);
+                }
+                else
+                {
+                    throw std::runtime_error("Cannot find definition for the maps");
+                }
+
+                config.levelDefinitions = levelDefinitions;
+            }
         }
+
 	}
 
     void GameConfigParser::parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const
