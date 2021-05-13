@@ -40,13 +40,8 @@ Stratega Docs
    :caption: Structure
 
    structure/overview/index
-   structure/gamestate/index
-   structure/action/index
-   structure/forwardModelAndActions/index
-   structure/configuration/index
-   structure/gui/index
-   structure/arena/index
-   structure/logging/index
+   structure/representation/index
+   structure/gameLogic/index
 
 
 .. toctree::

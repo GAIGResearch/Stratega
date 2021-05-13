@@ -2,21 +2,36 @@
 Overview
 #############
 
-The Stratega framework mainly consists of 4 parts, i.e. the game-runner, rendering, agents, and configuration.
+This page contains an overview of the various components contained in Stratega.
+Stratega can be split roughly into 4 parts, i.e. the game-runner, rendering, agents and configuration.
+The diagram below shows how the various components interact with each other.
+Note that the game-runner is represented by the box containing the forward model and game state.
 
-.. image:: ../../images/strategaStructure.png
-   :alt: Stratega Structure
+.. image:: ../../images/architectureOverview.png
+   :alt: Architecture Overview
 
-The core of the framework is the game-runner, whose sole purpose is to run games and provide information about the game. The framework provides two game-runners, one for turn-based and one for RTS-games.
-The agents are responsible for controlling the actions of a player in the game state. 
-To do this, each agent receives a game communicator to send actions or poll information about the current game state. Additionally, each agent has access to a copy of the forward model of the game-runner.
-Regardless of the type of game, every agent-thread runs until the game is over. Agents can query information or send actions at any point in time, even during an opponent's turn. This enables agents to think outside their own turns. Additionally, the agent can observe how the game evolves to think ahead. Note that the turn-based game-runner ignores actions from players when it's not their turn. Meanwhile, the RTS-runner will collect the actions from all players and execute them in order of receipt after a set amount of time.
+The center of the framework is the game-runner, whose sole purpose is to run games.
+Since Stratega supports both turn-based games and real-time games, the game-runner implements different behaviours based on the type of the game.
+To actually run a game, the game-runner contains the current state of the game and a forward model.
+The forward model is used by the game-runner to update the state of the game whenever it receives a new set of actions.
+While the game state is the same for all game types, the forward model is implemented differently to suit the game type. 
 
-The runner keeps track of which agent controls which player in the game state. If no agent is available for a player, the runner will send a signal and wait until an external source provides the missing actions. 
-The render-thread subscribes to events from the game-runner to update the window. If the runner signals missing agents, the GUI will switch to interactive mode to let human-players play the game. That also has the added benefit that human-players have no time limit.
-This approach has similarities to MVVM, in the sense that the game-runner represents the view-model. The renderer (view) is decoupled from the logic and can be easily disabled to switch between headless-execution and GUI-execution.
+Now, the game-runner may be able to run games.
+However, it also needs access to someone who decides how to act in the game.
+For this, the game-runner also gets access to a list of agents.
+Whenever a player can act in the game, the game-runner will ask the corresponding agent to compute an action.
+To do that, the agent gets access to a copy of the game state and the forward model.
+Note that the game state sent to the agent will have fog of war applied to it.
+In turn-based games, only one player can act simultaneously, so only one agent will be asked to compute an action.
+In real-time games, all agents can act in parallel, so they run in separate threads to save time.
 
-A feature of the framework is the ability to write algorithms for various degrees of game-abstractions. While game-states represent nodes in a game-tree, the forward model represents the edges to get from one node to another. That means the forward model provides actions, as well as the game-logic.
-Developers can provide a new forward model for the default game state or provide their new representations. Algorithms implemented in the framework can work with any kind of forward model.
+The game-runner can be executed in headless mode to evaluate games in quick succession.
+But the game-runner also supports a way to visualize the game and play it manually.
+For this, the game-runner has access to the game-renderer.
+The game-renderer is continuously informed about the current game state, which is then displayed to the user.
+By default, the GUI will be in spectator mode, but if the game-runner is missing an agent, the GUI will substitute the missing agent.
 
-Lastly, the framework provides the ability to configure games via YAML-files, which are explained in more detail in upcoming sections. It's noteworthy that configuration is separated from the rest of the framework, meaning the configuration initializes and sets up the game, but the framework does not need to be re-compiled every time a change in the configuration is made. 
+At last, the framework provides the ability to configure games using YAML files.
+The configuration is used to generate everything that was discussed so far, this includes what is contained in the game state, the game rules used by the forward model, and you can even define default agents that should be used in the game.
+The main benefit of the configuration file is that it allows researchers to test agents on a wide range of games.
+You do not have to reimplement the agent for each game, implement the agent once and test it on all the games already configured for Stratega.
