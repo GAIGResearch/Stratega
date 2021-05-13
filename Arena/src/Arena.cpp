@@ -54,17 +54,16 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		agents[i]->setSeed(seedDist(rngEngine));
 	}
 
-	// Initialize logging
-	gameBattle++;
-	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
+	// Initialize logging	
+	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
 	SGA::Log::logSingleValue("Map", std::to_string(mapCount));
-	SGA::Log::logSingleValue("Battle", std::to_string(gameBattle));
+	SGA::Log::logSingleValue("Battle", std::to_string(gameBattle++));
 	SGA::Log::logSingleValue("Seed", std::to_string(currSeed));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
-
+	
 	// Run the game
 	try
 	{
