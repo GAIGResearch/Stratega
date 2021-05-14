@@ -18,7 +18,7 @@ Some of this are optional and Stratega already inclused a default value.
 Arguments:
 
 - **seed:** Used to intialize the random engine.
-- **playerCount:** Defines the number of agents will play a game the games.
+- **playerCount:** Defines the number of agents that will play the games.
 - **logPath:** Path of the log file that Stratega will generate.
 - **gamesNumber:** Allow the user to choose the number of games that agents will play.
 - **configPath:** Path of the game configuration yaml.
@@ -47,9 +47,9 @@ Single map
    :alt: Single map example
 
 
-++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++
 Generated log example using one single map
-++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++
 
 .. code-block:: yaml
 
@@ -143,9 +143,9 @@ Example of maps file:
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
     
 
-++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++
 Generated log example using multiple maps
-++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++
 .. code-block:: yaml
 
     Game 0:

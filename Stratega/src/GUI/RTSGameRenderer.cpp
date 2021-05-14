@@ -14,7 +14,7 @@ namespace SGA
 		: state(),
 		fowState(),
 		assignment(),
-		window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		window(sf::VideoMode(1200, 800), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		pointOfViewPlayerID(0),
 		fowSettings(),
 		zoomValue(5.f),
@@ -60,6 +60,21 @@ namespace SGA
 		this->fowState = state;
 		this->fowState.applyFogOfWar(fowSettings.selectedPlayerID);
 		assignment.clear();
+
+		auto it = futureActionsToPlay.begin();
+		//Assign entity actions if they are still valid
+		while (it != futureActionsToPlay.end())
+		{
+			if (!it->validate(fowState)) {
+
+				it = futureActionsToPlay.erase(it);
+			}
+			else
+			{
+				assignment.assignActionOrReplace(*it);
+				++it;
+			}
+		}
 	}
 
 	void RTSGameRenderer::render()
@@ -473,7 +488,16 @@ namespace SGA
 		auto actionsToExecute = getWidgetResult(state, actionsSettings, pointOfViewPlayerID);
 		for(auto& action : actionsToExecute)
 		{
-			assignment.assignActionOrReplace(action);
+			if (action.actionTypeID == -1 || action.isPlayerAction())
+			{
+				//If continuous or Player action we assign it directly
+				assignment.assignActionOrReplace(action);
+			}
+			else
+			{
+				//If is Entity action we save it for future calls
+				futureActionsToPlay.emplace_back(action);
+			}
 		}
 
 		ImGui::NextColumn();

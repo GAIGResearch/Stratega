@@ -69,5 +69,8 @@ namespace SGA
 		bool moving = false;
 		bool dragging = false;
 		sf::Vector2f oldMousePosition;
+
+		//Collect actions played by previous frame
+		std::vector<Action> futureActionsToPlay;
 	};
 }
