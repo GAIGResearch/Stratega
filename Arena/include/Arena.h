@@ -18,13 +18,10 @@ public:
 private:
 	SGA::GameConfig* config;
 	std::unique_ptr<SGA::GameRunner> runner;
-	//Battle in the same combination with exchanged positions
-	int gameBattle;
+	//Number of battle in the same game combination with exchanged players
+	int gameBattleCount;
 	//One game is a set of battles between two or more agents
 	int gameCount;
-
-	bool runMultiMap;
 	int mapCount;
-
-	int currSeed;
+	int currentSeed;
 };
