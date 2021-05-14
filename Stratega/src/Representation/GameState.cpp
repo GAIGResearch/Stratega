@@ -112,7 +112,7 @@ namespace SGA
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
 
-	bool GameState::isInBounds(Vector2i pos)
+	bool GameState::isInBounds(Vector2i pos) const
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 	}
@@ -274,5 +274,142 @@ namespace SGA
 		}
 
 		return nullptr;
+	}
+
+	void GameState::printStateInfo() const
+	{
+		std::cout << "---------[StateInfo]---------" << std::endl;
+		std::cout << "Number of entities: " << entities.size() << std::endl;
+
+		//Print entities
+		for (auto& entity : entities)
+		{
+			std::cout << "[OwnerID]" <<entity.ownerID << std::endl;			
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.typeID).name << " [entityID]: "<<entity.id<< std::endl;
+		}
+	}
+
+	void GameState::printBoard() const
+	{
+		std::string map;
+		std::cout << "---------[Board]---------" << std::endl;
+		//Add tiles
+		for (int y = 0; y < board.getHeight(); ++y)
+		{
+			for (int x = 0; x < board.getWidth(); ++x)
+			{
+				//Get tile type
+				map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol;
+				map += "  ";
+			}
+			map += "\n";
+		}
+
+		//Add entities
+		for (auto& entity : entities)
+		{
+			auto& pos = entity.position;
+			const char symbol = gameInfo->getEntityType(entity.typeID).symbol;
+			const char ownerID = std::to_string(entity.ownerID)[0];
+			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
+
+			map[entityMapIndex] = symbol;
+
+			if (!entity.isNeutral())
+				map[entityMapIndex + 1] = ownerID;
+		}
+		//Print map
+		std::cout << map;
+	}
+
+	void GameState::printBoard(int playerID) const
+	{
+		if(playerID < players.size())
+		{
+			GameState stateWithFOG = *this;
+			stateWithFOG.applyFogOfWar(playerID);
+			stateWithFOG.printBoard();
+		}
+		else
+		{
+			std::cout << "Player not found" << std::endl;
+		}		
+	}
+	
+	void GameState::printEntityInfo(int entityID)
+	{
+		std::cout << "EntityInfo";
+		const auto* entity = getEntity(entityID);
+
+		if (entity)
+		{
+			std::cout << "[" << gameInfo->getEntityType(entity->typeID).name << "],";
+			std::cout << " [ID: " <<entity->id<<"],";
+			std::cout << " [OwnerID: " <<entity->ownerID<<"],";
+			std::cout << " [Position: "<< entity->position.x << "," << entity->position.y <<"]";
+
+			
+
+			int parameterID = 0;
+			auto& entityType = gameInfo->getEntityType(entity->typeID);
+			if (entity->parameters.empty())
+			{
+				std::cout << std::endl;
+				return;
+			}				
+				
+			std::cout << ", [Parameters: ";
+			for (auto& parameter : entity->parameters)
+			{
+				std::cout << "(" << entityType.parameters.find(parameterID++)->second.name <<": "<< parameter<<")";
+			}
+
+			std::cout << "]"<<std::endl;
+		}
+		else
+		{
+			std::cout << "Entity not found" << std::endl;
+		}
+	}
+
+	void GameState::printActionInfo(Action& action) const
+	{
+		std::cout << "ActionInfo";
+		if(action.actionTypeFlags== ActionFlag::AbortContinuousAction)
+		{
+			std::cout << "[AbortContinuousAction]" << std::endl;
+		}
+		else if (action.actionTypeFlags == ActionFlag::EndTickAction)
+		{
+			std::cout << "[EndTick]"  << std::endl;
+		}
+		else
+		{
+			const ActionType& actionType = gameInfo->getActionType(action.actionTypeID);
+			std::cout << "["<< actionType.name <<"]," ;
+			
+			//Print source
+			if (actionType.sourceType == ActionSourceType::Player)
+				std::cout << " [SourceType Player: " << action.ownerID << "],";
+			else
+			{
+				int entityID = action.getSourceID();
+				int entityTypeID = getEntityConst(entityID)->typeID;
+				auto& entityType = gameInfo->getEntityType(entityTypeID);
+				
+				std::cout << " [SourceType Entity: "<<entityType.name<<" "<<entityID<<"],";
+			}
+				
+
+
+
+			std::cout << " [ActionTargets" ;
+			for (size_t i = 0; i < actionType.actionTargets.size(); i++)
+			{
+				std::cout << "(Target: "<<actionType.actionTargets[i].first.getTypeString()<<", " << action.targets[i + 1].getValueString(*this) << ")";
+			}
+			std::cout << "]"<<std::endl;
+		}
+		
 	}
 }

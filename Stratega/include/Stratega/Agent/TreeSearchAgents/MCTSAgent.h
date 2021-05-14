@@ -14,8 +14,9 @@ namespace SGA
 			: parameters_(std::move(params))
 		{
 		}
-		
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+
+
+		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;

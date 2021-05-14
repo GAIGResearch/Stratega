@@ -2,47 +2,42 @@
 
 namespace SGA
 {
-	void BFSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment BFSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
-		const auto processedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
-
-		while (!gameCommunicator.isGameOver())
+		if (state.gameType != GameType::TBS)
 		{
-			if (gameCommunicator.isMyTurn())
-			{
-				auto gameState = gameCommunicator.getGameState();
-				if (gameState.isGameOver)	//safety check against race conditions
-					break;
-				const auto actionSpace = forwardModel.generateActions(gameState);
-				
-				// if there is just one action and we don't spent the time on continuing our search
-				// instead we return it instantly
-				if (actionSpace.size() == 1)
-				{
-					gameCommunicator.executeAction(actionSpace.at(0));
-					
-					// forget about your last action index, because the opponent will move in between
-					previousActionIndex = -1;
-					rootNode = nullptr;
-				}
-				else // else we run a full search
-				{
-					// init rootNode and node lists
-					init(*processedForwardModel, gameState);
+			throw std::runtime_error("BFSAgent only supports TBS-Games");
+		}
 
-					// perform BFS Search
-					search(*processedForwardModel, openNodes);
+		// ToDo Move preprocessing to init
+		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
 
-					// retrieve best action
-					const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-					auto action = rootNode->actionSpace.at(bestActionIndex);
-					gameCommunicator.executeAction(action);
-					
-					// remember latest action in case the search should be continued
-					previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+		const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+		// if there is just one action and we don't spent the time on continuing our search
+		// instead we return it instantly
+		if (actionSpace.size() == 1)
+		{
+			// forget about your last action index, because the opponent will move in between
+			previousActionIndex = -1;
+			rootNode = nullptr;
 
-				}
-			}
+			return ActionAssignment::fromSingleAction(actionSpace.front());
+		}
+		else // else we run a full search
+		{
+			// init rootNode and node lists
+			init(*processedForwardModel, state);
+
+			// perform BFS Search
+			search(*processedForwardModel, openNodes);
+
+			// retrieve best action
+			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
+			auto action = rootNode->actionSpace.at(bestActionIndex);\
+			// remember latest action in case the search should be continued
+			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+
+			return ActionAssignment::fromSingleAction(action);
 		}
 	}
 

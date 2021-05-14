@@ -1,6 +1,8 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -19,36 +21,8 @@ namespace SGA
 		}
 		return agents;
 	}
-	
-	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine )
-	{
-		std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
-		
-		// Generate game
-		std::unique_ptr<Game> game;
-		if (config.gameType == GameType::TBS)
-		{
-			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
-			auto fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
-			//fm.setRNGEngine(std::mt19937(distribution(rngEngine)));
-			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
-		}
-		else if (config.gameType == GameType::RTS)
-		{
-			auto gameState = std::unique_ptr<GameState>(dynamic_cast<GameState*>(config.generateGameState().release()));
-			auto fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
-			//fm.setRNGEngine(std::mt19937(distribution(rngEngine)));
-			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
-		}
-		else
-		{
-			throw std::runtime_error("Tried generating a game with unknown game-type ");
-		}
 
-		return game;
-	}
-
-	std::unique_ptr<GameState> GameConfig::generateGameState() const
+	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const
 	{
 		// Initialize state
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
@@ -93,75 +67,48 @@ namespace SGA
 		}
 
 		// Configure board and spawn entities
-		auto x = 0;
-		auto y = 0;
-		auto width = -1;
 		std::vector<Tile> tiles;
-		for(size_t i = 0; i < boardString.size(); i++)
+		
+		//Switch to selected level
+		int mapIDtoLoad = selectedLevel;
+		if (levelID != -1)
+			mapIDtoLoad = levelID;
+		auto& selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
+		if(selectedLevelDefinition==levelDefinitions.end())
 		{
-			auto c = boardString[i];
-			if(c == '\n')
-			{
-				y++;
-				if(width == -1)
-				{
-					width = x;
-				}
-				else if (x != width)
-				{
-					throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
-				}
-				
-				x = 0;
-				continue;
-			}
-
-			auto entityIt = entityLookup.find(c);
-			auto tileIt = tileLookup.find(c);
-			if(entityIt != entityLookup.end())
-			{
-				// Check if the entity was assigned to an player, we only look for players with ID 0-9
-				auto ownerID = Player::NEUTRAL_PLAYER_ID;
-				if(i < boardString.size() - 1 && std::isdigit(boardString[i + 1]))
-				{
-					ownerID = static_cast<int>(boardString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
-					if(playerIDs.find(ownerID) == playerIDs.end())
-					{
-						throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
-					}
-					i++;
-				}
-
-				state->addEntity(*entityIt->second, ownerID, Vector2f(x, y));
-				// Since an entity occupied this position, we will place the default tile here
-				tiles.emplace_back(defaultTile->toTile(x, y));
-			}
-			else if(tileIt != tileLookup.end())
-			{
-				tiles.emplace_back(tileIt->second->toTile(x, y));
-			}
-			else
-			{
-				throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
-			}
-
-			x++;
+			throw std::runtime_error("Selected level definition not found");
 		}
 
-		// Sometimes there is a newLine at the end of the string, and sometimes not
-		if(boardString[boardString.size() - 1] != '\n')
+		auto& board = selectedLevelDefinition->second.board;
+
+		//Instance Tiles
+		for (size_t y = 0; y < board.getHeight(); y++)
 		{
-			y++;
-			if (x != width)
+			for (size_t x = 0; x < board.getWidth(); x++)
 			{
-				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+				tiles.emplace_back(board.get(x,y)->toTile(x, y));
 			}
+		}
+
+		//Instance Entities
+		for (auto& entity : selectedLevelDefinition->second.entityPlacements)
+		{
+			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
 		}
 		
-		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
+		//Assign board to state
+		state->board = Grid2D<Tile>(board.getWidth(), tiles.begin(), tiles.end());
+
+		// Initialize Pathfinding
+		if(gameType == GameType::RTS)
+		{
+			auto* rtsFM = dynamic_cast<SGA::RTSForwardModel*>(forwardModel.get());
+			rtsFM->buildNavMesh(*state, NavigationConfig{});
+		}
 		
 		return std::move(state);
 	}
+
 
 	size_t GameConfig::getNumberOfPlayers() const
 	{

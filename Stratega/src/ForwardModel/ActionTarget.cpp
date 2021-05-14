@@ -1,6 +1,8 @@
 #include <Stratega/ForwardModel/ActionType.h>
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/GameState.h>
+
+
 namespace SGA
 {
 	ActionTarget ActionTarget::createPositionActionTarget(Vector2f position)
@@ -211,4 +213,54 @@ namespace SGA
 		
 		return isValid;
 	}
+
+	std::string ActionTarget::getValueString(const GameState& state) const
+	{
+		switch (targetType)
+		{
+		case EntityReference:
+			
+			return getEntityType(state).name +" "+std::to_string(getEntityID());
+			break;
+		case Position:
+		{
+			const auto position = getPosition(state);
+				
+			std::string posString;
+			std::string num_text = std::to_string(position.x);
+			std::string rounded = num_text.substr(0, num_text.find(".") + 3);
+			posString += num_text.substr(0, num_text.find(".") + 3);
+			posString += ",";
+			num_text = std::to_string(position.y);
+			posString += num_text.substr(0, num_text.find(".") + 3);
+			return posString;
+		}
+		break;
+		case PlayerReference:
+			return std::to_string(getPlayerID());
+			break;
+		case EntityTypeReference:
+			{
+			const auto& entityType = getEntityType(state);
+			return entityType.name;
+			}			
+			break;
+		case TechnologyReference:
+			{
+			int technologyID = getTechnologyID();
+			std::string technologyName = state.gameInfo->technologyTreeCollection->getTechnology(technologyID).name;
+			return technologyName;
+			}			
+			break;
+		case ContinuousActionReference:
+			return std::to_string(getContinuousActionID());
+			break;
+		case TileTypeReference:
+			return getTileType(state).name;
+			break;
+		default:
+			return "Not defined";
+		}
+	}
+
 }

@@ -3,37 +3,30 @@
 
 namespace SGA
 {
-	void OSLAAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment OSLAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
 	{
-		while (!gameCommunicator.isGameOver())
+		if(state.gameType != GameType::TBS)
 		{
-			if (gameCommunicator.isMyTurn())
+			throw std::runtime_error("OSLAAgent only supports TBS-Games");
+		}
+
+		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+		MinimizeDistanceHeuristic heuristic;
+		double bestHeuristicValue = -std::numeric_limits<double>::max();
+
+		int bestActionIndex = 0;
+		for (int i = 0; i < actionSpace.size(); i++)
+		{
+			auto gsCopy(state);
+			forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
+			const double value = heuristic.evaluateGameState(dynamic_cast<const TBSForwardModel&>(forwardModel), gsCopy, getPlayerID());
+			if (value > bestHeuristicValue)
 			{
-				auto gameState = gameCommunicator.getGameState();
-				if (gameState.isGameOver)
-					break;
-				auto actionSpace = forwardModel.generateActions(gameState);
-				MinimizeDistanceHeuristic heuristic;
-				double bestHeuristicValue = -std::numeric_limits<double>::max();
-				
-				int bestActionIndex = 0;
-				const int playerID = gameState.currentPlayer;
-
-				for (int i = 0; i < actionSpace.size(); i++)
-				{
-					auto gsCopy(gameState);
-					
-					forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-					const double value = heuristic.evaluateGameState(forwardModel, gsCopy, playerID);
-					if (value > bestHeuristicValue)
-					{
-						bestHeuristicValue = value;
-						bestActionIndex = i;
-					}
-				}
-
-				gameCommunicator.executeAction(actionSpace.at(bestActionIndex));
+				bestHeuristicValue = value;
+				bestActionIndex = i;
 			}
 		}
+
+		return ActionAssignment::fromSingleAction(actionSpace.at(bestActionIndex));
 	}
 }
