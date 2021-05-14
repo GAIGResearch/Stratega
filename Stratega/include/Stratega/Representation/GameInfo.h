@@ -16,7 +16,8 @@ namespace SGA
 
 	/// <summary>
 	/// Contains all the type information used by the game.
-	/// It Have different methods to get the different types: parameter, entity, action...
+	/// It have different methods to get the different types: parameter, entity, action...
+	/// The agent can access to the yaml path where the game configuration is defined.
 	/// </summary>
 	struct GameInfo
 	{

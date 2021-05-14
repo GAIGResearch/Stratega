@@ -34,6 +34,30 @@ namespace SGA
 
 		operator Type() const { return type; }
 
+		std::string getTypeString() const
+		{
+			switch (type)
+			{
+			case None:
+				return "None";
+				break;
+			case Position:
+				return "Position";
+			break;
+			case EntityType:
+				return "EntityType";
+				break;
+			case Entity:
+				return "Entity";
+				break;
+			case Technology:
+				return "Technology";
+				break;
+			case ContinuousAction:
+				return "ContinuousAction";
+				break;
+			}
+		}
 		//Check if is a valid target
 		bool isValid(const GameState& state, const ActionTarget& actionTarget, const ActionTarget& sourceActionTarget) const;
 

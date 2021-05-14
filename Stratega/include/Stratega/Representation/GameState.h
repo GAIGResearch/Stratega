@@ -16,7 +16,10 @@ namespace SGA
 		TBS,
 		RTS
 	};
-	
+	/// <summary>
+	/// Contains the game data without any logic, offering access to the current board, a list of player and their units.
+	/// If the agent want access to the definition of entity types, actions or game config yaml  it should access to <see cref="SGA::GameInfo"/>
+	/// </summary>
 	struct GameState final
 	{
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
@@ -51,7 +54,17 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
+		/// <summary>
+		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
+		/// </summary>
+		/// <param name="entity">The entity that will be analyzed</param>
+		/// <returns>A boolean indicating if the player can execute the action type</returns>
 		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
+		/// <summary>
+		/// Checks if a player can execute a given actionType
+		/// </summary>
+		/// <param name="player">The player that will be analyzed</param>
+		/// <returns>A boolean indicating if the entity can execute the action type</returns>
 		bool canExecuteAction(const Player& player, const ActionType& actionType) const;
 
 		//Entities
@@ -69,10 +82,25 @@ namespace SGA
 
 		
 		//Grid
+		/// <summary>
+		/// Checks if tile is occupied or the tile is walkable
+		/// </summary>
+		/// <param name="position">The position of the tile map</param>
+		/// <returns>A boolean indicating if the tile in the given position is walkable</returns>
 		bool isWalkable(const Vector2i& position);
-		
-		bool isInBounds(Vector2i pos);		
 
+		/// <summary>
+		/// Checks if position is inside of the tile map
+		/// </summary>
+		/// <param name="pos">The position to be checked</param>
+		/// <returns>A boolean indicating if tile map contains the position</returns>
+		bool isInBounds(Vector2i pos) const;
+
+		/// <summary>
+		/// Checks if position is inside of the tile map
+		/// </summary>
+		/// <param name="pos">The position to be checked</param>
+		/// <returns>A boolean indicating if tile map contains the position</returns>
 		bool isInBounds(Vector2f pos) const;
 
 
@@ -88,8 +116,10 @@ namespace SGA
 
 		int addPlayer(std::vector<int> actionIds);
 
-		
-		//Fog of war
+		/// <summary>
+		/// Removes entities and hide tiles that are not visible from the point of view of the given player.
+		/// </summary>
+		/// <param name="playerID">The playerID of the player from which the fow will be applied</param>
 		void applyFogOfWar(int playerID);
 
 
@@ -103,6 +133,18 @@ namespace SGA
 		{
 			return rngEngine;
 		}
+
+
+		//Print all the entities of the current state
+		void printStateInfo() const;
+		//Print view of the map of the current state
+		void printBoard() const;
+		//Print view of the map of the current state applying fog
+		void printBoard(int playerID) const;
+		//Print information of a specific entity
+		void printEntityInfo(int entityID);
+		//Print information of a specific action
+		void printActionInfo(Action& action) const;
 		
 	private:
 		int nextPlayerID;

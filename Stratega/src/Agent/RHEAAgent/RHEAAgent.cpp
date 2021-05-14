@@ -3,53 +3,43 @@
 
 namespace SGA
 {
-	
-	void RHEAAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
-	{
-        while (!gameCommunicator.isGameOver())
+    ActionAssignment RHEAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+    {
+        if (state.gameType != GameType::TBS)
         {
-            if (gameCommunicator.isMyTurn())
+            throw std::runtime_error("RHEAAgent only supports TBS-Games");
+        }
+    	
+        auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+        params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
+        params_.PLAYER_ID = getPlayerID();        // todo move into agent initialization
+
+        // in case only one action is available the player turn ends
+        // throw away previous solutions because we don't know what our opponent will do
+        if (actionSpace.size() == 1)
+        {
+            pop_.clear();
+            return ActionAssignment::fromSingleAction(actionSpace.at(0));
+        }
+        else
+        {
+            // either shift previous population or initialize a new population
+            if (params_.CONTINUE_SEARCH && !pop_.empty())
             {
-                auto gameState = gameCommunicator.getGameState();
-                if (gameState.isGameOver)
-                    break;
-            	
-                auto actionSpace = forwardModel.generateActions(gameState);
-
-                params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
-                params_.PLAYER_ID = gameState.currentPlayer;        // todo move into agent initialization
-
-                // in case only one action is available the player turn ends
-                // throw away previous solutions because we don't know what our opponent will do
-                if (actionSpace.size() == 1)
-                {
-                    gameCommunicator.executeAction(actionSpace.at(0));
-                    pop_.clear();
-                }
-                else
-                {
-                    auto& rnd = gameCommunicator.getRNGEngine();
-
-                    // either shift previous population or initialize a new population
-                    if (params_.CONTINUE_SEARCH && !pop_.empty())
-                    {
-                        pop_ = shiftPopulation(forwardModel, gameState, rnd);
-                    }
-                    else
-                    {
-                        initializePopulation(forwardModel, gameState, rnd);
-                    }
-
-                    // run rhea and return the best individual of the previous generation
-                    rheaLoop(forwardModel, gameState, rnd);
-                    gameCommunicator.executeAction(pop_[0].getActions().front());
-                }
+                pop_ = shiftPopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
             }
+            else
+            {
+                initializePopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+            }
+
+            // run rhea and return the best individual of the previous generation
+            rheaLoop(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+            return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
     }
 
-
-    void RHEAAgent::initializePopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937&)
+    void RHEAAgent::initializePopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937&)
     {
         // create params_.POP_SIZE new random individuals
         pop_.clear();
@@ -58,7 +48,7 @@ namespace SGA
         }
     }
 
-    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         std::vector<RHEAGenome> newPop;
 
@@ -84,7 +74,7 @@ namespace SGA
 
     bool sortByFitness(const RHEAGenome& i, const RHEAGenome& j) { return i.getValue() > j.getValue(); }
 
-    void RHEAAgent::rheaLoop(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::rheaLoop(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
         while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
@@ -94,7 +84,7 @@ namespace SGA
         sort(pop_.begin(), pop_.end(), sortByFitness);
     }
 
-    std::vector<RHEAGenome> RHEAAgent::nextGeneration(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::nextGeneration(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // placeholder for the next generation
         std::vector<RHEAGenome> newPop;
@@ -114,7 +104,7 @@ namespace SGA
         return newPop;
     }
 
-    RHEAGenome RHEAAgent::getNextGenerationIndividual(TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    RHEAGenome RHEAAgent::getNextGenerationIndividual(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         if (params_.POP_SIZE > 1)
         {

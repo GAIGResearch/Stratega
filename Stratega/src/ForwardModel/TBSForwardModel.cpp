@@ -1,12 +1,20 @@
+#include <cassert>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 
 namespace SGA
 {
-	void TBSForwardModel::advanceGameState(GameState& state, const std::vector<Action>& actions) const
+	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
-		for(const auto& action : actions)
+		assert(actions.getAssignmentCount() == 1);
+		for(const auto& action : actions.getEntityActions())
 		{
-			advanceGameState(state, action);
+			advanceGameState(state, action.second);
+			return;
+		}
+		for (const auto& action : actions.getPlayerActions())
+		{
+			advanceGameState(state, action.second);
+			return;
 		}
 	}
 	
@@ -104,5 +112,10 @@ namespace SGA
 		}
 
 		return false;
+	}
+
+	std::unique_ptr<EntityForwardModel> TBSForwardModel::clone() const
+	{
+		return std::make_unique<TBSForwardModel>(*this);
 	}
 }

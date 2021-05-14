@@ -21,10 +21,10 @@ namespace SGA
 			_stateHeuristic()
 		{
 		}
-		
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
-		double evaluateRollout(TBSForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
+		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+
+		double evaluateRollout(const TBSForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
 		void applyActionToGameState(const TBSForwardModel& forwardModel, GameState& gameState, const Action& action);
 
 	};
