@@ -59,5 +59,6 @@ namespace SGA
 
 			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
+
 	};
 }

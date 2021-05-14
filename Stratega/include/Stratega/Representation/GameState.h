@@ -133,6 +133,18 @@ namespace SGA
 		{
 			return rngEngine;
 		}
+
+
+		//Print all the entities of the current state
+		void printStateInfo() const;
+		//Print view of the map of the current state
+		void printBoard() const;
+		//Print view of the map of the current state applying fog
+		void printBoard(int playerID) const;
+		//Print information of a specific entity
+		void printEntityInfo(int entityID);
+		//Print information of a specific action
+		void printActionInfo(Action& action) const;
 		
 	private:
 		int nextPlayerID;
