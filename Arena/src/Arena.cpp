@@ -6,23 +6,39 @@
 #include <utils.h>
 
 Arena::Arena(const SGA::GameConfig& config)
-	: config(&config), runner(createGameRunner(config)), gameCount(0)
+	: config(&config), runner(createGameRunner(config)), gameBattleCount(0)
 {
 }
 
-void Arena::runGames(int playerCount, int seed)
+void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 {
-	gameCount = 0;
-	std::mt19937 rngEngine(seed);
-	CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine);};
-	generateCombinations(config->agentParams.size(), playerCount, callback);
+	currentMapID = 0;
+	currentSeed = seed;
+	
+	for (int i = 0; i < gamesNumber*mapNumber; ++i)
+	{
+		gameCount = i;
+		gameBattleCount = 0;
+		
+		//Change map after playing all gamesNumber in each map
+		if(i% gamesNumber ==0&&i!=0)
+		{
+			currentMapID++;
+		}
+		currentSeed =seed+i;
+		std::mt19937 rngEngine(currentSeed);
+		std::cout << "Using Seed: " << currentSeed <<std::endl;
+		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
+		generateCombinations(config->agentParams.size(), playerCount, callback);
+	}
+	
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
 {
 	// Initialize new Game
 	std::cout << "Initializing new game" << std::endl;
-	runner->reset();
+	runner->reset(currentMapID);
 
 	// Assign agents
 	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
@@ -37,14 +53,16 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		agents[i]->setSeed(seedDist(rngEngine));
 	}
 
-	// Initialize logging
-	gameCount++;
-	SGA::LoggingScope scope("Game" + std::to_string(gameCount));
+	// Initialize logging	
+	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
+	SGA::Log::logSingleValue("Map", std::to_string(currentMapID));
+	SGA::Log::logSingleValue("Battle", std::to_string(gameBattleCount++));
+	SGA::Log::logSingleValue("Seed", std::to_string(currentSeed));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
-
+	
 	// Run the game
 	try
 	{

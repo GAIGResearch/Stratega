@@ -22,7 +22,7 @@ namespace SGA
 		return agents;
 	}
 
-	std::unique_ptr<GameState> GameConfig::generateGameState() const
+	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const
 	{
 		// Initialize state
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
@@ -70,7 +70,10 @@ namespace SGA
 		std::vector<Tile> tiles;
 		
 		//Switch to selected level
-		auto& selectedLevelDefinition = levelDefinitions.find(selectedLevel);
+		int mapIDtoLoad = selectedLevel;
+		if (levelID != -1)
+			mapIDtoLoad = levelID;
+		auto& selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
 		if(selectedLevelDefinition==levelDefinitions.end())
 		{
 			throw std::runtime_error("Selected level definition not found");
@@ -105,6 +108,7 @@ namespace SGA
 		
 		return std::move(state);
 	}
+
 
 	size_t GameConfig::getNumberOfPlayers() const
 	{

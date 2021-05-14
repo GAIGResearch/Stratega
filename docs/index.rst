@@ -42,6 +42,7 @@ Stratega Docs
    structure/overview/index
    structure/representation/index
    structure/gameLogic/index
+   structure/arena/index
 
 
 .. toctree::

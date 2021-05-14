@@ -6,14 +6,17 @@ namespace SGA
 {
 	
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath);
+    std::unordered_map<int, LevelDefinition> loadLevelsFromYAML(const std::string& fileMapsPath, const GameConfig& config);
 	
 	class GameConfigParser
 	{
 	public:
 		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath) const;
+        std::unordered_map<int, LevelDefinition> parseLevelsFromFile(const std::string& fileMapsPath, const GameConfig& config) const;
 
 		void parseAgents(const YAML::Node& agentsNode, GameConfig& config) const;
 		void parseTileTypes(const YAML::Node& tilesNode, GameConfig& config) const;
+		//If the method received a maps path, it will load them from the path instead of the game yaml
 		void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const;
 		void parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const;
         void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;
@@ -31,8 +34,8 @@ namespace SGA
 		ActionCategory parseActionCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
         std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
-        void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const;
-        void parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const;
+        void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const;
+        void parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const;
 	};
 }
 

@@ -14,7 +14,40 @@ namespace SGA
         return parser.parseFromFile(filePath);
     }
 
-	
+	std::unordered_map<int, LevelDefinition> loadLevelsFromYAML(const std::string& fileMapsPath, const GameConfig& config)
+	{        
+        GameConfigParser parser;
+        return parser.parseLevelsFromFile(fileMapsPath, config);
+	}
+
+	std::unordered_map<int, LevelDefinition> GameConfigParser::parseLevelsFromFile(const std::string& fileMapsPath, const GameConfig& config) const
+	{
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+    	
+        //Load maps from a different path
+        //Check if is path        
+        std::ifstream file(fileMapsPath);
+        if (file)
+        {
+            std::cout << "The maps file exist" << std::endl;
+
+            //Lets read the yaml file
+            auto mapsConfig = YAML::LoadFile(fileMapsPath);
+
+            //Read maps
+            if (mapsConfig["Maps"].IsDefined())
+            {
+                parseMaps(mapsConfig, levelDefinitions, config);
+            }
+            else
+            {
+                throw std::runtime_error("Cannot find definition for the maps");
+            }
+        }
+
+        return levelDefinitions;
+	}
+
 	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
 	{
 		auto configNode = YAML::LoadFile(filePath);
@@ -137,18 +170,21 @@ namespace SGA
 		{
             throw std::runtime_error("Cannot find definition for the Board");
 		}
-
+    	
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+    	
+        //Load maps from file    	
         if (boardNode["GenerationType"].as<std::string>() == "Manual")
-        {    
-            std::unordered_map<int, LevelDefinition> levelDefinitions;
+        {
+            
 
             //Check if user has defined multiple maps
             if (boardNode["Maps"].IsDefined())
             {
-                if(boardNode["Maps"].IsScalar())
+                if (boardNode["Maps"].IsScalar())
                 {
                     auto path = boardNode["Maps"].as<std::string>();
-                	
+
                     //Check if is path
                     std::ifstream file(path);
                     if (file)
@@ -168,7 +204,7 @@ namespace SGA
                             throw std::runtime_error("Cannot find definition for the maps");
                         }
                     }
-                }                
+                }
                 else
                 {
                     parseMaps(boardNode, levelDefinitions, config);
@@ -176,32 +212,35 @@ namespace SGA
             }
 
             std::string boardString = boardNode["Layout"].as<std::string>();
-        	//Check if user choose one from the loaded maps
+            //Check if user choose one from the loaded maps
             bool found = false;
-            int indexMap=0;
+            int indexMap = 0;
             for (auto& levelDefinition : levelDefinitions)
             {
-	            if(levelDefinition.second.name==boardString)
-	            {
+                if (levelDefinition.second.name == boardString)
+                {
                     found = true;
                     config.selectedLevel = indexMap;
-	            }
+                }
                 indexMap++;
             }
 
-        	if(!found)
-        	{
+            if (!found)
+            {
                 //Parse definition
                 parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
                 config.selectedLevel = levelDefinitions.size() - 1;
-        	}       
-     	
+            }
+
             config.levelDefinitions = levelDefinitions;
         }
         else
         {
             throw std::runtime_error("Unknown board-generation type " + boardNode["GenerationType"].as<std::string>());
         }
+    	
+       
+
 	}
 
     void GameConfigParser::parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const
@@ -716,7 +755,7 @@ namespace SGA
         return filePath.string();
     }
 	
-	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const
+	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
 	{
         //Read the multiple maps in this file
         auto mapsLayout = mapsLayouts["Maps"].as<std::map<std::string, YAML::Node>>();
@@ -729,7 +768,7 @@ namespace SGA
 	}
 
     void GameConfigParser::parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName,
-        std::unordered_map<int, LevelDefinition>& levelDefinitions, GameConfig& config) const
+        std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
     {
         std::string mapString = mapLayout.as<std::string>();
     	
