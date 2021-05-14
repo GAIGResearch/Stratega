@@ -82,6 +82,7 @@ Single map
 Generated log example using one single map
 ++++++++++++++++++++++++++++++++++++++++++
 This example is the result of a competition between two agents(OSLAAgent and RandomAgent). In this competition they only played one game in one single map.
+
 .. code-block:: yaml
 
     Game 0:
@@ -178,6 +179,7 @@ Example of maps file:
 Generated log example using multiple maps
 ++++++++++++++++++++++++++++++++++++++++++
 This example is the result of a competition between two agents(OSLAAgent and RandomAgent). In this competition they played only one game on three different maps.
+
 .. code-block:: yaml
 
     Game 0:
