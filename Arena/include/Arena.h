@@ -7,7 +7,7 @@
 class Arena : public SGA::GameObserver
 {
 public:
-	Arena(SGA::GameConfig& config);
+	Arena(const SGA::GameConfig& config);
 
 	void runGames(int playerCount, int seed, int gamesNumber, int mapNumber=1);
 	void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
@@ -16,12 +16,12 @@ public:
 	void onGameFinished(const SGA::GameState& finalState, const SGA::EntityForwardModel& forwardModel) override;
 	
 private:
-	SGA::GameConfig* config;
+	const SGA::GameConfig* config;
 	std::unique_ptr<SGA::GameRunner> runner;
 	//Number of battle in the same game combination with exchanged players
 	int gameBattleCount;
 	//One game is a set of battles between two or more agents
 	int gameCount;
-	int mapCount;
+	int currentMapID;
 	int currentSeed;
 };

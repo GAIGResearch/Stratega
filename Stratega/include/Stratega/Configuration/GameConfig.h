@@ -49,7 +49,7 @@ namespace SGA
         TechnologyTreeCollection technologyTreeCollection;
             	
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
-        std::unique_ptr<GameState> generateGameState() const;
+        std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
 
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;

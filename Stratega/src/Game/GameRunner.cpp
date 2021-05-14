@@ -18,7 +18,15 @@ namespace SGA
 
 	void GameRunner::reset()
 	{
+		
 		currentState = config->generateGameState();
+		forwardModel = config->forwardModel->clone();
+	}
+
+	void GameRunner::reset(int levelID)
+	{
+
+		currentState = config->generateGameState(levelID);
 		forwardModel = config->forwardModel->clone();
 	}
 

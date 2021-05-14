@@ -35,6 +35,10 @@ namespace SGA
 		/// </summary>
 		void reset();
 		/// <summary>
+		/// Resets the game to an initial state with a specific map.
+		/// </summary>
+		void reset(int levelID);
+		/// <summary>
 		/// Advances the game by one timestep.
 		/// When the game has ended, you are responsible for calling <see cref="SGA::GameRunner::reset()"> to reset the environments state.
 		/// </summary>

@@ -120,7 +120,7 @@ EntityGroups:
 Board:
     GenerationType: Manual
     #Path or definition of multiple maps
-    Maps: ../../../gameConfigs/TBS/maps.yaml
+    #Maps: ../../../gameConfigs/TBS/maps.yaml
     #Maps:
     #    Map1: |-
     #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
@@ -155,23 +155,23 @@ Board:
     #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
     #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
     #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-    Layout: Map2
-    #Layout: |-
-    #    M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  W  W  .  W  W  .  .  c  .  .  M
-    #    M  .  .  .  .  .  .  W  c  W  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
-    #    M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-    #    M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+    #Layout: Map1
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
