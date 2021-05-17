@@ -1,6 +1,6 @@
-###############
-Representation
-###############
+###########################
+Game State Representation
+###########################
 This page describes several components that form the game state, as well as other aspects that are important parts of Stratega.
 
 +++++++++++++++
