@@ -13,7 +13,7 @@ Stratega is compiled using CMake. Luckily Visual Studio already provides a simpl
 #. Install Visual Studio 2019 Community from `here <https://visualstudio.microsoft.com/downloads/>`_
 #. Clone Stratega from `here <https://github.com/GAIGResearch/Stratega/>`_ (use the master branch)
 #. In Visual Studio open the folder (not project) containing the Stratega source code
-#. Execute **Project->Generate Cache**, Visua Studio may automatically do this when opening the folder
+#. Execute **Project->Generate Cache**, Visual Studio may automatically do this when opening the folder
 #. Execute **Build->Build All** to generate the executables
 #. Under **Select Startup Item...** choose GUI.exe and press **F5** to run it
 
