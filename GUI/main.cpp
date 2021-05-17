@@ -23,5 +23,7 @@ int main()
 	auto gameRunner = createGameRunner(*gameConfig);
 	gameRunner->play(agents);
 	
+	std::cout << "Player " << gameRunner->getGameState().winnerPlayerID << " won";
+
     return 0;
 }

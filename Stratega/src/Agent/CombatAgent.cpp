@@ -406,10 +406,10 @@ namespace SGA
 		}
 		if (nextAction.actionTypeFlags == ActionFlag::EndTickAction)
 		{
-			std::cout << "Combat Agent " << "end round" << std::endl;
+			//std::cout << "Combat Agent " << "end round" << std::endl;
 		} else
 		{
-			std::cout << "Combat Agent " << "does something" << std::endl;
+			//std::cout << "Combat Agent " << "does something" << std::endl;
 		}
 			
 		return ActionAssignment::fromSingleAction(nextAction);		

@@ -108,6 +108,7 @@ void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::EntityFo
 	{
 		SGA::Log::logSingleValue("WinnerID", finalState.winnerPlayerID);
 		SGA::Log::logSingleValue("Turns", finalState.currentTick + 1);
+		std::cout << "Winner is: "<< finalState.winnerPlayerID << std::endl;
 	}
 	else if (finalState.gameType == SGA::GameType::RTS)
 	{
