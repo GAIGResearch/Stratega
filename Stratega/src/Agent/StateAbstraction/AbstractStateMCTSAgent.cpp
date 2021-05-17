@@ -3,99 +3,67 @@
 
 namespace SGA
 {
-	void AbstractStateMCTSAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment AbstractStateMCTSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
-		const auto preprocessedForwardModel = parameters_.preprocessForwardModel(&forwardModel);
-		
-		while (!gameCommunicator.isGameOver())
+		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
+
+		// initialize the state factory in case it has not been done yet
+		if (parameters_.STATE_FACTORY == nullptr)
 		{
-			if (gameCommunicator.isMyTurn())
-			{
-				// Fetch state
-				auto state = gameCommunicator.getGameState();
-
-				if (parameters_.STATE_FACTORY == nullptr)
-				{
-					parameters_.STATE_FACTORY = std::make_unique<StateFactory>(state);
-					parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
-				}
-
-				
-				auto gameState = gameCommunicator.getGameState();
-				if (gameState.isGameOver)
-					break;
-				
-				
-				parameters_.PLAYER_ID = gameState.currentPlayer;
-
-				// if there is just one action and we don't spent the time on continuing our search
-				// we just instantly return it
-				// todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-				
-				auto actionSpace = preprocessedForwardModel->generateActions(state);
-				if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
-				{
-					gameCommunicator.executeAction(actionSpace.at(0));
-					rootNode = nullptr;
-					previousActionIndex = -1;
-				}
-				else
-				{
-					
-					if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
-					{
-						// in case of deterministic games we know which move has been done by us
-						// reuse the tree from the previous iteration
-						rootNode = std::move(rootNode->children[rootNode->actionToChildIndex[previousActionIndex]]);
-						//rootNode = std::move(rootNode->children.at(previousActionIndex));
-						rootNode->parentNode = nullptr;	// release parent
-						rootNode->setDepth(0);
-					}
-					else
-					{
-						// start a new tree
-						auto abstractState = parameters_.STATE_FACTORY->createAbstractState(gameState);
-						auto gameStateCopy(gameState);
-						rootNode = std::make_unique<AbstractMCTSNode>(*preprocessedForwardModel, abstractState, gameState);
-						//rootNode = std::make_unique<AbstractMCTSNode>(forwardModel, gameState);
-					}
-					
-					//params.printDetails();
-					parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
-					rootNode->searchMCTS(forwardModel, parameters_, gameCommunicator.getRNGEngine());
-					//rootNode->printTree();
-
-					// get and store best action
-					const int bestActionIndex = rootNode->mostVisitedAction(parameters_, gameCommunicator.getRNGEngine());
-					auto bestAction = rootNode->actionSpace.at(bestActionIndex);
-
-					previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
-					std::cout << "MCTS " << bestActionIndex << "; tree size:" << rootNode->children.size() << std::endl;
-
-					// return best action
-					gameCommunicator.executeAction(bestAction);
-
-				}
-			}
+			parameters_.STATE_FACTORY = std::make_unique<StateFactory>(state);
 		}
-	}
 
-	void AbstractStateMCTSAgent::runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
-	{
-		auto lastExecution = std::chrono::high_resolution_clock::now();
-		while (!gameCommunicator.isGameOver())
+		// initialize the state heuristic in case it has not been done yet
+		if (parameters_.STATE_HEURISTIC == nullptr) 
 		{
-			auto now = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<double> deltaTime = now - lastExecution;
-			if (deltaTime.count() >= 1)
+			parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
+		}
+				
+		parameters_.PLAYER_ID = getPlayerID();
+
+		// if there is just one action and we don't spent the time on continuing our search
+		// we just instantly return it
+		// todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
+				
+		auto actionSpace = processedForwardModel->generateActions(state);
+		if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
+		{
+			rootNode = nullptr;
+			previousActionIndex = -1;
+			return ActionAssignment::fromSingleAction(actionSpace.at(0));
+		}
+		else
+		{
+			if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
 			{
-				auto state = gameCommunicator.getGameState();
-				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
-				std::uniform_int_distribution<int> actionDist(0, actions.size() - 1);
-				int temp = actionDist(gameCommunicator.getRNGEngine());
-				gameCommunicator.executeAction(actions.at(actionDist(gameCommunicator.getRNGEngine())));
-				lastExecution = std::chrono::high_resolution_clock::now();
+				// in case of deterministic games we know which move has been done by us
+				// reuse the tree from the previous iteration
+				rootNode = std::move(rootNode->children.at(previousActionIndex));
+				rootNode->parentNode = nullptr;	// release parent
+				rootNode->setDepth(0);
 			}
+			else
+			{
+				// start a new tree
+				auto abstractState = parameters_.STATE_FACTORY->createAbstractState(state);
+				auto gameStateCopy(state);
+				rootNode = std::make_unique<AbstractMCTSNode>(*processedForwardModel, abstractState, state);
+			}
+
+
+			//params.printDetails();
+			parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
+			rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+			//rootNode->printTree();
+
+			// get and store best action
+			auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
+			auto bestAction = rootNode->actionSpace.at(bestActionIndex);
+
+			// return best action
+			previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
+			return ActionAssignment::fromSingleAction(bestAction);
+
 		}
 	}
 }

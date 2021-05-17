@@ -103,7 +103,11 @@ namespace SGA
 		}		
 		
 		//Generate EndTurnAction
-		bucket.emplace_back(Action::createEndAction(playerID));
+		if(gameState.gameType == GameType::TBS)
+		{
+			bucket.emplace_back(Action::createEndAction(playerID));
+		}
+		
 		return bucket;
 	}
 

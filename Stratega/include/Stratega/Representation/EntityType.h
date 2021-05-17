@@ -9,7 +9,11 @@
 namespace SGA
 {
 	typedef int EntityTypeID;
-	
+	/// <summary>
+	/// Contains the definition of the entity type. This information includes a list of parameters definitions,
+	/// the actions that can execute, required technologies to spawn a entity, a list of spawnable entity types and
+	/// a list of cost assigned to this entity type.
+	/// </summary>
 	struct EntityType
 	{
 		int id;
@@ -24,9 +28,18 @@ namespace SGA
 		double continuousActionTime;
 		
 		double lineOfSight;
-		
+
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
 		const Parameter& getParameter(ParameterID id) const;
+		/// <summary>
+		/// Checks if this entity type is allowed to execute an action type
+		/// </summary>
 		bool canExecuteAction(int actionTypeID) const;
+		/// <summary>
+		/// Generate a new empty instance of this entity type 
+		/// </summary>
 		Entity instantiateEntity(int entityID) const;
 	};
 }

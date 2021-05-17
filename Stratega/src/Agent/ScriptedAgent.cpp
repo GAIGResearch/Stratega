@@ -3,37 +3,12 @@
 
 namespace SGA
 {
-	void ScriptedAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment ScriptedAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
-		while (!gameCommunicator.isGameOver())
-		{
-			if (gameCommunicator.isMyTurn())
-			{
-				// Fetch state
-				auto state = gameCommunicator.getGameState();
-				
-				// Generate all available actions
-				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
+		// Generate all available actions
+		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
-				// Return the action selected by the script
-				gameCommunicator.executeAction(actionScript_->getAction(state, actions));
-			}
-		}
-	}
-
-	void ScriptedAgent::runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel)
-	{
-		auto lastExecution = std::chrono::high_resolution_clock::now();
-		while (!gameCommunicator.isGameOver())
-		{
-			auto now = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<double> deltaTime = now - lastExecution;
-			if (deltaTime.count() >= 1)
-			{
-				auto state = gameCommunicator.getGameState();
-				auto actions = forwardModel.generateActions(state, gameCommunicator.getPlayerID());
-				lastExecution = std::chrono::high_resolution_clock::now();
-			}
-		}
+		// Return the action selected by the script
+		return ActionAssignment::fromSingleAction(actionScript_->getAction(state, actionSpace));
 	}
 }

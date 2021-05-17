@@ -5,6 +5,10 @@
 
 namespace SGA
 {
+	/// <summary>
+	/// Contains all the points of the path and the current point index.
+	/// Used by the default <see cref="SGA::RTSForwardModel"/> for moving entities.
+	/// </summary>
 	class Path
 	{
 	public:

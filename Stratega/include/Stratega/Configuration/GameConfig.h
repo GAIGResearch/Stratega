@@ -4,13 +4,18 @@
 #include <string>
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Configuration/FunctionParser.h>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
-
 namespace SGA
 {
+    class LevelDefinition;
+	
     struct GameConfig
     {
+        // Rendering - ToDo Split renderConfig and move into dedicated parts (Tile, Entity, etc)
+        std::unique_ptr<RenderConfig> renderConfig;
+    	
     	// Game information
         GameType gameType = GameType::TBS;
 
@@ -35,14 +40,16 @@ namespace SGA
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation
-        std::string boardString;
+        //std::string boardString;
         int defaultTileTypeID=-1;
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+        int selectedLevel;
 
     	// Technology tree
         TechnologyTreeCollection technologyTreeCollection;
             	
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
-        std::unique_ptr<GameState> generateGameState() const;
+        std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
 
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
@@ -57,6 +64,4 @@ namespace SGA
         int getActionID(const std::string& name) const;
         int getTechnologyID(const std::string& name) const;
     };
-	
-    std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }

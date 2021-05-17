@@ -9,9 +9,10 @@ namespace SGA
 	{
 		size_t width;
 		size_t height;
-		std::vector<Type> grid;
+		//std::vector<Type> grid;
 
 	public:
+		std::vector<Type> grid;
 		typedef typename std::vector<Type>::reference reference;
 		typedef typename std::vector<Type>::const_reference const_reference;
 

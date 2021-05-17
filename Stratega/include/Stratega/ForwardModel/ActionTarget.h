@@ -17,7 +17,11 @@ namespace SGA
 	typedef int TileTypeID;
 
 	struct ActionType;
-	
+
+	/// <summary>
+	/// Used by <see cref="SGA::Action"/> to reference any possible type of target available in Stratega.
+	/// It contains a union of different types of data.
+	/// </summary>
 	class ActionTarget
 	{	
 	public:
@@ -70,7 +74,36 @@ namespace SGA
 		{
 			return targetType;
 		}
-		
+		std::string getTypeString() const
+		{
+			switch (targetType)
+			{
+			case EntityReference:
+				return "EntityReference";
+				break;
+			case Position:
+				return "Position";
+				break;
+			case PlayerReference:
+				return "PlayerReference";
+				break;
+			case EntityTypeReference:
+				return "EntityTypeReference";
+				break;
+			case TechnologyReference:
+				return "TechnologyReference";
+				break;
+			case ContinuousActionReference:
+				return "ContinuousActionReference";
+				break;
+			case TileTypeReference:
+				return "TileTypeReference";
+				break;
+			default:
+				return "Not defined";
+			}
+		}
+		std::string getValueString(const GameState& state) const;
 		//Check if this action target is valid in the received gamestate
 		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 

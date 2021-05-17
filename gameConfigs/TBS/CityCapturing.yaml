@@ -119,6 +119,43 @@ EntityGroups:
 
 Board:
     GenerationType: Manual
+    #Path or definition of multiple maps
+    #Maps: ../../../gameConfigs/TBS/maps.yaml
+    #Maps:
+    #    Map1: |-
+    #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  W  W  c  W  W  .  .  c  .  .  M
+    #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+    #
+    #    Map2: |-
+    #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+    #        M  .  .  c  .  .  W  W  .  W  W  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+    #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+    #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+    #Layout: Map1
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M

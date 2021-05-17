@@ -24,7 +24,7 @@ namespace SGA
 		{
 		}
 		
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
-		void runRTS(AgentGameCommunicator& gameCommunicator, RTSForwardModel forwardModel) override;
+		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+
 	};
 }

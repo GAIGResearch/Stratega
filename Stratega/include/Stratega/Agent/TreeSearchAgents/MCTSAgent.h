@@ -15,10 +15,12 @@ namespace SGA
 			: parameters_(std::move(params))
 		{
 		}
-		
-		void runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
+
+
+		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
+		bool initialized = false;
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
 		int previousActionIndex = -1;
 		MCTSParameters parameters_;

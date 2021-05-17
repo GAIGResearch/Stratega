@@ -1,4 +1,5 @@
 #pragma once
+#include <cassert>
 #include <functional>
 #include <unordered_set>
 #include <vector>
@@ -26,6 +27,8 @@ inline void generateCombinationsImpl(size_t choices, std::vector<int>& comb, siz
 
 inline void generateCombinations(size_t choices, size_t k, CallbackFn callback)
 {
+	assert(k <= choices);
+	
 	std::vector<int> combinationBucket(k);
 	std::unordered_set<int> used;
 	generateCombinationsImpl(choices, combinationBucket, 0, used, callback);

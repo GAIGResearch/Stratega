@@ -18,21 +18,21 @@ namespace SGA {
 
 	public:
 		// creates a random PortfolioGenome
-		RHEAGenome(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params);
+		RHEAGenome(const TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params);
 
 		// creates a copy of an existing Portfolio Genome
 		RHEAGenome(const RHEAGenome& other) = default;
 
 		std::vector<Action>& getActions() { return actions; };
 
-		void mutate(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator);
+		void mutate(const TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator);
 
 		[[nodiscard]] double getValue() const { return value; };
 		void setValue(double newValue) { this->value = newValue; };
 
-		void shift(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params);
+		void shift(const TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params);
 		void toString() const;
-		static RHEAGenome crossover(TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
+		static RHEAGenome crossover(const TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
 
 	private:
 		RHEAGenome(std::vector<Action>& actions, double value);

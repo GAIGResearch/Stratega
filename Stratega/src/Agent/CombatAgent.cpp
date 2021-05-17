@@ -263,174 +263,162 @@ namespace SGA
 		return 0;
 	}
 	
-	void CombatAgent::playTurn(AgentGameCommunicator& communicator, TBSForwardModel& fm)
+	ActionAssignment CombatAgent::playTurn(GameState& currentState, const EntityForwardModel& fm)
 	{
-		while (communicator.isMyTurn() && !communicator.isGameOver())
+		for (const auto a : *currentState.gameInfo->actionTypes)
 		{
-			auto currentState = communicator.getGameState();
-			for (const auto a : *currentState.gameInfo->actionTypes)
+			actionTypeIDToActionTypeString[a.first] = a.second.name;
+		}
+		actionTypeIDToActionTypeString[-1] = "EndTurn";
+			
+			
+
+		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
+
+		// Get my units and opponent units
+		std::vector<Entity*> myUnits;
+		std::vector<Entity*> opponentUnits;
+		for (auto& entity : currentState.entities) {
+			if (entity.ownerID == getPlayerID())
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
-			}
-			actionTypeIDToActionTypeString[-1] = "EndTurn";
-			
-			
-
-			//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
-
-			// Get my units and opponent units
-			std::vector<Entity*> myUnits;
-			std::vector<Entity*> opponentUnits;
-			for (auto& entity : currentState.entities) {
-				if (entity.ownerID == communicator.getPlayerID())
-				{
-					myUnits.push_back(&entity);
-				}
-				else
-				{
-					opponentUnits.push_back(&entity);
-				}
-				
-			}
-			
-			
-			
-			// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
-			Entity* bestAttackTarget = nullptr;
-			double highestScore = std::numeric_limits<double>::lowest();
-			for (auto* opp : opponentUnits)
-			{
-				
-				// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
-				double avgSupportScore = 0;
-				
-				for (auto* ally : opponentUnits)
-				{
-					if (ally->id == opp->id)
-						continue;
-
-					int dist = opp->position.manhattanDistance(ally->position);
-					int movesToSupport = dist / static_cast<double>(getMovementRange(ally, currentState));
-					avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
-				}
-				avgSupportScore /= opponentUnits.size();
-
-				
-				// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
-				double avgAttackScore = 0;
-				for (auto* attacker : myUnits)
-				{
-					int dist = opp->position.chebyshevDistance(attacker->position);
-					int movesToAttack = std::max(0, dist - static_cast<int>(getMovementRange(attacker, currentState))) / getMovementRange(attacker, currentState);
-					avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
-				}
-				avgAttackScore /= myUnits.size() + 1;
-
-				// Is this a better target than a previously found target?
-				double score = avgAttackScore - avgSupportScore;
-				if (score > highestScore)
-				{
-					highestScore = score;
-					bestAttackTarget = opp;
-				}
-				
-			}
-			
-			
-			Vector2f moveTarget;
-			// We found no enemy, so we move to a random position in order to find one
-			if (bestAttackTarget == nullptr)
-			{
-				auto& rngEngine = communicator.getRNGEngine();
-				std::uniform_int_distribution<int> widthDist(0, currentState.board.getWidth() - 1);
-				std::uniform_int_distribution<int> heightDist(0, currentState.board.getHeight() - 1);
-				moveTarget.x = widthDist(rngEngine);
-				moveTarget.y = heightDist(rngEngine);
+				myUnits.push_back(&entity);
 			}
 			else
 			{
-				moveTarget = bestAttackTarget->position;
+				opponentUnits.push_back(&entity);
 			}
-
-			auto actions = fm.generateActions(currentState);
-			Action nextAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
-			bool foundAction = false;
-			for (auto* unit : myUnits)
-			{
-				auto subActions = filterUnitActions(actions, *unit);
-				// First try attacking something
-				highestScore = std::numeric_limits<double>::lowest();
-				for (const auto& attack : filterActionTypes(subActions, "Attack"))
-				{
-					Entity& targetUnit = *attack.targets[1].getEntity(currentState);
-					if (targetUnit.ownerID == communicator.getPlayerID())
-						continue; // No attackerino my own units
-
-					auto score = getAttackScore(actions, targetUnit, attack, opponentUnits, currentState);
-					if (score > highestScore)
-					{
-						highestScore = score;
-						nextAction = attack;
-						foundAction = true;
-					}
-				}
-
-				if (foundAction)
-					break;
-
-				// Try healing something
-				highestScore = std::numeric_limits<double>::lowest();
-				for (const auto& heal : filterActionTypes(subActions, "Heal"))
-				{
-					Entity& targetUnit = *heal.targets[0].getEntity(currentState);
-					if (targetUnit.ownerID != communicator.getPlayerID())
-						continue; // No healerino opponents units
-					if (getHealth(&targetUnit, currentState) >= getMaxHealth(&targetUnit, currentState))
-						continue; // Stop healing units that are already full, what is wrong with you
-
-					auto score = getHealScore(actions, targetUnit, heal, opponentUnits, currentState);
-					if (score > highestScore)
-					{
-						highestScore = score;
-						nextAction = heal;
-						foundAction = true;
-					}
-				}
-
-				if (foundAction)
-					break;
-
-				// At last, try moving closer to the best attack target
-				auto moves = filterActionTypes(subActions, "Move");
-				if (getMoveInRange(*unit, moveTarget, getAttackRange(unit, currentState), opponentUnits, moves, nextAction, currentState))
-				{
-					break;
-				}
-			}
-			if (nextAction.actionTypeFlags == ActionFlag::EndTickAction)
-			{
-				std::cout << "Combat Agent " << "end round" << std::endl;
-			} else
-			{
-				std::cout << "Combat Agent " << "does something" << std::endl;
-			}
-			
-			communicator.executeAction(nextAction);
-			
+				
 		}
+			
+			
+			
+		// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
+		Entity* bestAttackTarget = nullptr;
+		double highestScore = std::numeric_limits<double>::lowest();
+		for (auto* opp : opponentUnits)
+		{
+				
+			// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
+			double avgSupportScore = 0;
+				
+			for (auto* ally : opponentUnits)
+			{
+				if (ally->id == opp->id)
+					continue;
+
+				int dist = opp->position.manhattanDistance(ally->position);
+				int movesToSupport = dist / static_cast<double>(getMovementRange(ally, currentState));
+				avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
+			}
+			avgSupportScore /= opponentUnits.size();
+
+				
+			// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
+			double avgAttackScore = 0;
+			for (auto* attacker : myUnits)
+			{
+				int dist = opp->position.chebyshevDistance(attacker->position);
+				int movesToAttack = std::max(0, dist - static_cast<int>(getMovementRange(attacker, currentState))) / getMovementRange(attacker, currentState);
+				avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
+			}
+			avgAttackScore /= myUnits.size() + 1;
+
+			// Is this a better target than a previously found target?
+			double score = avgAttackScore - avgSupportScore;
+			if (score > highestScore)
+			{
+				highestScore = score;
+				bestAttackTarget = opp;
+			}
+				
+		}
+			
+			
+		Vector2f moveTarget;
+		// We found no enemy, so we move to a random position in order to find one
+		if (bestAttackTarget == nullptr)
+		{
+			auto& rngEngine = getRNGEngine();
+			std::uniform_int_distribution<int> widthDist(0, currentState.board.getWidth() - 1);
+			std::uniform_int_distribution<int> heightDist(0, currentState.board.getHeight() - 1);
+			moveTarget.x = widthDist(rngEngine);
+			moveTarget.y = heightDist(rngEngine);
+		}
+		else
+		{
+			moveTarget = bestAttackTarget->position;
+		}
+
+		auto actions = fm.generateActions(currentState, getPlayerID());
+		Action nextAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
+		bool foundAction = false;
+		for (auto* unit : myUnits)
+		{
+			auto subActions = filterUnitActions(actions, *unit);
+			// First try attacking something
+			highestScore = std::numeric_limits<double>::lowest();
+			for (const auto& attack : filterActionTypes(subActions, "Attack"))
+			{
+				Entity& targetUnit = *attack.targets[1].getEntity(currentState);
+				if (targetUnit.ownerID == getPlayerID())
+					continue; // No attackerino my own units
+
+				auto score = getAttackScore(actions, targetUnit, attack, opponentUnits, currentState);
+				if (score > highestScore)
+				{
+					highestScore = score;
+					nextAction = attack;
+					foundAction = true;
+				}
+			}
+
+			if (foundAction)
+				break;
+
+			// Try healing something
+			highestScore = std::numeric_limits<double>::lowest();
+			for (const auto& heal : filterActionTypes(subActions, "Heal"))
+			{
+				Entity& targetUnit = *heal.targets[0].getEntity(currentState);
+				if (targetUnit.ownerID != getPlayerID())
+					continue; // No healerino opponents units
+				if (getHealth(&targetUnit, currentState) >= getMaxHealth(&targetUnit, currentState))
+					continue; // Stop healing units that are already full, what is wrong with you
+
+				auto score = getHealScore(actions, targetUnit, heal, opponentUnits, currentState);
+				if (score > highestScore)
+				{
+					highestScore = score;
+					nextAction = heal;
+					foundAction = true;
+				}
+			}
+
+			if (foundAction)
+				break;
+
+			// At last, try moving closer to the best attack target
+			auto moves = filterActionTypes(subActions, "Move");
+			if (getMoveInRange(*unit, moveTarget, getAttackRange(unit, currentState), opponentUnits, moves, nextAction, currentState))
+			{
+				break;
+			}
+		}
+		if (nextAction.actionTypeFlags == ActionFlag::EndTickAction)
+		{
+			std::cout << "Combat Agent " << "end round" << std::endl;
+		} else
+		{
+			std::cout << "Combat Agent " << "does something" << std::endl;
+		}
+			
+		return ActionAssignment::fromSingleAction(nextAction);		
 	}
 
-	void CombatAgent::runTBS(AgentGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
-		auto currentState = gameCommunicator.getGameState();
-		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(currentState);
-		while (!gameCommunicator.isGameOver())
-		{
-			if (gameCommunicator.isMyTurn())
-			{
-				playTurn(gameCommunicator, forwardModel);
-			}
-		}
+		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
+		return playTurn(state, forwardModel);
 	}
 
 }

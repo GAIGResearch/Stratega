@@ -1,0 +1,131 @@
+GameConfig:
+    Type: TBS
+    ActionTimer: 10s
+    RoundLimit: 100
+
+Agents:
+    - RandomAgent
+    - HumanAgent
+
+Player:
+    Parameters:
+        SpawnPoints: 5
+
+Tiles:
+    Plain:
+        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../GUI/Assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+     
+Actions:
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: EntityType
+                ValidTargets: Fighter
+                Conditions:
+                    - "CanAfford(Source.Player, Target)"
+                    - "CanSpawn(Source, Target)"
+        Effects:
+            - "SpawnRandom(Source, Target)"
+            - "PayCost(Source.Player, Target)"
+
+    # Attack Actions
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Fighter, City]
+                Conditions:
+                    - "InRange(Source, Target, 1)"
+        Effects:
+            - "Attack(Target.Health, 25)"
+
+
+    # Move Actions
+    Move:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Position
+                Shape: Circle
+                Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+
+Entities:
+    City:
+        Sprite: ../../GUI/Assets/Entities/castle.png
+        Symbol: c
+        LineOfSightRange: 5
+        CanSpawn: Fighter
+        Actions: [Spawn]
+        Parameters:
+            Health: 100
+
+    Fighter:
+        Sprite: ../../GUI/Assets/Entities/unit2.png
+        Symbol: f
+        LineOfSightRange: 6
+        Actions: [Move, Attack]
+        Parameters:
+            Health: 100
+        Cost:
+            SpawnPoints: 3
+
+
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  M
+        M  M  .  .  .  .  .  .  c1 .  .  .  .  .  .  M  M
+        M  M  .  .  .  .  .  .  .  .  .  .  M  M  .  M  M
+        M  M  .  .  .  .  .  .  W  .  .  .  M  M  .  M  M
+        M  M  .  .  .  .  .  .  W  .  .  .  .  .  .  .  M
+        M  M  .  .  .  .  .  W  W  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  W  W  W  W  W  .  .  .  .  .  M
+        M  .  .  .  .  .  .  W  W  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  M
+        M  M  .  .  M  M  .  .  W  .  .  .  .  .  .  M  M
+        M  M  .  .  M  M  .  .  .  .  .  .  .  .  .  M  M
+        M  M  .  .  .  .  .  .  c0 .  .  .  .  .  .  M  M
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+                   
+ForwardModel:
+    LoseConditions: #If true: Player -> cant play
+        NoHasCity:
+        - "NoHasEntity(Source, City)"
+
+    Trigger:
+    - OnTick:
+        ValidTargets: City
+        Conditions:
+            - "IsPlayerEntity(Source)"
+        Effects:
+            - "ModifyResource(Source.Player.SpawnPoints, 1)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Spawn: [Spawn]
+        Attack: [Attack]

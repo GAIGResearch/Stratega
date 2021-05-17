@@ -13,6 +13,12 @@ target_link_libraries(Stratega PUBLIC yaml-cpp)
 target_link_libraries(Stratega PUBLIC Recast)
 target_link_libraries(Stratega PUBLIC Detour)
 target_link_libraries(Stratega PUBLIC DebugUtils)
+target_link_libraries(Stratega
+	PRIVATE
+		sfml-graphics
+		sfml-system
+		sfml-window
+		ImGUI)
 
 install (TARGETS Stratega yaml-cpp
          ARCHIVE DESTINATION lib
