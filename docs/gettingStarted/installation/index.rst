@@ -32,5 +32,5 @@ Stratega generates documentation using Doxygen (and some other related dependenc
 If you wish to generate documentation, you must:
 
 #. Install `Doxygen <https://www.doxygen.nl/download.html>`_ manually. 
-#. If, despite installing Doxygen, the **Generate Cache** process still gives any error, follow this complete `installation instructions <https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/>`_ for potentially missing dependencies.
+#. If, despite installing Doxygen, the **Generate Cache** process still gives any error, follow these complete `installation instructions <https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/>`_ for potentially missing dependencies.
 #. Finally, set STRATEGA_BUILD_DOCS to ON compile the framework starting from the **Project->Generate Cache** step.
