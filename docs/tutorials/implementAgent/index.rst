@@ -5,11 +5,8 @@
 Implementing a random-agent
 ###########################
 
-Agents in Stratega are implemented by inheriting from the agent-interface (Stratega/include/Stratega/Agent/Agent.h). The agent-interface provides two methods that we can implement, one for turn-based and one for real-time games.
+Agents in Stratega are implemented by inheriting from the agent-interface (Stratega/include/Stratega/Agent/Agent.h). The agent-interface provides one method that we can implement, the same method is used for turn-based and for real-time games.
 
-
-.. note::
-   Work in progress...
 
 .. code-block:: c++
 
@@ -25,8 +22,8 @@ Agents in Stratega are implemented by inheriting from the agent-interface (Strat
         };
     }
 
-The computeAction method is called every tick/turn of the agent and it should return the ActionAssignment object with the list of actions the agent wants to execute.
-The agent receives a copy of the GameState with fog of war applied, it also receives the forward model object for simulating the game. Depending on which YAML-file was passed to Stratega, the forward model will behave differently.
+The **computeAction** method is called every tick/turn of the agent and it should return the ActionAssignment object with the list of actions the agent wants to execute.
+The agent receives a copy of the GameState with fog of war applied and the forward model object for simulating the game. Depending on which YAML-file was passed to Stratega, the forward model will behave differently.
 
 All we have to do now is fill our computeAction-method with logic. The following example shows how to implement a random-agent(TBS and RTS compatible):
 
