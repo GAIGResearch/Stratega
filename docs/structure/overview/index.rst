@@ -11,7 +11,7 @@ Stratega can be split roughly into 4 parts:
 #. The Game Configuration.
 
 The diagram below shows how these components interact with each other.
-The game-runner is represented by the box containing the forward model and game state.
+The **Game Runner** is represented by the box containing the forward model and game state.
 
 .. image:: ../../images/ArchitectureOverview.png
    :alt: Architecture Overview
