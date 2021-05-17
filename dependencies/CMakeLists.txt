@@ -13,7 +13,7 @@ FetchContent_Declare (
 
 FetchContent_Declare (
 	yaml_cpp
-	GIT_REPOSITORY "https://github.com/jbeder/yaml-cpp.git"
+	URL "https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-${YAML_CPP_VERSION}.zip"
 )
 
 FetchContent_Declare (
