@@ -16,7 +16,7 @@ namespace SGA
 		  fowState(),
 		  selectedAction(),
 		  window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
-		  pointOfViewPlayerID(0),
+		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
 		  dragging(false)
@@ -62,7 +62,8 @@ namespace SGA
 		selectedAction.reset();
 
 		// Update available actions
-		actionsSettings.actionsHumanPlayer = config->forwardModel->generateActions(fowState, pointOfViewPlayerID);
+		if(pointOfViewPlayerID != NO_PLAYER_ID)
+			actionsSettings.actionsHumanPlayer = config->forwardModel->generateActions(fowState, pointOfViewPlayerID);
 	}
 
 	void TBSGameRenderer::handleInput()
@@ -450,12 +451,15 @@ namespace SGA
 
 		ImGui::Text("Actions");
 
-		//Ask widget to get
-		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(state), actionsSettings, pointOfViewPlayerID);
-		if (!actionsToExecute.empty())
+		//Ask widget to get actions only if it has a human player assigned
+		if(pointOfViewPlayerID!=-1)
 		{
-			selectedAction = actionsToExecute.front();
-		}
+			auto actionsToExecute = getWidgetResult(const_cast<GameState&>(state), actionsSettings, pointOfViewPlayerID);
+			if (!actionsToExecute.empty())
+			{
+				selectedAction = actionsToExecute.front();
+			}
+		}		
 
 		ImGui::Separator();
 		ImGui::End();

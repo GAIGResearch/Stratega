@@ -28,8 +28,3 @@ add_subdirectory("Arena")
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")
 endif()
-
-if(STRATEGA_BUILD_BINDINGS)
-    pybind11_add_module(stratega bindings/python/python.cpp)
-    target_link_libraries(stratega PUBLIC Stratega)
-endif()
