@@ -7,7 +7,7 @@ Stratega can be split roughly into 4 parts, i.e. the game-runner, rendering, age
 The diagram below shows how the various components interact with each other.
 Note that the game-runner is represented by the box containing the forward model and game state.
 
-.. image:: ../../images/architectureOverview.png
+.. image:: ../../images/ArchitectureOverview.png
    :alt: Architecture Overview
 
 The center of the framework is the game-runner, whose sole purpose is to run games.
