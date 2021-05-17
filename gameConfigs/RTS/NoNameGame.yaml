@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - RandomAgent
-    - HumanAgent
+    - RandomAgent
 
 Player:
     Actions: [Build, Research]

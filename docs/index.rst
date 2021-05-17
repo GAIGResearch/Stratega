@@ -31,8 +31,7 @@ Stratega Docs
    :maxdepth: 1
    :caption: Tutorials
 
-   tutorials/implementTBSAgent/index
-   tutorials/implementTBSAgent/index
+   tutorials/implementAgent/index
    tutorials/definingANewGame/index
 
 .. toctree::
