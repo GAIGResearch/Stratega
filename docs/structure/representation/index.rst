@@ -1,29 +1,32 @@
-###############
-Representation
-###############
-This page describes various components that are contained in the game state.
-It also introduces important concepts that are used by all other parts of Stratega.
+.. role:: cpp(code)
+   :language: c++
+
+###########################
+Game State Representation
+###########################
+This page describes several components that form the game state, as well as other aspects that are important parts of Stratega.
 
 +++++++++++++++
 Game Types
 +++++++++++++++
-Stratega uses the same object to represent turn-based and real-time games.
-In this section, we briefly describe our definition of the two types of games and go over a few caveats to consider when dealing with them.
+Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe our definition of the two types of games and their characteristics.
+
+.. code-block:: c++
+	enum class GameType
+	{
+		TBS,
+		RTS
+	};
 
 In **turn-based** games, only one player can play at a time.
 Player's play in a predefined order and this order cannot be changed.
-When a player can play, he can execute actions until he runs out of actions or ends his turn by himself.
-Note that a player has to execute one action after the other.
-It is not possible to execute two actions at the same time.
+When a player can play, they can execute actions until they run out of actions or end their turn by themselves.
+All actions are executed individually (i.e. one action after the other), not simultaneously.
 A turn is over in turn-based games once all players have played once. After this, the next turn starts immediately.
 
-In **real-time** games, all players can play at the same time.
-Although it is a real-time game, the game is still split into ticks.
-By default, one tick equates to 1/60 of a second.
-In each tick, players can simultaneously execute multiple actions, but it is impossible to execute multiple actions with the same unit or player. 
+In **real-time** games, all players can play at the same time. For tracking "time" in both game types, the game state contains a value called *ticks*. In real-time games, a tick equates to 1/60 of a second. In each tick, players can simultaneously execute multiple actions, but it is impossible to execute multiple actions with the same unit or player. 
 
-For tracking "time" in both game types, the game state contains a value called ticks.
-For turn-based games, a single tick is the equivalent of a turn, and for real-time games, the definition stays the same.
+For turn-based games, a single *tick* is the equivalent of a turn.
 
 +++++++++++++++
 Entities
