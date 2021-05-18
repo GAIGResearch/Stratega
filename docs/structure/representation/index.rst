@@ -13,7 +13,7 @@ Stratega uses the same object to represent the information contained in turn-bas
 
 .. code-block:: c++
     :caption: Enumeration for Game Type (GameState.h)
-    :name: ../../../Stratega/include/Stratega/Representation/GameState.h
+    :name: `Link text <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_
 
 	enum class GameType
 	{
