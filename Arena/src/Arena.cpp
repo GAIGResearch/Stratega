@@ -28,8 +28,18 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 		currentSeed =seed+i;
 		std::mt19937 rngEngine(currentSeed);
 		std::cout << "Using Seed: " << currentSeed <<std::endl;
+
+		// Initialize logging	
+		SGA::LoggingScope scope("Game " + std::to_string(gameCount));
+		SGA::Log::logSingleValue("Map", std::to_string(currentMapID));
+		SGA::Log::logSingleValue("Seed", std::to_string(currentSeed));
+		
 		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 		generateCombinations(config->agentParams.size(), playerCount, callback);
+
+		// Kinda dirty hack to flush after every game
+		// This could result in weird yaml files, if logging is done outside of the game loggingScope
+		SGA::Log::getDefaultLogger().flush();
 	}
 	
 }
@@ -53,11 +63,9 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		agents[i]->setSeed(seedDist(rngEngine));
 	}
 
-	// Initialize logging	
-	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-	SGA::Log::logSingleValue("Map", std::to_string(currentMapID));
-	SGA::Log::logSingleValue("Battle", std::to_string(gameBattleCount++));
-	SGA::Log::logSingleValue("Seed", std::to_string(currentSeed));
+	//Log new battle
+	SGA::LoggingScope battleScope("Battle" + std::to_string(gameBattleCount++));
+	
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
@@ -74,10 +82,6 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		SGA::Log::logValue("Error", std::string(ex.what()));
 	}
 	std::cout << std::endl;
-
-	// Kinda dirty hack to flush after every game
-	// This could result in weird yaml files, if logging is done outside of the game loggingScope
-	SGA::Log::getDefaultLogger().flush();
 }
 
 void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel)
