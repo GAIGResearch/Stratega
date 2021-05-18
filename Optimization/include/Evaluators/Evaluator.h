@@ -30,6 +30,8 @@ namespace SGA
     	
         virtual std::vector<float> evaluate(std::vector<int> point, int nSamples) = 0;
         virtual void printPoint(const std::vector<int>& point) = 0;
+
+
     };
     
 

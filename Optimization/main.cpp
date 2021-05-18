@@ -7,7 +7,6 @@
 
 #include <Stratega/Configuration/GameConfigParser.h>
 
-#include <GameRunner.h>
 #include <InputParser.h>
 
 #include <filesystem>
@@ -23,6 +22,7 @@ int main(int argc, char** argv)
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
 	auto agent = parser.getCmdOption<int>("-agent", 0);
+	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../../../gameConfigs/TBS/KtKMaps_training.yaml");
 
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	if (configPath.empty())
@@ -32,10 +32,16 @@ int main(int argc, char** argv)
 	}
 	std::cout << "configPath" << configPath;
 
+
 	// Read Config
 	SGA::GameConfigParser configParser;
 	auto gameConfig = configParser.parseFromFile(configPath);
 	
+	if (!mapsPath.empty())
+	{
+		gameConfig->levelDefinitions = SGA::loadLevelsFromYAML(mapsPath, *gameConfig);
+	}
+
 	//auto yamlConfig = YAML::LoadFile(configPath);
 	//auto gameConfig = yamlConfig.as<SGA::GameConfig>();
 	//std::cout << "test2";
@@ -45,7 +51,7 @@ int main(int argc, char** argv)
 		case 0: evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
 			std::vector<bool> {false, true},
 			std::vector<bool> {false, true},
-			gameConfig.get()
+			*gameConfig
 			);
 		break;
 	}
