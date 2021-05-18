@@ -7,15 +7,22 @@ namespace SGA
 {
     
 	AbstractGameStateMCTSEvaluator::AbstractGameStateMCTSEvaluator(
+		std::vector<float> k_values,
+		std::vector<int> rollout_length,
+		std::vector<int> opponent_script_index,
         std::vector<bool> insertMapOptions,
         std::vector<bool> insertPositionsOptions,
 		GameConfig& configInput
 	)
 	: Evaluator("AbstractGameStateMCTSEvaluator"
 	),
+		k_values(k_values), rollout_length(rollout_length), opponent_script_index(opponent_script_index),
 		insertMap(insertMapOptions), insertPositions(insertPositionsOptions), agents(configInput.generateAgents()), config(configInput), arena(std::make_unique<Arena>(config))
     {
 		std::vector<int> searchSpaceDims;
+		searchSpaceDims.emplace_back(k_values.size());
+		searchSpaceDims.emplace_back(rollout_length.size());
+		searchSpaceDims.emplace_back(opponent_script_index.size());
 		searchSpaceDims.emplace_back(insertMap.size());
 		searchSpaceDims.emplace_back(insertPositions.size());
 
@@ -56,11 +63,14 @@ namespace SGA
 
 	void AbstractGameStateMCTSEvaluator::printPoint(const std::vector<int>& point)
     {
-	    std::cout << "Map=" << (insertMap[point[0]]==1) << ", ";
-	    std::cout << "Positions=" << (insertPositions[point[1]] == 1) << ", ";
-		for (int i = 2; i < point.size(); i++)
+		std::cout << "K=" << (k_values[point[0]]) << ", ";
+		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
+		std::cout << "OS=" << (rollout_length[point[2]]) << ", ";
+	    std::cout << "Map=" << (insertMap[point[3]]==1) << ", ";
+	    std::cout << "Positions=" << (insertPositions[point[4]] == 1) << ", ";
+		for (int i = 5; i < point.size(); i++)
 		{
-			std::cout << parameterNames[i-2] << "=" << (point[i] == 1) << ", ";
+			std::cout << parameterNames[i-5] << "=" << (point[5] == 1) << ", ";
 		}
     }
 
@@ -68,16 +78,35 @@ namespace SGA
 		std::unique_ptr<GameState> game = config.generateGameState();;
 
 		auto allAgents = config.generateAgents();
+		AbstractMCTSParameters params;
 
 		// setup current agent configuration
-		AbstractMCTSParameters params;
+		params.K = k_values[currentPoint[0]];
+		params.ROLLOUT_LENGTH = rollout_length[currentPoint[1]];
+		switch (currentPoint[2])
+		{
+		case 0:
+			params.OPPONENT_MODEL = std::make_unique<AttackClosestOpponentScript>();;
+			break;
+		case 1:
+			params.OPPONENT_MODEL = std::make_unique<AttackWeakestOpponentScript>();;
+			break;
+		case 2:
+			params.OPPONENT_MODEL = std::make_unique<RandomActionScript>();;
+			break;
+		default:
+			params.OPPONENT_MODEL = nullptr;
+			break;
+		}
+
+		// setup current agent configuration
 		params.STATE_FACTORY = nullptr;
 		StateFactoryConfiguration configuration;
-		configuration.insertMap = currentPoint[0] == 1;
-		configuration.insertEntityPositions = currentPoint[1] == 1;
-		for (int i = 2; i < currentPoint.size(); ++i)
+		configuration.insertMap = currentPoint[3] == 1;
+		configuration.insertEntityPositions = currentPoint[4] == 1;
+		for (int i = 5; i < currentPoint.size(); ++i)
 		{
-			configuration.insertEntityParameters[parameterNames[i - 2]] = currentPoint[i] == 1;
+			configuration.insertEntityParameters[parameterNames[i - 5]] = currentPoint[i] == 1;
 		}
 		params.STATE_FACTORY = std::make_unique<StateFactory>(configuration);
 		params.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(*game.get());

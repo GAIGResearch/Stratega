@@ -8,6 +8,7 @@ namespace SGA
         {
             throw std::runtime_error("MCTSAgent only supports TBS-Games");
         }
+        //std::cout << state.currentTick;
 
         // ToDo Move preprocessing to init
         const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));

@@ -54,7 +54,13 @@ namespace SGA
 			//params.printDetails();
 			parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 			rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+
 			//rootNode->printTree();
+			if (rootNode->children.size() == 0) {
+				auto randDist = std::uniform_int_distribution<int>(0, actionSpace.size() - 1);
+				int randomIndex = randDist(getRNGEngine());
+				return ActionAssignment::fromSingleAction(actionSpace[randomIndex]);
+			}
 
 			// get and store best action
 			auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());

@@ -15,6 +15,10 @@ namespace SGA
     class AbstractGameStateMCTSEvaluator : public Evaluator
     {
     private:
+        std::vector<float> k_values;			        // values of k
+        std::vector<int> rollout_length;	            // rollout length
+        std::vector<int> opponent_script_index;			// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+
         std::vector<bool> insertMap;
         std::vector<bool> insertPositions;
         std::vector<std::string> parameterNames;
@@ -28,6 +32,9 @@ namespace SGA
 
     public:
         AbstractGameStateMCTSEvaluator(
+            std::vector<float> k_values,
+            std::vector<int> rollout_length,
+            std::vector<int> opponent_script_index,
             std::vector<bool> inserMap,
             std::vector<bool> insertPositions,
             SGA::GameConfig& config

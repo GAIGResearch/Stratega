@@ -127,7 +127,7 @@ namespace SGA
 			std::unique_ptr<BaseActionScript> useSpecialAbility = std::make_unique<UseSpecialAbilityScript>();
 			newPortfolio.emplace_back(std::move(useSpecialAbility));
 		}
-		if (random_script[currentPoint[8]])
+		if (random_script[currentPoint[8]] || newPortfolio.empty())
 		{
 			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
 			newPortfolio.emplace_back(std::move(random));

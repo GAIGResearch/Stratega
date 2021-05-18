@@ -34,17 +34,19 @@ int main(int argc, char** argv)
 		std::cout << "You have to provide the argument -configPath" << std::endl;
 		return 0;
 	}
-	std::cout << "configPath" << configPath;
+	std::cout << "configPath: " << configPath << std::endl;
 
 
 	// Read Config
 	SGA::GameConfigParser configParser;
 	auto gameConfig = configParser.parseFromFile(configPath);
+	std::cout << "parsed Config file:" << std::endl;
 	
 	if (!mapsPath.empty())
 	{
 		gameConfig->levelDefinitions = SGA::loadLevelsFromYAML(mapsPath, *gameConfig);
 	}
+	std::cout << "number of maps: " << gameConfig->levelDefinitions.size() << std::endl;
 
 	//auto yamlConfig = YAML::LoadFile(configPath);
 	//auto gameConfig = yamlConfig.as<SGA::GameConfig>();
@@ -52,7 +54,9 @@ int main(int argc, char** argv)
 
 	std::unique_ptr<SGA::Evaluator> evaluator;
 	switch(agent){
-	case 0: evaluator = std::make_unique<SGA::MCTSEvaluator>(
+	case 1: 
+		std::cout << "Optimize MCTS Agent" << std::endl;
+		evaluator = std::make_unique<SGA::MCTSEvaluator>(
 			std::vector<float> {0.1, 1, 10, 100},			// values of k
 			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
 		    std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -61,7 +65,9 @@ int main(int argc, char** argv)
 			*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
 			break;
-		case 1: evaluator = std::make_unique<SGA::ActionAbstractingMCTSEvaluator>(
+		case 2: 
+			std::cout << "Optimize ActionAbstractingMCTS Agent" << std::endl;
+			evaluator = std::make_unique<SGA::ActionAbstractingMCTSEvaluator>(
 			std::vector<float> {0.1, 1, 10, 100},			// values of k
 			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
 			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -74,8 +80,10 @@ int main(int argc, char** argv)
 			* gameConfig									// gameconfig to determine the list of parameters and run games
 			);	
 			break;
-		/*
-		case 2: evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
+		
+		case 3: 
+			std::cout << "Optimize AbstractGameStateMCTS Agent" << std::endl;
+			evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
 			std::vector<float> {0.1, 1, 10, 100},			// values of k
 			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
 			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -84,7 +92,11 @@ int main(int argc, char** argv)
 			* gameConfig									// gameconfig to determine the list of parameters and run games
 			);
 			break;
-		case 3: evaluator = std::make_unique<SGA::AbstractingEverythingMCTSEvaluator>(
+		
+		case 4: 
+			std::cout << "Optimize AbstractingEverythingMCTS Agent" << std::endl;
+			
+			evaluator = std::make_unique<SGA::AbstractingEverythingMCTSEvaluator>(
 			std::vector<float> {0.1, 1, 10, 100},			// values of k
 			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
 			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -99,11 +111,13 @@ int main(int argc, char** argv)
 			* gameConfig									// gameconfig to determine the list of parameters and run games
 			);
 			break;
-		*/
+		
 	}
 
 	if (evaluator != nullptr)
 	{		
+		std::cout << "Start optimization" << std::endl;
+
 		//std::unique_ptr<SGA::Evaluator> evaluator = std::make_unique<SGA::NMaxEvaluator>(3, 5);
 		SGA::SearchSpace* searchSpace = evaluator->getSearchSpace();
 		SGA::Mutator mutator(searchSpace, false, false, 0.1f, true);

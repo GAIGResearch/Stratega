@@ -20,7 +20,7 @@ namespace SGA
 		currentMapID = 0;
 		currentSeed = seed;
 
-		for (int i = 0; i < 5; ++i) //gamesNumber * mapNumber; ++i)
+		for (int i = 0; i < gamesNumber * mapNumber; ++i)
 		{
 			gameCount = i;
 			gameBattleCount = 0;
@@ -51,7 +51,7 @@ namespace SGA
 	void Arena::runGame(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
 	{
 		// Initialize new Game
-		std::cout << "Initializing new game" << std::endl;
+		//std::cout << "Initializing new game" << std::endl;
 		runner->reset(currentMapID);
 
 		// Assign agents
@@ -63,7 +63,7 @@ namespace SGA
 		std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 		for (size_t i = 0; i < agentAssignment.size(); i++)
 		{
-			std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
+			//std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 			agents[i] = std::move(allAgents[agentAssignment[i]]);
 			// Set seed of the agents for deterministic behaviour
 			agents[i]->setSeed(seedDist(rngEngine));

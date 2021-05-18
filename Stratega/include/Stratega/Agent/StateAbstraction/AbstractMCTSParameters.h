@@ -34,9 +34,9 @@ namespace SGA
 		void printDetails() const;
 
 		AbstractMCTSParameters() {
+			/*
 			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
 			PORTFOLIO.emplace_back(std::move(attackClose));
-			/*
 			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
 			PORTFOLIO.emplace_back(std::move(attackClose));
 			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
