@@ -1,3 +1,6 @@
+.. role:: cpp(code)
+   :language: c++
+
 ###########################
 Game State Representation
 ###########################
@@ -6,7 +9,14 @@ This page describes several components that form the game state, as well as othe
 +++++++++++++++
 Game Types
 +++++++++++++++
-Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe our definition of the two types of games and go over a few caveats to consider when dealing with them.
+Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe our definition of the two types of games and their characteristics.
+
+.. code-block:: c++
+	enum class GameType
+	{
+		TBS,
+		RTS
+	};
 
 In **turn-based** games, only one player can play at a time.
 Player's play in a predefined order and this order cannot be changed.
