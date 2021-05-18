@@ -12,8 +12,7 @@ Game Types
 Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe our definition of the two types of games and their characteristics.
 
 .. code-block:: c++
-    :caption: Enumeration for Game Type (GameState.h)
-    :name: `Link text <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_
+    :caption: Enumeration for Game Type (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_)
 
 	enum class GameType
 	{
