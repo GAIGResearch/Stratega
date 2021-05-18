@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
 	//Optional
-	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../../../gameConfigs/TBS/KtKMaps.yaml");
+	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../../../gameConfigs/TBS/KtKMaps_test.yaml");
 
 	if(configPath.empty())
 	{
