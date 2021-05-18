@@ -13,7 +13,7 @@ namespace SGA
 		Arena(const SGA::GameConfig& config);
 
 		int runGames(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, int playerCount, int seed, int gamesNumber, int mapNumber=1);
-		int runGame(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
+		void runGame(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
 
 		void onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel) override;
 		void onGameFinished(const SGA::GameState& finalState, const SGA::EntityForwardModel& forwardModel) override;
@@ -28,5 +28,7 @@ namespace SGA
 		int gameCount;
 		int currentMapID;
 		int currentSeed;
+
+		std::vector<int> game_results;
 	};
 }
