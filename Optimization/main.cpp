@@ -1,5 +1,9 @@
 #include <NTBEA.h>
 #include <Evaluators/AbstractGameStateMCTSEvaluator.h>
+#include <Evaluators/ActionAbstractingMCTSEvaluator.h>
+#include <Evaluators/AbstractingEverythingMCTSEvaluator.h>
+#include <Evaluators/MCTSEvaluator.h>
+
 #include <Evaluators/Evaluator.h>
 #include <NTupleLandscapeModel.h>
 #include <random>
@@ -21,7 +25,7 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 0);
+	auto agent = parser.getCmdOption<int>("-agent", 1);
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../../../gameConfigs/TBS/KtKMaps_training.yaml");
 
 	// Currently obsolete but configPath shouldn't have a default value. So we keep it until then
@@ -48,12 +52,54 @@ int main(int argc, char** argv)
 
 	std::unique_ptr<SGA::Evaluator> evaluator;
 	switch(agent){
-		case 0: evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
-			std::vector<bool> {false, true},
-			std::vector<bool> {false, true},
-			*gameConfig
+	case 0: evaluator = std::make_unique<SGA::MCTSEvaluator>(
+			std::vector<float> {0.1, 1, 10, 100},			// values of k
+			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
+		    std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+			//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
+			//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+			*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
-		break;
+			break;
+		case 1: evaluator = std::make_unique<SGA::ActionAbstractingMCTSEvaluator>(
+			std::vector<float> {0.1, 1, 10, 100},			// values of k
+			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
+			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+			std::vector<bool> {false, true},				// Attack Closest
+			std::vector<bool> {false, true},				// Attack Weakest
+			std::vector<bool> {false, true},				// Run Away From Opponent
+			std::vector<bool> {false, true},				// Run to Friendly Unit
+			std::vector<bool> {false, true},				// Use Special Ability
+			std::vector<bool> {false, true},				// Random Script
+			* gameConfig									// gameconfig to determine the list of parameters and run games
+			);	
+			break;
+		/*
+		case 2: evaluator = std::make_unique<SGA::AbstractGameStateMCTSEvaluator>(
+			std::vector<float> {0.1, 1, 10, 100},			// values of k
+			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
+			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+			std::vector<bool> {false, true},				// abstract map
+			std::vector<bool> {false, true},				// abstract positions
+			* gameConfig									// gameconfig to determine the list of parameters and run games
+			);
+			break;
+		case 3: evaluator = std::make_unique<SGA::AbstractingEverythingMCTSEvaluator>(
+			std::vector<float> {0.1, 1, 10, 100},			// values of k
+			std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
+			std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+			std::vector<bool> {false, true},				// Attack Closest
+			std::vector<bool> {false, true},				// Attack Weakest
+			std::vector<bool> {false, true},				// Run Away From Opponent
+			std::vector<bool> {false, true},				// Run to Friendly Unit
+			std::vector<bool> {false, true},				// Use Special Ability
+			std::vector<bool> {false, true},				// Random Script
+			std::vector<bool> {false, true},				// abstract map
+			std::vector<bool> {false, true},				// abstract positions
+			* gameConfig									// gameconfig to determine the list of parameters and run games
+			);
+			break;
+		*/
 	}
 
 	if (evaluator != nullptr)

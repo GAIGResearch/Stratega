@@ -11,9 +11,8 @@ namespace SGA
 
         // ToDo Move preprocessing to init
         const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
-        if (initialized == false)
+        if (parameters_.STATE_HEURISTIC == nullptr)
         {
-            initialized = true;
             parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
         }
 
