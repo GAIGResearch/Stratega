@@ -282,20 +282,31 @@ namespace SGA
 			}
 		};
 
-		// Iterate over an rectangle as large as 'shapeSize' and take every valid position
-		auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x - shapeSize));
-		auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(position.x + shapeSize));
-		auto startCheckPositionY = std::max<int>(0, static_cast<int>(position.y - shapeSize));
-		auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(position.y + shapeSize));
 		std::vector<ActionTarget> targets;
-		for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
+
+		//Check all positions
+		if(shape==ShapeType::AllPositions)
 		{
-			for (auto y = startCheckPositionY; y <= endCheckPositionY; y++)
+			targets = generatePositionTargets(gameState);
+		}
+		else
+		{
+			// Iterate over an rectangle as large as 'shapeSize' and take every valid position
+			auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x - shapeSize));
+			auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(position.x + shapeSize));
+			auto startCheckPositionY = std::max<int>(0, static_cast<int>(position.y - shapeSize));
+			auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(position.y + shapeSize));
+			
+			for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
 			{
-				if(isValidPos(x, y))
-					targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
+				for (auto y = startCheckPositionY; y <= endCheckPositionY; y++)
+				{
+					if (isValidPos(x, y))
+						targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
+				}
 			}
 		}
+		
 		return targets;
 	}
 

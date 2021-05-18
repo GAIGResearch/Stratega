@@ -73,7 +73,7 @@ namespace SGA
 		int mapIDtoLoad = selectedLevel;
 		if (levelID != -1)
 			mapIDtoLoad = levelID;
-		auto& selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
+		auto selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
 		if(selectedLevelDefinition==levelDefinitions.end())
 		{
 			throw std::runtime_error("Selected level definition not found");
