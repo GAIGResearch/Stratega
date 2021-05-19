@@ -9,7 +9,8 @@ This page describes several components that form the game state, as well as othe
 +++++++++++++++
 Game Types
 +++++++++++++++
-Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe our definition of the two types of games and their characteristics.
+Stratega uses the same object to represent the information contained in turn-based and real-time games. Here, we briefly describe 
+our definition of the two types of games and their characteristics.
 
 .. code-block:: c++
     :caption: Enumeration for Game Type (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_)
@@ -31,12 +32,36 @@ In **real-time** games, all players can play at the same time. For tracking "tim
 For turn-based games, a single *tick* is the equivalent of a turn.
 
 +++++++++++++++
+Game Info
++++++++++++++++
+
+The Game State provides access to a `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameInfo.h>`_ object, which contains all 
+the types information used by the game. This allows agent to access information about the game being played dynamically. This information refers to tiles, entities, actions, etc. that
+can be observed during the game, irrespective of the current game state. Concretely, this information includes:
+
+#. *YAML Path*: Relative path to the game's YAML description file. This allows agents to parse and analyze the characteristics of the game being played.
+#. *Entity parameters*: a list of all the parameters that different entities in the game can have (e.g. Heal Range, Movement Points, Attack Damage). Each parameter has a unique identifier and a representative string.
+#. *Entity types*: list of all entity types existing in this game. Each entity type (e.g. Archer, Warrior, Worker) has a unique entity type identifier and a representative string.
+#. *Action types*: list of all action types available in the game. Each action type (e.g. Attack, Heal, Move) has a unique type identifier and representative string.
+#. *Type types*: list of all types of tiles in the game. Each tile type has a unique identifier and a representative string (e.g. Forest, Water, Mountain, Plain). This includes a special type of tile  called "Fog of War", which is used for producing partial observability.
+#. *Entity Groups*: super-set of *Entity Types*, also including groups of types that share common characterisitcs. These groups are used in Stratega to categorize types and apply effects on these categories rather than individual types. An example is shown in the code below:
+
+.. code-block:: yaml
+    :caption: Entity Groups (`NoNameGame.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/gameConfigs/NoNameGame.yaml>`_)
+
+    EntityGroups:
+        Units: [Worker, Warrior, Archer, Catapult]
+        Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+        Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult]
+
+
++++++++++++++++
 Entities
 +++++++++++++++
 ..
     Here we should describe how we represent Units, Buildings, etc
     The core idea is that entities have a position and nothing else.
-    To make a entity an building we can then add parameters to that building (For example gold)
+    To make a entity a building we can then add parameters to that building (For example gold)
     So essentially make sure that users understand that everything is represented by an entity.
     We could also mention that entities are owned by a specific player and that entities can be neutral.
 
@@ -50,6 +75,16 @@ Entities
         Stratega/Representation/EntityType <- A type describing a specific entity for example warrior
         Stratega/Representation/Entity <- The entity itself, meaning it is placed on the board
         Stratega/Representation/Parameter <- A parameter stored in the entity for example gold
+
+    Entity Type has:
+     - id (type):
+     - name
+     - parameter
+
+    Entity has:
+     - typeID, id, owner, position, lineOfSight, path, movementSpeed, collisionRadius. 
+     - isNeutral.
+
 
 
 +++++++++++++++
@@ -75,6 +110,10 @@ Player
     Stratega/Representation/GameInfo
     contains std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
     and std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes <---- !! This one contains the player actions, along with entity actions !!
+
+
+    Player has: 
+     - ID, score, canPlay, parameters, actions, attached actions.
 
 
 +++++++++++++++

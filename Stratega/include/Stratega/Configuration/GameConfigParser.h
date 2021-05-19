@@ -24,7 +24,7 @@ namespace SGA
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
         void parsePlayers(const YAML::Node& parametersNode, GameConfig& config) const;
         void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
-		void parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const;
+		void parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const;
         void parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const;
 		
 	private:
@@ -32,6 +32,7 @@ namespace SGA
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
+        EntityCategory parseEntityCategory(const std::string& name) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
         std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
         void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const;

@@ -165,6 +165,40 @@ namespace SGA
 		return ret;
 	}
 
+
+	std::vector<Entity*> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory)
+	{
+		const auto* player = getPlayer(playerID);
+		if (player == nullptr)
+			return {};
+
+		auto entityTypes = this->gameInfo->gameDescription->entityCategories[entityCategory];
+		std::vector<Entity*> ret;
+		for (auto& entity : entities)
+		{
+			if (entity.ownerID == playerID)
+			{
+				if (std::find(entityTypes.begin(), entityTypes.end(), entity.typeID) != entityTypes.end())
+				{
+					ret.emplace_back(&entity);
+				}
+			}
+		}
+		return ret;
+	}
+
+	std::vector<Entity*> GameState::getNonPlayerEntities(int playerID)
+	{
+		std::vector<Entity*> ret;
+		for (auto& entity : entities)
+		{
+			if (entity.ownerID != playerID)
+				ret.emplace_back(&entity);
+		}
+
+		return ret;
+	}
+
 	void GameState::applyFogOfWar(int playerID)
 	{
 		Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
