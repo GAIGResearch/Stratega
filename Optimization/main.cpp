@@ -125,7 +125,7 @@ int main(int argc, char** argv)
 		SGA::NTBEA ntbea(&landscapeModel, evaluator.get(), searchSpace, &mutator, 2, 20, 10);
 		std::mt19937 randomGenerator(1);
 
-		ntbea.run(100, randomGenerator);
+		ntbea.run(20, randomGenerator);
 		return 0;
 	} else
 	{
