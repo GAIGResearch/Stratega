@@ -388,6 +388,8 @@ namespace SGA
         targetType.type = node["Type"].as<TargetType::Type>();
         if (targetType.type == TargetType::Position)
         {
+        	
+        	targetType.samplingMethod= node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
         	if(node["Shape"].IsDefined())
         	{
 
@@ -397,6 +399,9 @@ namespace SGA
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
+        	if(targetType == TargetType::Entity)
+				targetType.samplingMethod = node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+        	
             targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
         else if (targetType.type == TargetType::Technology)

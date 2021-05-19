@@ -52,6 +52,11 @@ Actions:
         Targets:
             Target:
                 Type: Entity
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 ValidTargets: [Conquerer, Fighter]
                 Conditions:
                     - "InRange(Source, Target, 1)"
@@ -64,6 +69,11 @@ Actions:
         Targets:
             Target:
                 Type: Entity
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 ValidTargets: City
                 Conditions:
                     - "InRange(Source, Target, 1)"
@@ -78,8 +88,11 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 3
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:

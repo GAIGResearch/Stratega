@@ -131,4 +131,59 @@ namespace YAML
             return true;
         }
     };
+
+    template<>
+    struct convert<SGA::Neighbours::ShapeType>
+    {
+        static bool decode(const Node& node, SGA::Neighbours::ShapeType& rhs)
+        {
+            if (!node.IsScalar())
+                return false;
+
+            auto value = node.as<std::string>();
+            if (value == "Circle")
+                rhs = SGA::Neighbours::ShapeType::Circle;
+            else if (value == "Square")
+                rhs = SGA::Neighbours::ShapeType::Square;
+            else if (value == "Cross")
+                rhs = SGA::Neighbours::ShapeType::Cross;
+            else if (value == "Line")
+                rhs = SGA::Neighbours::ShapeType::Line;
+            else if (value == "AllPositions")
+                rhs = SGA::Neighbours::ShapeType::AllPositions;
+            else
+                return false;
+
+            return true;
+        }
+    };
+	
+    template<>
+    struct convert<std::shared_ptr<SGA::SamplingMethod>>
+    {
+        static bool decode(const Node& node, std::shared_ptr<SGA::SamplingMethod>& rhs)
+        {
+
+            auto value = node["Type"].as<std::string>();
+            if (value == "Neighbours")
+            {
+                auto& temp = std::make_shared<SGA::Neighbours>();
+                if (node["Options"].IsDefined())
+                {
+                    temp->shapeType = node["Options"]["Shape"].as<SGA::Neighbours::ShapeType>();
+                    temp->shapeSize = node["Options"]["Size"].as<int>(0);
+                }
+
+                rhs = temp;
+            }                
+           /* else if (value == "Dijkstra")
+            {
+                rhs = std::make_shared<SGA::Dijkstra>();
+            }    */            
+            else
+                return false;
+
+            return true;
+        }
+    };
 }
