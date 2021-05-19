@@ -30,9 +30,7 @@ namespace SGA
 			{
 				currentMapID++;
 			}
-			if ((i+1) % 5 == 0) {
-				std::cout << "x";
-			}
+			std::cout << "x";
 
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(currentSeed);

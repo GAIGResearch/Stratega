@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 		return 0;
 	} else
 	{
-		std::cout << "agent parameter needs to be 0" << "-agent=" << agent;
+		std::cout << "agent parameter needs to be a value in the range of [1, 4]" << "-agent=" << agent;
 		return -1;
 		
 	}
