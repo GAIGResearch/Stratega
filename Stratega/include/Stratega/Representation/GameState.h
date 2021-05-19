@@ -54,6 +54,7 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
+
 		/// <summary>
 		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
@@ -110,9 +111,33 @@ namespace SGA
 		
 		const Player* getPlayer(int playerID) const;
 
+
 		std::vector<const Entity*> getPlayerEntities(int playerID) const;
 
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
 		std::vector< Entity*> getPlayerEntities(int playerID);
+
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
+		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory);
+
+
+		/// <summary>
+		/// Gets the list of entities that do not belong to the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
+		/// <returns>The list of entities not own by the given player.</returns>
+		std::vector< Entity*> getNonPlayerEntities(int playerID);
+
+
 
 		int addPlayer(std::vector<int> actionIds);
 

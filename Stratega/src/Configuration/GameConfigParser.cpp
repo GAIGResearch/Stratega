@@ -73,7 +73,7 @@ namespace SGA
         parseForwardModel(configNode["ForwardModel"], *config);
 
         if (configNode["GameDescription"].IsDefined())
-			parseActionCategories(configNode["GameDescription"], *config);
+            parseGameDescription(configNode["GameDescription"], *config);
 
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
@@ -427,22 +427,33 @@ namespace SGA
     {
         ActionCategory actionCategory;
               
-        if (name == "Attack")
-            actionCategory = SGA::ActionCategory::Attack;
-        else if (name == "Heal")
-            actionCategory = SGA::ActionCategory::Heal;
-        else if (name == "Research")
-            actionCategory = SGA::ActionCategory::Research;
-        else if (name == "Gather")
-            actionCategory = SGA::ActionCategory::Gather;
-        else if (name == "Move")
-            actionCategory = SGA::ActionCategory::Move;
-        else if (name == "Spawn")
-            actionCategory = SGA::ActionCategory::Spawn;
-        else
-            throw std::runtime_error("Cannot find action category");
+        if (name == "Attack")        actionCategory = SGA::ActionCategory::Attack;
+        else if (name == "Heal")     actionCategory = SGA::ActionCategory::Heal;
+        else if (name == "Research") actionCategory = SGA::ActionCategory::Research;
+        else if (name == "Gather")   actionCategory = SGA::ActionCategory::Gather;
+        else if (name == "Move")     actionCategory = SGA::ActionCategory::Move;
+        else if (name == "Spawn")    actionCategory = SGA::ActionCategory::Spawn;
+        else throw std::runtime_error("Cannot find action category: " + name);
 		
         return actionCategory;
+    }
+
+
+    EntityCategory GameConfigParser::parseEntityCategory(const std::string& name) const
+    {
+        EntityCategory entityCategory;
+
+        if (name == "Base")           entityCategory = SGA::EntityCategory::Base;
+        else if (name == "Building")  entityCategory = SGA::EntityCategory::Building;
+        else if (name == "Spawner")   entityCategory = SGA::EntityCategory::Spawner;
+        else if (name == "Unit")      entityCategory = SGA::EntityCategory::Unit;
+        else if (name == "NoFighter") entityCategory = SGA::EntityCategory::NoFighter;
+        else if (name == "Fighter")   entityCategory = SGA::EntityCategory::Fighter;
+        else if (name == "Melee")     entityCategory = SGA::EntityCategory::Melee;
+        else if (name == "Ranged")    entityCategory = SGA::EntityCategory::Ranged;
+        else throw std::runtime_error("Cannot find entity category: " + name);
+
+        return entityCategory;
     }
 
 	void GameConfigParser::parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const
@@ -599,11 +610,11 @@ namespace SGA
         }
 	}
 
-    void GameConfigParser::parseActionCategories(const YAML::Node& gameDescription, GameConfig& config) const
+    void GameConfigParser::parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const
     {
-        //Parse Actions
-        auto actionsNode = gameDescription["Actions"];
-        auto types = actionsNode.as<std::map<std::string, YAML::Node>>();
+        //Parse Action Categories
+        auto nodes = gameDescription["Actions"];
+        auto types = nodes.as<std::map<std::string, YAML::Node>>();
 
         for (auto& type : types)
         {
@@ -620,6 +631,28 @@ namespace SGA
 
             config.actionCategories[category] = actionTypes;
         }		
+
+        //Parse Entity Categories
+        nodes = gameDescription["Entities"];
+        types = nodes.as<std::map<std::string, YAML::Node>>();
+
+        for (auto& type : types)
+        {
+            // Parse entity category
+            auto category = parseEntityCategory(type.first);
+            
+            // Assign entity types 
+            std::vector<int> entityTypes;
+            auto entities = type.second.as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : entities)
+            {
+                entityTypes.emplace_back(config.getEntityID(actionName));
+            }
+
+            config.entityCategories[category] = entityTypes;
+        }
+
+
     }
 
     void GameConfigParser::parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const

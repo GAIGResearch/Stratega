@@ -54,6 +54,9 @@ namespace SGA
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
 
+        //EntityCategories
+        std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
+
     	//Yaml path
         std::string yamlPath;
     	

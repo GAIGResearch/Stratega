@@ -6,7 +6,11 @@ namespace SGA
 {
 	//Forward declaration
 	struct GameInfo;
-	
+
+	/// <summary>
+	/// Represents a grouping of action types into categories.
+	/// Can be used by the agent to query <see cref="SGA::ActionType"/> grouped in different categories.
+	/// </summary>
 	enum class ActionCategory
 	{
 		Move,
@@ -17,21 +21,34 @@ namespace SGA
 		Research		
 	};
 
-	/// <summary>
-	/// A collection of action to categories in a game.
-	/// Represent a simplification of action types.
-	/// Can be used by the agent to query <see cref="SGA::ActionType"/> grouped in different categories.
-	/// </summary>
+	enum class EntityCategory
+	{
+		Base,
+		Building,
+		Spawner,
+		Unit,
+		NoFighter,
+		Fighter,
+		Melee,
+		Ranged
+	};
+
+
 	struct GameDescription
 	{
-		GameDescription(std::unordered_map<ActionCategory, std::vector<int>> actionTypes):
-			actionTypes(actionTypes)
+		GameDescription(std::unordered_map<ActionCategory, std::vector<int>> actionCat, 
+						std::unordered_map<EntityCategory, std::vector<int>> entityCat):
+			actionCategories(actionCat),
+			entityCategories(entityCat)
 		{
 			
 		}
 		
-		//List of action IDs group by action categories
-		std::unordered_map<ActionCategory, std::vector<int>> actionTypes;
+		//List of action IDs grouped by action categories
+		std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+
+		//List of entity IDs grouped by entity categories
+		std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
 
 		/// <summary>
 		/// Returns all the actiontypes IDs of the selected action category.

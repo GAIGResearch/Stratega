@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - OSLAAgent
-    - RandomAgent
+    - CombatAgent
 
 Tiles:
     Plain:
@@ -149,3 +149,9 @@ GameDescription:
         Move: [Move]
         Heal: [Heal]
         Attack: [Attack]
+    Entities:
+        Unit: [King, Warrior, Archer, Healer]
+        Fighter: [Warrior, Archer]
+        NoFighter: [Healer]
+        Melee: [Warrior]
+        Ranged: [Archer]
