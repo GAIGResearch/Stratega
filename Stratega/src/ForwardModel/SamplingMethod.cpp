@@ -96,8 +96,14 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 
 std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
 {
+	std::vector<int> entitiesIDs;
 	//Call base method
-	return SamplingMethod::getEntities(gameState, entityTypeIDs);
+	for (auto& entity : gameState.entities)
+	{
+		if (entity.position.distance(position) <= shapeSize)
+			entitiesIDs.emplace_back(entity.id);
+	}
+	return entitiesIDs;
 }
 
 std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -144,7 +150,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
 				if (gameState.board.get(x, y).tileTypeID == -1 || !gameState.board.get(x, y).isWalkable
-					|| std::floor(totalCost + 1) >= searchSize
+					|| std::floor(totalCost + 1) > searchSize
 					)
 					return false;
 			};

@@ -53,17 +53,15 @@ Actions:
             Target:
                 Type: Entity
                 SamplingMethod:
-                    Type: Dijkstra
+                #   Type: Dijkstra
+                #   Options:
+                #       SearchSize: 3
+                #       AllowDiagonals: false
+                    Type: Neighbours
                     Options:
-                        SearchSize: 3
-                        AllowDiagonals: false
-                #    Type: Neighbours
-                #    Options:
-                #        Shape: Circle
-                #        Size: 3
+                        Shape: Circle
+                        Size: 3
                 ValidTargets: [Conquerer, Fighter]
-                #Conditions:
-                #    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
@@ -74,13 +72,15 @@ Actions:
             Target:
                 Type: Entity
                 SamplingMethod: 
-                    Type: Neighbours
+                    Type: Dijkstra
                     Options:
-                        Shape: Circle
-                        Size: 3
+                        SearchSize: 1
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 ValidTargets: City
-                Conditions:
-                    - "InRange(Source, Target, 1)"
         Effects:
             - "ChangeOwner(Target, Source.Player)"
             - "Remove(Source)"
