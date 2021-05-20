@@ -30,4 +30,15 @@ namespace SGA
 			return std::vector<ActionType>();
 	}
 
+	bool GameDescription::isFromCategory(EntityCategory category, int entityTypeId) const
+	{
+		auto entityTypesIt = entityCategories.find(category);
+		if (entityTypesIt != entityCategories.end())
+		{
+			auto types = entityTypesIt->second;
+			return std::find(types.begin(), types.end(), entityTypeId) != types.end();
+		}
+		return false;		
+	}
+
 }

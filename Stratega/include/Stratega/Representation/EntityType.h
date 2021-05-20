@@ -41,5 +41,13 @@ namespace SGA
 		/// Generate a new empty instance of this entity type 
 		/// </summary>
 		Entity instantiateEntity(int entityID) const;
+		/// <summary>
+		/// Returns the maximum value of a given parameter
+		/// </summary>
+		double getParamMax(std::string paramName) const;
+		/// <summary>
+		/// Returns the minimum value of a given parameter
+		/// </summary>
+		double getParamMin(std::string paramName) const;
 	};
 }

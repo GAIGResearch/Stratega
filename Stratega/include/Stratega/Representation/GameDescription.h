@@ -13,6 +13,7 @@ namespace SGA
 	/// </summary>
 	enum class ActionCategory
 	{
+		Null, //Default value, not used in YAML.
 		Move,
 		Attack,
 		Heal,
@@ -23,6 +24,7 @@ namespace SGA
 
 	enum class EntityCategory
 	{
+		Null, //Default value, not used in YAML.
 		Base,
 		Building,
 		Spawner,
@@ -64,6 +66,15 @@ namespace SGA
 		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
 		/// <returns>List of action types</returns>
 		const std::vector<ActionType> getActionTypes(ActionCategory category, const GameInfo& gameInfo) const;
+
+
+		/// <summary>
+		/// Checks if a given entity type ID belongs to a given category
+		/// </summary>
+		/// <param name="category">The category group to be cheked.</param>
+		/// <param name="entityTypeId">ID Type of the entity that is to be checekd if it's part of the category.</param>
+		/// <returns>True if entityTypeId is a subset of the category given</returns>
+		bool isFromCategory(EntityCategory category, int entityTypeId) const;
 
 		//TODO Utilities
 		//getClosestMoveActionTo(Position)
