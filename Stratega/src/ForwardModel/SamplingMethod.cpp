@@ -1,8 +1,9 @@
+#include <queue>
 #include <Stratega/ForwardModel/SamplingMethod.h>
 #include <Stratega/Representation/Tile.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Representation/Vector2.h>
-
+#include <cmath>
 std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& gameState) const
 {
 	std::vector<SGA::Vector2i> targets;
@@ -99,3 +100,136 @@ std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const 
 	return SamplingMethod::getEntities(gameState, entityTypeIDs);
 }
 
+std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameState, const Vector2f& position) const
+{
+	std::vector<SGA::Vector2i> positions;
+	
+	Node root(position.x, position.y);
+	root.visited = true;
+	root.totalCost = 0;
+
+	std::vector<Node> nodesCache;
+	std::vector<Node> possibleDestinations;
+
+	Node currentNode;
+
+	std::priority_queue<Node> openNodes;
+	std::vector<Node> visitedNodes;
+
+	visitedNodes.emplace_back(root);
+	openNodes.emplace(root);
+	nodesCache.emplace_back(root);
+
+	while(!openNodes.empty())
+	{
+		currentNode = openNodes.top();
+		openNodes.pop();
+
+		//Check if the node is in possible destinations
+		auto it = std::find(possibleDestinations.begin(), possibleDestinations.end(), currentNode);
+		if(it==possibleDestinations.end())
+		{
+			possibleDestinations.emplace_back(currentNode);
+			positions.emplace_back(currentNode.posX, currentNode.posY);
+		}
+				
+		//Get neighbours
+		std::vector<Node> neighbours;
+		{
+			auto startCheckPositionX = std::max<int>(0, static_cast<int>(currentNode.posX - 1));
+			auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(currentNode.posX + 1));
+			auto startCheckPositionY = std::max<int>(0, static_cast<int>(currentNode.posY - 1));
+			auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(currentNode.posY + 1));
+
+			auto isValidPos = [&](int x, int y, float totalCost)
+			{
+				if (gameState.board.get(x, y).tileTypeID == -1 || !gameState.board.get(x, y).isWalkable
+					|| std::floor(totalCost + 1) >= searchSize
+					)
+					return false;
+			};
+
+			//Get Neighbours
+			for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
+			{
+				for (auto y = startCheckPositionY; y <= endCheckPositionY; y++)
+				{
+					//Allow diagonals
+					if (!allowDiagonals)
+						if (x == startCheckPositionX && y == startCheckPositionY ||
+							x == endCheckPositionX && y == endCheckPositionY ||
+							x == startCheckPositionX && y == endCheckPositionY ||
+							x == endCheckPositionX && y == startCheckPositionY)
+							continue;
+
+					//Valid neighbors
+					if (isValidPos(x, y, currentNode.totalCost))
+					{
+						Node newNeighbour{ x,y };
+						newNeighbour.totalCost = currentNode.totalCost + 1;
+						neighbours.emplace_back(newNeighbour);
+					}
+				}
+			}
+		}
+
+		//Check neighbours
+		for (auto& currentNeighbour : neighbours)
+		{
+			float nbCost = currentNeighbour.totalCost;
+
+			bool found = false;
+			Node neighbour;
+			if(!nodesCache.empty())
+			{
+				for (auto& nodeInCache : nodesCache)
+				{
+					if(nodeInCache==currentNeighbour)
+					{
+						found = true;
+						neighbour = nodeInCache;
+						break;
+					}
+				}
+			}
+
+			if (!found)
+				neighbour = currentNeighbour;
+
+			auto it = std::find(visitedNodes.begin(), visitedNodes.end(), neighbour);
+			if (it == visitedNodes.end())
+			{
+				neighbour.visited = true;
+				visitedNodes.emplace_back(neighbour);
+				neighbour.totalCost = nbCost+currentNode.totalCost;
+				openNodes.push(neighbour);
+				nodesCache.emplace_back(neighbour);
+			}
+			else if(nbCost +currentNode.totalCost < neighbour.totalCost)
+			{
+				neighbour.totalCost= nbCost + currentNode.totalCost;
+			}
+		}
+	}
+	
+	return positions;
+}
+
+std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
+{
+	//Call base method
+	auto possiblePositions = getPositions(gameState, position);
+	
+	std::vector<int> entities;
+	
+	for (auto& pos : possiblePositions)
+	{
+		auto* entity = gameState.getEntityAt(Vector2f(pos.x, pos.y));
+		if(entity)
+		{
+			entities.emplace_back(entity->id);
+		}
+	}
+	
+	return entities;
+}

@@ -179,7 +179,6 @@ namespace SGA
 
 	void EntityActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{
-
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action;
@@ -278,50 +277,11 @@ namespace SGA
 			targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(element.x, element.y)));
 		}
 		
-		//auto isValidPos = [&](int x, int y)
-		//{
-		//	if (gameState.board.get(x, y).tileTypeID == -1)
-		//		return false;
-		//	
-		//	switch (shape)
-		//	{
-		//		case ShapeType::Square: return true;
-		//		case ShapeType::Circle: return Vector2f(x, y).distance(position) <= shapeSize;
-		//		default: return false;
-		//	}
-		//};
-
-		//std::vector<ActionTarget> targets;
-
-		////Check all positions
-		//if(shape==ShapeType::AllPositions)
-		//{
-		//	targets = generatePositionTargets(gameState);
-		//}
-		//else
-		//{
-		//	// Iterate over an rectangle as large as 'shapeSize' and take every valid position
-		//	auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x - shapeSize));
-		//	auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(position.x + shapeSize));
-		//	auto startCheckPositionY = std::max<int>(0, static_cast<int>(position.y - shapeSize));
-		//	auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(position.y + shapeSize));
-		//	
-		//	for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
-		//	{
-		//		for (auto y = startCheckPositionY; y <= endCheckPositionY; y++)
-		//		{
-		//			if (isValidPos(x, y))
-		//				targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
-		//		}
-		//	}
-		//}
-		
 		return targets;
 	}
 
 	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
-
 		std::vector<ActionTarget> targets;
 
 		auto positions = samplingMethod->getPositions(gameState);
@@ -330,24 +290,6 @@ namespace SGA
 		{
 			targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(element.x, element.y)));
 		}
-		
-		////TODO ONLY WHAT CAN SEE?
-		//auto isValidPos = [&](int x, int y)
-		//{
-		//	return gameState.board.get(x, y).tileTypeID != -1;
-		//};
-		
-				
-		/*for (int x = 0; x < static_cast<int>(gameState.board.getWidth()); x++)
-		{
-			for (int y = 0; y < static_cast<int>(gameState.board.getHeight()); y++)
-			{
-				if (isValidPos(x, y))
-				{
-					targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(x, y)));
-				}
-			}
-		}*/
 		return targets;
 	}
 
@@ -368,11 +310,11 @@ namespace SGA
 
 		auto entitiesIDs = samplingMethod->getEntities(gameState, entityTypeIDs);
 
-		for (const auto& entity : gameState.entities)
-		{
-			if (entityTypeIDs.find(entity.typeID) != entityTypeIDs.end())
+		for (const auto& entityID : entitiesIDs)
+		{			
+			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->typeID) != entityTypeIDs.end())
 			{
-				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
+				targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			}
 		}
 		return targets;
@@ -384,11 +326,11 @@ namespace SGA
 
 		auto entitiesIDs = samplingMethod->getEntities(gameState, position, entityTypeIDs);
 		
-		for (const auto& entity : gameState.entities)
+		for (const auto& entityID : entitiesIDs)
 		{
-			if(entityTypeIDs.find(entity.typeID) != entityTypeIDs.end())
+			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->typeID) != entityTypeIDs.end())
 			{
-				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
+				targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			}
 		}
 		return targets;

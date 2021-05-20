@@ -176,10 +176,17 @@ namespace YAML
 
                 rhs = temp;
             }                
-           /* else if (value == "Dijkstra")
+            else if (value == "Dijkstra")
             {
-                rhs = std::make_shared<SGA::Dijkstra>();
-            }    */            
+                auto& temp = std::make_shared<SGA::Dijkstra>();
+                if (node["Options"].IsDefined())
+                {
+                    temp->searchSize = node["Options"]["SearchSize"].as<int>(1);
+                    temp->allowDiagonals = node["Options"]["AllowDiagonals"].as<bool>(false);
+                }
+
+                rhs = temp;
+            }               
             else
                 return false;
 

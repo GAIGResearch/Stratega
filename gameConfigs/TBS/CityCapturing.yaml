@@ -53,13 +53,17 @@ Actions:
             Target:
                 Type: Entity
                 SamplingMethod:
-                    Type: Neighbours
+                    Type: Dijkstra
                     Options:
-                        Shape: Circle
-                        Size: 3
+                        SearchSize: 3
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 3
                 ValidTargets: [Conquerer, Fighter]
-                Conditions:
-                    - "InRange(Source, Target, 1)"
+                #Conditions:
+                #    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
@@ -89,12 +93,12 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                    Type: Neighbours
+                    Type: Dijkstra
                     Options:
-                        Shape: Circle
-                        Size: 3
+                        SearchSize: 3
+                        AllowDiagonals: false
                 Conditions:
-                    - "IsWalkable(Target)"
+                - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 
@@ -173,10 +177,10 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  W  .  .  .  .  M
         M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
         M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M

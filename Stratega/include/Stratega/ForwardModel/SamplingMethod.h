@@ -47,7 +47,41 @@ namespace SGA
 	{
 		// Specific variables for targetType=Position
 		int searchSize;
+		bool allowDiagonals;
 
+		struct Node
+		{
+			Node() = default;
+			
+			Node(int x, int y):
+			posX(x),
+			posY(y)
+			{
+				
+			}
+			int posX;
+			int posY;
+			bool visited = false;
+			float totalCost = 0;
+			float estimatedCost = 0;
+
+			inline bool operator<(const Node& rhs) const
+			{
+				return totalCost+estimatedCost < rhs.totalCost+rhs.estimatedCost;
+			}
+
+			inline bool operator==(const Node& rhs) const
+			{
+				return posX==rhs.posX && posY==rhs.posY;
+			}
+
+			inline bool operator !=(const Node& rhs) const
+			
+			{
+				return posX != rhs.posX || posY != rhs.posY;
+			}
+		};
+		
 		std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
 		std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
 	};
