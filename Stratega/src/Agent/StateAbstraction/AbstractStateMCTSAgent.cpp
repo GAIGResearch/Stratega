@@ -6,7 +6,7 @@ namespace SGA
 	ActionAssignment AbstractStateMCTSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
-
+		//std::cout << state.currentTick << " ";
 		// initialize the state factory in case it has not been done yet
 		if (parameters_.STATE_FACTORY == nullptr)
 		{
@@ -38,7 +38,7 @@ namespace SGA
 			{
 				// in case of deterministic games we know which move has been done by us
 				// reuse the tree from the previous iteration
-				rootNode = std::move(rootNode->children.at(previousActionIndex));
+				rootNode = std::move(rootNode->children.at(rootNode->actionToChildIndex[previousActionIndex]));
 				rootNode->parentNode = nullptr;	// release parent
 				rootNode->setDepth(0);
 			}
