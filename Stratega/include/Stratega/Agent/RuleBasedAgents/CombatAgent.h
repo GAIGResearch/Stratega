@@ -62,13 +62,5 @@ namespace SGA
 		/// </summary>
 		bool getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity*>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const;
 
-		double getAttackDamage(const Entity* entity, GameState& gamestate) const;
-		double getAttackRange(const Entity* entity, GameState& gamestate) const;
-		double getMaxHealth(const Entity* entity, GameState& gamestate) const;
-		double getHealth(const Entity* entity, GameState& gamestate) const;
-		double getMovementRange(const Entity* entity, GameState& gamestate) const;
-		double getHealAmount(const Entity* entity, GameState& gamestate) const;
-
-
 	};
 }

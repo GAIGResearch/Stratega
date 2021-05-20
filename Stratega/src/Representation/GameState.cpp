@@ -149,22 +149,6 @@ namespace SGA
 		return ret;
 	}
 
-	std::vector<Entity*> GameState::getPlayerEntities(int playerID)
-	{
-		const auto* player = getPlayer(playerID);
-		if (player == nullptr)
-			return {};
-
-		std::vector<Entity*> ret;
-		for (auto& entity : entities)
-		{
-			if (entity.ownerID == playerID)
-				ret.emplace_back(&entity);
-		}
-
-		return ret;
-	}
-
 
 	std::vector<Entity*> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory)
 	{
@@ -172,13 +156,13 @@ namespace SGA
 		if (player == nullptr)
 			return {};
 
-		auto entityTypes = this->gameInfo->gameDescription->entityCategories[entityCategory];
 		std::vector<Entity*> ret;
 		for (auto& entity : entities)
 		{
 			if (entity.ownerID == playerID)
 			{
-				if (std::find(entityTypes.begin(), entityTypes.end(), entity.typeID) != entityTypes.end())
+				//Either no category was especified (default argment) or the entity type id belongs to this category.
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.typeID))
 				{
 					ret.emplace_back(&entity);
 				}
@@ -187,13 +171,19 @@ namespace SGA
 		return ret;
 	}
 
-	std::vector<Entity*> GameState::getNonPlayerEntities(int playerID)
+	std::vector<Entity*> GameState::getNonPlayerEntities(int playerID, EntityCategory entityCategory)
 	{
 		std::vector<Entity*> ret;
 		for (auto& entity : entities)
 		{
 			if (entity.ownerID != playerID)
-				ret.emplace_back(&entity);
+			{
+				//Either no category was especified (default argment) or the entity type id belongs to this category.
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.typeID))
+				{
+					ret.emplace_back(&entity);
+				}
+			}
 		}
 
 		return ret;

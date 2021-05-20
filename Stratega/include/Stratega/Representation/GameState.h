@@ -54,13 +54,13 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
-
 		/// <summary>
 		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
 		/// <param name="entity">The entity that will be analyzed</param>
 		/// <returns>A boolean indicating if the player can execute the action type</returns>
 		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
+		
 		/// <summary>
 		/// Checks if a player can execute a given actionType
 		/// </summary>
@@ -112,30 +112,30 @@ namespace SGA
 		const Player* getPlayer(int playerID) const;
 
 
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
+		//std::vector< Entity*> getPlayerEntities(int playerID);
 		std::vector<const Entity*> getPlayerEntities(int playerID) const;
 
 		/// <summary>
 		/// Gets the list of entities of the specified player.
 		/// </summary>
 		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
-		std::vector< Entity*> getPlayerEntities(int playerID);
-
-		/// <summary>
-		/// Gets the list of entities of the specified player.
-		/// </summary>
-		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
-		/// <param name="entityCategory">Entites retrieved will belong to this indicated category</param>
-		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
-		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory);
+		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
 
 
 		/// <summary>
 		/// Gets the list of entities that do not belong to the specified player.
 		/// </summary>
 		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities not own by the given player.</returns>
-		std::vector< Entity*> getNonPlayerEntities(int playerID);
+		std::vector< Entity*> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
 
 
 

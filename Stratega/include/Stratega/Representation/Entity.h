@@ -7,6 +7,8 @@
 
 namespace SGA
 {
+	struct GameInfo;
+
 	/// <summary>
 	/// Is an object that interacts with the game and responds to player input or other entities.
 	/// This entity can be assigned to a player performing a set of actions per tick/turn.
@@ -60,5 +62,6 @@ namespace SGA
 			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
 
+		double getEntityParameter(const GameInfo gameInformation, std::string paramName) const;
 	};
 }

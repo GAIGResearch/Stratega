@@ -51,3 +51,28 @@ SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 
 	return instance;
 }
+
+double SGA::EntityType::getParamMax(std::string paramName) const
+{
+	for (const auto& param : parameters)
+	{
+		if (param.second.name == paramName)
+		{
+			return param.second.maxValue;
+		}
+	}
+	return 0;
+}
+
+
+double SGA::EntityType::getParamMin(std::string paramName) const
+{
+	for (const auto& param : parameters)
+	{
+		if (param.second.name == paramName)
+		{
+			return param.second.minValue;
+		}
+	}
+	return 0;
+}
