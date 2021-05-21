@@ -13,7 +13,7 @@ namespace SGA
 	{
 	}
 
-	int Arena::runGames(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, int playerCount, int seed, int gamesNumber, int mapNumber)
+	std::vector<int> Arena::runGames(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, int playerCount, int seed, int gamesNumber, int mapNumber)
 	{
 		game_results.clear();
 
@@ -40,10 +40,14 @@ namespace SGA
 		}
 
 		int total_value = 0;
-		for (int n : game_results)
+		int games_won = 0;
+		for (int n : game_results) {
 			total_value += n;
+			if (n == 3)
+				games_won += 1;
+		}
 
-		return total_value;
+		return std::vector<int>{total_value, games_won};
 	}
 
 	void Arena::runGame(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, const std::vector<int>& agentAssignment, std::mt19937 rngEngine)

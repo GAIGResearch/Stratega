@@ -24,7 +24,7 @@ namespace SGA
 		bool PRIORITIZE_ROOT = true;
 		double EPSILON = 1e-2;
 
-		bool CONTINUE_PREVIOUS_SEARCH = true;
+		bool CONTINUE_PREVIOUS_SEARCH = false;
 
 		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 

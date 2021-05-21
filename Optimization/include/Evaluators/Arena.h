@@ -12,7 +12,7 @@ namespace SGA
 	public:
 		Arena(const SGA::GameConfig& config);
 
-		int runGames(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, int playerCount, int seed, int gamesNumber, int mapNumber=1);
+		std::vector<int> runGames(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, int playerCount, int seed, int gamesNumber, int mapNumber=1);
 		void runGame(std::function<std::vector<std::unique_ptr<Agent>>()> agentGenerator, const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
 
 		void onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel) override;

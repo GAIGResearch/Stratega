@@ -68,7 +68,9 @@ namespace SGA
 		std::cout << "evaluate agent: ";
 
 		currentPoint = point;
-		agentValue = arena->runGames([&]() {return generateAgents(); }, 2, 0, 1, config.levelDefinitions.size());
+		auto results = arena->runGames([&]() {return generateAgents(); }, 2, 0, 1, config.levelDefinitions.size());
+		agentValue = results[0];
+		nrOfWins = results[1];
 
 		std::cout << std::endl;
 
@@ -79,7 +81,7 @@ namespace SGA
     {
 		std::cout << "K=" << (k_values[point[0]]) << ", ";
 		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
-		std::cout << "OS=" << (rollout_length[point[2]]) << ", ";
+		std::cout << "OS=" << (point[2]) << ", ";
 		std::cout << "Scripts={";
 		if (point[3]) std::cout << "AC ";
 		if (point[4]) std::cout << "AW ";
