@@ -100,7 +100,7 @@ std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const 
 	//Call base method
 	for (auto& entity : gameState.entities)
 	{
-		if (entity.position.distance(position) <= shapeSize)
+		if (shapeType==ShapeType::AllPositions||entity.position.distance(position) <= shapeSize)
 			entitiesIDs.emplace_back(entity.id);
 	}
 	return entitiesIDs;

@@ -44,7 +44,7 @@ Entities:
         Cost:
             Prod: 10
         Parameters:
-            Health: 800
+            Health: 200
             StorageCapacity: 50
             Range: 6
 
@@ -57,7 +57,7 @@ Entities:
         Cost:
             Prod: 20
         Parameters:
-            Health: 500
+            Health: 100
             Range: 6
 
     MilitaryAcademy:
@@ -69,7 +69,7 @@ Entities:
         Cost:
             Prod: 40
         Parameters:
-            Health: 500
+            Health: 100
 
     Foundry:
         Sprite: ../../GUI/Assets/Entities/foundry.png
@@ -79,7 +79,7 @@ Entities:
         Cost:
             Prod: 50
         Parameters:
-            Health: 300
+            Health: 50
             
     Workshop:
         Sprite: ../../GUI/Assets/Entities/storage.png
@@ -89,7 +89,7 @@ Entities:
         Cost:
             Prod: 50
         Parameters:
-            Health: 300
+            Health: 50
 
     Storage:
         Sprite: ../../GUI/Assets/Entities/castle.png
@@ -100,7 +100,7 @@ Entities:
             Prod: 40
         Parameters:
             Cost: 40
-            Health: 200
+            Health: 50
             StorageCapacity: 50
 
     Worker:
@@ -131,7 +131,7 @@ Entities:
             Range: 3
             WeaponStrength: 25
             Morale: 10
-            Health: 150
+            Health: 50
             
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
@@ -147,7 +147,7 @@ Entities:
             WeaponStrength: 15
             ReloadTime: 2
             Morale: 10
-            Health: 100
+            Health: 30
             
     Catapult:
         Sprite: ../../GUI/Assets/Entities/unit4.png
@@ -187,6 +187,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Attackable
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.Range)"
         Effects:
@@ -199,8 +203,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 1 # Target.Speed
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 2
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -232,8 +243,12 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: GoldVein
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 2
                 Conditions:
-                    - "InRange(Source, Target, 2)"
                     - "ResourceGreater(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
@@ -251,8 +266,11 @@ Actions:
                     - "CanAfford(Source.Player, EntityTypeTarget)"
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 2
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 2
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -274,8 +292,10 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Circle
-                Size: 1
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
