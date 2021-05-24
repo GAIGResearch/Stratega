@@ -14,6 +14,10 @@ namespace SGA
 		explicit MCTSAgent(MCTSParameters&& params)
 			: parameters_(std::move(params))
 		{
+			//K=0.1, RL=1, OS=3;
+			parameters_.K = 0.1;
+			parameters_.ROLLOUT_LENGTH = 1;
+			//parameters_.OPPONENT_MODEL = nullptr;		// the opponent model has not been correctly set in the NTBEA evaluation
 		}
 
 

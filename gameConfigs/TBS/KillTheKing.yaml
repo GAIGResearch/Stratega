@@ -4,8 +4,11 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - AbstractStateMCTSAgent
     - CombatAgent
+    - MCTSAgent
+    - ActionAbstractionMCTSAgent
+    - AbstractStateMCTSAgent
+    - AbstractEverythingMCTSAgent
 
 Tiles:
     Plain:

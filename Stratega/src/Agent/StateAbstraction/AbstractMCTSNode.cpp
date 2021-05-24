@@ -258,11 +258,11 @@ namespace SGA
 		forwardModel.advanceGameState(gameState, action);
 		while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
 		{
-			if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
+			if (params.OPPONENT_MODEL) // use default opponentModel to choose actions until the turn has ended
 			{
 				params.REMAINING_FM_CALLS--;
 				auto actionSpace = forwardModel.generateActions(gameState);
-				auto opAction = params.opponentModel->getAction(gameState, actionSpace);
+				auto opAction = params.OPPONENT_MODEL->getAction(gameState, actionSpace);
 				forwardModel.advanceGameState(gameState, opAction);
 			}
 			else // skip opponent turn
