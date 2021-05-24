@@ -9,9 +9,9 @@ namespace SGA
 		return ownerID == Player::NEUTRAL_PLAYER_ID;
 	}
 
-	double Entity::getEntityParameter(const GameInfo gameInformation, std::string paramName) const
+	double Entity::getEntityParameter(std::string paramName) const
 	{
-		for (const auto& param : gameInformation.getEntityType(typeID).parameters)
+		for (const auto& param : type->parameters)
 		{
 			if (param.second.name == paramName)
 			{

@@ -30,7 +30,7 @@ bool SGA::EntityType::canExecuteAction(int actionTypeID) const
 
 SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 {
-	Entity instance;
+	Entity instance(this);
 	instance.id = entityID;
 	instance.typeID = this->id;
 	

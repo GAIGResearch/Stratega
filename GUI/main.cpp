@@ -4,7 +4,7 @@
 int main()
 {
 	std::mt19937 rngEngine(0);
-	std::string configPath("../../../gameConfigs/RTS/NoNameGame.yaml");
+	std::string configPath("../../../gameConfigs/TBS/KillTheKing.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();

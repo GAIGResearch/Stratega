@@ -17,7 +17,8 @@ namespace SGA
 	/// </summary>
 	struct Entity
 	{
-		Entity():
+		Entity(const EntityType* type):
+			type(type),
 			typeID(0),
 			id(0),
 			ownerID(0),
@@ -28,8 +29,11 @@ namespace SGA
 			collisionRadius(0.5)
 		{
 		}
-
+		
+		//Entity type
+		const EntityType* type;		
 		int typeID;
+		
 		int id;
 		int ownerID;
 		Vector2f position;
@@ -62,6 +66,6 @@ namespace SGA
 			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
 
-		double getEntityParameter(const GameInfo gameInformation, std::string paramName) const;
+		double getEntityParameter(std::string paramName) const;
 	};
 }
