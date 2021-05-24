@@ -20,7 +20,7 @@ namespace SGA
 		}
 				
 		parameters_.PLAYER_ID = getPlayerID();
-		std::cout << state.currentTick << " ";
+		//std::cout << state.currentTick << " ";
 
 		// if there is just one action and we don't spent the time on continuing our search
 		// we just instantly return it

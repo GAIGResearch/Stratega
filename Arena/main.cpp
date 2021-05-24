@@ -27,6 +27,7 @@ int main(int argc, char** argv)
 	
 	// Read Config
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
+	std::cout << "Config loaded correctly!" << std::endl;
 
 	// Run games
 	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
@@ -42,6 +43,7 @@ int main(int argc, char** argv)
 		gameConfig->levelDefinitions = SGA::loadLevelsFromYAML(mapsPath, *gameConfig);
 		//Run combinations per map
 		const int mapNumber = gameConfig->levelDefinitions.size();
+		std::cout << "Number of maps: " << mapNumber << std::endl;
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
 	}
 	
