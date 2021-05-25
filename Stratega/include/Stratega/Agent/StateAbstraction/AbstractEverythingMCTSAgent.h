@@ -50,6 +50,7 @@ namespace SGA
 			configuration.insertEntityParameters["HealAmount"] = false;
 
 			parameters_.STATE_FACTORY = std::make_unique<StateFactory>(configuration);
+			parameters_.STATE_HEURISTIC = nullptr;
 
 		}
 		

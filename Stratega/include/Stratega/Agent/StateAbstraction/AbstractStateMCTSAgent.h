@@ -25,7 +25,7 @@ namespace SGA
 			//Evaluated fitness: 20 and Wins: 6 at K=100, RL=5, OS=1, 
 
 			//K=100, RL=5, OS=1, 
-			parameters_.K = 100;
+			parameters_.K = 0.1;
 			parameters_.ROLLOUT_LENGTH = 5;
 			//parameters_.OPPONENT_MODEL = std::make_unique<AttackWeakestOpponentScript>(); // the opponent model has not been correctly set in the NTBEA evaluation
 
@@ -42,6 +42,7 @@ namespace SGA
 			configuration.insertEntityParameters["HealAmount"] = true;
 			
 			parameters_.STATE_FACTORY = std::make_unique<StateFactory>(configuration);
+			parameters_.STATE_HEURISTIC = nullptr;
 		}
 		
 		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
