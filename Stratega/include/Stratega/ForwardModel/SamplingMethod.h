@@ -24,6 +24,7 @@ namespace SGA
 
 		//Validate 
 		virtual bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const;
+		virtual bool validatePosition(const GameState& gameState,const Vector2f& targetPosition) const;
 	};
 
 	struct Neighbours: public SamplingMethod

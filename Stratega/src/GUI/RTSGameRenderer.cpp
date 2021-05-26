@@ -485,7 +485,7 @@ namespace SGA
 		ImGui::Separator();
 
 		//Ask widget to get		
-		auto actionsToExecute = getWidgetResult(state, actionsSettings, pointOfViewPlayerID);
+		auto actionsToExecute = getWidgetResult(fowState, actionsSettings, pointOfViewPlayerID);
 		for(auto& action : actionsToExecute)
 		{
 			if (action.actionTypeID == -1 || action.isPlayerAction())

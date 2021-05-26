@@ -12,35 +12,48 @@ namespace SGA
 			break;
 		case Position:
 		{
-			//Avoid player source
-			if (sourceActionTarget.getType() == ActionTarget::PlayerReference)
-				return true;
-
-			//Check sampling methods validation
-
-			//Verify if position is in shape
-			auto sourcePosition = sourceActionTarget.getPosition(state);
+			//Get target position
 			auto targetPosition = actionTarget.getPosition(state);
 
-			if (!samplingMethod->validatePosition(state, sourcePosition, targetPosition))
-				return false;
+			//Avoid player source
+			if (sourceActionTarget.getType() == ActionTarget::PlayerReference)
+			{
+				if (!samplingMethod->validatePosition(state, targetPosition))
+					return false;
+			}
+			else
+			{
+				//Check sampling methods validation
+				//Verify if position is in shape
+				auto sourcePosition = sourceActionTarget.getPosition(state);
+
+				if (!samplingMethod->validatePosition(state, sourcePosition, targetPosition))
+					return false;
+			}
+			
 	
 		}break;
 		case EntityType:
 			break;
 		case Entity:
 		{
-			//Check if entity type
-			if (groupEntityTypes.find(actionTarget.getEntityType(state).id) == groupEntityTypes.end())
-				return false;
+			if (sourceActionTarget.getType() == ActionTarget::PlayerReference)
+			{
+				return true;
+			}
+			else
+			{
+				//Check if entity type
+				if (groupEntityTypes.find(actionTarget.getEntityType(state).id) == groupEntityTypes.end())
+					return false;
 
-			//Verify if position is in shape
-			auto sourcePosition = sourceActionTarget.getPosition(state);
-			auto targetPosition = actionTarget.getPosition(state);
+				//Verify if position is in shape
+				auto sourcePosition = sourceActionTarget.getPosition(state);
+				auto targetPosition = actionTarget.getPosition(state);
 
-			if (!samplingMethod->validatePosition(state, sourcePosition, targetPosition))
-				return false;
-
+				if (!samplingMethod->validatePosition(state, sourcePosition, targetPosition))
+					return false;
+			}
 		}			
 			break;
 		case Technology:

@@ -43,6 +43,11 @@ bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vec
 	return true;
 }
 
+bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
+{
+	return gameState.board.get(targetPosition.x, targetPosition.y).tileTypeID != -1;
+}
+
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
 {
 	std::vector<SGA::Vector2i> targets;

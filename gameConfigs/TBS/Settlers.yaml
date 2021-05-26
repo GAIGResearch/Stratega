@@ -188,6 +188,7 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
+            Food: 5
         Parameters:
             Speed: 1
             Range: 3
@@ -203,6 +204,7 @@ Entities:
         CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
         Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
         Cost:
+            Food: 8
         Parameters:
             Speed: 1
             Range: 6
@@ -213,6 +215,7 @@ Entities:
         Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
         Cost:
+            Food: 10
         Parameters:
             Health: 20
             Speed: 1
@@ -225,6 +228,7 @@ Entities:
         CanSpawn: [Wonder]
         Actions: [Move, BuildWonder]
         Cost:
+            Food: 15
         Parameters:
             Speed: 1
             Range: 6
