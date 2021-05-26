@@ -1,7 +1,8 @@
 #pragma once
+#include <memory>
 #include <unordered_set>
 #include <vector>
-
+#include <Stratega/ForwardModel/SamplingMethod.h>
 namespace SGA
 {
 	class ActionTarget;
@@ -22,9 +23,7 @@ namespace SGA
 		
 		Type type = Type::None;
 
-		// Specific variables for targetType=Position
-		ShapeType shapeType;
-		int shapeSize;
+		std::shared_ptr<SamplingMethod> samplingMethod;
 		
 		// Specific variables for targetType=Unit
 		std::unordered_set<int> groupEntityTypes;

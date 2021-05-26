@@ -4,7 +4,7 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - OSLAAgent
+    - HumanAgent
     - RandomAgent
 
 Tiles:
@@ -55,6 +55,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
@@ -67,8 +71,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Square
-                Size: 1
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 1
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -82,6 +93,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
