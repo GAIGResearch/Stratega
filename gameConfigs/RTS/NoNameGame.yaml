@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - RandomAgent
-    - RandomAgent
+    - HumanAgent
 
 Player:
     Actions: [Build, Research]
@@ -187,6 +187,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Attackable
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.Range)"
         Effects:
@@ -199,7 +203,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: AllPositions
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 2
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -231,8 +243,13 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: GoldVein
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 2
                 Conditions:
-                    - "InRange(Source, Target, 2)"
+
                     - "ResourceGreater(Target.Gold, 0.1)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 0.1)"
@@ -252,8 +269,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 2
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 2
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -275,7 +295,10 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: AllPositions
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 

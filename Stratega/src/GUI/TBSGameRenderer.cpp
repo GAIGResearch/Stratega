@@ -451,7 +451,7 @@ namespace SGA
 		ImGui::Text("Actions");
 
 		//Ask widget to get
-		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(state), actionsSettings, pointOfViewPlayerID);
+		auto actionsToExecute = getWidgetResult(const_cast<GameState&>(fowState), actionsSettings, pointOfViewPlayerID);
 		if (!actionsToExecute.empty())
 		{
 			selectedAction = actionsToExecute.front();
