@@ -25,10 +25,6 @@ namespace SGA
 
 		std::shared_ptr<SamplingMethod> samplingMethod;
 		
-		// Specific variables for targetType=Position
-		ShapeType shapeType;
-		int shapeSize;
-		
 		// Specific variables for targetType=Unit
 		std::unordered_set<int> groupEntityTypes;
 		

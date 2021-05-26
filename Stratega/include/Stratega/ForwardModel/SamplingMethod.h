@@ -22,6 +22,8 @@ namespace SGA
 		virtual std::vector<Vector2i> getPositions(const GameState& gameState) const ;
 		virtual std::vector<int> getEntities(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const;
 
+		//Validate 
+		virtual bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const;
 	};
 
 	struct Neighbours: public SamplingMethod
@@ -30,8 +32,6 @@ namespace SGA
 		{
 			Circle,
 			Square,
-			Cross,
-			Line,
 			AllPositions
 		};
 		
@@ -41,6 +41,9 @@ namespace SGA
 		
 		std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
 		std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
+		
+		//Validate 
+		bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
 	};
 
 	struct Dijkstra : public SamplingMethod
@@ -84,5 +87,8 @@ namespace SGA
 		
 		std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
 		std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
+		
+		//Validate 
+		bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
 	};
 }

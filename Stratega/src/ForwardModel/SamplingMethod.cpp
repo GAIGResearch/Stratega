@@ -38,6 +38,10 @@ std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, co
 	return targets;
 }
 
+bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
+{
+	return true;
+}
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
 {
@@ -104,6 +108,23 @@ std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const 
 			entitiesIDs.emplace_back(entity.id);
 	}
 	return entitiesIDs;
+}
+
+bool SGA::Neighbours::validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
+{
+	switch (shapeType)
+	{
+	case ShapeType::Square:			
+	{
+		return (sourcePosition.x >= targetPosition.x - shapeSize && sourcePosition.x <= targetPosition.x + shapeSize &&
+			sourcePosition.y>=targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize);
+	}				
+	case ShapeType::Circle:
+	{
+		return sourcePosition.distance(targetPosition) <= shapeSize;
+	}				
+	default: return true;
+	}
 }
 
 std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -238,4 +259,18 @@ std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Ve
 	}
 	
 	return entities;
+}
+
+bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
+{
+	//Take Dijkstra possible positions
+	auto positions = getPositions(gameState, sourcePosition);
+
+	for each (auto position in positions)
+	{
+		if (targetPosition.distance(Vector2f(position.x,position.y)) <= 0.5f)
+			return true;
+	}
+
+	return false;
 }
