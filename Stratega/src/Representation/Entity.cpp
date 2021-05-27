@@ -41,11 +41,18 @@ namespace SGA
 		}
 	}
 
-	/*
-	double& Entity::getParameterAt(int paramIdx)
+	void Entity::setActionTicks(int actionTypeID, int tick)
 	{
-		return parameters[paramIdx];
-	}*/
+		// ToDo We should probably find a way to avoid this loop (why attachedActions is not a map?)
+		for (auto& actionInfo : attachedActions)
+		{
+			if (actionInfo.actionTypeID == actionTypeID)
+			{
+				actionInfo.lastExecutedTick = tick;
+				return;
+			}
+		}
+	}
 
 	void Entity::printInfo() const
 	{

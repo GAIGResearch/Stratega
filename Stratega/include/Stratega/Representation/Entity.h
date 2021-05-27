@@ -23,9 +23,10 @@ namespace SGA
 		//Reference to the Entity type of this entity.
 		const EntityType* type;
 
-		std::vector<double> parameters;
-		std::vector<ActionInfo> attachedActions;
+		//Internal state of this entity.
 		bool remove = false;
+		std::vector<ActionInfo> attachedActions;
+		std::vector<double> parameters;
 
 	public:
 		std::vector<Action> continuousAction;
@@ -43,13 +44,22 @@ namespace SGA
 		{
 		}
 
+		//ID of this entity in the game.
 		int id;
+
+		//ID of the player who owns this entity.
 		int ownerID;
+
+		//ID of the type of entity.
 		int typeID;
+
+		//Position of the entity in the board.
 		Vector2f position;
+
+		//Range of the line of sight of this entity.
 		double lineOfSightRange;
 
-		//RTS Stuff
+		//Variables for continuous movement of the unit in RTS games.
 		Path path;
 		double movementSpeed;
 		double collisionRadius;
@@ -72,18 +82,30 @@ namespace SGA
 			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
 
-		double getParameter(std::string paramName) const;
-		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }	
-		std::vector<double> getParamValues() { return parameters; }
-		std::vector<double> getParamValues() const { return parameters; }
-		std::vector<ActionInfo> getAttachedActions() { return attachedActions; }
+
 		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+		void setActionTicks(int actionTypeID, int tick);
+
+		//Functions for flagging a unit for removal.
+		void flagRemove() { remove = true; } 
+		bool flagged() { return remove; }
+		
+		//Initializes the entity with a given ID. Creates default attached actions and parameters list from the entity type.
+		void init(int entityID);
+
+		//Prints information about the entity.
+		void printInfo() const;
+
+		//Get Parameters list functions.
+		std::vector<double>& getParamValues() { return parameters; }
+		const std::vector<double>& getParamValues() const { return parameters; }
+
+		//Get specific parameters, by name or index.
+		double getParameter(std::string paramName) const;
+		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+
+
 		//std::vector<Action> getContinuousActions() { return continuousAction; }
 		//std::vector<Action> getContinuousActions() const { return continuousAction; }
-		void flagRemove() { remove = true; } //Not sure we'll need to set to false externally ever.
-		bool flagged() { return remove; }
-
-		void init(int entityID);
-		void printInfo() const;
 	};
 }
