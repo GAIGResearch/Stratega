@@ -167,15 +167,7 @@ namespace SGA
 			{
 				// Remember when the action was executed
 				auto& executingEntity = *action.targets[0].getEntity(state);
-				// ToDo We should probably find a way to avoid this loop
-				for (auto& actionInfo : executingEntity.getAttachedActions())
-				{
-					if (actionInfo.actionTypeID == action.actionTypeID)
-					{
-						actionInfo.lastExecutedTick = state.currentTick;
-						break;
-					}
-				}
+				executingEntity.setActionTicks(action.actionTypeID, state.currentTick);
 			}
 			else
 			{

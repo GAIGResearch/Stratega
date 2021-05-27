@@ -251,7 +251,7 @@ namespace  SGA
 		//Get cost of target, parameterlist to look up and the parameters of the source
 		const auto& cost = costParam.getCost(state, targets);
 		const auto& parameterLookUp = sourceParam.getParameterLookUp(state, targets);
-		auto& parameters = sourceParam.getParameterList(state, targets);
+		const auto& parameters = sourceParam.getParameterList(state, targets);
 
 		//Check if the source can pay the all the cost of the target
 		for (const auto& idCostPair : cost)
