@@ -17,6 +17,19 @@ namespace SGA
 	/// </summary>
 	struct Entity
 	{
+
+	private:
+
+		//Reference to the Entity type of this entity.
+		const EntityType* type;
+
+		std::vector<double> parameters;
+		std::vector<ActionInfo> attachedActions;
+		bool remove = false;
+
+	public:
+		std::vector<Action> continuousAction;
+
 		Entity(const EntityType* type):
 			type(type),
 			typeID(0),
@@ -29,17 +42,11 @@ namespace SGA
 			collisionRadius(0.5)
 		{
 		}
-		
-		//Entity type
-		const EntityType* type;		
-		int typeID;
-		
+
 		int id;
 		int ownerID;
+		int typeID;
 		Vector2f position;
-		std::vector<ActionInfo> attachedActions;
-		std::vector<double> parameters;
-		bool shouldRemove=false;
 		double lineOfSightRange;
 
 		//RTS Stuff
@@ -48,7 +55,6 @@ namespace SGA
 		double collisionRadius;
 
 		//Continuous Action
-		std::vector<Action> continuousAction;
 		bool isNeutral() const;
 
 		/// <summary>
@@ -66,6 +72,18 @@ namespace SGA
 			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 		}
 
-		double getEntityParameter(std::string paramName) const;
+		double getParameter(std::string paramName) const;
+		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }	
+		std::vector<double> getParamValues() { return parameters; }
+		std::vector<double> getParamValues() const { return parameters; }
+		std::vector<ActionInfo> getAttachedActions() { return attachedActions; }
+		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+		//std::vector<Action> getContinuousActions() { return continuousAction; }
+		//std::vector<Action> getContinuousActions() const { return continuousAction; }
+		void flagRemove() { remove = true; } //Not sure we'll need to set to false externally ever.
+		bool flagged() { return remove; }
+
+		void init(int entityID);
+		void printInfo() const;
 	};
 }

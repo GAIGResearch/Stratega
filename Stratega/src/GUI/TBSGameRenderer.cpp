@@ -364,7 +364,7 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			auto* selectedEntity = state.getEntityConst(*actionsSettings.selectedEntities.begin());
+			auto* selectedEntity = state.getEntity(*actionsSettings.selectedEntities.begin());
 			auto entityType = state.gameInfo->getEntityType(selectedEntity->typeID);
 
 			ImGui::Text(entityType.name.c_str());
@@ -387,7 +387,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
+				stream << std::fixed << std::setprecision(2) << selectedEntity->getParameterAt(parameterIndex++);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;

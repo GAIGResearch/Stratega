@@ -11,7 +11,7 @@ namespace SGA
 			if (sourceEntity.ownerID != playerID)
 				continue;
 			
-			for (const auto& actionInfo : sourceEntity.attachedActions)
+			for (const auto& actionInfo : sourceEntity.getAttachedActions())
 			{
 				auto& actionType = gameState.gameInfo->getActionType(actionInfo.actionTypeID);
 				

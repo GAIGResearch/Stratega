@@ -30,7 +30,7 @@ namespace SGA
 		// Remove Entities
 		for (size_t i = 0; i < state.entities.size(); i++)
 		{
-			if (state.entities[i].shouldRemove)
+			if (state.entities[i].flagged())
 			{
 				state.entities.erase(state.entities.begin() + i);
 				i -= 1;
