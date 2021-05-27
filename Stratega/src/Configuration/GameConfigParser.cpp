@@ -387,16 +387,14 @@ namespace SGA
         TargetType targetType;
         targetType.type = node["Type"].as<TargetType::Type>();
         if (targetType.type == TargetType::Position)
-        {
-        	if(node["Shape"].IsDefined())
-        	{
-
-                targetType.shapeType = node["Shape"].as<ShapeType>();
-                targetType.shapeSize = node["Size"].as<int>(0);
-        	}
+        {        	
+        	targetType.samplingMethod= node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
+        	if(targetType == TargetType::Entity)
+				targetType.samplingMethod = node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+        	
             targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
         }
         else if (targetType.type == TargetType::Technology)

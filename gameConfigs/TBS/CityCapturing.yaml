@@ -52,9 +52,16 @@ Actions:
         Targets:
             Target:
                 Type: Entity
+                SamplingMethod:
+                #   Type: Dijkstra
+                #   Options:
+                #       SearchSize: 3
+                #       AllowDiagonals: false
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 ValidTargets: [Conquerer, Fighter]
-                Conditions:
-                    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
@@ -64,9 +71,16 @@ Actions:
         Targets:
             Target:
                 Type: Entity
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 1
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 ValidTargets: City
-                Conditions:
-                    - "InRange(Source, Target, 1)"
         Effects:
             - "ChangeOwner(Target, Source.Player)"
             - "Remove(Source)"
@@ -78,10 +92,13 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 3
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: false
                 Conditions:
-                    - "IsWalkable(Target)"
+                - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
 
@@ -160,10 +177,10 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+        M  .  .  .  .  .  .  W  .  W  .  W  .  .  .  .  M
         M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
         M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
