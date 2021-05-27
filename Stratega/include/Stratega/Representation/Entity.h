@@ -18,6 +18,50 @@ namespace SGA
 	struct Entity
 	{
 
+	public:
+
+		/// <summary>
+		//ID of this entity in the game.
+		/// <summary>
+		int id;
+
+		/// <summary>
+		//ID of the player who owns this entity.
+		/// <summary>
+		int ownerID;
+
+		/// <summary>
+		//ID of the type of entity.
+		/// <summary>
+		int typeID;
+
+		/// <summary>
+		//Position of the entity in the board.
+		/// <summary>
+		Vector2f position;
+
+		/// <summary>
+		//Range of the line of sight of this entity.
+		/// <summary>
+		double lineOfSightRange;
+
+		/* Variables for continuous movement of the unit in RTS games. */
+
+		/// <summary>
+		/// Path that this entity is following (RTS)
+		/// <summary>
+		Path path;
+
+		/// <summary>
+		/// Movement speed for this entity (RTS)
+		/// <summary>
+		double movementSpeed;
+		
+		/// <summary>
+		/// Collision radius for this entity (RTS)
+		/// <summary>
+		double collisionRadius;
+
 	private:
 
 		//Reference to the Entity type of this entity.
@@ -29,83 +73,111 @@ namespace SGA
 		std::vector<double> parameters;
 		std::vector<Action> continuousAction;
 
+
 	public:
 
-		Entity(const EntityType* type):
+		/// <summary>
+		/// Creates an instance of an entity. 
+		/// <summary>
+		/// <param name="type">Receives a pointer to the type of entity this will be.</param>
+		Entity(const EntityType* type) :
 			type(type),
 			typeID(0),
 			id(0),
 			ownerID(0),
 			position(),
-		    lineOfSightRange(5),
-		    path(),
-		    movementSpeed(2),
+			lineOfSightRange(5),
+			path(),
+			movementSpeed(2),
 			collisionRadius(0.5)
 		{
 		}
 
-		//ID of this entity in the game.
-		int id;
-
-		//ID of the player who owns this entity.
-		int ownerID;
-
-		//ID of the type of entity.
-		int typeID;
-
-		//Position of the entity in the board.
-		Vector2f position;
-
-		//Range of the line of sight of this entity.
-		double lineOfSightRange;
-
-		//Variables for continuous movement of the unit in RTS games.
-		Path path;
-		double movementSpeed;
-		double collisionRadius;
-
-		//Continuous Action
+		/// <summary>
+		/// Indicates if this unit is neutral (i.e. does not belong to any playing faction).
+		/// <summary>
+		/// <returns>True if this entity is neutral.</returns>
 		bool isNeutral() const;
 
 		/// <summary>
 		/// Returns a <see cref="SGA::ActionInfo"/> object linked to action type,
 		/// used to check when was the last time the action type was executed by this entity
 		/// </summary>
-		const ActionInfo& getActionInfo(int actionTypeID) const
-		{
-			for (auto& actionInfo : attachedActions)
-			{
-				if (actionInfo.actionTypeID == actionTypeID)
-					return actionInfo;
-			}
-
-			throw std::runtime_error("Tried accessing actionInfo of unknown action type");
-		}
+		/// <param name="actionTypeID">The ID of the action type we're looking for.</param>
+		/// <returns>The action info object, if it exists. Throws a runtime error if it doesn't.</returns>
+		const ActionInfo& getActionInfo(int actionTypeID) const;
 
 
+		/// <summary>
+		/// Returns the actions attached to this entity.
+		/// <summary>
+		/// <returns>The list of <see cref="SGA::ActionInfo"/> attached to this entity.</returns>
 		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+
+
+		/// <summary>
+		/// Sets the last executed game ticks to the tick passed by parameter for the action corresponding to the type received.
+		/// <summary>
+		/// <param name="actionTypeID">The ID of the action type we're looking for.</param>
+		/// <param name="tick">The value of the tick to set in the action information</param>
 		void setActionTicks(int actionTypeID, int tick);
 
-		//Functions for flagging a unit for removal.
-		void flagRemove() { remove = true; } 
-		bool flagged() { return remove; }
+		/// <summary>
+		// Flags this entity to be removed by the game engine.
+		/// <summary>
+		void flagRemove() { remove = true; }
 		
+		/// <summary>
+		/// Checks if this entity should be removed by the game engine.
+		/// <summary>
+		/// <returns>True if this entity is marked to be removed.</returns>
+		bool flagged() { return remove; }
+
+		/// <summary>
 		//Initializes the entity with a given ID. Creates default attached actions and parameters list from the entity type.
+		/// <summary>
+		/// <param name="entityID">(Unique) ID of this entity in the game.</param>
 		void init(int entityID);
 
-		//Prints information about the entity.
+		/// <summary>
+		// Prints information about the entity, parameters and actions
+		/// <summary>
 		void printInfo() const;
 
-		//Get Parameters list functions.
+		/// <summary>
+		/// Gets the list of parameters values. Modifiable.
+		/// <summary>
+		/// <returns>The list of parameters values.</returns>
 		std::vector<double>& getParamValues() { return parameters; }
+		
+		/// <summary>
+		/// Gets the list of parameters values.
+		/// <summary>
+		/// <returns>The list of parameters values.</returns>
 		const std::vector<double>& getParamValues() const { return parameters; }
 
-		//Get specific parameters, by name or index.
+		/// <summary>
+		/// Gets the value of a specific parameter, by name 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
 		double getParameter(std::string paramName) const;
+		
+		/// <summary>
+		/// Gets a specific parameters, by index 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
 		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }
 
-		// Get continuous actions
+		/// <summary>
+		/// Gets the list of continuous actions attached to this entity. Modifiable.
+		/// <summary>
+		/// <returns>The list of continuous actions attached to this entity.</returns>
 		std::vector<Action>& getContinuousActions() { return continuousAction; }
+
+		/// <summary>
+		/// Gets the list of continuous actions attached to this entity. 
+		/// <summary>
+		/// <returns>The list of continuous actions attached to this entity.</returns>
 		const std::vector<Action>& getContinuousActions() const { return continuousAction; }
 	};
 }
