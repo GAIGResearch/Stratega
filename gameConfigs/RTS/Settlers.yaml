@@ -4,7 +4,7 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - RandomAgent
+    - DoNothingAgent
     - HumanAgent
 
 Player:
@@ -70,10 +70,11 @@ Entities:
         Sprite: ../../GUI/Assets/Entities/wonder.png
         LineOfSightRange: 5
         Actions: []
+        RequiredTechnology: Wonder
         Cost:
             Wood: 2000
             Iron: 2000
-            Food: 2000
+            Food: 200
             Bricks: 2000
         Parameters:
             Health: 200
@@ -246,6 +247,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Attackable
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.Range)"
         Effects:
@@ -259,6 +264,10 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Spy
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
                 Conditions:
                     - "InRange(Source, Target, Source.Range)"
         Effects:
@@ -271,7 +280,11 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: AllPositions
+                SamplingMethod:
+                   Type: Dijkstra
+                   Options:
+                       SearchSize: 4
+                       AllowDiagonals: false
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -284,8 +297,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: IronMine
-                Conditions:
-                    - "InRange(Source, Target, 3)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
         Effects:
             - "ModifyResource(Source.Player.Iron, Source.IronMining)"
 
@@ -296,8 +312,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: GoldMine
-                Conditions:
-                    - "InRange(Source, Target, 3)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
         Effects:
             - "ModifyResource(Source.Player.Gold, Source.GoldMining)"
 
@@ -308,8 +327,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Farm
-                Conditions:
-                    - "InRange(Source, Target, 3)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
         Effects:
             - "ModifyResource(Source.Player.Food, Source.LivestockFarming)"
 
@@ -320,8 +342,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Saw
-                Conditions:
-                    - "InRange(Source, Target, 3)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
         Effects:
             - "ModifyResource(Source.Player.Wood, Source.WoodCutting)"
 
@@ -332,8 +357,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Masonry
-                Conditions:
-                    - "InRange(Source, Target, 3)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
         Effects:
             - "ModifyResource(Source.Player.Bricks, Source.BrickMaking)"
 
@@ -351,8 +379,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -373,8 +404,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Ore)"
@@ -395,8 +429,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Gold)"
@@ -417,8 +454,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition,Animals)"
@@ -439,8 +479,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Plain)"
@@ -461,8 +504,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Clay)"
@@ -483,8 +529,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Forest)"
@@ -505,8 +554,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
         Effects:
@@ -526,8 +578,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
         Effects:
@@ -547,8 +602,11 @@ Actions:
 
             TargetPosition:
                 Type: Position
-                Shape: Square
-                Size: 4
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
         TriggerComplete:

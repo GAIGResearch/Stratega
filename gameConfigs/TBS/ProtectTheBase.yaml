@@ -38,8 +38,11 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Square
-                Size: 1
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -54,8 +57,11 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Square
-                Size: 1
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -70,8 +76,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Attackable
-                Conditions:
-                    - "InRange(Source, Target, 10)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 4
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
 
@@ -82,8 +91,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 3
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -97,8 +113,12 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: GoldVein
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
                 Conditions:
-                    - "InRange(Source, Target, 1)"
                     - "ResourceGreater(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Gold, 40)"
@@ -110,8 +130,11 @@ Actions:
             Target:
                 Type: Entity
                 ValidTargets: Base
-                Conditions:
-                    - "InRange(Source, Target, 1)"
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
         Effects:
             - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
 
@@ -123,7 +146,7 @@ Entities:
         Actions: [SpawnMiner, SpawnFighter]
         Parameters:
             Gold: 500
-            Health: 500
+            Health: 100
 
     Miner:
         Sprite: ../../GUI/Assets/Entities/unit7.png
@@ -132,7 +155,7 @@ Entities:
         Actions: [Move, Mine, Deposit]
         Parameters:
             Gold: 0
-            Health: 50
+            Health: 20
 
     Fighter:
         Sprite: ../../GUI/Assets/Entities/unit2.png
@@ -140,7 +163,7 @@ Entities:
         LineOfSightRange: 6
         Parameters:
             AttackDamage: 10
-            Health: 80
+            Health: 40
         Actions: [Move, Attack]
 
     GoldVein:

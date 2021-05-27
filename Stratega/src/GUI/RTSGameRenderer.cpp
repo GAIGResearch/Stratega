@@ -15,7 +15,7 @@ namespace SGA
 		fowState(),
 		assignment(),
 		window(sf::VideoMode(1200, 800), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
-		pointOfViewPlayerID(0),
+		pointOfViewPlayerID(NO_PLAYER_ID),
 		fowSettings(),
 		zoomValue(5.f),
 		dragging(false)
@@ -484,19 +484,22 @@ namespace SGA
 		ImGui::SetColumnWidth(2, 250);
 		ImGui::Separator();
 
-		//Ask widget to get		
-		auto actionsToExecute = getWidgetResult(state, actionsSettings, pointOfViewPlayerID);
-		for(auto& action : actionsToExecute)
+		//Ask widget to get	
+		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
-			if (action.actionTypeID == -1 || action.isPlayerAction())
+			auto actionsToExecute = getWidgetResult(fowState, actionsSettings, pointOfViewPlayerID);
+			for (auto& action : actionsToExecute)
 			{
-				//If continuous or Player action we assign it directly
-				assignment.assignActionOrReplace(action);
-			}
-			else
-			{
-				//If is Entity action we save it for future calls
-				futureActionsToPlay.emplace_back(action);
+				if (action.actionTypeID == -1 || action.isPlayerAction())
+				{
+					//If continuous or Player action we assign it directly
+					assignment.assignActionOrReplace(action);
+				}
+				else
+				{
+					//If is Entity action we save it for future calls
+					futureActionsToPlay.emplace_back(action);
+				}
 			}
 		}
 
@@ -597,89 +600,93 @@ namespace SGA
 		ImGui::BeginGroup();
 
 		int index = 0;
-		auto actionsHumanCanPlay = config->forwardModel->generateActions(fowState, pointOfViewPlayerID);
-
-		for (auto action : actionsHumanCanPlay)
+		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
-			std::string actionInfo = std::to_string(index);
-			if (action.actionTypeID == -1)
+			auto actionsHumanCanPlay = config->forwardModel->generateActions(fowState, pointOfViewPlayerID);
+
+			for (auto action : actionsHumanCanPlay)
 			{
-				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+				std::string actionInfo = std::to_string(index);
+				if (action.actionTypeID == -1)
 				{
-					if (action.targets[0].getType() == ActionTarget::EntityReference)
+					if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 					{
-						//We need to find the continues action name that will abort
-						auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
-						for (auto& continueAction : sourceEntity.continuousAction)
+						if (action.targets[0].getType() == ActionTarget::EntityReference)
 						{
-							if (continueAction.continuousActionID == action.continuousActionID)
+							//We need to find the continues action name that will abort
+							auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
+							for (auto& continueAction : sourceEntity.continuousAction)
 							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
-								actionInfo += " Abort " + actionType.name;
+								if (continueAction.continuousActionID == action.continuousActionID)
+								{
+									const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+									actionInfo += " Abort " + actionType.name;
+								}
 							}
 						}
+						else
+						{
+							//We need to find the continues action name that will abort
+							auto& sourcePlayer = action.targets[0].getPlayer(state);
+							for (auto& continueAction : sourcePlayer.continuousAction)
+							{
+								if (continueAction.continuousActionID == action.continuousActionID)
+								{
+									const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+									actionInfo += " Abort " + actionType.name;
+								}
+							}
+						}
+
+
+
 					}
 					else
+						actionInfo += " SpecialAction";
+				}
+				else
+				{
+					const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
+
+					actionInfo += " " + actionType.name;
+
+					//TODO Clean this :D IS TEMPORAL
+					for (auto& targetType : action.targets)
 					{
-						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.targets[0].getPlayer(state);
-						for (auto& continueAction : sourcePlayer.continuousAction)
+						switch (targetType.getType())
 						{
-							if (continueAction.continuousActionID == action.continuousActionID)
-							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
-								actionInfo += " Abort " + actionType.name;
-							}
+						case ActionTarget::Position:
+							actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
+							break;
+						case ActionTarget::EntityReference:
+							actionInfo += state.gameInfo->getEntityType(state.getEntity(targetType.getEntityID())->typeID).name;
+							break;
+						case ActionTarget::PlayerReference:
+							actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
+							break;
+						case ActionTarget::TechnologyReference:
+							actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+							break;
+						case ActionTarget::EntityTypeReference:
+							actionInfo += " Entity: " + targetType.getEntityType(state).name;
+							break;
+						case ActionTarget::ContinuousActionReference:
+							break;
 						}
 					}
 
-
-
 				}
-				else
-					actionInfo += " SpecialAction";
-			}
-			else
-			{
-				const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
 
-				actionInfo += " " + actionType.name;
+				index++;
 
-				//TODO Clean this :D IS TEMPORAL
-				for (auto& targetType : action.targets)
+				if (ImGui::Button(actionInfo.c_str()))
 				{
-					switch (targetType.getType())
-					{
-					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
-						break;
-					case ActionTarget::EntityReference:
-						actionInfo += state.gameInfo->getEntityType(state.getEntity(targetType.getEntityID())->typeID).name;
-						break;
-					case ActionTarget::PlayerReference:
-						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
-						break;
-					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
-						break;
-					case ActionTarget::EntityTypeReference:
-						actionInfo += " Entity: " + targetType.getEntityType(state).name;
-						break;
-					case ActionTarget::ContinuousActionReference:
-						break;
-					}
+					assignment.assignActionOrReplace(action);
+					break;
 				}
-
-			}
-
-			index++;
-
-			if (ImGui::Button(actionInfo.c_str()))
-			{
-				assignment.assignActionOrReplace(action);
-				break;
 			}
 		}
+		
 
 		ImGui::EndGroup();
 
@@ -770,16 +777,19 @@ namespace SGA
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
-		const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
-		for (const auto& parameter : *state.gameInfo->playerParameterTypes)
+		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
-			//Double to string with 2 precision				
-			std::stringstream stream;
-			stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
-			std::string valueParameter = stream.str();
+			const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
+			for (const auto& parameter : *state.gameInfo->playerParameterTypes)
+			{
+				//Double to string with 2 precision				
+				std::stringstream stream;
+				stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+				std::string valueParameter = stream.str();
 
-			std::string parameterInfo = parameter.second.name + ": " + valueParameter;
-			ImGui::BulletText(parameterInfo.c_str());
+				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+				ImGui::BulletText(parameterInfo.c_str());
+			}
 		}
 
 		ImGui::EndGroup();

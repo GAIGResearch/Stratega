@@ -31,7 +31,7 @@ namespace SGA::Widgets
 		bool waitingForEntity = false;
 
 		//Configuration
-		bool removeSelectedEntities = true;
+		bool removeSelectedEntities = false;
 		
 		void reset()
 		{
