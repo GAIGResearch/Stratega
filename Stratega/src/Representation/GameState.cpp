@@ -362,38 +362,11 @@ namespace SGA
 	
 	void GameState::printEntityInfo(int entityID)
 	{
-		std::cout << "EntityInfo";
 		const auto* entity = getEntity(entityID);
-
-		if (entity)
-		{
-			std::cout << "[" << gameInfo->getEntityType(entity->typeID).name << "],";
-			std::cout << " [ID: " <<entity->id<<"],";
-			std::cout << " [OwnerID: " <<entity->ownerID<<"],";
-			std::cout << " [Position: "<< entity->position.x << "," << entity->position.y <<"]";
-
-			
-
-			int parameterID = 0;
-			auto& entityType = gameInfo->getEntityType(entity->typeID);
-			if (entity->parameters.empty())
-			{
-				std::cout << std::endl;
-				return;
-			}				
-				
-			std::cout << ", [Parameters: ";
-			for (auto& parameter : entity->parameters)
-			{
-				std::cout << "(" << entityType.parameters.find(parameterID++)->second.name <<": "<< parameter<<")";
-			}
-
-			std::cout << "]"<<std::endl;
-		}
-		else
-		{
+		if (entity)  	
+			entity->printInfo();
+		else 			
 			std::cout << "Entity not found" << std::endl;
-		}
 	}
 
 	void GameState::printActionInfo(Action& action) const

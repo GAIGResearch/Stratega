@@ -31,24 +31,7 @@ bool SGA::EntityType::canExecuteAction(int actionTypeID) const
 SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 {
 	Entity instance(this);
-	instance.id = entityID;
-	instance.typeID = this->id;
-	
-	// Add actions
-	instance.attachedActions.reserve(actionIds.size());
-	for(auto actionTypeID : actionIds)
-	{
-		instance.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
-	}
-
-	// Set parameter values
-	instance.lineOfSightRange = lineOfSight;
-	instance.parameters.reserve(parameters.size());
-	for(const auto& idParamPair: parameters)
-	{
-		instance.parameters.emplace_back(idParamPair.second.defaultValue);
-	}
-
+	instance.init(entityID);
 	return instance;
 }
 

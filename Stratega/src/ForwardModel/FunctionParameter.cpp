@@ -142,7 +142,7 @@ namespace SGA
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
-				return entity.parameters[param.index];
+				return entity.getParameterAt(param.index);
 			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
@@ -350,13 +350,13 @@ namespace SGA
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				return sourceEntity.parameters;
+				return sourceEntity.getParamValues();
 			}
 		}
 		else
 		{
 			auto& sourceEntity = getEntity(state, actionTargets);
-			return sourceEntity.parameters;
+			return sourceEntity.getParamValues();
 		}
 
 		throw std::runtime_error("Type not recognized");
@@ -381,13 +381,13 @@ namespace SGA
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				return sourceEntity.parameters;
+				return sourceEntity.getParamValues();
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			return sourceEntity.parameters;
+			return sourceEntity.getParamValues();
 		}
 
 		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");

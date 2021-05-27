@@ -9,7 +9,28 @@ namespace SGA
 		return ownerID == Player::NEUTRAL_PLAYER_ID;
 	}
 
-	double Entity::getEntityParameter(std::string paramName) const
+	void Entity::init(int entityID)
+	{
+		this->id = entityID;
+		this->typeID = type->id;
+		
+		// Add actions
+		attachedActions.reserve(type->actionIds.size());
+		for (auto actionTypeID : type->actionIds)
+		{
+			attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
+		}
+
+		// Set parameter values
+		lineOfSightRange = type->lineOfSight;
+		parameters.reserve(type->parameters.size());
+		for (const auto& idParamPair : type->parameters)
+		{
+			parameters.emplace_back(idParamPair.second.defaultValue);
+		}
+	}
+
+	double Entity::getParameter(std::string paramName) const
 	{
 		for (const auto& param : type->parameters)
 		{
@@ -18,6 +39,35 @@ namespace SGA
 				return parameters[param.second.index];
 			}
 		}
+	}
+
+	/*
+	double& Entity::getParameterAt(int paramIdx)
+	{
+		return parameters[paramIdx];
+	}*/
+
+	void Entity::printInfo() const
+	{
+		std::cout << "[" << type->name << "],";
+		std::cout << " [ID: " << id << "],";
+		std::cout << " [OwnerID: " << ownerID << "],";
+		std::cout << " [Position: " << position.x << "," << position.y << "]";
+
+		int parameterID = 0;
+		if (parameters.empty())
+		{
+			std::cout << std::endl;	
+			return;
+		}
+
+		std::cout << ", [Parameters: ";
+		for (auto& parameter : parameters)
+		{
+			std::cout << "(" << type->parameters.find(parameterID++)->second.name << ": " << parameter << ")";
+		}
+
+		std::cout << "]" << std::endl;
 	}
 
 }
