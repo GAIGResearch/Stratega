@@ -27,9 +27,9 @@ namespace SGA
 		bool remove = false;
 		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
+		std::vector<Action> continuousAction;
 
 	public:
-		std::vector<Action> continuousAction;
 
 		Entity(const EntityType* type):
 			type(type),
@@ -104,8 +104,8 @@ namespace SGA
 		double getParameter(std::string paramName) const;
 		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }
 
-
-		//std::vector<Action> getContinuousActions() { return continuousAction; }
-		//std::vector<Action> getContinuousActions() const { return continuousAction; }
+		// Get continuous actions
+		std::vector<Action>& getContinuousActions() { return continuousAction; }
+		const std::vector<Action>& getContinuousActions() const { return continuousAction; }
 	};
 }
