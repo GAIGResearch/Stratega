@@ -54,6 +54,17 @@ namespace SGA
 		}
 	}
 
+	const ActionInfo& Entity::getActionInfo(int actionTypeID) const
+	{
+		for (auto& actionInfo : attachedActions)
+		{
+			if (actionInfo.actionTypeID == actionTypeID)
+				return actionInfo;
+		}
+
+		throw std::runtime_error("Tried accessing actionInfo of unknown action type");
+	}
+
 	void Entity::printInfo() const
 	{
 		std::cout << "[" << type->name << "],";
