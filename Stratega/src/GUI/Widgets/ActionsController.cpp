@@ -91,7 +91,7 @@ namespace SGA::Widgets
 				//If player is researching abort action
 				for (auto& entityID : settings.selectedEntities)
 				{
-					for (auto& action : state.getEntity(entityID)->continuousAction)
+					for (const auto& action : state.getEntity(entityID)->getContinuousActions())
 					{
 						if (action.actionTypeID == settings.actionTypeSelected)
 						{

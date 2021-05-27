@@ -20,7 +20,7 @@ namespace SGA
 				if (actionType.isContinuous)
 				{
 					//Check if entity is already executing it
-					for (auto& action : sourceEntity.continuousAction)
+					for (const auto& action : sourceEntity.getContinuousActions())
 					{
 						if (action.actionTypeID == actionType.id)
 						{
@@ -357,7 +357,7 @@ namespace SGA
 	{
 		std::vector<ActionTarget> targets;
 
-		for (auto& action : sourceEntity.continuousAction)
+		for (const auto& action : sourceEntity.getContinuousActions())
 		{
 			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.continuousActionID));
 		}

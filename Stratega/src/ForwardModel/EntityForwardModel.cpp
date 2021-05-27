@@ -106,20 +106,21 @@ namespace SGA
 				int continuousActionID = action.targets[1].getContinuousActionID();
 
 				//Search continuousAction to abort
-				for (size_t i = 0; i < sourceEntity.continuousAction.size(); i++)
+				std::vector<Action>& continuousActions = sourceEntity.getContinuousActions();
+				for (size_t i = 0; i < continuousActions.size(); i++)
 				{
-					if (sourceEntity.continuousAction[i].continuousActionID == continuousActionID)
+					if (continuousActions[i].continuousActionID == continuousActionID)
 					{
-						auto& actionType = state.gameInfo->getActionType(sourceEntity.continuousAction[i].actionTypeID);
+						auto& actionType = state.gameInfo->getActionType(continuousActions[i].actionTypeID);
 
 						//Execute OnAbort Effects				
 						for (auto& effect : actionType.OnAbort)
 						{
-							effect->execute(state, *this, sourceEntity.continuousAction[i].targets);
+							effect->execute(state, *this, continuousActions[i].targets);
 						}
 
 						//Remove continuous action
-						sourceEntity.continuousAction.erase(sourceEntity.continuousAction.begin() + i);
+						continuousActions.erase(continuousActions.begin() + i);
 						i--;
 					}
 				}
@@ -145,8 +146,7 @@ namespace SGA
 				}
 
 				auto& executingEntity = *newAction.targets[0].getEntity(state);
-				executingEntity.continuousAction.emplace_back(newAction);
-
+				executingEntity.getContinuousActions().emplace_back(newAction);
 			}
 			else if (actionType.sourceType == ActionSourceType::Player)
 			{
@@ -224,25 +224,26 @@ namespace SGA
 		//Check if condition is complete
 		for (size_t j = 0; j < state.entities.size(); j++)
 		{
-			for (size_t i = 0; i < state.entities[j].continuousAction.size(); i++)
+			std::vector<Action>& continuousActions = state.entities[j].getContinuousActions();
+			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
-				auto& actionType = state.gameInfo->getActionType(state.entities[j].continuousAction[i].actionTypeID);
+				auto& actionType = state.gameInfo->getActionType(continuousActions[i].actionTypeID);
 				//Add one elapsed tick
-				state.entities[j].continuousAction[i].elapsedTicks++;
+				continuousActions[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
 					auto& type = state.gameInfo->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
-						effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+						effect->execute(state, *this, continuousActions[i].targets);
 					}
 				}
 				//Check if action is complete
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
+					if (!condition->isFullfilled(state, continuousActions[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -273,13 +274,13 @@ namespace SGA
 							auto& type = state.gameInfo->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
-								effect->execute(state, *this, state.entities[j].continuousAction[i].targets);
+								effect->execute(state, *this, continuousActions[i].targets);
 							}
 						}
 					}
 
 					//Delete the ContinuousAction
-					state.entities[j].continuousAction.erase(state.entities[j].continuousAction.begin() + i);
+					continuousActions.erase(continuousActions.begin() + i);
 					i--;
 					//Stop executing this action
 					continue;

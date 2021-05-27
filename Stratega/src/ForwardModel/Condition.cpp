@@ -44,7 +44,7 @@ namespace  SGA
 		{
 			auto& sourceEntity = targets[0].getEntityConst(state);
 
-			for (auto& action : sourceEntity.continuousAction)
+			for (const auto& action : sourceEntity.getContinuousActions())
 			{
 				if (action.continuousActionID == targets[2].getContinuousActionID())
 				{
