@@ -74,9 +74,9 @@ namespace SGA
 		/// <summary>
 		/// Creates an instance of an entity. 
 		/// <summary>
-		/// <param name="type">Receives a pointer to the type of entity this will be.</param>
-		Entity(const EntityType* type) :
-			type(type),
+
+		Entity() :
+			type(0),
 			id(0),
 			ownerID(0),
 			position(),
@@ -86,6 +86,12 @@ namespace SGA
 			collisionRadius(0.5)
 		{
 		}
+
+		/// <summary>
+		//Initializes the entity with a given ID. Creates default attached actions and parameters list from the entity type.
+		/// <summary>
+		/// <param name="entityID">(Unique) ID of this entity in the game.</param>
+		void init(const EntityType* type, int entityID);
 
 		/// <summary>
 		/// Indicates if this unit is neutral (i.e. does not belong to any playing faction).
@@ -127,11 +133,6 @@ namespace SGA
 		/// <returns>True if this entity is marked to be removed.</returns>
 		bool flagged() { return remove; }
 
-		/// <summary>
-		//Initializes the entity with a given ID. Creates default attached actions and parameters list from the entity type.
-		/// <summary>
-		/// <param name="entityID">(Unique) ID of this entity in the game.</param>
-		void init(int entityID);
 
 		/// <summary>
 		// Prints information about the entity, parameters and actions
