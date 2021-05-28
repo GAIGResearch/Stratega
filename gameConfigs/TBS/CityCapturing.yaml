@@ -210,3 +210,8 @@ GameDescription:
         Move: [Move]
         Spawn: [Spawn]
         Attack: [Attack, Capture]
+    Entities:
+        Base: [City]
+        Unit: [Fighter, Conquerer]
+        Fighter: [Fighter]
+        NoFighter: [Conquerer]

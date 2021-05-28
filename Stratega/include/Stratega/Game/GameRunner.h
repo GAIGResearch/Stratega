@@ -14,7 +14,7 @@ namespace SGA
 	class Agent;
 
 	/// <summary>
-	/// An abstract class that provides a simplified interface to play games with a given <see SGAcref="SGA::GameConfig"/>.
+	/// An abstract class that provides a simplified interface to play games with a given <see cref="SGA::GameConfig"/>.
 	/// Use "createGameRunner" to create an instance of this class.
 	/// </summary>
 	class GameRunner

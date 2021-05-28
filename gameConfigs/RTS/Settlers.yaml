@@ -865,3 +865,11 @@ GameDescription:
         Gather: [MineIron, MineGold, FarmLivestock, CutWood, MakeBrick]
         Spawn: [Spawn, BuildIronMine, BuildGoldMine, BuildFarm, BuildUniversity, BuildMansory, BuildSaw, BuildOutpost, BuildGuardTower, BuildWonder]
         Attack: [Sabotage, Attack]
+    Entities:
+        Base: [City]
+        Building: [City, Farm, IronMine, GoldMine, Outpost, GuardTower, University, Wonder]
+        Spawner: [City, Builder, Architect]
+        Unit: [Spy, Villager, Builder, Architect]
+        Fighter: [Spy]
+        NoFighter: [Villager, Builder, Architect]
+        Melee: [Spy]
