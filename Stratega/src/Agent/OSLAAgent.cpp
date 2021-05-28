@@ -11,28 +11,6 @@ namespace SGA
 			throw std::runtime_error("OSLAAgent only supports TBS-Games");
 		}
 
-		/*for (Entity e : state.entities)
-		{
-			std::cout << e.position.x << ", " << e.position.y << std::endl;
-			//std::shared_ptr<std::unordered_map<int, EntityType>> types = state.gameInfo->entityTypes;
-			//auto it = types->find(e.typeID);
-			//EntityType& et = it->second;
-			//std::cout << et.name << std::endl;
-
-			EntityType et = state.gameInfo->getEntityType(e.typeID);
-			std::cout << et.name << std::endl;
-
-			for (auto kv : et.parameters)
-			{
-				Parameter p = kv.second;
-				
-				std::cout << p.name << "(" << p.id << "): " << p.defaultValue << std::endl;
-			}
-			
-			std::cout << "Hey" << std::endl;
-		}
-		*/
-
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		MinimizeDistanceHeuristic heuristic;
 		double bestHeuristicValue = -std::numeric_limits<double>::max();
