@@ -31,9 +31,9 @@ namespace SGA
 		int ownerID;
 
 		/// <summary>
-		//ID of the type of entity.
+		//Entity type
 		/// <summary>
-		int typeID;
+		const EntityType* type;
 
 		/// <summary>
 		//Position of the entity in the board.
@@ -63,16 +63,11 @@ namespace SGA
 		double collisionRadius;
 
 	private:
-
-		//Reference to the Entity type of this entity.
-		const EntityType* type;
-
 		//Internal state of this entity.
 		bool remove = false;
 		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
 		std::vector<Action> continuousAction;
-
 
 	public:
 
@@ -82,7 +77,6 @@ namespace SGA
 		/// <param name="type">Receives a pointer to the type of entity this will be.</param>
 		Entity(const EntityType* type) :
 			type(type),
-			typeID(0),
 			id(0),
 			ownerID(0),
 			position(),

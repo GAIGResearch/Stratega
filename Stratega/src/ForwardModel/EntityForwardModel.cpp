@@ -197,7 +197,7 @@ namespace SGA
 		{		
 			for (const auto& entity : state.entities)
 			{
-				if (onTickEffect.validTargets.find(entity.typeID) == onTickEffect.validTargets.end())
+				if (onTickEffect.validTargets.find(entity.type->id) == onTickEffect.validTargets.end())
 					continue;
 				std::vector<ActionTarget> targets;
 				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));

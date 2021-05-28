@@ -153,13 +153,13 @@ namespace SGA
 		if (attackAmount >= targetHealth)
 		{
 			// We can kill the unit immediatly
-			return unitScores.at(target.typeID) * 2;
+			return unitScores.at(target.type->id) * 2;
 		}
 		else if (healAmount < attackAmount)
 		{
 			// We can kill the unit with an delay
 			int turnsToKill = std::min(4., std::ceil(targetHealth / (attackAmount - healAmount)));
-			return unitScores.at(target.typeID) * (1. + 1. / (1. + turnsToKill));
+			return unitScores.at(target.type->id) * (1. + 1. / (1. + turnsToKill));
 		}
 
 		// We can't kill the unit alone
@@ -189,13 +189,13 @@ namespace SGA
 		else if (healAmount >= potentialDamage)
 		{
 			// We can keep the unit alive forever
-			return 2 * unitScores.at(target.typeID);
+			return 2 * unitScores.at(target.type->id);
 		}
 		else
 		{
 			// We can delay the death
 			int turnsUntilDeath = std::min<int>(4, static_cast<int>(std::ceil(targetHealth / (potentialDamage - healAmount))));
-			return (1. + turnsUntilDeath / 4.) * unitScores.at(target.typeID);
+			return (1. + turnsUntilDeath / 4.) * unitScores.at(target.type->id);
 		}
 		return 0;
 	}
@@ -235,7 +235,7 @@ namespace SGA
 
 				int dist = opp->position.manhattanDistance(ally->position);
 				int movesToSupport = dist / ally->getParameter("MovementPoints");
-				avgSupportScore += unitScores.at(ally->typeID) / (1. + movesToSupport);
+				avgSupportScore += unitScores.at(ally->type->id) / (1. + movesToSupport);
 			}
 			avgSupportScore /= opponentUnits.size();
 
@@ -247,7 +247,7 @@ namespace SGA
 				int dist = opp->position.chebyshevDistance(attacker->position);
 				double movementRange = attacker->getParameter("MovementPoints");
 				int movesToAttack = std::max(0, dist - static_cast<int>(movementRange)) / movementRange;
-				avgAttackScore += unitScores.at(attacker->typeID) / (1. + movesToAttack);
+				avgAttackScore += unitScores.at(attacker->type->id) / (1. + movesToAttack);
 			}
 			avgAttackScore /= myUnits.size() + 1;
 

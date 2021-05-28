@@ -312,7 +312,7 @@ namespace SGA
 
 		for (const auto& entityID : entitiesIDs)
 		{			
-			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->typeID) != entityTypeIDs.end())
+			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->type->id) != entityTypeIDs.end())
 			{
 				targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			}
@@ -328,7 +328,7 @@ namespace SGA
 		
 		for (const auto& entityID : entitiesIDs)
 		{
-			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->typeID) != entityTypeIDs.end())
+			if (entityTypeIDs.find(gameState.getEntityConst(entityID)->type->id) != entityTypeIDs.end())
 			{
 				targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			}

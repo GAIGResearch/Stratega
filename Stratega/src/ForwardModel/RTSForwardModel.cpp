@@ -86,7 +86,7 @@ namespace SGA
 				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
 					continue;
 
-				const auto& entityType = state.gameInfo->getEntityType(unit.typeID);
+				const auto& entityType = state.gameInfo->getEntityType(unit.type->id);
 
 				//Only affects enviroment collision if the entity can move
 				int moveActionID = state.gameInfo->getActionTypeID("Move");
@@ -120,7 +120,7 @@ namespace SGA
 			int startCheckPositionY = static_cast<int>(std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE));
 			int endCheckPositionY = static_cast<int>(std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE));
 
-			const auto& entityType = state.gameInfo->getEntityType(unit.typeID);
+			const auto& entityType = state.gameInfo->getEntityType(unit.type->id);
 			
 			//Only affects enviroment collision if the entity can move
 			int moveActionID = state.gameInfo->getActionTypeID("Move");
