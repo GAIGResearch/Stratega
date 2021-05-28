@@ -513,7 +513,7 @@ namespace SGA
 			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 
 			//Check if entity have sprite
-			auto entityType = state.gameInfo->getEntityType(state.getEntity(entity)->typeID);
+			auto entityType = *state.getEntity(entity)->type;
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -581,7 +581,7 @@ namespace SGA
 
 		for (auto& unit : units)
 		{
-			auto& type = state.gameInfo->getEntityType(unit.typeID);
+			auto& type = *unit.type;
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -637,9 +637,6 @@ namespace SGA
 								}
 							}
 						}
-
-
-
 					}
 					else
 						actionInfo += " SpecialAction";
@@ -659,7 +656,7 @@ namespace SGA
 							actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 							break;
 						case ActionTarget::EntityReference:
-							actionInfo += state.gameInfo->getEntityType(state.getEntity(targetType.getEntityID())->typeID).name;
+							actionInfo += state.getEntity(targetType.getEntityID())->type->name;
 							break;
 						case ActionTarget::PlayerReference:
 							actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);

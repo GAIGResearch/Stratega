@@ -162,7 +162,7 @@ namespace SGA
 			if (entity.ownerID == playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
-				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.typeID))
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.type->id))
 				{
 					ret.emplace_back(&entity);
 				}
@@ -179,7 +179,7 @@ namespace SGA
 			if (entity.ownerID != playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
-				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.typeID))
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.type->id))
 				{
 					ret.emplace_back(&entity);
 				}
@@ -309,7 +309,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			std::cout << "[OwnerID]" <<entity.ownerID << std::endl;			
-			std::cout << "	[type]: " << gameInfo->getEntityType(entity.typeID).name << " [entityID]: "<<entity.id<< std::endl;
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.type->id).name << " [entityID]: "<<entity.id<< std::endl;
 		}
 	}
 
@@ -333,7 +333,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			auto& pos = entity.position;
-			const char symbol = gameInfo->getEntityType(entity.typeID).symbol;
+			const char symbol = gameInfo->getEntityType(entity.type->id).symbol;
 			const char ownerID = std::to_string(entity.ownerID)[0];
 			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
 
@@ -391,14 +391,11 @@ namespace SGA
 			else
 			{
 				int entityID = action.getSourceID();
-				int entityTypeID = getEntityConst(entityID)->typeID;
+				int entityTypeID = getEntityConst(entityID)->type->id;
 				auto& entityType = gameInfo->getEntityType(entityTypeID);
 				
 				std::cout << " [SourceType Entity: "<<entityType.name<<" "<<entityID<<"],";
 			}
-				
-
-
 
 			std::cout << " [ActionTargets" ;
 			for (size_t i = 0; i < actionType.actionTargets.size(); i++)

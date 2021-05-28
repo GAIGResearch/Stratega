@@ -12,7 +12,6 @@ namespace SGA
 	void Entity::init(int entityID)
 	{
 		this->id = entityID;
-		this->typeID = type->id;
 		
 		// Add actions
 		attachedActions.reserve(type->actionIds.size());
