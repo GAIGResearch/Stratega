@@ -280,11 +280,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                SamplingMethod:
-                   Type: Dijkstra
-                   Options:
-                       SearchSize: 4
-                       AllowDiagonals: false
+                SamplingMethod: 
+                #    Type: Dijkstra
+                #    Options:
+                #        SearchSize: 2
+                #        AllowDiagonals: false
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                        #Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
