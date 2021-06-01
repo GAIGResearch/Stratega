@@ -223,7 +223,7 @@ namespace SGA::Widgets
 				//Check if any selectedEntity can spawn the targets
 				for (auto& entity : settings.selectedEntities)
 				{
-					auto& entityType = *state.getEntity(entity)->type;
+					auto& entityType = state.getEntity(entity)->getEntityType();
 					if (entityType.spawnableEntityTypes.find(possibleActionType) == entityType.spawnableEntityTypes.end())
 					{
 						canSpawn = false;
@@ -384,7 +384,7 @@ namespace SGA::Widgets
 		for (auto& entityID : settings.selectedEntities)
 		{
 			//Check if entityType can execute this
-			const EntityType& entityType = *state.getEntity(entityID)->type;
+			const EntityType& entityType = state.getEntity(entityID)->getEntityType();
 			const Entity* entity = state.getEntity(entityID);
 
 			
@@ -445,7 +445,7 @@ namespace SGA::Widgets
 
 		for (auto& entity : settings.selectedEntities)
 		{
-			int entityTypeID = state.getEntity(entity)->type->id;
+			int entityTypeID = state.getEntity(entity)->getEntityTypeID();
 
 			for (auto& actionID : state.gameInfo->getEntityType(entityTypeID).actionIds)
 			{

@@ -107,7 +107,7 @@ namespace SGA
 			{
 				auto& entity = getEntity(state, actionTargets);
 
-				const auto& entityType = *entity.type;
+				const auto& entityType = entity.getEntityType();
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
@@ -410,14 +410,14 @@ namespace SGA
 			if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				const auto& sourceEntityType = *sourceEntity.type;
+				const auto& sourceEntityType = sourceEntity.getEntityType();
 				return sourceEntityType.parameters;
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			const auto& sourceEntityType = *sourceEntity.type;
+			const auto& sourceEntityType = sourceEntity.getEntityType();
 			return sourceEntityType.parameters;
 		}
 

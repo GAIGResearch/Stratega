@@ -31,11 +31,6 @@ namespace SGA
 		int ownerID;
 
 		/// <summary>
-		//Entity type
-		/// <summary>
-		const EntityType* type;
-
-		/// <summary>
 		//Position of the entity in the board.
 		/// <summary>
 		Vector2f position;
@@ -68,6 +63,10 @@ namespace SGA
 		std::vector<ActionInfo> attachedActions;
 		std::vector<double> parameters;
 		std::vector<Action> continuousAction;
+		/// <summary>
+		//Entity type
+		/// <summary>
+		const EntityType* type;
 
 	public:
 
@@ -93,6 +92,19 @@ namespace SGA
 		/// <param name="entityID">(Unique) ID of this entity in the game.</param>
 		void init(const EntityType* type, int entityID);
 
+		/// <summary>
+		/// Return entity type
+		/// <summary>
+		const EntityType& getEntityType() const
+		{
+			return *type;
+		}
+
+		/// <summary>
+		/// Return entity type ID
+		/// <summary>
+		int getEntityTypeID() const;
+		
 		/// <summary>
 		/// Indicates if this unit is neutral (i.e. does not belong to any playing faction).
 		/// <summary>
