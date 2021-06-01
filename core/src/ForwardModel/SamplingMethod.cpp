@@ -30,7 +30,7 @@ std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, co
 	std::vector<int> targets;
 	for (const auto& entity : gameState.entities)
 	{
-		if (entityTypeIDs.find(entity.type->id) != entityTypeIDs.end())
+		if (entityTypeIDs.find(entity.getEntityTypeID()) != entityTypeIDs.end())
 		{
 			targets.emplace_back(entity.id);
 		}

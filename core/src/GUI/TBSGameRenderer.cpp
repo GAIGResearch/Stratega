@@ -365,7 +365,7 @@ namespace SGA
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
 			auto* selectedEntity = state.getEntity(*actionsSettings.selectedEntities.begin());
-			auto entityType = *selectedEntity->type;
+			auto& entityType = selectedEntity->getEntityType();
 
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -406,7 +406,7 @@ namespace SGA
 			for (auto& entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = *entity->type;
+				auto& entityType = entity->getEntityType();
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -474,7 +474,7 @@ namespace SGA
 
 		for (auto& unit : state.entities)
 		{
-			auto& type = *unit.type;
+			auto& type = unit.getEntityType();
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -549,7 +549,7 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += state.getEntityConst(targetType.getEntityID())->type->name;
+						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);

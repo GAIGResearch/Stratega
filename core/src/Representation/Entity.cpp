@@ -8,6 +8,11 @@ namespace SGA
 	{
 		return ownerID == Player::NEUTRAL_PLAYER_ID;
 	}
+	
+	int Entity::getEntityTypeID() const
+	{
+		return type->id;
+	}
 
 	void Entity::init(const EntityType* type, int entityID)
 	{
