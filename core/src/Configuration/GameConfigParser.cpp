@@ -600,12 +600,6 @@ namespace SGA
             	
             }
         }
-        
-		//Initialize researched list for each player
-        for (int i = 0; i < static_cast<int>(config.agentParams.size()); i++)
-        {
-            config.technologyTreeCollection.researchedTechnologies[i] = {};
-        }
 	}
 
     void GameConfigParser::parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const

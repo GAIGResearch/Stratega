@@ -54,6 +54,54 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
+		//PlayerID + ResearchedTechnologyID
+		std::unordered_map<int, std::vector<int>> researchedTechnologies;
+		
+		bool isResearched(int playerID, int technologyID) const
+		{
+			//Search if the technology is found in the list of researchedtechnologies
+			const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+			for (auto& element : researchedPairList->second)
+			{
+				if (element == technologyID)
+					return true;
+			}
+			return false;
+		}
+
+		bool canResearch(int playerID, int technologyID) const
+		{
+			//Check if is researched
+			if (isResearched(playerID, technologyID))
+				return false;
+
+			//Check if technology parents are researched		
+			const TechnologyTreeNode& technologyNode = gameInfo->technologyTreeCollection->getTechnology(technologyID);
+
+			const std::vector<int>& parentsIDs = technologyNode.parentIDs;
+
+			for (auto& parent : parentsIDs)
+			{
+				const TechnologyTreeNode& technologyParentNode = gameInfo->technologyTreeCollection->getTechnology(parent);
+
+				if (!isResearched(playerID, technologyParentNode.id))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		void researchTechnology(int playerID, int technologyID)
+		{
+			//Get researched technologies of player
+			const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+			//Find technology index and add it to the researched list			
+			researchedPairList->second.emplace_back(technologyID);
+		}
+		
 		/// <summary>
 		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
