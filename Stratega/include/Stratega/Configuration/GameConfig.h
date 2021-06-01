@@ -8,8 +8,6 @@
 #include <Stratega/Representation/GameDescription.h>
 #include <yaml-cpp/yaml.h>
 
-#include "yaml-cpp/node/node.h"
-
 namespace SGA
 {
     class LevelDefinition;
