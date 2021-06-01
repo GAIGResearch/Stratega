@@ -59,12 +59,12 @@ PYBIND11_MODULE(stratega, m) {
 		.def_readwrite("parameters", &SGA::Player::parameters);
 
 	// ---- Tile ----
-	py::class_<SGA::Tile>(m, "Tile")
-		.def(py::init<int, int, int>(), py::arg("typeID"), py::arg("x"), py::arg("y"))
-		.def_readwrite("id", &SGA::Tile::tileTypeID)
-		.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
-		.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
-		.def_readwrite("position", &SGA::Tile::position);
+	//py::class_<SGA::Tile>(m, "Tile")
+	//	.def(py::init<int, int, int>(), py::arg("typeID"), py::arg("x"), py::arg("y"))
+	//	//.def_readwrite("id", &SGA::Tile::tileTypeID)
+	//	.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
+	//	.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
+	//	.def_readwrite("position", &SGA::Tile::position);
 
 	// ---- GameType ----
 	py::enum_<SGA::GameType>(m, "GameType")

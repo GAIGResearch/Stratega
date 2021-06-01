@@ -4,6 +4,8 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
 
+#include "SFML/System/Vector2.hpp"
+
 namespace SGA
 {
 	void TileMap::init(const GameState& state, const GameConfig& gameConfig, const RenderConfig& renderConfig)
@@ -45,7 +47,7 @@ namespace SGA
 				}
 				else if(fogType == FogRenderType::Nothing)
 				{
-					updateTileQuad(quad, tile, fogTile.tileTypeID == -1 ? sf::Color::Transparent : sf::Color::White);
+					updateTileQuad(quad, tile, fogTile.getTileTypeID() == -1 ? sf::Color::Transparent : sf::Color::White);
 				}
 				else if(fogType == FogRenderType::Fog)
 				{
@@ -53,7 +55,7 @@ namespace SGA
 				}
 				else if(fogType == FogRenderType::Tiles)
 				{
-					updateTileQuad(quad, tile, fogTile.tileTypeID == -1 ? FOG_COLOR : sf::Color::White);
+					updateTileQuad(quad, tile, fogTile.getTileTypeID() == -1 ? FOG_COLOR : sf::Color::White);
 				}
 				
 			}
@@ -69,9 +71,9 @@ namespace SGA
 		quadPtr[1].position = sf::Vector2f(start.x + tileSize.x, start.y);
 		quadPtr[2].position = sf::Vector2f(start.x + tileSize.x, start.y + tileSize.y);
 		quadPtr[3].position = sf::Vector2f(start.x, start.y + tileSize.y);
-
+		
 		// define the 4 texture coordinates
-		auto rect = tileset.getSpriteRect(tileSpritePaths.at(tile.tileTypeID));
+		auto rect = tileset.getSpriteRect(tileSpritePaths.at(tile.getTileTypeID()));
 		quadPtr[0].texCoords = sf::Vector2f(rect.left, rect.top);
 		quadPtr[1].texCoords = sf::Vector2f(rect.left + rect.width, rect.top);
 		quadPtr[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);
