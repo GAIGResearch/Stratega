@@ -14,7 +14,7 @@ namespace SGA
 
 		Tile toTile(int x, int y) const
 		{
-			Tile instance(id, x, y);
+			Tile instance(id, this, x, y);
 			instance.isWalkable = isWalkable;
 			instance.blocksSight = blocksSight;
 			return instance;

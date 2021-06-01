@@ -204,14 +204,14 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                    Type: Dijkstra
-                    Options:
-                        SearchSize: 2
-                        AllowDiagonals: false
-                #    Type: Neighbours
+                #    Type: Dijkstra
                 #    Options:
-                #        Shape: Circle
-                #        Size: 1
+                #        SearchSize: 2
+                #        AllowDiagonals: false
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                        #Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -420,3 +420,12 @@ GameDescription:
         Gather: [Mine]
         Spawn: [Spawn, Build]
         Attack: [Attack]
+    Entities:
+        Base: [City]
+        Building: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+        Spawner: [City, Barracks, MilitaryAcademy]
+        Unit: [Worker, Warrior, Archer, Catapult]
+        Fighter: [Warrior, Archer, Catapult]
+        NoFighter: [Worker]
+        Melee: [Warrior]
+        Ranged: [Archer, Catapult]

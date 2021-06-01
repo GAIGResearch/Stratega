@@ -44,7 +44,7 @@ namespace  SGA
 		{
 			auto& sourceEntity = targets[0].getEntityConst(state);
 
-			for (auto& action : sourceEntity.continuousAction)
+			for (const auto& action : sourceEntity.getContinuousActions())
 			{
 				if (action.continuousActionID == targets[2].getContinuousActionID())
 				{
@@ -125,7 +125,7 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).tileTypeID==tileType.id;
+		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).getTileTypeID()==tileType.id;
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)
@@ -150,7 +150,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 		
-		return state.gameInfo->technologyTreeCollection->isResearched(targetPlayer.id, targetTechnology.id);
+		return state.isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
 	NoHasEntity::NoHasEntity(const std::vector<FunctionParameter>& parameters) :
@@ -168,7 +168,7 @@ namespace  SGA
 		bool hasEntity = false;
 		for (auto& entity : entities)
 		{
-			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
 				hasEntity = true;
 		}
 
@@ -189,7 +189,7 @@ namespace  SGA
 
 		for (auto& entity : entities)
 		{
-			if (entity->typeID == entityTypeParam.getEntityType(state, targets).id)
+			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
 				return true;
 		}
 	
@@ -208,7 +208,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 
-		return state.gameInfo->technologyTreeCollection->canResearch(targetPlayer.id, targetTechnology.id);
+		return state.canResearch(targetPlayer.id, targetTechnology.id);
 	}
 
 	CanSpawnCondition::CanSpawnCondition(const std::vector<FunctionParameter>& parameters)
@@ -224,7 +224,7 @@ namespace  SGA
 
 		// Check if we fullfill the technology-requirements for the target entity
 		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.gameInfo->technologyTreeCollection->isResearched(playerID, targetEntityType.requiredTechnologyID))
+			!state.isResearched(playerID, targetEntityType.requiredTechnologyID))
 		{
 			return false;
 		}
@@ -251,7 +251,7 @@ namespace  SGA
 		//Get cost of target, parameterlist to look up and the parameters of the source
 		const auto& cost = costParam.getCost(state, targets);
 		const auto& parameterLookUp = sourceParam.getParameterLookUp(state, targets);
-		auto& parameters = sourceParam.getParameterList(state, targets);
+		const auto& parameters = sourceParam.getParameterList(state, targets);
 
 		//Check if the source can pay the all the cost of the target
 		for (const auto& idCostPair : cost)

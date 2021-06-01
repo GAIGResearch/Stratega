@@ -40,11 +40,11 @@ PYBIND11_MODULE(stratega, m) {
 	// ---- Entity ----
 	py::class_<SGA::Entity>(m, "Entity")
 		.def(py::init<>())
-		.def_readwrite("type_id", &SGA::Entity::typeID)
+		//.def_readwrite("type_id", &SGA::Entity::typeID)
 		.def_readwrite("id", &SGA::Entity::id)
 		.def_readwrite("owner_ID", &SGA::Entity::ownerID)
 		.def_readwrite("position", &SGA::Entity::position)
-		.def_readwrite("parameters", &SGA::Entity::parameters)
+		//.def_readwrite("parameters", &SGA::Entity::parameters)
 		.def_readwrite("sight_range", &SGA::Entity::lineOfSightRange)
 		.def_readwrite("movement_speed", &SGA::Entity::movementSpeed)
 		.def_readwrite("collision_radius", &SGA::Entity::collisionRadius)
@@ -59,12 +59,12 @@ PYBIND11_MODULE(stratega, m) {
 		.def_readwrite("parameters", &SGA::Player::parameters);
 
 	// ---- Tile ----
-	py::class_<SGA::Tile>(m, "Tile")
-		.def(py::init<int, int, int>(), py::arg("typeID"), py::arg("x"), py::arg("y"))
-		.def_readwrite("id", &SGA::Tile::tileTypeID)
-		.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
-		.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
-		.def_readwrite("position", &SGA::Tile::position);
+	//py::class_<SGA::Tile>(m, "Tile")
+	//	.def(py::init<int, int, int>(), py::arg("typeID"), py::arg("x"), py::arg("y"))
+	//	//.def_readwrite("id", &SGA::Tile::tileTypeID)
+	//	.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
+	//	.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
+	//	.def_readwrite("position", &SGA::Tile::position);
 
 	// ---- GameType ----
 	py::enum_<SGA::GameType>(m, "GameType")

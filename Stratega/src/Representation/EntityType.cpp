@@ -31,23 +31,31 @@ bool SGA::EntityType::canExecuteAction(int actionTypeID) const
 SGA::Entity SGA::EntityType::instantiateEntity(int entityID) const
 {
 	Entity instance;
-	instance.id = entityID;
-	instance.typeID = this->id;
-	
-	// Add actions
-	instance.attachedActions.reserve(actionIds.size());
-	for(auto actionTypeID : actionIds)
-	{
-		instance.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
-	}
-
-	// Set parameter values
-	instance.lineOfSightRange = lineOfSight;
-	instance.parameters.reserve(parameters.size());
-	for(const auto& idParamPair: parameters)
-	{
-		instance.parameters.emplace_back(idParamPair.second.defaultValue);
-	}
-
+	instance.init(this, entityID);
 	return instance;
+}
+
+double SGA::EntityType::getParamMax(std::string paramName) const
+{
+	for (const auto& param : parameters)
+	{
+		if (param.second.name == paramName)
+		{
+			return param.second.maxValue;
+		}
+	}
+	return 0;
+}
+
+
+double SGA::EntityType::getParamMin(std::string paramName) const
+{
+	for (const auto& param : parameters)
+	{
+		if (param.second.name == paramName)
+		{
+			return param.second.minValue;
+		}
+	}
+	return 0;
 }

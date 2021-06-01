@@ -131,13 +131,13 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
 					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction
-					|| possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					|| possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
 				//Get source
-				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = possibleAction.getActionType();
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
@@ -173,13 +173,13 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
 					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction ||
-					possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
 				//Get source
-				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = possibleAction.getActionType();
 
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
@@ -364,8 +364,8 @@ namespace SGA
 			ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
-			auto* selectedEntity = state.getEntityConst(*actionsSettings.selectedEntities.begin());
-			auto entityType = state.gameInfo->getEntityType(selectedEntity->typeID);
+			auto* selectedEntity = state.getEntity(*actionsSettings.selectedEntities.begin());
+			auto& entityType = selectedEntity->getEntityType();
 
 			ImGui::Text(entityType.name.c_str());
 			ImGui::Columns(2, "mixed");
@@ -387,7 +387,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << selectedEntity->parameters[parameterIndex++];
+				stream << std::fixed << std::setprecision(2) << selectedEntity->getParameterAt(parameterIndex++);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
@@ -406,7 +406,7 @@ namespace SGA
 			for (auto& entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = state.gameInfo->getEntityType(entity->typeID);
+				auto& entityType = entity->getEntityType();
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 
@@ -474,7 +474,7 @@ namespace SGA
 
 		for (auto& unit : state.entities)
 		{
-			auto& type = state.gameInfo->getEntityType(unit.typeID);
+			auto& type = unit.getEntityType();
 			std::string unitInfo;
 			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
 			ImGui::Text(unitInfo.c_str());
@@ -497,7 +497,7 @@ namespace SGA
 		{
 
 			std::string actionInfo = std::to_string(index);
-			if (action.actionTypeID == -1)
+			if (action.getActionTypeID() == -1)
 			{
 				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 				{
@@ -505,11 +505,11 @@ namespace SGA
 					{
 						//We need to find the continues action name that will abort
 						auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
-						for (auto& continueAction : sourceEntity.continuousAction)
+						for (const auto& continueAction : sourceEntity.getContinuousActions())
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -522,7 +522,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -536,7 +536,7 @@ namespace SGA
 			}
 			else
 			{
-				const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
+				const ActionType& actionType = action.getActionType();
 
 				actionInfo += " " + actionType.name;
 
@@ -549,7 +549,7 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += state.gameInfo->getEntityType(state.getEntityConst(targetType.getEntityID())->typeID).name;
+						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().name;
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);

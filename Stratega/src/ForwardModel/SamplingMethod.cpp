@@ -10,7 +10,7 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 
 	auto isValidPos = [&](int x, int y)
 	{
-		return gameState.board.get(x, y).tileTypeID != -1;
+		return gameState.board.get(x, y).getTileTypeID() != -1;
 	};
 
 	for (int x = 0; x < static_cast<int>(gameState.board.getWidth()); x++)
@@ -30,7 +30,7 @@ std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, co
 	std::vector<int> targets;
 	for (const auto& entity : gameState.entities)
 	{
-		if (entityTypeIDs.find(entity.typeID) != entityTypeIDs.end())
+		if (entityTypeIDs.find(entity.getEntityTypeID()) != entityTypeIDs.end())
 		{
 			targets.emplace_back(entity.id);
 		}
@@ -45,7 +45,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vec
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.board.get(targetPosition.x, targetPosition.y).tileTypeID != -1;
+	return gameState.board.get(targetPosition.x, targetPosition.y).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -57,7 +57,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			return gameState.board.get(x, y).tileTypeID != -1;
+			return gameState.board.get(x, y).getTileTypeID() != -1;
 		};
 
 		for (int x = 0; x < static_cast<int>(gameState.board.getWidth()); x++)
@@ -73,7 +73,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			if (gameState.board.get(x, y).tileTypeID == -1)
+			if (gameState.board.get(x, y).getTileTypeID() == -1)
 				return false;
 
 			switch (shapeType)
@@ -175,7 +175,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
-				if (gameState.board.get(x, y).tileTypeID == -1 || !gameState.board.get(x, y).isWalkable
+				if (gameState.board.get(x, y).getTileTypeID() == -1 || !gameState.board.get(x, y).isWalkable
 					|| std::floor(totalCost + 1) > searchSize
 					)
 					return false;
@@ -271,7 +271,7 @@ bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f&
 	//Take Dijkstra possible positions
 	auto positions = getPositions(gameState, sourcePosition);
 
-	for each (auto position in positions)
+	for(auto& position : positions)
 	{
 		if (targetPosition.distance(Vector2f(position.x,position.y)) <= 0.5f)
 			return true;

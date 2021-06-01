@@ -40,7 +40,7 @@ namespace SGA
 		gameInfo.technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
 		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
 		gameInfo.yamlPath = yamlPath;
-		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories);
+		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories, entityCategories);
 		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
 
 		
@@ -104,6 +104,12 @@ namespace SGA
 		{
 			auto* rtsFM = dynamic_cast<SGA::RTSForwardModel*>(forwardModel.get());
 			rtsFM->buildNavMesh(*state, NavigationConfig{});
+		}
+
+		//Initialize researched list for each player
+		for (int i = 0; i < getNumberOfPlayers(); i++)
+		{
+			state->researchedTechnologies[i] = {};
 		}
 		
 		return std::move(state);

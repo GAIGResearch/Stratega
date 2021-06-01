@@ -107,7 +107,7 @@ namespace SGA
 			{
 				auto& entity = getEntity(state, actionTargets);
 
-				const auto& entityType = state.gameInfo->getEntityType(entity.typeID);
+				const auto& entityType = entity.getEntityType();
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
@@ -142,7 +142,7 @@ namespace SGA
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
-				return entity.parameters[param.index];
+				return entity.getParameterAt(param.index);
 			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
@@ -350,13 +350,13 @@ namespace SGA
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				return sourceEntity.parameters;
+				return sourceEntity.getParamValues();
 			}
 		}
 		else
 		{
 			auto& sourceEntity = getEntity(state, actionTargets);
-			return sourceEntity.parameters;
+			return sourceEntity.getParamValues();
 		}
 
 		throw std::runtime_error("Type not recognized");
@@ -381,13 +381,13 @@ namespace SGA
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				return sourceEntity.parameters;
+				return sourceEntity.getParamValues();
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			return sourceEntity.parameters;
+			return sourceEntity.getParamValues();
 		}
 
 		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
@@ -410,14 +410,14 @@ namespace SGA
 			if (target.getType() == ActionTarget::EntityReference)
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
-				const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
+				const auto& sourceEntityType = sourceEntity.getEntityType();
 				return sourceEntityType.parameters;
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
-			const auto& sourceEntityType = state.gameInfo->getEntityType(sourceEntity.typeID);
+			const auto& sourceEntityType = sourceEntity.getEntityType();
 			return sourceEntityType.parameters;
 		}
 

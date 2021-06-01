@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - RandomAgent
-    - HumanAgent
+    - OSLAAgent
+    - OSLAAgent
 
 Player:
     Actions: [Build, Research]
@@ -408,7 +408,7 @@ ForwardModel:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"
 
-#Action categories
+#Game Description
 GameDescription:
     Type: CombatGame
     Actions:
@@ -417,3 +417,12 @@ GameDescription:
         Gather: [Mine]
         Spawn: [Spawn, Build]
         Attack: [Attack]
+    Entities:
+        Base: [City]
+        Building: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+        Spawner: [City, Barracks, MilitaryAcademy]
+        Unit: [Worker, Warrior, Archer, Catapult]
+        Fighter: [Warrior, Archer, Catapult]
+        NoFighter: [Worker]
+        Melee: [Warrior]
+        Ranged: [Archer, Catapult]

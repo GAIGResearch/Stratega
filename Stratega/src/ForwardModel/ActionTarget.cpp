@@ -72,7 +72,7 @@ namespace SGA
 		}
 		else if (targetType == EntityReference)
 		{
-			return state.gameInfo->getEntityType(getEntityConst(state).typeID).spawnableEntityTypes;
+			return getEntityConst(state).getEntityType().spawnableEntityTypes;
 		}
 
 		throw std::runtime_error("Type not recognised");
@@ -161,7 +161,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			const auto& type = state.gameInfo->getEntityType(state.getEntityConst(data.entityID)->typeID);
+			const auto& type = state.getEntityConst(data.entityID)->getEntityType();
 			return type;
 		}
 		else

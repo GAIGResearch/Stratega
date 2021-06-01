@@ -211,3 +211,11 @@ GameDescription:
         Gather: [Mine, Deposit]
         Spawn: [SpawnFighter, SpawnMiner]
         Attack: [Attack]
+    Entities:
+        Base: [Base]
+        Building: [Base]
+        Spawner: [Base]
+        Unit: [Miner, Fighter]
+        Fighter: [Fighter]
+        NoFighter: [Miner]
+        Melee: [Fighter]
