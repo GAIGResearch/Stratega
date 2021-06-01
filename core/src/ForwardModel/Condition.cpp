@@ -125,7 +125,7 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).tileTypeID==tileType.id;
+		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).getTileTypeID()==tileType.id;
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)

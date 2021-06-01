@@ -10,7 +10,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, 0, 0),
+		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(std::move(board)),
 		players(),
@@ -26,7 +26,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, 0, 0),
+		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(0, 0, fogOfWarTile),
 		nextEntityID(0),
@@ -323,7 +323,7 @@ namespace SGA
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				//Get tile type
-				map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol;
+				map += gameInfo->getTileType(board.get(x, y).getTileTypeID()).symbol;
 				map += "  ";
 			}
 			map += "\n";
