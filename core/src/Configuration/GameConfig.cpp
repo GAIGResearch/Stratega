@@ -105,6 +105,12 @@ namespace SGA
 			auto* rtsFM = dynamic_cast<SGA::RTSForwardModel*>(forwardModel.get());
 			rtsFM->buildNavMesh(*state, NavigationConfig{});
 		}
+
+		//Initialize researched list for each player
+		for (int i = 0; i < getNumberOfPlayers(); i++)
+		{
+			state->researchedTechnologies[i] = {};
+		}
 		
 		return std::move(state);
 	}

@@ -80,55 +80,7 @@ namespace SGA
 	{
 	public:
 		//List of tech types
-		std::unordered_map<int, TechnologyTreeType> technologyTreeTypes;
-		//PlayerID + ResearchedTechnologyID
-		std::unordered_map<int, std::vector<int>> researchedTechnologies;
-
-		bool isResearched(int playerID, int technologyID) const
-		{
-			//Search if the technology is found in the list of researchedtechnologies
-			const auto& researchedPairList = researchedTechnologies.find(playerID);
-
-			for (auto& element : researchedPairList->second)
-			{
-				if (element==technologyID)
-					return true;
-			}
-			return false;
-		}
-
-		bool canResearch(int playerID, int technologyID) const
-		{
-			//Check if is researched
-			if (isResearched(playerID, technologyID))
-				return false;
-			
-			//Check if technology parents are researched		
-			const TechnologyTreeNode& technologyNode = getTechnology(technologyID);
-
-			const std::vector<int>& parentsIDs = technologyNode.parentIDs;
-
-			for (auto& parent : parentsIDs)
-			{
-				const TechnologyTreeNode& technologyParentNode = getTechnology(parent);
-
-				if (!isResearched(playerID, technologyParentNode.id))
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-
-		void researchTechnology(int playerID, int technologyID)
-		{
-			//Get researched technologies of player
-			const auto& researchedPairList = researchedTechnologies.find(playerID);
-
-			std::cout << "Researched " << technologyID << std::endl;
-			//Find technology index and add it to the researched list			
-			researchedPairList->second.emplace_back(technologyID);
-		}
+		std::unordered_map<int, TechnologyTreeType> technologyTreeTypes;		
 		
 		[[nodiscard]] const TechnologyTreeNode& getTechnology(int technologyID) const
 		{

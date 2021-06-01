@@ -110,7 +110,7 @@ namespace SGA::Widgets
 				}
 
 				//Check if the player can research the possible technologies
-				if (!state.gameInfo->technologyTreeCollection->canResearch(playerID, possibleTechnology))
+				if (!state.canResearch(playerID, possibleTechnology))
 					continue;
 
 				ImGui::PushID(elementNumber);
@@ -174,7 +174,7 @@ namespace SGA::Widgets
 				}
 
 				//Check if the player can research the possible technologies
-				if (!state.gameInfo->technologyTreeCollection->canResearch(playerID, possibleTechnology))
+				if (!state.canResearch(playerID, possibleTechnology))
 					continue;
 
 				ImGui::PushID(elementNumber);
