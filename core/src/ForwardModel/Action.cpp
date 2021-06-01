@@ -6,7 +6,7 @@ namespace SGA
 {
 	void Action::execute(GameState& state, const EntityForwardModel& fm) const
 	{
-		auto& type = state.gameInfo->actionTypes->at(actionTypeID);
+		auto& type = state.gameInfo->actionTypes->at(getActionTypeID());
 		for (auto& effect : type.effects)
 		{
 			effect->execute(state,fm, targets);
@@ -16,10 +16,10 @@ namespace SGA
 	bool Action::validate(GameState& state) const
 	{
 		//Continuous or special action
-		if (actionTypeID==-1)
+		if (getActionTypeID()==-1)
 			return true;
 
-		auto& actionType = state.gameInfo->getActionType(actionTypeID);
+		auto& actionType = getActionType();
 		
 		//Check if source and targets are valid
 		if(isEntityAction())
@@ -30,7 +30,7 @@ namespace SGA
 			if(entity!=nullptr)
 			{
 				// Check if this action can be executed		
-				if (state.currentTick - entity->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
+				if (state.currentTick - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
 					return false;
 				
 				//Check preconditions
@@ -67,7 +67,7 @@ namespace SGA
 		{
 			// Check if this action can be executed		
 			auto* player = state.getPlayer(targets.at(0).getPlayerID());
-			if (state.currentTick - player->getActionInfo(actionTypeID).lastExecutedTick < actionType.cooldownTicks)
+			if (state.currentTick - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
 				return true;
 
 			//Not found
@@ -88,5 +88,14 @@ namespace SGA
 	[[nodiscard]] int Action::getSourceID() const
 	{
 		return isEntityAction() ? targets.at(0).getEntityID() : targets.at(0).getPlayerID();
+	}
+
+	int Action::getActionTypeID() const
+	{
+		int actionTypeID = -1;
+		if (actionType)
+			actionTypeID = actionType->id;
+		
+		return actionTypeID;
 	}
 }

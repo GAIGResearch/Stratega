@@ -36,9 +36,9 @@ namespace SGA
 	/// </summary>
 	struct Action
 	{
-		Action():
+		Action(const ActionType* actionType):
 			actionTypeFlags(ActionFlag::None),
-			actionTypeID(-1),
+			actionType(actionType),
 			ownerID(0),
 			continuousActionID(-1),
 			elapsedTicks(0)
@@ -47,7 +47,7 @@ namespace SGA
 		
 		ActionFlag actionTypeFlags;
 		
-		int actionTypeID;
+		//int actionTypeID;
 		// Contains all targets involved in an action
 		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
 		// PlayerAction": Index 0 contains the target of the action
@@ -56,7 +56,10 @@ namespace SGA
 
 		int continuousActionID;
 		int elapsedTicks;
-
+	private:
+		const ActionType* actionType;
+		
+	public:		
 		/// <summary>
 		/// Execute a list of effects which are defined in the <see cref="SGA::ActionType"/> linked to this action.
 		/// </summary>
@@ -72,14 +75,18 @@ namespace SGA
 		[[nodiscard]] bool isEntityAction() const;
 		[[nodiscard]] bool isPlayerAction() const;
 		[[nodiscard]] int getSourceID() const;
+		int getActionTypeID() const;
+		const ActionType& getActionType() const
+		{
+			return *actionType;
+		}
 
 		/// <summary>
 		/// Generates an Action used by the game to end the tick/turn.
 		/// </summary>
 		static Action createEndAction(int playerID)
 		{
-			Action a;
-			a.actionTypeID = -1;
+			Action a(nullptr);
 			a.actionTypeFlags = ActionFlag::EndTickAction;
 			a.ownerID = playerID;
 			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
@@ -91,7 +98,7 @@ namespace SGA
 		/// </summary>
 		static Action createAbortAction(int playerID,int entityID, int continuousActionID)
 		{
-			Action a;			
+			Action a(nullptr);			
 			a.ownerID = playerID;			
 			a.actionTypeFlags = ActionFlag::AbortContinuousAction;
 			a.continuousActionID = continuousActionID;
@@ -105,7 +112,7 @@ namespace SGA
 		/// </summary>
 		static Action createAbortAction(int playerID, int continuousActionID)
 		{
-			Action a;
+			Action a(nullptr);
 			a.ownerID = playerID;
 			a.actionTypeFlags = ActionFlag::AbortContinuousAction;
 			a.continuousActionID = continuousActionID;

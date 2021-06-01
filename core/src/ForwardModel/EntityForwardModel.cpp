@@ -86,7 +86,7 @@ namespace SGA
 				{
 					if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
 					{
-						auto& actionType = state.gameInfo->getActionType(sourcePlayer.continuousAction[i].actionTypeID);
+						auto& actionType = sourcePlayer.continuousAction[i].getActionType();
 
 						//Execute OnAbort Effects				
 						for (auto& effect : actionType.OnAbort)
@@ -111,7 +111,7 @@ namespace SGA
 				{
 					if (continuousActions[i].continuousActionID == continuousActionID)
 					{
-						auto& actionType = state.gameInfo->getActionType(continuousActions[i].actionTypeID);
+						auto& actionType = continuousActions[i].getActionType();
 
 						//Execute OnAbort Effects				
 						for (auto& effect : actionType.OnAbort)
@@ -128,7 +128,7 @@ namespace SGA
 		}
 		else if (action.actionTypeFlags == ActionFlag::ContinuousAction)
 		{
-			auto& actionType = state.gameInfo->getActionType(action.actionTypeID);
+			auto& actionType = action.getActionType();
 			//If we are generating continuousAction we need to track them somehow
 			//Using ID for each action for example				
 			Action newAction = action;
@@ -162,12 +162,12 @@ namespace SGA
 		}
 		else
 		{
-			const auto& actionType = state.gameInfo->getActionType(action.actionTypeID);
+			const auto& actionType =action.getActionType();
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
 				// Remember when the action was executed
 				auto& executingEntity = *action.targets[0].getEntity(state);
-				executingEntity.setActionTicks(action.actionTypeID, state.currentTick);
+				executingEntity.setActionTicks(action.getActionTypeID(), state.currentTick);
 			}
 			else
 			{
@@ -176,7 +176,7 @@ namespace SGA
 				// ToDo We should probably find a way to avoid this loop
 				for (auto& actionInfo : executingPlayer.attachedActions)
 				{
-					if (actionInfo.actionTypeID == action.actionTypeID)
+					if (actionInfo.actionTypeID == action.getActionTypeID())
 					{
 						actionInfo.lastExecutedTick = state.currentTick;
 						break;
@@ -227,7 +227,7 @@ namespace SGA
 			std::vector<Action>& continuousActions = state.entities[j].getContinuousActions();
 			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
-				auto& actionType = state.gameInfo->getActionType(continuousActions[i].actionTypeID);
+				auto& actionType = continuousActions[i].getActionType();
 				//Add one elapsed tick
 				continuousActions[i].elapsedTicks++;
 				//Execute OnTick Effects
@@ -293,7 +293,7 @@ namespace SGA
 		{
 			for (size_t i = 0; i < state.players[j].continuousAction.size(); i++)
 			{
-				auto& actionType = state.gameInfo->getActionType(state.players[j].continuousAction[i].actionTypeID);
+				auto& actionType = state.players[j].continuousAction[i].getActionType();
 				//Add one elapsed tick
 				state.players[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects

@@ -7,7 +7,7 @@ namespace SGA
 		std::vector<Action> filteredActions;
 		for (const auto& a : actions)
 		{
-			if (a.actionTypeID != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.id)
+			if (a.getActionTypeID() != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.id)
 			{
 				filteredActions.emplace_back(a);
 			}
@@ -21,7 +21,7 @@ namespace SGA
 
 		for (const auto& a : actions)
 		{
-			if (actionTypeIDToActionTypeString.at(a.actionTypeID) == type)
+			if (actionTypeIDToActionTypeString.at(a.getActionTypeID()) == type)
 			{
 				filteredActions.emplace_back(a);
 			}
