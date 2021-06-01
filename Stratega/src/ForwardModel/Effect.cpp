@@ -51,7 +51,7 @@ namespace SGA
 
 		targetResource -= amount;
 		if (targetResource <= 0)
-			entity.shouldRemove = true;
+			entity.flagRemove();
 	}
 
 	AttackProbability::AttackProbability(const std::vector<FunctionParameter>& parameters) :
@@ -76,7 +76,7 @@ namespace SGA
 		{
 			targetResource -= amount;
 			if (targetResource <= 0)
-				entity.shouldRemove = true;
+				entity.flagRemove();
 		}
 	}
 
@@ -164,7 +164,7 @@ namespace SGA
 	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
-		targetEntity.shouldRemove = true;
+		targetEntity.flagRemove();
 	}
 
 	ResearchTechnology::ResearchTechnology(const std::vector<FunctionParameter>& parameters)
@@ -176,7 +176,7 @@ namespace SGA
 	void ResearchTechnology::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
-		state.gameInfo->technologyTreeCollection->researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
+		state.researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)

@@ -53,7 +53,7 @@ namespace SGA
 			quadPtr[3].position = sf::Vector2f(start.x, start.y + spriteSize.y);
 
 			// define the 4 texture coordinates
-			auto rect = atlas.getSpriteRect(entitySpritePaths.at(entity.typeID));
+			auto rect = atlas.getSpriteRect(entitySpritePaths.at(entity.getEntityTypeID()));
 			quadPtr[0].texCoords = sf::Vector2f(rect.left, rect.top);
 			quadPtr[1].texCoords = sf::Vector2f(rect.left + rect.width, rect.top);
 			quadPtr[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);

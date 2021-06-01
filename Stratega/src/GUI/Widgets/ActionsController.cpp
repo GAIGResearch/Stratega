@@ -91,9 +91,9 @@ namespace SGA::Widgets
 				//If player is researching abort action
 				for (auto& entityID : settings.selectedEntities)
 				{
-					for (auto& action : state.getEntity(entityID)->continuousAction)
+					for (const auto& action : state.getEntity(entityID)->getContinuousActions())
 					{
-						if (action.actionTypeID == settings.actionTypeSelected)
+						if (action.getActionTypeID() == settings.actionTypeSelected)
 						{
 							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 							ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
@@ -110,7 +110,7 @@ namespace SGA::Widgets
 				}
 
 				//Check if the player can research the possible technologies
-				if (!state.gameInfo->technologyTreeCollection->canResearch(playerID, possibleTechnology))
+				if (!state.canResearch(playerID, possibleTechnology))
 					continue;
 
 				ImGui::PushID(elementNumber);
@@ -158,7 +158,7 @@ namespace SGA::Widgets
 				//If player is researching abort action
 				for (auto& action : state.getPlayer(playerID)->continuousAction)
 				{
-					if (action.actionTypeID == settings.actionTypeSelected)
+					if (action.getActionTypeID() == settings.actionTypeSelected)
 					{
 						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
@@ -174,7 +174,7 @@ namespace SGA::Widgets
 				}
 
 				//Check if the player can research the possible technologies
-				if (!state.gameInfo->technologyTreeCollection->canResearch(playerID, possibleTechnology))
+				if (!state.canResearch(playerID, possibleTechnology))
 					continue;
 
 				ImGui::PushID(elementNumber);
@@ -223,7 +223,7 @@ namespace SGA::Widgets
 				//Check if any selectedEntity can spawn the targets
 				for (auto& entity : settings.selectedEntities)
 				{
-					auto& entityType = state.gameInfo->getEntityType(state.getEntity(entity)->typeID);
+					auto& entityType = state.getEntity(entity)->getEntityType();
 					if (entityType.spawnableEntityTypes.find(possibleActionType) == entityType.spawnableEntityTypes.end())
 					{
 						canSpawn = false;
@@ -333,7 +333,7 @@ namespace SGA::Widgets
 		const ActionType& actionType = state.gameInfo->getActionType(settings.actionTypeSelected);
 
 		//Generate action with the current selected settings
-		Action newAction;
+		Action newAction(&actionType);
 
 		if (actionType.isContinuous)
 			newAction.actionTypeFlags = ActionFlag::ContinuousAction;
@@ -354,7 +354,6 @@ namespace SGA::Widgets
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
 		newAction.targets = actionTargets;
-		newAction.actionTypeID = settings.actionTypeSelected;
 		newAction.ownerID = playerID;
 		
 		auto* player = state.getPlayer(playerID);
@@ -377,14 +376,13 @@ namespace SGA::Widgets
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
 		newAction.targets = actionTargets;
-		newAction.actionTypeID = settings.actionTypeSelected;
 		newAction.ownerID = playerID;
 
 		//Generate all action for each entity
 		for (auto& entityID : settings.selectedEntities)
 		{
 			//Check if entityType can execute this
-			const EntityType& entityType = state.gameInfo->getEntityType(state.getEntity(entityID)->typeID);
+			const EntityType& entityType = state.getEntity(entityID)->getEntityType();
 			const Entity* entity = state.getEntity(entityID);
 
 			
@@ -445,7 +443,7 @@ namespace SGA::Widgets
 
 		for (auto& entity : settings.selectedEntities)
 		{
-			int entityTypeID = state.getEntity(entity)->typeID;
+			int entityTypeID = state.getEntity(entity)->getEntityTypeID();
 
 			for (auto& actionID : state.gameInfo->getEntityType(entityTypeID).actionIds)
 			{

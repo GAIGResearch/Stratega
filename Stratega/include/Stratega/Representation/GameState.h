@@ -54,12 +54,61 @@ namespace SGA
 		std::vector<Entity> entities;
 		std::vector<Player> players;
 
+		//PlayerID + ResearchedTechnologyID
+		std::unordered_map<int, std::vector<int>> researchedTechnologies;
+		
+		bool isResearched(int playerID, int technologyID) const
+		{
+			//Search if the technology is found in the list of researchedtechnologies
+			const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+			for (auto& element : researchedPairList->second)
+			{
+				if (element == technologyID)
+					return true;
+			}
+			return false;
+		}
+
+		bool canResearch(int playerID, int technologyID) const
+		{
+			//Check if is researched
+			if (isResearched(playerID, technologyID))
+				return false;
+
+			//Check if technology parents are researched		
+			const TechnologyTreeNode& technologyNode = gameInfo->technologyTreeCollection->getTechnology(technologyID);
+
+			const std::vector<int>& parentsIDs = technologyNode.parentIDs;
+
+			for (auto& parent : parentsIDs)
+			{
+				const TechnologyTreeNode& technologyParentNode = gameInfo->technologyTreeCollection->getTechnology(parent);
+
+				if (!isResearched(playerID, technologyParentNode.id))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		void researchTechnology(int playerID, int technologyID)
+		{
+			//Get researched technologies of player
+			const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+			//Find technology index and add it to the researched list			
+			researchedPairList->second.emplace_back(technologyID);
+		}
+		
 		/// <summary>
 		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
 		/// <param name="entity">The entity that will be analyzed</param>
 		/// <returns>A boolean indicating if the player can execute the action type</returns>
 		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
+		
 		/// <summary>
 		/// Checks if a player can execute a given actionType
 		/// </summary>
@@ -110,9 +159,33 @@ namespace SGA
 		
 		const Player* getPlayer(int playerID) const;
 
+
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
+		//std::vector< Entity*> getPlayerEntities(int playerID);
 		std::vector<const Entity*> getPlayerEntities(int playerID) const;
 
-		std::vector< Entity*> getPlayerEntities(int playerID);
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
+		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
+
+
+		/// <summary>
+		/// Gets the list of entities that do not belong to the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
+		/// <returns>The list of entities not own by the given player.</returns>
+		std::vector< Entity*> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
+
+
 
 		int addPlayer(std::vector<int> actionIds);
 

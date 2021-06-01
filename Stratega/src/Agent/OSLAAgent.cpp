@@ -1,6 +1,7 @@
 #include <Stratega/Agent/OSLAAgent.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 
+
 namespace SGA
 {
 	ActionAssignment OSLAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)

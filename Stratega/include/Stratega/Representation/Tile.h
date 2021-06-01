@@ -2,10 +2,12 @@
 #include <Stratega/Representation/Vector2.h>
 namespace SGA
 {
+	struct TileType;
+	
 	struct Tile
 	{
-		Tile(int typeID, int x, int y):
-			tileTypeID(typeID),
+		Tile(int typeID,const TileType* tileType,int x, int y):
+			tileType(tileType),
 			isWalkable(true),
 			blocksSight(false),
 			position(x, y)
@@ -13,10 +15,14 @@ namespace SGA
 
 		}
 
-		int tileTypeID;
+		int getTileTypeID() const;
+		
 		bool isWalkable;
 		bool blocksSight;
 		Vector2i position;
+		
+	private:
+		const TileType* tileType;
 	};
 
 }

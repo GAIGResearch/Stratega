@@ -48,9 +48,12 @@ Actions:
         Targets:
             Target:
                 Type: Entity
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 2
                 ValidTargets: [Fighter, City]
-                Conditions:
-                    - "InRange(Source, Target, 1)"
         Effects:
             - "Attack(Target.Health, 25)"
 
@@ -62,8 +65,15 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                Shape: Circle
-                Size: 3
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: true
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -129,3 +139,9 @@ GameDescription:
         Move: [Move]
         Spawn: [Spawn]
         Attack: [Attack]
+    Entities:
+        Base: [City]
+        Building: [City]
+        Spawner: [City]
+        Unit: [Fighter]
+        Fighter: [Fighter]

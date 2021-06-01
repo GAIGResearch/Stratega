@@ -1,5 +1,4 @@
 #pragma once
-#include <yaml-cpp/yaml.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
@@ -7,6 +6,8 @@
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
+#include <yaml-cpp/yaml.h>
+
 namespace SGA
 {
     class LevelDefinition;
@@ -53,6 +54,9 @@ namespace SGA
 
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+
+        //EntityCategories
+        std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
 
     	//Yaml path
         std::string yamlPath;

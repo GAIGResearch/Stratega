@@ -10,7 +10,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, 0, 0),
+		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(std::move(board)),
 		players(),
@@ -26,7 +26,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, 0, 0),
+		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(0, 0, fogOfWarTile),
 		nextEntityID(0),
@@ -149,7 +149,8 @@ namespace SGA
 		return ret;
 	}
 
-	std::vector<Entity*> GameState::getPlayerEntities(int playerID)
+
+	std::vector<Entity*> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory)
 	{
 		const auto* player = getPlayer(playerID);
 		if (player == nullptr)
@@ -159,7 +160,30 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			if (entity.ownerID == playerID)
-				ret.emplace_back(&entity);
+			{
+				//Either no category was especified (default argment) or the entity type id belongs to this category.
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
+				{
+					ret.emplace_back(&entity);
+				}
+			}
+		}
+		return ret;
+	}
+
+	std::vector<Entity*> GameState::getNonPlayerEntities(int playerID, EntityCategory entityCategory)
+	{
+		std::vector<Entity*> ret;
+		for (auto& entity : entities)
+		{
+			if (entity.ownerID != playerID)
+			{
+				//Either no category was especified (default argment) or the entity type id belongs to this category.
+				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
+				{
+					ret.emplace_back(&entity);
+				}
+			}
 		}
 
 		return ret;
@@ -285,7 +309,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			std::cout << "[OwnerID]" <<entity.ownerID << std::endl;			
-			std::cout << "	[type]: " << gameInfo->getEntityType(entity.typeID).name << " [entityID]: "<<entity.id<< std::endl;
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).name << " [entityID]: "<<entity.id<< std::endl;
 		}
 	}
 
@@ -299,7 +323,7 @@ namespace SGA
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				//Get tile type
-				map += gameInfo->getTileType(board.get(x, y).tileTypeID).symbol;
+				map += gameInfo->getTileType(board.get(x, y).getTileTypeID()).symbol;
 				map += "  ";
 			}
 			map += "\n";
@@ -309,7 +333,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			auto& pos = entity.position;
-			const char symbol = gameInfo->getEntityType(entity.typeID).symbol;
+			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).symbol;
 			const char ownerID = std::to_string(entity.ownerID)[0];
 			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
 
@@ -338,38 +362,11 @@ namespace SGA
 	
 	void GameState::printEntityInfo(int entityID)
 	{
-		std::cout << "EntityInfo";
 		const auto* entity = getEntity(entityID);
-
-		if (entity)
-		{
-			std::cout << "[" << gameInfo->getEntityType(entity->typeID).name << "],";
-			std::cout << " [ID: " <<entity->id<<"],";
-			std::cout << " [OwnerID: " <<entity->ownerID<<"],";
-			std::cout << " [Position: "<< entity->position.x << "," << entity->position.y <<"]";
-
-			
-
-			int parameterID = 0;
-			auto& entityType = gameInfo->getEntityType(entity->typeID);
-			if (entity->parameters.empty())
-			{
-				std::cout << std::endl;
-				return;
-			}				
-				
-			std::cout << ", [Parameters: ";
-			for (auto& parameter : entity->parameters)
-			{
-				std::cout << "(" << entityType.parameters.find(parameterID++)->second.name <<": "<< parameter<<")";
-			}
-
-			std::cout << "]"<<std::endl;
-		}
-		else
-		{
+		if (entity)  	
+			entity->printInfo();
+		else 			
 			std::cout << "Entity not found" << std::endl;
-		}
 	}
 
 	void GameState::printActionInfo(Action& action) const
@@ -385,23 +382,19 @@ namespace SGA
 		}
 		else
 		{
-			const ActionType& actionType = gameInfo->getActionType(action.actionTypeID);
+			const ActionType& actionType = action.getActionType();
 			std::cout << "["<< actionType.name <<"]," ;
 			
 			//Print source
 			if (actionType.sourceType == ActionSourceType::Player)
 				std::cout << " [SourceType Player: " << action.ownerID << "],";
 			else
-			{
+			{				
 				int entityID = action.getSourceID();
-				int entityTypeID = getEntityConst(entityID)->typeID;
-				auto& entityType = gameInfo->getEntityType(entityTypeID);
+				auto& entityType = getEntityConst(entityID)->getEntityType();
 				
 				std::cout << " [SourceType Entity: "<<entityType.name<<" "<<entityID<<"],";
 			}
-				
-
-
 
 			std::cout << " [ActionTargets" ;
 			for (size_t i = 0; i < actionType.actionTargets.size(); i++)
