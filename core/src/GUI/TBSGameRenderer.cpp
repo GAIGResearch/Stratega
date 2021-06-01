@@ -131,13 +131,13 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
 					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction
-					|| possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					|| possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
 				//Get source
-				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = possibleAction.getActionType();
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
@@ -173,13 +173,13 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.actionTypeID == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
 					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction ||
-					possibleAction.actionTypeID != actionsSettings.actionTypeSelected)
+					possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
 				//Get source
-				const auto& actionType = state.gameInfo->getActionTypeConst(possibleAction.actionTypeID);
+				const auto& actionType = possibleAction.getActionType();
 
 				//Check the source and the selected entity is the same
 				if (actionType.sourceType == ActionSourceType::Entity)
@@ -497,7 +497,7 @@ namespace SGA
 		{
 
 			std::string actionInfo = std::to_string(index);
-			if (action.actionTypeID == -1)
+			if (action.getActionTypeID() == -1)
 			{
 				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 				{
@@ -509,7 +509,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -522,7 +522,7 @@ namespace SGA
 						{
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
-								const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.name;
 							}
 						}
@@ -536,7 +536,7 @@ namespace SGA
 			}
 			else
 			{
-				const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
+				const ActionType& actionType = action.getActionType();
 
 				actionInfo += " " + actionType.name;
 

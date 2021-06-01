@@ -22,7 +22,7 @@ namespace SGA
 					//Check if entity is already executing it
 					for (const auto& action : sourceEntity.getContinuousActions())
 					{
-						if (action.actionTypeID == actionType.id)
+						if (action.getActionTypeID() == actionType.id)
 						{
 							//This entity cant execute the action
 							generateContinuousAction = false;
@@ -68,7 +68,7 @@ namespace SGA
 				//Check if entity is already executing it
 				for (auto& action : player.continuousAction)
 				{
-					if (action.actionTypeID == actionType.id)
+					if (action.getActionTypeID() == actionType.id)
 					{
 						//This entity cant execute the action
 						generateContinuousAction = false;
@@ -146,8 +146,7 @@ namespace SGA
 	{		
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
-			Action action;
-			action.actionTypeID = actionType.id;
+			Action action(&actionType);
 			action.ownerID = sourceEntity.ownerID;
 			action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
 			
@@ -181,8 +180,7 @@ namespace SGA
 	{
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
-			Action action;
-			action.actionTypeID = actionType.id;
+			Action action(&actionType);
 			action.ownerID = sourcePlayer.id;
 			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
 
@@ -366,16 +364,14 @@ namespace SGA
 	
 	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
-		Action selfAction;
-		selfAction.actionTypeID = actionType.id;
+		Action selfAction(&actionType);
 		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
 		return selfAction;
 	}
 
 	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
-		Action selfAction;
-		selfAction.actionTypeID = actionType.id;
+		Action selfAction(&actionType);
 		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };
 		return selfAction;
 	}

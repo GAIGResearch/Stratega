@@ -93,7 +93,7 @@ namespace SGA::Widgets
 				{
 					for (const auto& action : state.getEntity(entityID)->getContinuousActions())
 					{
-						if (action.actionTypeID == settings.actionTypeSelected)
+						if (action.getActionTypeID() == settings.actionTypeSelected)
 						{
 							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 							ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
@@ -158,7 +158,7 @@ namespace SGA::Widgets
 				//If player is researching abort action
 				for (auto& action : state.getPlayer(playerID)->continuousAction)
 				{
-					if (action.actionTypeID == settings.actionTypeSelected)
+					if (action.getActionTypeID() == settings.actionTypeSelected)
 					{
 						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
 						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
@@ -333,7 +333,7 @@ namespace SGA::Widgets
 		const ActionType& actionType = state.gameInfo->getActionType(settings.actionTypeSelected);
 
 		//Generate action with the current selected settings
-		Action newAction;
+		Action newAction(&actionType);
 
 		if (actionType.isContinuous)
 			newAction.actionTypeFlags = ActionFlag::ContinuousAction;
@@ -354,7 +354,6 @@ namespace SGA::Widgets
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
 		newAction.targets = actionTargets;
-		newAction.actionTypeID = settings.actionTypeSelected;
 		newAction.ownerID = playerID;
 		
 		auto* player = state.getPlayer(playerID);
@@ -377,7 +376,6 @@ namespace SGA::Widgets
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
 		newAction.targets = actionTargets;
-		newAction.actionTypeID = settings.actionTypeSelected;
 		newAction.ownerID = playerID;
 
 		//Generate all action for each entity

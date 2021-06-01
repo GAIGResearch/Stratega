@@ -382,7 +382,7 @@ namespace SGA
 		}
 		else
 		{
-			const ActionType& actionType = gameInfo->getActionType(action.actionTypeID);
+			const ActionType& actionType = action.getActionType();
 			std::cout << "["<< actionType.name <<"]," ;
 			
 			//Print source

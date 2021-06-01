@@ -490,7 +490,7 @@ namespace SGA
 			auto actionsToExecute = getWidgetResult(fowState, actionsSettings, pointOfViewPlayerID);
 			for (auto& action : actionsToExecute)
 			{
-				if (action.actionTypeID == -1 || action.isPlayerAction())
+				if (action.getActionTypeID() == -1 || action.isPlayerAction())
 				{
 					//If continuous or Player action we assign it directly
 					assignment.assignActionOrReplace(action);
@@ -607,7 +607,7 @@ namespace SGA
 			for (auto action : actionsHumanCanPlay)
 			{
 				std::string actionInfo = std::to_string(index);
-				if (action.actionTypeID == -1)
+				if (action.getActionTypeID() == -1)
 				{
 					if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 					{
@@ -619,7 +619,7 @@ namespace SGA
 							{
 								if (continueAction.continuousActionID == action.continuousActionID)
 								{
-									const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+									const ActionType& actionType = continueAction.getActionType();
 									actionInfo += " Abort " + actionType.name;
 								}
 							}
@@ -632,7 +632,7 @@ namespace SGA
 							{
 								if (continueAction.continuousActionID == action.continuousActionID)
 								{
-									const ActionType& actionType = state.gameInfo->getActionType(continueAction.actionTypeID);
+									const ActionType& actionType = continueAction.getActionType();
 									actionInfo += " Abort " + actionType.name;
 								}
 							}
@@ -643,7 +643,7 @@ namespace SGA
 				}
 				else
 				{
-					const ActionType& actionType = state.gameInfo->getActionType(action.actionTypeID);
+					const ActionType& actionType = action.getActionType();
 
 					actionInfo += " " + actionType.name;
 
