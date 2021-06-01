@@ -1,5 +1,4 @@
 #pragma once
-#include <yaml-cpp/yaml.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
@@ -7,6 +6,10 @@
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
+#include <yaml-cpp/yaml.h>
+
+#include "yaml-cpp/node/node.h"
+
 namespace SGA
 {
     class LevelDefinition;

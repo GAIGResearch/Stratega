@@ -164,7 +164,7 @@ namespace YAML
             auto value = node["Type"].as<std::string>();
             if (value == "Neighbours")
             {
-                auto& temp = std::make_shared<SGA::Neighbours>();
+                auto temp = std::make_shared<SGA::Neighbours>();
                 if (node["Options"].IsDefined())
                 {
                     temp->shapeType = node["Options"]["Shape"].as<SGA::Neighbours::ShapeType>();
@@ -175,7 +175,7 @@ namespace YAML
             }                
             else if (value == "Dijkstra")
             {
-                auto& temp = std::make_shared<SGA::Dijkstra>();
+                auto temp = std::make_shared<SGA::Dijkstra>();
                 if (node["Options"].IsDefined())
                 {
                     temp->searchSize = node["Options"]["SearchSize"].as<int>(1);

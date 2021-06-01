@@ -271,7 +271,7 @@ bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f&
 	//Take Dijkstra possible positions
 	auto positions = getPositions(gameState, sourcePosition);
 
-	for each (auto position in positions)
+	for(auto& position : positions)
 	{
 		if (targetPosition.distance(Vector2f(position.x,position.y)) <= 0.5f)
 			return true;
