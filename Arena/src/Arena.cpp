@@ -43,7 +43,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	// Assign agents
 	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto allAgents = config->generateAgents();
-	std::vector<std::unique_ptr<SGA::Agent>> agents(agentAssignment.size());
+	std::vector<std::shared_ptr<SGA::Agent>> agents(agentAssignment.size());
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{

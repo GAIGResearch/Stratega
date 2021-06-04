@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <Stratega/ForwardModel/ActionTarget.h>
-
 namespace SGA
 {
 	/// <summary>

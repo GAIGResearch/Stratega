@@ -11,7 +11,7 @@
 
 namespace SGA
 {
-	class Agent;
+	class Agent;	
 
 	/// <summary>
 	/// An abstract class that provides a simplified interface to play games with a given <see cref="SGA::GameConfig"/>.
@@ -58,14 +58,15 @@ namespace SGA
 		/// </summary>
 		/// <param name="agents">A list of agents to obtain actions from.</param>
 		/// <param name="observer">An optional observer who is notified about important events in the game.</param>
-		void run(std::vector<std::unique_ptr<Agent>>& agents, GameObserver* observer = nullptr);
+		void run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer = nullptr);
 		
 		/// <summary>
 		/// Renders a visual representation of the game and allows interactive action selection.
 		/// </summary>
 		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
-		void play(std::vector<std::unique_ptr<Agent>>& agents);
+		void play(std::vector<std::shared_ptr<Agent>>& agents);
+		//void play2(std::vector<std::shared_ptr<Agent>>& agents);
 		
 		/// <summary>
 		/// Returns a reference to the current state of the game.
@@ -73,11 +74,11 @@ namespace SGA
 		[[nodiscard]] const GameState& getGameState() const;
 
 	protected:
-		void initializeAgents(std::vector<std::unique_ptr<Agent>>& agents);
+		void initializeAgents(std::vector<std::shared_ptr<Agent>>& agents);
 		void ensureRendererInitialized();
 
-		virtual void runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer) = 0;
-		virtual void playInternal(std::vector<std::unique_ptr<Agent>>& agents, int humanIndex) = 0;
+		virtual void runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer) = 0;
+		virtual void playInternal(std::vector<std::shared_ptr<Agent>>& agents, int humanIndex) = 0;
 		
 		std::unique_ptr<EntityForwardModel> forwardModel;
 		std::unique_ptr<GameRenderer> renderer;
@@ -92,4 +93,13 @@ namespace SGA
 	/// be kept in memory while this object exists.</param>
 	/// <returns>A pointer to the initialized GameRunner.</returns>
 	std::unique_ptr<GameRunner> createGameRunner(const GameConfig& config);
+
+
+	class GameRunnerPy : public GameRunner // helper type for exposing protected functions
+	{
+	public:
+		using GameRunner::initializeAgents; // inherited with different access modifier
+	};
 }
+
+
