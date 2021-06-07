@@ -18,6 +18,7 @@ namespace SGA
 		
 		virtual void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs);
 		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) = 0;
+		virtual void computeAction2(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs);
 
 		int getPlayerID();
 		void setPlayerID(int playerID);
@@ -30,5 +31,7 @@ namespace SGA
 		int playerID;
 		std::mt19937 rngEngine;
 	};
+
+	
 }
 

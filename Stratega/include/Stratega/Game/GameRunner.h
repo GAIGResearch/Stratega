@@ -66,7 +66,10 @@ namespace SGA
 		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
 		void play(std::vector<std::shared_ptr<Agent>>& agents);
-		//void play2(std::vector<std::shared_ptr<Agent>>& agents);
+		void play2(std::shared_ptr<Agent>& agent)
+		{
+
+		}
 		
 		/// <summary>
 		/// Returns a reference to the current state of the game.

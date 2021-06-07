@@ -11,6 +11,11 @@ namespace SGA
 	{
 		// Do nothing by default
 	}
+	
+	void Agent::computeAction2(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs)
+	{
+
+	}
 
 	int Agent::getPlayerID()
 	{

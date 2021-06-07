@@ -12,7 +12,7 @@
 #include <Stratega/Representation/Grid2D.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/GameConfigParser.h>
-
+#include <Stratega/ForwardModel/TBSForwardModel.h>
 #include "Stratega/Game/GameRunner.h"
 
 namespace py = pybind11;
@@ -21,8 +21,79 @@ namespace py = pybind11;
 PYBIND11_MAKE_OPAQUE(std::vector<double>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Player>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
+PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
 
+void playPythonAgent(SGA::Agent* agent)
+{
+	py::print("Running");
+	SGA::GameState state;
+	SGA::TBSForwardModel fm;	
+	agent->computeAction2(state, &fm, 0);
+}
+
+void playPythonAgents(std::vector<std::shared_ptr<SGA::Agent>> agents)
+{
+	py::print("Running");
+	SGA::GameState state;
+	SGA::TBSForwardModel fm;
+	
+	//std::vector<std::shared_ptr<SGA::Agent>> agents2;
+
+	//for (auto agent : agents)
+	//{
+	//	agent.cast<std::shared_ptr<SGA::Agent>>();
+	////	auto newAgent = std::make_shared<SGA::Agent>(agent);
+	////	//agents2.emplace_back(newAgent);
+	////	//agent->computeAction2(state, &fm, 0);
+	//}
+
+	for(auto& agent : agents)
+	{
+		agent->computeAction2(state, &fm, 0);
+	}
+}
+
+class PyAgent : public SGA::Agent {
+public:
+	/* Inherit the constructors */
+	using SGA::Agent::Agent;
+
+	//void test() override {
+	//	PYBIND11_OVERRIDE_PURE(
+	//		void, /* Return type */
+	//		Agent,      /* Parent class */
+	//		test,          /* Name of function in C++ (must match Python name) */
+	//		n_times      /* Argument(s) */
+	//	);
+	//}
+
+	/* Trampoline (need one for each virtual function) */
+	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::EntityForwardModel& forwardModel, long timeBudgetMs) override
+	{
+		PYBIND11_OVERRIDE_PURE(
+			SGA::ActionAssignment, /* Return type */
+			SGA::Agent,      /* Parent class */
+			computeAction,          /* Name of function in C++ (must match Python name) */
+			state,
+			forwardModel,
+			timeBudgetMs    /* Argument(s) */
+		);
+	}
+
+	/* Trampoline (need one for each virtual function) */
+	void computeAction2(SGA::GameState state, const SGA::EntityForwardModel* forwardModel, long timeBudgetMs) override
+	{
+		PYBIND11_OVERRIDE(
+			void,
+			SGA::Agent,      /* Parent class */
+			computeAction2,          /* Name of function in C++ (must match Python name) */
+			state,
+			forwardModel,
+			timeBudgetMs    /* Argument(s) */
+		);
+	}
+};
  void test()
  {
 	 std::cout << "Hello" << std::endl;
@@ -85,13 +156,18 @@ void runDefault()
  }
 
 PYBIND11_MODULE(stratega, m)
-{
+{/*
+	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentVector",
+		"Agent vector.");*/
+
     m.doc() = "Stratega python bindings"; // optional module docstring
 
 	m.def("loadConfig", &loadConfig, "Loads game config", py::arg("path"));
 	m.def("createRunner", &createRunner, "Create game runner", py::arg("gameConfig"));
 	m.def("generateAgents", &generateAgents, "Generate agents", py::arg("gameConfig"));
 	m.def("initializeAgents", &initializeAgents, "Initialize agents", py::arg("agents"), py::arg("seed"));
+	m.def("playPythonAgent", &playPythonAgent, "playPythonAgent", py::arg("agent"));
+	m.def("playPythonAgents", &playPythonAgents, "playPythonAgents", py::arg("agents"));
 
 	m.def("test", &test,
 		py::call_guard<py::scoped_ostream_redirect,
@@ -103,7 +179,9 @@ PYBIND11_MODULE(stratega, m)
 	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
-	
+	/*py::bind_vector<std::vector<std::shared_ptr<PyAgent>>>(m, "AgentList2");
+	py::implicitly_convertible<py::list, std::vector<std::shared_ptr<SGA::Agent>>>();*/
+
 	// ---- Vector2f ----
 	py::class_<SGA::Vector2f>(m, "Vector2f")
 		.def(py::init<double, double>(), py::arg("x") = 0.0, py::arg("y") = 0.0)
@@ -183,7 +261,8 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("initializeAgents", &SGA::GameRunnerPy::initializeAgents)
-		.def("play", &SGA::GameRunnerPy::play)
+		.def("play", &SGA::GameRunnerPy::play, py::arg("agents"))
+		.def("play2", &SGA::GameRunnerPy::play2, py::arg("agent"))
 		//.def(py::pickle([](const SGA::GameRunner& p)
 		//	{ // __getstate__
 		//		/* Return a tuple that fully encodes the state of the object */
@@ -191,7 +270,15 @@ PYBIND11_MODULE(stratega, m)
 		;
 
 	// ---- Agent ----
-	py::class_<SGA::Agent>(m, "Agent");
+	//py::class_<SGA::Agent>(m, "Agent");
+
+	py::class_<SGA::ActionAssignment>(m, "ActionAssignment");
+	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel");
+
+	py::class_<SGA::Agent, PyAgent , std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
+		.def(py::init<>())
+		.def("computeAction", &SGA::Agent::computeAction, py::return_value_policy::reference);
+
 
 	// Add a scoped redirect for your noisy code
 	m.def("noisy_func", []() {
