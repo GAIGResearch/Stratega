@@ -44,9 +44,13 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto allAgents = config->generateAgents();
 	std::vector<std::unique_ptr<SGA::Agent>> agents(agentAssignment.size());
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
+		//Check if agent is Human
+		if(!agents[i])
+			throw std::runtime_error("Human agents cant play Arena");
+
 		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
 		// Set seed of the agents for deterministic behaviour
