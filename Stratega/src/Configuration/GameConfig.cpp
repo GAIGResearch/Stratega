@@ -22,6 +22,31 @@ namespace SGA
 		return agents;
 	}
 
+	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const
+	{
+		int nextPlayerID = state->getNumPlayers();
+		Player player = { nextPlayerID, 0, true };
+
+		
+		// Add parameters
+		player.parameters.resize(gameInfo.playerParameterTypes->size());
+		for (const auto& idParamPair : *gameInfo.playerParameterTypes)
+		{
+			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+		}
+
+
+		// Add actions
+		player.attachedActions.reserve(playerActionIds.size());
+		for (auto actionTypeID : playerActionIds)
+		{
+			player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
+		}
+
+		state->addPlayer(player);
+		return player.id;
+	}
+
 	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const
 	{
 		// Initialize state
@@ -47,7 +72,7 @@ namespace SGA
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
-			playerIDs.emplace(state->addPlayer(playerActionIds));
+			playerIDs.emplace(addPlayer(state, gameInfo));
 		}
 
 		// Create some lookups for initializing the board and entities
