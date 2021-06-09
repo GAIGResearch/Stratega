@@ -69,6 +69,6 @@ namespace SGA
         int getTechnologyID(const std::string& name) const;
 
         //Adds a new player to the game.
-        int addPlayer(std::unique_ptr<GameState>& state, GameInfo gameInfo) const;
+        int addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const;
     };
 }

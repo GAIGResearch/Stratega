@@ -45,7 +45,6 @@ namespace SGA
 
 	}
 
-
 	int GameState::addPlayer(Player p)
 	{
 		int playerID = players.size();
@@ -386,9 +385,9 @@ namespace SGA
 		}		
 	}
 	
-	void GameState::printEntityInfo(int entityID)
+	void GameState::printEntityInfo(int entityID) const
 	{
-		const auto* entity = getEntity(entityID);
+		const auto* entity = getEntityConst(entityID);
 		if (entity)  	
 			entity->printInfo();
 		else 			

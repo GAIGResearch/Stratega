@@ -22,7 +22,7 @@ namespace SGA
 		return agents;
 	}
 
-	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo gameInfo) const
+	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const
 	{
 		int nextPlayerID = state->getNumPlayers();
 		Player player = { nextPlayerID, 0, true };
@@ -72,7 +72,6 @@ namespace SGA
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
-			//playerIDs.emplace(state->addPlayer(playerActionIds));
 			playerIDs.emplace(addPlayer(state, gameInfo));
 		}
 
