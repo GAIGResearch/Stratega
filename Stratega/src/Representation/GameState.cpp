@@ -13,9 +13,7 @@ namespace SGA
 		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(std::move(board)),
-		players(),
-		nextEntityID(0),
-		nextPlayerID(0)
+		players()
 	{
 	}
 
@@ -28,9 +26,7 @@ namespace SGA
 		tickLimit(-1),
 		fogOfWarTile(-1, nullptr, 0, 0),
 		fogOfWarId(-1),
-		board(0, 0, fogOfWarTile),
-		nextEntityID(0),
-		nextPlayerID(0)
+		board(0, 0, fogOfWarTile)
 	{
 	}
 
@@ -49,78 +45,37 @@ namespace SGA
 
 	}
 
-	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
+	int GameState::addPlayer(Player p)
 	{
-		for (auto& unit : entities)
-		{
-			if (unit.position.distance(pos) <= maxDistance)
-			{
-				return &unit;
-			}
-		}
-		return nullptr;
-	}
-
-	int GameState::addPlayer(std::vector<int> actionIds)
-	{
-		auto& player = players.emplace_back(Player{ nextPlayerID, 0, true });
-		// Add parameters
-		player.parameters.resize(gameInfo->playerParameterTypes->size());
-		for (const auto& idParamPair : *gameInfo->playerParameterTypes)
-		{
-			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
-		}
-
-		// Add actions
-		player.attachedActions.reserve(actionIds.size());
-		for (auto actionTypeID : actionIds)
-		{
-			player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
-		}
-
-		nextPlayerID++;
-		return player.id;
+		int playerID = players.size();
+		players.emplace_back(p);
+		return playerID;
 	}
 
 	int GameState::addEntity(const EntityType& type, int playerID, const Vector2f& position)
 	{
+		int nextEntityID = entities.size();
 		auto instance = type.instantiateEntity(nextEntityID);
 		instance.ownerID = playerID;
 		instance.position = position;
 		entities.emplace_back(std::move(instance));
 
-		nextEntityID++;
 		return instance.id;
 	}
 
-	Entity* GameState::getEntity(Vector2f pos)
+	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
 	{
 		for (auto& entity : entities)
 		{
 			if (entity.position == pos)
+				return &entity;
+			else if (maxDistance > 0.0 && (entity.position.distance(pos) <= maxDistance))
 				return &entity;
 		}
 
 		return nullptr;
 	}
 
-	bool GameState::isWalkable(const Vector2i& position)
-	{
-		Tile& targetTile = board.get(position.x, position.y);
-		Entity* targetUnit = getEntity(Vector2f(position));
-
-		return targetUnit == nullptr && targetTile.isWalkable;
-	}
-
-	bool GameState::isInBounds(Vector2i pos) const
-	{
-		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-	}
-
-	bool GameState::isInBounds(Vector2f pos) const
-	{
-		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-	}
 
 	const Player* GameState::getPlayer(int playerID) const
 	{
@@ -300,6 +255,76 @@ namespace SGA
 		return nullptr;
 	}
 
+	/* TECHNOLOGIES */
+
+	bool GameState::canResearch(int playerID, int technologyID) const
+	{
+		//Check if is researched
+		if (isResearched(playerID, technologyID))
+			return false;
+
+		//Check if technology parents are researched		
+		const TechnologyTreeNode& technologyNode = gameInfo->technologyTreeCollection->getTechnology(technologyID);
+
+		const std::vector<int>& parentsIDs = technologyNode.parentIDs;
+
+		for (auto& parent : parentsIDs)
+		{
+			const TechnologyTreeNode& technologyParentNode = gameInfo->technologyTreeCollection->getTechnology(parent);
+
+			if (!isResearched(playerID, technologyParentNode.id))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bool GameState::isResearched(int playerID, int technologyID) const
+	{
+		//Search if the technology is found in the list of researchedtechnologies
+		const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+		for (auto& element : researchedPairList->second)
+		{
+			if (element == technologyID)
+				return true;
+		}
+		return false;
+	}
+
+	void GameState::researchTechnology(int playerID, int technologyID)
+	{
+		//Get researched technologies of player
+		const auto& researchedPairList = researchedTechnologies.find(playerID);
+
+		//Find technology index and add it to the researched list			
+		researchedPairList->second.emplace_back(technologyID);
+	}
+
+	/* BOARD */
+
+	bool GameState::isWalkable(const Vector2i& position)
+	{
+		Tile& targetTile = board.get(position.x, position.y);
+		Entity* targetUnit = getEntity(Vector2f(position));
+
+		return targetUnit == nullptr && targetTile.isWalkable;
+	}
+
+	bool GameState::isInBounds(Vector2i pos) const
+	{
+		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+	}
+
+	bool GameState::isInBounds(Vector2f pos) const
+	{
+		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+	}
+
+	/* PRINTS */
+
+
 	void GameState::printStateInfo() const
 	{
 		std::cout << "---------[StateInfo]---------" << std::endl;
@@ -360,9 +385,9 @@ namespace SGA
 		}		
 	}
 	
-	void GameState::printEntityInfo(int entityID)
+	void GameState::printEntityInfo(int entityID) const
 	{
-		const auto* entity = getEntity(entityID);
+		const auto* entity = getEntityConst(entityID);
 		if (entity)  	
 			entity->printInfo();
 		else 			
