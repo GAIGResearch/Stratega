@@ -241,6 +241,27 @@ namespace SGA
 		/// <returns>Returns the ID of the player added to the game, equal to the number of players -1.</returns>
 		int addPlayer(Player p);
 
+		/// <summary>
+		/// Gets the value of a player parameter.
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from</param>
+		/// <param name="paramName">Name of the parameter which value is requested</param>
+		/// <returns>Returns the value of the parameter indicated for the player whose ID is given.</returns>
+		double getPlayerParameter(int playerID, std::string paramName) const;
+
+		/// <summary>
+		/// Returns a list will all the parameter names of the player of which ID is given
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from. For the moment, all players have the same parameter names (hence playerID is not used).</param>
+		/// <returns>A vector with all the parameter names of the requested player.</returns>
+		std::vector<std::string> getPlayerParameterNames(int playerID) const;
+
+		/// <summary>
+		/// Gets a map with all pairs <parameter,value>
+		/// <summary>
+		/// <param name="playerID">ID of the player to get the parameter from. </param>
+		/// <returns>Returns a map with all the parameters of this player.</returns>
+		std::unordered_map<std::string, double> getPlayerParameters(int playerID) const;
 
 
 		/***** PRINT FUNCTIONS *****/
