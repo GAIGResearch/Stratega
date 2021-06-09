@@ -93,7 +93,6 @@ namespace SGA
 
 		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
 
-
 		/// <summary>
 		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
 		/// </summary>
@@ -235,7 +234,6 @@ namespace SGA
 		/// <returns>Number of players in this game</returns>
 		int getNumPlayers() const { return players.size(); };
 
-
 		/// <summary>
 		/// Adds a player to the game state.
 		/// </summary>
@@ -275,7 +273,7 @@ namespace SGA
 		void printActionInfo(Action& action) const;
 
 		/// <summary>
-		/// Increments the ID for the next continuous action of RTS.
+		/// Increments the ID for the next continuous action.
 		/// </summary>
 		void incNextContinuousActionID() { continuousActionNextID++; }
 
