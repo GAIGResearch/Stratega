@@ -144,6 +144,16 @@ namespace SGA
 		return ret;
 	}
 
+
+	int GameState::getPlayerScore(int playerID) const
+	{
+		const Player* p = getPlayer(playerID);
+		if (p != nullptr)
+		{
+			return p->score;
+		}
+	}
+
 	double GameState::getPlayerParameter(int playerID, std::string paramName) const
 	{
 		const Player* p = getPlayer(playerID);
@@ -155,8 +165,10 @@ namespace SGA
 				{
 					return p->parameters[param.second.index];
 				}
-			}		
-		}
+			}
+			std::cout << "WARNING: No parameter " << paramName << " associated to player ID " << playerID << std::endl;
+
+		}else std::cout << "WARNING: No player associated to ID " << playerID << std::endl;
 	}
 
 	//NOTE: For the moment, all players have the same parameters (hence playerID is not used).
@@ -173,8 +185,10 @@ namespace SGA
 	{
 		const Player* p = getPlayer(playerID);
 		std::unordered_map<std::string, double> params;
-		for (const auto& param : *gameInfo->playerParameterTypes)
+		if (p != nullptr) for (const auto& param : *gameInfo->playerParameterTypes)
 			params.emplace(param.second.name, p->parameters[param.second.index]);
+		else std::cout << "WARNING: No player associated to ID " << playerID << std::endl;
+
 		return params;
 	}
 

@@ -212,6 +212,8 @@ namespace SGA
 		double nProd = currentState.getPlayerParameter(1, "Prod");
 		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
 		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
+		int score = currentState.getPlayerScore(0);
+
 
 		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
 

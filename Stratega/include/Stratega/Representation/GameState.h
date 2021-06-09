@@ -263,6 +263,14 @@ namespace SGA
 		/// <returns>Returns a map with all the parameters of this player.</returns>
 		std::unordered_map<std::string, double> getPlayerParameters(int playerID) const;
 
+		/// <summary>
+		/// Returns the score of the player whose ID is passed.
+		/// </summary>
+		/// <param name="playerID">ID of the player to pass.</param>
+		/// <returns>The current score of the given player.</returns>
+		int getPlayerScore(int playerID) const;
+
+
 
 		/***** PRINT FUNCTIONS *****/
 
