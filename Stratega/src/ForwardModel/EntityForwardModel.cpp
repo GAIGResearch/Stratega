@@ -21,7 +21,7 @@ namespace SGA
 	
 	bool EntityForwardModel::canPlayerPlay(const GameState& state, Player& player) const
 	{
-		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+		if (state.getFogOfWarTileId() != -1 && player.id != state.getFogOfWarTileId())
 			return true;
 
 		//Check Lose conditions
@@ -42,7 +42,7 @@ namespace SGA
 
 	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const
 	{
-		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+		if (state.getFogOfWarTileId() != -1 && player.id != state.getFogOfWarTileId())
 			return false;
 
 		//Check Win conditions
@@ -132,7 +132,8 @@ namespace SGA
 			//If we are generating continuousAction we need to track them somehow
 			//Using ID for each action for example				
 			Action newAction = action;
-			newAction.continuousActionID = state.continueActionNextID++;
+			newAction.continuousActionID = state.getNextContinuousActionID();
+			state.incNextContinuousActionID();
 			newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
 
 			//If is continues we execute OnStart Effects
