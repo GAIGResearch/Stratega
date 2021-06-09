@@ -191,6 +191,7 @@ namespace SGA
 		/// <returns>Returns the unique ID of the entity created.</returns>
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
 
+
 		/// <summary>
 		/// Gets the list of entities of the specified player.
 		/// </summary>
@@ -206,7 +207,6 @@ namespace SGA
 		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
 		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
-
 
 		/// <summary>
 		/// Gets the list of entities that do not belong to the specified player.
@@ -245,7 +245,6 @@ namespace SGA
 
 
 
-
 		/***** PRINT FUNCTIONS *****/
 
 		/// <summary>
@@ -263,12 +262,12 @@ namespace SGA
 		/// <param name="playerID">The ID of the player to print information of.</param>
 		/// </summary>
 		void printBoard(int playerID) const;
-		
+
 		/// <summary>
 		/// Print information of a specific entity
 		/// <param name="playerID">ID of the entity to print information of.</param>
 		/// </summary>
-		void printEntityInfo(int entityID);
+		void printEntityInfo(int entityID) const;
 		
 		/// <summary>
 		/// Print information of a specific action
@@ -281,7 +280,7 @@ namespace SGA
 		void incNextContinuousActionID() { continuousActionNextID++; }
 
 		/// <summary>
-		/// Increments the ID for the next continuous action of RTS.
+		/// Returns the ID for the next continuous action.
 		/// </summary>
 		/// <returns>The ID of the next continuous action.</returns>
 		int getNextContinuousActionID() { return continuousActionNextID; }
