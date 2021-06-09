@@ -46,6 +46,26 @@ namespace SGA
 		}
 	}
 
+
+	std::vector<std::string> Entity::getEntityParameterNames() const
+	{
+		std::vector<std::string> paramNames;
+		for (const auto& param : type->parameters)
+			paramNames.emplace_back(param.second.name);
+
+		return paramNames;
+	}
+
+
+	std::unordered_map<std::string, double> Entity::getEntityParameters() const
+	{
+		std::unordered_map<std::string, double> params;
+		for (const auto& param : type->parameters)
+			params.emplace(param.second.name, parameters[param.second.index]);
+		return params;
+	}
+
+
 	void Entity::setActionTicks(int actionTypeID, int tick)
 	{
 		// ToDo We should probably find a way to avoid this loop (why attachedActions is not a map?)

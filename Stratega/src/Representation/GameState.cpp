@@ -144,6 +144,41 @@ namespace SGA
 		return ret;
 	}
 
+	double GameState::getPlayerParameter(int playerID, std::string paramName) const
+	{
+		const Player* p = getPlayer(playerID);
+		if (p != nullptr)
+		{
+			for (const auto& param : *gameInfo->playerParameterTypes)
+			{
+				if (param.second.name == paramName)
+				{
+					return p->parameters[param.second.index];
+				}
+			}		
+		}
+	}
+
+	//NOTE: For the moment, all players have the same parameters (hence playerID is not used).
+	std::vector<std::string> GameState::getPlayerParameterNames(int playerID) const
+	{
+		std::vector<std::string> paramNames;
+		for (const auto& param : *gameInfo->playerParameterTypes)
+			paramNames.emplace_back(param.second.name);
+		
+		return paramNames;
+	}
+
+	std::unordered_map<std::string, double> GameState::getPlayerParameters(int playerID) const
+	{
+		const Player* p = getPlayer(playerID);
+		std::unordered_map<std::string, double> params;
+		for (const auto& param : *gameInfo->playerParameterTypes)
+			params.emplace(param.second.name, p->parameters[param.second.index]);
+		return params;
+	}
+
+
 	void GameState::applyFogOfWar(int playerID)
 	{
 		Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
