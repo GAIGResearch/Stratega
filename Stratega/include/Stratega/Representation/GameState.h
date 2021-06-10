@@ -190,6 +190,7 @@ namespace SGA
 		/// <returns>Returns the unique ID of the entity created.</returns>
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
 
+
 		/// <summary>
 		/// Gets the list of entities of the specified player.
 		/// </summary>
@@ -240,6 +241,42 @@ namespace SGA
 		/// <returns>Returns the ID of the player added to the game, equal to the number of players -1.</returns>
 		int addPlayer(Player p);
 
+		/// <summary>
+		/// Gets the value of a player parameter.
+		/// Be sure to check first is the parameter you are asking for exist using <here cref="SGA::GameState::hasPlayerParameter()"/>
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from</param>
+		/// <param name="paramName">Name of the parameter which value is requested</param>
+		/// <returns>Returns the value of the parameter indicated for the player whose ID is given.</returns>
+		double getPlayerParameter(int playerID, std::string paramName) const;
+
+		/// <summary>
+		/// Indicates if the player has a specific parameter
+		/// </summary>
+		/// <param name="paramName">Name of the parameter which want to be checked</param>
+		/// /// <returns>A bool indicating if player has that parameter</returns>
+		bool hasPlayerParameter(std::string paramName) const;
+		
+		/// <summary>
+		/// Returns a list will all the parameter names of the player of which ID is given
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from. For the moment, all players have the same parameter names (hence playerID is not used).</param>
+		/// <returns>A vector with all the parameter names of the requested player.</returns>
+		std::vector<std::string> getPlayerParameterNames(int playerID) const;
+
+		/// <summary>
+		/// Gets a map with all pairs <parameter,value>
+		/// <summary>
+		/// <param name="playerID">ID of the player to get the parameter from. </param>
+		/// <returns>Returns a map with all the parameters of this player.</returns>
+		std::unordered_map<std::string, double> getPlayerParameters(int playerID) const;
+
+		/// <summary>
+		/// Returns the score of the player whose ID is passed.
+		/// </summary>
+		/// <param name="playerID">ID of the player to pass.</param>
+		/// <returns>The current score of the given player.</returns>
+		int getPlayerScore(int playerID) const;
 
 
 
@@ -260,7 +297,7 @@ namespace SGA
 		/// <param name="playerID">The ID of the player to print information of.</param>
 		/// </summary>
 		void printBoard(int playerID) const;
-		
+
 		/// <summary>
 		/// Print information of a specific entity
 		/// <param name="playerID">ID of the entity to print information of.</param>
@@ -278,7 +315,7 @@ namespace SGA
 		void incNextContinuousActionID() { continuousActionNextID++; }
 
 		/// <summary>
-		/// Return the ID for the next continuous action.
+		/// Returns the ID for the next continuous action.
 		/// </summary>
 		/// <returns>The ID of the next continuous action.</returns>
 		int getNextContinuousActionID() { return continuousActionNextID; }

@@ -27,14 +27,12 @@ namespace SGA
 		int nextPlayerID = state->getNumPlayers();
 		Player player = { nextPlayerID, 0, true };
 
-		
 		// Add parameters
 		player.parameters.resize(gameInfo.playerParameterTypes->size());
 		for (const auto& idParamPair : *gameInfo.playerParameterTypes)
 		{
 			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
 		}
-
 
 		// Add actions
 		player.attachedActions.reserve(playerActionIds.size());

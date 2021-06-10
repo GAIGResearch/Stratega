@@ -208,6 +208,18 @@ namespace SGA
 		}
 		actionTypeIDToActionTypeString[-1] = "EndTurn";
 
+		//Receive specific parameters
+		//Check if this parameters are available in the current game
+		if(currentState.hasPlayerParameter("Gold"))
+			double nGold = currentState.getPlayerParameter(0, "Gold");
+
+		if (currentState.hasPlayerParameter("Prod"))
+			double nProd = currentState.getPlayerParameter(1, "Prod");
+
+
+		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
+		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
+		int score = currentState.getPlayerScore(0);
 
 
 		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
@@ -224,9 +236,11 @@ namespace SGA
 		double highestScore = std::numeric_limits<double>::lowest();
 		for (auto* opp : opponentUnits)
 		{
-
 			// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
 			double avgSupportScore = 0;
+
+			std::vector<std::string> eParamNames = opp->getEntityParameterNames();
+			std::unordered_map<std::string, double> aParams = opp->getEntityParameters();
 
 			for (auto* ally : opponentUnits)
 			{
