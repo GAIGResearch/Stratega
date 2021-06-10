@@ -62,6 +62,7 @@ namespace SGA::Widgets
 		{
 			return selectedEntities.find(unitID) != selectedEntities.end();
 		}
+
 	};
 	
 	/// <summary>
@@ -95,4 +96,7 @@ namespace SGA::Widgets
 	//Assign to the list of selected targets a entity
 	void assignEntity(const GameState& state, ActionsSettings& settings, int entity);
 
+
+	//Checks if the seletec entities still exist
+	bool checkSelectedEntitiesAvailable(GameState& state, ActionsSettings& settings);
 }

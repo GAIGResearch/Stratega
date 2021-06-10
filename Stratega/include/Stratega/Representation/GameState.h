@@ -243,12 +243,20 @@ namespace SGA
 
 		/// <summary>
 		/// Gets the value of a player parameter.
+		/// Be sure to check first is the parameter you are asking for exist using <here cref="SGA::GameState::hasPlayerParameter()"/>
 		/// </summary>
 		/// <param name="playerID">ID of the player to get the parameter from</param>
 		/// <param name="paramName">Name of the parameter which value is requested</param>
 		/// <returns>Returns the value of the parameter indicated for the player whose ID is given.</returns>
 		double getPlayerParameter(int playerID, std::string paramName) const;
 
+		/// <summary>
+		/// Indicates if the player has a specific parameter
+		/// </summary>
+		/// <param name="paramName">Name of the parameter which want to be checked</param>
+		/// /// <returns>A bool indicating if player has that parameter</returns>
+		bool hasPlayerParameter(std::string paramName) const;
+		
 		/// <summary>
 		/// Returns a list will all the parameter names of the player of which ID is given
 		/// </summary>

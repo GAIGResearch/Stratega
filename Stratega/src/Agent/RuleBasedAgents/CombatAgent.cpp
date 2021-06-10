@@ -208,8 +208,15 @@ namespace SGA
 		}
 		actionTypeIDToActionTypeString[-1] = "EndTurn";
 
-		double nGold = currentState.getPlayerParameter(0, "Gold");
-		double nProd = currentState.getPlayerParameter(1, "Prod");
+		//Receive specific parameters
+		//Check if this parameters are available in the current game
+		if(currentState.hasPlayerParameter("Gold"))
+			double nGold = currentState.getPlayerParameter(0, "Gold");
+
+		if (currentState.hasPlayerParameter("Prod"))
+			double nProd = currentState.getPlayerParameter(1, "Prod");
+
+
 		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
 		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
 		int score = currentState.getPlayerScore(0);
