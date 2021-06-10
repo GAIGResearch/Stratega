@@ -96,7 +96,6 @@ namespace SGA
 				return (cur->expand(forwardModel, params, randomGenerator));
 			}
 			else {
-				//printTree();
 				cur = cur->uct(params, randomGenerator);
 			}
 		}
@@ -105,43 +104,57 @@ namespace SGA
 
 	AbstractMCTSNode* AbstractMCTSNode::expand(TBSForwardModel& forwardModel, AbstractMCTSParameters& params, std::mt19937& randomGenerator)
 	{
-		// roll the state
-		//todo remove unnecessary copy of gameState
+		// roll the state and determine abstract state
 		auto gsCopy(gameState);
-		int actionIndex = actionToChildIndex.size();
-		if (actionIndex == actionSpace.size()-1)
-		{
-			//std::cout << "here";
-		}
-		
+		int actionIndex = children.size();
 		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(actionIndex), params);
-
 		auto abstractState = params.STATE_FACTORY->createAbstractState(gsCopy);
 
-		// check if state already exists as a child
+		// store all the equivalence classes that do not match the current abstract state
+		std::set<int> nonMatchingEquivalenceClasses;		
+
+		// find equivalence class
 		auto current = children.begin();
 		const auto end = children.end();
 		while (current != end) {
-			if ((*current)->abstractGameState == abstractState) break;
+			// if equivalence class has previously been tested, we can ignore it this time (should be faster than repeating the same check again)
+			if (nonMatchingEquivalenceClasses.find((*current)->equivalenceClassID)  != nonMatchingEquivalenceClasses.end()) {
+				++current;
+				continue;
+			}
+
+			// if the equivalence class has not been tested yet, compare the two states
+			if ((*current)->abstractGameState == abstractState) {
+				// if they are the same we will assign the respective equivalence class to the new node later on
+				break;
+			}
+			else {
+				// because they are not the same, we will add the equivalence class to the set of nonMatchingClasses
+				nonMatchingEquivalenceClasses.emplace((*current)->equivalenceClassID);
+			}
 			++current;
 		}
+
+		// create a new child node
+		const int newChildIndex = children.size();
+		auto newNode = std::unique_ptr<AbstractMCTSNode>(new AbstractMCTSNode(forwardModel, std::move(abstractState), std::move(gsCopy), this, newChildIndex));
+
+		// assign equivalenceClass if a matching partner has been found
 		if (current != end)
 		{
-			// the gameState already exists
-			actionToChildIndex.push_back((*current)->childIndex);
-			
-			// add the action to the current nodes child mapping and return the existing state
-			return (*current).get();
+			newNode->equivalenceClassID = (*current)->equivalenceClassID;
 		}
 		else
 		{
-			// it is a new abstract gameState
-			// generate child node, add it to the tree, and link action to childNode
-			const int newChildIndex = children.size();
-			children.push_back(std::unique_ptr<AbstractMCTSNode>(new AbstractMCTSNode(forwardModel, std::move(abstractState), std::move(gsCopy), this, newChildIndex)));
-			actionToChildIndex.push_back(newChildIndex);
-			return children[newChildIndex].get();
+			// it is a new equivalence class and therefore receives a new unique class ID
+			this->nrOfEquivalenceClasses++;
+			newNode->equivalenceClassID = this->nrOfEquivalenceClasses;
 		}
+
+		// add the new child to the tree and return it
+		children.push_back(std::move(newNode));
+		return children[newChildIndex].get();
+
 	}
 
 	double AbstractMCTSNode::normalize(const double aValue, const double aMin, const double aMax)
@@ -275,8 +288,12 @@ namespace SGA
 	void AbstractMCTSNode::backUp(AbstractMCTSNode* node, const double result)
 	{
 		AbstractMCTSNode* n = node;
+
 		while (n != nullptr)
 		{
+			// remember equivalence class for propagation to siblings
+			int equivalenceClass = n->equivalenceClassID;
+
 			n->nVisits++;
 			n->value += result;
 			if (result < n->bounds[0]) {
@@ -286,6 +303,30 @@ namespace SGA
 				n->bounds[1] = result;
 			}
 			n = n->parentNode;
+
+			if (n != nullptr) {
+				//check for all siblings if they have the same equivalenceClass
+				auto current = n->children.begin();
+				const auto end = n->children.end();
+				while (current != end) {
+					// if the equivalence class has not been tested yet, compare the two states
+					if ((*current)->equivalenceClassID == equivalenceClass) {
+
+						// add the current rollout to equivalant siblings
+						n->nVisits++;
+						n->value += result;
+						if (result < n->bounds[0]) {
+							n->bounds[0] = result;
+						}
+						if (result > n->bounds[1]) {
+							n->bounds[1] = result;
+						}
+
+						break;
+					}
+					++current;
+				}
+			}
 		}
 	}
 
@@ -320,23 +361,13 @@ namespace SGA
 
 		if (mostVisitedStates.empty()) 
 		{
-			// none of the child states has ever been visisted, return the first action
+			// none of the child states have ever been visisted, return the first action
 			return 0;
 		}
 		if (mostVisitedStates.size() == 1) 
 		{
 			// there is a single best state, but we still need to choose a random action yielding this state
-			int targetState = mostVisitedStates[0];
-			std::vector<int> candidate_actions;
-			for (int i = 0; i < actionToChildIndex.size(); i++)
-			{
-				if (actionToChildIndex[i] == targetState) {
-					candidate_actions.push_back(i);
-				}
-			}
-			auto randDist = std::uniform_int_distribution<int>(0, candidate_actions.size()-1);
-			int randomIndex = randDist(randomGenerator);
-			return candidate_actions[randomIndex];
+			return mostVisitedStates[0];
 		}
 		else
 		{
@@ -369,18 +400,8 @@ namespace SGA
 			return 0;
 		}
 		else {
-			// there is a single best state, but we still need to choose a random action yielding this state
-			int targetState = bestState;
-			std::vector<int> candidate_actions;
-			for (int i = 0; i < actionToChildIndex.size(); i++)
-			{
-				if (actionToChildIndex[i] == targetState) {
-					candidate_actions.push_back(i);
-				}
-			}
-			auto randDist = std::uniform_int_distribution<int>(0, candidate_actions.size()-1);
-			int randomIndex = randDist(randomGenerator);
-			return candidate_actions[randomIndex];
+			// there is a best state, so we return its action which is the action of the same index
+			return bestState;
 		}
 	}
 

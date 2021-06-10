@@ -39,7 +39,7 @@ namespace SGA
 			{
 				// in case of deterministic games we know which move has been done by us
 				// reuse the tree from the previous iteration
-				rootNode = std::move(rootNode->children.at(rootNode->actionToChildIndex[previousActionIndex]));
+				rootNode = std::move(rootNode->children.at(previousActionIndex));
 				rootNode->parentNode = nullptr;	// release parent
 				rootNode->setDepth(0);
 			}
@@ -64,7 +64,7 @@ namespace SGA
 			}
 
 			// get and store best action
-			auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
+			auto bestActionIndex = rootNode->getActionOfHighestRatedState(parameters_, getRNGEngine());
 			auto bestAction = rootNode->actionSpace.at(bestActionIndex);
 
 			// return best action

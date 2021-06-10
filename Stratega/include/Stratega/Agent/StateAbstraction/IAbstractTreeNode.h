@@ -11,12 +11,13 @@ namespace SGA
 	public:
 		GameState gameState;
 		AbstractState abstractGameState;
-		
+		int equivalenceClassID = -1;
+		int nrOfEquivalenceClasses = 0;
+
 		NodeType* parentNode = nullptr;
 		int previousAction = -1;
 		
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::vector<int> actionToChildIndex;
 		
 		std::vector<Action> actionSpace;
 		int childIndex = 0;
@@ -44,7 +45,7 @@ namespace SGA
 	//todo make these protected after all tests are done
 	public:
 		[[nodiscard]] bool isFullyExpanded() const {
-			return actionToChildIndex.size() >= actionSpace.size();
+			return children.size() >= actionSpace.size();
 		}
 
 		void printTree(const std::string& prefix, const IAbstractTreeNode<NodeType>* node, bool isLast, const std::string& actionName) const

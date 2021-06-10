@@ -5,10 +5,7 @@ GameConfig:
 
 Agents:
     - CombatAgent
-    - MCTSAgent
-    - ActionAbstractionMCTSAgent
-    - AbstractStateMCTSAgent
-    - AbstractEverythingMCTSAgent
+    - CombatAgent
 
 Tiles:
     Plain:
@@ -145,6 +142,7 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+
 #Action categories
 GameDescription:
     Type: CombatGame

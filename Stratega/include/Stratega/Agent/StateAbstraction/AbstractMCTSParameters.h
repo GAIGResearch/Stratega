@@ -24,11 +24,11 @@ namespace SGA
 		bool PRIORITIZE_ROOT = true;
 		double EPSILON = 1e-2;
 
-		bool CONTINUE_PREVIOUS_SEARCH = false;
+		bool CONTINUE_PREVIOUS_SEARCH = true;
 
 		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
-		std::unique_ptr<StateHeuristic> STATE_HEURISTIC = std::make_unique<MinimizeDistanceHeuristic>();
+		std::unique_ptr<StateHeuristic> STATE_HEURISTIC = nullptr;
 
 		void printDetails() const;
 

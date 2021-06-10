@@ -12,6 +12,7 @@ namespace SGA
 	{
 	private:
 		std::unique_ptr<AbstractMCTSNode> rootNode = nullptr;
+
 		int previousActionIndex = -1;
 		AbstractMCTSParameters parameters_;
 		bool continuePreviousSearch = true;
@@ -22,6 +23,7 @@ namespace SGA
 		AbstractStateMCTSAgent(AbstractMCTSParameters&& params) :
 			Agent{}, parameters_(std::move(params))
 		{
+			/*
 			//Evaluated fitness: 20 and Wins: 6 at K=100, RL=5, OS=1, 
 
 			//K=100, RL=5, OS=1, 
@@ -32,20 +34,24 @@ namespace SGA
 			// Map=1, Positions=1, AttackDamage=1, HealRange=1, AttackRange=1, Health=1, MovementPoints=1, HealAmount=1,
 			params.STATE_FACTORY = nullptr;
 			StateFactoryConfiguration configuration;
-			configuration.insertMap = true;
+			configuration.insertMap = false;
 			configuration.insertEntityPositions = true;
-			configuration.insertEntityParameters["AttackDamage"] = true;
-			configuration.insertEntityParameters["HealRange"] = true;
-			configuration.insertEntityParameters["AttackRange"] = true;
+			configuration.insertEntityParameters["AttackDamage"] = false;
+			configuration.insertEntityParameters["HealRange"] = false;
+			configuration.insertEntityParameters["AttackRange"] = false;
 			configuration.insertEntityParameters["Health"] = true;
-			configuration.insertEntityParameters["MovementPoints"] = true;
-			configuration.insertEntityParameters["HealAmount"] = true;
+			configuration.insertEntityParameters["MovementPoints"] = false;
+			configuration.insertEntityParameters["HealAmount"] = false;
 			
 			parameters_.STATE_FACTORY = std::make_unique<StateFactory>(configuration);
 			parameters_.STATE_HEURISTIC = nullptr;
+			
+			parameters_.OPPONENT_MODEL = std::make_unique<AttackWeakestOpponentScript>();
+			*/
 		}
 		
 		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+
 
 	};
 }

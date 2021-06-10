@@ -113,8 +113,7 @@ namespace SGA
 		params.STATE_FACTORY = std::make_unique<StateFactory>(configuration);
 		params.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(*game.get());
 
-		
-
+		// set parameters for current agent
 		allAgents[0] = std::make_unique<AbstractStateMCTSAgent>(std::move(params));
 		return allAgents;
 	}
