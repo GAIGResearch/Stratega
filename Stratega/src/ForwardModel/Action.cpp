@@ -98,4 +98,23 @@ namespace SGA
 		
 		return actionTypeID;
 	}
+
+	std::string Action::getActionName() const
+	{
+		std::string name = "undefined";
+		if (actionType)
+			name = actionType->name;
+
+		return name;
+	}
+
+
+	const ActionSourceType Action::getActionSourceType() const
+	{
+		if (actionType)
+			return actionType->sourceType;
+
+		return SGA::ActionSourceType::Player;
+		//EndTick seems to have a null actionType?
+	}
 }

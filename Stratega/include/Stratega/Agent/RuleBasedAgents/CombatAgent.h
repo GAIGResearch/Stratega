@@ -11,6 +11,7 @@ namespace SGA
 	{
 	public:
 		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
 		UnitTypeStrengthLookup unitScores;
