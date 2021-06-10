@@ -59,13 +59,29 @@ namespace SGA
 		double collisionRadius;
 
 	private:
-		//Internal state of this entity.
-		bool remove = false;
-		std::vector<ActionInfo> attachedActions;
-		std::vector<double> parameters;
-		std::vector<Action> continuousAction;
+		
 		/// <summary>
-		//Entity type
+		/// Flag that indicates if this entity will be removed from the game.
+		/// </summary>
+		bool remove = false;
+		
+		/// <summary>
+		/// Actions that this entity can execute in this game.
+		/// </summary>
+		std::vector<ActionInfo> attachedActions;
+
+		/// <summary>
+		/// Array of actions currently being executed by this entity
+		/// </summary>
+		std::vector<Action> continuousAction;
+
+		/// <summary>
+		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> parameters;
+		
+		/// <summary>
+		/// Entity type
 		/// <summary>
 		const EntityType* type;
 
@@ -124,6 +140,12 @@ namespace SGA
 		/// <returns>The list of <see cref="SGA::ActionInfo"/> attached to this entity.</returns>
 		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
 
+		/// <summary>
+		/// Retrieves the list of action types this entity can execute.
+		/// </summary>
+		/// <param name="gameInfo">Reference to the game information object (from GameState)</param>
+		/// <returns>Vector with all action types this entity can execute</returns>
+		const std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
 
 		/// <summary>
 		/// Sets the last executed game ticks to the tick passed by parameter for the action corresponding to the type received.

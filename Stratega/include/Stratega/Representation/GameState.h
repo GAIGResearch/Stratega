@@ -108,6 +108,13 @@ namespace SGA
 		bool canExecuteAction(const Player& player, const ActionType& actionType) const;
 
 		/// <summary>
+		/// Returns a list with all the action types that a player can execute
+		/// </summary>
+		/// <param name="playerID">ID of the player we get the action types from.</param>
+		/// <returns>Vector with action types this player can execute in this game</returns>
+		const std::vector<ActionType> getPlayerActionTypes(int playerID) const;
+
+		/// <summary>
 		/// Checks if given technology has been researched by a player.
 		/// </summary>
 		/// <param name="playerID">ID of the player to check</param>
