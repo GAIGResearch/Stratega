@@ -507,22 +507,23 @@ namespace SGA
 		ImGui::Text("Entities");
 		int elementNumber = 0;
 
-		for (auto& entity : actionsSettings.selectedEntities)
-		{
-			ImGui::PushID(elementNumber);
-			if ((elementNumber++ % 8) != 0) ImGui::SameLine();
-
-			//Check if entity have sprite
-			auto& entityType = state.getEntity(entity)->getEntityType();
-			//Add units
-			sf::Texture& texture = assetCache.getTexture(entityType.name);
-
-			if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
+		if(checkSelectedEntitiesAvailable(fowState, actionsSettings))
+			for (auto& entity : actionsSettings.selectedEntities)
 			{
-			}
+				ImGui::PushID(elementNumber);
+				if ((elementNumber++ % 8) != 0) ImGui::SameLine();
 
-			ImGui::PopID();
-		}
+				//Check if entity have sprite
+				auto& entityType = state.getEntity(entity)->getEntityType();
+				//Add units
+				sf::Texture& texture = assetCache.getTexture(entityType.name);
+
+				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
+				{
+				}
+
+				ImGui::PopID();
+			}
 
 
 		ImGui::NextColumn();
