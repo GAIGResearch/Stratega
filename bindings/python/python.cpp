@@ -90,7 +90,7 @@ PYBIND11_MODULE(stratega, m) {
 		.def_readwrite("winner_id", &SGA::GameState::winnerPlayerID)
 		.def_readwrite("current_tick", &SGA::GameState::currentTick)
 		.def_readwrite("tick_limit", &SGA::GameState::tickLimit)
-		.def_readwrite("fog_of_war_id", &SGA::GameState::fogOfWarId)
+		//.def_readwrite("fog_of_war_id", &SGA::GameState::fogOfWarId)
 		.def_readwrite("board", &SGA::GameState::board)
 		.def_readwrite("entities", &SGA::GameState::entities)
 		.def_readwrite("players", &SGA::GameState::players);

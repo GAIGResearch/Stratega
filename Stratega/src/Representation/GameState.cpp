@@ -144,6 +144,67 @@ namespace SGA
 		return ret;
 	}
 
+
+	int GameState::getPlayerScore(int playerID) const
+	{
+		const Player* p = getPlayer(playerID);
+		if (p != nullptr)
+		{
+			return p->score;
+		}
+	}
+
+	double GameState::getPlayerParameter(int playerID, std::string paramName) const
+	{
+		const Player* p = getPlayer(playerID);
+		if (p != nullptr)
+		{
+			for (const auto& param : *gameInfo->playerParameterTypes)
+			{
+				if (param.second.name == paramName)
+				{
+					return p->parameters[param.second.index];
+				}
+			}
+			throw std::runtime_error("WARNING: No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
+
+		}else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
+	}
+
+	bool GameState::hasPlayerParameter(std::string paramName) const
+	{
+		for (const auto& param : *gameInfo->playerParameterTypes)
+		{
+			if (param.second.name == paramName)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//NOTE: For the moment, all players have the same parameters (hence playerID is not used).
+	std::vector<std::string> GameState::getPlayerParameterNames(int playerID) const
+	{
+		std::vector<std::string> paramNames;
+		for (const auto& param : *gameInfo->playerParameterTypes)
+			paramNames.emplace_back(param.second.name);
+		
+		return paramNames;
+	}
+
+	std::unordered_map<std::string, double> GameState::getPlayerParameters(int playerID) const
+	{
+		const Player* p = getPlayer(playerID);
+		std::unordered_map<std::string, double> params;
+		if (p != nullptr) for (const auto& param : *gameInfo->playerParameterTypes)
+			params.emplace(param.second.name, p->parameters[param.second.index]);
+		else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
+
+		return params;
+	}
+
+
 	void GameState::applyFogOfWar(int playerID)
 	{
 		Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());

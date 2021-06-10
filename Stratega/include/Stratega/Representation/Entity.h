@@ -1,6 +1,7 @@
 #pragma once
 #include <optional>
 #include <vector>
+#include <unordered_map>
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/Path.h>
 #include <Stratega/ForwardModel/Action.h>
@@ -95,10 +96,7 @@ namespace SGA
 		/// <summary>
 		/// Return entity type
 		/// <summary>
-		const EntityType& getEntityType() const
-		{
-			return *type;
-		}
+		const EntityType& getEntityType() const { return *type; }
 
 		/// <summary>
 		/// Return entity type ID
@@ -162,6 +160,18 @@ namespace SGA
 		/// <summary>
 		/// <returns>The list of parameters values.</returns>
 		const std::vector<double>& getParamValues() const { return parameters; }
+
+		/// <summary>
+		/// Gets the list of parameters names.
+		/// <summary>
+		/// <returns>The list of parameters names of this entity.</returns>
+		std::vector<std::string> getEntityParameterNames() const;
+
+		/// <summary>
+		/// Gets a map with all pairs <parameter,value>
+		/// <summary>
+		/// <returns>Returns a map with all the parameters.</returns>
+		std::unordered_map<std::string, double> getEntityParameters() const;
 
 		/// <summary>
 		/// Gets the value of a specific parameter, by name 
