@@ -220,7 +220,6 @@ namespace SGA
 		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
 		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
 		int score = currentState.getPlayerScore(0);
-
 		std::vector<ActionType> actionTypes = currentState.getPlayerActionTypes(0);
 
 
