@@ -90,6 +90,19 @@ namespace SGA
 		throw std::runtime_error("Tried accessing actionInfo of unknown action type");
 	}
 
+
+	const std::vector<ActionType> Entity::getActionTypes(const GameInfo& gameInfo) const
+	{
+		std::vector<ActionType> aTypes;
+		for (const ActionInfo aInfo : attachedActions)
+		{
+			ActionType at = gameInfo.getActionType(aInfo.actionTypeID);
+			aTypes.emplace_back(at);
+		}
+
+		return aTypes;
+	}
+
 	void Entity::printInfo() const
 	{
 		std::cout << "[" << type->name << "],";

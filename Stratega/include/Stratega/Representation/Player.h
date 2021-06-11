@@ -29,7 +29,7 @@ namespace SGA
 		bool canPlay;
 
 		/// <summary>
-		/// Array of actions currently being executed
+		/// Array of actions currently being executed by this player
 		/// </summary>
 		std::vector<Action> continuousAction;
 

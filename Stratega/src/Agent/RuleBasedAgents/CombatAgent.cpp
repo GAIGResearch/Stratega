@@ -220,6 +220,7 @@ namespace SGA
 		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
 		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
 		int score = currentState.getPlayerScore(0);
+		std::vector<ActionType> actionTypes = currentState.getPlayerActionTypes(0);
 
 
 		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
@@ -230,6 +231,24 @@ namespace SGA
 		std::vector<Entity*> myFigherUnits = currentState.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
 		std::vector<Entity*> myUnits = currentState.getPlayerEntities(getPlayerID());
 		std::vector<Entity*> allOppUnits = currentState.getNonPlayerEntities(getPlayerID());
+
+		std::vector<ActionType> actionTypesEnt;
+		int entID = 0;
+		if (myUnits.size() > 0)
+		{
+			Entity* ent = myUnits[0];
+			entID = ent->id;
+			actionTypesEnt = ent->getActionTypes(*currentState.gameInfo);	
+		}
+
+		const auto actionSpace = fm.generateActions(currentState, getPlayerID());
+		//const auto actionSpaceF = this->filterActionsByTypeID(actionSpace, 5);
+		//const auto actionSpaceF = this->filterActionsByName(actionSpace, "Spawn");
+		//const auto actionSpaceF = this->filterActionsByFlag(actionSpace, SGA::ActionFlag::EndTickAction);
+		//const auto actionSpaceF = this->filterActionsBySource(actionSpace, SGA::ActionSourceType::Player);
+		const auto actionSpaceP = this->filterActionsByPlayerID(actionSpace, this->getPlayerID());
+		const auto actionSpaceE = this->filterActionsByEntityID(actionSpace, entID); 
+
 
 		// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
 		Entity* bestAttackTarget = nullptr;
@@ -362,10 +381,18 @@ namespace SGA
 		return ActionAssignment::fromSingleAction(nextAction);
 	}
 
+
+
+	void CombatAgent::init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	{
+		//Init stuff goes here.
+	}
+
 	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
 		return playTurn(state, forwardModel);
 	}
+
 
 }
