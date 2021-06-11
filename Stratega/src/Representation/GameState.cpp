@@ -303,6 +303,19 @@ namespace SGA
 		return true;
 	}
 
+	const std::vector<ActionType> GameState::getPlayerActionTypes(int playerID) const
+	{
+		const Player* p = getPlayer(playerID);
+		std::vector<ActionType> aTypes;
+		if (p != nullptr) for (const ActionInfo aInfo : p->attachedActions)
+		{
+			ActionType at = gameInfo->getActionType(aInfo.actionTypeID);
+			aTypes.emplace_back(at);
+		}
+		else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
+		return aTypes;
+	}
+
 	const Entity* GameState::getEntityAt(const Vector2f& pos) const
 	{
 		for(const auto& entity : entities)
