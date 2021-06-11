@@ -57,7 +57,7 @@ This information refers to tiles, entities, actions, etc. that can be observed d
 
 
 .. code-block:: yaml
-    :caption: Entity Groups (`NoNameGame.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/gameConfigs/NoNameGame.yaml>`_)
+    :caption: Entity Groups (`NoNameGame.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/gameConfigs/TBS/NoNameGame.yaml>`_)
 
     EntityGroups:
         Units: [Worker, Warrior, Archer, Catapult]
@@ -160,7 +160,7 @@ level provided in YAML format.
 **Tiles** form the board and have a *tile type*, an <x,y> position, and two flags that indicate if i) the tile is
 walkable; and ii) if it blocks link of sight between entities. Instantiations of Tile 
 (`Tile.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/Tile.h>`_) are dynamic, 
-while their TileType (`Tile.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/Tile.h>`_)
+while their TileType (`TileType.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/TileType.h>`_)
 decribes static information, common for all types of the same type. Each tile type has a name, an associated character
 (for YAML level instantiations), an ID and the values for walkable and line of sight blocking for this type.
 
