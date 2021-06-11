@@ -13,7 +13,7 @@ namespace SGA
 		try
 		{
 			auto begin = std::chrono::high_resolution_clock::now();
-			results.actions = agent.computeAction(std::move(stateCopy), forwardModel, 40);
+			results.actions = agent.computeAction(std::move(stateCopy), &forwardModel, 40);
 			auto end = std::chrono::high_resolution_clock::now();
 			results.computationTime = end - begin;
 		}

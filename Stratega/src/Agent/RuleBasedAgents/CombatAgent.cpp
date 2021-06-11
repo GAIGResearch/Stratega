@@ -348,10 +348,10 @@ namespace SGA
 		return ActionAssignment::fromSingleAction(nextAction);
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
-		return playTurn(state, forwardModel);
+		return playTurn(state, *forwardModel);
 	}
 
 }

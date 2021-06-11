@@ -3,14 +3,14 @@
 
 namespace SGA
 {
-	ActionAssignment BeamSearchAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment BeamSearchAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs)
 	{
 		if (state.gameType != GameType::TBS)
 		{
 			throw std::runtime_error("BeamSearchAgent only supports TBS-Games");
 		}
 
-		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
+		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
 		TreeNode rootNode = TreeNode(*processedForwardModel, state);
 
 		if (rootNode.actionSpace.size() == 1)

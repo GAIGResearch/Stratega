@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment DFSAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs)
 	{
 		if (state.gameType != GameType::TBS)
 		{
@@ -11,7 +11,7 @@ namespace SGA
 		}
 
 		remainingForwardModelCalls = forwardModelCalls;
-		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+		auto actionSpace = forwardModel->generateActions(state, getPlayerID());
 		if (actionSpace.size() == 1)
 		{
 			return ActionAssignment::fromSingleAction(actionSpace.front());
@@ -24,8 +24,8 @@ namespace SGA
 			for (size_t i = 0; i < actionSpace.size(); i++)
 			{
 				auto gsCopy(state);
-				forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-				const double value = evaluateRollout(dynamic_cast<const TBSForwardModel&>(forwardModel), state, 1, getPlayerID());
+				forwardModel->advanceGameState(gsCopy, actionSpace.at(i));
+				const double value = evaluateRollout(dynamic_cast<const TBSForwardModel&>(*forwardModel), state, 1, getPlayerID());
 				if (value > bestHeuristicValue)
 				{
 					bestHeuristicValue = value;

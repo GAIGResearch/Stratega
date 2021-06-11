@@ -3,14 +3,14 @@
 
 namespace SGA
 {
-    ActionAssignment RHEAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+    ActionAssignment RHEAAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long /*timeBudgetMs*/)
     {
         if (state.gameType != GameType::TBS)
         {
             throw std::runtime_error("RHEAAgent only supports TBS-Games");
         }
     	
-        auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+        auto actionSpace = forwardModel->generateActions(state, getPlayerID());
         params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
         params_.PLAYER_ID = getPlayerID();        // todo move into agent initialization
 
@@ -26,15 +26,15 @@ namespace SGA
             // either shift previous population or initialize a new population
             if (params_.CONTINUE_SEARCH && !pop_.empty())
             {
-                pop_ = shiftPopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+                pop_ = shiftPopulation(dynamic_cast<const TBSForwardModel&>(*forwardModel), state, getRNGEngine());
             }
             else
             {
-                initializePopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+                initializePopulation(dynamic_cast<const TBSForwardModel&>(*forwardModel), state, getRNGEngine());
             }
 
             // run rhea and return the best individual of the previous generation
-            rheaLoop(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+            rheaLoop(dynamic_cast<const TBSForwardModel&>(*forwardModel), state, getRNGEngine());
             return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
     }

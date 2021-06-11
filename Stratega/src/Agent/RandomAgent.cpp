@@ -3,10 +3,10 @@
 
 namespace SGA
 {
-	ActionAssignment RandomAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+	ActionAssignment RandomAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long /*timeBudgetMs*/)
 	{
 		// Generate all available actions
-		auto actions = forwardModel.generateActions(state, getPlayerID());
+		auto actions = forwardModel->generateActions(state, getPlayerID());
 		// Uniformly sample a action
 		std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 		auto actionIndex = actionDist(getRNGEngine());

@@ -10,7 +10,7 @@ namespace SGA
 	class CombatAgent : public Agent
 	{
 	public:
-		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		UnitTypeStrengthLookup unitScores;

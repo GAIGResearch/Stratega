@@ -26,7 +26,7 @@ namespace SGA
 		{
 		}
 
-		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		std::vector<RHEAGenome> shiftPopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);

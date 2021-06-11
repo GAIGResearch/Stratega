@@ -59,6 +59,10 @@ namespace SGA
 		/// <param name="agents">A list of agents to obtain actions from.</param>
 		/// <param name="observer">An optional observer who is notified about important events in the game.</param>
 		void run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer = nullptr);
+		void run2(std::vector<std::shared_ptr<Agent>>& agents)
+		{
+			run(agents);
+		}
 		
 		/// <summary>
 		/// Renders a visual representation of the game and allows interactive action selection.

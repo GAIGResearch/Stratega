@@ -4,8 +4,9 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
+    - HumanAgent
     - CombatAgent
-    - CombatAgent
+    #- CombatAgent
 
 Tiles:
     Plain:

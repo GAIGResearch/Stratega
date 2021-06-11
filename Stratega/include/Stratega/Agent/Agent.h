@@ -17,7 +17,7 @@ namespace SGA
 		Agent& operator=(Agent&& other) noexcept = delete;
 		
 		virtual void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs);
-		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) = 0;
+		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs) = 0;
 		virtual void computeAction2(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs);
 
 		int getPlayerID();

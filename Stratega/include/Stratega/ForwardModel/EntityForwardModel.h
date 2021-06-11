@@ -67,6 +67,14 @@ namespace SGA
 		/// </summary>
 		virtual void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const;
 		
+		std::vector<Action> test(const GameState& state, int playerID) const
+		{
+			std::vector<Action> actionBucket;
+			generateActions(state, playerID, actionBucket);
+
+			return {};
+		}
+
 		virtual std::unique_ptr<EntityForwardModel> clone() const = 0;
 
 		/// <summary>
