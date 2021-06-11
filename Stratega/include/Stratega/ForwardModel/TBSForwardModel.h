@@ -25,6 +25,14 @@ namespace  SGA
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 
 		using EntityForwardModel::generateActions;
+		using EntityForwardModel::generateActions2;
+		/*std::vector<Action> generateActions(const GameState& state, int playerID) const override
+		{
+			std::vector<Action> actionBucket;
+			generateActions(state, playerID, actionBucket);
+			return actionBucket;
+		}*/
+
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
 		
 		std::unique_ptr<EntityForwardModel> clone() const override;

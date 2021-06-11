@@ -62,6 +62,7 @@ namespace SGA
 		/// Returns a list of available actions in the given gamestate by the received player.
 		/// </summary>
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state, int playerID) const;
+		std::vector<Action> generateActions2(const GameState* state, int playerID) const;
 		/// <summary>
 		/// Updated a list of available actions in the given gamestate by the received player.
 		/// </summary>

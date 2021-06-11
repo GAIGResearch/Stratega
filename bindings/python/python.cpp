@@ -25,6 +25,7 @@ namespace py = pybind11;
 
 // STL
 PYBIND11_MAKE_OPAQUE(std::vector<double>);
+PYBIND11_MAKE_OPAQUE(std::vector<SGA::Action>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Player>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
@@ -63,6 +64,19 @@ void playPythonAgents(std::vector<std::shared_ptr<SGA::Agent>> agents)
 	}
 }
 
+class PythonAgent
+{
+	std::unique_ptr<SGA::Agent> agent;
+
+	PythonAgent(std::string agentName)
+	{
+		//Create stratega agent
+	}
+	PythonAgent(SGA::Agent& agent)
+	{
+		this->agent = std::make_unique<SGA::Agent>(agent);
+	}
+};
 class PyAgent : public SGA::Agent {
 public:
 	/* Inherit the constructors */
@@ -178,10 +192,23 @@ PYBIND11_MODULE(stratega, m)
 	// ---- STL ----
 	py::bind_vector<std::vector<double>>(m, "DoubleList");
 	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
+	//py::bind_vector<std::vector<SGA::Action>>(m, "ActionList", py::module_local(false));
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
 	/*py::bind_vector<std::vector<std::shared_ptr<PyAgent>>>(m, "AgentList2");
 	py::implicitly_convertible<py::list, std::vector<std::shared_ptr<SGA::Agent>>>();*/
+
+	
+	py::class_<std::vector<SGA::Action>>(m, "ActionList")
+		.def(py::init<>())
+		.def("clear", &std::vector<SGA::Action>::clear)
+		.def("get", [](const std::vector<SGA::Action>& v, int index)
+			{
+				return v[index]; 
+			})
+		.def("pop_back", &std::vector<SGA::Action>::pop_back)
+		.def("count", [](const std::vector<SGA::Action>& v) { return v.size(); });
+			
 
 	// ---- Vector2f ----
 	py::class_<SGA::Vector2f>(m, "Vector2f")
@@ -281,10 +308,14 @@ PYBIND11_MODULE(stratega, m)
 		.def_static("fromSingleAction", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
 
 	// ---- Forward model ----
-	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel")
-		.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::EntityForwardModel::generateActions, py::const_));
+	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel");
+		//.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::EntityForwardModel::generateActions, py::const_));
+		//.def("generateActions2", &SGA::EntityForwardModel::generateActions2, py::arg("state"), py::arg("playerID"));
+		
 	py::class_<SGA::TBSForwardModel, SGA::EntityForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
+		.def("generateActions2", &SGA::TBSForwardModel::generateActions2, py::arg("state"), py::arg("playerID"))
+		//.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::TBSForwardModel::generateActions, py::const_))
 		.def("advanceGameState_const", py::overload_cast<SGA::GameState&, const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_));
 		//.def("generateActions", py::overload_cast<const SGA::GameState& , int>(&SGA::TBSForwardModel::generateActions, py::const_));
 		//.def("generateActions", &SGA::TBSForwardModel::generateActions, py::arg("state"), py::arg("playerID"), py::const_);
