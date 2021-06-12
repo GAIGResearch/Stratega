@@ -225,7 +225,7 @@ Actions:
         Targets:
             Target:
                 Type: Technology
-                ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+                ValidTargets: All  
                 Conditions:
                     - "CanResearch(Source, Target)"
                     - "CanAfford(Source, Target)"
@@ -235,6 +235,7 @@ Actions:
             - "PayCost(Source, Target)"
         OnComplete:
             - "Research(Source, Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
 
     
     Mine:
@@ -278,6 +279,7 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ModifyResource(Source.Player.Score, 2)"
 
     #Build
     Build:
@@ -303,6 +305,7 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
+            - "ModifyResource(Source.Player.Score, 5)"
 
 TechnologyTrees:
     SingleTree:

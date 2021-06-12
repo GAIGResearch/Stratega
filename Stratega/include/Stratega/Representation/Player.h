@@ -19,11 +19,6 @@ namespace SGA
 		int id;
 
 		/// <summary>
-		/// Current score of this player.
-		/// </summary>
-		double score = 0;
-
-		/// <summary>
 		/// Indicates if this player can play at this time.
 		/// </summary>
 		bool canPlay;

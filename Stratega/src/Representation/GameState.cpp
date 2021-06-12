@@ -147,12 +147,9 @@ namespace SGA
 
 	int GameState::getPlayerScore(int playerID) const
 	{
-		const Player* p = getPlayer(playerID);
-		if (p != nullptr)
-		{
-			return p->score;
-		}
-		else throw std::runtime_error("ERROR: No player associated to ID " + std::to_string(playerID));
+		if (hasPlayerParameter("Score"))
+			return getPlayerParameter(playerID, "Score");
+		return 0; 
 	}
 
 	double GameState::getPlayerParameter(int playerID, std::string paramName) const
