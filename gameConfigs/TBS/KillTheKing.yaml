@@ -4,7 +4,7 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - HumanAgent
+    - RandomAgent
     - CombatAgent
 
 Tiles:
@@ -151,7 +151,7 @@ Entities:
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
-        - "NoHasEntity(Source, King)"
+        - "HasNoEntity(Source, King)"
 
     Trigger:
         - OnTick:

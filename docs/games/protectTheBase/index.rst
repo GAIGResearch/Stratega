@@ -204,8 +204,8 @@ YAML
                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
-            NoHasCity:
-            - "NoHasEntity(Source, Base)"
+            HasNoCity:
+            - "HasNoEntity(Source, Base)"
 
     #Action categories
     GameDescription:

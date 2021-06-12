@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - OSLAAgent
-    - OSLAAgent
+    - CombatAgent
 
 Player:
     Actions: [Build, Research]
@@ -13,6 +13,7 @@ Player:
     Parameters:
         Gold: 0
         Prod: 5
+        Score: 0
 
 Tiles:
     Plain:
@@ -383,8 +384,8 @@ Board:
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
-        NoHasCity:
-        - "NoHasEntity(Source, City)"
+        HasNoCity:
+        - "HasNoEntity(Source, City)"
 
     Trigger:
         - OnTick:

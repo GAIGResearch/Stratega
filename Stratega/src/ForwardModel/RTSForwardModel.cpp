@@ -566,7 +566,7 @@ namespace SGA
 			}
 
 			//Check if player can play
-			if (player.canPlay && canPlayerPlay(state, player))
+			if (player.canPlay && !checkPlayerLost(state, player))
 			{
 				winnerID = player.id;
 				numberPlayerCanPlay++;

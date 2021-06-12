@@ -10,7 +10,7 @@ namespace SGA
 	{
 		static FunctionFactory<Condition> factory;
 		factory.registerFunction<HasEntity>("HasEntity");
-		factory.registerFunction<NoHasEntity>("NoHasEntity");
+		factory.registerFunction<HasNoEntity>("HasNoEntity");
 		factory.registerFunction<ResourceGreater>("ResourceGreater");
 		factory.registerFunction<ResourceLower>("ResourceLower");
 		factory.registerFunction<SamePlayer>("SamePlayer");
