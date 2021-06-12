@@ -16,7 +16,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Tried assigning an unknown action-type to ActionAssignment");
+			throw std::runtime_error("ERROR: Tried assigning an unknown action-type to ActionAssignment");
 		}
 	}
 

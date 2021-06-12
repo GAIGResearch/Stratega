@@ -152,6 +152,7 @@ namespace SGA
 		{
 			return p->score;
 		}
+		else throw std::runtime_error("ERROR: No player associated to ID " + std::to_string(playerID));
 	}
 
 	double GameState::getPlayerParameter(int playerID, std::string paramName) const
@@ -166,9 +167,9 @@ namespace SGA
 					return p->parameters[param.second.index];
 				}
 			}
-			throw std::runtime_error("WARNING: No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
+			throw std::runtime_error("ERROR: No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
 
-		}else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
+		}else throw std::runtime_error("ERROR: No player associated to ID " + std::to_string(playerID));
 	}
 
 	bool GameState::hasPlayerParameter(std::string paramName) const
