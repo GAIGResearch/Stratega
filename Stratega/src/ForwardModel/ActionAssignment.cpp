@@ -72,4 +72,9 @@ namespace SGA
 		return assignment;
 	}
 
+	ActionAssignment ActionAssignment::createEndActionAssignment(int playerID)
+	{
+		return fromSingleAction(Action::createEndAction(playerID));
+	}
+
 }

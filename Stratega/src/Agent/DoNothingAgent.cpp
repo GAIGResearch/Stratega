@@ -7,6 +7,6 @@ namespace SGA
 		if(state.gameType==GameType::RTS)
 			return ActionAssignment();
 		else
-			return ActionAssignment::fromSingleAction(Action::createEndAction(getPlayerID()));	
+			return ActionAssignment::createEndActionAssignment(getPlayerID());
 	}
 }
