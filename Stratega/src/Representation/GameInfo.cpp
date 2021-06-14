@@ -15,7 +15,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else throw std::runtime_error("ERROR: No entity type associated to ID " + std::to_string(entityTypeID));
+		else throw std::runtime_error("No entity type associated to ID " + std::to_string(entityTypeID));
 	}
 
 	const ActionType& GameInfo::getActionTypeConst(int actionTypeID)
@@ -25,7 +25,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else throw std::runtime_error("ERROR: No action type associated to ID " + std::to_string(actionTypeID));
+		else throw std::runtime_error("No action type associated to ID " + std::to_string(actionTypeID));
 	}
 
 	int GameInfo::getParameterGlobalID(std::string parameterName)
@@ -58,7 +58,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else throw std::runtime_error("ERROR: No player parameter associated to ID " + std::to_string(id));
+		else throw std::runtime_error("No player parameter associated to ID " + std::to_string(id));
 	}
 
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const

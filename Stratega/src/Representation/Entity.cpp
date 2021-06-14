@@ -87,7 +87,7 @@ namespace SGA
 				return actionInfo;
 		}
 
-		throw std::runtime_error("ERROR: No action type associated to ID " + std::to_string(actionTypeID));
+		throw std::runtime_error("No action type associated to ID " + std::to_string(actionTypeID));
 	}
 
 
