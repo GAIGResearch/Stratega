@@ -55,51 +55,64 @@ namespace SGA
 			observer = defaultObserver;
 		}
 		
-		// Check that no player is controlled by a human
-		for (int i = 0; i < agents.size(); i++)
-		{
-			if (agents[i] == nullptr)
+		try
+		{		
+			// Check that no player is controlled by a human
+			for (int i = 0; i < agents.size(); i++)
 			{
-				throw std::runtime_error("No player can be controlled by a human in an arena.");
+				if (agents[i] == nullptr)
+				{
+					throw std::runtime_error("No player can be controlled by a human in an arena.");
+				}
+				else
+				{
+					agents[i]->setPlayerID(i);
+				}
 			}
-			else
-			{
-				agents[i]->setPlayerID(i);
-			}
-		}
 
-		initializeAgents(agents);
-		observer->onGameStarted(*currentState, *forwardModel);
-		runInternal(agents, *observer);
-		observer->onGameFinished(*currentState, *forwardModel);
+			initializeAgents(agents);
+			observer->onGameStarted(*currentState, *forwardModel);
+			runInternal(agents, *observer);
+			observer->onGameFinished(*currentState, *forwardModel);
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
+		}
 	}
 
 	void GameRunner::play(std::vector<std::unique_ptr<Agent>>& agents)
 	{
 		assert(agents.size() == currentState->players.size());
-
-		// Check if a player is controlled by an human
-		int humanIndex = GameRenderer::NO_PLAYER_ID;
-		for (int i = 0; i < agents.size(); i++)
+		try
 		{
-			if (agents[i] == nullptr)
+			// Check if a player is controlled by an human
+			int humanIndex = GameRenderer::NO_PLAYER_ID;
+			for (int i = 0; i < agents.size(); i++)
 			{
-				if (humanIndex != GameRenderer::NO_PLAYER_ID)
+				if (agents[i] == nullptr)
 				{
-					throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
+					if (humanIndex != GameRenderer::NO_PLAYER_ID)
+					{
+						throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
+					}
+					humanIndex = i;
 				}
-				humanIndex = i;
+				else
+				{
+					agents[i]->setPlayerID(i);
+				}
 			}
-			else
-			{
-				agents[i]->setPlayerID(i);
-			}
-		}
 
-		initializeAgents(agents);
-		ensureRendererInitialized();
-		renderer->setPlayerPointOfView(humanIndex);
-		playInternal(agents, humanIndex);
+			initializeAgents(agents);
+			ensureRendererInitialized();
+			renderer->setPlayerPointOfView(humanIndex);
+			playInternal(agents, humanIndex);
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
+		}
 	}
 
 	void GameRunner::initializeAgents(std::vector<std::unique_ptr<Agent>>& agents)

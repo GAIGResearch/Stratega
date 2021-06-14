@@ -210,7 +210,7 @@ namespace SGA
 
 		//Receive specific parameters
 		//Check if this parameters are available in the current game
-		if(currentState.hasPlayerParameter("Gold"))
+		//if(currentState.hasPlayerParameter("Gold"))
 			double nGold = currentState.getPlayerParameter(0, "Gold");
 
 		if (currentState.hasPlayerParameter("Prod"))

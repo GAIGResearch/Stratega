@@ -18,7 +18,7 @@ namespace SGA
 			{
 				if(agents[i] != nullptr)
 				{
-					threads[i].startComputing(*agents[i], *currentState, *forwardModel);
+					threads[i].startComputing(*agents[i], *currentState, *forwardModel, timeBudgetMs);
 				}				
 			}
 
@@ -33,15 +33,28 @@ namespace SGA
 			ActionAssignment nextAction;
 			for (size_t i = 0; i < agents.size(); i++)
 			{
-				if (agents[i] != nullptr)
+				try
 				{
-					auto results = threads[i].join();
-					// ToDO verify that the agent didnt crash/hit time limit
-					nextAction.merge(results.actions);
-				}
-				else
+					if (agents[i] != nullptr)
+					{
+						auto results = threads[i].join();
+						//Check if agent throw exception and rethrow it
+						if (results.error)
+						{
+							std::rethrow_exception(results.error);
+						}
+						// ToDO verify that the agent didnt hit time limit
+						nextAction.merge(results.actions);
+					}
+					else
+					{
+						nextAction.merge(renderer->getPlayerActions());
+					}
+				}				
+				catch (const std::exception& ex)
 				{
-					nextAction.merge(renderer->getPlayerActions());
+					std::cout << "Agent crashed error: " << ex.what() << std::endl;
+					return;
 				}
 			}
 			
@@ -56,30 +69,39 @@ namespace SGA
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver)
 		{
-			// Run agents
-			for (size_t i = 0; i < agents.size(); i++)
-			{
-				if (agents[i] != nullptr)
+			ActionAssignment nextActions;
+			try {
+				// Run agents
+				for (size_t i = 0; i < agents.size(); i++)
 				{
-					threads[i].startComputing(*agents[i], *currentState, *forwardModel);
+					if (agents[i] != nullptr)
+					{
+						threads[i].startComputing(*agents[i], *currentState, *forwardModel, timeBudgetMs);
+					}
+				}
+
+				// Collect actions				
+				for (size_t i = 0; i < agents.size(); i++)
+				{
+					auto results = threads[i].join();
+					//Check if agent throw exception and rethrow it
+					if (results.error)
+					{
+						std::rethrow_exception(results.error);
+					}
+					// ToDO verify that the agent didnt hit time limit
+					nextActions.merge(results.actions);
 				}
 			}
-
-			// Collect actions
-			ActionAssignment nextAction;
-			for (size_t i = 0; i < agents.size(); i++)
+			catch (const std::exception& ex)
 			{
-				auto results = threads[i].join();
-				// ToDO verify that the agent didnt crash/hit time limit
-				nextAction.merge(results.actions);
+				std::cout << "Agent crashed error: " << ex.what() << std::endl;
+				return;
 			}
 
 			// Step
-			forwardModel->advanceGameState(*currentState, nextAction);
+			forwardModel->advanceGameState(*currentState, nextActions);
 			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
 	}
-
-
-
 }

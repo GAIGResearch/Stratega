@@ -15,23 +15,29 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 	currentMapID = 0;
 	currentSeed = seed;
 	
-	for (int i = 0; i < gamesNumber*mapNumber; ++i)
+	try
 	{
-		gameCount = i;
-		gameBattleCount = 0;
-		
-		//Change map after playing all gamesNumber in each map
-		if(i% gamesNumber ==0&&i!=0)
+		for (int i = 0; i < gamesNumber * mapNumber; ++i)
 		{
-			currentMapID++;
+			gameCount = i;
+			gameBattleCount = 0;
+
+			//Change map after playing all gamesNumber in each map
+			if (i % gamesNumber == 0 && i != 0)
+			{
+				currentMapID++;
+			}
+			currentSeed = seed + i;
+			std::mt19937 rngEngine(currentSeed);
+			std::cout << "Using Seed: " << currentSeed << std::endl;
+			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
+			generateCombinations(config->agentParams.size(), playerCount, callback);
 		}
-		currentSeed =seed+i;
-		std::mt19937 rngEngine(currentSeed);
-		std::cout << "Using Seed: " << currentSeed <<std::endl;
-		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
-		generateCombinations(config->agentParams.size(), playerCount, callback);
 	}
-	
+	catch (const std::exception& ex)
+	{
+		std::cout << "Arena error: " << ex.what()<< std::endl;		
+	}	
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
@@ -75,7 +81,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	}
 	catch (const std::exception& ex)
 	{
-		std::cout << "Game crashed error logging error in the logfile" << std::endl;
+		std::cout << "Game crashed error, logging error in the logfile" << std::endl;
 		SGA::Log::logValue("Error", std::string(ex.what()));
 	}
 	std::cout << std::endl;

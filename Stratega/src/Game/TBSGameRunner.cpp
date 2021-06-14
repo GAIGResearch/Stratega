@@ -20,24 +20,47 @@ namespace SGA
 			auto& currentAgent = agents[currentState->currentPlayer];
 			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
-				agentThread.startComputing(*currentAgent, *currentState, *forwardModel);
-				// Render
-				auto startTime = std::chrono::high_resolution_clock::now();
-				while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(40))
+				try
 				{
-					tbsRenderer->render();
+					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, timeBudgetMs);
+					// Render
+					auto startTime = std::chrono::high_resolution_clock::now();
+					while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(timeBudgetMs))
+					{
+						tbsRenderer->render();
+					}
+					// Collect action - ToDO verify that the agent didnt crash/hit time limit
+					auto results = agentThread.join();
+
+					//Check if agent throw exception and rethrow it
+					if (results.error)
+					{
+						std::rethrow_exception(results.error);
+					}					
+
+					nextAction = results.actions;
 				}
-				// Collect action - ToDO verify that the agent didnt crash/hit time limit
-				auto results = agentThread.join();
-				nextAction = results.actions;
+				catch (const std::exception& ex)
+				{
+					std::cout << "Agent crashed error: " << ex.what() << std::endl;
+					return;
+				}				
 			}
 			else // Wait for the GUI to return an action
 			{
-				while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
+				try
 				{
-					renderer->render();
+					while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
+					{
+						renderer->render();
+					}
+					nextAction = tbsRenderer->getPlayerActions();
 				}
-				nextAction = tbsRenderer->getPlayerActions();
+				catch (const std::exception& ex)
+				{
+					std::cout << "GUI crashed error: " << ex.what() << std::endl;
+					return;
+				}
 			}
 
 			// Stop game immediately
@@ -56,9 +79,26 @@ namespace SGA
 	{
 		while (!currentState->isGameOver)
 		{
-			auto& currentAgent = agents[currentState->currentPlayer];
-			auto results = runAgent(*currentAgent, *currentState, *forwardModel);
-			// ToDO verify that the agent didnt crash/hit time limit
+			AgentResults results;
+
+			try
+			{
+				auto& currentAgent = agents[currentState->currentPlayer];
+				results = runAgent(*currentAgent, *currentState, *forwardModel, timeBudgetMs);
+
+				//Check if agent throw exception and rethrow it
+				if (results.error)
+				{
+					std::rethrow_exception(results.error);
+				}
+			}			
+			catch (const std::exception& ex)
+			{
+				std::cout << "Agent crashed error: " << ex.what() << std::endl;
+				return;
+			}
+
+			// ToDO verify that the agent didnt hit time limit			
 			forwardModel->advanceGameState(*currentState, results.actions);
 			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
