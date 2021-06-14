@@ -27,7 +27,7 @@ namespace SGA
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->lineOfSight;
+		lineOfSightRange = type->lineOfSightRange;
 		parameters.reserve(type->parameters.size());
 		for (const auto& idParamPair : type->parameters)
 		{

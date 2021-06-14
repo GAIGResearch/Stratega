@@ -1,3 +1,5 @@
+.. _game-state-representation:
+
 .. role:: cpp(code)
    :language: c++
 
@@ -35,6 +37,7 @@ Here, we briefly describe our definition of the two types of games and their cha
 For turn-based games, a single *tick* is the equivalent of a turn.
 
 
+.. _game-state-representation_gameInfo:
 +++++++++++++++
 Game Info
 +++++++++++++++

@@ -32,6 +32,7 @@ Stratega Docs
    :caption: Tutorials
 
    tutorials/implementAgent/index
+   tutorials/exploringGameStates/index
    tutorials/definingANewGame/index
 
 .. toctree::
