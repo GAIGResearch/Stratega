@@ -83,6 +83,8 @@ namespace SGA
 		std::unique_ptr<GameRenderer> renderer;
 		std::unique_ptr<GameState> currentState;
 		const GameConfig* config;
+
+		long timeBudgetMs = 40;
 	};
 
 	/// <summary>
