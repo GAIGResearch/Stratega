@@ -163,7 +163,7 @@ YAML
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
             NoHasKing:
-            - "NoHasEntity(Source, King)"
+            - "HasNoEntity(Source, King)"
 
         Trigger:
             - OnTick:

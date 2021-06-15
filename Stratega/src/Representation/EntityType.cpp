@@ -7,15 +7,7 @@ const SGA::Parameter& SGA::EntityType::getParameter(ParameterID parameterID) con
 	{
 		return it->second;
 	}
-	else
-	{
-		std::string s;
-		s.append("Tried accessing unknown parameter ID ");
-		s.append(std::to_string(parameterID));
-		s.append("in entityType ");
-		s.append(name);
-		throw std::runtime_error(s);
-	}
+	else throw std::runtime_error("No parameter associated to ID " + std::to_string(id) + " in entity type " + name);
 }
 
 bool SGA::EntityType::canExecuteAction(int actionTypeID) const

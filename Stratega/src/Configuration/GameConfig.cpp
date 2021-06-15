@@ -25,7 +25,7 @@ namespace SGA
 	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const
 	{
 		int nextPlayerID = state->getNumPlayers();
-		Player player = { nextPlayerID, 0, true };
+		Player player = { nextPlayerID, true };
 
 		// Add parameters
 		player.parameters.resize(gameInfo.playerParameterTypes->size());

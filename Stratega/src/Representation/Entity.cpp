@@ -27,7 +27,7 @@ namespace SGA
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->lineOfSight;
+		lineOfSightRange = type->lineOfSightRange;
 		parameters.reserve(type->parameters.size());
 		for (const auto& idParamPair : type->parameters)
 		{
@@ -87,7 +87,7 @@ namespace SGA
 				return actionInfo;
 		}
 
-		throw std::runtime_error("Tried accessing actionInfo of unknown action type");
+		throw std::runtime_error("No action type associated to ID " + std::to_string(actionTypeID));
 	}
 
 
