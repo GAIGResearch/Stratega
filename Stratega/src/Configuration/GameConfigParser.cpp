@@ -75,6 +75,9 @@ namespace SGA
         if (configNode["GameDescription"].IsDefined())
             parseGameDescription(configNode["GameDescription"], *config);
 
+        if (configNode["GameRunner"].IsDefined())
+            parseGameRunner(configNode["GameRunner"], *config);
+
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -436,7 +439,6 @@ namespace SGA
         return actionCategory;
     }
 
-
     EntityCategory GameConfigParser::parseEntityCategory(const std::string& name) const
     {
         EntityCategory entityCategory;
@@ -645,6 +647,20 @@ namespace SGA
         }
 
 
+    }
+
+    void GameConfigParser::parseGameRunner(const YAML::Node& gameRunner, GameConfig& config) const
+    {
+        auto agentInitializationTime = gameRunner["AgentInitializationTime"];
+        config.shouldCheckInitTime= agentInitializationTime["Enabled"].as<bool>(false);
+        config.initBudgetTimetMs= agentInitializationTime["BudgetTimeMs"].as<long>(40);
+        config.initDisqualificationBudgetTimeMs = agentInitializationTime["DisqualificationTimeMs"].as<long>(60);
+
+        auto agentComputationTime = gameRunner["AgentComputationTime"];
+        config.shouldCheckComputationTime= agentComputationTime["Enabled"].as<bool>(false);
+        config.budgetTimeMs= agentComputationTime["BudgetTimeMs"].as<long>(40);
+        config.disqualificationBudgetTimeMs = agentComputationTime["DisqualificationTimeMs"].as<long>(60);
+        config.maxNumberWarnings = agentComputationTime["MaxNumberWarnings"].as<int>(3);
     }
 
     void GameConfigParser::parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const

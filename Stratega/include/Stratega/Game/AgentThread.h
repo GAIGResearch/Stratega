@@ -8,7 +8,7 @@ namespace SGA
 	{
 		std::exception_ptr error = nullptr;
 		ActionAssignment actions{};
-		std::chrono::nanoseconds computationTime{};
+		std::chrono::milliseconds computationTime{};
 	};
 
 	/// <summary>

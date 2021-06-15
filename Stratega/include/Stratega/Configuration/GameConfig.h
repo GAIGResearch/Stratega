@@ -60,7 +60,19 @@ namespace SGA
 
     	//Yaml path
         std::string yamlPath;
-    	
+
+        //Game runner config
+        //Computation budget time
+        bool shouldCheckComputationTime = false;
+        long budgetTimeMs = 40;
+        long disqualificationBudgetTimeMs = 60;
+        int maxNumberWarnings = 3;
+
+        //Intialization budget time
+        bool shouldCheckInitTime = false;
+        long initBudgetTimetMs = 40;
+        long initDisqualificationBudgetTimeMs = 60;
+
     	//Base utilities
         size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;

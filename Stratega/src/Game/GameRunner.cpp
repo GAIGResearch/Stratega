@@ -11,7 +11,14 @@ namespace SGA
 {
 	GameRunner::GameRunner(const GameConfig& config)
 		: currentState(),
-		  config(&config)
+		  config(&config),
+		shouldCheckComputationTime(config.shouldCheckComputationTime),
+		shouldCheckInitTime(config.shouldCheckInitTime),
+		budgetTimeMs(config.budgetTimeMs),
+		disqualificationBudgetTimeMs(config.disqualificationBudgetTimeMs),
+		maxNumberWarnings(config.maxNumberWarnings),
+		initBudgetTimetMs(config.initBudgetTimetMs),
+		initDisqualificationBudgetTimeMs(config.initDisqualificationBudgetTimeMs)
 	{
 		reset();
 	}
@@ -25,7 +32,7 @@ namespace SGA
 
 	void GameRunner::reset(int levelID)
 	{
-
+		playerWarnings.clear();
 		currentState = config->generateGameState(levelID);
 		forwardModel = config->forwardModel->clone();
 	}
@@ -115,17 +122,68 @@ namespace SGA
 		}
 	}
 
+	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)
+	{
+		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
+		{
+			playerWarnings[currentState->currentPlayer]++;
+			throw warning("WARNING: player " + std::to_string(playerID) + " has exceeded the initialization time");
+		}
+		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)
+		{
+			//Disqualify player for exceeding the initialization time
+			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
+			throw warning("Player " + std::to_string(playerID) + " disqualified for exceeding the initialization time");
+		}
+	}
+
 	void GameRunner::initializeAgents(std::vector<std::unique_ptr<Agent>>& agents)
 	{
-		// ToDo we have to catch exceptions + check the timeBudget -> can we reuse code for running an Agent somehow?
-		for(auto& agent : agents)
-		{
-			if(agent != nullptr)
+		try
+		{			
+			for (auto& agent : agents)
 			{
-				auto stateCopy(*currentState);
-				stateCopy.applyFogOfWar(agent->getPlayerID());
-				agent->init(std::move(stateCopy), *forwardModel, 1000);
+				//Init warning vector
+				playerWarnings.emplace_back(0);
+
+				if (agent != nullptr)
+				{
+					auto stateCopy(*currentState);
+					stateCopy.applyFogOfWar(agent->getPlayerID());
+
+					auto begin = std::chrono::high_resolution_clock::now();
+					agent->init(std::move(stateCopy), *forwardModel, initBudgetTimetMs);
+					auto end = std::chrono::high_resolution_clock::now();
+					auto initTime = std::chrono::duration_cast<std::chrono::milliseconds>
+						(end - begin);					
+					
+					try
+					{
+						//Check the initialization time of the agent
+						if (shouldCheckInitTime)
+							checkInitializationTime(initTime, agent->getPlayerID());
+					}
+					catch (const warning& ex)
+					{
+						std::cout << "Agent initialization warning: " << ex.what() << std::endl;
+					}
+					catch (const std::exception& ex)
+					{
+						std::cout << "Agent initialization crashed error: " << ex.what() << std::endl;
+						return;
+					}
+									
+				}
 			}
+		}
+		catch (const warning& ex)
+		{
+			std::cout << "Agent initialization warning: " << ex.what() << std::endl;
+		}
+		catch (const std::exception& ex)
+		{
+			std::cout << "Agent initialization crashed error: " << ex.what() << std::endl;
+			return;
 		}
 	}
 
