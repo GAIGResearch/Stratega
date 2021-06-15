@@ -153,13 +153,13 @@ namespace  SGA
 		return state.isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
-	NoHasEntity::NoHasEntity(const std::vector<FunctionParameter>& parameters) :
+	HasNoEntity::HasNoEntity(const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
 		entityTypeParam(parameters[1])
 	{
 	}
 
-	bool NoHasEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool HasNoEntity::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 

@@ -47,7 +47,7 @@ namespace SGA
 			return data.playerID;
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 
 	int ActionTarget::getPlayerID(const GameState& state) const
@@ -61,7 +61,7 @@ namespace SGA
 			return state.getEntityConst(data.entityID)->ownerID;
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 	
 	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
@@ -75,7 +75,7 @@ namespace SGA
 			return getEntityConst(state).getEntityType().spawnableEntityTypes;
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const
@@ -90,7 +90,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 
@@ -102,7 +102,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 
@@ -116,7 +116,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 
@@ -127,13 +127,13 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing player.");
+				throw std::runtime_error("An action-target contained an not existing player with id " + std::to_string(data.playerID));
 			}
 			return *player;
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 
@@ -144,12 +144,12 @@ namespace SGA
 			auto* player = state.getPlayer(data.playerID);
 			if (player == nullptr)
 			{
-				throw std::runtime_error("A action-target contained an not existing player.");
+				throw std::runtime_error("An action-target contained an not existing player with id " + std::to_string(data.playerID));
 			}
 			return *player;
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 
 	const EntityType& ActionTarget::getEntityType(const GameState& state) const
@@ -166,7 +166,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 
@@ -179,7 +179,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
 

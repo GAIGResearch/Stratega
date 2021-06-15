@@ -19,10 +19,10 @@ namespace SGA
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
 	
-	bool EntityForwardModel::canPlayerPlay(const GameState& state, Player& player) const
+	bool EntityForwardModel::checkPlayerLost(const GameState& state, Player& player) const
 	{
 		if (state.getFogOfWarTileId() != -1 && player.id != state.getFogOfWarTileId())
-			return true;
+			return false;
 
 		//Check Lose conditions
 		std::vector<ActionTarget> targets;
@@ -33,11 +33,11 @@ namespace SGA
 			for (auto& loseCondition : loseConditionType)
 			{
 				if (loseCondition->isFullfilled(state, targets))
-					return false;
+					return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const

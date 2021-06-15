@@ -260,11 +260,11 @@ namespace SGA
             type.name = nameTypePair.first;
             type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
             type.id = static_cast<int>(config.entityTypes.size());
-            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<double>();
+            type.lineOfSightRange = nameTypePair.second["LineOfSightRange"].as<double>();
 
             parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
-            type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.id, std::move(type));
         }
     }

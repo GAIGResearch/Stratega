@@ -123,13 +123,13 @@ namespace SGA
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class NoHasEntity : public Condition
+	class HasNoEntity : public Condition
 	{
 		FunctionParameter playerParam;
 		FunctionParameter entityTypeParam;
 
 	public:
-		NoHasEntity(const std::vector<FunctionParameter>& parameters);
+		HasNoEntity(const std::vector<FunctionParameter>& parameters);
 		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	

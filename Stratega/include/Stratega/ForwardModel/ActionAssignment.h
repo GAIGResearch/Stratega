@@ -59,5 +59,13 @@ namespace SGA
 		/// <param name="a">The action that should be contained in the ActionAssignment.</param>
 		/// <returns>An ActionAssignment containing a single assignment.</returns>
 		static ActionAssignment fromSingleAction(Action a);
+
+		/// <summary>
+		/// Generates an ActionAssignment used by the game to end the tick/turn.
+		/// </summary>
+		/// <param name="playerID">ID of the player for which the End action is created</param>
+		/// <returns>ActionAssignment that ends the current turn for the plater ID supplied</returns>
+		static ActionAssignment createEndActionAssignment(int playerID);
+
 	};
 }

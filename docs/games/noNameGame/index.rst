@@ -391,8 +391,8 @@ YAML
                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
-            NoHasCity:
-            - "NoHasEntity(Source, City)"
+            HasNoCity:
+            - "HasNoEntity(Source, City)"
 
         Trigger:
             - OnTick:

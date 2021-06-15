@@ -61,7 +61,7 @@ namespace SGA
 			return actionTargets[data.argumentIndex];
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	double FunctionParameter::getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -73,7 +73,7 @@ namespace SGA
 			case Type::EntityPlayerParameterReference: return getParameterValue(state, actionTargets);
 			case Type::TimeReference: return getTime(state, actionTargets);
 			default:
-				throw std::runtime_error("Type not recognised");
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 	
@@ -95,8 +95,8 @@ namespace SGA
 			}
 
 		}
-		
-		throw std::runtime_error("Type not recognized");
+
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	const Parameter& FunctionParameter::getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -125,8 +125,8 @@ namespace SGA
 			return param;
 		}
 
-		
-		throw std::runtime_error("Type not recognized");
+
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 	
 	double FunctionParameter::getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -158,7 +158,7 @@ namespace SGA
 			return player->parameters[param.index];
 		}
 
-		throw std::runtime_error("Type not recognized");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	Vector2f FunctionParameter::getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -169,7 +169,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 	
@@ -190,7 +190,7 @@ namespace SGA
 				return *state.getEntity(entityID);
 			}
 			default:
-				throw std::runtime_error("Type not recognised");
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 
@@ -219,7 +219,7 @@ namespace SGA
 			return actionTargets[data.argumentIndex].getPlayer(state);
 		}
 		default:
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 
@@ -239,7 +239,7 @@ namespace SGA
 			return actionTargets[data.argumentIndex].getPlayerID(state);
 		}
 		default:
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 	
@@ -259,8 +259,8 @@ namespace SGA
 			const auto& actionTarget = actionTargets[data.argumentIndex];
 			return actionTarget.getEntityType(state);
 		}
-		
-		throw std::runtime_error("Type not recognised");
+
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -282,7 +282,7 @@ namespace SGA
 			return actionTargets[data.argumentIndex].getSpawneableEntities(state);
 		}
 		default:
-			throw std::runtime_error("Type not recognised");
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
 
@@ -300,7 +300,7 @@ namespace SGA
 		}
 		else
 		{
-			throw std::runtime_error("Type not recognized");
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 		
 	}
@@ -328,7 +328,7 @@ namespace SGA
 			return getEntityType(state, actionTargets).cost;
 		}
 
-		throw std::runtime_error("Type not recognized");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	std::vector<double>& FunctionParameter::getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -359,7 +359,7 @@ namespace SGA
 			return sourceEntity.getParamValues();
 		}
 
-		throw std::runtime_error("Type not recognized");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	const std::vector<double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -390,7 +390,7 @@ namespace SGA
 			return sourceEntity.getParamValues();
 		}
 
-		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	const std::unordered_map<ParameterID, Parameter>& FunctionParameter::getParameterLookUp(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
@@ -421,7 +421,7 @@ namespace SGA
 			return sourceEntityType.parameters;
 		}
 
-		throw std::runtime_error("Tried accessing ParameterMap of invalid parameter");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& /*actionTargets*/) const
@@ -432,7 +432,7 @@ namespace SGA
 			return state.gameInfo->getTileType(data.tileTypeID);
 		}
 
-		throw std::runtime_error("Type not recognised");
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
 }
