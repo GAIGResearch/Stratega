@@ -25,6 +25,7 @@ namespace SGA
         void parsePlayers(const YAML::Node& parametersNode, GameConfig& config) const;
         void parseTechnologyTrees(const YAML::Node& techtreeNode, GameConfig& config) const;
 		void parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const;
+		void parseGameRunner(const YAML::Node& gameRunner, GameConfig& config) const;
         void parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const;
 		
 	private:

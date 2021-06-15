@@ -8,6 +8,7 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Game/GameObserver.h>
+#include <Stratega/Other/Exceptions.h>
 
 namespace SGA
 {
@@ -79,10 +80,25 @@ namespace SGA
 		virtual void runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<std::unique_ptr<Agent>>& agents, int humanIndex) = 0;
 		
+		virtual void checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID);
+
 		std::unique_ptr<EntityForwardModel> forwardModel;
 		std::unique_ptr<GameRenderer> renderer;
 		std::unique_ptr<GameState> currentState;
 		const GameConfig* config;
+
+		//Computation budget time
+		bool shouldCheckComputationTime;		
+		long budgetTimeMs;
+		long disqualificationBudgetTimeMs;
+		std::vector<int> playerWarnings;
+		int maxNumberWarnings;
+
+		//Intialization budget time
+		bool shouldCheckInitTime;
+		long initBudgetTimetMs;
+		long initDisqualificationBudgetTimeMs;
+
 	};
 
 	/// <summary>
