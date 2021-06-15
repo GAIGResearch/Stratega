@@ -11,5 +11,6 @@ namespace SGA
 	protected:
 		void runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer) override;
 		void playInternal(std::vector<std::unique_ptr<Agent>>& agents, int humanIndex) override;
+		void checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID);
 	};
 }

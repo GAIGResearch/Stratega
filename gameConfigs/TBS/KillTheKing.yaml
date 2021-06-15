@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - CombatAgent
+    - RandomAgent
 
 Tiles:
     Plain:
@@ -157,6 +157,7 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+
 #Action categories
 GameDescription:
     Type: CombatGame
@@ -170,3 +171,14 @@ GameDescription:
         NoFighter: [Healer]
         Melee: [Warrior]
         Ranged: [Archer]
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5

@@ -18,7 +18,7 @@ namespace SGA
 			{
 				if(agents[i] != nullptr)
 				{
-					threads[i].startComputing(*agents[i], *currentState, *forwardModel, timeBudgetMs);
+					threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
 				}				
 			}
 
@@ -30,7 +30,7 @@ namespace SGA
 			}
 
 			// Collect actions
-			ActionAssignment nextAction;
+			ActionAssignment nextActions;
 			for (size_t i = 0; i < agents.size(); i++)
 			{
 				try
@@ -43,23 +43,31 @@ namespace SGA
 						{
 							std::rethrow_exception(results.error);
 						}
-						// ToDO verify that the agent didnt hit time limit
-						nextAction.merge(results.actions);
+
+						nextActions.merge(results.actions);
+
+						//Check computation time
+						if (shouldCheckComputationTime)
+							checkComputationTime(results.computationTime, agents[i]->getPlayerID());
 					}
 					else
 					{
-						nextAction.merge(renderer->getPlayerActions());
+						nextActions.merge(renderer->getPlayerActions());
 					}
-				}				
+				}	
+				catch (const warning& ex)
+				{
+					std::cout << "Agent warning: " << ex.what() << std::endl;
+				}
 				catch (const std::exception& ex)
 				{
-					std::cout << "Agent crashed error: " << ex.what() << std::endl;
+					std::cout << "Agent error: " << ex.what() << std::endl;
 					return;
 				}
 			}
 			
 			// Step
-			forwardModel->advanceGameState(*currentState, nextAction);
+			forwardModel->advanceGameState(*currentState, nextActions);
 			renderer->update(*currentState);
 		}
 	}
@@ -70,38 +78,82 @@ namespace SGA
 		while (!currentState->isGameOver)
 		{
 			ActionAssignment nextActions;
-			try {
+			try
+			{
 				// Run agents
 				for (size_t i = 0; i < agents.size(); i++)
 				{
 					if (agents[i] != nullptr)
 					{
-						threads[i].startComputing(*agents[i], *currentState, *forwardModel, timeBudgetMs);
+						threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
 					}
 				}
 
 				// Collect actions				
 				for (size_t i = 0; i < agents.size(); i++)
 				{
-					auto results = threads[i].join();
-					//Check if agent throw exception and rethrow it
-					if (results.error)
+					try
 					{
-						std::rethrow_exception(results.error);
+						auto results = threads[i].join();
+						//Check if agent throw exception and rethrow it
+						if (results.error)
+						{
+							std::rethrow_exception(results.error);
+						}
+
+						nextActions.merge(results.actions);
+
+						//Check computation time
+						if (shouldCheckComputationTime)
+							checkComputationTime(results.computationTime, agents[i]->getPlayerID());
 					}
-					// ToDO verify that the agent didnt hit time limit
-					nextActions.merge(results.actions);
+					catch (const warning& ex)
+					{
+						std::cout << "Agent warning: " << ex.what() << std::endl;
+					}
+					catch (const std::exception& ex)
+					{
+						std::cout << "Agent error: " << ex.what() << std::endl;
+						return;
+					}
+
 				}
+			}
+			catch (const warning& ex)
+			{
+				std::cout << "Agent warning: " << ex.what() << std::endl;
 			}
 			catch (const std::exception& ex)
 			{
-				std::cout << "Agent crashed error: " << ex.what() << std::endl;
+				std::cout << "Agent error: " << ex.what() << std::endl;
 				return;
-			}
+			}						
 
 			// Step
 			forwardModel->advanceGameState(*currentState, nextActions);
 			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
+	}
+
+	void RTSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID)
+	{
+		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
+		{
+			//Disqualify player for exceeding the warning number
+			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			throw warning("Player  " + std::to_string(currentPlayerID) + " disqualified for exceeding warnings number");
+		}
+		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
+		{
+			//add one warning
+			playerWarnings[currentState->currentPlayer]++;
+			throw warning("Player " + std::to_string(currentPlayerID) + " has exceeded the computation time");
+		}
+		else if (computationTime.count() >= disqualificationBudgetTimeMs)
+		{
+			//Disqualify player for exceeding the computation time
+			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			throw warning("Player " + std::to_string(currentPlayerID) + " disqualified for exceeding the computation time");
+		}		
 	}
 }
