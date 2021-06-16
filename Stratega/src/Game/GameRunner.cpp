@@ -127,13 +127,13 @@ namespace SGA
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
 		{
 			playerWarnings[currentState->currentPlayer]++;
-			throw warning("WARNING: player " + std::to_string(playerID) + " has exceeded the initialization time");
+			std::cout << "WARNING: Player " << std::to_string(playerID) << " has exceeded the initialization time" << std::endl;
 		}
 		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the initialization time
 			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
-			throw warning("Player " + std::to_string(playerID) + " disqualified for exceeding the initialization time");
+			std::cout << "WARNING: Player " << std::to_string(playerID) << " disqualified for exceeding the initialization time" << std::endl;
 		}
 	}
 
@@ -156,29 +156,13 @@ namespace SGA
 					auto end = std::chrono::high_resolution_clock::now();
 					auto initTime = std::chrono::duration_cast<std::chrono::milliseconds>
 						(end - begin);					
-					
-					try
-					{
-						//Check the initialization time of the agent
-						if (shouldCheckInitTime)
-							checkInitializationTime(initTime, agent->getPlayerID());
-					}
-					catch (const warning& ex)
-					{
-						std::cout << "Agent initialization warning: " << ex.what() << std::endl;
-					}
-					catch (const std::exception& ex)
-					{
-						std::cout << "Agent initialization crashed error: " << ex.what() << std::endl;
-						return;
-					}
-									
+										
+					//Check the initialization time of the agent
+					if (shouldCheckInitTime)
+						checkInitializationTime(initTime, agent->getPlayerID());
+
 				}
 			}
-		}
-		catch (const warning& ex)
-		{
-			std::cout << "Agent initialization warning: " << ex.what() << std::endl;
 		}
 		catch (const std::exception& ex)
 		{
