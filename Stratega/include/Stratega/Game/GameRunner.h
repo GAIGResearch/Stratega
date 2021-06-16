@@ -8,7 +8,6 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Game/GameObserver.h>
-#include <Stratega/Other/Exceptions.h>
 
 namespace SGA
 {
