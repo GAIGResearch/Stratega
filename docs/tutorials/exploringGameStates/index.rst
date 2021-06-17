@@ -5,6 +5,7 @@
 Agents and Game States
 #############################
 
+
 .. note::
     This page is about **programming** for Stratega. You are in the right place if you want to know how to write code about querying aspects of the game state and information. 
 
@@ -334,3 +335,4 @@ Game State
 .. note::
     Game Information refers to **dynamic** information of a game being played in Stratega. You are in the right place if you want to know how to write
     code about querying aspects that are *specific* to a given game state (actual positions of entities, values of properties, technologies researched, etc). 
+

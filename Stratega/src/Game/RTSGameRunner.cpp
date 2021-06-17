@@ -43,22 +43,18 @@ namespace SGA
 						{
 							std::rethrow_exception(results.error);
 						}
-
-						nextActions.merge(results.actions);
-
 						//Check computation time
 						if (shouldCheckComputationTime)
-							checkComputationTime(results.computationTime, agents[i]->getPlayerID());
+							if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
+							{
+								nextActions.merge(results.actions);
+							}
 					}
 					else
 					{
 						nextActions.merge(renderer->getPlayerActions());
 					}
 				}	
-				catch (const warning& ex)
-				{
-					std::cout << "Agent warning: " << ex.what() << std::endl;
-				}
 				catch (const std::exception& ex)
 				{
 					std::cout << "Agent error: " << ex.what() << std::endl;
@@ -91,37 +87,22 @@ namespace SGA
 
 				// Collect actions				
 				for (size_t i = 0; i < agents.size(); i++)
-				{
-					try
+				{					
+					auto results = threads[i].join();
+					//Check if agent throw exception and rethrow it
+					if (results.error)
 					{
-						auto results = threads[i].join();
-						//Check if agent throw exception and rethrow it
-						if (results.error)
+						std::rethrow_exception(results.error);
+					}
+
+					//Check computation time
+					if (shouldCheckComputationTime)
+						if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
 						{
-							std::rethrow_exception(results.error);
+							nextActions.merge(results.actions);
 						}
 
-						nextActions.merge(results.actions);
-
-						//Check computation time
-						if (shouldCheckComputationTime)
-							checkComputationTime(results.computationTime, agents[i]->getPlayerID());
-					}
-					catch (const warning& ex)
-					{
-						std::cout << "Agent warning: " << ex.what() << std::endl;
-					}
-					catch (const std::exception& ex)
-					{
-						std::cout << "Agent error: " << ex.what() << std::endl;
-						return;
-					}
-
 				}
-			}
-			catch (const warning& ex)
-			{
-				std::cout << "Agent warning: " << ex.what() << std::endl;
 			}
 			catch (const std::exception& ex)
 			{
@@ -135,25 +116,28 @@ namespace SGA
 		}
 	}
 
-	void RTSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID)
+	bool  RTSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID)
 	{
 		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
 			currentState->getPlayer(currentPlayerID)->canPlay = false;
-			throw warning("Player  " + std::to_string(currentPlayerID) + " disqualified for exceeding warnings number");
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings number" << std::endl;
+			return false;
 		}
 		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
 		{
 			//add one warning
-			playerWarnings[currentState->currentPlayer]++;
-			throw warning("Player " + std::to_string(currentPlayerID) + " has exceeded the computation time");
+			playerWarnings[currentPlayerID]++;
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " has exceeded the computation time" << std::endl;
+			return true;
 		}
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
 			currentState->getPlayer(currentPlayerID)->canPlay = false;
-			throw warning("Player " + std::to_string(currentPlayerID) + " disqualified for exceeding the computation time");
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time" << std::endl;
+			return false;
 		}		
 	}
 }

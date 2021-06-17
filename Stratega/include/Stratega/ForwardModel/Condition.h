@@ -140,6 +140,7 @@ namespace SGA
 	public:
 		HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+
 	};
 	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
