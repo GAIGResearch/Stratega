@@ -60,7 +60,7 @@ This information refers to tiles, entities, actions, etc. that can be observed d
 
 
 .. code-block:: yaml
-    :caption: Entity Groups (`NoNameGame.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/gameConfigs/TBS/NoNameGame.yaml>`_)
+    :caption: Entity Groups (`BasicRTS.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/gameConfigs/TBS/BasicRTS.yaml>`_)
 
     EntityGroups:
         Units: [Worker, Warrior, Archer, Catapult]
@@ -97,7 +97,7 @@ For instance, in YAML, the definition of a player can be like the following snip
 
         
 .. code-block:: yaml
-    :caption: Entity Groups (NoNameGame.yaml) 
+    :caption: Entity Groups (BasicRTS.yaml) 
        
     Player:
         Actions: [Build, Research]
@@ -114,7 +114,7 @@ with initial values of 0 and 5, respectively.
 By default Stratega instantiates one player for each agent defined in the configuration. For instance:
 
 .. code-block:: yaml
-    :caption: Agent  (NoNameGame.yaml) 
+    :caption: Agent  (BasicRTS.yaml) 
 
     Agents:
     - OSLAAgent
@@ -170,7 +170,7 @@ decribes static information, common for all types of the same type. Each tile ty
 A tile type is defined in YAML as follows:
 
 .. code-block:: yaml
-    :caption: Tile Type Mountain (NoNameGame.yaml) 
+    :caption: Tile Type Mountain (BasicRTS.yaml) 
 
     Mountain:
         Sprite: ../../GUI/Assets/Tiles/rock.png
