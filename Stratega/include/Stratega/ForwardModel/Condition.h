@@ -26,22 +26,22 @@ namespace SGA
 		std::string expression;
 	};
 	
-	class ResourceLower : public Condition
+	class ResourceLowerEqual : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBoundParameter;
 	public:
-		ResourceLower(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		ResourceLowerEqual(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
 		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
-	class ResourceGreater : public Condition
+	class ResourceGreaterEqual : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBoundParameter;
 	public:
-		ResourceGreater(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		ResourceGreaterEqual(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
 		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};

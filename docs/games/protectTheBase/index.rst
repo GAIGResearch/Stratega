@@ -61,7 +61,7 @@ YAML
             Type: EntityAction
             Cooldown: 1
             Preconditions:
-                - "ResourceGreater(Source.Gold, 50)"
+                - "ResourceGreaterEqual(Source.Gold, 50)"
             Targets:
                 Target:
                     Type: Position
@@ -77,7 +77,7 @@ YAML
             Type: EntityAction
             Cooldown: 1
             Preconditions:
-                - "ResourceGreater(Source.Gold, 100)"
+                - "ResourceGreaterEqual(Source.Gold, 100)"
             Targets:
                 Target:
                     Type: Position
@@ -126,7 +126,7 @@ YAML
                     ValidTargets: GoldVein
                     Conditions:
                         - "InRange(Source, Target, 1)"
-                        - "ResourceGreater(Target.Gold, 40)"
+                        - "ResourceGreaterEqual(Target.Gold, 40)"
             Effects:
                 - "Transfer(Target.Gold, Source.Gold, 40)"
 

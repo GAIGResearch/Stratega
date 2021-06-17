@@ -251,7 +251,7 @@ Actions:
                         Shape: Circle
                         Size: 2
                 Conditions:
-                    - "ResourceGreater(Target.Gold, 40)"
+                    - "ResourceGreaterEqual(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
 
@@ -407,7 +407,7 @@ ForwardModel:
             ValidTargets: Foundry
             Conditions:
                 - "IsPlayerEntity(Source)"
-                - "ResourceGreater(Source.Player.Gold, 2)"
+                - "ResourceGreaterEqual(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"

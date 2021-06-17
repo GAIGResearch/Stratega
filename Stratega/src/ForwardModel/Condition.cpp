@@ -4,14 +4,14 @@
 
 namespace  SGA
 {
-	ResourceLower::ResourceLower(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
+	ResourceLowerEqual::ResourceLowerEqual(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
 		resourceReference(parameters.at(0)),
 		lowerBoundParameter(parameters.at(1)), 
 		Condition(exp)
 	{
 	}
 
-	bool ResourceLower::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceLowerEqual::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = lowerBoundParameter.getConstant(state,targets);
@@ -19,14 +19,14 @@ namespace  SGA
 		return targetResource <= lowerBound;
 	}
 
-	ResourceGreater::ResourceGreater(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+	ResourceGreaterEqual::ResourceGreaterEqual(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		lowerBoundParameter(parameters.at(1)),
 		Condition(exp)
 	{
 	}
 
-	bool ResourceGreater::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceGreaterEqual::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = lowerBoundParameter.getConstant(state,targets);

@@ -231,7 +231,7 @@ When applied to the "KillTheKing" game, the output of executing this code is as 
             ModifyResource(Target.Health, Source.HealAmount)
     [Move]
      Preconditions: 1
-            ResourceGreater(Source.MovementPoints, 1)
+            ResourceGreaterEqual(Source.MovementPoints, 1)
      Target Conditions: 1
             IsWalkable(Target)
      Effects: 2
