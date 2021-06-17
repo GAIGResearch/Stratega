@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - OSLAAgent
-    - CombatAgent
+    - MyAgent
 
 Player:
     Actions: [Build, Research]

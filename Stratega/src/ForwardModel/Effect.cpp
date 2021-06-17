@@ -6,9 +6,10 @@
 
 namespace SGA
 {
-	ModifyResource::ModifyResource(const std::vector<FunctionParameter>& parameters) :
+	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
@@ -21,9 +22,10 @@ namespace SGA
 		targetResource += amount;
 	}
 
-	ChangeResource::ChangeResource(const std::vector<FunctionParameter>& parameters) :
+	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
@@ -36,9 +38,10 @@ namespace SGA
 		targetResource = amount;
 	}
 	
-	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
+	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
@@ -54,10 +57,11 @@ namespace SGA
 			entity.flagRemove();
 	}
 
-	AttackProbability::AttackProbability(const std::vector<FunctionParameter>& parameters) :
+	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1)),
-		probabilityParameter(parameters.at(2))
+		probabilityParameter(parameters.at(2)),
+		Effect(exp)
 	{
 
 	}
@@ -80,8 +84,9 @@ namespace SGA
 		}
 	}
 
-	Move::Move(const std::vector<FunctionParameter>& parameters)
-		: entityParam(parameters[0]), targetPositionParam(parameters[1])
+	Move::Move(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: entityParam(parameters[0]), targetPositionParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 	
@@ -110,8 +115,9 @@ namespace SGA
 		}
 	}
 
-	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
-		: targetResource(parameters[0])
+	SetToMaximum::SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetResource(parameters[0]),
+		Effect(exp)
 	{
 	}
 
@@ -123,8 +129,9 @@ namespace SGA
 		paramValue = param.maxValue;
 	}
 
-	TransferEffect::TransferEffect(const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])
+	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
@@ -144,8 +151,9 @@ namespace SGA
 		targetValue = targetValue + amount;
 	}
 
-	ChangeOwnerEffect::ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0]), playerParam(parameters[1])
+	ChangeOwnerEffect::ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]), playerParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 	
@@ -156,8 +164,9 @@ namespace SGA
 		targetEntity.ownerID = newOwner.id;
 	}
 
-	RemoveEntityEffect::RemoveEntityEffect(const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0])
+	RemoveEntityEffect::RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]),
+		Effect(exp)
 	{
 	}
 
@@ -167,9 +176,10 @@ namespace SGA
 		targetEntity.flagRemove();
 	}
 
-	ResearchTechnology::ResearchTechnology(const std::vector<FunctionParameter>& parameters)
+	ResearchTechnology::ResearchTechnology(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: playerParam(parameters[0]),
-		  technologyTypeParam(parameters[1])
+		  technologyTypeParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 
@@ -179,8 +189,9 @@ namespace SGA
 		state.researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
-	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	SpawnEntityRandom::SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 
@@ -211,8 +222,9 @@ namespace SGA
 	}
 
 
-	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	SpawnEntity::SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
@@ -224,8 +236,9 @@ namespace SGA
 		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 
-	SpawnEntityGrid::SpawnEntityGrid(const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	SpawnEntityGrid::SpawnEntityGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
@@ -240,8 +253,9 @@ namespace SGA
 	}
 
 	
-	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), costParam(parameters[1])
+	PayCostEffect::PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), costParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 

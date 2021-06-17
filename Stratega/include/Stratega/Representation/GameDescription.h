@@ -76,6 +76,41 @@ namespace SGA
 		/// <returns>True if entityTypeId is a subset of the category given</returns>
 		bool isFromCategory(EntityCategory category, int entityTypeId) const;
 
+
+		static std::string toString(ActionCategory ac)
+		{
+			switch (ac)
+			{
+				case ActionCategory::Null: return "None";
+				case ActionCategory::Move: return "Move";
+				case ActionCategory::Attack: return "Attack";
+				case ActionCategory::Heal: return "Heal";
+				case ActionCategory::Gather: return "Gather";
+				case ActionCategory::Spawn: return "Spawn";
+				case ActionCategory::Research: return "Research";
+				default: return "Undefined";
+			}
+		}
+
+
+		static std::string toString(EntityCategory ec)
+		{
+			switch (ec)
+			{
+				case EntityCategory::Null: return "None";
+				case EntityCategory::Base: return "Base";
+				case EntityCategory::Building: return "Building";
+				case EntityCategory::Spawner: return "Spawner";
+				case EntityCategory::Unit: return "Unit";
+				case EntityCategory::NoFighter: return "NoFighter";
+				case EntityCategory::Fighter: return "Fighter";
+				case EntityCategory::Melee: return "Melee";
+				case EntityCategory::Ranged: return "Ranged";
+				default: return "Undefined";
+			}
+		}		
+
+
 		//TODO Utilities
 		//getClosestMoveActionTo(Position)
 		//getEntitiesWithLowHP()

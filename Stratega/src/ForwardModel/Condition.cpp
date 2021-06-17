@@ -4,9 +4,10 @@
 
 namespace  SGA
 {
-	ResourceLower::ResourceLower(const std::vector<FunctionParameter>& parameters) :
+	ResourceLower::ResourceLower(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
 		resourceReference(parameters.at(0)),
-		lowerBoundParameter(parameters.at(1))
+		lowerBoundParameter(parameters.at(1)), 
+		Condition(exp)
 	{
 	}
 
@@ -18,9 +19,10 @@ namespace  SGA
 		return targetResource <= lowerBound;
 	}
 
-	ResourceGreater::ResourceGreater(const std::vector<FunctionParameter>& parameters) :
+	ResourceGreater::ResourceGreater(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		lowerBoundParameter(parameters.at(1))
+		lowerBoundParameter(parameters.at(1)),
+		Condition(exp)
 	{
 	}
 
@@ -32,8 +34,10 @@ namespace  SGA
 		return targetResource >= lowerBound;
 	}
 
-	HasElapsedTime::HasElapsedTime(const std::vector<FunctionParameter>& parameters) :
-		lowerBoundParameter(parameters.at(0))
+
+	HasElapsedTime::HasElapsedTime(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		lowerBoundParameter(parameters.at(0)),
+		Condition(exp)
 	{
 	}
 
@@ -74,9 +78,8 @@ namespace  SGA
 		return false;
 	}
 	
-	SamePlayer::SamePlayer(const std::vector<FunctionParameter>& /*parameters*/)
+	SamePlayer::SamePlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{
-		
 	}
 
 	bool SamePlayer::isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
@@ -87,10 +90,11 @@ namespace  SGA
 		return sourceEntity.ownerID == targetEntity.ownerID;
 	}
 
-	InRange::InRange(const std::vector<FunctionParameter>& parameters)
+	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: sourceEntity(parameters.at(0)),
 		targetEntity(parameters.at(1)),
-		distance(parameters.at(2))
+		distance(parameters.at(2)),
+		Condition(exp)
 	{
 	}
 
@@ -103,8 +107,9 @@ namespace  SGA
 		return source.position.distance(target) <= dist;
 	}
 
-	IsWalkable::IsWalkable(const std::vector<FunctionParameter>& parameters)
-		: targetPosition(parameters[0])
+	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetPosition(parameters[0]),
+		Condition(exp)
 	{
 	}
 	
@@ -114,9 +119,10 @@ namespace  SGA
 		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
 	}
 
-	IsTile::IsTile(const std::vector<FunctionParameter>& parameters)
+	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: targetPosition(parameters[0]),
-		targetTile(parameters[1])
+		targetTile(parameters[1]),
+		Condition(exp)
 	{
 	}
 	
@@ -128,8 +134,9 @@ namespace  SGA
 		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).getTileTypeID()==tileType.id;
 	}
 
-	IsPlayerEntity::IsPlayerEntity(const std::vector<FunctionParameter>& parameters)
-		: targetParam(parameters[0])
+	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetParam(parameters[0]),
+		Condition(exp)
 	{
 	}
 
@@ -139,9 +146,10 @@ namespace  SGA
 		return !entity.isNeutral();
 	}
 	
-	IsResearched::IsResearched(const std::vector<FunctionParameter>& parameters) :
+	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
-		technologyTypeParam(parameters[1])
+		technologyTypeParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
@@ -153,9 +161,10 @@ namespace  SGA
 		return state.isResearched(targetPlayer.id, targetTechnology.id);
 	}
 
-	HasNoEntity::HasNoEntity(const std::vector<FunctionParameter>& parameters) :
+	HasNoEntity::HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
-		entityTypeParam(parameters[1])
+		entityTypeParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
@@ -175,9 +184,10 @@ namespace  SGA
 		return !hasEntity;
 	}
 	
-	HasEntity::HasEntity(const std::vector<FunctionParameter>& parameters) :
+	HasEntity::HasEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
-		entityTypeParam(parameters[1])
+		entityTypeParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
@@ -197,9 +207,10 @@ namespace  SGA
 	}
 
 	
-	CanResearch::CanResearch(const std::vector<FunctionParameter>& parameters) :
+	CanResearch::CanResearch(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
-		technologyTypeParam(parameters[1])
+		technologyTypeParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
@@ -211,8 +222,9 @@ namespace  SGA
 		return state.canResearch(targetPlayer.id, targetTechnology.id);
 	}
 
-	CanSpawnCondition::CanSpawnCondition(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	CanSpawnCondition::CanSpawnCondition(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
@@ -240,8 +252,9 @@ namespace  SGA
 		return true;
 	}
 
-	CanAfford::CanAfford(const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), costParam(parameters[1])
+	CanAfford::CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), costParam(parameters[1]),
+		Condition(exp)
 	{
 	}
 
