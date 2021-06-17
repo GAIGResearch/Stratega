@@ -265,3 +265,41 @@ For more information regarding entities, check the following classes and the :re
      - isNeutral.
 
 
+
++++++++++++++++++++++++++
+Research and Technologies
++++++++++++++++++++++++++
+
+Stratega incorporates the concept of research trees for strategy games. The fundamental atomic element is a 
+Technology (implemented in the struct "TechnologyTreeNode"), which is organized in one or more trees in a game
+(it is possible to define multiple technologies trees in a game). 
+Each technology incudes the following elements:
+
+#. Name of the technology
+#. Description of the technology
+#. Technologies that need to be researched before this one becomes available.
+#. List of costs that must be paid to research this technologies.
+#. Time (ticks or turns) required to investigate this technology.
+
+An example of a technology as defined in YAML is as follows:
+
+.. code-block:: yaml
+    :caption: Technology 'Pottery' in BasicTBS game.
+
+    Pottery:
+        Description: Allows to construct a Storage.
+        Requirements: [Mining]
+        Cost:
+            Prod: 10
+        Time: 2
+
+In this example, the technology "Potery" has a string description that defines what can this be used for. It has a requirement, "Mining", which
+is another technology that must be researched before this one becomes available. It costs 10 units of the resource "Prod" and takes 2 turns to
+be completed.
+
+Technologies can be researched through actions, and the code includes functions to inspect the technology trees 
+(in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameInfo.h>`_) and to check if a 
+technology can be researched or has been researched already 
+(in `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_).
+
+

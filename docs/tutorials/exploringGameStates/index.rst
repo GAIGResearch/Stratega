@@ -5,6 +5,10 @@
 Agents and Game States
 #############################
 
+.. note::
+    This page is about **programming** for Stratega. You are in the right place if you want to know how to write code about querying aspects of the game state and information. 
+
+
 AI Agents have access to the current game state in order to be able to determine what is the best next action to execute in the game. This page shows a few examples about how to
 access interesting information in the game state that can help you implement agents for this framework. Stratega supplies information in two different modalities:
 
@@ -23,6 +27,11 @@ This page shows examples of how agents can access this information. For a more l
 Game Information
 ++++++++++++++++
 
+.. note::
+    Game Information refers to **static** information of a game being played in Stratega. You are in the right place if you want to know how to write
+    code about querying aspects that are constant during the duration of the game (i.e. types of units, types of tiles, technologies defined...). 
+
+
 First of all, the YAML description file of the game being played is accessible to the agents at all times. You can retrieve the filename and parse the YAML file yourself. For instance, 
 like this:
 
@@ -40,6 +49,10 @@ like this:
 
 Note that 'state' in line 1 is the object of type 'GameState' which is (for instance) received in the function *computeAgent*. The property gameInfo in the game state is in charge of
 providing static information about the game. See section :ref:`Game Info <game-state-representation_gameInfo>` for more details.
+
+
+Game Description: Types
+***********************
 
 GameInfo's API provides information about the types of objects that can be found in the game. In particular, you can find information about possible types of tiles that form the board, 
 entities and actions. These types can be accessed directly in their data structure (3 unordered maps, respectively, indexed by unique type ID) or by supplying a specific ID for the type.
@@ -86,6 +99,10 @@ All these *type* classes have information about the entities, tiles and actions 
 
 
 You're encouraged to look at the :ref:`cpp Reference <cpp-reference>` for variables and methods that can be used to retrieve this information.
+
+
+Game Description: Categories
+****************************
 
 The GameInfo object also provides extra (static) information about the game through a GameDescription pointer, which provides additional details on the game's ontology. Stratega defines
 a collection of entity and action groups that allows the agent to query for entities or actions that respond to a particular purpose. For instance, in the game BasicTBS, included in the 
@@ -147,7 +164,6 @@ The output of the above snippet is as follows:
 
 Similarly, it's possible to extract information about entity categories. The following snippet:
 
-
 .. code-block:: c++
     :linenos:
 
@@ -177,6 +193,10 @@ produces this output:
 
 
 As can be seen, any of these types (entities or actions) can belong to more than one category.
+
+
+Action types: conditions and effects
+************************************
 
 Action types also provide information about the conditions and effects that actions have in the game. These are all accessible
 through the ActionType object, they are used as follows:
@@ -254,7 +274,56 @@ The following example shows the output of the action type "Research" from the ga
      OnComplete Effects: 2
         Research(Source, Target)
         ModifyResource(Source.Player.Score, 10)
-            
+
+
+Technologies
+************
+
+Games in Stratega may have technologies that need to be researched in order to unlock certain 
+abilities or entities. These technologies are organized in trees, and there may be more than one
+tree per game. 
+
+The GameInfo object exposes existing technologies in the game to the agent. For instance, it is 
+possible to query the number of trees in the game and how many technologies each tree have, by
+using the function 'getTechnologyCounts()':
+
+.. code-block:: c++
+    :linenos:
+
+    std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
+    for (const auto& [id, count] : techCounts)
+    {
+        //'id' is the technology tree ID, 'count' is the number of technologies on each tree.
+    }
+
+Also, it is possible to retrieve the list of all technologies in a tree. The following code snippet
+iterates through the technologies of all trees and prints the information to console:
+
+.. code-block:: c++
+    :linenos:
+
+    std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
+    for (const auto& [id, count] : techCounts)
+    {
+        std::vector<TechnologyTreeNode> techs = state.gameInfo->getTreeNodes(id);
+        for (TechnologyTreeNode t : techs)
+            std::cout << t.toString(*state.gameInfo) << std::endl;
+    }
+
+This is part of the output obtained by this code for the BasicTBS game:
+
+.. code-block:: text
+
+    [...]
+    Mining: Base technology (id: 7)
+        Costs: Prod: 10.000000;
+        Tech requirements (IDs): None.
+        Research time: 2.000000
+
+    Pottery: Allows to construct a Storage. (id: 8)
+        Costs: Prod: 10.000000;
+        Tech requirements (IDs): 7;
+        Research time: 2.000000
 
 
 
@@ -262,3 +331,6 @@ The following example shows the output of the action type "Research" from the ga
 Game State
 ++++++++++++++++
 
+.. note::
+    Game Information refers to **dynamic** information of a game being played in Stratega. You are in the right place if you want to know how to write
+    code about querying aspects that are *specific* to a given game state (actual positions of entities, values of properties, technologies researched, etc). 

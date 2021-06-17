@@ -88,4 +88,54 @@ namespace SGA
 	{
 		return tileTypes->find(tileTypeID)->second;
 	}
+
+	std::unordered_map<int, int> GameInfo::getTechnologyCounts() const
+	{
+		std::unordered_map<int, int> counts;
+		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		{
+			counts.emplace(id, techTree.technologies.size());
+		}
+		return counts;
+	}
+
+
+	const TechnologyTreeNode& GameInfo::getTechnology(int technologyID) const 
+	{
+		return technologyTreeCollection->getTechnology(technologyID);
+	}
+
+	int GameInfo::getTechnologyTypeID(const std::string& technologyName) const
+	{
+		return technologyTreeCollection->getTechnologyTypeID(technologyName);
+	}
+
+	std::vector<TechnologyTreeNode> GameInfo::getTreeNodes(int techTreeID) const
+	{
+		std::vector<TechnologyTreeNode> techs;
+
+		const auto& it = technologyTreeCollection->technologyTreeTypes.find(techTreeID);
+		if (it != technologyTreeCollection->technologyTreeTypes.end())
+		{
+			std::unordered_map<int, TechnologyTreeNode> ttNodes = it->second.technologies;
+			for (const auto& [id, treeNode] : ttNodes)
+			{
+				techs.emplace_back(treeNode);
+			}
+		}
+
+		return techs;
+	}
+
+	std::vector<int> GameInfo::getTechTreesIDs() const
+	{
+		std::vector<int> ids;
+		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		{
+			ids.emplace_back(id);
+		}
+		return ids;
+	}
+		
+
 }
