@@ -7,7 +7,6 @@ Agents:
     - HumanAgent
     - RandomAgent
 
-
 Tiles:
     Plain:
         Sprite: ../../GUI/Assets/Tiles/plain.png
@@ -68,7 +67,7 @@ Actions:
     Move:
         Type: EntityAction
         Preconditions:
-            - "ResourceGreater(Source.MovementPoints, 1)"
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Targets:
             Target:
                 Type: Position
