@@ -90,7 +90,7 @@ YAML
         Move:
             Type: EntityAction
             Preconditions:
-                - "ResourceGreater(Source.MovementPoints, 1)"
+                - "ResourceGreaterEqual(Source.MovementPoints, 1)"
             Targets:
                 Target:
                     Type: Position

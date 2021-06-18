@@ -45,8 +45,6 @@ namespace SGA
 		/// <returns>GameDescription.</returns>
 		GameDescription& getGameDescription() const;
 		
-		//Entities
-		
 		/// <summary>
 		/// Returns the entity type.
 		/// </summary>
@@ -55,12 +53,21 @@ namespace SGA
 		const EntityType& getEntityType(int entityTypeID) const;
 
 		/// <summary>
+		/// Returns the tile type.
+		/// </summary>
+		/// <param name="tileTypeID">The ID of the tile type</param>
+		/// <returns> The TileType.</returns>
+		const TileType& getTileType(int tileTypeID) const;
+
+
+		/**** PARAMTERS ***/
+
+		/// <summary>
 		/// Returns the ID of the parameter.
 		/// </summary>
 		/// <param name="parameterName">The parameter name.</param>
 		/// <returns>The parameter ID.</returns>
 		int getParameterGlobalID(std::string parameterName);
-
 
 		/// <summary>
 		/// Returns the parameter type from a entityType.
@@ -70,7 +77,6 @@ namespace SGA
 		/// <returns>The parameter.</returns>
 		const Parameter& getParameterType(int entityTypeID, int globalParameterID) const;
 
-
 		/// <summary>
 		/// Returns true if the entity type has the searched parameter
 		/// </summary>
@@ -78,9 +84,17 @@ namespace SGA
 		/// <param name="parameterName">The parameter name.</param>
 		/// <returns>True if it has the parameter</returns>
 		bool checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const;
+				
+		/// <summary>
+		/// Returns the parameter of the player.
+		/// </summary>
+		/// <param name="ParameterID">The ID of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const;		
 
-		
-		//Actions
+
+		/*** ACTION TYPES ***/
+
 		/// <summary>
 		/// Returns the action type.
 		/// </summary>
@@ -93,7 +107,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="typeID">The ID of the action type</param>
 		/// <returns> The action type.</returns>
-		const ActionType& getActionType(int typeID) const;		
+		const ActionType& getActionType(int typeID) const;
 
 		/// <summary>
 		/// Returns the action type ID.
@@ -102,20 +116,42 @@ namespace SGA
 		/// <returns> The action type ID.</returns>
 		int getActionTypeID(std::string actionName);
 
-		//Player
-		/// <summary>
-		/// Returns the parameter of the player.
-		/// </summary>
-		/// <param name="ParameterID">The ID of the parameter</param>
-		/// <returns> The parameter.</returns>
-		const SGA::Parameter& getPlayerParameter(ParameterID id) const;		
 
-		//Tiles
+		/*** TECHNOLOGIES ***/
+
 		/// <summary>
-		/// Returns the tile type.
+		/// Returns a map of tuples with the tree ID and how many technologies each has.
 		/// </summary>
-		/// <param name="tileTypeID">The ID of the tile type</param>
-		/// <returns> The TileType.</returns>
-		const TileType& getTileType(int tileTypeID) const;		
+		/// <returns>A map with trees and technology counts</returns>
+		std::unordered_map<int, int> getTechnologyCounts() const;
+
+		/// <summary>
+		/// Returns a technology node with an ID corresponding to the one passed by parameter. The node could come from
+		/// any of the trees of the tree collection.
+		/// </summary>
+		/// <param name="technologyID">ID of the technology to search for.</param>
+		/// <returns>The tree node searched for, an exception if it doesn't exist.</returns>
+		[[nodiscard]] const TechnologyTreeNode& getTechnology(int technologyID) const;
+
+		/// <summary>
+		/// Returns the ID of a technology that matches the requested name, in any of the trees of the tree collection.
+		/// </summary>
+		/// <param name="technologyName">Name of the technology to search for.</param>
+		/// <returns>ID of the technology searched for, or a runtime error if it doesn't exist.</returns>
+		[[nodiscard]] int getTechnologyTypeID(const std::string& technologyName) const;
+
+		/// <summary>
+		/// Returns a list with all technologies of a given tree, specified by its ID
+		/// </summary>
+		/// <param name="techTreeID">ID of the tech tree to look for</param>
+		/// <returns>A list with all technologies of a given research tree</returns>
+		std::vector<TechnologyTreeNode> getTreeNodes(int techTreeID) const;
+
+		/// <summary>
+		/// Returns the IDs of the tech trees of this game.
+		/// </summary>
+		/// <returns>Returns the IDs of the tech trees of this game.</returns>
+		std::vector<int> getTechTreesIDs() const; 
 	};
+
 }

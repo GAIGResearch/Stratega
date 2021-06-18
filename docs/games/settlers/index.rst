@@ -720,7 +720,7 @@ YAML
 
         LoseConditions: #If true: Player -> cant play
             HasResource:
-            - "ResourceLower(Source.Food, 0)"
+            - "ResourceLowerEqual(Source.Food, 0)"
 
         Trigger:
        #Global resource compsumption

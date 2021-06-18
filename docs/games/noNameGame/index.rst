@@ -6,8 +6,8 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/NoNameGame.yaml
-    /gameConfigs/RTS/NoNameGame.yaml
+    /gameConfigs/TBS/BasicTBS.yaml
+    /gameConfigs/RTS/BasicRTS.yaml
 
 .. only:: html
 
@@ -262,7 +262,7 @@ YAML
                     ValidTargets: GoldVein
                     Conditions:
                         - "InRange(Source, Target, 2)"
-                        - "ResourceGreater(Target.Gold, 40)"
+                        - "ResourceGreaterEqual(Target.Gold, 40)"
             Effects:
                 - "Transfer(Target.Gold, Source.Player.Gold, 40)"
 
@@ -411,7 +411,7 @@ YAML
                 ValidTargets: Foundry
                 Conditions:
                     - "IsPlayerEntity(Source)"
-                    - "ResourceGreater(Source.Player.Gold, 2)"
+                    - "ResourceGreaterEqual(Source.Player.Gold, 2)"
                 Effects:
                     - "ModifyResource(Source.Player.Gold, -2)"
                     - "ModifyResource(Source.Player.Prod, 4)"

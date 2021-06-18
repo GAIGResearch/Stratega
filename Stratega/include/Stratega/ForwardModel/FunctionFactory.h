@@ -8,7 +8,7 @@ namespace SGA
 	class FunctionFactory
 	{
 	public:
-		typedef std::function<Function* (const std::vector<FunctionParameter>& params)> FnAllocator;
+		typedef std::function<Function* (const std::string& code, const std::vector<FunctionParameter>& params)> FnAllocator;
 		
 		static FunctionFactory<Function>& get()
 		{
@@ -24,17 +24,17 @@ namespace SGA
 
 			registeredFunctions.emplace(
 				name,
-				[](const std::vector<FunctionParameter>& params) {return static_cast<Function*>(new T(params)); }
+				[](const std::string& code, const std::vector<FunctionParameter>& params) {return static_cast<Function*>(new T(code, params)); }
 			);
 			return true;
 		}
 
-		std::unique_ptr<Function> createFunction(const std::string& name, const std::vector<FunctionParameter>& params)
+		std::unique_ptr<Function> createFunction(const std::string& code, const std::string& name, const std::vector<FunctionParameter>& params)
 		{
 			if (registeredFunctions.find(name) == registeredFunctions.end())
 				return nullptr;
 			
-			return std::unique_ptr<Function>(registeredFunctions.at(name)(params));
+			return std::unique_ptr<Function>(registeredFunctions.at(name)(code, params));
 		}
 
 		// This class should not be copied
