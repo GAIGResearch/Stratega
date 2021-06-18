@@ -1,5 +1,5 @@
 #include <NTupleLandscapeModel.h>
-
+#include <Stratega/Logging/Log.h>
 
 namespace SGA
 {
@@ -78,21 +78,27 @@ namespace SGA
                 _tuples.emplace_back(tup);
             //_tuples.insert(_tuples.end(), n_tuples.begin(), n_tuples.end());
 
+            std::string message;
             std::cout << "Added " << n << "-tuples: " << std::endl;
-
+            SGA::LoggingScope scope("Added "+ std::to_string(n) +"-tuples");
+            
             for (std::vector<int> i : n_tuples)
             {
+                message.clear();
                 std::cout << "\t";
                 for (int j : i)
                 {
+                    message += std::to_string(j) + ", ";
                     std::cout << j << ", ";
                 }
+                SGA::Log::logValue("Tuple", message);
                 std::cout << std::endl;
+                
             }
         }
 
         std::cout << "Tuple Landscape Size: " << _tuples.size() << std::endl;
-        
+        SGA::Log::logValue("Tuple Landscape Size", _tuples.size());
     }
 
     /// Add a point and it's fitness to the tuple landscape

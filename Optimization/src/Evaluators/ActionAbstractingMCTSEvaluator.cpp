@@ -43,6 +43,7 @@ namespace SGA
 	
 	std::vector<float> ActionAbstractingMCTSEvaluator::evaluate(std::vector<int> point, int nSamples)
 	{
+		SGA::Log::logSingleValue("Evaluate agent", "");
 		nSamples = config.levelDefinitions.size();
 		float value = 0;
 
@@ -61,19 +62,37 @@ namespace SGA
 		return { agentValue, nrOfWins };
 	}
 
-	void ActionAbstractingMCTSEvaluator::printPoint(const std::vector<int>& point)
+	std::string ActionAbstractingMCTSEvaluator::printPoint(const std::vector<int>& point)
     {
+		std::string message;
 	    std::cout << "K=" << (k_values[point[0]]) << ", ";
+		message += "K=" + std::to_string(k_values[point[0]]) + ", ";
 	    std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
+		message += "RL=" + std::to_string(rollout_length[point[1]]) + ", ";
 	    std::cout << "OS=" << (point[2]) << ", ";
+		message += "OS=" + std::to_string(point[2]) + ", ";
+
 		std::cout << "Scripts={";
+		message += "Scripts={";
+
 		if (point[3]) std::cout << "AC ";
 		if (point[4]) std::cout << "AW ";
 		if (point[5]) std::cout << "RA ";
 		if (point[6]) std::cout << "RF ";
 		if (point[7]) std::cout << "SA ";
 		if (point[8]) std::cout << "RND ";
+		
+		if (point[3]) message += "AC ";
+		if (point[4]) message += "AW ";
+		if (point[5]) message += "RA ";
+		if (point[6]) message += "RF ";
+		if (point[7]) message += "SA ";
+		if (point[8]) message += "RND ";
+
 		std::cout << "}";
+		message += "}";
+
+		return message;
     }
 
 	std::vector<std::unique_ptr<Agent>> ActionAbstractingMCTSEvaluator::generateAgents() {

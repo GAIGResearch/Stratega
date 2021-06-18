@@ -56,7 +56,7 @@ namespace SGA
         std::vector<float> evaluate(std::vector<int> point, int nSamples) override;
         //float evaluateGame(std::vector<int> point, int opponentID, bool playFirst);
     	
-        void printPoint(const std::vector<int>& point) override;
+        std::string printPoint(const std::vector<int>& point) override;
 
         std::vector<std::unique_ptr<Agent>> generateAgents();
     };

@@ -9,7 +9,7 @@
 #include <SearchSpace.h>
 #include <Evaluators/Evaluator.h>
 #include <NTupleLandscapeModel.h>
-
+#include <Stratega/Logging/Log.h>
 
 namespace SGA
 {

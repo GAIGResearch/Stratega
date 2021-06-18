@@ -29,6 +29,7 @@ namespace SGA
 	
 	std::vector<float> MCTSEvaluator::evaluate(std::vector<int> point, int nSamples)
 	{
+		SGA::Log::logSingleValue("Evaluate agent", "");
 		nSamples = config.levelDefinitions.size();
 		float value = 0;
 
@@ -47,11 +48,17 @@ namespace SGA
 		return { agentValue, nrOfWins };
 	}
 
-	void MCTSEvaluator::printPoint(const std::vector<int>& point)
+	std::string MCTSEvaluator::printPoint(const std::vector<int>& point)
     {
+		std::string message;
 		std::cout << "K=" << (k_values[point[0]]) << ", ";
+		message += "K=" + std::to_string(k_values[point[0]]) + ", ";
 		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
+		message += "RL=" + std::to_string(rollout_length[point[1]]) + ", ";
 		std::cout << "OS=" << (point[2]) << ";";
+		message += "OS=" + std::to_string(point[2]) + ", ";
+
+		return message;
     }
 
 	std::vector<std::unique_ptr<Agent>> MCTSEvaluator::generateAgents() {

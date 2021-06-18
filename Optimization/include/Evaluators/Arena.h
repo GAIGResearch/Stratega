@@ -4,7 +4,7 @@
 #include <Stratega/Game/GameObserver.h>
 #include <Stratega/Game/GameRunner.h>
 //#include <Evaluators/AbstractGameStateMCTSEvaluator.h>
-
+#include <Stratega/Logging/Log.h>
 namespace SGA 
 {
 	class Arena : public SGA::GameObserver

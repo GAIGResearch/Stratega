@@ -21,9 +21,9 @@ namespace SGA
 	
     std::vector<int> NTBEA::evaluateLandscape(std::vector<int>& point, std::mt19937& randomGenerator)
     {
-    	
+        //SGA::LoggingScope scope("Estimating landscape around: ");
         std::cout << "Estimating landscape around: ";
-        _evaluator->printPoint(point);
+        SGA::Log::logValue("Estimating landscape around: ", _evaluator->printPoint(point));       
         std::cout << std::endl;
     	
         auto evaluated_neighbors = std::set<std::vector<int>>();
@@ -51,14 +51,14 @@ namespace SGA
             evaluated_neighbors.emplace(potential_neighbor);
 
             std::cout << "Neighbor UCB " << ucb_with_noise << " at ";
-            _evaluator->printPoint(potential_neighbor);
+            SGA::Log::logValue("Neighbor UCB "+std::to_string(ucb_with_noise)+ " at ", _evaluator->printPoint(potential_neighbor));
             std::cout << std::endl;
 
             // Track the best neighbor that we have seen so far
             if (current_best_ucb < ucb_with_noise)
             {
                 std::cout << "Found best UCB " << ucb_with_noise << " at ";
-                _evaluator->printPoint(potential_neighbor);
+                SGA::Log::logValue("Found best UCB "+std::to_string(ucb_with_noise) + " at ", _evaluator->printPoint(potential_neighbor));
             	std::cout << std::endl;
                 current_best_ucb = ucb_with_noise;
                 current_best_neighbor = potential_neighbor;
@@ -69,58 +69,82 @@ namespace SGA
 
     void NTBEA::run(int n_evaluations, std::mt19937& randomGenerator)
     {
-    	
-        _tupleLandscape->init();
-
-        // Get a random point to start
-        auto point = _searchSpace->getRandomPoint(randomGenerator);
-
-        // Repeat many times
-        for (int eval = 0; eval < n_evaluations; eval++)
+        try
         {
-            //std::cout << "Evaluation: " << eval << std::endl;
-        	
-            // Explore the neighborhood in the tuple landscape and find a strong next candidate point
-            // Skip this if this is the first iteration of the algorithm because it will be a random point
-            if (eval > 0)
-            {
-                point = evaluateLandscape(point, randomGenerator);
-            }
-        	
-            // Evaluate the point(is repeated several times if n_samples > 0)
-            std::vector<float> fitnessValues = _evaluator->evaluate(point, _nSamples);
-            int nrOfWins = fitnessValues.back();
-            fitnessValues.pop_back();
+            _tupleLandscape->init();
+            SGA::Log::getDefaultLogger().flush();
 
-            double fitness = 0.0f;
-            const int n = fitnessValues.size();
-            if (n != 0) {
-                fitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0) / n;
-            }
-        	
-            std::cout << "Evaluated fitness: " << fitness << " and Wins: " << nrOfWins << " at " ;
-            _evaluator->printPoint(point);
-            std::cout << std::endl;
-        	
-            // Add the new point to the tuple landscape
-            _tupleLandscape->addEvaluatedPoint(point, fitness);
+            // Get a random point to start
+            auto point = _searchSpace->getRandomPoint(randomGenerator);
 
-            if (eval % 10 == 0)
+            // Repeat many times
+            for (int eval = 0; eval < n_evaluations; eval++)
             {
-                const auto solution = _tupleLandscape->getBestSampled();
-                const auto bestFitness = solution.second;
-                std::cout << "Iterations: " << eval << ", Best fitness: " << bestFitness << ", Solution: ";
-                _evaluator->printPoint(solution.first);
+                //std::cout << "Evaluation: " << eval << std::endl;
+                // Explore the neighborhood in the tuple landscape and find a strong next candidate point
+                // Skip this if this is the first iteration of the algorithm because it will be a random point
+                if (eval > 0)
+                {
+                    point = evaluateLandscape(point, randomGenerator);
+                }
+
+                // Evaluate the point(is repeated several times if n_samples > 0)
+                std::vector<float> fitnessValues = _evaluator->evaluate(point, _nSamples);
+                int nrOfWins = fitnessValues.back();
+                fitnessValues.pop_back();
+
+                double fitness = 0.0f;
+                const int n = fitnessValues.size();
+                if (n != 0) {
+                    fitness = std::accumulate(fitnessValues.begin(), fitnessValues.end(), 0.0) / n;
+                }
+
+
+
+                std::cout << "Evaluated fitness: " << fitness << " and Wins: " << nrOfWins << " at ";
+                SGA::Log::logSingleValue("Evaluated fitness: " + std::to_string(fitness) + " and Wins: " + std::to_string(nrOfWins) + " at ", _evaluator->printPoint(point));
                 std::cout << std::endl;
-            }
-        }
-    	
-        // Once we have evaluated all the points, get the best one we have seen so far
-        const auto solution = _tupleLandscape->getBestSampled();
 
-        std::cout << "Best solution: ";
-        _evaluator->printPoint(solution.first);
-    	std::cout << std::endl;
+                // Add the new point to the tuple landscape
+                _tupleLandscape->addEvaluatedPoint(point, fitness);
+
+                if (eval % 10 == 0)
+                {
+                    const auto solution = _tupleLandscape->getBestSampled();
+                    const auto bestFitness = solution.second;
+                    std::cout << "Iterations: " << eval << ", Best fitness: " << bestFitness << ", Solution: ";
+                    SGA::Log::logSingleValue("Iterations: " + std::to_string(eval) + ", Best fitness: " + std::to_string(bestFitness) + ", Solution: ", _evaluator->printPoint(solution.first));
+                    std::cout << std::endl;
+                }
+                SGA::Log::getDefaultLogger().flush();
+            }
+
+            // Once we have evaluated all the points, get the best one we have seen so far
+            const auto solution = _tupleLandscape->getBestSampled();
+
+            std::cout << "Best solution: ";
+            SGA::LoggingScope scope("Best solution: ");
+            SGA::Log::logSingleValue("Point", _evaluator->printPoint(solution.first));
+            std::cout << std::endl;
+            SGA::Log::getDefaultLogger().flush();
+        }
+        catch (std::exception& ex)
+        {
+            std::cout << ex.what();
+            SGA::Log::logValue("Error", ex.what());
+
+            SGA::Log::getDefaultLogger().flush();
+
+            std::cout << "Best solution: ";
+
+            SGA::LoggingScope scope("Best solution: ");
+            const auto solution = _tupleLandscape->getBestSampled();
+            SGA::Log::logSingleValue("Point", _evaluator->printPoint(solution.first));
+
+            std::cout << std::endl;
+            SGA::Log::getDefaultLogger().flush();
+        }
+        
 	}
     
 }

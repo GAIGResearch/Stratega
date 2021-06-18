@@ -59,6 +59,7 @@ namespace SGA
 	
 	std::vector<float> AbstractingEverythingMCTSEvaluator::evaluate(std::vector<int> point, int nSamples)
 	{
+		SGA::Log::logSingleValue("Evaluate agent", "");
 		nSamples = config.levelDefinitions.size();
 		float value = 0;
 
@@ -77,12 +78,18 @@ namespace SGA
 		return { agentValue, nrOfWins };
 	}
 
-	void AbstractingEverythingMCTSEvaluator::printPoint(const std::vector<int>& point)
+	std::string AbstractingEverythingMCTSEvaluator::printPoint(const std::vector<int>& point)
     {
+		std::string message;
 		std::cout << "K=" << (k_values[point[0]]) << ", ";
+		message += "K=" + std::to_string(k_values[point[0]]) + ", ";
 		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
+		message += "RL=" + std::to_string(rollout_length[point[1]]) + ", ";
 		std::cout << "OS=" << (point[2]) << ", ";
+		message += "OS=" + std::to_string(point[2]) + ", ";
+
 		std::cout << "Scripts={";
+		message += "Scripts={";
 		if (point[3]) std::cout << "AC ";
 		if (point[4]) std::cout << "AW ";
 		if (point[5]) std::cout << "RA ";
@@ -90,12 +97,25 @@ namespace SGA
 		if (point[7]) std::cout << "SA ";
 		if (point[8]) std::cout << "RND ";
 
+		if (point[3]) message += "AC ";
+		if (point[4]) message += "AW ";
+		if (point[5]) message += "RA ";
+		if (point[6]) message += "RF ";
+		if (point[7]) message += "SA ";
+		if (point[8]) message += "RND ";
+
 	    std::cout << "Map=" << (insertMap[point[9]]==1) << ", ";
+		message += "Map=" + std::to_string(insertMap[point[9]] == 1) + ", ";
 	    std::cout << "Positions=" << (insertPositions[point[10]] == 1) << ", ";
+		message += "Positions=" + std::to_string(insertPositions[point[10]] == 1) + ", ";
+
 		for (int i = 11; i < point.size(); i++)
 		{
 			std::cout << parameterNames[i-11] << "=" << (point[i] == 1) << ", ";
+			message += parameterNames[i - 11] + "=" + std::to_string(point[i] == 1) + ", ";
 		}
+
+		return message;
     }
 
 	std::vector<std::unique_ptr<Agent>> AbstractingEverythingMCTSEvaluator::generateAgents() {

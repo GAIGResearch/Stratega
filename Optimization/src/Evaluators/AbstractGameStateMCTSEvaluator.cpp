@@ -44,7 +44,9 @@ namespace SGA
     }
 	
 	std::vector<float> AbstractGameStateMCTSEvaluator::evaluate(std::vector<int> point, int nSamples)
-	{
+	{   
+		SGA::LoggingScope scope("Evaluate agent: ");
+		//SGA::Log::logSingleValue("Evaluate agent", "");
 		nSamples = config.levelDefinitions.size();
 		float value = 0;
 
@@ -63,17 +65,28 @@ namespace SGA
 		return { agentValue, nrOfWins };
 	}
 
-	void AbstractGameStateMCTSEvaluator::printPoint(const std::vector<int>& point)
+	std::string AbstractGameStateMCTSEvaluator::printPoint(const std::vector<int>& point)
     {
+		std::string message;
+		
 		std::cout << "K=" << (k_values[point[0]]) << ", ";
+		message += "K=" + std::to_string(k_values[point[0]]) + ", ";
 		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
+		message += "RL=" + std::to_string(rollout_length[point[1]]) + ", ";
 		std::cout << "OS=" << (point[2]) << ", ";
+		message += "OS=" + std::to_string(point[2]) + ", ";
 	    std::cout << "Map=" << (insertMap[point[3]]==1) << ", ";
+		message += "Map=" + std::to_string(insertMap[point[3]] == 1) + ", ";
 	    std::cout << "Positions=" << (insertPositions[point[4]] == 1) << ", ";
+		message += "Positions=" + std::to_string(insertPositions[point[4]] == 1) + ", ";
+
 		for (int i = 5; i < point.size(); i++)
 		{
 			std::cout << parameterNames[i-5] << "=" << (point[5] == 1) << ", ";
+			message += parameterNames[i-5] + "=" + std::to_string(point[5] == 1) + ", ";				
 		}
+
+		return message;
     }
 
 	std::vector<std::unique_ptr<Agent>> AbstractGameStateMCTSEvaluator::generateAgents() {

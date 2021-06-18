@@ -31,14 +31,16 @@ namespace SGA
 				currentMapID++;
 			}
 			std::cout << "x";
-
+			
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(currentSeed);
 
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(agentGenerator, c, rngEngine); };
 			generateCombinations(config->agentParams.size(), playerCount, callback);
 		}
-
+		
+		SGA::Log::logSingleValue("Games", std::to_string(gamesNumber * mapNumber));
+		
 		int total_value = 0;
 		int games_won = 0;
 		for (int n : game_results) {
