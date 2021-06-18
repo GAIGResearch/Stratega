@@ -31,7 +31,8 @@ namespace SGA
 		bool blocksSight = false;
 
 		/// <summary>
-		/// Indicates if this is a default tile 
+		/// Indicates if this is a default tile. Default tiles are used for fog of war (to substitute
+		///  elements that should be hidden) and to be place in positions where units are defined in the YAML level layout.
 		/// </summary>
 		bool isDefaultTile = false;
 

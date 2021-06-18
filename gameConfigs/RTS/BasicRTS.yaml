@@ -1,19 +1,18 @@
 GameConfig:
-    Type: TBS
+    Type: RTS
     ActionTimer: 10s
     RoundLimit: 100
 
 Agents:
-    - OSLAAgent
-    - CombatAgent
+    - RandomAgent
+    - HumanAgent
 
 Player:
     Actions: [Build, Research]
     CanSpawn: Buildings
     Parameters:
         Gold: 0
-        Prod: 5
-        Score: 0
+        Prod: 50
 
 Tiles:
     Plain:
@@ -43,9 +42,9 @@ Entities:
         Actions: [Spawn]
         CanSpawn: [Worker]
         Cost:
-            Prod: 10
+            Prod: 100
         Parameters:
-            Health: 200
+            Health: 800
             StorageCapacity: 50
             Range: 6
 
@@ -56,9 +55,9 @@ Entities:
         Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
-            Prod: 20
+            Prod: 200
         Parameters:
-            Health: 100
+            Health: 500
             Range: 6
 
     MilitaryAcademy:
@@ -68,9 +67,9 @@ Entities:
         Actions: [Spawn]
         CanSpawn: [Catapult]
         Cost:
-            Prod: 40
+            Prod: 400
         Parameters:
-            Health: 100
+            Health: 500
 
     Foundry:
         Sprite: ../../GUI/Assets/Entities/foundry.png
@@ -78,9 +77,9 @@ Entities:
         RequiredTechnology: Metallurgy
         Actions: []
         Cost:
-            Prod: 50
+            Prod: 500
         Parameters:
-            Health: 50
+            Health: 300
             
     Workshop:
         Sprite: ../../GUI/Assets/Entities/storage.png
@@ -88,9 +87,9 @@ Entities:
         RequiredTechnology: Apprenticeship
         Actions: []
         Cost:
-            Prod: 50
+            Prod: 500
         Parameters:
-            Health: 50
+            Health: 300
 
     Storage:
         Sprite: ../../GUI/Assets/Entities/castle.png
@@ -98,10 +97,10 @@ Entities:
         RequiredTechnology: Pottery
         Actions: []
         Cost:
-            Prod: 40
+            Prod: 400
         Parameters:
             Cost: 40
-            Health: 50
+            Health: 200
             StorageCapacity: 50
 
     Worker:
@@ -109,13 +108,13 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
-            Prod: 5
+            Prod: 50
         Time: 5
         Parameters:
             ResourceCapacity: 10
             Armor: 5
             Speed: 1
-            WeaponStrength: 5
+            WeaponStrength: 0.05
             Health: 50
             Range: 3
             
@@ -125,14 +124,14 @@ Entities:
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
         Cost:
-            Prod: 10
+            Prod: 100
         Parameters:
             Armor: 20
             Speed: 1
             Range: 3
-            WeaponStrength: 25
+            WeaponStrength: 0.25
             Morale: 10
-            Health: 50
+            Health: 150
             
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
@@ -140,15 +139,15 @@ Entities:
         Actions: [Move, Attack]
         RequiredTechnology: Archery
         Cost:
-            Prod: 15
+            Prod: 150
         Parameters:
             Armor: 15
             Speed: 1
             Range: 6
-            WeaponStrength: 15
+            WeaponStrength: 0.15
             ReloadTime: 2
             Morale: 10
-            Health: 30
+            Health: 100
             
     Catapult:
         Sprite: ../../GUI/Assets/Entities/unit4.png
@@ -156,12 +155,12 @@ Entities:
         Actions: [Move, Attack]
         RequiredTechnology: Engineering
         Cost:
-            Prod: 20
+            Prod: 200
         Parameters:
             Armor: 10
             Speed: 1
             Range: 15
-            WeaponStrength: 40
+            WeaponStrength: 0.40
             ReloadTime: 3
             Morale: 5
             Health: 60
@@ -205,14 +204,14 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                    Type: Dijkstra
-                    Options:
-                        SearchSize: 2
-                        AllowDiagonals: false
-                #    Type: Neighbours
+                #    Type: Dijkstra
                 #    Options:
-                #        Shape: Circle
-                #        Size: 1
+                #        SearchSize: 2
+                #        AllowDiagonals: false
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                        #Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
@@ -225,7 +224,7 @@ Actions:
         Targets:
             Target:
                 Type: Technology
-                ValidTargets: All  
+                ValidTargets: All
                 Conditions:
                     - "CanResearch(Source, Target)"
                     - "CanAfford(Source, Target)"
@@ -235,7 +234,6 @@ Actions:
             - "PayCost(Source, Target)"
         OnComplete:
             - "Research(Source, Target)"
-            - "ModifyResource(Source.Player.Score, 10)"
 
     
     Mine:
@@ -251,9 +249,11 @@ Actions:
                         Shape: Circle
                         Size: 2
                 Conditions:
-                    - "ResourceGreater(Target.Gold, 40)"
+
+                    - "ResourceGreaterEqual(Target.Gold, 0.1)"
         Effects:
-            - "Transfer(Target.Gold, Source.Player.Gold, 40)"
+            - "Transfer(Target.Gold, Source.Player.Gold, 0.1)"
+
 
     #Spawn
     Spawn:
@@ -266,6 +266,7 @@ Actions:
                 Conditions:
                     - "CanSpawn(Source, EntityTypeTarget)"
                     - "CanAfford(Source.Player, EntityTypeTarget)"
+
             TargetPosition:
                 Type: Position
                 SamplingMethod: 
@@ -279,7 +280,6 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
-            - "ModifyResource(Source.Player.Score, 2)"
 
     #Build
     Build:
@@ -305,63 +305,62 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
-            - "ModifyResource(Source.Player.Score, 5)"
 
 TechnologyTrees:
     SingleTree:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 10
-            Time: 2
+                Prod: 100
+            Time: 200
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]
             Cost:
-                Prod: 15
-            Time: 2
+                Prod: 150
+            Time: 200
         Pottery:
             Description: Allows to construct a Storage.
             Requirements: [Mining]
             Cost:
-                Prod: 10
-            Time: 2
+                Prod: 1000
+            Time: 200
         Mathematics:
             Description: Here you can build a military academy
             Requirements: [Mining]
             Cost:
-                Prod: 15
-            Time: 2
+                Prod: 1500
+            Time: 200
         Archery:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
-            Time: 5
+                Gold: 2000
+            Time: 500
         Bronze Working:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
-            Time: 5
+                Gold: 200
+            Time: 500
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost:
-                Gold: 30
-            Time: 5
+                Gold: 3000
+            Time: 500
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost:
-                Gold: 40
-            Time: 8
+                Gold: 4000
+            Time: 800
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost:
-                Gold: 30
-            Time: 5
+                Gold: 3000
+            Time: 500
             
 
 Board:
@@ -396,23 +395,23 @@ ForwardModel:
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Prod, 1)"
+                - "ModifyResource(Source.Player.Prod, 0.1)"
         - OnTick:
             ValidTargets: Workshop
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Prod, 2)"
+                - "ModifyResource(Source.Player.Prod, 0.2)"
         - OnTick:
             ValidTargets: Foundry
             Conditions:
                 - "IsPlayerEntity(Source)"
-                - "ResourceGreater(Source.Player.Gold, 2)"
+                - "ResourceGreaterEqual(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
-                - "ModifyResource(Source.Player.Prod, 4)"
+                - "ModifyResource(Source.Player.Prod, 0.4)"
 
-#Game Description
+#Action categories
 GameDescription:
     Type: CombatGame
     Actions:
@@ -430,3 +429,14 @@ GameDescription:
         NoFighter: [Worker]
         Melee: [Warrior]
         Ranged: [Archer, Catapult]
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5

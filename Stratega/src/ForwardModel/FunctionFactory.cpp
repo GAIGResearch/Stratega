@@ -11,8 +11,8 @@ namespace SGA
 		static FunctionFactory<Condition> factory;
 		factory.registerFunction<HasEntity>("HasEntity");
 		factory.registerFunction<HasNoEntity>("HasNoEntity");
-		factory.registerFunction<ResourceGreater>("ResourceGreater");
-		factory.registerFunction<ResourceLower>("ResourceLower");
+		factory.registerFunction<ResourceGreaterEqual>("ResourceGreaterEqual");
+		factory.registerFunction<ResourceLowerEqual>("ResourceLowerEqual");
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsTile>("IsTileType");

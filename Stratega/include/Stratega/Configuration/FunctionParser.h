@@ -44,7 +44,7 @@ namespace SGA
 					throw std::runtime_error("Could not parse '" + code + "'");
 				}
 
-				auto instance = FunctionFactory<Function>::get().createFunction(abstractFn->functionName, abstractFn->parameters);
+				auto instance = FunctionFactory<Function>::get().createFunction(code, abstractFn->functionName, abstractFn->parameters);
 				if (instance == nullptr)
 				{
 					throw std::runtime_error("Tried calling unknown function " + abstractFn->functionName + ": '" + code + "'");

@@ -32,7 +32,7 @@ namespace SGA
 		{
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfilled(state, targets))
+				if (loseCondition->isFulfilled(state, targets))
 					return true;
 			}
 		}
@@ -57,7 +57,7 @@ namespace SGA
 			//Check condition list
 			for (auto& winCondition : winConditionType)
 			{
-				if (!winCondition->isFullfilled(state, targets))
+				if (!winCondition->isFulfilled(state, targets))
 				{
 					playerWon = false;
 					break;
@@ -205,7 +205,7 @@ namespace SGA
 				auto isValid = true;
 				for(const auto& condition : onTickEffect.conditions)
 				{
-					if(!condition->isFullfilled(state, targets))
+					if(!condition->isFulfilled(state, targets))
 					{
 						isValid = false;
 						break;
@@ -244,7 +244,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfilled(state, continuousActions[i].targets))
+					if (!condition->isFulfilled(state, continuousActions[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -260,7 +260,7 @@ namespace SGA
 					/*for (auto& targetType : actionType.actionTargets)
 					for (const auto& condition : targetType.second)
 					{
-						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
+						if (!condition->isFulfilled(state, state.entities[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
@@ -311,7 +311,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
+					if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -327,7 +327,7 @@ namespace SGA
 					/*for (auto& targetType : actionType.actionTargets)
 					for (const auto& condition : targetType.second)
 					{
-						if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
+						if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
@@ -372,7 +372,7 @@ namespace SGA
 			auto isValid = true;
 			for (const auto& condition : onSpawnEffect.conditions)
 			{
-				if (!condition->isFullfilled(state, targets))
+				if (!condition->isFulfilled(state, targets))
 				{
 					isValid = false;
 					break;

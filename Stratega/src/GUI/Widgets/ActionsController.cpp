@@ -131,7 +131,7 @@ namespace SGA::Widgets
 						//Check if we fullfil the conditions to spawn the entity
 						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 						{
-							if (!condition->isFullfilled(state, actionTargets))
+							if (!condition->isFulfilled(state, actionTargets))
 							{
 								canExecute = false;
 								break;
@@ -191,7 +191,7 @@ namespace SGA::Widgets
 					//Check if player fullfil the conditions to spawn the entity
 					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 					{
-						if (!condition->isFullfilled(state, actionTargets))
+						if (!condition->isFulfilled(state, actionTargets))
 						{
 							canExecute = false;
 							break;
@@ -251,7 +251,7 @@ namespace SGA::Widgets
 						//Check if we fullfil the conditions to spawn the entity
 						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 						{
-							if (!condition->isFullfilled(state, actionTargets))
+							if (!condition->isFulfilled(state, actionTargets))
 							{
 								canExecute = false;
 								break;
@@ -294,7 +294,7 @@ namespace SGA::Widgets
 					//Check if player fullfil the conditions to spawn the entity
 					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 					{
-						if (!condition->isFullfilled(state, actionTargets))
+						if (!condition->isFulfilled(state, actionTargets))
 						{
 							canExecute = false;
 							break;

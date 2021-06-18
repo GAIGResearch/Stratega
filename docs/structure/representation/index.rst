@@ -60,7 +60,7 @@ This information refers to tiles, entities, actions, etc. that can be observed d
 
 
 .. code-block:: yaml
-    :caption: Entity Groups (`NoNameGame.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/gameConfigs/TBS/NoNameGame.yaml>`_)
+    :caption: Entity Groups (`BasicRTS.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/gameConfigs/TBS/BasicRTS.yaml>`_)
 
     EntityGroups:
         Units: [Worker, Warrior, Archer, Catapult]
@@ -97,7 +97,7 @@ For instance, in YAML, the definition of a player can be like the following snip
 
         
 .. code-block:: yaml
-    :caption: Entity Groups (NoNameGame.yaml) 
+    :caption: Entity Groups (BasicRTS.yaml) 
        
     Player:
         Actions: [Build, Research]
@@ -114,7 +114,7 @@ with initial values of 0 and 5, respectively.
 By default Stratega instantiates one player for each agent defined in the configuration. For instance:
 
 .. code-block:: yaml
-    :caption: Agent  (NoNameGame.yaml) 
+    :caption: Agent  (BasicRTS.yaml) 
 
     Agents:
     - OSLAAgent
@@ -170,7 +170,7 @@ decribes static information, common for all types of the same type. Each tile ty
 A tile type is defined in YAML as follows:
 
 .. code-block:: yaml
-    :caption: Tile Type Mountain (NoNameGame.yaml) 
+    :caption: Tile Type Mountain (BasicRTS.yaml) 
 
     Mountain:
         Sprite: ../../GUI/Assets/Tiles/rock.png
@@ -263,5 +263,43 @@ For more information regarding entities, check the following classes and the :re
     Entity has:
      - typeID, id, owner, position, lineOfSight, path, movementSpeed, collisionRadius. 
      - isNeutral.
+
+
+
++++++++++++++++++++++++++
+Research and Technologies
++++++++++++++++++++++++++
+
+Stratega incorporates the concept of research trees for strategy games. The fundamental atomic element is a 
+Technology (implemented in the struct "TechnologyTreeNode"), which is organized in one or more trees in a game
+(it is possible to define multiple technologies trees in a game). 
+Each technology incudes the following elements:
+
+#. Name of the technology
+#. Description of the technology
+#. Technologies that need to be researched before this one becomes available.
+#. List of costs that must be paid to research this technologies.
+#. Time (ticks or turns) required to investigate this technology.
+
+An example of a technology as defined in YAML is as follows:
+
+.. code-block:: yaml
+    :caption: Technology 'Pottery' in BasicTBS game.
+
+    Pottery:
+        Description: Allows to construct a Storage.
+        Requirements: [Mining]
+        Cost:
+            Prod: 10
+        Time: 2
+
+In this example, the technology "Potery" has a string description that defines what can this be used for. It has a requirement, "Mining", which
+is another technology that must be researched before this one becomes available. It costs 10 units of the resource "Prod" and takes 2 turns to
+be completed.
+
+Technologies can be researched through actions, and the code includes functions to inspect the technology trees 
+(in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameInfo.h>`_) and to check if a 
+technology can be researched or has been researched already 
+(in `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_).
 
 
