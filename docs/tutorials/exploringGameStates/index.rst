@@ -336,3 +336,90 @@ Game State
     Game Information refers to **dynamic** information of a game being played in Stratega. You are in the right place if you want to know how to write
     code about querying aspects that are *specific* to a given game state (actual positions of entities, values of properties, technologies researched, etc). 
 
+
+One of the things that can be queried about the game state is the current state of the board. The board
+is a Grid2d<Tile> object owned by the GameState (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameState.h>`_)
+which provides acces to its bounds (width x height) and the tiles it contains.
+
+For instance, the following snippet runs through all the tiles in the board and prints some basic information. Each
+tile has a tile type and certain properties regarding visibility and the ability of being traversed:
+
+.. code-block:: c++
+    :linenos:
+
+    for (int x = 0; x < state.board.getWidth(); ++x){
+      for (int y = 0; y < state.board.getHeight(); ++y){
+        Tile t = state.board.get(x, y);
+        std::cout << "x: " << x << ", y: " << y << "; tile type: " << t.getTileTypeID() << " (" << t.name() << "), walkable: " <<
+            t.isWalkable << ", blocks view: " << t.blocksSight << std::endl;
+      }
+    }
+
+
+The following extract shows a portion of the output produced for this snippet: 
+
+
+.. code-block:: text
+
+    x: 21, y: 8; tile type: -1 (Fog), walkable: 1, blocks view: 0
+    x: 21, y: 9; tile type: -1 (Fog), walkable: 1, blocks view: 0
+    x: 21, y: 10; tile type: 1 (Mountain), walkable: 0, blocks view: 1
+    x: 21, y: 11; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 21, y: 12; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 21, y: 13; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 21, y: 14; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 21, y: 15; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 21, y: 16; tile type: 1 (Mountain), walkable: 0, blocks view: 1
+    x: 22, y: 0; tile type: -1 (Fog), walkable: 1, blocks view: 0
+    x: 22, y: 1; tile type: -1 (Fog), walkable: 1, blocks view: 0
+
+which corresponds to a row in the board of the following state:
+
+.. image:: ../../images/StrategaBoardFog.png
+    :width: 400
+    :alt: Stratega Board with Fog
+
+
+Note that a portion of the board is occluded by fog (a grey/cloud-ish tile). This is the tile type (with id = -1)
+used for hiding information that is not visible to the current player.
+
+The game state also provides information about the entities that occupy the board. Given a position in the board (x,y)
+it's possible to query if there's an entity at that position with the function "getEntity(Vector2f)". Entities have an
+entity type, an owner and a certain set of parameters that be retrieved from the Entity object. The
+following example code expands the previous snippet including how to retrive entities and print its parameters:
+
+
+.. code-block:: c++
+    :linenos:
+
+    for (int x = 0; x < state.board.getWidth(); ++x){
+      for (int y = 0; y < state.board.getHeight(); ++y){
+        Tile t = state.board.get(x, y);
+        std::cout << "x: " << x << ", y: " << y << "; tile type: " << t.getTileTypeID() << " (" << t.name() << "), walkable: " <<
+            t.isWalkable << ", blocks view: " << t.blocksSight << std::endl;
+                
+        Entity* ent = state.getEntity(Vector2f(x, y));
+        if (ent != nullptr){
+          std::cout << "\tEntity: " << ent->getEntityType().name << ", owner's player ID: " << ent->ownerID <<
+                    ", parameters: " << std::endl;
+
+          std::unordered_map<std::string, double> params = ent->getEntityParameters();
+          for (const auto& [paramName, value] : params)
+            std::cout << "\t\t" << paramName << ": " << value << std::endl;
+        }
+      }
+    }
+
+And here's an extract of the output. See how the entity in the center is a city, with several paramters:
+
+.. code-block:: text
+
+    x: 17, y: 12; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 17, y: 13; tile type: 2 (Plain), walkable: 1, blocks view: 0
+            Entity: City, owner's player ID: 0, parameters:
+                    Health: 200
+                    StorageCapacity: 50
+                    Range: 6
+    x: 17, y: 14; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 17, y: 15; tile type: 2 (Plain), walkable: 1, blocks view: 0
+    x: 17, y: 16; tile type: 1 (Mountain), walkable: 0, blocks view: 1
