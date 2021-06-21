@@ -102,6 +102,10 @@ namespace SGA
 	std::string Action::getActionName() const
 	{
 		std::string name = "undefined";
+
+		if (actionTypeFlags == ActionFlag::EndTickAction)
+			name = "End Turn / Pass Action";
+
 		if (actionType)
 			name = actionType->name;
 
@@ -111,10 +115,12 @@ namespace SGA
 
 	const ActionSourceType Action::getActionSourceType() const
 	{
+		if(actionTypeFlags == ActionFlag::EndTickAction)
+			return SGA::ActionSourceType::Player;
+
 		if (actionType)
 			return actionType->sourceType;
 
 		return SGA::ActionSourceType::Player;
-		//EndTick seems to have a null actionType?
 	}
 }

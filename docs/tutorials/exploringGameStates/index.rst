@@ -1,9 +1,9 @@
 .. role:: cpp(code)
    :language: c++
 
-#############################
-Agents and Game States
-#############################
+################################
+Agents and Game States: Samples
+################################
 
 
 .. note::
@@ -383,6 +383,9 @@ which corresponds to a row in the board of the following state:
 Note that a portion of the board is occluded by fog (a grey/cloud-ish tile). This is the tile type (with id = -1)
 used for hiding information that is not visible to the current player.
 
+Entities
+***********************
+
 The game state also provides information about the entities that occupy the board. Given a position in the board (x,y)
 it's possible to query if there's an entity at that position with the function "getEntity(Vector2f)". Entities have an
 entity type, an owner and a certain set of parameters that be retrieved from the Entity object. The
@@ -423,3 +426,289 @@ And here's an extract of the output. See how the entity in the center is a city,
     x: 17, y: 14; tile type: 2 (Plain), walkable: 1, blocks view: 0
     x: 17, y: 15; tile type: 2 (Plain), walkable: 1, blocks view: 0
     x: 17, y: 16; tile type: 1 (Mountain), walkable: 0, blocks view: 1
+
+
+A more efficient way of retrieving the entities of a player is to directly ask for them to the
+game state. The function "getPlayerEntities(int playerID)" in GameState retrives all the entities of the player
+whose ID has been provided. The following code retrieves all the entities for the current player, whose ID can 
+be obtained using the "getPlayerID()" method in the Agent class. Note that now we are printing the position of 
+entity directly from the Entity object:
+
+.. code-block:: c++
+    :linenos:
+
+    std::vector<Entity*> myEntities = state.getPlayerEntities(this->getPlayerID());
+    for (const Entity* ent : myEntities)
+    {
+        std::cout << "Entity: " << ent->getEntityType().name << ", owner's player ID: " << ent->ownerID <<
+            ", position (x:" << ent->position.x << ", y:" << ent->position.y << "), parameters: " << std::endl;
+
+        std::unordered_map<std::string, double> params = ent->getEntityParameters();
+        for (const auto& [paramName, value] : params)
+            std::cout << "\t" << paramName << ": " << value << std::endl;
+    }
+
+This is an example of this output in a KillTheKing game for the Combat Agent (included in the framework), which
+controls multiple fighting units:
+
+.. code-block:: text
+
+    Entity: Archer, owner's player ID: 0, position (x:6, y:11), parameters:
+      AttackDamage: 10
+      AttackRange: 5
+      MovementPoints: 2
+      Health: 100
+    Entity: King, owner's player ID: 0, position (x:13, y:11), parameters:
+      AttackDamage: 100
+      AttackRange: 2
+      MovementPoints: 1
+      Health: 400
+    Entity: Warrior, owner's player ID: 0, position (x:7, y:11), parameters:
+      AttackDamage: 100
+      AttackRange: 2
+      MovementPoints: 2
+      Health: 200
+
+Naturally, you're also able to query for the entities of different players, although the result will be affected
+by the fog of war (i.e. only visible enemy entities will be visible). Player IDs are integers from 0 to 'numPlayers - 1',
+where the number of players can be retrieved from the game state with the function "getNumPlayers()".
+
+Entities can also be filtered by entity categories. Entity categories are defined in an enumerator in  
+`GameDescription.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Representation/GameDescription.h>`_:
+
+.. code-block:: c++
+    :linenos:
+
+    enum class EntityCategory
+	{
+		Null, //Default value, not used in YAML.
+		Base,
+		Building,
+		Spawner,
+		Unit,
+		NoFighter,
+		Fighter,
+		Melee,
+		Ranged
+	};
+
+These categories may be assigned to entity types in the YAML file that describes the game. For instance, in Kill the King, the 
+entity categories are defined as follows:
+
+.. code-block:: yaml
+
+    GameDescription:
+      Entities:
+        Unit: [King, Warrior, Archer, Healer]
+        Fighter: [Warrior, Archer]
+        NoFighter: [Healer]
+        Melee: [Warrior]
+        Ranged: [Archer]
+
+Hence, a call like this:
+
+.. code-block:: c++
+    :linenos:
+
+    std::vector<Entity*> myFigherUnits = state.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
+
+would retrieve the entities that only belong to the entity types 'Warrior' and 'Archer'.
+
+
+Player Parameters
+*****************************
+
+It is possible to also retrieve player parameters from the game state by providing a player ID. Examples of these parameters are the 
+score, the current level of production or gold (this is the case for the BasicTBS game). These parameters can be retrieved 
+by name, or all parameters in pairs <name, value>. Some useful functions from GameState are:
+
+#. std::vector<std::string> getPlayerParameterNames(int playerID) const;
+#. bool hasPlayerParameter(std::string paramName) const;
+#. double getPlayerParameter(int playerID, std::string paramName) const;
+
+For instance, the following snippet prints the parameter of the current player:
+
+
+.. code-block:: c++
+    :linenos:
+
+    std::unordered_map<std::string, double> params = state.getPlayerParameters(getPlayerID());
+    for (const auto& [param, val] : params)
+        std::cout << param << ": " << val << std::endl;
+
+        
+Technologies
+************************
+
+Finally, it is also possible to query about the technologies actually researched in the current game state. For instance, the
+following snippet shows the technologies in a research tree, indicating which ones have been researched and which ones are 
+available. Note that this code blends two types of data: static information (lines 1-5), which is constant through the game, and
+dynamic information (lines 7-9), which depends on a particular instant in the game:
+
+.. code-block:: c++
+    :linenos:
+
+    std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
+    for (const auto& [id, count] : techCounts)
+    {
+        std::vector<TechnologyTreeNode> techs = state.gameInfo->getTreeNodes(id);
+        for (TechnologyTreeNode t : techs)
+        {
+            bool isResearched = state.isResearched(getPlayerID(), t.id);
+            bool canBeResearched = state.canResearch(getPlayerID(), t.id);
+            std::cout << "Tech: " << t.name << " researched: " << isResearched << ", available: " << canBeResearched << std::endl;
+        }
+    }
+
+
+For the initial state in the game BasicTBS, the output of the code above is as follows:
+
+.. code-block:: text
+
+    Tech: Mining researched: 0, available: 1
+    Tech: Pottery researched: 0, available: 0
+    Tech: Apprenticeship researched: 0, available: 0
+    Tech: Archery researched: 0, available: 0
+    Tech: Bronze Working researched: 0, available: 0
+    Tech: Discipline researched: 0, available: 0
+    Tech: Engineering researched: 0, available: 0
+    Tech: Mathematics researched: 0, available: 0
+    Tech: Metallurgy researched: 0, available: 0
+
+    
+
+++++++++++++++++
+Forward Model and Actions
+++++++++++++++++
+
+The forward model allows the player to do advanced operations with game state objects. These operations are:
+
+#. Generate all actions available in a given state for a given player.
+#. Advance the current game state with an action.
+#. Checking win/lose conditions in the game state.
+
+
+Actions and Targets
+*******************
+
+The available actions of a game state can be retrieved with the function "generateActions()". This function 
+receives a state (for which actions need to be generated) and a player ID (who's meant to be able to execute
+those actions).  
+
+For instance, the following snippets retrieves all actions from a given state and prints some of its attributes.
+Note that these are actions that can be executed at this game state, and they differ from action types in that the
+latter are part of the *static* information of the game.
+
+.. code-block:: c++
+    :linenos:
+
+    std::vector<Action> actions = forwardModel.generateActions(state, getPlayerID());
+    for (Action act : actions)
+        std::cout << act.getActionName() << ", is entity action: " << act.isEntityAction() << std::endl;
+
+Action objects have **targets**, which are stored in the vector "targets" of the Action struct 
+(`Action.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/ForwardModel/Action.h>`_)
+These ActionTargets have many variables that can be consulted. Among them, the most relevant ones are:
+
+#. getPlayerID(): Id of the player who's target of this action.
+#. getEntityID(): Id of the entity, if any, who's target of this action.
+#. getPosition(): <x,y> position where this action takes place.
+#. getTechnologyID(): If this action is a research one, the ID of the technology that is to be researched by it.
+#. getType(): Returns the type of the target, which is one of the values defined in the "enum Type" from ActionTarget  
+(`ActionTarget.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/ForwardModel/ActionTarget.h>`_).
+
+Extending the previous code snippet, we can access (and print to console) extra information about the targets of the actions:
+
+
+.. code-block:: c++
+    :linenos:
+
+    std::vector<Action> actions = forwardModel.generateActions(state, getPlayerID());
+    for (Action act : actions)
+    {
+        std::cout << act.getActionName();
+        for (ActionTarget at : act.targets)
+        {
+            switch (at.getType())
+            {
+            case SGA::ActionTarget::Type::PlayerReference:
+                std::cout << ", for player " << at.getPlayerID();
+                break;
+            case SGA::ActionTarget::Type::Position:
+                std::cout << ", at position " << at.getPosition(state).x << "," << at.getPosition(state).y;
+                break;
+            case SGA::ActionTarget::Type::EntityTypeReference:
+                std::cout << ", entity type " << at.getEntityType(state).id;
+                break;
+            case SGA::ActionTarget::Type::EntityReference:
+                std::cout << ", by entity " << at.getEntityID();
+                break;
+            case SGA::ActionTarget::Type::TechnologyReference:
+                std::cout << ", for technology with ID " << at.getTechnologyID();
+            }
+        }
+        std::cout << std::endl;
+    }
+
+
+The output of this snippet for the initial game state of BasicTBS is as follows, which shows the name
+of the action (or action type), followed by its properties:
+
+.. code-block:: text
+    :caption: Note that this output has been reduced to save space.
+
+    Spawn, by entity 14, entity type 9, at position 15,13
+    Spawn, by entity 14, entity type 9, at position 16,12
+    Spawn, by entity 14, entity type 9, at position 16,13
+    [...]
+    Spawn, by entity 14, entity type 9, at position 18,13
+    Spawn, by entity 14, entity type 9, at position 18,14
+    Spawn, by entity 14, entity type 9, at position 19,13
+    End Turn / Pass Action, for player 0
+
+
+Note that actions become available depending on the conditions specified in their action type. Therefore, for instance,
+in this case there are no player research or build actions, because the pre-requisites (resources) are not met. In the
+BasicTBS game, certain resources are gained by turn, which allows these actions to appear after a few turns:
+
+.. code-block:: text
+    :caption: Note that this output has been reduced to save space.
+
+    Spawn, by entity 14, entity type 9, at position 15,13
+    Spawn, by entity 14, entity type 9, at position 16,12
+    Spawn, by entity 14, entity type 9, at position 16,13
+    [...]
+    Spawn, by entity 14, entity type 9, at position 18,13
+    Spawn, by entity 14, entity type 9, at position 18,14
+    Spawn, by entity 14, entity type 9, at position 19,13
+    Build, for player 0, entity type 3, at position 12,13
+    Build, for player 0, entity type 3, at position 13,11
+    [...]
+    Build, for player 0, entity type 3, at position 21,15
+    Build, for player 0, entity type 3, at position 22,13
+    Research, for player 0, for technology with ID 7
+    End Turn / Pass Action, for player 0
+
+
+Forward Model: Advance and Copy
+********************************
+
+The main objective of the forward model is to apply these actions to the game state. This can be done with a simple
+call:
+
+.. code-block:: c++
+    :linenos:
+
+    forwardModel.advanceGameState(state, action);
+
+This call **modifies** the object "state" by processing the action "action" and applying its effects in the game state.
+Therefore, in order to try different actions from a single state, it's necessary to make *copies* of the game state. In
+Stratega, copies of a GameState object can be obtained using the *copy constructor*. Hence, for a GameState variable 
+"state", the following expression creates a "gsCopy" variable which is an exact copy of "state":
+
+.. code-block:: c++
+    :linenos:
+
+    auto gsCopy(state);
+
+
