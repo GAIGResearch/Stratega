@@ -54,11 +54,11 @@ namespace SGA
 
 	int GameState::addEntity(const EntityType& type, int playerID, const Vector2f& position)
 	{
-		int nextEntityID = entities.size();
 		auto instance = type.instantiateEntity(nextEntityID);
 		instance.ownerID = playerID;
 		instance.position = position;
 		entities.emplace_back(std::move(instance));
+		nextEntityID++;
 
 		return instance.id;
 	}
