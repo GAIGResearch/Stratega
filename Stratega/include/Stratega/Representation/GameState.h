@@ -87,9 +87,11 @@ namespace SGA
 		/// Map that indicates if a technology is researched by a player. Key is the player ID and maps to a vector of technology IDs.
 		/// </summary>
 		std::unordered_map<int, std::vector<int>> researchedTechnologies;
-		
 
-
+		/// <summary>
+		/// The id that will be assigned to the next entity that is added to the game.
+		/// </summary>
+		int nextEntityID = 0;
 
 		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
 

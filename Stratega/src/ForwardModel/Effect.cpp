@@ -4,6 +4,8 @@
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 
+#include "Stratega/ForwardModel/FunctionParameter.h"
+
 namespace SGA
 {
 	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -159,6 +161,7 @@ namespace SGA
 	
 	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
+		auto sourceEntity = targets[0].getEntity(state);
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
 		targetEntity.ownerID = newOwner.id;
