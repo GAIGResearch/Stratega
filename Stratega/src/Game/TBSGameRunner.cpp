@@ -50,6 +50,8 @@ namespace SGA
 			forwardModel->advanceGameState(*currentState, nextAction);
 			renderer->update(*currentState);
 		}
+
+		tbsRenderer->closeWindow();
 	}
 
 	void TBSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)

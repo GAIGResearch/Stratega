@@ -53,6 +53,10 @@ namespace SGA
 		/// </summary>
 		/// <returns>True if the user wants to end the game, otherwise false.</returns>
 		virtual bool isGameEndRequested() = 0;
+		/// <summary>
+		/// Close the sfml window.
+		/// </summary>
+		virtual void closeWindow() = 0;
 	};
 
 	/// <summary>

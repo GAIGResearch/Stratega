@@ -13,8 +13,8 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
-#include "Stratega/Game/GameRunner.h"
-
+#include <Stratega/Game/GameRunner.h>
+#include <Stratega/Agent/AgentFactory.h>
 #include<Stratega/Game/AgentThread.h>
 
 #include <fstream>
@@ -22,6 +22,7 @@
 #include <filesystem>
 
 namespace py = pybind11;
+class PythonAgent;
 
 // STL
 PYBIND11_MAKE_OPAQUE(std::vector<double>);
@@ -30,64 +31,20 @@ PYBIND11_MAKE_OPAQUE(std::vector<SGA::Player>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
+PYBIND11_MAKE_OPAQUE(std::vector<PythonAgent>);
 
-void playPythonAgent(SGA::Agent* agent)
-{	
-	py::print("Running");
 
-	SGA::GameState state;
-	SGA::TBSForwardModel fm;
-	SGA::AgentThread agentThread;
-	agent->computeAction(state, &fm, 0);
-	//nextAction = results.actions;
-}
-
-void playPythonAgents(std::vector<std::shared_ptr<SGA::Agent>> agents)
-{
-	py::print("Running");
-	SGA::GameState state;
-	SGA::TBSForwardModel fm;
-	
-	//std::vector<std::shared_ptr<SGA::Agent>> agents2;
-
-	//for (auto agent : agents)
-	//{
-	//	agent.cast<std::shared_ptr<SGA::Agent>>();
-	////	auto newAgent = std::make_shared<SGA::Agent>(agent);
-	////	//agents2.emplace_back(newAgent);
-	////	//agent->computeAction2(state, &fm, 0);
-	//}
-
-	for(auto& agent : agents)
-	{
-		agent->computeAction(state, &fm, 0);
-	}
-}
-
-class PythonAgent
-{
-	std::unique_ptr<SGA::Agent> agent;
-
-	PythonAgent(std::string agentName)
-	{
-		//Create stratega agent
-	}
-	PythonAgent(SGA::Agent& agent)
-	{
-		this->agent = std::make_unique<SGA::Agent>(agent);
-	}
-};
 class PyAgent : public SGA::Agent {
 public:
 	/* Inherit the constructors */
 	using SGA::Agent::Agent;
 	using SGA::Agent::getPlayerID;
-	
+
 	/* Trampoline (need one for each virtual function) */
 	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::EntityForwardModel* forwardModel, long timeBudgetMs) override
 	{
 		/* Acquire GIL before calling Python code */
-		py::gil_scoped_acquire acquire;
+		//py::gil_scoped_acquire acquire;
 
 		PYBIND11_OVERRIDE_PURE(
 			SGA::ActionAssignment, /* Return type */
@@ -112,6 +69,7 @@ public:
 		);
 	}
 };
+
  void test()
  {
 	 std::cout << "Hello" << std::endl;
@@ -181,8 +139,6 @@ PYBIND11_MODULE(stratega, m)
 	m.def("createRunner", &createRunner, "Create game runner", py::arg("gameConfig"));
 	m.def("generateAgents", &generateAgents, "Generate agents", py::arg("gameConfig"));
 	m.def("initializeAgents", &initializeAgents, "Initialize agents", py::arg("agents"), py::arg("seed"));
-	m.def("playPythonAgent", &playPythonAgent, "playPythonAgent", py::arg("agent"));
-	m.def("playPythonAgents", &playPythonAgents, "playPythonAgents", py::arg("agents"));
 
 	m.def("test", &test,
 		py::call_guard<py::scoped_ostream_redirect,
@@ -195,6 +151,7 @@ PYBIND11_MODULE(stratega, m)
 	//py::bind_vector<std::vector<SGA::Action>>(m, "ActionList", py::module_local(false));
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
+	//py::bind_vector<std::vector<PythonAgent>>(m, "AgentList2");
 	/*py::bind_vector<std::vector<std::shared_ptr<PyAgent>>>(m, "AgentList2");
 	py::implicitly_convertible<py::list, std::vector<std::shared_ptr<SGA::Agent>>>();*/
 
@@ -289,13 +246,54 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("initializeAgents", &SGA::GameRunnerPy::initializeAgents)
-		.def("play", &SGA::GameRunnerPy::play, py::arg("agents"), py::call_guard<py::gil_scoped_release>())
-		.def("run2", &SGA::GameRunnerPy::run2, py::arg("agents"), py::call_guard<py::gil_scoped_release>())
-		.def("play2", &SGA::GameRunnerPy::play2, py::arg("agent"), py::call_guard<py::gil_scoped_release>())
-		//.def(py::pickle([](const SGA::GameRunner& p)
-		//	{ // __getstate__
-		//		/* Return a tuple that fully encodes the state of the object */
-		//		return py::make_tuple("", "test");}))
+		.def("play",
+			[](SGA::GameRunner& a, py::list agents) {
+				py::print("play agents");
+
+				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
+				for (auto& agent : agents)
+				{
+					if (pybind11::str(agent,true).check())
+					{
+						py::print(agent.cast<std::string>());
+						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
+					}
+					else
+					{
+						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
+						py::print("casted Agent");
+						newAgents.emplace_back(castedAgent);
+					}
+				}
+				py::print("play agents2");
+				py::gil_scoped_release release;
+				a.play(newAgents);
+			}
+		)
+		.def("run",
+			[](SGA::GameRunner& a, py::list agents) {
+				py::print("run agents");
+
+				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
+				for (auto& agent : agents)
+				{
+					if (pybind11::str(agent, true).check())
+					{
+						py::print(agent.cast<std::string>());
+						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
+					}
+					else
+					{
+						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
+						py::print("casted Agent");
+						newAgents.emplace_back(castedAgent);
+					}
+				}
+				py::print("run agents2");
+				py::gil_scoped_release release;
+				a.run(newAgents);
+			}
+		)
 		;
 
 	// ---- Action ----	
@@ -327,7 +325,6 @@ PYBIND11_MODULE(stratega, m)
 		.def(py::init<>())
 		.def("computeAction", &SGA::Agent::computeAction, py::return_value_policy::reference)
 		.def("getPlayerID", &SGA::Agent::getPlayerID);
-
 
 	// Add a scoped redirect for your noisy code
 	m.def("noisy_func", []() {

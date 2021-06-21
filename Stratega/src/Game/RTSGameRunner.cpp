@@ -49,6 +49,8 @@ namespace SGA
 			forwardModel->advanceGameState(*currentState, nextAction);
 			renderer->update(*currentState);
 		}
+
+		renderer->closeWindow();
 	}
 
 	void RTSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
