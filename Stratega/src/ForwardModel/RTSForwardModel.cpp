@@ -557,7 +557,7 @@ namespace SGA
 		for (Player& player : state.players)
 		{
 			//Check if player won
-			if(player.canPlay && checkPlayerWon(state, player))
+			if(player.canPlay && checkPlayerWon(state, player.id))
 			{
 				winnerID = player.id;
 				
@@ -566,7 +566,7 @@ namespace SGA
 			}
 
 			//Check if player can play
-			if (player.canPlay && !checkPlayerLost(state, player))
+			if (player.canPlay && !checkPlayerLost(state, player.id))
 			{
 				winnerID = player.id;
 				numberPlayerCanPlay++;

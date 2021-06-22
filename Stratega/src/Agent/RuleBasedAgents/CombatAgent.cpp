@@ -208,49 +208,8 @@ namespace SGA
 		}
 		actionTypeIDToActionTypeString[-1] = "EndTurn";
 
-		//Receive specific parameters
-		//Check if this parameters are available in the current game
-		if(currentState.hasPlayerParameter("Gold"))
-			double nGold = currentState.getPlayerParameter(0, "Gold");
-
-		if (currentState.hasPlayerParameter("Prod"))
-			double nProd = currentState.getPlayerParameter(1, "Prod");
-
-
-		std::vector<std::string> paramNames = currentState.getPlayerParameterNames(0);
-		std::unordered_map<std::string, double> playerParams = currentState.getPlayerParameters(0);
-		int score = currentState.getPlayerScore(0);
-
-		//std::cout << std::to_string(currentState.currentTick) << ": " << std::to_string(score) << std::endl;
-
-		std::vector<ActionType> actionTypes = currentState.getPlayerActionTypes(0);
-
-
-		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
-
-		// Get my units and opponent units
-		//std::vector<Entity*> myUnits = currentState.getPlayerEntities(getPlayerID());
-		std::vector<Entity*> opponentUnits = currentState.getNonPlayerEntities(getPlayerID(), SGA::EntityCategory::Unit);
-		std::vector<Entity*> myFigherUnits = currentState.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
 		std::vector<Entity*> myUnits = currentState.getPlayerEntities(getPlayerID());
-		std::vector<Entity*> allOppUnits = currentState.getNonPlayerEntities(getPlayerID());
-
-		std::vector<ActionType> actionTypesEnt;
-		int entID = 0;
-		if (myUnits.size() > 0)
-		{
-			Entity* ent = myUnits[0];
-			entID = ent->id;
-			actionTypesEnt = ent->getActionTypes(*currentState.gameInfo);	
-		}
-
-		const auto actionSpace = fm.generateActions(currentState, getPlayerID());
-		//const auto actionSpaceF = this->filterActionsByTypeID(actionSpace, 5);
-		//const auto actionSpaceF = this->filterActionsByName(actionSpace, "Spawn");
-		//const auto actionSpaceF = this->filterActionsByFlag(actionSpace, SGA::ActionFlag::EndTickAction);
-		//const auto actionSpaceF = this->filterActionsBySource(actionSpace, SGA::ActionSourceType::Player);
-		const auto actionSpaceP = this->filterActionsByPlayerID(actionSpace, this->getPlayerID());
-		const auto actionSpaceE = this->filterActionsByEntityID(actionSpace, entID); 
+		std::vector<Entity*> opponentUnits = currentState.getNonPlayerEntities(getPlayerID());
 
 
 		// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
