@@ -33,6 +33,7 @@ Stratega Docs
 
    tutorials/implementAgent/index
    tutorials/exploringGameStates/index
+   tutorials/implementOSLA/index
    tutorials/definingANewGame/index
 
 .. toctree::

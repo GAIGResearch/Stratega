@@ -212,7 +212,7 @@ namespace SGA
 		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
 		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
-		std::vector< Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
+		std::vector<Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
 
 		/// <summary>
 		/// Gets the list of entities that do not belong to the specified player.
@@ -220,7 +220,7 @@ namespace SGA
 		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
 		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities not own by the given player.</returns>
-		std::vector< Entity*> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
+		std::vector<Entity*> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
 
 
 

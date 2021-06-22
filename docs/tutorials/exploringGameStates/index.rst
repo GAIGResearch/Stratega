@@ -712,3 +712,7 @@ Stratega, copies of a GameState object can be obtained using the *copy construct
     auto gsCopy(state);
 
 
+Advancing and creating copies of the game state are two essential operations required to build statistical forward planning
+agents, such as Monte Carlo Tree Search and Rolling Horizon Evolutionary Algorithms (included in the framework). In the 
+tutorial :ref:`Implementing One Step Look Ahead <implement_osla>` we show how to use these two artifacts to build
+an agent that uses action sampling to determine the move to make in the next game, plus an heuristic to evaluate game states.

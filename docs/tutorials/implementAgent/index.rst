@@ -1,3 +1,5 @@
+.. _implement_agent:
+
 .. role:: cpp(code)
    :language: c++
 
