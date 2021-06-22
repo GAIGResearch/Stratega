@@ -1,3 +1,5 @@
+.. _agent_game_states:
+
 .. role:: cpp(code)
    :language: c++
 
