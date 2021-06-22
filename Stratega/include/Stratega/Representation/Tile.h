@@ -35,6 +35,13 @@ namespace SGA
 		/// Position <x,y> of this tile in the board.
 		/// </summary>
 		Vector2i position;
+
+
+		/// <summary>
+		/// Returns the name of this tile type
+		/// </summary>
+		/// <returns>Name ot the tile type of this type.</returns>
+		const std::string name() const;
 		
 	private:
 
