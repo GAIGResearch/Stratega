@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Representation/Path.h>
 
 #include <chrono>
@@ -10,14 +10,14 @@
 namespace  SGA
 {
 	/// <summary>
-	/// Is the default <see cref="SGA::EntityForwardModel"/> for RTS games, it contains specific methods.
+	/// Is the default <see cref="SGA::yForwardModel"/> for RTS games, it contains specific methods.
 	/// Each <see cref="SGA::RTSForwardModel::advanceGameState()"/> call move all the entities and resolve the collisions before
 	/// executing all the received actions.
 	/// After executing the actions it updates the entities that should be
 	/// removed before checking if the game is over.
 	/// The <see cref="SGA::RTSForwardModel::advanceGameState()"/> accepts a list of actions or one single action.
 	/// </summary>
-	class RTSForwardModel : public EntityForwardModel
+	class RTSForwardModel : public ForwardModel
 	{
 	public:
 		double deltaTime;
@@ -41,7 +41,7 @@ namespace  SGA
 		/// </summary>
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 
-		std::unique_ptr<EntityForwardModel> clone() const override;
+		std::unique_ptr<ForwardModel> clone() const override;
 
 		/// <summary>
 		/// Moves all the entities that have a current path and they did not reach their destination.

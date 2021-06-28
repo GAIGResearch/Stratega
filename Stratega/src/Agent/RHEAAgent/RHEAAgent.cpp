@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-    ActionAssignment RHEAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+    ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, long /*timeBudgetMs*/)
     {
         if (state.gameType != GameType::TBS)
         {

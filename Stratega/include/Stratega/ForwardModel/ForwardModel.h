@@ -40,7 +40,7 @@ namespace SGA
 	/// The forward models can be extended by implementing forward model abstractions, can be useful for reducing the games
 	/// complexity and ease the training and decision-making process of AI agents. 
 	/// </summary>
-	class EntityForwardModel
+	class ForwardModel
 	{
 
 	public:
@@ -66,8 +66,8 @@ namespace SGA
 		std::vector<std::vector<std::shared_ptr<Condition>>> loseConditions;
 		
 		//Constructor/destructor
-		virtual ~EntityForwardModel() = default;
-		EntityForwardModel();
+		virtual ~ForwardModel() = default;
+		ForwardModel();
 
 		/// <summary>
 		/// Advances the game state passed by parameter with a given action. 
@@ -103,7 +103,7 @@ namespace SGA
 		/// Clones the current forward model.
 		/// </summary>
 		/// <returns>A copy of this forward model.</returns>
-		virtual std::unique_ptr<EntityForwardModel> clone() const = 0;
+		virtual std::unique_ptr<ForwardModel> clone() const = 0;
 
 		/// <summary>
 		/// Checks if a player has lost the game due to the game's lose conditions.

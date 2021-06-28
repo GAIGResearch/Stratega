@@ -10,8 +10,8 @@ namespace SGA
 	class CombatAgent : public Agent
 	{
 	public:
-		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
-		void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
 		UnitTypeStrengthLookup unitScores;
@@ -23,7 +23,7 @@ namespace SGA
 		/// <summary>
 		/// Plays actions until the agent's turn is over
 		/// </summary>
-		ActionAssignment playTurn(GameState& state, const EntityForwardModel& fm);
+		ActionAssignment playTurn(GameState& state, const ForwardModel& fm);
 
 		/// <summary>
 		/// Filters out all moves that are not within the specified radius.

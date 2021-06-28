@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <Stratega/GUI/GameRenderer.h>
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
@@ -81,7 +81,7 @@ namespace SGA
 		
 		virtual void checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID);
 
-		std::unique_ptr<EntityForwardModel> forwardModel;
+		std::unique_ptr<ForwardModel> forwardModel;
 		std::unique_ptr<GameRenderer> renderer;
 		std::unique_ptr<GameState> currentState;
 		const GameConfig* config;

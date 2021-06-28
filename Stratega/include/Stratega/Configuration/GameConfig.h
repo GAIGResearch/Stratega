@@ -28,7 +28,7 @@ namespace SGA
         std::unordered_map<int, TileType> tileTypes;
 
     	//ForwardModel
-        std::unique_ptr<EntityForwardModel> forwardModel;
+        std::unique_ptr<ForwardModel> forwardModel;
     	
     	// Players
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;

@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	void Action::execute(GameState& state, const EntityForwardModel& fm) const
+	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
 		auto& type = state.gameInfo->actionTypes->at(getActionTypeID());
 		for (auto& effect : type.effects)

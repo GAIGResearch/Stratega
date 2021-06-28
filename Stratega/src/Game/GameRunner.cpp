@@ -3,7 +3,7 @@
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/GUI/GameRenderer.h>
 

@@ -12,8 +12,8 @@ public:
 	void runGames(int playerCount, int seed, int gamesNumber, int mapNumber=1);
 	void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
 
-	void onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel) override;
-	void onGameFinished(const SGA::GameState& finalState, const SGA::EntityForwardModel& forwardModel) override;
+	void onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel) override;
+	void onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel) override;
 	
 private:
 	const SGA::GameConfig* config;

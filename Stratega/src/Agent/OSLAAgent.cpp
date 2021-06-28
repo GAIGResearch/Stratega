@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	ActionAssignment OSLAAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+	ActionAssignment OSLAAgent::computeAction(GameState state, const ForwardModel& forwardModel, long /*timeBudgetMs*/)
 	{
 		if(state.gameType != GameType::TBS)
 		{
@@ -20,7 +20,7 @@ namespace SGA
 		{
 			GameState gsCopy(state);
 			forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-			const double value = heuristic.evaluateGameState(dynamic_cast<const TBSForwardModel&>(forwardModel), gsCopy, getPlayerID());
+			const double value = heuristic.evaluateGameState(forwardModel, gsCopy, getPlayerID());
 			if (value > bestHeuristicValue)
 			{
 				bestHeuristicValue = value;
