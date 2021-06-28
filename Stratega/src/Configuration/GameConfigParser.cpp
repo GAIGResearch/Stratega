@@ -463,7 +463,7 @@ namespace SGA
             throw std::runtime_error("Cannot find a definition for the ForwardModel");
         }
 		
-        std::unique_ptr<EntityForwardModel> fm;
+        std::unique_ptr<ForwardModel> fm;
 		if(config.gameType == GameType::TBS)
 		{
             fm = std::make_unique<TBSForwardModel>();

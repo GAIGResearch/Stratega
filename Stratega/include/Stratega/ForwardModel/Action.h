@@ -15,10 +15,10 @@ namespace SGA
 		int lastExecutedTick;
 	};
 	
-	class EntityForwardModel;
+	class ForwardModel;
 
 	/// <summary>
-	/// Used to define how the <see cref="SGA::EntityForwardModel::executeAction()"/> will execute this action.
+	/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
 	/// </summary>
 	enum class ActionFlag
 	{
@@ -46,7 +46,7 @@ namespace SGA
 		}
 		
 		/// <summary>
-		/// Used to define how the <see cref="SGA::EntityForwardModel::executeAction()"/> will execute this action.
+		/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
 		/// </summary>
 		ActionFlag actionTypeFlags;
 		
@@ -76,7 +76,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">Game state in which this action is executed</param>
 		/// <param name="fm">Forward model used to execute the aciton.</param>
-		void execute(GameState& state, const EntityForwardModel& fm) const;
+		void execute(GameState& state, const ForwardModel& fm) const;
 
 		/// <summary>
 		/// Checks if this action can be executed.

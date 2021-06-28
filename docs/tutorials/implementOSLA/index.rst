@@ -30,7 +30,7 @@ In order to implement this agent, first we setup the agent as indicated at the s
 a class that inherits from "Agent", override the *computeAction* function and finally register the agent in the AgentFactory::getDefaultFactory() method to be able to test it.
 
 The first step to implement OSLA is (in *computeAction*) to compute all available actions from the current state. The tools to do this are passed by parameter to the 
-*computeAction* method: the GameState and the EntityForwardModel objects. The function *generateActions* in EntityForwardModel can be used as indicated in the following
+*computeAction* method: the GameState and the ForwardModel objects. The function *generateActions* in ForwardModel can be used as indicated in the following
 snippet, which also runs through all actions in the returned list:
 
 .. code-block:: c++
@@ -38,7 +38,7 @@ snippet, which also runs through all actions in the returned list:
     #include <Stratega/Agent/DoNothing/MyAgent.h>
     namespace SGA
     {
-        ActionAssignment MyAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
         {
             std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
             for (int i = 0; i < actionSpace.size(); i++)
@@ -50,7 +50,7 @@ snippet, which also runs through all actions in the returned list:
 *generateActions* also receives a player ID, the one from the player for whom actions must be generated. The ID of the current player can be obtained by using "getPlayerID()",
 as described in the :ref:`Agents and Game States <agent_game_states>` section.
 
-The next step is to advance the state with each one of these actions.  The EntityForwardModel *advanceGameState* function receives a game state object and an action. This 
+The next step is to advance the state with each one of these actions.  The ForwardModel *advanceGameState* function receives a game state object and an action. This 
 function executes that action in the game state received, **modifying** the game state that is passed by parameter. Given that we can only *advance* the state (and not 
 go *back*), we also need to make a copy of the current state, for each new action we want to try. Copying a game state is simple, as we can just the *copy constructor* of C++.
 
@@ -105,7 +105,7 @@ The only thing missing now is to include the logic that keeps a reference to the
 
 .. code-block:: c++
 
-    ActionAssignment MyAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+    ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
     {
         std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
 

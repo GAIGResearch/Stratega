@@ -91,7 +91,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	SGA::Log::getDefaultLogger().flush();
 }
 
-void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel)
+void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel)
 {
 	if(state.gameType == SGA::GameType::TBS)
 	{
@@ -113,7 +113,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityFo
 	}
 }
 
-void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::EntityForwardModel& forwardModel)
+void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
 {
 	if (finalState.gameType == SGA::GameType::TBS)
 	{

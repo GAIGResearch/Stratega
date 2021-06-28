@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	AgentResults runAgent(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		assert(0 <= agent.getPlayerID() && agent.getPlayerID() < state.players.size());
 
@@ -44,7 +44,7 @@ namespace SGA
 		}
 	}
 
-	void AgentThread::startComputing(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	void AgentThread::startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);

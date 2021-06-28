@@ -54,7 +54,7 @@ PYBIND11_MODULE(stratega, m) {
 	py::class_<SGA::Player>(m, "Player")
 		.def(py::init<>())
 		.def_readwrite("id", &SGA::Player::id)
-		.def_readwrite("score", &SGA::Player::score)
+		//.def_readwrite("score", &SGA::Player::score)
 		.def_readwrite("can_play", &SGA::Player::canPlay)
 		.def_readwrite("parameters", &SGA::Player::parameters);
 

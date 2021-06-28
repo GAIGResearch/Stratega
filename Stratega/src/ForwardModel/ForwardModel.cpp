@@ -1,25 +1,25 @@
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {
-	EntityForwardModel::EntityForwardModel()
+	ForwardModel::ForwardModel()
 		: actionSpace(generateDefaultActionSpace())
 	{
 	}
 	
-	std::vector<Action> EntityForwardModel::generateActions(const GameState& state, int playerID) const
+	std::vector<Action> ForwardModel::generateActions(const GameState& state, int playerID) const
 	{
 		std::vector<Action> actionBucket;
 		generateActions(state, playerID, actionBucket);
 		return actionBucket;
 	}
 
-	void EntityForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
+	void ForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
 	
-	bool EntityForwardModel::checkPlayerLost(const GameState& state, int playerID) const
+	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{
 		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
 			return false;
@@ -40,7 +40,7 @@ namespace SGA
 		return false;
 	}
 
-	bool EntityForwardModel::checkPlayerWon(const GameState& state, int playerID) const
+	bool ForwardModel::checkPlayerWon(const GameState& state, int playerID) const
 	{
 		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
 			return false;
@@ -72,7 +72,7 @@ namespace SGA
 		return false;
 	}
 
-	void EntityForwardModel::executeAction(GameState& state, const Action& action) const
+	void ForwardModel::executeAction(GameState& state, const Action& action) const
 	{
 		if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 		{
@@ -189,7 +189,7 @@ namespace SGA
 		}
 	}
 
-	void EntityForwardModel::endTick(GameState& state) const
+	void ForwardModel::endTick(GameState& state) const
 	{
 		state.currentTick++;
 
@@ -359,7 +359,7 @@ namespace SGA
 		}
 	
 
-	void EntityForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
+	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
 

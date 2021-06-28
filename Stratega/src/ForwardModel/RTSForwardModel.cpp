@@ -586,7 +586,7 @@ namespace SGA
 		return false;
 	}
 
-	std::unique_ptr<EntityForwardModel> RTSForwardModel::clone() const
+	std::unique_ptr<ForwardModel> RTSForwardModel::clone() const
 	{
 		return std::make_unique<RTSForwardModel>(*this);
 	}

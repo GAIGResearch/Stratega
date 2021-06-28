@@ -57,7 +57,7 @@ We'll call our agent's class ``DoNothing`` and we plan to override the method *c
         class DoNothing : public Agent
         {
         public:
-            ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
         };
     }
 
@@ -76,7 +76,7 @@ The code would look like this now:
     #include <Stratega/Agent/DoNothing/DoNothing.h>
     namespace SGA
     {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
         {
         
         }
@@ -92,7 +92,7 @@ As simple as shown in the next snippet:
 
     namespace SGA
     {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
         {
             return ActionAssignment();
         }
@@ -118,7 +118,7 @@ We use it in the following snippet to complete the code for our agent:
 
     namespace SGA
     {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
         {
             if (state.gameType == GameType::RTS)
                 return ActionAssignment();
@@ -198,7 +198,7 @@ set up this agent is the same as for the DoNothing agent (and any other agent in
         class MyAgent : public Agent
         {
         public:
-            ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
         };
     }
 
@@ -237,7 +237,7 @@ line completes the code for this function:
 
     namespace SGA
     {
-        ActionAssignment RandomAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long /*timeBudgetMs*/)
+        ActionAssignment RandomAgent::computeAction(GameState state, const ForwardModel& forwardModel, long /*timeBudgetMs*/)
         {
             // Generate all available actions
             auto actions = forwardModel.generateActions(state, getPlayerID());

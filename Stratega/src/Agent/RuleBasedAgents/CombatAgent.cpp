@@ -200,7 +200,7 @@ namespace SGA
 		return 0;
 	}
 
-	ActionAssignment CombatAgent::playTurn(GameState& currentState, const EntityForwardModel& fm)
+	ActionAssignment CombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
 		for (const auto a : *currentState.gameInfo->actionTypes)
 		{
@@ -345,12 +345,12 @@ namespace SGA
 
 
 
-	void CombatAgent::init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	void CombatAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		//Init stuff goes here.
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
 		return playTurn(state, forwardModel);

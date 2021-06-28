@@ -1,7 +1,7 @@
 #pragma once
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <random>
 
 namespace SGA
@@ -24,7 +24,7 @@ namespace SGA
 		/// <param name="initialState">Copy of the initial state of the game.</param>
 		/// <param name="forwardModel">Forward Model of the game.</param>
 		/// <param name="timeBudgetMs">Number of milliseconds to return an action</param>
-		virtual void init(GameState initialState, const EntityForwardModel& forwardModel, long timeBudgetMs);
+		virtual void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs);
 
 		/// <summary>
 		/// Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment
@@ -34,7 +34,7 @@ namespace SGA
 		/// <param name="forwardModel">Forward model of the game.</param>
 		/// <param name="timeBudgetMs">Time in milliseconds to return an action</param>
 		/// <returns></returns>
-		virtual ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) = 0;
+		virtual ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) = 0;
 
 		/// <summary>
 		/// Returns this player's ID.

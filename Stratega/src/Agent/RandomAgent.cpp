@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment RandomAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+	ActionAssignment RandomAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		// Generate all available actions
 		auto actions = forwardModel.generateActions(state, getPlayerID());
