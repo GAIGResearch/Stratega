@@ -4,9 +4,9 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - HumanAgent
+    #- HumanAgent
     - CombatAgent
-    #- CombatAgent
+    - OSLAAgent
 
 Tiles:
     Plain:
@@ -75,7 +75,7 @@ Actions:
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 1
+                        SearchSize: 10
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
@@ -158,6 +158,7 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+
 #Action categories
 GameDescription:
     Type: CombatGame

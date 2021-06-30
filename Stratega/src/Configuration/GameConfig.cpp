@@ -114,8 +114,7 @@ namespace SGA
 		
 		return std::move(state);
 	}
-
-
+	
 	size_t GameConfig::getNumberOfPlayers() const
 	{
 		return numPlayers == -1 ? agentParams.size() : numPlayers;

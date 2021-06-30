@@ -105,7 +105,7 @@ namespace SGA
 		}
 		std::string getValueString(const GameState& state) const;
 		//Check if this action target is valid in the received gamestate
-		static bool isValid(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
+		static bool isValidWithTargets(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
 
 		//Check if action target is valid in the received gamestate
 		bool isValid(const GameState& state) const;		

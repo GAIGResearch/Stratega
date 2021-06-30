@@ -363,7 +363,7 @@ namespace SGA::Widgets
 			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
 				return;			
 
-			if (ActionTarget::isValid(state, actionType, newAction.targets))
+			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
 		}
 	}
@@ -395,7 +395,7 @@ namespace SGA::Widgets
 			//The entity should be able to execute this action type
 			newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);
 
-			if (ActionTarget::isValid(state, actionType, newAction.targets))
+			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
 				actionsToExecute.emplace_back(newAction);
 		}
 	}

@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+#include <pybind11/stl.h>
 #include <pybind11/complex.h>
 #include <pybind11/functional.h>
 #include <pybind11/chrono.h>
@@ -15,8 +16,8 @@
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/Game/GameRunner.h>
 #include <Stratega/Agent/AgentFactory.h>
-#include<Stratega/Game/AgentThread.h>
-
+#include <Stratega/Game/AgentThread.h>
+#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
@@ -33,6 +34,71 @@ PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
 PYBIND11_MAKE_OPAQUE(std::vector<PythonAgent>);
 
+class PyCondition : public SGA::Condition {
+public:
+	/* Inherit the constructors */
+	using SGA::Condition::Condition;
+
+	/* Trampoline (need one for each virtual function) */
+	bool isFullfilled(const SGA::GameState& state, const std::vector<SGA::ActionTarget>& targets)const override {
+		PYBIND11_OVERRIDE_PURE(
+			bool, /* Return type */
+			SGA::Condition,      /* Parent class */
+			isFullfilled,          /* Name of function in C++ (must match Python name) */
+			state,
+			targets/* Argument(s) */
+		);
+	}
+};
+
+class PySamplingMethod : public SGA::SamplingMethod {
+public:
+	/* Inherit the constructors */
+	using SGA::SamplingMethod::SamplingMethod;
+
+	/* Trampoline (need one for each virtual function) */
+	std::vector<SGA::Vector2i>getPositions(const SGA::GameState& gameState, const SGA::Vector2f& position)const override
+	{
+		PYBIND11_OVERRIDE_PURE(
+			std::vector<SGA::Vector2i>, /* Return type */
+			SGA::SamplingMethod,      /* Parent class */
+			getPositions,          /* Name of function in C++ (must match Python name) */
+			gameState,
+			position/* Argument(s) */
+		);
+	}
+
+	/* Trampoline (need one for each virtual function) */
+	std::vector<int>getEntities(const SGA::GameState& gameState, const SGA::Vector2f& position, const std::unordered_set<int>& entityTypeIDs)const override
+	{
+		PYBIND11_OVERRIDE_PURE(
+			std::vector<int>, /* Return type */
+			SGA::SamplingMethod,      /* Parent class */
+			getEntities,          /* Name of function in C++ (must match Python name) */
+			gameState,
+			position,/* Argument(s) */
+			entityTypeIDs/* Argument(s) */
+		);
+	}
+};
+
+class PyEffect : public SGA::Effect {
+public:
+	/* Inherit the constructors */
+	using SGA::Effect::Effect;
+
+	/* Trampoline (need one for each virtual function) */
+	void execute(SGA::GameState& state, const SGA::EntityForwardModel& fm, const std::vector<SGA::ActionTarget>& targets)const override {
+		PYBIND11_OVERRIDE_PURE(
+			void, /* Return type */
+			SGA::Effect,      /* Parent class */
+			execute,          /* Name of function in C++ (must match Python name) */
+			state,
+			fm,
+			targets/* Argument(s) */
+		);
+	}
+};
 
 class PyAgent : public SGA::Agent {
 public:
@@ -43,61 +109,28 @@ public:
 	/* Trampoline (need one for each virtual function) */
 	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::EntityForwardModel* forwardModel, long timeBudgetMs) override
 	{
-		/* Acquire GIL before calling Python code */
-		//py::gil_scoped_acquire acquire;
-
 		PYBIND11_OVERRIDE_PURE(
-			SGA::ActionAssignment, /* Return type */
-			SGA::Agent,      /* Parent class */
-			computeAction,          /* Name of function in C++ (must match Python name) */
+			SGA::ActionAssignment,
+			SGA::Agent,
+			computeAction,
 			state,
 			forwardModel,
-			timeBudgetMs    /* Argument(s) */
+			timeBudgetMs
 		);
 	}
 
-	/* Trampoline (need one for each virtual function) */
 	void computeAction2(SGA::GameState state, const SGA::EntityForwardModel* forwardModel, long timeBudgetMs) override
 	{
 		PYBIND11_OVERRIDE(
 			void,
-			SGA::Agent,      /* Parent class */
-			computeAction2,          /* Name of function in C++ (must match Python name) */
+			SGA::Agent,
+			computeAction2,
 			state,
 			forwardModel,
-			timeBudgetMs    /* Argument(s) */
+			timeBudgetMs
 		);
 	}
 };
-
- void test()
- {
-	 std::cout << "Hello" << std::endl;
-	 printf("Hello Stratega");
- }
-
-void runDefault()
- {
-	std::mt19937 rngEngine(0);
-	std::string configPath("../../../gameConfigs/TBS/KillTheKing.yaml");
-	auto gameConfig = SGA::loadConfigFromYAML(configPath);
-
-	auto agents = gameConfig->generateAgents();
-	// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
-	for (auto& agent : agents)
-	{
-		auto seed = seedDist(rngEngine);
-		// Ignore human player
-		if (agent != nullptr)
-		{
-			agent->setSeed(seed);
-		}
-	}
-
-	auto gameRunner = SGA::createGameRunner(*gameConfig);
-	gameRunner->play(agents);
- }
 
  std::unique_ptr<SGA::GameConfig> loadConfig(std::string& path)
  {
@@ -106,7 +139,6 @@ void runDefault()
 
  std::unique_ptr<SGA::GameRunner> createRunner(const SGA::GameConfig* gameConfig)
  {
-	 //py::list < std::unique_ptr<SGA::Agent> test;
 	 return SGA::createGameRunner(*gameConfig);
  }
 
@@ -135,26 +167,52 @@ PYBIND11_MODULE(stratega, m)
 {
     m.doc() = "Stratega python bindings"; // optional module docstring
 
-	m.def("loadConfig", &loadConfig, "Loads game config", py::arg("path"));
-	m.def("createRunner", &createRunner, "Create game runner", py::arg("gameConfig"));
-	m.def("generateAgents", &generateAgents, "Generate agents", py::arg("gameConfig"));
-	m.def("initializeAgents", &initializeAgents, "Initialize agents", py::arg("agents"), py::arg("seed"));
-
-	m.def("test", &test,
-		py::call_guard<py::scoped_ostream_redirect,
-		py::scoped_estream_redirect>());
-	m.def("runDefault", &runDefault, "Run default main");
+	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
+	m.def("create_runner", &createRunner, "Create game runner", py::arg("gameConfig"));
+	m.def("generate_agents", &generateAgents, "Generate agents", py::arg("gameConfig"));
+	m.def("initialize_agents", &initializeAgents, "Initialize agents", py::arg("agents"), py::arg("seed"));
  	
-	// ---- STL ----
+	// ---- STL binds----
+	//Basic list
 	py::bind_vector<std::vector<double>>(m, "DoubleList");
-	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
-	//py::bind_vector<std::vector<SGA::Action>>(m, "ActionList", py::module_local(false));
-	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
-	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
-	//py::bind_vector<std::vector<PythonAgent>>(m, "AgentList2");
-	/*py::bind_vector<std::vector<std::shared_ptr<PyAgent>>>(m, "AgentList2");
-	py::implicitly_convertible<py::list, std::vector<std::shared_ptr<SGA::Agent>>>();*/
+	py::bind_vector<std::vector<int>>(m, "IntList");
 
+	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
+	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
+
+	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
+
+	py::bind_vector<std::vector<SGA::ActionTarget>>(m, "ActionTargetList");
+
+	//Types
+	py::bind_map<std::unordered_map<int, SGA::TileType>>(m, "TileTypesMap");
+	py::bind_map<std::unordered_map<int, SGA::EntityType>>(m, "EntityTypesMap");
+	py::bind_map<std::unordered_map<int, SGA::ActionType>>(m, "ActionTypesMap");
+
+	//Actions stuff:
+	py::bind_vector<std::vector<std::pair<SGA::TargetType, std::vector<std::shared_ptr<SGA::Condition>>>>>(m, "ActionTargetsList");
+	py::bind_vector<std::vector<std::shared_ptr<SGA::Condition>>>(m, "ConditionsList");
+	py::bind_vector<std::vector<std::shared_ptr<PyCondition>>>(m, "PyConditionsList");
+	py::bind_vector<std::vector<std::shared_ptr<SGA::Effect>>>(m, "EffectsList");
+
+	//Parameters
+	py::bind_map<std::unordered_map<std::string, SGA::ParameterID>>(m, "ParametersMap");
+	py::bind_map<std::unordered_map<SGA::ParameterID, SGA::Parameter>>(m, "PlayerParameterTypesMap");
+
+	//Entities
+	py::bind_map<std::unordered_map<std::string, std::unordered_set<int>>>(m, "EntityGroupsMap");
+
+	//Levels
+	py::bind_map<std::unordered_map<int, SGA::LevelDefinition>>(m, "LevelDefinitionsMap");
+
+	//Cost
+	py::bind_map<std::unordered_map<SGA::ParameterID, double>>(m, "CostMap");
+
+	//Categories
+	py::bind_map<std::unordered_map<SGA::ActionCategory, std::vector<int>>>(m, "ActionCategoriesMap");
+	py::bind_map<std::unordered_map<SGA::EntityCategory, std::vector<int>>>(m, "EntityCategoriesMap");
+
+	
 	
 	py::class_<std::vector<SGA::Action>>(m, "ActionList")
 		.def(py::init<>())
@@ -164,7 +222,11 @@ PYBIND11_MODULE(stratega, m)
 				return v[index]; 
 			})
 		.def("pop_back", &std::vector<SGA::Action>::pop_back)
-		.def("count", [](const std::vector<SGA::Action>& v) { return v.size(); });
+		.def("count", [](const std::vector<SGA::Action>& v) { return v.size(); })
+		.def("__len__", [](const std::vector<SGA::Action>& v) { return v.size(); })
+		.def("__iter__", [](std::vector<SGA::Action>& v) {
+				return py::make_iterator(v.begin(), v.end());
+					}, py::keep_alive<0, 1>());
 			
 
 	// ---- Vector2f ----
@@ -176,23 +238,11 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Vector2i ----
 	py::class_<SGA::Vector2i>(m, "Vector2i")
-		.def(py::init<double, double>(), py::arg("x") = 0.0, py::arg("y") = 0.0)
+		.def(py::init<int, int>(), py::arg("x") = 0.0, py::arg("y") = 0.0)
 		.def_readwrite("x", &SGA::Vector2i::x)
 		.def_readwrite("y", &SGA::Vector2i::y)
 		.def("__repr__", [](const SGA::Vector2i& v) {return "(" + std::to_string(v.x) + "," + std::to_string(v.y) + ")"; });
 	
-	// ---- Entity ----
-	py::class_<SGA::Entity>(m, "Entity")
-		.def(py::init<>())
-		//.def_readwrite("type_id", &SGA::Entity::typeID)
-		.def_readwrite("id", &SGA::Entity::id)
-		.def_readwrite("owner_ID", &SGA::Entity::ownerID)
-		.def_readwrite("position", &SGA::Entity::position)
-		//.def_readwrite("parameters", &SGA::Entity::parameters)
-		.def_readwrite("sight_range", &SGA::Entity::lineOfSightRange)
-		.def_readwrite("movement_speed", &SGA::Entity::movementSpeed)
-		.def_readwrite("collision_radius", &SGA::Entity::collisionRadius)
-		.def("is_neutral", &SGA::Entity::isNeutral);
 
 	// ---- Player ----
 	py::class_<SGA::Player>(m, "Player")
@@ -202,13 +252,32 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("can_play", &SGA::Player::canPlay)
 		.def_readwrite("parameters", &SGA::Player::parameters);
 
-	// ---- Tile ----
-	//py::class_<SGA::Tile>(m, "Tile")
-	//	.def(py::init<int, int, int>(), py::arg("typeID"), py::arg("x"), py::arg("y"))
-	//	//.def_readwrite("id", &SGA::Tile::tileTypeID)
-	//	.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
-	//	.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
-	//	.def_readwrite("position", &SGA::Tile::position);
+	// ---- Entity ----
+	py::class_<SGA::Entity>(m, "Entity")
+		.def(py::init<>())
+		.def("init", &SGA::Entity::init, py::arg("type"), py::arg("entityID"))
+		.def_readwrite("id", &SGA::Entity::id)
+		.def_readwrite("owner_id", &SGA::Entity::ownerID)
+		.def_readwrite("position", &SGA::Entity::position)
+		.def_readwrite("line_of_sight_range", &SGA::Entity::lineOfSightRange)
+		.def_readwrite("movement_speed", &SGA::Entity::movementSpeed)
+		.def_readwrite("collision_radius", &SGA::Entity::collisionRadius)
+		.def("get_entitytype", &SGA::Entity::getEntityType)
+		.def("get_entitytype_id", &SGA::Entity::getEntityTypeID)		
+		.def("is_neutral", &SGA::Entity::isNeutral)
+		.def("get_action_info", &SGA::Entity::getActionInfo, py::arg("actionTypeID"))
+		.def("get_attached_actions", &SGA::Entity::getAttachedActions)
+		.def("set_action_ticks", &SGA::Entity::setActionTicks, py::arg("actionTypeID"), py::arg("tick"))
+		.def("flag_remove", &SGA::Entity::flagRemove)
+		.def("flagged", &SGA::Entity::flagged)
+		.def("print_info", &SGA::Entity::printInfo)
+		.def("get_param_values", py::overload_cast<>(&SGA::Entity::getParamValues, py::const_))
+		.def("get_param_values", py::overload_cast<>(&SGA::Entity::getParamValues))
+		.def("get_parameter", &SGA::Entity::getParameter, py::arg("paramName"))
+		.def("get_parameter_at", &SGA::Entity::getParameterAt, py::arg("paramIdx"))
+		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions, py::const_))
+		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions))
+		;
 
 	// ---- GameType ----
 	py::enum_<SGA::GameType>(m, "GameType")
@@ -223,11 +292,24 @@ PYBIND11_MODULE(stratega, m)
 	
 	// ---- GameState ----
 	py::class_<SGA::GameState>(m, "GameState")
+		//.def(py::init<SGA::GameState>())
 		.def(py::init([]()
 		{
+			py::scoped_ostream_redirect stream(
+				std::cout,                               // std::ostream&
+				py::module_::import("sys").attr("stdout") // Python output
+			);
+			
 			std::cerr << "A GameState was constructed, use XXX instead" << std::endl;
 			return std::make_unique<SGA::GameState>();
-			}))
+			
+		}))
+		.def("__copy__", [](const SGA::GameState& self) {
+			return SGA::GameState(self);
+			})
+		.def("__deepcopy__", [](const SGA::GameState& self, py::dict) {
+			return SGA::GameState(self);
+			})
 		.def_readwrite("current_player", &SGA::GameState::currentPlayer)
 		.def_readwrite("game_type", &SGA::GameState::gameType)
 		.def_readwrite("is_game_over", &SGA::GameState::isGameOver)
@@ -237,73 +319,468 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("fog_of_war_id", &SGA::GameState::fogOfWarId)
 		.def_readwrite("board", &SGA::GameState::board)
 		.def_readwrite("entities", &SGA::GameState::entities)
-		.def_readwrite("players", &SGA::GameState::players);
+		.def_readwrite("players", &SGA::GameState::players)
+
+		//Technologies
+		.def("is_researched", &SGA::GameState::isResearched, py::arg("playerID"), py::arg("technologyID"), "Check if technology is researched")
+		.def("can_research", &SGA::GameState::canResearch, py::arg("playerID"), py::arg("technologyID"), "Check if player can research an technology")
+		.def("research_technology", &SGA::GameState::researchTechnology, py::arg("playerID"), py::arg("technologyID"), "Research technology")
+		
+		//Other
+		.def("can_execute_action", py::overload_cast<const SGA::Entity&, const SGA::ActionType& >(&SGA::GameState::canExecuteAction, py::const_), "Checks if a Entity can execute a given actionType")
+		.def("can_execute_action", py::overload_cast<const SGA::Player&, const SGA::ActionType& >(&SGA::GameState::canExecuteAction, py::const_), "Checks if a Entity can execute a given actionType")
+		
+		////Entities
+		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::automatic_reference,  "Get entity")
+		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntity), "Get entity")
+		.def("get_entity", py::overload_cast<SGA::Vector2f>(&SGA::GameState::getEntity), "Get entity")
+		.def("get_entity_at", &SGA::GameState::getEntityAt, py::arg("pos"), "Get entity at a position")
+		.def("get_entity_const", &SGA::GameState::getEntityConst, py::arg("entityID"), "Get entity at a position")
+		.def("add_entity", &SGA::GameState::addEntity, py::arg("type"), py::arg("playerID"), py::arg("position"), "Add entity to gamestate")
+		
+		////Grid
+		.def("is_walkable", &SGA::GameState::isWalkable, py::arg("position"), "Checks if tile is occupied or the tile is walkable")
+		.def("is_in_bounds", py::overload_cast<SGA::Vector2f>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
+		.def("is_in_bounds", py::overload_cast<SGA::Vector2i>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
+
+		////Player
+		.def("get_player", py::overload_cast<int>(&SGA::GameState::getPlayer, py::const_),py::return_value_policy::reference, "Get player")
+		.def("get_player", py::overload_cast<int>(&SGA::GameState::getPlayer), py::return_value_policy::reference, "Get player")
+		
+		.def("get_player_entities", py::overload_cast<int>(&SGA::GameState::getPlayerEntities, py::const_), "Gets the list of entities of the specified player.")
+		.def("get_player_entities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getPlayerEntities), "Gets the list of entities of the specified player.")
+		
+		.def("get_non_playerEntities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getNonPlayerEntities), "Gets the list of entities that do not belong to the specified player.")
+		
+		.def("add_player", &SGA::GameState::addPlayer, py::arg("actionIds"), "Adds player to gamestate")
+		.def("apply_fog_of_war", &SGA::GameState::applyFogOfWar, py::arg("playerID"), "Removes entities and hide tiles that are not visible from the point of view of the given player.")
+		
+		.def("set_rng_engine", &SGA::GameState::setRNGEngine, py::arg("engine"))
+		.def("get_rng_engine", &SGA::GameState::getRNGEngine)
+
+		//Print information
+		.def("print_state_info", &SGA::GameState::printStateInfo,"Print all the entities of the current state")
+		.def("print_board", py::overload_cast<int>(&SGA::GameState::printBoard, py::const_))
+		.def("print_board", py::overload_cast<>(&SGA::GameState::printBoard, py::const_), "Print view of the map of the current state applying fog")
+		.def("print_entity_info", &SGA::GameState::printEntityInfo, py::arg("entityID"), "Print information of a specific entity")
+		.def("print_action_info", &SGA::GameState::printActionInfo, py::arg("action"), "Print information of a specific action")
+		;
+
+	py::enum_<SGA::EntityCategory>(m, "EntityCategory")
+		.value("Base", SGA::EntityCategory::Base)
+		.value("Building", SGA::EntityCategory::Building)
+		.value("Fighter", SGA::EntityCategory::Fighter)
+		.value("Melee", SGA::EntityCategory::Melee)
+		.value("Null", SGA::EntityCategory::Null)
+		.value("Ranged", SGA::EntityCategory::Ranged)
+		.value("Spawner", SGA::EntityCategory::Spawner)
+		.value("Unit", SGA::EntityCategory::Unit)
+		.value("NoFighter", SGA::EntityCategory::NoFighter)
+		.export_values();
+
+	//---- Random Engine ----
+	py::class_<std::mt19937>(m, "mt19937");
 
 	// ---- GameConfig ----
 	py::class_<SGA::GameConfig>(m, "GameConfig")
-		.def("generateAgents", &SGA::GameConfig::generateAgents);
+		.def_readwrite("game_type", &SGA::GameConfig::gameType)
+
+		.def_readwrite("tick_limit", &SGA::GameConfig::tickLimit)
+		.def_readwrite("num_players", &SGA::GameConfig::numPlayers)
+		.def_readwrite("tile_types", &SGA::GameConfig::tileTypes)
+
+		//Players
+		.def_readwrite("player_parameter_types", &SGA::GameConfig::playerParameterTypes)
+		.def_readwrite("player_spawnable_types", &SGA::GameConfig::playerSpawnableTypes)
+		.def_readwrite("player_action_ids", &SGA::GameConfig::playerActionIds)
+
+		//Entities
+		.def_readwrite("parameters", &SGA::GameConfig::parameters)
+		.def_readwrite("entity_groups", &SGA::GameConfig::entityGroups)
+		.def_readwrite("entity_types", &SGA::GameConfig::entityTypes)
+
+		//Actions types		
+		.def_readwrite("action_types", &SGA::GameConfig::actionTypes)
+
+		//Levels
+		.def_readwrite("default_tile_type_id", &SGA::GameConfig::defaultTileTypeID)
+		.def_readwrite("level_definitions", &SGA::GameConfig::levelDefinitions)
+		.def_readwrite("selected_level", &SGA::GameConfig::selectedLevel)
+
+		// Technology tree
+		.def_readwrite("technology_tree_collection", &SGA::GameConfig::technologyTreeCollection)
+
+		//ActionCategories and EntityCategories
+		.def_readwrite("action_categories", &SGA::GameConfig::actionCategories)
+		.def_readwrite("entity_categories", &SGA::GameConfig::entityCategories)
+
+		.def_readwrite("yaml_path", &SGA::GameConfig::yamlPath)
+
+		.def("generate_agents", &SGA::GameConfig::generateAgents)
+		.def("generate_gamestate", &SGA::GameConfig::generateGameState, py::arg("levelID")=-1)
+		.def("get_forward_model",
+			[](SGA::GameConfig* a)
+			{
+				return std::move(a->forwardModel);
+			}
+		)
+		//Methods
+		.def("get_number_of_players", &SGA::GameConfig::getNumberOfPlayers)
+		.def("get_entity_id", &SGA::GameConfig::getEntityID, py::arg("name"))
+		.def("get_tile_id", &SGA::GameConfig::getTileID, py::arg("name"))
+		.def("get_action_id", &SGA::GameConfig::getActionID, py::arg("name"))
+		.def("get_technology_id", &SGA::GameConfig::getTechnologyID, py::arg("name"))
+		;
+
+	// ---- TileType ----
+	py::class_<SGA::TileType>(m, "TileType")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::TileType::name)
+		.def_readwrite("symbol", &SGA::TileType::symbol)
+		.def_readwrite("id", &SGA::TileType::id)
+		.def_readwrite("is_walkable", &SGA::TileType::isWalkable)
+		.def_readwrite("is_default_tile", &SGA::TileType::isDefaultTile)
+		.def("to_tile", &SGA::TileType::toTile, py::arg("x"), py::arg("y"));
+
+	// ---- Tile ----
+	py::class_<SGA::Tile>(m, "Tile")
+		.def(py::init<int, const SGA::TileType*, int, int>(), py::arg("typeID"), py::arg("tileType"), py::arg("x"), py::arg("y"))
+		.def_readwrite("is_walkable", &SGA::Tile::isWalkable)
+		.def_readwrite("blocks_sight", &SGA::Tile::blocksSight)
+		.def_readwrite("position", &SGA::Tile::position)
+		.def_readwrite("position", &SGA::Tile::position)
+		
+		.def("get_tile_type_id", &SGA::Tile::getTileTypeID);
+
+	// ---- Parameter ----
+	py::class_<SGA::Parameter>(m, "Parameter")
+		.def(py::init<>())
+		.def_readwrite("id", &SGA::Parameter::id)
+		.def_readwrite("name", &SGA::Parameter::name)
+		.def_readwrite("index", &SGA::Parameter::index)
+		.def_readwrite("default_value", &SGA::Parameter::defaultValue)
+		.def_readwrite("min_value", &SGA::Parameter::minValue)
+		.def_readwrite("max_value", &SGA::Parameter::maxValue);
+
+	// ---- ActionFlag ----
+	py::enum_<SGA::ActionFlag>(m, "ActionFlag")
+		.value("None", SGA::ActionFlag::None)
+		.value("EndTickAction", SGA::ActionFlag::EndTickAction)
+		.value("ContinuousAction", SGA::ActionFlag::ContinuousAction)
+		.value("AbortContinuousAction", SGA::ActionFlag::AbortContinuousAction)
+		.export_values();
+
+	// ---- Action type ----
+	py::class_<SGA::ActionType>(m, "ActionType")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::ActionType::name)
+		.def_readwrite("source_type", &SGA::ActionType::sourceType)
+		.def_readwrite("id", &SGA::ActionType::id)
+		.def_readwrite("cooldown_ticks", &SGA::ActionType::cooldownTicks)
+		.def_readwrite("action_targets", &SGA::ActionType::actionTargets)
+		.def_readwrite("preconditions", &SGA::ActionType::preconditions)
+		.def_readwrite("effects", &SGA::ActionType::effects)
+		.def_readwrite("is_continuous", &SGA::ActionType::isContinuous)
+		.def_readwrite("trigger_complete", &SGA::ActionType::triggerComplete)
+		.def_readwrite("on_start", &SGA::ActionType::OnStart)
+		.def_readwrite("on_tick", &SGA::ActionType::OnTick)
+		.def_readwrite("on_complete", &SGA::ActionType::OnComplete)
+		.def_readwrite("on_abort", &SGA::ActionType::OnAbort)
+		.def("get_target_conditions", &SGA::ActionType::getTargetConditions, py::arg("searchingTarget"));
+	
+	// ---- Entity type ----
+	py::class_<SGA::EntityType>(m, "EntityType")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::EntityType::name)
+		.def_readwrite("id", &SGA::EntityType::id)
+		.def_readwrite("symbol", &SGA::EntityType::symbol)
+		.def_readwrite("parameters", &SGA::EntityType::parameters)
+		.def_readwrite("action_ids", &SGA::EntityType::actionIds)
+		.def_readwrite("required_technology_id", &SGA::EntityType::requiredTechnologyID)
+		.def_readwrite("spawnable_entitytypes", &SGA::EntityType::spawnableEntityTypes)
+		.def_readwrite("cost", &SGA::EntityType::cost)
+		.def_readwrite("line_of_sight", &SGA::EntityType::lineOfSight)
+		.def("can_execute_action", &SGA::EntityType::canExecuteAction, py::arg("actionTypeID"))
+		.def("instantiate_entity", &SGA::EntityType::instantiateEntity, py::arg("entityID"))
+		.def("get_param_max", &SGA::EntityType::getParamMax, py::arg("paramName"))
+		.def("get_param_min", &SGA::EntityType::getParamMin, py::arg("paramName"))
+		.def("get_parameter", &SGA::EntityType::getParameter, py::arg("id"));
+	
+	// ---- ActionInfo ----
+	py::class_<SGA::ActionInfo>(m, "ActionInfo")
+		.def(py::init<>())
+		.def_readwrite("action_type_id", &SGA::ActionInfo::actionTypeID)
+		.def_readwrite("last_executed_tick", &SGA::ActionInfo::lastExecutedTick)		;
+
+	// ---- Action ----	
+	py::class_<SGA::Action>(m, "Action")
+		.def(py::init<const SGA::ActionType*>(), py::arg("actionType"))
+		.def_readwrite("action_type_flags", &SGA::Action::actionTypeFlags)
+		.def_readwrite("targets", &SGA::Action::targets)
+		.def_readwrite("owner_id", &SGA::Action::ownerID)
+		.def_readwrite("continuous_action_id", &SGA::Action::continuousActionID)
+		.def_readwrite("elapsed_ticks", &SGA::Action::elapsedTicks)
+		.def("execute", &SGA::Action::execute, py::arg("state"), py::arg("fm"))
+		.def("validate", &SGA::Action::validate, py::arg("state"))
+		.def("is_entity_action", &SGA::Action::isEntityAction)
+		.def("is_player_action", &SGA::Action::isPlayerAction)
+		.def("get_source_id", &SGA::Action::getSourceID)
+		.def("get_actiontype_id", &SGA::Action::getActionTypeID)
+		.def("get_actiontype", &SGA::Action::getActionType)
+		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"))
+		.def_static("create_abort_action", py::overload_cast<int,int,int>(&SGA::Action::createAbortAction))
+		.def_static("create_abort_action", py::overload_cast<int,int>(&SGA::Action::createAbortAction))
+		;
+
+	// --- ActionSourceType ---
+	py::enum_<SGA::ActionSourceType>(m, "ActionSourceType")
+		.value("Entity", SGA::ActionSourceType::Entity)
+		.value("Building", SGA::ActionSourceType::Player)
+		.export_values();
+
+	// --- ActionSourceTypeEnum ---
+	py::enum_<SGA::TargetType::Type>(m, "TargetTypeEnum")
+		.value("None", SGA::TargetType::Type::None)
+		.value("Position", SGA::TargetType::Type::Position)
+		.value("EntityType", SGA::TargetType::Type::EntityType)
+		.value("Entity", SGA::TargetType::Type::Entity)
+		.value("Technology", SGA::TargetType::Type::Technology)
+		.value("ContinuousAction", SGA::TargetType::Type::ContinuousAction)
+		.export_values();
+
+	// ---- TargetType ----	
+	py::class_<SGA::TargetType>(m, "TargetType")
+		.def(py::init<>())
+		.def_readwrite("type", &SGA::TargetType::type)
+		.def_readwrite("sampling_method", &SGA::TargetType::samplingMethod)
+		.def_readwrite("group_entity_types", &SGA::TargetType::groupEntityTypes)
+		.def_readwrite("technology_types", &SGA::TargetType::technologyTypes)
+		.def("get_type_string", &SGA::TargetType::getTypeString)
+		.def("is_valid", &SGA::TargetType::isValid, py::arg("state"), py::arg("actionTarget"), py::arg("sourceActionTarget"))
+		;
+
+	// ---- SamplingMethod ----	
+	py::class_<SGA::SamplingMethod, PySamplingMethod, std::shared_ptr<SGA::SamplingMethod>>(m, "SamplingMethod")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::SamplingMethod::name)
+		.def("get_positions", py::overload_cast<const SGA::GameState&, const SGA::Vector2f&>(&SGA::SamplingMethod::getPositions, py::const_))		
+		.def("get_positions", py::overload_cast<const SGA::GameState&>(&SGA::SamplingMethod::getPositions, py::const_))
+		.def("get_entities", py::overload_cast<const SGA::GameState&, const SGA::Vector2f&, const std::unordered_set<int>&>(&SGA::SamplingMethod::getEntities, py::const_))
+		.def("get_entities", py::overload_cast<const SGA::GameState&, const std::unordered_set<int>&>(&SGA::SamplingMethod::getEntities, py::const_))
+		.def("validate_position", py::overload_cast<const SGA::GameState&, const SGA::Vector2f&, const SGA::Vector2f&>(&SGA::SamplingMethod::validatePosition, py::const_))
+		.def("validate_position", py::overload_cast<const SGA::GameState&, const SGA::Vector2f&>(&SGA::SamplingMethod::validatePosition, py::const_))
+		;
+
+	// ---- Condition ----	
+	py::class_<SGA::Condition, PyCondition, std::shared_ptr<SGA::Condition>>(m, "Condition")
+		.def(py::init<>())
+		.def("isFullfilled", &SGA:: Condition::isFullfilled, py::arg("state"), py::arg("targets"))
+		;
+
+	
+	// ---- Effect ----	
+	py::class_<SGA::Effect, PyEffect, std::shared_ptr<SGA::Effect>>(m, "Effect")
+		.def("execute", &SGA::Effect::execute, py::arg("state"), py::arg("fm"), py::arg("targets"))
+		;
+
+	
+	// --- ActionTargetEnum ---
+	py::enum_<SGA::ActionTarget::Type>(m, "ActionTargetEnum")
+		.value("Position", SGA::ActionTarget::Type::Position)
+		.value("EntityReference", SGA::ActionTarget::Type::EntityReference)
+		.value("PlayerReference", SGA::ActionTarget::Type::PlayerReference)
+		.value("EntityTypeReference", SGA::ActionTarget::Type::EntityTypeReference)
+		.value("TechnologyReference", SGA::ActionTarget::Type::TechnologyReference)
+		.value("ContinuousActionReference", SGA::ActionTarget::Type::ContinuousActionReference)
+		.value("TileTypeReference", SGA::ActionTarget::Type::TileTypeReference)
+		.export_values();
+
+	// ---- ActionTarget ----	
+	py::class_<SGA::ActionTarget>(m, "ActionTarget")
+		.def_static("create_position_action_target", &SGA::ActionTarget::createPositionActionTarget, py::arg("position"))
+		.def_static("create_entity_action_target", &SGA::ActionTarget::createEntityActionTarget, py::arg("entityID"))
+		.def_static("create_player_action_target", &SGA::ActionTarget::createPlayerActionTarget, py::arg("playerID"))
+		.def_static("create_technology_entity_action_target", &SGA::ActionTarget::createTechnologyEntityActionTarget, py::arg("technologyID"))
+		.def_static("create_continuous_action_target", &SGA::ActionTarget::createContinuousActionActionTarget, py::arg("continuousActionID"))
+		.def_static("create_entity_type_action_target", &SGA::ActionTarget::createEntityTypeActionTarget, py::arg("entityTypeID"))
+		.def_static("create_tile_type_action_target", &SGA::ActionTarget::createTileTypeActionTarget, py::arg("entityTypeID"))
+
+		.def("get_entity_const", &SGA::ActionTarget::getEntityConst, py::arg("state"))
+		.def("get_entity", &SGA::ActionTarget::getEntity, py::arg("state"))
+		.def("get_player", &SGA::ActionTarget::getPlayer, py::arg("state"))
+		.def("get_player_const", &SGA::ActionTarget::getPlayerConst, py::arg("state"))
+		.def("get_entity_type", &SGA::ActionTarget::getEntityType, py::arg("state"))
+		.def("get_tile_type", &SGA::ActionTarget::getTileType, py::arg("state"))
+		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawneableEntities, py::arg("state"))
+
+		.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
+		.def("get_technology_id", &SGA::ActionTarget::getTechnologyID)
+		.def("get_player_id", py::overload_cast<const SGA::GameState&>(&SGA::ActionTarget::getPlayerID, py::const_))
+		.def("get_player_id", py::overload_cast<>(&SGA::ActionTarget::getPlayerID, py::const_))
+		.def("get_entity_id", &SGA::ActionTarget::getEntityID)
+		.def("get_continuous_action_id", &SGA::ActionTarget::getContinuousActionID)
+		.def("get_type", &SGA::ActionTarget::getType)
+		.def("get_type_string", &SGA::ActionTarget::getTypeString)
+		.def("get_value_string", &SGA::ActionTarget::getValueString, py::arg("state"))
+
+		.def_static("is_valid_with_targets", &SGA::ActionTarget::isValidWithTargets, py::arg("state"), py::arg("actionType"), py::arg("actionTargets"))
+		.def("is_valid", &SGA::ActionTarget::isValid, py::arg("state"))
+		;
+
 
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
-		.def("initializeAgents", &SGA::GameRunnerPy::initializeAgents)
+		.def("initialize_agents", &SGA::GameRunnerPy::initializeAgents)
 		.def("play",
-			[](SGA::GameRunner& a, py::list agents) {
-				py::print("play agents");
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, int seed = 0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
+
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+
+				std::cout << "Run GUI" << std::endl;
+				py::gil_scoped_release release;
+				a.play(newAgents);
+				py::gil_scoped_acquire acquire;
+			}
+		)
+		.def("play",
+			[](SGA::GameRunner& a, py::list agents, int seed=0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
 
 				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
 				for (auto& agent : agents)
 				{
 					if (pybind11::str(agent,true).check())
 					{
-						py::print(agent.cast<std::string>());
 						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
 					}
 					else
 					{
 						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
-						py::print("casted Agent");
 						newAgents.emplace_back(castedAgent);
 					}
 				}
-				py::print("play agents2");
+
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+
+				std::cout << "Run GUI" << std::endl;
 				py::gil_scoped_release release;
 				a.play(newAgents);
+				py::gil_scoped_acquire acquire;
 			}
 		)
 		.def("run",
-			[](SGA::GameRunner& a, py::list agents) {
-				py::print("run agents");
+			[](SGA::GameRunner& a, py::list agents, int seed=0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
 
 				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
 				for (auto& agent : agents)
 				{
 					if (pybind11::str(agent, true).check())
 					{
-						py::print(agent.cast<std::string>());
 						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
 					}
 					else
 					{
 						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
-						py::print("casted Agent");
 						newAgents.emplace_back(castedAgent);
 					}
 				}
-				py::print("run agents2");
-				py::gil_scoped_release release;
+
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+				std::cout << "Run arena" << std::endl;
+				py::gil_scoped_release release;				
 				a.run(newAgents);
+				py::gil_scoped_acquire acquire;
+			}
+		)
+		.def("run",
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, int seed=0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
+
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+				std::cout << "Run arena" << std::endl;
+				py::gil_scoped_release release;				
+				a.run(newAgents);
+				py::gil_scoped_acquire acquire;
 			}
 		)
 		;
+	
+	// ---- GameObserver ----
+	py::class_<SGA::GameObserver>(m, "GameObserver");
 
-	// ---- Action ----	
-	py::class_<SGA::Action>(m, "Action")
-		.def_static("createEndAction", &SGA::Action::createEndAction, py::arg("playerID"));
+
+	// ---- Heuristic ----
+	py::class_<SGA::MinimizeDistanceHeuristic>(m, "MinimizeDistanceHeuristic")
+		.def(py::init<>())
+		.def_static("get_name", &SGA::MinimizeDistanceHeuristic::getName)
+		.def("evaluate_gamestate", &SGA::MinimizeDistanceHeuristic::evaluateGameState, py::arg("forwardModel"), py::arg("gameState"), py::arg("playerID"));
 
 	// ---- Action Assignment ----
 	py::class_<SGA::ActionAssignment>(m, "ActionAssignment")
 		.def(py::init<>())
-		.def_static("fromSingleAction", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
+		.def_static("from_single_action", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
 
 	// ---- Forward model ----
 	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel");
@@ -312,26 +789,33 @@ PYBIND11_MODULE(stratega, m)
 		
 	py::class_<SGA::TBSForwardModel, SGA::EntityForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
-		.def("generateActions2", &SGA::TBSForwardModel::generateActions2, py::arg("state"), py::arg("playerID"))
+		.def("generate_actions", &SGA::TBSForwardModel::generateActions2, py::arg("state"), py::arg("playerID"))
+		//.def("generate_actions", &SGA::TBSForwardModel::generateActions, py::arg("state"), py::arg("playerID"))
 		//.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::TBSForwardModel::generateActions, py::const_))
-		.def("advanceGameState_const", py::overload_cast<SGA::GameState&, const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_));
+		.def("advance_gamestate_const", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_))
 		//.def("generateActions", py::overload_cast<const SGA::GameState& , int>(&SGA::TBSForwardModel::generateActions, py::const_));
 		//.def("generateActions", &SGA::TBSForwardModel::generateActions, py::arg("state"), py::arg("playerID"), py::const_);
 		//.def("generateActions", py::overload_cast<SGA::GameState& , int>(&SGA::TBSForwardModel::generateActions, py::const_));
-		//.def_static("advanceGameState", &SGA::EntityForwardModel::advanceGameState, py::arg("state"), py::arg("actions"));
+		.def("advance_gamestate",
+			[](SGA::EntityForwardModel& fm, SGA::GameState& state, SGA::Action& action)
+			{
+				SGA::GameState newGS = state;
+				SGA::Action newAction = action;
+				//py::gil_scoped_acquire acquire;
+				//py::scoped_ostream_redirect stream(
+				//	std::cout,                               // std::ostream&
+				//	py::module_::import("sys").attr("stdout") // Python output
+				//);
+
+				fm.advanceGameState(newGS, newAction);
+			}
+		)
+		/*.def("advanceGameState", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_))*/;
 
 	// ---- Agent ----
 	py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
 		.def(py::init<>())
 		.def("computeAction", &SGA::Agent::computeAction, py::return_value_policy::reference)
-		.def("getPlayerID", &SGA::Agent::getPlayerID);
+		.def("get_player_id", &SGA::Agent::getPlayerID);
 
-	// Add a scoped redirect for your noisy code
-	m.def("noisy_func", []() {
-		py::scoped_ostream_redirect stream(
-			std::cout,                               // std::ostream&
-			py::module_::import("sys").attr("stdout") // Python output
-		);
-		std::cout << "kjf";
-		});
 }

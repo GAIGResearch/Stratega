@@ -76,7 +76,6 @@ namespace SGA
 
 	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents)
 	{
-		std::cout << "test";
 		assert(agents.size() == currentState->players.size());
 
 		// Check if a player is controlled by an human
