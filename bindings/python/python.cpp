@@ -184,6 +184,13 @@ PYBIND11_MODULE(stratega, m)
 
 	py::bind_vector<std::vector<SGA::ActionTarget>>(m, "ActionTargetList");
 
+	py::bind_vector<std::vector<std::shared_ptr<SGA::EntityType>>>(m, "EntityTypetList");
+	py::bind_vector<std::vector<SGA::EntityPlacement>>(m, "EntityPlacementList");
+
+	//Technologies
+	py::bind_map<std::unordered_map<int, SGA::TechnologyTreeNode>>(m, "TechnologiesMap");
+	py::bind_map<std::unordered_map<int, std::vector<int>>>(m, "ResearchedTechnologiesMap");
+
 	//Types
 	py::bind_map<std::unordered_map<int, SGA::TileType>>(m, "TileTypesMap");
 	py::bind_map<std::unordered_map<int, SGA::EntityType>>(m, "EntityTypesMap");
@@ -202,6 +209,9 @@ PYBIND11_MODULE(stratega, m)
 	//Entities
 	py::bind_map<std::unordered_map<std::string, std::unordered_set<int>>>(m, "EntityGroupsMap");
 
+	//Actions
+	py::bind_map<std::unordered_map<int, SGA::Action>>(m, "ActionsMap");
+
 	//Levels
 	py::bind_map<std::unordered_map<int, SGA::LevelDefinition>>(m, "LevelDefinitionsMap");
 
@@ -216,6 +226,12 @@ PYBIND11_MODULE(stratega, m)
 	
 	py::class_<std::vector<SGA::Action>>(m, "ActionList")
 		.def(py::init<>())
+		.def("__copy__", [](const std::vector<SGA::Action>& self) {
+		return std::vector<SGA::Action>(self);
+			})
+		.def("__deepcopy__", [](const std::vector<SGA::Action>& self, py::dict) {
+				return std::vector<SGA::Action>(self);
+			})
 		.def("clear", &std::vector<SGA::Action>::clear)
 		.def("get", [](const std::vector<SGA::Action>& v, int index)
 			{
@@ -231,6 +247,12 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Vector2f ----
 	py::class_<SGA::Vector2f>(m, "Vector2f")
+		.def("__copy__", [](const SGA::Vector2f& self) {
+		return SGA::Vector2f(self);
+			})
+		.def("__deepcopy__", [](const SGA::Vector2f& self, py::dict) {
+				return SGA::Vector2f(self);
+			})
 		.def(py::init<double, double>(), py::arg("x") = 0.0, py::arg("y") = 0.0)
 		.def_readwrite("x", &SGA::Vector2f::x)
 		.def_readwrite("y", &SGA::Vector2f::y)
@@ -238,14 +260,61 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Vector2i ----
 	py::class_<SGA::Vector2i>(m, "Vector2i")
+		.def("__copy__", [](const SGA::Vector2i& self) {
+		return SGA::Vector2i(self);
+			})
+		.def("__deepcopy__", [](const SGA::Vector2i& self, py::dict) {
+				return SGA::Vector2i(self);
+			})
 		.def(py::init<int, int>(), py::arg("x") = 0.0, py::arg("y") = 0.0)
 		.def_readwrite("x", &SGA::Vector2i::x)
 		.def_readwrite("y", &SGA::Vector2i::y)
 		.def("__repr__", [](const SGA::Vector2i& v) {return "(" + std::to_string(v.x) + "," + std::to_string(v.y) + ")"; });
 	
+	// ---- Action type ----
+	py::class_<SGA::ActionType, std::shared_ptr<SGA::ActionType>>(m, "ActionType")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::ActionType::name)
+		.def_readwrite("source_type", &SGA::ActionType::sourceType)
+		.def_readwrite("id", &SGA::ActionType::id)
+		.def_readwrite("cooldown_ticks", &SGA::ActionType::cooldownTicks)
+		.def_readwrite("action_targets", &SGA::ActionType::actionTargets)
+		.def_readwrite("preconditions", &SGA::ActionType::preconditions)
+		.def_readwrite("effects", &SGA::ActionType::effects)
+		.def_readwrite("is_continuous", &SGA::ActionType::isContinuous)
+		.def_readwrite("trigger_complete", &SGA::ActionType::triggerComplete)
+		.def_readwrite("on_start", &SGA::ActionType::OnStart)
+		.def_readwrite("on_tick", &SGA::ActionType::OnTick)
+		.def_readwrite("on_complete", &SGA::ActionType::OnComplete)
+		.def_readwrite("on_abort", &SGA::ActionType::OnAbort)
+		.def("get_target_conditions", &SGA::ActionType::getTargetConditions, py::arg("searchingTarget"));
+
+	// ---- Entity type ----
+	py::class_<SGA::EntityType, std::shared_ptr<SGA::EntityType>>(m, "EntityType")
+		.def(py::init<>())
+		.def_readwrite("name", &SGA::EntityType::name)
+		.def_readwrite("id", &SGA::EntityType::id)
+		.def_readwrite("symbol", &SGA::EntityType::symbol)
+		.def_readwrite("parameters", &SGA::EntityType::parameters)
+		.def_readwrite("action_ids", &SGA::EntityType::actionIds)
+		.def_readwrite("required_technology_id", &SGA::EntityType::requiredTechnologyID)
+		.def_readwrite("spawnable_entitytypes", &SGA::EntityType::spawnableEntityTypes)
+		.def_readwrite("cost", &SGA::EntityType::cost)
+		.def_readwrite("line_of_sight", &SGA::EntityType::lineOfSight)
+		.def("can_execute_action", &SGA::EntityType::canExecuteAction, py::arg("actionTypeID"))
+		.def("instantiate_entity", &SGA::EntityType::instantiateEntity, py::arg("entityID"))
+		.def("get_param_max", &SGA::EntityType::getParamMax, py::arg("paramName"))
+		.def("get_param_min", &SGA::EntityType::getParamMin, py::arg("paramName"))
+		.def("get_parameter", &SGA::EntityType::getParameter, py::arg("id"));
 
 	// ---- Player ----
 	py::class_<SGA::Player>(m, "Player")
+		.def("__copy__", [](const SGA::Player& self) {
+		return SGA::Player(self);
+			})
+		.def("__deepcopy__", [](const SGA::Player& self, py::dict) {
+				return SGA::Player(self);
+			})
 		.def(py::init<>())
 		.def_readwrite("id", &SGA::Player::id)
 		.def_readwrite("score", &SGA::Player::score)
@@ -254,6 +323,12 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Entity ----
 	py::class_<SGA::Entity>(m, "Entity")
+		.def("__copy__", [](const SGA::Entity& self) {
+		return SGA::Entity(self);
+			})
+		.def("__deepcopy__", [](const SGA::Entity& self, py::dict) {
+				return SGA::Entity(self);
+			})
 		.def(py::init<>())
 		.def("init", &SGA::Entity::init, py::arg("type"), py::arg("entityID"))
 		.def_readwrite("id", &SGA::Entity::id)
@@ -284,12 +359,41 @@ PYBIND11_MODULE(stratega, m)
 		.value("TBS", SGA::GameType::TBS)
 		.value("RTS", SGA::GameType::RTS);
 
-	// ---- Grid2D<Tile> ----
-	//using Board = SGA::Grid2D<SGA::Tile>;
-	//py::class_<Board>(m, "Board")
-	//	.def(py::init<int, int, SGA::Tile>(), py::arg("width"), py::arg("height"), py::arg("default_tile"))
-	//	.def("__get_item__", [](const Board& b, int y, int x) {return b.get(x, y); });
-	
+	//---- GameDescription ----
+	py::class_<SGA::GameDescription,std::shared_ptr<SGA::GameDescription>>(m, "GameDescription")
+		.def_readwrite("action_categories", &SGA::GameDescription::actionCategories)
+		.def_readwrite("entity_categories", &SGA::GameDescription::entityCategories)
+		.def("get_action_types_ids", &SGA::GameDescription::getActionTypesIDs, py::arg("category"))
+		.def("get_action_types", &SGA::GameDescription::getActionTypes, py::arg("category"), py::arg("gameInfo"))
+		.def("is_from_category", &SGA::GameDescription::isFromCategory, py::arg("category"), py::arg("entityTypeId"))
+	;
+
+	// ---- EntityCategory ----
+	py::enum_<SGA::EntityCategory>(m, "EntityCategory")
+		.value("Null", SGA::EntityCategory::Null)
+		.value("Base", SGA::EntityCategory::Base)
+		.value("Building", SGA::EntityCategory::Building)
+		.value("Spawner", SGA::EntityCategory::Spawner)
+		.value("Unit", SGA::EntityCategory::Unit)
+		.value("NoFighter", SGA::EntityCategory::NoFighter)
+		.value("Fighter", SGA::EntityCategory::Fighter)
+		.value("Melee", SGA::EntityCategory::Melee)
+		.value("Ranged", SGA::EntityCategory::Ranged)
+		.export_values()
+		;
+
+	// ---- ActionCategory ----
+	py::enum_<SGA::ActionCategory>(m, "ActionCategory")
+		.value("Null", SGA::ActionCategory::Null)
+		.value("Move", SGA::ActionCategory::Move)
+		.value("Attack", SGA::ActionCategory::Attack)
+		.value("Heal", SGA::ActionCategory::Heal)
+		.value("Gather", SGA::ActionCategory::Gather)
+		.value("Spawn", SGA::ActionCategory::Spawn)
+		.value("Research", SGA::ActionCategory::Research)
+		.export_values()
+		;
+
 	// ---- GameState ----
 	py::class_<SGA::GameState>(m, "GameState")
 		//.def(py::init<SGA::GameState>())
@@ -313,13 +417,17 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("current_player", &SGA::GameState::currentPlayer)
 		.def_readwrite("game_type", &SGA::GameState::gameType)
 		.def_readwrite("is_game_over", &SGA::GameState::isGameOver)
-		.def_readwrite("winner_id", &SGA::GameState::winnerPlayerID)
+		.def_readwrite("winner_player_id", &SGA::GameState::winnerPlayerID)
 		.def_readwrite("current_tick", &SGA::GameState::currentTick)
 		.def_readwrite("tick_limit", &SGA::GameState::tickLimit)
 		.def_readwrite("fog_of_war_id", &SGA::GameState::fogOfWarId)
+		.def_readwrite("fog_of_war_tile", &SGA::GameState::fogOfWarTile)
 		.def_readwrite("board", &SGA::GameState::board)
 		.def_readwrite("entities", &SGA::GameState::entities)
 		.def_readwrite("players", &SGA::GameState::players)
+		.def_readwrite("game_info", &SGA::GameState::gameInfo)
+
+		.def_readwrite("researched_technologies", &SGA::GameState::researchedTechnologies)
 
 		//Technologies
 		.def("is_researched", &SGA::GameState::isResearched, py::arg("playerID"), py::arg("technologyID"), "Check if technology is researched")
@@ -366,74 +474,13 @@ PYBIND11_MODULE(stratega, m)
 		.def("print_action_info", &SGA::GameState::printActionInfo, py::arg("action"), "Print information of a specific action")
 		;
 
-	py::enum_<SGA::EntityCategory>(m, "EntityCategory")
-		.value("Base", SGA::EntityCategory::Base)
-		.value("Building", SGA::EntityCategory::Building)
-		.value("Fighter", SGA::EntityCategory::Fighter)
-		.value("Melee", SGA::EntityCategory::Melee)
-		.value("Null", SGA::EntityCategory::Null)
-		.value("Ranged", SGA::EntityCategory::Ranged)
-		.value("Spawner", SGA::EntityCategory::Spawner)
-		.value("Unit", SGA::EntityCategory::Unit)
-		.value("NoFighter", SGA::EntityCategory::NoFighter)
-		.export_values();
-
 	//---- Random Engine ----
 	py::class_<std::mt19937>(m, "mt19937");
 
-	// ---- GameConfig ----
-	py::class_<SGA::GameConfig>(m, "GameConfig")
-		.def_readwrite("game_type", &SGA::GameConfig::gameType)
-
-		.def_readwrite("tick_limit", &SGA::GameConfig::tickLimit)
-		.def_readwrite("num_players", &SGA::GameConfig::numPlayers)
-		.def_readwrite("tile_types", &SGA::GameConfig::tileTypes)
-
-		//Players
-		.def_readwrite("player_parameter_types", &SGA::GameConfig::playerParameterTypes)
-		.def_readwrite("player_spawnable_types", &SGA::GameConfig::playerSpawnableTypes)
-		.def_readwrite("player_action_ids", &SGA::GameConfig::playerActionIds)
-
-		//Entities
-		.def_readwrite("parameters", &SGA::GameConfig::parameters)
-		.def_readwrite("entity_groups", &SGA::GameConfig::entityGroups)
-		.def_readwrite("entity_types", &SGA::GameConfig::entityTypes)
-
-		//Actions types		
-		.def_readwrite("action_types", &SGA::GameConfig::actionTypes)
-
-		//Levels
-		.def_readwrite("default_tile_type_id", &SGA::GameConfig::defaultTileTypeID)
-		.def_readwrite("level_definitions", &SGA::GameConfig::levelDefinitions)
-		.def_readwrite("selected_level", &SGA::GameConfig::selectedLevel)
-
-		// Technology tree
-		.def_readwrite("technology_tree_collection", &SGA::GameConfig::technologyTreeCollection)
-
-		//ActionCategories and EntityCategories
-		.def_readwrite("action_categories", &SGA::GameConfig::actionCategories)
-		.def_readwrite("entity_categories", &SGA::GameConfig::entityCategories)
-
-		.def_readwrite("yaml_path", &SGA::GameConfig::yamlPath)
-
-		.def("generate_agents", &SGA::GameConfig::generateAgents)
-		.def("generate_gamestate", &SGA::GameConfig::generateGameState, py::arg("levelID")=-1)
-		.def("get_forward_model",
-			[](SGA::GameConfig* a)
-			{
-				return std::move(a->forwardModel);
-			}
-		)
-		//Methods
-		.def("get_number_of_players", &SGA::GameConfig::getNumberOfPlayers)
-		.def("get_entity_id", &SGA::GameConfig::getEntityID, py::arg("name"))
-		.def("get_tile_id", &SGA::GameConfig::getTileID, py::arg("name"))
-		.def("get_action_id", &SGA::GameConfig::getActionID, py::arg("name"))
-		.def("get_technology_id", &SGA::GameConfig::getTechnologyID, py::arg("name"))
-		;
+	
 
 	// ---- TileType ----
-	py::class_<SGA::TileType>(m, "TileType")
+	py::class_<SGA::TileType, std::shared_ptr<SGA::TileType>>(m, "TileType")
 		.def(py::init<>())
 		.def_readwrite("name", &SGA::TileType::name)
 		.def_readwrite("symbol", &SGA::TileType::symbol)
@@ -469,42 +516,6 @@ PYBIND11_MODULE(stratega, m)
 		.value("ContinuousAction", SGA::ActionFlag::ContinuousAction)
 		.value("AbortContinuousAction", SGA::ActionFlag::AbortContinuousAction)
 		.export_values();
-
-	// ---- Action type ----
-	py::class_<SGA::ActionType>(m, "ActionType")
-		.def(py::init<>())
-		.def_readwrite("name", &SGA::ActionType::name)
-		.def_readwrite("source_type", &SGA::ActionType::sourceType)
-		.def_readwrite("id", &SGA::ActionType::id)
-		.def_readwrite("cooldown_ticks", &SGA::ActionType::cooldownTicks)
-		.def_readwrite("action_targets", &SGA::ActionType::actionTargets)
-		.def_readwrite("preconditions", &SGA::ActionType::preconditions)
-		.def_readwrite("effects", &SGA::ActionType::effects)
-		.def_readwrite("is_continuous", &SGA::ActionType::isContinuous)
-		.def_readwrite("trigger_complete", &SGA::ActionType::triggerComplete)
-		.def_readwrite("on_start", &SGA::ActionType::OnStart)
-		.def_readwrite("on_tick", &SGA::ActionType::OnTick)
-		.def_readwrite("on_complete", &SGA::ActionType::OnComplete)
-		.def_readwrite("on_abort", &SGA::ActionType::OnAbort)
-		.def("get_target_conditions", &SGA::ActionType::getTargetConditions, py::arg("searchingTarget"));
-	
-	// ---- Entity type ----
-	py::class_<SGA::EntityType>(m, "EntityType")
-		.def(py::init<>())
-		.def_readwrite("name", &SGA::EntityType::name)
-		.def_readwrite("id", &SGA::EntityType::id)
-		.def_readwrite("symbol", &SGA::EntityType::symbol)
-		.def_readwrite("parameters", &SGA::EntityType::parameters)
-		.def_readwrite("action_ids", &SGA::EntityType::actionIds)
-		.def_readwrite("required_technology_id", &SGA::EntityType::requiredTechnologyID)
-		.def_readwrite("spawnable_entitytypes", &SGA::EntityType::spawnableEntityTypes)
-		.def_readwrite("cost", &SGA::EntityType::cost)
-		.def_readwrite("line_of_sight", &SGA::EntityType::lineOfSight)
-		.def("can_execute_action", &SGA::EntityType::canExecuteAction, py::arg("actionTypeID"))
-		.def("instantiate_entity", &SGA::EntityType::instantiateEntity, py::arg("entityID"))
-		.def("get_param_max", &SGA::EntityType::getParamMax, py::arg("paramName"))
-		.def("get_param_min", &SGA::EntityType::getParamMin, py::arg("paramName"))
-		.def("get_parameter", &SGA::EntityType::getParameter, py::arg("id"));
 	
 	// ---- ActionInfo ----
 	py::class_<SGA::ActionInfo>(m, "ActionInfo")
@@ -514,6 +525,12 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Action ----	
 	py::class_<SGA::Action>(m, "Action")
+		.def("__copy__", [](const SGA::Action& self) {
+		return SGA::Action(self);
+			})
+		.def("__deepcopy__", [](const SGA::Action& self, py::dict) {
+				return SGA::Action(self);
+			})
 		.def(py::init<const SGA::ActionType*>(), py::arg("actionType"))
 		.def_readwrite("action_type_flags", &SGA::Action::actionTypeFlags)
 		.def_readwrite("targets", &SGA::Action::targets)
@@ -573,16 +590,13 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Condition ----	
 	py::class_<SGA::Condition, PyCondition, std::shared_ptr<SGA::Condition>>(m, "Condition")
-		.def(py::init<>())
 		.def("isFullfilled", &SGA:: Condition::isFullfilled, py::arg("state"), py::arg("targets"))
 		;
-
 	
 	// ---- Effect ----	
 	py::class_<SGA::Effect, PyEffect, std::shared_ptr<SGA::Effect>>(m, "Effect")
 		.def("execute", &SGA::Effect::execute, py::arg("state"), py::arg("fm"), py::arg("targets"))
 		;
-
 	
 	// --- ActionTargetEnum ---
 	py::enum_<SGA::ActionTarget::Type>(m, "ActionTargetEnum")
@@ -627,7 +641,68 @@ PYBIND11_MODULE(stratega, m)
 		.def("is_valid", &SGA::ActionTarget::isValid, py::arg("state"))
 		;
 
+	// ---- EntityPlacement ----	
+	py::class_<SGA::EntityPlacement>(m, "EntityPlacement")
+		.def(py::init<>())
+		.def_readwrite("ownerID", &SGA::EntityPlacement::ownerID)
+		.def_readwrite("position", &SGA::EntityPlacement::position)
+		.def_readwrite("entity_type", &SGA::EntityPlacement::entityType)
+		;
 
+	// ---- LevelDefinition ----	
+	py::class_<SGA::LevelDefinition>(m, "LevelDefinition")
+		.def(py::init<std::vector<SGA::EntityPlacement>, SGA::Grid2D<std::shared_ptr<SGA::TileType>>>(), py::arg("entityPlacements"), py::arg("board"))
+		.def_readwrite("name", &SGA::LevelDefinition::name)
+		.def_readwrite("board_string", &SGA::LevelDefinition::boardString)
+		.def_readwrite("entity_placements", &SGA::LevelDefinition::entityPlacements)
+		.def_readwrite("board", &SGA::LevelDefinition::board)
+		;
+
+	// ---- TechnologyTreeCollection ----	
+	py::class_<SGA::TechnologyTreeCollection, std::shared_ptr<SGA::TechnologyTreeCollection>>(m, "TechnologyTreeCollection")
+		.def_readwrite("technology_tree_types", &SGA::TechnologyTreeCollection::technologyTreeTypes)
+		.def("get_technology", &SGA::TechnologyTreeCollection::getTechnology, py::arg("technologyID"))
+		.def("get_technology_type_id", &SGA::TechnologyTreeCollection::getTechnologyTypeID, py::arg("technologyName"))
+		;
+	// ---- TechnologyTreeType ----	
+	py::class_<SGA::TechnologyTreeType, std::shared_ptr<SGA::TechnologyTreeType>>(m, "TechnologyTreeType")
+		.def_readwrite("technology_tree_name", &SGA::TechnologyTreeType::technologyTreeName)
+		.def_readwrite("technologies", &SGA::TechnologyTreeType::technologies)
+		.def("getTechnology_node", &SGA::TechnologyTreeType::getTechnologyNode, py::arg("technologyID"))
+		.def("findTechnology_node", &SGA::TechnologyTreeType::findTechnologyNode, py::arg("technologyID"))
+		.def("getTechnology_node_id", &SGA::TechnologyTreeType::getTechnologyNodeID, py::arg("technologyName"))
+		.def("have_technology_node", &SGA::TechnologyTreeType::haveTechnologyNode, py::arg("technologyName"))
+		;
+	// ---- TechnologyTreeNode ----	
+	py::class_<SGA::TechnologyTreeNode, std::shared_ptr<SGA::TechnologyTreeNode>>(m, "TechnologyTreeNode")
+		.def_readwrite("name", &SGA::TechnologyTreeNode::name)
+		.def_readwrite("description", &SGA::TechnologyTreeNode::description)
+		.def_readwrite("id", &SGA::TechnologyTreeNode::id)
+		.def_readwrite("parent_ids", &SGA::TechnologyTreeNode::parentIDs)
+		.def_readwrite("cost", &SGA::TechnologyTreeNode::cost)
+		.def_readwrite("continuousActionTime", &SGA::TechnologyTreeNode::continuousActionTime)
+		;
+	// ---- Grid2D<Tile> ----
+	py::class_<SGA::Grid2D<SGA::Tile>>(m, "BoardTiles")
+		.def(py::init<int, int, SGA::Tile>(), py::arg("width"), py::arg("height"), py::arg("default_tile"))
+		.def_readwrite("grid", &SGA::Grid2D<SGA::Tile>::grid)
+		.def("get", [](const SGA::Grid2D<SGA::Tile>& b, int y, int x) {return b.get(x, y); })
+		.def("get_width", &SGA::Grid2D<SGA::Tile>::getWidth)
+		.def("get_height", &SGA::Grid2D<SGA::Tile>::getHeight)
+		.def("is_in_bounds", py::overload_cast<const SGA::Vector2i&>(&SGA::Grid2D<SGA::Tile>::isInBounds, py::const_))
+		.def("is_in_bounds", py::overload_cast<int, int>(&SGA::Grid2D<SGA::Tile>::isInBounds, py::const_))
+		;
+	// ---- Grid2D<TileType> ----
+	py::class_<SGA::Grid2D<std::shared_ptr<SGA::TileType>>>(m, "BoardTileTypes")
+		.def(py::init<int, int, std::shared_ptr<SGA::TileType>>(), py::arg("width"), py::arg("height"), py::arg("default_tile"))
+		.def_readwrite("grid", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::grid)
+		.def("get", [](const SGA::Grid2D<std::shared_ptr<SGA::TileType>>& b, int y, int x) {return b.get(x, y); })
+		.def("get_width", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::getWidth)
+		.def("get_height", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::getHeight)
+		.def("is_in_bounds", py::overload_cast<const SGA::Vector2i&>(&SGA::Grid2D<std::shared_ptr<SGA::TileType>>::isInBounds, py::const_))
+		.def("is_in_bounds", py::overload_cast<int, int>(&SGA::Grid2D<std::shared_ptr<SGA::TileType>>::isInBounds, py::const_))
+		;
+	 
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("initialize_agents", &SGA::GameRunnerPy::initializeAgents)
@@ -765,8 +840,94 @@ PYBIND11_MODULE(stratega, m)
 				py::gil_scoped_acquire acquire;
 			}
 		)
+		.def("reset", py::overload_cast<int>(&SGA::GameRunner::reset),py::arg("levelID"))
+		.def("reset", py::overload_cast<>(&SGA::GameRunner::reset))
+		.def("step", &SGA::GameRunner::step, py::arg("actions"))
+		.def("render", &SGA::GameRunner::render)
+		.def("get_gamestate", &SGA::GameRunner::getGameState)
 		;
 	
+	// ---- GameConfig ----
+	py::class_<SGA::GameConfig>(m, "GameConfig")
+		.def_readwrite("game_type", &SGA::GameConfig::gameType)
+
+		.def_readwrite("tick_limit", &SGA::GameConfig::tickLimit)
+		.def_readwrite("num_players", &SGA::GameConfig::numPlayers)
+		.def_readwrite("tile_types", &SGA::GameConfig::tileTypes)
+
+		//.def_property_readonly("forward_model", [](const SGA::GameConfig& config) {return config.forwardModel.get(); }, py::return_value_policy::reference_internal)
+
+		//Players
+		.def_readwrite("player_parameter_types", &SGA::GameConfig::playerParameterTypes)
+		.def_readwrite("player_spawnable_types", &SGA::GameConfig::playerSpawnableTypes)
+		.def_readwrite("player_action_ids", &SGA::GameConfig::playerActionIds)
+
+		//Entities
+		.def_readwrite("parameters", &SGA::GameConfig::parameters)
+		.def_readwrite("entity_groups", &SGA::GameConfig::entityGroups)
+		.def_readwrite("entity_types", &SGA::GameConfig::entityTypes)
+
+		//Actions types		
+		.def_readwrite("action_types", &SGA::GameConfig::actionTypes)
+
+		//Levels
+		.def_readwrite("default_tile_type_id", &SGA::GameConfig::defaultTileTypeID)
+		.def_readwrite("level_definitions", &SGA::GameConfig::levelDefinitions)
+		.def_readwrite("selected_level", &SGA::GameConfig::selectedLevel)
+
+		// Technology tree
+		.def_readwrite("technology_tree_collection", &SGA::GameConfig::technologyTreeCollection)
+
+		//ActionCategories and EntityCategories
+		.def_readwrite("action_categories", &SGA::GameConfig::actionCategories)
+		.def_readwrite("entity_categories", &SGA::GameConfig::entityCategories)
+
+		.def_readwrite("yaml_path", &SGA::GameConfig::yamlPath)
+
+		.def("generate_agents", &SGA::GameConfig::generateAgents)
+		.def("generate_gamestate", &SGA::GameConfig::generateGameState, py::arg("levelID") = -1)
+		.def("get_forward_model",
+			[](SGA::GameConfig* a)
+			{
+				return std::move(a->forwardModel);
+			}
+		)
+		//Methods
+		.def("get_number_of_players", &SGA::GameConfig::getNumberOfPlayers)
+		.def("get_entity_id", &SGA::GameConfig::getEntityID, py::arg("name"))
+		.def("get_tile_id", &SGA::GameConfig::getTileID, py::arg("name"))
+		.def("get_action_id", &SGA::GameConfig::getActionID, py::arg("name"))
+		.def("get_technology_id", &SGA::GameConfig::getTechnologyID, py::arg("name"))
+		;
+	// ---- GameInfo ----
+	py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo")
+		.def_readwrite("yaml_path", &SGA::GameInfo::yamlPath)
+
+		//.def_readwrite("parameter_id_lookup", &SGA::GameInfo::parameterIDLookup)
+		//.def_readwrite("player_parameter_types", &SGA::GameInfo::playerParameterTypes)
+		//.def_readwrite("player_Spawnable_types", &SGA::GameInfo::playerSpawnableTypes)
+		//.def_readwrite("entity_types", &SGA::GameInfo::entityTypes)
+		//.def_readwrite("action_types", &SGA::GameInfo::actionTypes)
+		//.def_readwrite("tile_types", &SGA::GameInfo::tileTypes)
+
+		.def_readwrite("technology_tree_collection", &SGA::GameInfo::technologyTreeCollection)
+		.def_readwrite("entity_groups", &SGA::GameInfo::entityGroups)
+
+		.def_readwrite("game_description", &SGA::GameInfo::gameDescription)
+
+		.def("get_game_description", &SGA::GameInfo::getGameDescription)
+		.def("get_entity_type", &SGA::GameInfo::getEntityType, py::arg("entityTypeID"))
+		.def("get_parameter_global_id", &SGA::GameInfo::getParameterGlobalID, py::arg("parameterName"))
+		.def("get_parameter_type", &SGA::GameInfo::getParameterType, py::arg("entityTypeID"), py::arg("globalParameterID"))
+		.def("check_entity_have_parameter", &SGA::GameInfo::checkEntityHaveParameter, py::arg("entityTypeID"), py::arg("parameterName"))
+		.def("get_action_type_const", &SGA::GameInfo::getActionTypeConst, py::arg("actionTypeID"))
+		.def("get_action_type", &SGA::GameInfo::getActionType, py::arg("typeID"))
+		.def("get_action_type_id", &SGA::GameInfo::getActionTypeID, py::arg("actionName"))
+		.def("get_player_parameter", &SGA::GameInfo::getPlayerParameter, py::arg("id"))
+		.def("get_tile_type", &SGA::GameInfo::getTileType, py::arg("tileTypeID"))
+
+		;
+
 	// ---- GameObserver ----
 	py::class_<SGA::GameObserver>(m, "GameObserver");
 
@@ -779,7 +940,21 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Action Assignment ----
 	py::class_<SGA::ActionAssignment>(m, "ActionAssignment")
+		.def("__copy__", [](const SGA::ActionAssignment& self) {
+		return SGA::ActionAssignment(self);
+			})
+		.def("__deepcopy__", [](const SGA::ActionAssignment& self, py::dict) {
+				return SGA::ActionAssignment(self);
+			})
 		.def(py::init<>())
+		.def("assign_action_or_replace", &SGA::ActionAssignment::assignActionOrReplace, py::arg("newAction"))
+		.def("merge", &SGA::ActionAssignment::merge, py::arg("merge"))
+		.def("clear", &SGA::ActionAssignment::clear)
+		.def("get_entity_action", &SGA::ActionAssignment::getEntityAction, py::arg("entityID"))
+		.def("get_player_action", &SGA::ActionAssignment::getPlayerAction, py::arg("playerID"))
+		.def("get_assignment_count", &SGA::ActionAssignment::getAssignmentCount)
+		.def("get_entity_actions", &SGA::ActionAssignment::getEntityActions)
+		.def("get_player_actions", &SGA::ActionAssignment::getPlayerActions)
 		.def_static("from_single_action", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
 
 	// ---- Forward model ----
