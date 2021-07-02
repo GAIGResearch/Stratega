@@ -6,6 +6,7 @@
 #include <pybind11/chrono.h>
 #include <pybind11/iostream.h>
 
+#include <Stratega/Logging/FileLogger.h>
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/Entity.h>
 #include <Stratega/Representation/Player.h>
@@ -19,9 +20,11 @@
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Arena/Arena.h>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <Stratega/Logging/Log.h>
 
 namespace py = pybind11;
 class PythonAgent;
@@ -154,14 +157,27 @@ public:
 	 }
  }
 
+ void setDefaultLogger(std::string logPath)
+ {
+	 SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
+ }
+
+ Arena createArena(const SGA::GameConfig* gameConfig)
+ {
+	 return Arena(*gameConfig);
+ }
+
 PYBIND11_MODULE(stratega, m)
 {
     m.doc() = "Stratega python bindings"; // optional module docstring
 
 	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
 	m.def("create_runner", &createRunner, "Create game runner", py::arg("gameConfig"));
+	m.def("create_arena", &createArena, "Create game aren", py::arg("gameConfig"));
 	m.def("generate_agents", &generateAgents, "Generate agents", py::arg("gameConfig"));
 	m.def("initialize_agents", &initializeAgents, "Initialize agents", py::arg("agents"), py::arg("seed"));
+	m.def("set_default_logger", &setDefaultLogger, "Set default logger", py::arg("logPath"));
+	m.def("load_levels_from_yaml", &SGA::loadLevelsFromYAML, "Load Levels definitions  from YAML", py::arg("fileMapsPath"), py::arg("config"));
  	
 	// ---- STL binds----
 	//Basic list
@@ -1073,5 +1089,39 @@ PYBIND11_MODULE(stratega, m)
 		.def("computeAction", &SGA::Agent::computeAction, py::return_value_policy::reference, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
 		.def("init", &SGA::Agent::init, "Function for initializing the agent. Override this function to receive a call just before starts.")
 		.def("get_player_id", &SGA::Agent::getPlayerID);
+
+	// ---- Arena ----
+	py::class_<Arena>(m, "Arena")
+		.def("run_games", py::overload_cast<int,int,int,int>(&Arena::runGames))
+		//.def("run_games", &Arena::runGames, py::call_guard<py::gil_scoped_release>(), py::arg("playerCount"), py::arg("seed"), py::arg("gamesNumber"), py::arg("mapNumber")=1)
+		.def("run_games",
+			[](Arena& a, int playerCount, int seed, int gamesNumber, int mapNumber, py::list agents)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
+
+				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
+				for (auto& agent : agents)
+				{
+					if (pybind11::str(agent, true).check())
+					{
+						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
+					}
+					else
+					{
+						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
+						newAgents.emplace_back(castedAgent);
+					}
+				}
+
+				py::gil_scoped_release release;
+				a.runGames(playerCount, seed, gamesNumber, mapNumber, newAgents);
+				py::gil_scoped_acquire acquire;
+			}
+		)
+		
+		;
 
 }
