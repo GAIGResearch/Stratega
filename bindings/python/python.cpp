@@ -188,9 +188,6 @@ PYBIND11_MODULE(stratega, m)
 	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
 
-	//py::bind_vector<std::vector<SGA::Action>>(m, "ActionList");
-
-
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
 
 	py::bind_vector<std::vector<SGA::ActionTarget>>(m, "ActionTargetList");
@@ -949,13 +946,6 @@ PYBIND11_MODULE(stratega, m)
 	py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo")
 		.def_readwrite("yaml_path", &SGA::GameInfo::yamlPath)
 
-		//.def_readwrite("parameter_id_lookup", &SGA::GameInfo::parameterIDLookup)
-		//.def_readwrite("player_parameter_types", &SGA::GameInfo::playerParameterTypes)
-		//.def_readwrite("player_Spawnable_types", &SGA::GameInfo::playerSpawnableTypes)
-		//.def_readwrite("entity_types", &SGA::GameInfo::entityTypes)
-		//.def_readwrite("action_types", &SGA::GameInfo::actionTypes)
-		//.def_readwrite("tile_types", &SGA::GameInfo::tileTypes)
-
 		.def_readwrite("technology_tree_collection", &SGA::GameInfo::technologyTreeCollection)
 		.def_readwrite("entity_groups", &SGA::GameInfo::entityGroups)
 
@@ -1120,8 +1110,7 @@ PYBIND11_MODULE(stratega, m)
 				a.runGames(playerCount, seed, gamesNumber, mapNumber, newAgents);
 				py::gil_scoped_acquire acquire;
 			}
-		)
-		
+		)		
 		;
 
 }

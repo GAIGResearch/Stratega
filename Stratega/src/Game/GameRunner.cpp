@@ -137,34 +137,6 @@ namespace SGA
 		}
 	}
 
-	//void GameRunner::play2(std::vector<std::shared_ptr<Agent>>& agents)
-	//{
-	//	assert(agents.size() == currentState->players.size());
-
-	//	// Check if a player is controlled by an human
-	//	int humanIndex = GameRenderer::NO_PLAYER_ID;
-	//	for (int i = 0; i < agents.size(); i++)
-	//	{
-	//		if (agents[i] == nullptr)
-	//		{
-	//			if (humanIndex != GameRenderer::NO_PLAYER_ID)
-	//			{
-	//				throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
-	//			}
-	//			humanIndex = i;
-	//		}
-	//		else
-	//		{
-	//			agents[i]->setPlayerID(i);
-	//		}
-	//	}
-
-	//	initializeAgents(agents);
-	//	ensureRendererInitialized();
-	//	renderer->setPlayerPointOfView(humanIndex);
-	//	playInternal(agents, humanIndex);
-	//}
-
 	void GameRunner::initializeAgents(std::vector<std::shared_ptr<Agent>>& agents)
 	{
 		try
