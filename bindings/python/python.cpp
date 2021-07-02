@@ -204,7 +204,12 @@ PYBIND11_MODULE(stratega, m)
 	py::bind_vector<std::vector<std::pair<SGA::TargetType, std::vector<std::shared_ptr<SGA::Condition>>>>>(m, "ActionTargetsList");
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Condition>>>(m, "ConditionsList");
 	py::bind_vector<std::vector<std::shared_ptr<PyCondition>>>(m, "PyConditionsList");
+	py::bind_vector<std::vector<std::shared_ptr<PyEffect>>>(m, "PyEffectsList");
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Effect>>>(m, "EffectsList");
+
+	//ForwardModel
+	py::bind_vector<std::vector<SGA::OnTickEffect>>(m, "OnTickEffectsList");
+	py::bind_vector<std::vector<SGA::OnEntitySpawnEffect>>(m, "OnEntitySpawnEffectList");
 
 	//Parameters
 	py::bind_map<std::unordered_map<std::string, SGA::ParameterID>>(m, "ParametersMap");
@@ -961,8 +966,30 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_player_actions", &SGA::ActionAssignment::getPlayerActions)
 		.def_static("from_single_action", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
 
+	// ---- OnTickEffect ----
+	py::class_<SGA::OnTickEffect>(m, "OnTickEffect")
+		.def(py::init<>())
+		.def_readwrite("valid_targets", &SGA::OnTickEffect::validTargets)
+		.def_readwrite("conditions", &SGA::OnTickEffect::conditions)
+		.def_readwrite("effects", &SGA::OnTickEffect::effects)
+		;
+	// ---- OnEntitySpawnEffect ----
+	py::class_<SGA::OnEntitySpawnEffect>(m, "OnEntitySpawnEffect")
+		.def(py::init<>())
+		.def_readwrite("valid_targets", &SGA::OnEntitySpawnEffect::validTargets)
+		.def_readwrite("conditions", &SGA::OnEntitySpawnEffect::conditions)
+		.def_readwrite("effects", &SGA::OnEntitySpawnEffect::effects)
+		;
+		
 	// ---- Forward model ----
 	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel")
+
+		.def_readwrite("on_tick_effects", &SGA::EntityForwardModel::onTickEffects)
+		.def_readwrite("on_entity_spawn_effects", &SGA::EntityForwardModel::onEntitySpawnEffects)
+		.def_readwrite("win_conditions", &SGA::EntityForwardModel::winConditions)
+		.def_readwrite("lose_conditions", &SGA::EntityForwardModel::loseConditions)
+		.def_readwrite("action_targets", &SGA::EntityForwardModel::actionTargets)
+
 		.def("can_player_play", &SGA::EntityForwardModel::canPlayerPlay, py::arg("state"), py::arg("player"))
 		.def("check_player_won", &SGA::EntityForwardModel::checkPlayerWon, py::arg("state"), py::arg("player"))
 		.def("end_tick", &SGA::EntityForwardModel::endTick, py::arg("state"))
