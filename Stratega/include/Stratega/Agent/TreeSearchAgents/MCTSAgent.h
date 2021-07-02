@@ -16,7 +16,7 @@ namespace SGA
 		}
 
 
-		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;

@@ -20,7 +20,7 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes);
