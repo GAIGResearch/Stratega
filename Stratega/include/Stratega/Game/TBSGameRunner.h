@@ -9,8 +9,8 @@ namespace SGA
 		explicit TBSGameRunner(const GameConfig& config);
 
 	protected:
-		void runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer) override;
-		void playInternal(std::vector<std::unique_ptr<Agent>>& agents, int humanIndex) override;
+		void runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer) override;
+		void playInternal(std::vector<std::shared_ptr<Agent>>& agents, int humanIndex) override;
 		bool checkComputationTime(std::chrono::milliseconds computationTime);
 	};
 }

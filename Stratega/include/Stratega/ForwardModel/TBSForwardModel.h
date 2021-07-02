@@ -25,6 +25,7 @@ namespace  SGA
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 
 		using ForwardModel::generateActions;
+
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
 		
 		std::unique_ptr<ForwardModel> clone() const override;

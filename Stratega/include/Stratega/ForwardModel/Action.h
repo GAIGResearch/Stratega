@@ -2,7 +2,6 @@
 #include <vector>
 #include <Stratega/ForwardModel/ActionTarget.h>
 #include <Stratega/ForwardModel/ActionSourceType.h>
-
 namespace SGA
 {
 	/// <summary>

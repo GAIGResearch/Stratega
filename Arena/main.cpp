@@ -1,8 +1,8 @@
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Logging/Log.h>
 
-#include <Arena.h>
-#include <InputParser.h>
+#include <Stratega/Arena/Arena.h>
+#include <Stratega/Arena/InputParser.h>
 
 #include <filesystem>
 

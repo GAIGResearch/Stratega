@@ -8,6 +8,7 @@ Agents:
     - RandomAgent
 
 
+
 Tiles:
     Plain:
         Sprite: ../../GUI/Assets/Tiles/plain.png
@@ -75,7 +76,7 @@ Actions:
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 1
+                        SearchSize: 3
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
