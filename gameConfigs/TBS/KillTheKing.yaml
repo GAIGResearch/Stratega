@@ -4,9 +4,10 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    #- HumanAgent
-    - CombatAgent
-    - OSLAAgent
+    - HumanAgent
+    - RandomAgent
+
+
 
 Tiles:
     Plain:
@@ -68,14 +69,14 @@ Actions:
     Move:
         Type: EntityAction
         Preconditions:
-            - "ResourceGreater(Source.MovementPoints, 1)"
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Targets:
             Target:
                 Type: Position
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 10
+                        SearchSize: 3
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
@@ -152,7 +153,7 @@ Entities:
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
-        - "NoHasEntity(Source, King)"
+        - "HasNoEntity(Source, King)"
 
     Trigger:
         - OnTick:
@@ -172,3 +173,14 @@ GameDescription:
         NoFighter: [Healer]
         Melee: [Warrior]
         Ranged: [Archer]
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5

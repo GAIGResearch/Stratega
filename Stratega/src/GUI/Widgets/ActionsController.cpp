@@ -131,7 +131,7 @@ namespace SGA::Widgets
 						//Check if we fullfil the conditions to spawn the entity
 						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 						{
-							if (!condition->isFullfilled(state, actionTargets))
+							if (!condition->isFulfilled(state, actionTargets))
 							{
 								canExecute = false;
 								break;
@@ -191,7 +191,7 @@ namespace SGA::Widgets
 					//Check if player fullfil the conditions to spawn the entity
 					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 					{
-						if (!condition->isFullfilled(state, actionTargets))
+						if (!condition->isFulfilled(state, actionTargets))
 						{
 							canExecute = false;
 							break;
@@ -251,7 +251,7 @@ namespace SGA::Widgets
 						//Check if we fullfil the conditions to spawn the entity
 						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 						{
-							if (!condition->isFullfilled(state, actionTargets))
+							if (!condition->isFulfilled(state, actionTargets))
 							{
 								canExecute = false;
 								break;
@@ -294,7 +294,7 @@ namespace SGA::Widgets
 					//Check if player fullfil the conditions to spawn the entity
 					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
 					{
-						if (!condition->isFullfilled(state, actionTargets))
+						if (!condition->isFulfilled(state, actionTargets))
 						{
 							canExecute = false;
 							break;
@@ -400,12 +400,31 @@ namespace SGA::Widgets
 		}
 	}
 
+	bool checkSelectedEntitiesAvailable(GameState& state, ActionsSettings& settings)
+	{
+		if (settings.selectedEntities.empty())
+			return false;
+
+		bool areAvailable = true;
+		for (auto& entityID : settings.selectedEntities)
+		{
+			auto* entity = state.getEntity(entityID);
+			if (!entity)
+				areAvailable = false;
+		}
+
+		if (!areAvailable)
+			settings.selectedEntities.clear();
+
+		return areAvailable;
+	}
 	
 	void getActionType(GameState& state, ActionsSettings& settings, int playerID)
 	{
 		std::unordered_set<int> actionTypes;
+
 		
-		if (settings.selectedEntities.empty())
+		if (!checkSelectedEntitiesAvailable(state,settings))
 			getPlayerPossibleActionTypes(state, settings, playerID, actionTypes);
 		else
 			getEntityPossibleActionTypes(state, settings, playerID, actionTypes);

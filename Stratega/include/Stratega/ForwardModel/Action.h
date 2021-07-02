@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <Stratega/ForwardModel/ActionTarget.h>
+#include <Stratega/ForwardModel/ActionSourceType.h>
 namespace SGA
 {
 	/// <summary>
@@ -13,10 +14,10 @@ namespace SGA
 		int lastExecutedTick;
 	};
 	
-	class EntityForwardModel;
+	class ForwardModel;
 
 	/// <summary>
-	/// Used to define how the <see cref="SGA::EntityForwardModel::executeAction()"/> will execute this action.
+	/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
 	/// </summary>
 	enum class ActionFlag
 	{
@@ -29,8 +30,7 @@ namespace SGA
 	/// <summary>
 	/// Contains the main information of an action as the action type id that is linked to an <see cref="SGA::ActionType"/> 
 	/// which defines the conditions and effects that should be executed or validated.
-	/// , the owner and a list of source/targets <see cref="SGA::ActionTarget"/> of the action.
-	///
+	/// The owner and a list of source/targets <see cref="SGA::ActionTarget"/> of the action.
 	/// The action has an actionFlag to check if is an end tick action, continuous action or a normal action.
 	/// </summary>
 	struct Action
@@ -44,45 +44,106 @@ namespace SGA
 		{
 		}
 		
+		/// <summary>
+		/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
+		/// </summary>
 		ActionFlag actionTypeFlags;
 		
-		//int actionTypeID;
-		// Contains all targets involved in an action
-		// UnitAction: Index 0 contains the source and Index 1 the target of the action//opposite
-		// PlayerAction": Index 0 contains the target of the action
+		/// <summary>
+		/// Vector with all targets involved in this action. For a UnitAction, index 0 contains the source and index 1 the target of the action.
+		/// For a PlayerAction, index 0 contains the target of the action. 
+		/// </summary>
 		std::vector<ActionTarget> targets;
+
+		/// <summary>
+		/// ID of the owner of this action.
+		/// </summary>
 		int ownerID;
 
+		/// <summary>
+		/// For continuous action, ID of this action.
+		/// </summary>
 		int continuousActionID;
+
+		/// <summary>
+		/// Ticks elapsed since this action started.
+		/// </summary>
 		int elapsedTicks;
-	private:
-		const ActionType* actionType;
 		
-	public:		
 		/// <summary>
-		/// Execute a list of effects which are defined in the <see cref="SGA::ActionType"/> linked to this action.
+		/// Execute the effects defined in the <see cref="SGA::ActionType"/> linked to this action.
 		/// </summary>
-		void execute(GameState& state, const EntityForwardModel& fm) const;
+		/// <param name="state">Game state in which this action is executed</param>
+		/// <param name="fm">Forward model used to execute the aciton.</param>
+		void execute(GameState& state, const ForwardModel& fm) const;
+
 		/// <summary>
-		/// Execute a list of conditions which are defined in the <see cref="SGA::ActionType"/> linked to this action.
-		/// This method checks if the last time of the action execution is higher than the cooldown,
+		/// Checks if this action can be executed.
+		/// It verifies if the conditions defined in the <see cref="SGA::ActionType"/> linked to this action are passed.
+		/// This method also checks if the last time of the action execution is higher than the cooldown,
 		/// and if all the preconditions and target conditions are fullfilled.
-		/// It also checks that all the actions targets are still valid.
+		/// It also checks that all the actions targets are valid.
 		/// </summary>
+		/// <param name="state">Game state in which this action could be executed</param>
+		/// <returns>True if this action can be run in the game state passed by parameter</returns>
 		bool validate(GameState& state) const;
 
+		/// <summary>
+		/// Checks if this action is to be executed over an entity.
+		/// </summary>
+		/// <returns>True if this action has an entity as target</returns>
 		[[nodiscard]] bool isEntityAction() const;
-		[[nodiscard]] bool isPlayerAction() const;
-		[[nodiscard]] int getSourceID() const;
-		int getActionTypeID() const;
-		const ActionType& getActionType() const
-		{
-			return *actionType;
-		}
 
+		/// <summary>
+		/// Checks if this action is to be executed over a player.
+		/// </summary>
+		/// <returns>True if this action has a player as target</returns>
+		[[nodiscard]] bool isPlayerAction() const;
+
+		/// <summary>
+		/// Gets the player or entity ID of the target of this action
+		/// </summary>
+		/// <returns>The player or entity ID of the target of this action</returns>
+		[[nodiscard]] int getSourceID() const;
+
+		/// <summary>
+		/// Returns the action type ID of this action
+		/// </summary>
+		/// <returns>Returns the action type ID of this action</returns>
+		int getActionTypeID() const;
+		
+		/// <summary>
+		/// Returns the name of this action
+		/// </summary>
+		/// <returns>Returns the name of this action</returns>
+		std::string getActionName() const;
+
+		/// <summary>
+		/// Checks if this action is to be executed over an entity.
+		/// </summary>
+		/// <returns>True if this action has an entity as target</returns>
+		const ActionType& getActionType() const { return *actionType; }
+
+		/// <summary>
+		/// Returns the action source type
+		/// </summary>
+		/// <returns>Action source type</returns>
+		const ActionSourceType getActionSourceType() const;
+
+	private:
+		/// <summary>
+		/// Type associated with this action.
+		/// </summary>
+		const ActionType* actionType;
+
+
+	public:  //Static Action functions.
+ 
 		/// <summary>
 		/// Generates an Action used by the game to end the tick/turn.
 		/// </summary>
+		/// <param name="playerID">ID of the player for which the End action is created</param>
+		/// <returns>Action that ends the current turn for the plater ID supplied</returns>
 		static Action createEndAction(int playerID)
 		{
 			Action a(nullptr);
@@ -95,7 +156,11 @@ namespace SGA
 		/// <summary>
 		/// Generates an Action which the owner is a entity, used by the game to abort a continuous action.
 		/// </summary>
-		static Action createAbortAction(int playerID,int entityID, int continuousActionID)
+		/// <param name="playerID">Player ID for which this action is created.</param>
+		/// <param name="entityID">Entity that owns this action to abort a continuous action.</param>
+		/// <param name="continuousActionID">ID of the continuous action to abort</param>
+		/// <returns></returns>
+		static Action createAbortAction(int playerID, int entityID, int continuousActionID)
 		{
 			Action a(nullptr);			
 			a.ownerID = playerID;			
@@ -109,6 +174,9 @@ namespace SGA
 		/// <summary>
 		/// Generates an Action which the owner is a player, used by the game to abort a continuous action.
 		/// </summary>
+		/// <param name="playerID">Player ID for which this action is created.</param>
+		/// <param name="continuousActionID">ID of the continuous action to abort</param>
+		/// <returns></returns>
 		static Action createAbortAction(int playerID, int continuousActionID)
 		{
 			Action a(nullptr);

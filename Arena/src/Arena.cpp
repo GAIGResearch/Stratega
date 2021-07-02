@@ -15,23 +15,29 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 	currentMapID = 0;
 	currentSeed = seed;
 	
-	for (int i = 0; i < gamesNumber*mapNumber; ++i)
+	try
 	{
-		gameCount = i;
-		gameBattleCount = 0;
-		
-		//Change map after playing all gamesNumber in each map
-		if(i% gamesNumber ==0&&i!=0)
+		for (int i = 0; i < gamesNumber * mapNumber; ++i)
 		{
-			currentMapID++;
+			gameCount = i;
+			gameBattleCount = 0;
+
+			//Change map after playing all gamesNumber in each map
+			if (i % gamesNumber == 0 && i != 0)
+			{
+				currentMapID++;
+			}
+			currentSeed = seed + i;
+			std::mt19937 rngEngine(currentSeed);
+			std::cout << "Using Seed: " << currentSeed << std::endl;
+			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
+			generateCombinations(config->agentParams.size(), playerCount, callback);
 		}
-		currentSeed =seed+i;
-		std::mt19937 rngEngine(currentSeed);
-		std::cout << "Using Seed: " << currentSeed <<std::endl;
-		CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
-		generateCombinations(config->agentParams.size(), playerCount, callback);
 	}
-	
+	catch (const std::exception& ex)
+	{
+		std::cout << "Arena error: " << ex.what()<< std::endl;		
+	}	
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
@@ -44,11 +50,16 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto allAgents = config->generateAgents();
 	std::vector<std::shared_ptr<SGA::Agent>> agents(agentAssignment.size());
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
+
+		//Check if agent is Human
+		if (!agents[i])
+			throw std::runtime_error("Human agents cant play Arena");
+
 		// Set seed of the agents for deterministic behaviour
 		agents[i]->setSeed(seedDist(rngEngine));
 	}
@@ -70,7 +81,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	}
 	catch (const std::exception& ex)
 	{
-		std::cout << "Game crashed error logging error in the logfile" << std::endl;
+		std::cout << "Game crashed error, logging error in the logfile" << std::endl;
 		SGA::Log::logValue("Error", std::string(ex.what()));
 	}
 	std::cout << std::endl;
@@ -80,7 +91,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	SGA::Log::getDefaultLogger().flush();
 }
 
-void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityForwardModel& forwardModel)
+void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel)
 {
 	if(state.gameType == SGA::GameType::TBS)
 	{
@@ -102,7 +113,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::EntityFo
 	}
 }
 
-void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::EntityForwardModel& forwardModel)
+void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
 {
 	if (finalState.gameType == SGA::GameType::TBS)
 	{

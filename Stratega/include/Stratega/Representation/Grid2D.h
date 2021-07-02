@@ -7,14 +7,14 @@ namespace SGA
 	template<typename Type>
 	class Grid2D
 	{
+	private:
 		size_t width;
 		size_t height;
-		//std::vector<Type> grid;
-
-	public:
-		std::vector<Type> grid;
 		typedef typename std::vector<Type>::reference reference;
 		typedef typename std::vector<Type>::const_reference const_reference;
+		
+	public:
+		std::vector<Type> grid;
 
 		template<typename InputIterator>
 		Grid2D(size_t width, InputIterator begin, InputIterator end)

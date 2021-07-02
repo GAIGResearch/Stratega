@@ -1,6 +1,7 @@
 #pragma once
 #include <optional>
 #include <vector>
+#include <unordered_map>
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/Path.h>
 #include <Stratega/ForwardModel/Action.h>
@@ -58,13 +59,29 @@ namespace SGA
 		double collisionRadius;
 
 	private:
-		//Internal state of this entity.
-		bool remove = false;
-		std::vector<ActionInfo> attachedActions;
-		std::vector<double> parameters;
-		std::vector<Action> continuousAction;
+		
 		/// <summary>
-		//Entity type
+		/// Flag that indicates if this entity will be removed from the game.
+		/// </summary>
+		bool remove = false;
+		
+		/// <summary>
+		/// Actions that this entity can execute in this game.
+		/// </summary>
+		std::vector<ActionInfo> attachedActions;
+
+		/// <summary>
+		/// Array of actions currently being executed by this entity
+		/// </summary>
+		std::vector<Action> continuousAction;
+
+		/// <summary>
+		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> parameters;
+		
+		/// <summary>
+		/// Entity type
 		/// <summary>
 		const EntityType* type;
 
@@ -95,10 +112,7 @@ namespace SGA
 		/// <summary>
 		/// Return entity type
 		/// <summary>
-		const EntityType& getEntityType() const
-		{
-			return *type;
-		}
+		const EntityType& getEntityType() const { return *type; }
 
 		/// <summary>
 		/// Return entity type ID
@@ -126,6 +140,12 @@ namespace SGA
 		/// <returns>The list of <see cref="SGA::ActionInfo"/> attached to this entity.</returns>
 		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
 
+		/// <summary>
+		/// Retrieves the list of action types this entity can execute.
+		/// </summary>
+		/// <param name="gameInfo">Reference to the game information object (from GameState)</param>
+		/// <returns>Vector with all action types this entity can execute</returns>
+		const std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
 
 		/// <summary>
 		/// Sets the last executed game ticks to the tick passed by parameter for the action corresponding to the type received.
@@ -162,6 +182,18 @@ namespace SGA
 		/// <summary>
 		/// <returns>The list of parameters values.</returns>
 		const std::vector<double>& getParamValues() const { return parameters; }
+
+		/// <summary>
+		/// Gets the list of parameters names.
+		/// <summary>
+		/// <returns>The list of parameters names of this entity.</returns>
+		std::vector<std::string> getEntityParameterNames() const;
+
+		/// <summary>
+		/// Gets a map with all pairs <parameter,value>
+		/// <summary>
+		/// <returns>Returns a map with all the parameters.</returns>
+		std::unordered_map<std::string, double> getEntityParameters() const;
 
 		/// <summary>
 		/// Gets the value of a specific parameter, by name 

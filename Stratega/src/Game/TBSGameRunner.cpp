@@ -20,24 +20,54 @@ namespace SGA
 			auto& currentAgent = agents[currentState->currentPlayer];
 			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
-				agentThread.startComputing(*currentAgent, *currentState, *forwardModel);
-				// Render
-				auto startTime = std::chrono::high_resolution_clock::now();
-				while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(40))
+				try
 				{
-					tbsRenderer->render();
-				}
-				// Collect action - ToDO verify that the agent didnt crash/hit time limit
-				auto results = agentThread.join();
-				nextAction = results.actions;
+					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, budgetTimeMs);
+					// Render
+					auto startTime = std::chrono::high_resolution_clock::now();
+					while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(budgetTimeMs))
+					{
+						tbsRenderer->render();
+					}
+
+					auto results = agentThread.join();
+
+					//Check if agent throw exception and rethrow it
+					if (results.error)
+						std::rethrow_exception(results.error);
+
+					nextAction = results.actions;
+
+					//Check computation time
+					if (shouldCheckComputationTime)					
+						if (checkComputationTime(results.computationTime))
+							nextAction.clear();
+						else
+							nextAction = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
+					
+						
+				}				
+				catch (const std::exception& ex)
+				{
+					std::cout << "Agent error: " << ex.what() << std::endl;
+					return;
+				}				
 			}
 			else // Wait for the GUI to return an action
 			{
-				while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
+				try
 				{
-					renderer->render();
+					while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
+					{
+						renderer->render();
+					}
+					nextAction = tbsRenderer->getPlayerActions();
 				}
-				nextAction = tbsRenderer->getPlayerActions();
+				catch (const std::exception& ex)
+				{
+					std::cout << "GUI crashed error: " << ex.what() << std::endl;
+					return;
+				}
 			}
 
 			// Stop game immediately
@@ -58,11 +88,59 @@ namespace SGA
 	{
 		while (!currentState->isGameOver)
 		{
-			auto& currentAgent = agents[currentState->currentPlayer];
-			auto results = runAgent(*currentAgent, *currentState, *forwardModel);
-			// ToDO verify that the agent didnt crash/hit time limit
-			forwardModel->advanceGameState(*currentState, results.actions);
+			AgentResults results;
+			ActionAssignment actionAssignment;
+			try
+			{
+				auto& currentAgent = agents[currentState->currentPlayer];
+				results = runAgent(*currentAgent, *currentState, *forwardModel, budgetTimeMs);
+
+				//Check if agent throw exception and rethrow it
+				if (results.error)
+					std::rethrow_exception(results.error);
+
+				actionAssignment = results.actions;
+				//Check computation time
+				if (shouldCheckComputationTime)
+					if (checkComputationTime(results.computationTime))
+						actionAssignment.clear();
+					else
+						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
+						
+			}
+			catch (const std::exception& ex)
+			{
+				std::cout << "Agent error: " << ex.what() << std::endl;
+				return;
+			}
+		
+			forwardModel->advanceGameState(*currentState, actionAssignment);
 			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
+	}
+
+	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
+	{
+		if (playerWarnings[currentState->currentPlayer] >= maxNumberWarnings)
+		{
+			//Disqualify player for exceeding the warning number
+			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
+			std::cout<<"WARNING: Player  " << std::to_string(currentState->currentPlayer) << " disqualified for exceeding warnings number" << std::endl;
+			return false;
+		}
+		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
+		{
+			//add one warning
+			playerWarnings[currentState->currentPlayer]++;
+			std::cout<<"WARNING: Player " << std::to_string(currentState->currentPlayer) << " has exceeded the computation time"<<std::endl;
+			return true;
+		}
+		else if (computationTime.count() >= disqualificationBudgetTimeMs)
+		{
+			//Disqualify player for exceeding the computation time
+			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
+			std::cout<<"WARNING: Player " << std::to_string(currentState->currentPlayer) << " disqualified for exceeding the computation time" << std::endl;
+			return false;
+		}		
 	}
 }

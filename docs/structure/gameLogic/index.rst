@@ -93,8 +93,8 @@ That is why each condition has access to a source in the given example below.
                    
     ForwardModel:
         LoseConditions:
-            NoHasCity:
-              - "NoHasEntity(Source, City)" # A player loses the game if he has no entity of type City anymore
+            HasNoCity:
+              - "HasNoEntity(Source, City)" # A player loses the game if he has no entity of type City anymore
 
         Trigger:
             - OnTick:

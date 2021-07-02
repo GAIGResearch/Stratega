@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <Stratega/GUI/GameRenderer.h>
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
@@ -79,10 +79,25 @@ namespace SGA
 		virtual void runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<std::shared_ptr<Agent>>& agents, int humanIndex) = 0;
 		
-		std::unique_ptr<EntityForwardModel> forwardModel;
+		virtual void checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID);
+
+		std::unique_ptr<ForwardModel> forwardModel;
 		std::unique_ptr<GameRenderer> renderer;
 		std::unique_ptr<GameState> currentState;
 		const GameConfig* config;
+
+		//Computation budget time
+		bool shouldCheckComputationTime;		
+		long budgetTimeMs;
+		long disqualificationBudgetTimeMs;
+		std::vector<int> playerWarnings;
+		int maxNumberWarnings;
+
+		//Intialization budget time
+		bool shouldCheckInitTime;
+		long initBudgetTimetMs;
+		long initDisqualificationBudgetTimeMs;
+
 	};
 
 	/// <summary>

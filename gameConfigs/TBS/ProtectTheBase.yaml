@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - RandomAgent
-    - HumanAgent
+    - CombatAgent
 
 
 Tiles:
@@ -34,7 +34,7 @@ Actions:
         Type: EntityAction
         Cooldown: 1
         Preconditions:
-            - "ResourceGreater(Source.Gold, 50)"
+            - "ResourceGreaterEqual(Source.Gold, 50)"
         Targets:
             Target:
                 Type: Position
@@ -53,7 +53,7 @@ Actions:
         Type: EntityAction
         Cooldown: 1
         Preconditions:
-            - "ResourceGreater(Source.Gold, 100)"
+            - "ResourceGreaterEqual(Source.Gold, 100)"
         Targets:
             Target:
                 Type: Position
@@ -119,7 +119,7 @@ Actions:
                         Shape: Square
                         Size: 1
                 Conditions:
-                    - "ResourceGreater(Target.Gold, 40)"
+                    - "ResourceGreaterEqual(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Gold, 40)"
 
@@ -200,8 +200,8 @@ Board:
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
-        NoHasCity:
-        - "NoHasEntity(Source, Base)"
+        HasNoCity:
+        - "HasNoEntity(Source, Base)"
 
 #Action categories
 GameDescription:

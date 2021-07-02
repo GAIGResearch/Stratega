@@ -2,11 +2,11 @@
 
 namespace SGA
 {
-	ActionAssignment DoNothingAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long /*timeBudgetMs*/)
+	ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
 	{
 		if(state.gameType==GameType::RTS)
 			return ActionAssignment();
 		else
-			return ActionAssignment::fromSingleAction(Action::createEndAction(getPlayerID()));	
+			return ActionAssignment::createEndActionAssignment(getPlayerID());
 	}
 }

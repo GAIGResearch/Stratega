@@ -347,7 +347,7 @@ namespace SGA
 
 	void TBSGameRenderer::createEntityInformation()
 	{
-		if (!actionsSettings.selectedEntities.empty())
+		if (checkSelectedEntitiesAvailable(fowState, actionsSettings))
 		{
 			ImGuiWindowFlags window_flags = 0;
 			//window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -365,6 +365,7 @@ namespace SGA
 			ImGui::Begin("Entity Information", NULL, window_flags);
 
 			auto* selectedEntity = state.getEntity(*actionsSettings.selectedEntities.begin());
+			
 			auto& entityType = selectedEntity->getEntityType();
 
 			ImGui::Text(entityType.name.c_str());

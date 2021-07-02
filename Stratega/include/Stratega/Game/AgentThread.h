@@ -8,7 +8,7 @@ namespace SGA
 	{
 		std::exception_ptr error = nullptr;
 		ActionAssignment actions{};
-		std::chrono::nanoseconds computationTime{};
+		std::chrono::milliseconds computationTime{};
 	};
 
 	/// <summary>
@@ -19,7 +19,7 @@ namespace SGA
 	/// <param name="state">The game state that the agent should use to compute the action.</param>
 	/// <param name="forwardModel">The forward model that the agent should use to compute the action.</param>
 	/// <returns>The results obtained by executing the agent.</returns>
-	AgentResults runAgent(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel);
+	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs);
 
 	/// <summary>
 	/// A reusable thread for running a given agent.
@@ -35,7 +35,7 @@ namespace SGA
 		/// <param name="agent">The agent that should be used for computing the action. Note that the agent has to be initialized before passing it to this method.</param>
 		/// <param name="state">The game state that the agent should use to compute the action.</param>
 		/// <param name="forwardModel">The forward model that the agent should use to compute the action.</param>
-		void startComputing(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel);
+		void startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs);
 		/// <summary>
 		/// Waits for the agent-thread to finish computing.
 		/// </summary>
@@ -43,11 +43,11 @@ namespace SGA
 		AgentResults join();
 
 	private:
-		void runAgentThread();
+		void runAgentThread(long timeBudgetMs);
 		
 		Agent* agent;
 		const GameState* state;
-		const EntityForwardModel* forwardModel;
+		const ForwardModel* forwardModel;
 		std::thread thread;
 		
 		bool computing;

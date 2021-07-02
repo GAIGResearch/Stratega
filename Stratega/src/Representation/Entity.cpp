@@ -27,7 +27,7 @@ namespace SGA
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->lineOfSight;
+		lineOfSightRange = type->lineOfSightRange;
 		parameters.reserve(type->parameters.size());
 		for (const auto& idParamPair : type->parameters)
 		{
@@ -45,6 +45,26 @@ namespace SGA
 			}
 		}
 	}
+
+
+	std::vector<std::string> Entity::getEntityParameterNames() const
+	{
+		std::vector<std::string> paramNames;
+		for (const auto& param : type->parameters)
+			paramNames.emplace_back(param.second.name);
+
+		return paramNames;
+	}
+
+
+	std::unordered_map<std::string, double> Entity::getEntityParameters() const
+	{
+		std::unordered_map<std::string, double> params;
+		for (const auto& param : type->parameters)
+			params.emplace(param.second.name, parameters[param.second.index]);
+		return params;
+	}
+
 
 	void Entity::setActionTicks(int actionTypeID, int tick)
 	{
@@ -67,7 +87,20 @@ namespace SGA
 				return actionInfo;
 		}
 
-		throw std::runtime_error("Tried accessing actionInfo of unknown action type");
+		throw std::runtime_error("No action type associated to ID " + std::to_string(actionTypeID));
+	}
+
+
+	const std::vector<ActionType> Entity::getActionTypes(const GameInfo& gameInfo) const
+	{
+		std::vector<ActionType> aTypes;
+		for (const ActionInfo aInfo : attachedActions)
+		{
+			ActionType at = gameInfo.getActionType(aInfo.actionTypeID);
+			aTypes.emplace_back(at);
+		}
+
+		return aTypes;
 	}
 
 	void Entity::printInfo() const

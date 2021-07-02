@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	AgentResults runAgent(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel)
+	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		assert(0 <= agent.getPlayerID() && agent.getPlayerID() < state.players.size());
 
@@ -13,9 +13,12 @@ namespace SGA
 		try
 		{
 			auto begin = std::chrono::high_resolution_clock::now();
-			results.actions = agent.computeAction(std::move(stateCopy), &forwardModel, 40);
+			results.actions = agent.computeAction(std::move(stateCopy), &forwardModel, timeBudgetMs);
 			auto end = std::chrono::high_resolution_clock::now();
-			results.computationTime = end - begin;
+			//results.computationTime = end - begin;
+			results.computationTime = std::chrono::duration_cast<std::chrono::milliseconds>
+				(end - begin);
+			
 		}
 		catch (...)
 		{
@@ -41,7 +44,7 @@ namespace SGA
 		}
 	}
 
-	void AgentThread::startComputing(Agent& agent, const GameState& state, const EntityForwardModel& forwardModel)
+	void AgentThread::startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);
@@ -54,7 +57,7 @@ namespace SGA
 		resultCache = AgentResults{};
 
 		// Start thread to compute
-		thread = std::thread(&AgentThread::runAgentThread, this);
+		thread = std::thread(&AgentThread::runAgentThread, this, timeBudgetMs);
 	}
 
 	AgentResults AgentThread::join()
@@ -66,9 +69,9 @@ namespace SGA
 		return resultCache;
 	}
 
-	void AgentThread::runAgentThread()
+	void AgentThread::runAgentThread(long timeBudgetMs)
 	{
-		resultCache = runAgent(*this->agent, *this->state, *this->forwardModel);
+		resultCache = runAgent(*this->agent, *this->state, *this->forwardModel, timeBudgetMs);
 	}
 
 	

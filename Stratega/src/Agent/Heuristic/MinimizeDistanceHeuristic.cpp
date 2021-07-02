@@ -4,8 +4,7 @@
 
 namespace SGA
 {
-
-	double MinimizeDistanceHeuristic::evaluateGameState(const EntityForwardModel& /*forwardModel*/, GameState& gameState, int playerID)
+	double MinimizeDistanceHeuristic::evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& gameState, int playerID)
 	{
 		double score = 0.0;
 

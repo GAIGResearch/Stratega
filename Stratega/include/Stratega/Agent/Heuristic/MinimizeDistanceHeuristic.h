@@ -6,7 +6,7 @@ namespace SGA
 	class MinimizeDistanceHeuristic : public StateHeuristic
 	{
 	public:
-		double evaluateGameState(const EntityForwardModel& forwardModel, GameState& gameState, const int playerID) override;
+		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override;
 		static std::string getName() { return "MinimizeDistanceHeuristic"; }
 	};
 }

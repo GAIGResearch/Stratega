@@ -90,7 +90,7 @@ YAML
         Move:
             Type: EntityAction
             Preconditions:
-                - "ResourceGreater(Source.MovementPoints, 1)"
+                - "ResourceGreaterEqual(Source.MovementPoints, 1)"
             Targets:
                 Target:
                     Type: Position
@@ -163,7 +163,7 @@ YAML
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
             NoHasKing:
-            - "NoHasEntity(Source, King)"
+            - "HasNoEntity(Source, King)"
 
         Trigger:
             - OnTick:

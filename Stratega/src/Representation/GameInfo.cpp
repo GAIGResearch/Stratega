@@ -15,13 +15,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown entity type with ID=");
-			s.append(std::to_string(entityTypeID));
-			throw std::runtime_error(s);
-		}
+		else throw std::runtime_error("No entity type associated to ID " + std::to_string(entityTypeID));
 	}
 
 	const ActionType& GameInfo::getActionTypeConst(int actionTypeID)
@@ -31,13 +25,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown action type with ID=");
-			s.append(std::to_string(actionTypeID));
-			throw std::runtime_error(s);
-		}
+		else throw std::runtime_error("No action type associated to ID " + std::to_string(actionTypeID));
 	}
 
 	int GameInfo::getParameterGlobalID(std::string parameterName)
@@ -70,13 +58,7 @@ namespace SGA
 		{
 			return it->second;
 		}
-		else
-		{
-			std::string s;
-			s.append("Tried accessing unknown player parameter ID ");
-			s.append(std::to_string(id));
-			throw std::runtime_error(s);
-		}
+		else throw std::runtime_error("No player parameter associated to ID " + std::to_string(id));
 	}
 
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const
@@ -106,4 +88,54 @@ namespace SGA
 	{
 		return tileTypes->find(tileTypeID)->second;
 	}
+
+	std::unordered_map<int, int> GameInfo::getTechnologyCounts() const
+	{
+		std::unordered_map<int, int> counts;
+		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		{
+			counts.emplace(id, techTree.technologies.size());
+		}
+		return counts;
+	}
+
+
+	const TechnologyTreeNode& GameInfo::getTechnology(int technologyID) const 
+	{
+		return technologyTreeCollection->getTechnology(technologyID);
+	}
+
+	int GameInfo::getTechnologyTypeID(const std::string& technologyName) const
+	{
+		return technologyTreeCollection->getTechnologyTypeID(technologyName);
+	}
+
+	std::vector<TechnologyTreeNode> GameInfo::getTreeNodes(int techTreeID) const
+	{
+		std::vector<TechnologyTreeNode> techs;
+
+		const auto& it = technologyTreeCollection->technologyTreeTypes.find(techTreeID);
+		if (it != technologyTreeCollection->technologyTreeTypes.end())
+		{
+			std::unordered_map<int, TechnologyTreeNode> ttNodes = it->second.technologies;
+			for (const auto& [id, treeNode] : ttNodes)
+			{
+				techs.emplace_back(treeNode);
+			}
+		}
+
+		return techs;
+	}
+
+	std::vector<int> GameInfo::getTechTreesIDs() const
+	{
+		std::vector<int> ids;
+		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		{
+			ids.emplace_back(id);
+		}
+		return ids;
+	}
+		
+
 }

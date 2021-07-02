@@ -17,7 +17,7 @@ namespace SGA
 		BeamSearchParameters parameters_ = BeamSearchParameters();
 
 	public:
-		ActionAssignment computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:	
 		Action beamSearch(TBSForwardModel& forwardModel, TreeNode& root);

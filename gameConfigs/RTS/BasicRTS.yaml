@@ -250,7 +250,7 @@ Actions:
                         Size: 2
                 Conditions:
 
-                    - "ResourceGreater(Target.Gold, 0.1)"
+                    - "ResourceGreaterEqual(Target.Gold, 0.1)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 0.1)"
 
@@ -386,8 +386,8 @@ Board:
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
-        NoHasCity:
-        - "NoHasEntity(Source, City)"
+        HasNoCity:
+        - "HasNoEntity(Source, City)"
 
     Trigger:
         - OnTick:
@@ -406,7 +406,7 @@ ForwardModel:
             ValidTargets: Foundry
             Conditions:
                 - "IsPlayerEntity(Source)"
-                - "ResourceGreater(Source.Player.Gold, 2)"
+                - "ResourceGreaterEqual(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 0.4)"
@@ -429,3 +429,14 @@ GameDescription:
         NoFighter: [Worker]
         Melee: [Warrior]
         Ranged: [Archer, Catapult]
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5

@@ -200,7 +200,7 @@ namespace SGA
 		return 0;
 	}
 
-	ActionAssignment CombatAgent::playTurn(GameState& currentState, const EntityForwardModel& fm)
+	ActionAssignment CombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
 		for (const auto a : *currentState.gameInfo->actionTypes)
 		{
@@ -208,25 +208,20 @@ namespace SGA
 		}
 		actionTypeIDToActionTypeString[-1] = "EndTurn";
 
-
-
-		//std::cout << "CombatAgent " << currentState.currentGameTurn << std::endl;
-
-		// Get my units and opponent units
-		//std::vector<Entity*> myUnits = currentState.getPlayerEntities(getPlayerID());
-		std::vector<Entity*> opponentUnits = currentState.getNonPlayerEntities(getPlayerID(), SGA::EntityCategory::Unit);
-		std::vector<Entity*> myFigherUnits = currentState.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
 		std::vector<Entity*> myUnits = currentState.getPlayerEntities(getPlayerID());
-		std::vector<Entity*> allOppUnits = currentState.getNonPlayerEntities(getPlayerID());
+		std::vector<Entity*> opponentUnits = currentState.getNonPlayerEntities(getPlayerID());
+
 
 		// Compute the best target that we should attack, based on how much support it has and how easy we can attack it
 		Entity* bestAttackTarget = nullptr;
 		double highestScore = std::numeric_limits<double>::lowest();
 		for (auto* opp : opponentUnits)
 		{
-
 			// How much support has the unit? Computed by estimating how long it reaches for support to arrive and how strong it is.
 			double avgSupportScore = 0;
+
+			std::vector<std::string> eParamNames = opp->getEntityParameterNames();
+			std::unordered_map<std::string, double> aParams = opp->getEntityParameters();
 
 			for (auto* ally : opponentUnits)
 			{
@@ -348,10 +343,14 @@ namespace SGA
 		return ActionAssignment::fromSingleAction(nextAction);
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const EntityForwardModel* forwardModel, long timeBudgetMs)
+	void CombatAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	{
+		//Init stuff goes here.
+	}
+
+	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
 		return playTurn(state, *forwardModel);
 	}
-
 }

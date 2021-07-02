@@ -28,7 +28,7 @@ namespace SGA
         std::unordered_map<int, TileType> tileTypes;
 
     	//ForwardModel
-        std::unique_ptr<EntityForwardModel> forwardModel;
+        std::unique_ptr<ForwardModel> forwardModel;
     	
     	// Players
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;
@@ -60,12 +60,27 @@ namespace SGA
 
     	//Yaml path
         std::string yamlPath;
-    	
+
+        //Game runner config
+        //Computation budget time
+        bool shouldCheckComputationTime = false;
+        long budgetTimeMs = 40;
+        long disqualificationBudgetTimeMs = 60;
+        int maxNumberWarnings = 3;
+
+        //Intialization budget time
+        bool shouldCheckInitTime = false;
+        long initBudgetTimetMs = 40;
+        long initDisqualificationBudgetTimeMs = 60;
+
     	//Base utilities
         size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;
         int getTechnologyID(const std::string& name) const;
+
+        //Adds a new player to the game.
+        int addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const;
     };
 }

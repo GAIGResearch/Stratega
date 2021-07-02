@@ -4,9 +4,11 @@
 
 namespace SGA
 {
+
 	class Condition
 	{
 	public:
+
 		Condition() = default;
 		virtual ~Condition() = default;
 		Condition(const Condition& other) = default;
@@ -14,44 +16,51 @@ namespace SGA
 		Condition& operator=(const Condition& other) = delete;
 		Condition& operator=(Condition&& other) noexcept = delete;
 	
-		virtual bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
+		virtual bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const = 0;
+		const std::string expr() const { return expression; };
+
+	protected:
+		Condition(const std::string exp) { expression = exp; }
+
+	private:
+		std::string expression;
 	};
 	
-	class ResourceLower : public Condition
+	class ResourceLowerEqual : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBoundParameter;
 	public:
-		ResourceLower(const std::vector<FunctionParameter>& parameters);
+		ResourceLowerEqual(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
-	class ResourceGreater : public Condition
+	class ResourceGreaterEqual : public Condition
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter lowerBoundParameter;
 	public:
-		ResourceGreater(const std::vector<FunctionParameter>& parameters);
+		ResourceGreaterEqual(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	class HasElapsedTime : public Condition
 	{
 		FunctionParameter lowerBoundParameter;
 	public:
-		HasElapsedTime(const std::vector<FunctionParameter>& parameters);
+		HasElapsedTime(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	class SamePlayer : public Condition
 	{
 	public:
-		SamePlayer(const std::vector<FunctionParameter>& parameters);
+		SamePlayer(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class InRange : public Condition
@@ -61,8 +70,8 @@ namespace SGA
 		FunctionParameter distance;
 
 	public:
-		InRange(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		InRange(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class IsWalkable : public Condition
@@ -70,8 +79,8 @@ namespace SGA
 		FunctionParameter targetPosition;
 
 	public:
-		IsWalkable(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class IsTile : public Condition
@@ -80,8 +89,8 @@ namespace SGA
 		FunctionParameter targetTile;
 
 	public:
-		IsTile(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	class IsPlayerEntity : public Condition
@@ -89,8 +98,8 @@ namespace SGA
 		FunctionParameter targetParam;
 
 	public:
-		IsPlayerEntity(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	class IsResearched : public Condition
@@ -99,8 +108,8 @@ namespace SGA
 		FunctionParameter technologyTypeParam;
 		
 	public:
-		IsResearched(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class CanResearch : public Condition
@@ -109,8 +118,8 @@ namespace SGA
 		FunctionParameter technologyTypeParam;
 		
 	public:
-		CanResearch(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		CanResearch(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class HasEntity : public Condition
@@ -119,18 +128,19 @@ namespace SGA
 		FunctionParameter entityTypeParam;
 
 	public:
-		HasEntity(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		HasEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class NoHasEntity : public Condition
+	class HasNoEntity : public Condition
 	{
 		FunctionParameter playerParam;
 		FunctionParameter entityTypeParam;
 
 	public:
-		NoHasEntity(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+
 	};
 	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
@@ -140,8 +150,8 @@ namespace SGA
 		FunctionParameter targetEntityTypeParam;
 
 	public:
-		CanSpawnCondition(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		CanSpawnCondition(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class CanAfford : public Condition
@@ -150,7 +160,7 @@ namespace SGA
 		FunctionParameter costParam;
 
 	public:
-		CanAfford(const std::vector<FunctionParameter>& parameters);
-		bool isFullfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+		CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 }

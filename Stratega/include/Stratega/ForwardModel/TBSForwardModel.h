@@ -1,17 +1,17 @@
 #pragma once
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace  SGA
 {
 	struct GameState;
 
 	/// <summary>
-	/// Is the default <see cref="SGA::EntityForwardModel"/> for TBS games, it contains specific methods.
+	/// Is the default <see cref="SGA::ForwardModel"/> for TBS games, it contains specific methods.
 	/// Each <see cref="SGA::TBSForwardModel::advanceGameState()"/> call execute the received action and
 	/// updates the entities that should be removed before checking if the game is over.
 	/// The <see cref="SGA::TBSForwardModel::advanceGameState()"/> accepts a list of actions or one single action.
 	/// </summary>
-	class TBSForwardModel : public EntityForwardModel
+	class TBSForwardModel : public ForwardModel
 	{
 	public:
 		/// <summary>
@@ -24,11 +24,11 @@ namespace  SGA
 		/// </summary>
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 
-		using EntityForwardModel::generateActions;
+		using ForwardModel::generateActions;
 
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
 		
-		std::unique_ptr<EntityForwardModel> clone() const override;
+		std::unique_ptr<ForwardModel> clone() const override;
 
 		/// <summary>
 		/// End the turn of the current player and if all the player has played it ends the current game turn.

@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - OSLAAgent
-    - OSLAAgent
+    - MyAgent
+    - CombatAgent
 
 Player:
     Actions: [Build, Research]
@@ -13,6 +13,7 @@ Player:
     Parameters:
         Gold: 0
         Prod: 5
+        Score: 0
 
 Tiles:
     Plain:
@@ -224,7 +225,7 @@ Actions:
         Targets:
             Target:
                 Type: Technology
-                ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+                ValidTargets: All  
                 Conditions:
                     - "CanResearch(Source, Target)"
                     - "CanAfford(Source, Target)"
@@ -234,6 +235,7 @@ Actions:
             - "PayCost(Source, Target)"
         OnComplete:
             - "Research(Source, Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
 
     
     Mine:
@@ -249,7 +251,7 @@ Actions:
                         Shape: Circle
                         Size: 2
                 Conditions:
-                    - "ResourceGreater(Target.Gold, 40)"
+                    - "ResourceGreaterEqual(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
 
@@ -277,6 +279,7 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ModifyResource(Source.Player.Score, 2)"
 
     #Build
     Build:
@@ -302,6 +305,7 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
+            - "ModifyResource(Source.Player.Score, 5)"
 
 TechnologyTrees:
     SingleTree:
@@ -383,8 +387,8 @@ Board:
                    
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
-        NoHasCity:
-        - "NoHasEntity(Source, City)"
+        HasNoCity:
+        - "HasNoEntity(Source, City)"
 
     Trigger:
         - OnTick:
@@ -403,7 +407,7 @@ ForwardModel:
             ValidTargets: Foundry
             Conditions:
                 - "IsPlayerEntity(Source)"
-                - "ResourceGreater(Source.Player.Gold, 2)"
+                - "ResourceGreaterEqual(Source.Player.Gold, 2)"
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"

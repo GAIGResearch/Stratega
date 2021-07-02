@@ -1,53 +1,53 @@
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {
-	EntityForwardModel::EntityForwardModel()
+	ForwardModel::ForwardModel()
 		: actionSpace(generateDefaultActionSpace())
 	{
 	}
 	
-	std::vector<Action> EntityForwardModel::generateActions(const GameState& state, int playerID) const
+	std::vector<Action> ForwardModel::generateActions(const GameState& state, int playerID) const
 	{
 		std::vector<Action> actionBucket;
 		generateActions(state, playerID, actionBucket);
 		return actionBucket;
 	}
 
-	void EntityForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
+	void ForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
 	
-	bool EntityForwardModel::canPlayerPlay(const GameState& state, Player& player) const
+	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{
-		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
-			return true;
+		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
+			return false;
 
 		//Check Lose conditions
 		std::vector<ActionTarget> targets;
-		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 		
 		for (auto& loseConditionType : loseConditions)
 		{
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfilled(state, targets))
-					return false;
+				if (loseCondition->isFulfilled(state, targets))
+					return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 
-	bool EntityForwardModel::checkPlayerWon(const GameState& state, Player& player) const
+	bool ForwardModel::checkPlayerWon(const GameState& state, int playerID) const
 	{
-		if (state.fogOfWarId != -1 && player.id != state.fogOfWarId)
+		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
 			return false;
 
 		//Check Win conditions
 		std::vector<ActionTarget> targets;
-		targets.emplace_back(ActionTarget::createPlayerActionTarget(player.id));
+		targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 
 		//Check win condition types
 		for (auto& winConditionType : winConditions)
@@ -57,7 +57,7 @@ namespace SGA
 			//Check condition list
 			for (auto& winCondition : winConditionType)
 			{
-				if (!winCondition->isFullfilled(state, targets))
+				if (!winCondition->isFulfilled(state, targets))
 				{
 					playerWon = false;
 					break;
@@ -72,7 +72,7 @@ namespace SGA
 		return false;
 	}
 
-	void EntityForwardModel::executeAction(GameState& state, const Action& action) const
+	void ForwardModel::executeAction(GameState& state, const Action& action) const
 	{
 		if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
 		{
@@ -132,7 +132,8 @@ namespace SGA
 			//If we are generating continuousAction we need to track them somehow
 			//Using ID for each action for example				
 			Action newAction = action;
-			newAction.continuousActionID = state.continueActionNextID++;
+			newAction.continuousActionID = state.getNextContinuousActionID();
+			state.incNextContinuousActionID();
 			newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
 
 			//If is continues we execute OnStart Effects
@@ -188,7 +189,7 @@ namespace SGA
 		}
 	}
 
-	void EntityForwardModel::endTick(GameState& state) const
+	void ForwardModel::endTick(GameState& state) const
 	{
 		state.currentTick++;
 
@@ -204,7 +205,7 @@ namespace SGA
 				auto isValid = true;
 				for(const auto& condition : onTickEffect.conditions)
 				{
-					if(!condition->isFullfilled(state, targets))
+					if(!condition->isFulfilled(state, targets))
 					{
 						isValid = false;
 						break;
@@ -243,7 +244,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfilled(state, continuousActions[i].targets))
+					if (!condition->isFulfilled(state, continuousActions[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -259,7 +260,7 @@ namespace SGA
 					/*for (auto& targetType : actionType.actionTargets)
 					for (const auto& condition : targetType.second)
 					{
-						if (!condition->isFullfilled(state, state.entities[j].continuousAction[i].targets))
+						if (!condition->isFulfilled(state, state.entities[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
@@ -310,7 +311,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
+					if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -326,7 +327,7 @@ namespace SGA
 					/*for (auto& targetType : actionType.actionTargets)
 					for (const auto& condition : targetType.second)
 					{
-						if (!condition->isFullfilled(state, state.players[j].continuousAction[i].targets))
+						if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
 						{
 							canExecute = false;
 							break;
@@ -358,7 +359,7 @@ namespace SGA
 		}
 	
 
-	void EntityForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
+	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
 
@@ -371,7 +372,7 @@ namespace SGA
 			auto isValid = true;
 			for (const auto& condition : onSpawnEffect.conditions)
 			{
-				if (!condition->isFullfilled(state, targets))
+				if (!condition->isFulfilled(state, targets))
 				{
 					isValid = false;
 					break;

@@ -1,19 +1,22 @@
 #include <Stratega/ForwardModel/Effect.h>
-#include <Stratega/ForwardModel/EntityForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 
+#include "Stratega/ForwardModel/FunctionParameter.h"
+
 namespace SGA
 {
-	ModifyResource::ModifyResource(const std::vector<FunctionParameter>& parameters) :
+	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
 	
-	void ModifyResource::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ModifyResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
 		auto amount = amountParameter.getConstant(state, targets);
@@ -21,14 +24,15 @@ namespace SGA
 		targetResource += amount;
 	}
 
-	ChangeResource::ChangeResource(const std::vector<FunctionParameter>& parameters) :
+	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
 
-	void ChangeResource::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ChangeResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
 		double amount = amountParameter.getConstant(state, targets);
@@ -36,14 +40,15 @@ namespace SGA
 		targetResource = amount;
 	}
 	
-	Attack::Attack(const std::vector<FunctionParameter>& parameters) :
+	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1))
+		amountParameter(parameters.at(1)),
+		Effect(exp)
 	{
 
 	}
 	
-	void Attack::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void Attack::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
@@ -54,15 +59,16 @@ namespace SGA
 			entity.flagRemove();
 	}
 
-	AttackProbability::AttackProbability(const std::vector<FunctionParameter>& parameters) :
+	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1)),
-		probabilityParameter(parameters.at(2))
+		probabilityParameter(parameters.at(2)),
+		Effect(exp)
 	{
 
 	}
 	
-	void AttackProbability::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void AttackProbability::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto& targetResource = resourceReference.getParameterValue(state, targets);
@@ -80,12 +86,13 @@ namespace SGA
 		}
 	}
 
-	Move::Move(const std::vector<FunctionParameter>& parameters)
-		: entityParam(parameters[0]), targetPositionParam(parameters[1])
+	Move::Move(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: entityParam(parameters[0]), targetPositionParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 	
-	void Move::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Move::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
@@ -110,12 +117,13 @@ namespace SGA
 		}
 	}
 
-	SetToMaximum::SetToMaximum(const std::vector<FunctionParameter>& parameters)
-		: targetResource(parameters[0])
+	SetToMaximum::SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetResource(parameters[0]),
+		Effect(exp)
 	{
 	}
 
-	void SetToMaximum::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void SetToMaximum::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& param = targetResource.getParameter(state, targets);
 		auto& paramValue = targetResource.getParameterValue(state, targets);
@@ -123,12 +131,13 @@ namespace SGA
 		paramValue = param.maxValue;
 	}
 
-	TransferEffect::TransferEffect(const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])
+	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
-	void TransferEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void TransferEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& sourceType = sourceParam.getParameter(state, targets);
 		auto& sourceValue = sourceParam.getParameterValue(state, targets);
@@ -144,47 +153,52 @@ namespace SGA
 		targetValue = targetValue + amount;
 	}
 
-	ChangeOwnerEffect::ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0]), playerParam(parameters[1])
+	ChangeOwnerEffect::ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]), playerParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 	
-	void ChangeOwnerEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ChangeOwnerEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
+		auto sourceEntity = targets[0].getEntity(state);
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
 		targetEntity.ownerID = newOwner.id;
 	}
 
-	RemoveEntityEffect::RemoveEntityEffect(const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0])
+	RemoveEntityEffect::RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: targetEntityParam(parameters[0]),
+		Effect(exp)
 	{
 	}
 
-	void RemoveEntityEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void RemoveEntityEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		targetEntity.flagRemove();
 	}
 
-	ResearchTechnology::ResearchTechnology(const std::vector<FunctionParameter>& parameters)
+	ResearchTechnology::ResearchTechnology(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: playerParam(parameters[0]),
-		  technologyTypeParam(parameters[1])
+		  technologyTypeParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 
-	void ResearchTechnology::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ResearchTechnology::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		state.researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
 	}
 
-	SpawnEntityRandom::SpawnEntityRandom(const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1])
+	SpawnEntityRandom::SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 
-	void SpawnEntityRandom::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnEntityRandom::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
@@ -211,12 +225,13 @@ namespace SGA
 	}
 
 
-	SpawnEntity::SpawnEntity(const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	SpawnEntity::SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
-	void SpawnEntity::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnEntity::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& ownerID = spawnSource.getPlayerID(state, targets);
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
@@ -224,12 +239,13 @@ namespace SGA
 		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 
-	SpawnEntityGrid::SpawnEntityGrid(const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2])
+	SpawnEntityGrid::SpawnEntityGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
+		Effect(exp)
 	{
 	}
 
-	void SpawnEntityGrid::execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void SpawnEntityGrid::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& ownerID = spawnSource.getPlayerID(state, targets);
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
@@ -240,12 +256,13 @@ namespace SGA
 	}
 
 	
-	PayCostEffect::PayCostEffect(const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), costParam(parameters[1])
+	PayCostEffect::PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: sourceParam(parameters[0]), costParam(parameters[1]),
+		Effect(exp)
 	{
 	}
 
-	void PayCostEffect::execute(GameState& state, const EntityForwardModel&, const std::vector<ActionTarget>& targets) const
+	void PayCostEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		//Get cost of target, parameterlist to look up and the parameters of the source
 		const auto& cost = costParam.getCost(state, targets);

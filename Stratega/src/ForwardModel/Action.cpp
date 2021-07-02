@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	void Action::execute(GameState& state, const EntityForwardModel& fm) const
+	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
 		auto& type = state.gameInfo->actionTypes->at(getActionTypeID());
 		for (auto& effect : type.effects)
@@ -36,7 +36,7 @@ namespace SGA
 				//Check preconditions
 				for (auto& precondition : actionType.preconditions)
 				{
-					if (!precondition->isFullfilled(state, targets))
+					if (!precondition->isFulfilled(state, targets))
 						return false;
 				}
 				
@@ -52,7 +52,7 @@ namespace SGA
 				{
 					for (auto& condition : actionTarget.second)
 					{
-						if (!condition->isFullfilled(state, targets))
+						if (!condition->isFulfilled(state, targets))
 							return false;
 					}
 				}
@@ -97,5 +97,30 @@ namespace SGA
 			actionTypeID = actionType->id;
 		
 		return actionTypeID;
+	}
+
+	std::string Action::getActionName() const
+	{
+		std::string name = "undefined";
+
+		if (actionTypeFlags == ActionFlag::EndTickAction)
+			name = "End Turn / Pass Action";
+
+		if (actionType)
+			name = actionType->name;
+
+		return name;
+	}
+
+
+	const ActionSourceType Action::getActionSourceType() const
+	{
+		if(actionTypeFlags == ActionFlag::EndTickAction)
+			return SGA::ActionSourceType::Player;
+
+		if (actionType)
+			return actionType->sourceType;
+
+		return SGA::ActionSourceType::Player;
 	}
 }

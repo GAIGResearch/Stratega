@@ -75,6 +75,9 @@ namespace SGA
         if (configNode["GameDescription"].IsDefined())
             parseGameDescription(configNode["GameDescription"], *config);
 
+        if (configNode["GameRunner"].IsDefined())
+            parseGameRunner(configNode["GameRunner"], *config);
+
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
@@ -257,11 +260,11 @@ namespace SGA
             type.name = nameTypePair.first;
             type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
             type.id = static_cast<int>(config.entityTypes.size());
-            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<double>();
+            type.lineOfSightRange = nameTypePair.second["LineOfSightRange"].as<double>();
 
             parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
 
-            type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.id, std::move(type));
         }
     }
@@ -436,7 +439,6 @@ namespace SGA
         return actionCategory;
     }
 
-
     EntityCategory GameConfigParser::parseEntityCategory(const std::string& name) const
     {
         EntityCategory entityCategory;
@@ -461,7 +463,7 @@ namespace SGA
             throw std::runtime_error("Cannot find a definition for the ForwardModel");
         }
 		
-        std::unique_ptr<EntityForwardModel> fm;
+        std::unique_ptr<ForwardModel> fm;
 		if(config.gameType == GameType::TBS)
 		{
             fm = std::make_unique<TBSForwardModel>();
@@ -645,6 +647,20 @@ namespace SGA
         }
 
 
+    }
+
+    void GameConfigParser::parseGameRunner(const YAML::Node& gameRunner, GameConfig& config) const
+    {
+        auto agentInitializationTime = gameRunner["AgentInitializationTime"];
+        config.shouldCheckInitTime= agentInitializationTime["Enabled"].as<bool>(false);
+        config.initBudgetTimetMs= agentInitializationTime["BudgetTimeMs"].as<long>(40);
+        config.initDisqualificationBudgetTimeMs = agentInitializationTime["DisqualificationTimeMs"].as<long>(60);
+
+        auto agentComputationTime = gameRunner["AgentComputationTime"];
+        config.shouldCheckComputationTime= agentComputationTime["Enabled"].as<bool>(false);
+        config.budgetTimeMs= agentComputationTime["BudgetTimeMs"].as<long>(40);
+        config.disqualificationBudgetTimeMs = agentComputationTime["DisqualificationTimeMs"].as<long>(60);
+        config.maxNumberWarnings = agentComputationTime["MaxNumberWarnings"].as<int>(3);
     }
 
     void GameConfigParser::parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const

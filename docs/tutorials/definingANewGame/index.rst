@@ -241,8 +241,8 @@ A tick in turn-based games is equivalent to all players having played once, or i
                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
-            NoHasCity:
-            - "NoHasEntity(Source, City)"
+            HasNoCity:
+            - "HasNoEntity(Source, City)"
 
         Trigger:
         - OnTick:
@@ -376,8 +376,8 @@ Full yaml
                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
-            NoHasCity:
-            - "NoHasEntity(Source, City)"
+            HasNoCity:
+            - "HasNoEntity(Source, City)"
 
         Trigger:
         - OnTick:
