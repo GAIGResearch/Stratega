@@ -14,6 +14,7 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <Stratega/Game/GameRunner.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Game/AgentThread.h>
@@ -180,6 +181,9 @@ PYBIND11_MODULE(stratega, m)
 	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
 
+	//py::bind_vector<std::vector<SGA::Action>>(m, "ActionList");
+
+
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
 
 	py::bind_vector<std::vector<SGA::ActionTarget>>(m, "ActionTargetList");
@@ -233,7 +237,7 @@ PYBIND11_MODULE(stratega, m)
 				return std::vector<SGA::Action>(self);
 			})
 		.def("clear", &std::vector<SGA::Action>::clear)
-		.def("get", [](const std::vector<SGA::Action>& v, int index)
+		.def("__getitem__", [](const std::vector<SGA::Action>& v, int index)
 			{
 				return v[index]; 
 			})
@@ -958,34 +962,56 @@ PYBIND11_MODULE(stratega, m)
 		.def_static("from_single_action", &SGA::ActionAssignment::fromSingleAction, py::arg("a"));
 
 	// ---- Forward model ----
-	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel");
-		//.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::EntityForwardModel::generateActions, py::const_));
-		//.def("generateActions2", &SGA::EntityForwardModel::generateActions2, py::arg("state"), py::arg("playerID"));
+	py::class_<SGA::EntityForwardModel>(m, "EntityForwardModel")
+		.def("can_player_play", &SGA::EntityForwardModel::canPlayerPlay, py::arg("state"), py::arg("player"))
+		.def("check_player_won", &SGA::EntityForwardModel::checkPlayerWon, py::arg("state"), py::arg("player"))
+		.def("end_tick", &SGA::EntityForwardModel::endTick, py::arg("state"))
+		.def("execute_action", &SGA::EntityForwardModel::executeAction, py::arg("state"), py::arg("action"))
+		.def("spawn_entity", &SGA::EntityForwardModel::spawnEntity, py::arg("state"), py::arg("entityType"), py::arg("playerID"), py::arg("position"))
+		;
+		
 		
 	py::class_<SGA::TBSForwardModel, SGA::EntityForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
-		.def("generate_actions", &SGA::TBSForwardModel::generateActions2, py::arg("state"), py::arg("playerID"))
-		//.def("generate_actions", &SGA::TBSForwardModel::generateActions, py::arg("state"), py::arg("playerID"))
-		//.def("generateActions", py::overload_cast<const SGA::GameState&, int>(&SGA::TBSForwardModel::generateActions, py::const_))
-		.def("advance_gamestate_const", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_))
-		//.def("generateActions", py::overload_cast<const SGA::GameState& , int>(&SGA::TBSForwardModel::generateActions, py::const_));
-		//.def("generateActions", &SGA::TBSForwardModel::generateActions, py::arg("state"), py::arg("playerID"), py::const_);
-		//.def("generateActions", py::overload_cast<SGA::GameState& , int>(&SGA::TBSForwardModel::generateActions, py::const_));
-		.def("advance_gamestate",
-			[](SGA::EntityForwardModel& fm, SGA::GameState& state, SGA::Action& action)
-			{
-				SGA::GameState newGS = state;
-				SGA::Action newAction = action;
-				//py::gil_scoped_acquire acquire;
-				//py::scoped_ostream_redirect stream(
-				//	std::cout,                               // std::ostream&
-				//	py::module_::import("sys").attr("stdout") // Python output
-				//);
+		.def("generate_actions", py::overload_cast<const SGA::GameState& , int>(&SGA::EntityForwardModel::generateActions, py::const_))
+		.def("generate_actions", py::overload_cast<const SGA::GameState& , int, std::vector<SGA::Action>&>(&SGA::EntityForwardModel::generateActions, py::const_))
 
-				fm.advanceGameState(newGS, newAction);
-			}
-		)
-		/*.def("advanceGameState", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_))*/;
+		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_))
+		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_))
+
+		.def("end_turn", &SGA::TBSForwardModel::endTurn, py::arg("state"))
+		.def("is_valid", &SGA::TBSForwardModel::isValid, py::arg("state"), py::arg("action"))
+		.def("check_game_is_finished", &SGA::TBSForwardModel::checkGameIsFinished, py::arg("state"))
+		;
+
+	py::class_<SGA::RTSForwardModel, SGA::EntityForwardModel>(m, "RTSForwardModel")
+		.def(py::init<>())
+		.def_readwrite("delta_time", &SGA::RTSForwardModel::deltaTime)
+
+		.def("generate_actions", py::overload_cast<const SGA::GameState&, int>(&SGA::EntityForwardModel::generateActions, py::const_))
+		.def("generate_actions", py::overload_cast<const SGA::GameState&, int, std::vector<SGA::Action>&>(&SGA::EntityForwardModel::generateActions, py::const_))
+
+		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::RTSForwardModel::advanceGameState, py::const_))
+		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::ActionAssignment&>(&SGA::RTSForwardModel::advanceGameState, py::const_))
+
+		.def("move_entities", &SGA::RTSForwardModel::moveEntities, py::arg("state"))
+		.def("resolve_entity_collisions", &SGA::RTSForwardModel::resolveEntityCollisions, py::arg("state"))
+		.def("resolve_environment_collisions", &SGA::RTSForwardModel::resolveEnvironmentCollisions, py::arg("state"))
+
+		.def("find_path", &SGA::RTSForwardModel::findPath, py::arg("state"), py::arg("startPos"), py::arg("endPos"))
+		.def("check_game_is_finished", &SGA::RTSForwardModel::checkGameIsFinished, py::arg("state"))
+		;
+
+	// ---- Path ----
+	py::class_<SGA::Path>(m, "Path")
+		.def(py::init<>())
+		//.def_readwrite("m_straight_path", &SGA::Path::m_straightPath)
+		.def_readwrite("m_nstraight_path", &SGA::Path::m_nstraightPath)
+		//.def_readwrite("m_straight_path_flags", &SGA::Path::m_straightPathFlags)
+		.def_readwrite("m_straight_path_options", &SGA::Path::m_straightPathOptions)
+		.def_readwrite("current_path_index", &SGA::Path::currentPathIndex)
+		.def("is_empty", &SGA::Path::isEmpty);
+
 
 	// ---- Agent ----
 	py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")

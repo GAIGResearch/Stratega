@@ -13,12 +13,6 @@ namespace SGA
 		generateActions(state, playerID, actionBucket);
 		return actionBucket;
 	}
-	std::vector<Action> EntityForwardModel::generateActions2(const GameState* state, int playerID) const
-	{
-		std::vector<Action> actionBucket;
-		generateActions(*state, playerID, actionBucket);
-		return actionBucket;
-	}
 
 	void EntityForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
