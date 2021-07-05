@@ -43,6 +43,8 @@ namespace  SGA
 
 		std::unique_ptr<ForwardModel> clone() const override;
 
+		GameType getGameType() const override { return SGA::GameType::RTS; }
+
 		/// <summary>
 		/// Moves all the entities that have a current path and they did not reach their destination.
 		/// If the entity has a path it moves the entity through all the path points one after the

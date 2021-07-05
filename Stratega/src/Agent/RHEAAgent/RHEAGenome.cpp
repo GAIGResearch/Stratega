@@ -18,7 +18,7 @@ namespace SGA {
         }
 
         // rate newly created individual
-        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
+        value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, playerID);
     }
 
     RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
@@ -30,11 +30,11 @@ namespace SGA {
         forwardModel.advanceGameState(gameState, action);
         while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
         {
-            if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
+            if (params.getOpponentModel()) // use default opponentModel to choose actions until the turn has ended
             {
                 params.REMAINING_FM_CALLS--;
                 auto opActionSpace = forwardModel.generateActions(gameState);
-                auto opAction = params.opponentModel->getAction(gameState, opActionSpace);
+                auto opAction = params.getOpponentModel()->getAction(gameState, opActionSpace);
                 forwardModel.advanceGameState(gameState, opAction);
             }
             else // skip opponent turn
@@ -86,7 +86,7 @@ namespace SGA {
         }
 
         // rate mutated individual
-        this->value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
+        this->value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, playerID);
     }
 
     RHEAGenome RHEAGenome::crossover(const TBSForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
@@ -142,7 +142,7 @@ namespace SGA {
             actIdx++;
         }
 
-        const double value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
+        const double value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, playerID);
         return RHEAGenome(actions, value);
     }
 
@@ -164,7 +164,7 @@ namespace SGA {
             // test if a planned action is still valid. if not, replace with a random one
             // and always replace the last action with a new random one
             // (since the vector has been rotated it does not have any meaning)
-            if (i == actions.size() - 1 || !forwardModel.isValid(gameState, actions[i]))
+            if (i == actions.size() - 1)
             {
                 actions[i] = actionSpace.at(rand() % actionSpace.size());
             }
@@ -173,7 +173,7 @@ namespace SGA {
         }
 
         // re-evaluate the shifted individual
-        value = params.HEURISTIC.evaluateGameState(forwardModel, gameState, playerID);
+        value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, playerID);
     }
 
     void RHEAGenome::toString() const

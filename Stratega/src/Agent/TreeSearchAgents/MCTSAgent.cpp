@@ -4,14 +4,6 @@ namespace SGA
 {
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
     {
-        if (state.gameType != GameType::TBS)
-        {
-            throw std::runtime_error("MCTSAgent only supports TBS-Games");
-        }
-    	
-    	// ToDo Move preprocessing to init
-        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
-
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
         parameters_.PLAYER_ID = getPlayerID();
 
@@ -26,6 +18,7 @@ namespace SGA
         }
         else
         {
+            const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
             if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
@@ -37,7 +30,7 @@ namespace SGA
             else
             {
                 // start a new tree
-                rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state);
+                rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state, getPlayerID());
             }
 
             //params.printDetails();
@@ -47,7 +40,7 @@ namespace SGA
 
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
-            auto bestAction = rootNode->actionSpace.at(bestActionIndex);
+            auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 
             // return best action
             previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
