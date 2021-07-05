@@ -2,9 +2,19 @@
 #include <Stratega/Agent/ActionScripts/BaseActionScript.h>
 #include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Agent/AgentParameters.h>
 
 namespace SGA {
-	struct RHEAParams {
+	struct RHEAParams : AgentParameters {
+
+	public:
+
+		RHEAParams()
+		{
+			opponentModel = std::make_shared<RandomActionScript>();
+			heuristic = std::make_shared<MinimizeDistanceHeuristic>();
+		}
+
 		// basic parameters
 		size_t POP_SIZE = 10;				// population size
 		size_t INDIVIDUAL_LENGTH = 10;		// planning horizon of an individual
@@ -23,10 +33,8 @@ namespace SGA {
 		int REMAINING_FM_CALLS = MAX_FM_CALLS;	// the number of remaining forward model calls
 		int PLAYER_ID = -1;						// the agents ID in the current game
 
-		MinimizeDistanceHeuristic HEURISTIC;	// the heuristic used to evaluate a genome
-		double EPSILON = 1e-2;									// the amount of noise for randomly modifying an individuals value
-		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<RandomActionScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
-
+		double EPSILON = 1e-2;					// the amount of noise for randomly modifying an individuals value
+		
 		void printDetails() const;
 	};
 }

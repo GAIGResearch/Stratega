@@ -18,6 +18,13 @@ namespace SGA
 	{
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
+
+
+	/*bool ForwardModel::isValid(const GameState& state, const Action& action) const
+	{
+		return true;
+	}*/
+
 	
 	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{

@@ -105,6 +105,13 @@ namespace SGA
 		/// <returns>A copy of this forward model.</returns>
 		virtual std::unique_ptr<ForwardModel> clone() const = 0;
 
+
+		/// <summary>
+		/// Indicates the game type this forward model is for. GameType is an enum defined in GameState.h
+		/// </summary>
+		/// <returns>The game type of this forward model.</returns>
+		virtual GameType getGameType() const = 0;
+
 		/// <summary>
 		/// Checks if a player has lost the game due to the game's lose conditions.
 		/// </summary>
@@ -142,6 +149,7 @@ namespace SGA
 
 		// Not in use.
 		///std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
+		///virtual bool isValid(const GameState & state, const Action & action) const;
 
 		/// <summary>
 		/// Executes the action in the given game state. This is used by subclasses of this forward model to

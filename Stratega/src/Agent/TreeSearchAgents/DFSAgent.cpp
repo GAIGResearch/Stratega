@@ -5,11 +5,6 @@ namespace SGA
 {
 	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
-		if (state.gameType != GameType::TBS)
-		{
-			throw std::runtime_error("DFSAgent only supports TBS-Games");
-		}
-
 		remainingForwardModelCalls = forwardModelCalls;
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		if (actionSpace.size() == 1)
@@ -18,14 +13,13 @@ namespace SGA
 		}
 		else
 		{
-
 			auto bestHeuristicValue = -std::numeric_limits<double>::max();
 			size_t bestActionIndex = 0;
 			for (size_t i = 0; i < actionSpace.size(); i++)
 			{
 				auto gsCopy(state);
-				forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-				const double value = evaluateRollout(dynamic_cast<const TBSForwardModel&>(forwardModel), state, 1, getPlayerID());
+				applyActionToGameState(forwardModel, gsCopy, actionSpace.at(i), getPlayerID());
+				const double value = evaluateRollout(forwardModel, state, 1, getPlayerID());
 				if (value > bestHeuristicValue)
 				{
 					bestHeuristicValue = value;
@@ -41,20 +35,20 @@ namespace SGA
 		}
 	}
 
-	double DFSAgent::evaluateRollout(const TBSForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
+	double DFSAgent::evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
-		if (depth == maxDepth || gameState.isGameOver)
+		if (depth == maxDepth || gameState.isGameOver || remainingForwardModelCalls <= 0)
 		{
 			return _stateHeuristic.evaluateGameState(forwardModel, gameState, playerID);
 		}
 		else
 		{
-			auto actionSpace = forwardModel.generateActions(gameState);
+			auto actionSpace = forwardModel.generateActions(gameState, getPlayerID());
 			for (const auto& action : actionSpace)
 			{
 				auto gsCopy(gameState);
-				applyActionToGameState(forwardModel, gameState, action);
+				applyActionToGameState(forwardModel, gameState, action, playerID);
 
 				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
 				if (value > bestValue)
@@ -69,25 +63,16 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const TBSForwardModel& forwardModel, GameState& gameState, const Action& action)
+	void DFSAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, int playerID)
 	{
-		remainingForwardModelCalls--;
-		const int playerID = gameState.currentPlayer;
-		forwardModel.advanceGameState(gameState, action);
-		
-		while (gameState.currentPlayer != playerID && !gameState.isGameOver)
+		//Roll the game state with our action.
+		remainingForwardModelCalls -= SGA::roll(gameState, forwardModel, action, playerID, agentParams);
+
+		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
+		while (!gameState.canPlay(getPlayerID()) && remainingForwardModelCalls>0 && !gameState.isGameOver)
 		{
-			if (opponentModel) // use default opponentModel to choose actions until the turn has ended
-			{
-				auto actionSpace = forwardModel.generateActions(gameState);
-				auto opAction = opponentModel->getAction(gameState, actionSpace);
-				forwardModel.advanceGameState(gameState, opAction);
-			}
-			else // skip opponent turn
-			{
-				forwardModel.advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
-			}
-			remainingForwardModelCalls--;
+			//Roll actions for the opponent(s).
+			remainingForwardModelCalls -= SGA::rollOppOnly(gameState, forwardModel, agentParams);
 		}
 	}
 }

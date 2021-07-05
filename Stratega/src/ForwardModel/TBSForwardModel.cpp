@@ -71,10 +71,6 @@ namespace SGA
 		}
 	}
 
-	bool TBSForwardModel::isValid(const GameState& /*state*/, const Action& /*action*/) const
-	{
-		return true;
-	}
 
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{

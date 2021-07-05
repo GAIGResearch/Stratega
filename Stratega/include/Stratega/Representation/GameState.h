@@ -16,6 +16,7 @@ namespace SGA
 		TBS,
 		RTS
 	};
+
 	/// <summary>
 	/// Contains the game data without any logic, offering access to the current board, a list of player and their units.
 	/// If the agent want access to the definition of entity types, actions or game config yaml  it should access to <see cref="SGA::GameInfo"/>
@@ -237,6 +238,20 @@ namespace SGA
 		const Player* getPlayer(int playerID) const;
 		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
 		
+		/// <summary>
+		/// Returns a list with the ID of players that can play in this game state.
+		/// </summary>
+		/// <returns>A list with all IDs of player that can play now.</returns>
+		std::vector<int> whoCanPlay() const;
+		
+		/// <summary>
+		/// Indicates if the player with the provided ID can play in this game state.
+		/// </summary>
+		/// <param name="playerID">ID to check</param>
+		/// <returns>true if the player with ID playerID can play now.</returns>
+		bool canPlay(int playerID) const;
+
+
 		/// <summary>
 		/// Gets the number of players in this game state.
 		/// </summary>

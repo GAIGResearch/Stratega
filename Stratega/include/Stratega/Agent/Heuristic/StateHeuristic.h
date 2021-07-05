@@ -9,6 +9,7 @@ namespace SGA
 		virtual ~StateHeuristic() = 0;
 
 		virtual double evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& /*gameState*/, const int /*playerID*/) { return 0; };
+		virtual std::string getName() const { return "Undefined heuristic name"; }
 	};
 
 
