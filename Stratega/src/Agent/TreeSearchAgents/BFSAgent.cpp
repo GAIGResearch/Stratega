@@ -36,6 +36,11 @@ namespace SGA
 		}
 	}
 
+	void BFSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	{
+		parameters_.PLAYER_ID = getPlayerID();
+	}
+
 	/// <summary>
 	/// - Either creates a new rootNode or selects a subtree from the previous search.
 	/// - Initializes openNodes and knownLeaves accordingly.
@@ -45,7 +50,6 @@ namespace SGA
 	/// <param name="gameState">the current game-state</param>
 	void BFSAgent::init(ForwardModel& forwardModel, GameState& gameState)
 	{
-		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
 		{
 			// in case of a deterministic game we know that the previously simulated action

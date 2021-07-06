@@ -18,6 +18,7 @@ namespace SGA
 
 	public:
 		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:	
 		Action beamSearch(ForwardModel& forwardModel, TreeNode& root);
