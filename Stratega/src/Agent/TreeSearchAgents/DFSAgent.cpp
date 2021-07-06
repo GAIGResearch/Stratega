@@ -35,6 +35,12 @@ namespace SGA
 		}
 	}
 
+
+	void DFSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	{
+		agentParams.PLAYER_ID = getPlayerID();
+	}
+
 	double DFSAgent::evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
@@ -48,7 +54,7 @@ namespace SGA
 			for (const auto& action : actionSpace)
 			{
 				auto gsCopy(gameState);
-				applyActionToGameState(forwardModel, gameState, action, playerID);
+				applyActionToGameState(forwardModel, gsCopy, action, playerID);
 
 				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
 				if (value > bestValue)

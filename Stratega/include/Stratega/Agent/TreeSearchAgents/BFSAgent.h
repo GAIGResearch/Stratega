@@ -27,5 +27,6 @@ namespace SGA
 		int getBestActionIdx(ForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
 		void init(ForwardModel& forwardModel, GameState& gameState);
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 	};
 }

@@ -22,8 +22,6 @@ namespace SGA
 
 	Action BeamSearchAgent::beamSearch(ForwardModel& forwardModel, TreeNode& root)
 	{
-		parameters_.PLAYER_ID = root.gameState.currentPlayer;
-
 		std::vector<TreeNode*> bestSimulations = simulate(forwardModel, root);
 
 		for (size_t i = 1; i < parameters_.PLAYER_BEAM_DEPTH; i++)
@@ -86,5 +84,11 @@ namespace SGA
 			bestSimulations.erase(bestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, bestSimulations.end());
 			
 		return bestSimulations;
+	}
+
+
+	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	{
+		parameters_.PLAYER_ID = getPlayerID();
 	}
 }
