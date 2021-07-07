@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-    ActionAssignment ActionAbstractionMCTSAgent::computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs)
+    ActionAssignment ActionAbstractionMCTSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
     {
         if (state.gameType != GameType::TBS)
         {
@@ -11,14 +11,14 @@ namespace SGA
         //std::cout << state.currentTick;
 
         // ToDo Move preprocessing to init
-        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
+        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
         if (parameters_.STATE_HEURISTIC == nullptr)
         {
             parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
         }
 
         // generate actions
-        const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+        const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
         parameters_.PLAYER_ID = getPlayerID();
 
         // if there is just one action and we don't spent the time on continuing our search
