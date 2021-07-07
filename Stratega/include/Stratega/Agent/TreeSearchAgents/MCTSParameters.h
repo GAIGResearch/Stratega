@@ -19,8 +19,7 @@ namespace SGA {
 
         std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
-        std::unique_ptr<StateHeuristic> STATE_HEURISTIC = std::make_unique<MinimizeDistanceHeuristic>();
-        std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<RandomActionScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
+        std::unique_ptr<StateHeuristic> STATE_HEURISTIC = nullptr;
 
         void printDetails() const;
     };
