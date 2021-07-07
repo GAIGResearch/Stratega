@@ -10,7 +10,7 @@ namespace SGA
 		{
 			if (param.second.name == "Health")
 			{
-				return entity->parameters[param.second.index];
+				return entity->getParamValues()[param.second.index];
 			}
 		}
 		return 0;

@@ -17,7 +17,7 @@ namespace SGA
 				for (int j = 0; j < tbsState.board.getHeight(); j++) 
 				{
 					auto tile = tbsState.board[Vector2i(i, j)];
-					mapDescription.push_back(tile.tileTypeID);
+					mapDescription.push_back(tile.getTileTypeID());
 				}
 			}
 			state.addAttribute("Map", mapDescription);
@@ -39,12 +39,12 @@ namespace SGA
 				std::vector<double> parameterValues;
 				//int globalParameterID = tbsState.getParameterGlobalID(entry.first);
 				for (auto entity : tbsState.entities) {
-					const auto& entityType = tbsState.gameInfo->getEntityType(entity.typeID);
+					const auto& entityType = tbsState.gameInfo->getEntityType(entity.getEntityTypeID());
 					for (const auto& parameter : entityType.parameters)
 					{
 						if (parameter.second.name == entry.first)
 						{
-							parameterValues.push_back(entity.parameters[parameter.second.index]);
+							parameterValues.push_back(entity.getParameterAt(parameter.second.index));
 							break;
 						}
 					}

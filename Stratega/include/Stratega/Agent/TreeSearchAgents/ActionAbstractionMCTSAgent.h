@@ -16,11 +16,6 @@ namespace SGA
 		explicit ActionAbstractionMCTSAgent(MCTSParameters&& params)
 			: parameters_(std::move(params))
 		{
-			//K=10, RL=5, OS=3, 
-			parameters_.K = 10;
-			parameters_.ROLLOUT_LENGTH = 5;
-			//parameters_.OPPONENT_MODEL = nullptr;	// the opponent model has not been correctly set in the NTBEA evaluation
-
 			// Scripts={AC AW }
 			parameters_.PORTFOLIO = std::vector<std::unique_ptr<BaseActionScript>>();
 			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
@@ -30,7 +25,7 @@ namespace SGA
 		}
 
 
-		ActionAssignment computeAction(GameState state, const EntityForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		bool initialized = false;
