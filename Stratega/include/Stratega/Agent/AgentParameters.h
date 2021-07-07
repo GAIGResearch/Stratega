@@ -18,7 +18,7 @@ namespace SGA {
 		// the script the opponent is simulated with
 		// never set this to be a nullptr, use SkipTurnScript instead
 		std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();	
-		std::unique_ptr<StateHeuristic> OBJECTIVE = std::make_unique<MinimizeDistanceHeuristic>();
+		std::unique_ptr<StateHeuristic> OBJECTIVE = nullptr;
 		std::unique_ptr<StateFactory> STATE_FACTORY = nullptr;
 
 		// the portfolio used to sample actions of a genome
