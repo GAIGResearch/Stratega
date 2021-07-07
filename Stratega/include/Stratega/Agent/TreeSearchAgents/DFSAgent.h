@@ -25,7 +25,7 @@ namespace SGA
 		{
 		}
 
-		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 		double evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, int playerID);

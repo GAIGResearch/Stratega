@@ -28,7 +28,7 @@ namespace SGA
 		{
 			return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 		}
-
+		
 		static UnitTypeStrengthLookup computeLinearSumEvaluation(const GameState& gameState)
 		{
 			double maxDamage = 0;
@@ -56,7 +56,7 @@ namespace SGA
 						maxHealth = std::max(parameter.second.maxValue, maxHealth);
 						continue;
 					}
-					if (parameter.second.name == "MovementPoints")
+					if (parameter.second.name == "MovementPoints" )
 					{
 						maxMovementRange = std::max(parameter.second.maxValue, maxMovementRange);
 						continue;
@@ -73,9 +73,9 @@ namespace SGA
 				}
 			}
 
-
+			
 			UnitTypeStrengthLookup strengthLookup;
-
+			
 			for (const auto& entry : *gameState.gameInfo->entityTypes)
 			{
 				double score = 0;
@@ -115,7 +115,7 @@ namespace SGA
 						std::cout << parameter.second.name;
 					}
 				}
-
+				
 				for (auto actionID : entry.second.actionIds)
 				{
 					const auto& action = (*gameState.gameInfo->actionTypes)[actionID];
@@ -139,10 +139,10 @@ namespace SGA
 						std::cout << "action unknown" << action.name;
 					}
 				}
-
+				
 				strengthLookup[entry.second.id] = score;
 			}
-
+			
 			return strengthLookup;
 		}
 	};

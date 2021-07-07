@@ -1,6 +1,7 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/TreeSearchAgents/MCTSNode.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 #include "MCTSParameters.h"
 
@@ -15,10 +16,8 @@ namespace SGA
 		{
 		}
 
-
 		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
-
-		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;

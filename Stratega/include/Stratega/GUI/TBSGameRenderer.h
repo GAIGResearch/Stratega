@@ -25,6 +25,11 @@ namespace SGA
 
 		bool isActionAvailable() const;
 		bool isGameEndRequested() override;
+
+		void closeWindow() override
+		{
+			window.close();
+		}
 		
 	private:
 		void updateFow();

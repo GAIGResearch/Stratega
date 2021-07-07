@@ -5,9 +5,9 @@
 #include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
-	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
+	std::vector<std::shared_ptr<Agent>> GameConfig::generateAgents() const
 	{
-		std::vector<std::unique_ptr<Agent>> agents;
+		std::vector<std::shared_ptr<Agent>> agents;
 		for (const auto& agentNode : agentParams)
 		{
 			if (agentNode.second.IsNull())
@@ -137,8 +137,7 @@ namespace SGA
 		
 		return std::move(state);
 	}
-
-
+	
 	size_t GameConfig::getNumberOfPlayers() const
 	{
 		return numPlayers == -1 ? agentParams.size() : numPlayers;

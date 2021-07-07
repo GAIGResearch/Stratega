@@ -2,9 +2,15 @@
 
 namespace SGA
 {
-    ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+    ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
     {
-        const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
+        if (parameters_.STATE_HEURISTIC == nullptr)
+        {
+            parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
+        }
+
+        // generate actions
+        const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
 
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
@@ -17,7 +23,7 @@ namespace SGA
         }
         else
         {
-            const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(forwardModel));
+            const auto processedForwardModel = parameters_.preprocessForwardModel(*forwardModel);
             if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
@@ -39,14 +45,13 @@ namespace SGA
 
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
-            auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
+            auto bestAction = rootNode->getActionSpace(*forwardModel, getPlayerID()).at(bestActionIndex);
 
             // return best action
             previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }
-
 
     void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
     {

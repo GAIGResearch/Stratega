@@ -35,7 +35,7 @@ namespace SGA
 		/// <param name="forwardModel">Forward model of the game.</param>
 		/// <param name="timeBudgetMs">Time in milliseconds to return an action</param>
 		/// <returns></returns>
-		virtual ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) = 0;
+		virtual ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) = 0;
 
 		/// <summary>
 		/// Returns this player's ID.
@@ -128,6 +128,7 @@ namespace SGA
 		std::vector<Action> filterActionsByPlayerID(const std::vector<Action>& actions, int playerID) const;
 
 	};
+
 
 	/// <summary>
 	/// Given an opponent ID, it rolls the state forward executing an action dictated by the opponent model from agParams.

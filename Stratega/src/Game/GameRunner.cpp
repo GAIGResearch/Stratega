@@ -54,7 +54,7 @@ namespace SGA
 		renderer->render();
 	}
 
-	void GameRunner::run(std::vector<std::unique_ptr<Agent>>& agents, GameObserver* observer)
+	void GameRunner::run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer)
 	{
 		assert(agents.size() == currentState->players.size());
 		if(observer == nullptr)
@@ -88,7 +88,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::play(std::vector<std::unique_ptr<Agent>>& agents)
+	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents)
 	{
 		assert(agents.size() == currentState->players.size());
 		try
@@ -137,7 +137,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::initializeAgents(std::vector<std::unique_ptr<Agent>>& agents)
+	void GameRunner::initializeAgents(std::vector<std::shared_ptr<Agent>>& agents)
 	{
 		try
 		{			

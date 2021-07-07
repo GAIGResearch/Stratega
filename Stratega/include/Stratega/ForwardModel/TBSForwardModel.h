@@ -25,6 +25,7 @@ namespace  SGA
 		void advanceGameState(GameState& state, const ActionAssignment& action) const override;
 
 		using ForwardModel::generateActions;
+
 		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
 		
 		std::unique_ptr<ForwardModel> clone() const override;
@@ -35,6 +36,7 @@ namespace  SGA
 		/// End the turn of the current player and if all the player has played it ends the current game turn.
 		/// </summary>
 		void endTurn(GameState& state) const;
+
 
 		/// <summary>
 		/// Checks if the game is finished by current limit or because a player has won.
