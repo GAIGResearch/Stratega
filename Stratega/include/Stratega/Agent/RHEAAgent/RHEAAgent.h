@@ -3,7 +3,7 @@
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <Stratega/Agent/RHEAAgent/RHEAGenome.h>
 #include <Stratega/Agent/RHEAAgent/RHEAParams.h>
@@ -26,16 +26,17 @@ namespace SGA
 		{
 		}
 
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
-		std::vector<RHEAGenome> shiftPopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		void initializePopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		void rheaLoop(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		std::vector<RHEAGenome> nextGeneration(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		RHEAGenome getNextGenerationIndividual(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> nextGeneration(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		RHEAGenome getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 		std::vector<RHEAGenome> tournamentSelection();
 	};
 	

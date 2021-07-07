@@ -16,6 +16,8 @@ namespace SGA
 		}
 
 
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
+
 		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:

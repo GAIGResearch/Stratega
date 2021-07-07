@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - BeamSearchAgent
     - RandomAgent
+    - RHEAAgent
 
 
 Tiles:
@@ -108,7 +108,7 @@ Entities:
     Warrior:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: w
-        LineOfSightRange: 6
+        LineOfSightRange: 6000
         Actions: [Attack, Move]
         Parameters:
             Health: 200
@@ -119,7 +119,7 @@ Entities:
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit4.png
         Symbol: a
-        LineOfSightRange: 10
+        LineOfSightRange: 10000
         Parameters:
             Health: 100
             AttackRange: 5
@@ -130,7 +130,7 @@ Entities:
     Healer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
         Symbol: h
-        LineOfSightRange: 4
+        LineOfSightRange: 4000
         Parameters:
             Health: 40
             HealRange: 2
@@ -141,7 +141,7 @@ Entities:
     King:
         Sprite: ../../GUI/Assets/Entities/unit1.png
         Symbol: k
-        LineOfSightRange: 6
+        LineOfSightRange: 6000
         Parameters:
             Health: 400
             AttackRange: 2

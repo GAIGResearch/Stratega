@@ -5,14 +5,8 @@ namespace SGA
 {
     ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, long /*timeBudgetMs*/)
     {
-        if (state.gameType != GameType::TBS)
-        {
-            throw std::runtime_error("RHEAAgent only supports TBS-Games");
-        }
-    	
         auto actionSpace = forwardModel.generateActions(state, getPlayerID());
         params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
-        params_.PLAYER_ID = getPlayerID();        // todo move into agent initialization
 
         // in case only one action is available the player turn ends
         // throw away previous solutions because we don't know what our opponent will do
@@ -26,20 +20,20 @@ namespace SGA
             // either shift previous population or initialize a new population
             if (params_.CONTINUE_SEARCH && !pop_.empty())
             {
-                pop_ = shiftPopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+                pop_ = shiftPopulation(forwardModel, state, getRNGEngine());
             }
             else
             {
-                initializePopulation(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+                initializePopulation(forwardModel, state, getRNGEngine());
             }
 
             // run rhea and return the best individual of the previous generation
-            rheaLoop(dynamic_cast<const TBSForwardModel&>(forwardModel), state, getRNGEngine());
+            rheaLoop(forwardModel, state, getRNGEngine());
             return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
     }
 
-    void RHEAAgent::initializePopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937&)
+    void RHEAAgent::initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937&)
     {
         // create params_.POP_SIZE new random individuals
         pop_.clear();
@@ -48,7 +42,7 @@ namespace SGA
         }
     }
 
-    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         std::vector<RHEAGenome> newPop;
 
@@ -74,7 +68,7 @@ namespace SGA
 
     bool sortByFitness(const RHEAGenome& i, const RHEAGenome& j) { return i.getValue() > j.getValue(); }
 
-    void RHEAAgent::rheaLoop(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
         while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
@@ -84,7 +78,7 @@ namespace SGA
         sort(pop_.begin(), pop_.end(), sortByFitness);
     }
 
-    std::vector<RHEAGenome> RHEAAgent::nextGeneration(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::nextGeneration(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // placeholder for the next generation
         std::vector<RHEAGenome> newPop;
@@ -104,7 +98,7 @@ namespace SGA
         return newPop;
     }
 
-    RHEAGenome RHEAAgent::getNextGenerationIndividual(const TBSForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    RHEAGenome RHEAAgent::getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         if (params_.POP_SIZE > 1)
         {
@@ -139,5 +133,11 @@ namespace SGA
         RHEAGenome& parent2 = tournament[0];
 
         return std::vector<RHEAGenome>{parent1, parent2};
+    }
+
+
+    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+    {
+        params_.PLAYER_ID = getPlayerID();
     }
 }
