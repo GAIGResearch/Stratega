@@ -9,7 +9,7 @@ namespace SGA
 		currentState->currentPlayer = -1;
 	}
 
-	void RTSGameRunner::playInternal(std::vector<std::unique_ptr<Agent>>& agents, int /*humanIndex*/)
+	void RTSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
 	{
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver && !renderer->isGameEndRequested())
@@ -67,9 +67,11 @@ namespace SGA
 			forwardModel->advanceGameState(*currentState, nextActions);
 			renderer->update(*currentState);
 		}
+
+		renderer->closeWindow();
 	}
 
-	void RTSGameRunner::runInternal(std::vector<std::unique_ptr<Agent>>& agents, GameObserver& observer)
+	void RTSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
 	{
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver)

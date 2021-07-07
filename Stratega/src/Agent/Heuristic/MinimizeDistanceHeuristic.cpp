@@ -4,7 +4,6 @@
 
 namespace SGA
 {
-
 	double MinimizeDistanceHeuristic::evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& gameState, int playerID)
 	{
 		double score = 0.0;
@@ -35,18 +34,24 @@ namespace SGA
 		}
 
 		double sumOfAverageDistances = 0;
-		for (const auto& playerUnit : playerEntities)
+		if (opponentEntites.size() > 0)
 		{
-			double sumOfDistances = 0;
-			auto a = positions[playerUnit];
-			for (int opponentUnit : opponentEntites)
+			for (const auto& playerUnit : playerEntities)
 			{
-				auto b = positions[opponentUnit];
-				sumOfDistances += abs(a.x - b.x) + abs(a.y - b.y);
+				double sumOfDistances = 0;
+				auto a = positions[playerUnit];
+				for (int opponentUnit : opponentEntites)
+				{
+					auto b = positions[opponentUnit];
+					sumOfDistances += abs(a.x - b.x) + abs(a.y - b.y);
+				}
+				sumOfAverageDistances = sumOfDistances / opponentEntites.size();
 			}
-			sumOfAverageDistances = sumOfDistances / opponentEntites.size();
 		}
-		score += sumOfAverageDistances / playerEntities.size();
+
+		if (playerEntities.size() > 0) {
+			score += sumOfAverageDistances / playerEntities.size();
+		}
 
 		return score;
 	}

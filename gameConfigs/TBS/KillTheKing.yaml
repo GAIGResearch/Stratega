@@ -4,8 +4,9 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - RandomAgent
-    - RHEAAgent
+    - CombatAgent
+    - PMCTSAgent
+
 
 
 Tiles:
@@ -75,7 +76,7 @@ Actions:
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 1
+                        SearchSize: 3
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
@@ -108,7 +109,7 @@ Entities:
     Warrior:
         Sprite: ../../GUI/Assets/Entities/unit2.png
         Symbol: w
-        LineOfSightRange: 6000
+        LineOfSightRange: 6
         Actions: [Attack, Move]
         Parameters:
             Health: 200
@@ -119,7 +120,7 @@ Entities:
     Archer:
         Sprite: ../../GUI/Assets/Entities/unit4.png
         Symbol: a
-        LineOfSightRange: 10000
+        LineOfSightRange: 10
         Parameters:
             Health: 100
             AttackRange: 5
@@ -130,7 +131,7 @@ Entities:
     Healer:
         Sprite: ../../GUI/Assets/Entities/unit3.png
         Symbol: h
-        LineOfSightRange: 4000
+        LineOfSightRange: 4
         Parameters:
             Health: 40
             HealRange: 2
@@ -141,7 +142,7 @@ Entities:
     King:
         Sprite: ../../GUI/Assets/Entities/unit1.png
         Symbol: k
-        LineOfSightRange: 6000
+        LineOfSightRange: 6
         Parameters:
             Health: 400
             AttackRange: 2

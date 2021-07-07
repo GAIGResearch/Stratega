@@ -4,6 +4,7 @@
 #include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/PortfolioForwardModel.h>
+#include <Stratega/Agent/StateAbstraction/StateFactory.h>
 
 
 namespace SGA {
@@ -14,11 +15,8 @@ namespace SGA {
 		// the script the opponent is simulated with
 		// never set this to be a nullptr, use SkipTurnScript instead
 		std::shared_ptr<BaseActionScript> opponentModel;
-		std::shared_ptr<StateHeuristic> heuristic;
+		std::unique_ptr<StateFactory> STATE_FACTORY = nullptr;
 
-		// the portfolio used to sample actions of a genome
-		// if empty the original forwardModel will be used to generate actions
-		std::vector<std::shared_ptr<BaseActionScript>> portfolio;
 		
 	public: 
 
@@ -27,6 +25,11 @@ namespace SGA {
 		int REMAINING_FM_CALLS = MAX_FM_CALLS;	// the number of remaining forward model calls
 		int PLAYER_ID = -1;						// the agents ID in the current game
 
+		std::shared_ptr<StateHeuristic> heuristic;
+
+		// the portfolio used to sample actions of a genome
+		// if empty the original forwardModel will be used to generate actions
+		std::vector<std::shared_ptr<BaseActionScript>> portfolio;
 
 		AgentParameters()
 		{

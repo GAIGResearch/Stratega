@@ -23,6 +23,11 @@ namespace SGA
 		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
 		bool isGameEndRequested() override;
+
+		void closeWindow() override
+		{
+			window.close();
+		}
 		
 	private:
 		void handleInput();

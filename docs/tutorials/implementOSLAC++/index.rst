@@ -1,10 +1,10 @@
-.. _implement_osla:
+.. _implement_cpp_osla:
 
 .. role:: cpp(code)
    :language: c++
 
 ################################
-Implementing One Step Look Ahead
+Implementing One Step Look Ahead (C++)
 ################################
 
 This page shows how to implement an agent (One Step Look Ahead; OSLA) that uses the following components required for Statistical Forward Planning agents (i.e. Monte
@@ -26,7 +26,7 @@ reach the respective N next states:
 Each one of the subsequent states is then evaluated to obtained a (numerical) value of its quality. The objective is to identify which is the best state found according to
 a heuristic / evaluation of the features of the state. Finally, the action that led to state with the highest value is returned to the game to be played next.
 
-In order to implement this agent, first we setup the agent as indicated at the start of the :ref:`Implementing Simple AI Agents <implement_agent>` tutorial (this is: generate
+In order to implement this agent, first we setup the agent as indicated at the start of the :ref:`Implementing Simple AI Agents (C++) <implement_cpp_agent>` tutorial (this is: generate
 a class that inherits from "Agent", override the *computeAction* function and finally register the agent in the AgentFactory::getDefaultFactory() method to be able to test it.
 
 The first step to implement OSLA is (in *computeAction*) to compute all available actions from the current state. The tools to do this are passed by parameter to the 
