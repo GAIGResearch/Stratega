@@ -173,7 +173,6 @@ namespace SGA
 			const auto& actionType =action.getActionType();
 			if (actionType.sourceType == ActionSourceType::Entity)
 			{
-				// Remember when the action was executed
 				auto& executingEntity = *action.targets[0].getEntity(state);
 				executingEntity.setActionTicks(action.getActionTypeID(), state.currentTick);
 			}

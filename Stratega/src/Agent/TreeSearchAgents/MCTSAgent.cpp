@@ -5,7 +5,6 @@ namespace SGA
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
     {
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
-        parameters_.PLAYER_ID = getPlayerID();
 
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
@@ -47,4 +46,11 @@ namespace SGA
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }
+
+
+    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+    {
+        parameters_.PLAYER_ID = getPlayerID();
+    }
+
 }
