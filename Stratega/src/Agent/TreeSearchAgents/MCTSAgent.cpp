@@ -9,9 +9,16 @@ namespace SGA
             throw std::runtime_error("MCTSAgent only supports TBS-Games");
         }
     	
-    	// ToDo Move preprocessing to init
-        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
+        //std::cout << state.currentTick;
 
+    // ToDo Move preprocessing to init
+        const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
+        if (parameters_.STATE_HEURISTIC == nullptr)
+        {
+            parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
+        }
+
+        // generate actions
         const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
         parameters_.PLAYER_ID = getPlayerID();
 
