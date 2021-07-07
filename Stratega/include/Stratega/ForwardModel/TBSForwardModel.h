@@ -34,6 +34,7 @@ namespace  SGA
 		/// End the turn of the current player and if all the player has played it ends the current game turn.
 		/// </summary>
 		void endTurn(GameState& state) const;
+
 		virtual bool isValid(const GameState& state, const Action& action) const;
 		/// <summary>
 		/// Checks if the game is finished by current limit or because a player has won.

@@ -30,10 +30,10 @@ namespace py = pybind11;
 class PythonAgent;
 
 // STL
-PYBIND11_MAKE_OPAQUE(std::vector<double>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Action>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Player>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
+PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity*>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
 PYBIND11_MAKE_OPAQUE(std::vector<PythonAgent>);
@@ -169,6 +169,10 @@ public:
 
 PYBIND11_MODULE(stratega, m)
 {
+	py::options options;
+	options.enable_function_signatures();
+	options.enable_user_defined_docstrings();
+	
     m.doc() = "Stratega python bindings"; // optional module docstring
 
 	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
@@ -187,6 +191,7 @@ PYBIND11_MODULE(stratega, m)
 
 	py::bind_vector<std::vector<SGA::Player>>(m, "PlayerList");
 	py::bind_vector<std::vector<SGA::Entity>>(m, "EntityList");
+	py::bind_vector<std::vector<SGA::Entity*>>(m, "EntityPointerList");
 
 	py::bind_vector<std::vector<std::shared_ptr<SGA::Agent>>>(m, "AgentList");
 
@@ -491,7 +496,7 @@ PYBIND11_MODULE(stratega, m)
 		
 		.def("get_player_entities", py::overload_cast<int>(&SGA::GameState::getPlayerEntities, py::const_), "Gets the list of entities of the specified player.")
 		.def("get_player_entities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getPlayerEntities), "Gets the list of entities of the specified player.")		
-		.def("get_non_playerEntities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getNonPlayerEntities), "Gets the list of entities that do not belong to the specified player.")
+		.def("get_non_player_entities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getNonPlayerEntities), "Gets the list of entities that do not belong to the specified player.")
 		
 		.def("add_player", &SGA::GameState::addPlayer, py::arg("p"), "Adds player to gamestate")
 		.def("get_player_parameter", &SGA::GameState::getPlayerParameter, py::arg("playerID"), py::arg("paramName"), "Gets the value of a player parameter. Be sure to check first is the parameter you are asking for exist using SGA::GameState::hasPlayerParameter()")
@@ -945,6 +950,8 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameInfo ----
 	py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo")
 		.def_readwrite("yaml_path", &SGA::GameInfo::yamlPath)
+
+		//.def_readwrite("entity_types", &SGA::GameInfo::entityTypes)
 
 		.def_readwrite("technology_tree_collection", &SGA::GameInfo::technologyTreeCollection)
 		.def_readwrite("entity_groups", &SGA::GameInfo::entityGroups)
