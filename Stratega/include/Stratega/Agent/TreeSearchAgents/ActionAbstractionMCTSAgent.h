@@ -17,14 +17,15 @@ namespace SGA
 			: parameters_(std::move(params))
 		{
 			// Scripts={AC AW }
-			parameters_.PORTFOLIO = std::vector<std::unique_ptr<BaseActionScript>>();
+			parameters_.portfolio.clear();
 			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
-			parameters_.PORTFOLIO.emplace_back(std::move(attackClose));
+			parameters_.portfolio.emplace_back(std::move(attackClose));
 			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
-			parameters_.PORTFOLIO.emplace_back(std::move(attackWeak));
+			parameters_.portfolio.emplace_back(std::move(attackWeak));
 		}
 
 
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
