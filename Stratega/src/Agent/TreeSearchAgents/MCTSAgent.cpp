@@ -4,11 +4,6 @@ namespace SGA
 {
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
     {
-        if (parameters_.STATE_HEURISTIC == nullptr)
-        {
-            parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(state);
-        }
-
         // generate actions
         const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
 
@@ -56,6 +51,11 @@ namespace SGA
     void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
     {
         parameters_.PLAYER_ID = getPlayerID();
+        if (parameters_.STATE_HEURISTIC == nullptr)
+        {
+            parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(initialState);
+        }
+
     }
 
 }
