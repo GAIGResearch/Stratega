@@ -12,8 +12,8 @@ namespace SGA
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex, ownerID)
 	{
 		computeActionSpace(forwardModel);
+		initializeNode();
 	}
-
 
 
 	/// <summary>
