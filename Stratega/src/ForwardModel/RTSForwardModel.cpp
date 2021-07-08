@@ -4,11 +4,14 @@ namespace SGA
 {
 	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		static ActionAssignment assignmentCache;
-		assignmentCache.clear();
-		assignmentCache.assignActionOrReplace(action);
-		
-		advanceGameState(state, assignmentCache);
+		if (action.actionTypeFlags != ActionFlag::EndTickAction)
+		{
+			static ActionAssignment assignmentCache;
+			assignmentCache.clear();
+			assignmentCache.assignActionOrReplace(action);
+
+			advanceGameState(state, assignmentCache);
+		}
 	}
 
 	void RTSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
