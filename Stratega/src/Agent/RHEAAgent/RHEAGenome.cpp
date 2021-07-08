@@ -5,7 +5,7 @@ namespace SGA {
 
     RHEAGenome::RHEAGenome(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params)
     {
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
         while (!gameState.isGameOver && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
@@ -43,7 +43,7 @@ namespace SGA {
 
     void RHEAGenome::mutate(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
     {
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
 
         // go through the actions and fill the actionVector of its child
@@ -90,7 +90,7 @@ namespace SGA {
     RHEAGenome RHEAGenome::crossover(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
     	// initialize variables for the new genome to be created
         std::vector<Action> actions;

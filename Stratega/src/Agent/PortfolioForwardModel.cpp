@@ -8,7 +8,7 @@ namespace SGA
 		auto actions = actionSpace->generateActions(state, playerID);
 		for (std::shared_ptr<BaseActionScript>& actionScript : this->portfolio)
 		{
-			actionBucket.emplace_back(actionScript->getAction(state, actions));
+			actionBucket.emplace_back(actionScript->getAction(state, *this, playerID));
 		}
 	}
 	
@@ -17,7 +17,7 @@ namespace SGA
 		auto actions = actionSpace->generateActions(state, playerID);
 		for (std::shared_ptr<BaseActionScript>& actionScript : this->portfolio)
 		{
-			actionBucket.emplace_back(actionScript->getAction(state, actions));
+			actionBucket.emplace_back(actionScript->getAction(state, *this, playerID));
 		}
 	}
 

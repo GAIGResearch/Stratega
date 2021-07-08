@@ -44,8 +44,8 @@ namespace SGA {
 		BaseActionScript(BaseActionScript&&) = default;
 		BaseActionScript& operator=(BaseActionScript&&) = default;
 		
-		virtual Action getAction(const GameState& gameState, std::vector<Action>& actionSpace) const = 0;
-		virtual Action getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int unitID) const = 0;
+		virtual Action getAction(const GameState& gameState, const ForwardModel& forwardModel, int playerID) const = 0;
+		virtual Action getActionForUnit(const GameState& gameState, const ForwardModel& forwardModel, int playerID, int unitID) const = 0;
 		[[nodiscard]] virtual std::string toString() const = 0;
 		
 		friend std::ostream& operator<<(std::ostream& os, const BaseActionScript& dt)

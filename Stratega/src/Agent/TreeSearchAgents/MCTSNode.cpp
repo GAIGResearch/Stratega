@@ -134,7 +134,7 @@ namespace SGA
 
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
-		const bool iAmMoving = (gameState.currentPlayer == params.PLAYER_ID);
+		bool amIMoving = gameState.canPlay(params.PLAYER_ID);
 
 		std::vector<double> childValues(children.size(), 0);
 
@@ -154,10 +154,10 @@ namespace SGA
 		}
 
 		int which = -1;
-		double bestValue = iAmMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
+		double bestValue = amIMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
 
 		for (size_t i = 0; i < children.size(); ++i) {
-			if ((iAmMoving && childValues[i] > bestValue) || (!iAmMoving && childValues[i] < bestValue)) {
+			if ((amIMoving && childValues[i] > bestValue) || (!amIMoving && childValues[i] < bestValue)) {
 				which = static_cast<int>(i);
 				bestValue = childValues[i];
 			}
@@ -179,7 +179,7 @@ namespace SGA
 
 			//if(this.children.length == 0)
 			std::cout << "Warning! couldn't find the best UCT value " << which << " : " << children.size() << "\n";
-			std::cout << nodeDepth << ", AmIMoving? " << iAmMoving << "\n";
+			std::cout << nodeDepth << ", amIMoving? " << amIMoving << "\n";
 
 			for (size_t i = 0; i < children.size(); ++i)
 				std::cout << "\t" << childValues[i] << "\n";

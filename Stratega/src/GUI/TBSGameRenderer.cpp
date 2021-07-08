@@ -327,7 +327,7 @@ namespace SGA
 		ImGui::Begin("Info window");
 		std::string text = "Tick:" + std::to_string(state.currentTick);
 		ImGui::Text(text.c_str());
-		text = "Current Player : " + std::to_string(state.currentPlayer);
+		text = "Current Player : " + std::to_string(state.getCurrentTBSPlayer());
 		ImGui::Text(text.c_str());
 		ImGui::End();
 	}

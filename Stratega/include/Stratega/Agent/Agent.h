@@ -146,8 +146,7 @@ namespace SGA
 		if (oppModel)
 		{
 			//If an opponent model is defined, apply it.
-			auto actions = fm.generateActions(gs, oppID);
-			fm.advanceGameState(gs, oppModel->getAction(gs, actions));
+			fm.advanceGameState(gs, oppModel->getAction(gs, fm, oppID));
 			return true;
 		}
 		else

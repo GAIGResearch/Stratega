@@ -35,11 +35,6 @@ namespace SGA
 		std::shared_ptr<GameInfo> gameInfo;
 
 		/// <summary>
-		/// ID of the current player (TBS only)		
-		/// </summary>
-		int currentPlayer;
-
-		/// <summary>
 		/// Navigational Mesh (for RTS)	
 		/// </summary>
 		std::shared_ptr<Navigation> navigation;
@@ -366,6 +361,17 @@ namespace SGA
 		/// </summary>
 		std::mt19937 rngEngine;
 
+		/// <summary>
+		/// Returns the ID of the player that moves in this state for Turn Based Games.
+		/// For non-TBS, this value is -1.
+		/// </summary>
+		int getCurrentTBSPlayer() const { return currentPlayer; }
+
+		/// <summary>
+		/// Sets the current TBS player. For non-TBS, this should receive -1.
+		/// </summary>
+		void setCurrentTBSPlayer(int playerID) { currentPlayer = playerID; }
+
 	private:
 
 		/// <summary>
@@ -383,5 +389,10 @@ namespace SGA
 		/// </summary>
 		int continuousActionNextID = 0;
 
+		/// <summary>
+		/// ID of the current player if only one can play.
+		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with 1-N player IDs.
+		/// </summary>
+		int currentPlayer;
 	};
 }
