@@ -17,10 +17,8 @@ namespace SGA
 		return 0;
 	}
 	
-	Action AttackWeakestOpponentScript::getAction(const GameState& gameState, const ForwardModel& forwardModel, int playerID) const
+	Action AttackWeakestOpponentScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
-
-		auto actionSpace = forwardModel.generateActions(gameState, playerID);
 		if (actionSpace.size() > 1)
 		{
 			// create a map of action types to filter relevant actions
@@ -111,9 +109,8 @@ namespace SGA
 		return actionSpace[actionSpace.size() - 1];
 	}
 
-	Action AttackWeakestOpponentScript::getActionForUnit(const GameState& gameState, const ForwardModel& forwardModel, int playerID, int unitID) const
+	Action AttackWeakestOpponentScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
 	{
-		auto actionSpace = forwardModel.generateActions(gameState, playerID);
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{

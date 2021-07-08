@@ -3,13 +3,12 @@
 
 namespace SGA
 {
-	Action RandomActionScript::getAction(const GameState& gameState, const ForwardModel& forwardModel, int playerID) const
+	Action RandomActionScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
-		auto actionSpace = forwardModel.generateActions(gameState, playerID);
 		return actionSpace[rand() % actionSpace.size()];
 	}
 	
-	Action RandomActionScript::getActionForUnit(const GameState& gameState, const ForwardModel& forwardModel, int playerID, int /*unitID*/) const
+	Action RandomActionScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int /*unitID*/) const
 	{
 		//std::vector<Action> suitableActions;
 		/*for (const auto& action : actionSpace)
@@ -26,7 +25,6 @@ namespace SGA
 		if (!suitableActions.empty())
 			return suitableActions.at(rand() % suitableActions.size());*/
 
-		auto actionSpace = forwardModel.generateActions(gameState, playerID);
 		return actionSpace[rand() % actionSpace.size()];
 	}
 }

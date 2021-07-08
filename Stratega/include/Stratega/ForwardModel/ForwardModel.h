@@ -139,6 +139,11 @@ namespace SGA
 		void spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const;
 
 
+		std::shared_ptr<EntityActionSpace> getActionSpace() const
+		{
+			return actionSpace;
+		}
+
 	protected:
 
 		/// <summary>
@@ -168,6 +173,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State to finish its tick/turn.</param>
 		void endTick(GameState& state) const;
+
 
 		/// <summary>
 		/// It generates a default action space unique pointer.
