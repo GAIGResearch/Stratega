@@ -23,7 +23,7 @@ namespace SGA
 		for (const auto& entity : gameState.entities)
 		{
 			positions.emplace(entity.id, entity.position);
-			if (entity.ownerID != gameState.currentPlayer)
+			if (entity.ownerID != playerID)
 			{
 				opponentEntites.insert(entity.id);
 			}

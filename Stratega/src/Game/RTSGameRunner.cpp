@@ -6,7 +6,7 @@ namespace SGA
 	RTSGameRunner::RTSGameRunner(const GameConfig& config)
 		: GameRunner(config)
 	{
-		currentState->currentPlayer = -1;
+		currentState->setCurrentTBSPlayer(-1);
 	}
 
 	void RTSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
