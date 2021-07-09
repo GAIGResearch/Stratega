@@ -106,11 +106,16 @@ namespace SGA
 
 					//Check computation time
 					if (shouldCheckComputationTime)
+					{
 						if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
 						{
 							nextActions.merge(results.actions);
 						}
-
+					}
+					else
+					{
+						nextActions.merge(results.actions);
+					}
 				}
 			}
 			catch (const std::exception& ex)
