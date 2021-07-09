@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
 	{
 		if (state.gameType != GameType::TBS)
 		{

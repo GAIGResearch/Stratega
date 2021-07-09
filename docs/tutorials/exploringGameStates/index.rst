@@ -719,7 +719,9 @@ For instance, the following snippet prints the parameter of the current player:
         :title: python
         :linenos:        
         
-        myFigherUnits = state.get_player_entities(self.get_player_id(), stratega.EntityCategory.Fighter)
+        params = state.get_player_parameters(self.get_player_id())
+        for param in params:
+            print(param, ":", params[param])
 
 
         

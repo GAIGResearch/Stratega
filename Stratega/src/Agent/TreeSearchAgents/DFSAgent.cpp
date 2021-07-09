@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
 	{
 		if (state.gameType != GameType::TBS)
 		{

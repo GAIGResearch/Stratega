@@ -26,6 +26,8 @@
 #include <filesystem>
 #include <Stratega/Logging/Log.h>
 
+#include <Stratega/Utils/Timer.h>
+
 namespace py = pybind11;
 class PythonAgent;
 
@@ -114,7 +116,7 @@ public:
 	using SGA::Agent::getPlayerID;
 
 	/* Trampoline (need one for each virtual function) */
-	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::ForwardModel* forwardModel, long timeBudgetMs) override
+	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::ForwardModel* forwardModel, SGA::Timer timer) override
 	{
 		PYBIND11_OVERRIDE_PURE(
 			SGA::ActionAssignment,
@@ -122,7 +124,7 @@ public:
 			computeAction,
 			state,
 			forwardModel,
-			timeBudgetMs
+			timer
 		);
 	}
 };
@@ -1104,7 +1106,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Agent ----
 	py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
 		.def(py::init<>())
-		.def("computeAction", &SGA::Agent::computeAction, py::return_value_policy::reference, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
+		.def("computeAction", &SGA::Agent::computeAction, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
 		.def("init", &SGA::Agent::init, "Function for initializing the agent. Override this function to receive a call just before starts.")
 		.def("get_player_id", &SGA::Agent::getPlayerID);
 
@@ -1139,6 +1141,21 @@ PYBIND11_MODULE(stratega, m)
 				py::gil_scoped_acquire acquire;
 			}
 		)		
+		;
+
+	// ---- Timer ----
+	py::class_<SGA::Timer>(m, "Timer")
+		.def(py::init<long>(), py::arg("maxTimeMs")=0)
+		.def("start", &SGA::Timer::start)
+		.def("stop", &SGA::Timer::stop)
+		.def("elapsed_milliseconds", &SGA::Timer::elapsedMilliseconds)
+		.def("elapsed_seconds", &SGA::Timer::elapsedSeconds)
+		.def("elapsed_minutes", &SGA::Timer::elapsedMinutes)
+		.def("elapsed_hours", &SGA::Timer::elapsedHours)
+		.def("set_max_time_milliseconds", &SGA::Timer::setMaxTimeMilliseconds, py::arg("newMaxTimeMs"))
+		.def("remaining_time_milliseconds", &SGA::Timer::remainingTimeMilliseconds)
+		.def("exceeded_max_time", &SGA::Timer::exceededMaxTime)
+		.def("get_max_time_milliseconds", &SGA::Timer::getMaxTimeMilliseconds)
 		;
 
 }

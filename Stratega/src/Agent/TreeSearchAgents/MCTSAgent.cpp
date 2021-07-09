@@ -2,7 +2,7 @@
 
 namespace SGA
 {
-    ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+    ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
     {
         if (state.gameType != GameType::TBS)
         {

@@ -8,7 +8,6 @@ Agents:
     - RandomAgent
 
 
-
 Tiles:
     Plain:
         Sprite: ../../GUI/Assets/Tiles/plain.png

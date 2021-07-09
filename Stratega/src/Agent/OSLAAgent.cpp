@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	ActionAssignment OSLAAgent::computeAction(GameState state, const ForwardModel* forwardModel, long /*timeBudgetMs*/)
+	ActionAssignment OSLAAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer /*timer*/)
 	{
 		if(state.gameType != GameType::TBS)
 		{

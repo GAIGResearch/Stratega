@@ -7,7 +7,7 @@ namespace SGA
 	{
 	}
 
-	void Agent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, long /*timeBudgetMs*/)
+	void Agent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		// Do nothing by default
 	}
