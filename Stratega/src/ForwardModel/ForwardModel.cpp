@@ -168,7 +168,7 @@ namespace SGA
 				executingPlayer.continuousAction.emplace_back(newAction);
 			}
 		}
-		else
+		else if (action.actionTypeFlags != ActionFlag::EndTickAction)
 		{
 			const auto& actionType =action.getActionType();
 			if (actionType.sourceType == ActionSourceType::Entity)
