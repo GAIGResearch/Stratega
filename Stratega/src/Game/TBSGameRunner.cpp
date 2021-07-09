@@ -40,11 +40,8 @@ namespace SGA
 
 					//Check computation time
 					if (shouldCheckComputationTime)					
-						if (checkComputationTime(results.computationTime))
-							nextAction.clear();
-						else
+						if (!checkComputationTime(results.computationTime))
 							nextAction = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-					
 						
 				}				
 				catch (const std::exception& ex)
@@ -102,11 +99,8 @@ namespace SGA
 				actionAssignment = results.actions;
 				//Check computation time
 				if (shouldCheckComputationTime)
-					if (checkComputationTime(results.computationTime))
-						actionAssignment.clear();
-					else
-						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-						
+					if (!checkComputationTime(results.computationTime))
+						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));						
 			}
 			catch (const std::exception& ex)
 			{
