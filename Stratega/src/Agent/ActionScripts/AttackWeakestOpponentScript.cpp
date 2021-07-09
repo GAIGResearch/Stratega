@@ -7,7 +7,7 @@ namespace SGA
 
 	double AttackWeakestOpponentScript::getHealth(const Entity* entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->getEntityTypeID()].parameters)
 		{
 			if (param.second.name == "Health")
 			{
