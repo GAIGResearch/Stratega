@@ -37,7 +37,7 @@ namespace SGA {
 			//portfolio.emplace_back(random);
 			portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
 			opponentModel = std::make_shared<RandomActionScript>();
-			heuristic = std::make_unique<MinimizeDistanceHeuristic>();
+			//heuristic = std::make_unique<MinimizeDistanceHeuristic>();
 		};
 
 		void printDetails() const;
