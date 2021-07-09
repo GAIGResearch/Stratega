@@ -1,4 +1,5 @@
 #include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 
 namespace SGA
@@ -141,5 +142,9 @@ namespace SGA
     void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
     {
         params_.PLAYER_ID = getPlayerID();
+        if (params_.heuristic == nullptr)
+        {
+            params_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        }
     }
 }

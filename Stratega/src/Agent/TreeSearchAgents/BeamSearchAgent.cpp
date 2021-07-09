@@ -1,4 +1,5 @@
 #include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 
 namespace SGA
@@ -90,5 +91,9 @@ namespace SGA
 	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
 	{
 		parameters_.PLAYER_ID = getPlayerID();
+		if (parameters_.heuristic == nullptr)
+		{
+			parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+		}
 	}
 }
