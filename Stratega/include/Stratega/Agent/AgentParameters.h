@@ -63,9 +63,9 @@ namespace SGA {
 			else throw std::exception("Unrecognized forward model type in Agent Parameters.");
 		}
 
-		std::shared_ptr<BaseActionScript> AgentParameters::getOpponentModel() const { return opponentModel; }
-		std::shared_ptr<StateHeuristic> AgentParameters::getStateHeuristic() const { return heuristic; }
-		std::vector<std::shared_ptr<BaseActionScript>> AgentParameters::getPortfolio() const { return portfolio; }
+		std::shared_ptr<BaseActionScript> getOpponentModel() const { return opponentModel; }
+		std::shared_ptr<StateHeuristic> getStateHeuristic() const { return heuristic; }
+		std::vector<std::shared_ptr<BaseActionScript>> getPortfolio() const { return portfolio; }
 
 	};
 }
