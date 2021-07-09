@@ -138,7 +138,10 @@ namespace SGA
 		/// <param name="position">Position where the entity will be spawned.</param>
 		void spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const;
 
-
+		/// <summary>
+		/// Returns the action space of this forward model
+		/// </summary>
+		/// <returns>Action space of this forward model.</returns>
 		std::shared_ptr<EntityActionSpace> getActionSpace() const
 		{
 			return actionSpace;

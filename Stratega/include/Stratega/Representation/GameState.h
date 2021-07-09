@@ -391,7 +391,7 @@ namespace SGA
 
 		/// <summary>
 		/// ID of the current player if only one can play.
-		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with 1-N player IDs.
+		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with N-1 player IDs.
 		/// </summary>
 		int currentPlayer;
 	};

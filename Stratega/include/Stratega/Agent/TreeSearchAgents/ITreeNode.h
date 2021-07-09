@@ -51,7 +51,7 @@ namespace SGA
 		///  - If the owner can't play at this state, the player that can play if there's only one other to play.
 		/// </summary>
 		std::vector<Action> actionSpace;
-		int playerID;
+		int playerID;  //ID of the player whose action space has been calculated in this node (and it's to move in the game).
 
 
 		/// <summary>
