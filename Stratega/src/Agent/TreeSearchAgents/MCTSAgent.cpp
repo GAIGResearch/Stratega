@@ -51,9 +51,9 @@ namespace SGA
     void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
     {
         parameters_.PLAYER_ID = getPlayerID();
-        if (parameters_.STATE_HEURISTIC == nullptr)
+        if (parameters_.heuristic == nullptr)
         {
-            parameters_.STATE_HEURISTIC = std::make_unique<AbstractHeuristic>(initialState);
+            parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
         }
 
     }
