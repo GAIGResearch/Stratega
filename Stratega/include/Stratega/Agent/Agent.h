@@ -138,7 +138,7 @@ namespace SGA
 	/// <param name="fm">Forward model to roll the state forward and quering available actions.</param>
 	/// <param name="agParams">Parameters of the agent who's calling this method.</param>
 	/// <param name="oppID">ID of the opponent who will roll the state forward with an action.</param>
-	/// <returns>The number of actions executed by this function.</returns>
+	/// <returns>True if one action was executed.</returns>
 	inline bool rollOppAction(GameState& gs, const ForwardModel& fm, const AgentParameters& agParams, int oppID)
 	{
 		//An opponent is to play in this state.
