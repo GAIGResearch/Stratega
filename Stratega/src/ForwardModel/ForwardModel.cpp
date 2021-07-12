@@ -20,11 +20,6 @@ namespace SGA
 	}
 
 
-	/*bool ForwardModel::isValid(const GameState& state, const Action& action) const
-	{
-		return true;
-	}*/
-
 	
 	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{
@@ -79,129 +74,139 @@ namespace SGA
 		return false;
 	}
 
-	void ForwardModel::executeAction(GameState& state, const Action& action) const
+
+	void ForwardModel::executeAbortContinuousAction(GameState& state, const Action& action) const
 	{
-		if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+		if (action.targets[0].getType() == ActionTarget::PlayerReference)
 		{
-			if (action.targets[0].getType() == ActionTarget::PlayerReference)
+			auto& sourcePlayer = action.targets[0].getPlayer(state);
+			int continuousActionID = action.targets[1].getContinuousActionID();
+
+			//Search continuousAction to abort
+			for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
 			{
-				auto& sourcePlayer = action.targets[0].getPlayer(state);
-				int continuousActionID = action.targets[1].getContinuousActionID();
-
-				//Search continuousAction to abort
-				for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
+				if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
 				{
-					if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
+					auto& actionType = sourcePlayer.continuousAction[i].getActionType();
+
+					//Execute OnAbort Effects				
+					for (auto& effect : actionType.OnAbort)
 					{
-						auto& actionType = sourcePlayer.continuousAction[i].getActionType();
-
-						//Execute OnAbort Effects				
-						for (auto& effect : actionType.OnAbort)
-						{
-							effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
-						}
-
-						//Remove continuous action
-						sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
-						i--;
+						effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
 					}
-				}
-			}
-			else
-			{
-				auto& sourceEntity = *action.targets[0].getEntity(state);
-				int continuousActionID = action.targets[1].getContinuousActionID();
 
-				//Search continuousAction to abort
-				std::vector<Action>& continuousActions = sourceEntity.getContinuousActions();
-				for (size_t i = 0; i < continuousActions.size(); i++)
-				{
-					if (continuousActions[i].continuousActionID == continuousActionID)
-					{
-						auto& actionType = continuousActions[i].getActionType();
-
-						//Execute OnAbort Effects				
-						for (auto& effect : actionType.OnAbort)
-						{
-							effect->execute(state, *this, continuousActions[i].targets);
-						}
-
-						//Remove continuous action
-						continuousActions.erase(continuousActions.begin() + i);
-						i--;
-					}
+					//Remove continuous action
+					sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+					i--;
 				}
 			}
 		}
-		else if (action.actionTypeFlags == ActionFlag::ContinuousAction)
+		else
 		{
-			auto& actionType = action.getActionType();
-			//If we are generating continuousAction we need to track them somehow
-			//Using ID for each action for example				
-			Action newAction = action;
-			newAction.continuousActionID = state.getNextContinuousActionID();
-			state.incNextContinuousActionID();
-			newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
+			auto& sourceEntity = *action.targets[0].getEntity(state);
+			int continuousActionID = action.targets[1].getContinuousActionID();
 
-			//If is continues we execute OnStart Effects
-			//and we add the action to the list of continuous actions
-			if (actionType.sourceType == ActionSourceType::Entity)
+			//Search continuousAction to abort
+			std::vector<Action>& continuousActions = sourceEntity.getContinuousActions();
+			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
-				auto& type = state.gameInfo->actionTypes->at(actionType.id);
-				for (auto& effect : type.OnStart)
+				if (continuousActions[i].continuousActionID == continuousActionID)
 				{
-					effect->execute(state, *this, newAction.targets);
-				}
+					auto& actionType = continuousActions[i].getActionType();
 
-				auto& executingEntity = *newAction.targets[0].getEntity(state);
-				executingEntity.getContinuousActions().emplace_back(newAction);
-			}
-			else if (actionType.sourceType == ActionSourceType::Player)
-			{
-				auto& type = state.gameInfo->actionTypes->at(actionType.id);
-				for (auto& effect : type.OnStart)
-				{
-					effect->execute(state, *this, newAction.targets);
-				}
-
-				auto& executingPlayer = newAction.targets[0].getPlayer(state);
-				executingPlayer.continuousAction.emplace_back(newAction);
-			}
-		}
-		else if (action.actionTypeFlags != ActionFlag::EndTickAction)
-		{
-			const auto& actionType =action.getActionType();
-			if (actionType.sourceType == ActionSourceType::Entity)
-			{
-				auto& executingEntity = *action.targets[0].getEntity(state);
-				executingEntity.setActionTicks(action.getActionTypeID(), state.currentTick);
-			}
-			else
-			{
-				// Remember when the action was executed
-				auto& executingPlayer = action.targets[0].getPlayer(state);
-				// ToDo We should probably find a way to avoid this loop
-				for (auto& actionInfo : executingPlayer.attachedActions)
-				{
-					if (actionInfo.actionTypeID == action.getActionTypeID())
+					//Execute OnAbort Effects				
+					for (auto& effect : actionType.OnAbort)
 					{
-						actionInfo.lastExecutedTick = state.currentTick;
-						break;
+						effect->execute(state, *this, continuousActions[i].targets);
 					}
+
+					//Remove continuous action
+					continuousActions.erase(continuousActions.begin() + i);
+					i--;
 				}
 			}
-			
-			action.execute(state, *this);	
 		}
 	}
 
-	void ForwardModel::endTick(GameState& state) const
+	void ForwardModel::executeContinuousAction(GameState& state, const Action& action) const
 	{
-		state.currentTick++;
+		auto& actionType = action.getActionType();
+		//If we are generating continuousAction we need to track them somehow
+		//Using ID for each action for example				
+		Action newAction = action;
+		newAction.continuousActionID = state.getNextContinuousActionID();
+		state.incNextContinuousActionID();
+		newAction.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(newAction.continuousActionID));
 
+		//If is continues we execute OnStart Effects
+		//and we add the action to the list of continuous actions
+		if (actionType.sourceType == ActionSourceType::Entity)
+		{
+			auto& type = state.gameInfo->actionTypes->at(actionType.id);
+			for (auto& effect : type.OnStart)
+			{
+				effect->execute(state, *this, newAction.targets);
+			}
+
+			auto& executingEntity = *newAction.targets[0].getEntity(state);
+			executingEntity.getContinuousActions().emplace_back(newAction);
+		}
+		else if (actionType.sourceType == ActionSourceType::Player)
+		{
+			auto& type = state.gameInfo->actionTypes->at(actionType.id);
+			for (auto& effect : type.OnStart)
+			{
+				effect->execute(state, *this, newAction.targets);
+			}
+
+			auto& executingPlayer = newAction.targets[0].getPlayer(state);
+			executingPlayer.continuousAction.emplace_back(newAction);
+		}
+	}
+
+	void ForwardModel::executeNormalAction(GameState& state, const Action& action) const
+	{
+		const auto& actionType = action.getActionType();
+		if (actionType.sourceType == ActionSourceType::Entity)
+		{
+			auto& executingEntity = *action.targets[0].getEntity(state);
+			executingEntity.setActionTicks(action.getActionTypeID(), state.currentTick);
+		}
+		else
+		{
+			// Remember when the action was executed
+			auto& executingPlayer = action.targets[0].getPlayer(state);
+			// ToDo We should probably find a way to avoid this loop
+			for (auto& actionInfo : executingPlayer.attachedActions)
+			{
+				if (actionInfo.actionTypeID == action.getActionTypeID())
+				{
+					actionInfo.lastExecutedTick = state.currentTick;
+					break;
+				}
+			}
+		}
+
+		action.execute(state, *this);
+	}
+
+	void ForwardModel::executeAction(GameState& state, const Action& action) const
+	{
+		switch (action.actionTypeFlags)
+		{
+		case ActionFlag::AbortContinuousAction: executeAbortContinuousAction(state, action); break;
+		case ActionFlag::ContinuousAction: executeContinuousAction(state, action); break;
+		case ActionFlag::EndTickAction: break;
+		default: executeNormalAction(state, action);
+		}
+	}
+
+
+	void ForwardModel::executeOnTriggerEffects(GameState& state) const
+	{
 		// Execute OnTick-trigger
-		for(const auto& onTickEffect : onTickEffects)
-		{		
+		for (const auto& onTickEffect : onTickEffects)
+		{
 			for (const auto& entity : state.entities)
 			{
 				if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
@@ -209,16 +214,16 @@ namespace SGA
 				std::vector<ActionTarget> targets;
 				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
 				auto isValid = true;
-				for(const auto& condition : onTickEffect.conditions)
+				for (const auto& condition : onTickEffect.conditions)
 				{
-					if(!condition->isFulfilled(state, targets))
+					if (!condition->isFulfilled(state, targets))
 					{
 						isValid = false;
 						break;
 					}
 				}
 
-				if(isValid)
+				if (isValid)
 				{
 					for (const auto& effect : onTickEffect.effects)
 					{
@@ -227,7 +232,10 @@ namespace SGA
 				}
 			}
 		}
+	}
 
+	void ForwardModel::checkEntitiesContinuousActionIsComplete(GameState& state) const
+	{
 		//Check if condition is complete
 		for (size_t j = 0; j < state.entities.size(); j++)
 		{
@@ -292,9 +300,12 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-			}		
+			}
 		}
+	}
 
+	void ForwardModel::checkPlayerContinuousActionIsComplete(GameState& state) const
+	{
 		//Player continuous Action
 		for (size_t j = 0; j < state.players.size(); j++)
 		{
@@ -359,10 +370,19 @@ namespace SGA
 					//Stop executing this action
 					continue;
 				}
-				}				
-
 			}
+
 		}
+	}
+		
+	void ForwardModel::endTick(GameState& state) const
+	{
+		state.currentTick++;
+
+		executeOnTriggerEffects(state);
+		checkEntitiesContinuousActionIsComplete(state);
+		checkPlayerContinuousActionIsComplete(state);
+	}
 	
 
 	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
