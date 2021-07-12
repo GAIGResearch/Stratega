@@ -1,8 +1,8 @@
-#include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 
 namespace SGA
 {
-	std::vector<Action> EntityActionSpace::generateActions(const GameState& gameState, int playerID) const
+	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const
 	{
 		std::vector<Action> bucket;
 		//Generate entities actions
@@ -142,7 +142,7 @@ namespace SGA
 		return result;
 	}
 	
-	void EntityActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
+	void ActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{		
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
@@ -176,7 +176,7 @@ namespace SGA
 		}
 	}
 
-	void EntityActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
+	void ActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
@@ -210,7 +210,7 @@ namespace SGA
 		}
 	}
 	
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 		
@@ -238,7 +238,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
@@ -264,7 +264,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -278,7 +278,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -291,7 +291,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		for(const auto& entityTypeID : entityTypeIDs)
@@ -302,7 +302,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -318,7 +318,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState,  const Vector2f& position, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generateGroupTargets(const GameState& gameState,  const Vector2f& position, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -334,7 +334,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		
@@ -351,7 +351,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity) const
+	std::vector<ActionTarget> ActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -362,14 +362,14 @@ namespace SGA
 		return targets;
 	}
 	
-	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
+	Action ActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
 		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
 		return selfAction;
 	}
 
-	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
+	Action ActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
 		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };

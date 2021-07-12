@@ -1,7 +1,7 @@
 #pragma once
 #include <random>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
 
 #include "Condition.h"
@@ -31,7 +31,7 @@ namespace SGA
 
 	/// <summary>
 	/// Is the driving component of Stratega, with a provided gamestate it can generate a new set of available
-	/// actions thanks to the <see cref="SGA::EntityActionSpace"/>.
+	/// actions thanks to the <see cref="SGA::ActionSpace"/>.
 	/// The returned actions store the action type and a list of sources and targets the action will be applied to.
 	/// Each <see cref="SGA::RTSForwardModel"/> and <see cref="SGA::TBSForwardModel"/> by default contains the definition of how to advance the game
 	/// and other utility methods used in each specific game type.
@@ -142,7 +142,7 @@ namespace SGA
 		/// Returns the action space of this forward model
 		/// </summary>
 		/// <returns>Action space of this forward model.</returns>
-		std::shared_ptr<EntityActionSpace> getActionSpace() const
+		std::shared_ptr<ActionSpace> getActionSpace() const
 		{
 			return actionSpace;
 		}
@@ -152,7 +152,7 @@ namespace SGA
 		/// <summary>
 		/// Action space (generator) for this forward model.
 		/// </summary>
-		std::shared_ptr<EntityActionSpace> actionSpace;
+		std::shared_ptr<ActionSpace> actionSpace;
 
 
 		// Not in use.
@@ -190,16 +190,16 @@ namespace SGA
 		/// It generates a default action space unique pointer.
 		/// </summary>
 		/// <returns>Returns an empty action space.</returns>
-		std::unique_ptr<EntityActionSpace> generateDefaultActionSpace() const
+		std::unique_ptr<ActionSpace> generateDefaultActionSpace() const
 		{
-			return std::make_unique<EntityActionSpace>();
+			return std::make_unique<ActionSpace>();
 		}
 
 		/// <summary>
 		/// Sets the action space of this objet to the oen passed by parameter.
 		/// </summary>
 		/// <param name="newActionSpace">Action space to set.</param>
-		void setActionSpace(std::unique_ptr<EntityActionSpace> newActionSpace)
+		void setActionSpace(std::unique_ptr<ActionSpace> newActionSpace)
 		{
 			this->actionSpace = std::move(newActionSpace);
 		}
