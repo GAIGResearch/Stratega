@@ -176,10 +176,10 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 {
 	if(state.gameType == SGA::GameType::TBS)
 	{
-		SGA::Log::logValue("ActivePlayer", state.currentPlayer);
+		SGA::Log::logValue("ActivePlayer", state.getCurrentTBSPlayer());
 
 		// ToDo getActions should accept const gameStates
-		auto actions = forwardModel.generateActions(state, state.currentPlayer);
+		auto actions = forwardModel.generateActions(state, state.getCurrentTBSPlayer());
 		SGA::Log::logValue("ActionCount", actions.size());
 	}
 	else if(state.gameType == SGA::GameType::RTS)

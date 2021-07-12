@@ -7,7 +7,7 @@ namespace SGA
 		static ActionAssignment assignmentCache;
 		assignmentCache.clear();
 		assignmentCache.assignActionOrReplace(action);
-		
+
 		advanceGameState(state, assignmentCache);
 	}
 

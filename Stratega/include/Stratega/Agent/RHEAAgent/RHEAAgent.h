@@ -3,7 +3,7 @@
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <Stratega/Agent/RHEAAgent/RHEAGenome.h>
 #include <Stratega/Agent/RHEAAgent/RHEAParams.h>
@@ -26,6 +26,7 @@ namespace SGA
 		{
 		}
 
+		void init(GameState initialState, const ForwardModel & forwardModel, long timeBudgetMs) override;
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:

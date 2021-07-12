@@ -7,6 +7,6 @@ namespace SGA
 	{
 	public:
 		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override;
-		static std::string getName() { return "MinimizeDistanceHeuristic"; }
+		std::string getName() const override { return "MinimizeDistanceHeuristic"; }
 	};
 }

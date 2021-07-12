@@ -1,8 +1,9 @@
 #include <Stratega/Agent/ActionScripts/UseSpecialAbilityScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {
-	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<SGA::Action>& actionSpace) const
+	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
 		if (actionSpace.size() > 1)
 		{
@@ -28,7 +29,7 @@ namespace SGA
 		return actionSpace[rand() % actionSpace.size()];
 	}
 
-	Action UseSpecialAbilityScript::getActionForUnit(const GameState& gameState, std::vector<SGA::Action>& actionSpace, int unitID) const
+	Action UseSpecialAbilityScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
 	{
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)

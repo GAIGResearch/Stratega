@@ -105,6 +105,13 @@ namespace SGA
 		/// <returns>A copy of this forward model.</returns>
 		virtual std::unique_ptr<ForwardModel> clone() const = 0;
 
+
+		/// <summary>
+		/// Indicates the game type this forward model is for. GameType is an enum defined in GameState.h
+		/// </summary>
+		/// <returns>The game type of this forward model.</returns>
+		virtual GameType getGameType() const = 0;
+
 		/// <summary>
 		/// Checks if a player has lost the game due to the game's lose conditions.
 		/// </summary>
@@ -131,6 +138,14 @@ namespace SGA
 		/// <param name="position">Position where the entity will be spawned.</param>
 		void spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const;
 
+		/// <summary>
+		/// Returns the action space of this forward model
+		/// </summary>
+		/// <returns>Action space of this forward model.</returns>
+		std::shared_ptr<EntityActionSpace> getActionSpace() const
+		{
+			return actionSpace;
+		}
 
 	protected:
 
@@ -142,6 +157,7 @@ namespace SGA
 
 		// Not in use.
 		///std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
+		///virtual bool isValid(const GameState & state, const Action & action) const;
 
 		/// <summary>
 		/// Executes the action in the given game state. This is used by subclasses of this forward model to
@@ -150,6 +166,10 @@ namespace SGA
 		/// <param name="state">State where the action is executed. This game state will be altered.</param>
 		/// <param name="action">Action to execute.</param>
 		void executeAction(GameState& state, const Action& action) const;
+
+		void executeAbortContinuousAction(GameState& state, const Action& action) const;
+		void executeContinuousAction(GameState& state, const Action& action) const;
+		void executeNormalAction(GameState& state, const Action& action) const;
 
 
 		/// <summary>
@@ -160,6 +180,11 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State to finish its tick/turn.</param>
 		void endTick(GameState& state) const;
+
+		void executeOnTriggerEffects(GameState& state) const;
+		void checkEntitiesContinuousActionIsComplete(GameState& state) const;
+		void checkPlayerContinuousActionIsComplete(GameState& state) const;
+
 
 		/// <summary>
 		/// It generates a default action space unique pointer.

@@ -1,33 +1,28 @@
 #include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 
 namespace SGA
 {
 	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
 	{
-		if (state.gameType != GameType::TBS)
-		{
-			throw std::runtime_error("BeamSearchAgent only supports TBS-Games");
-		}
+		const auto processedForwardModel = parameters_.preprocessForwardModel(*forwardModel);
+		TreeNode rootNode = TreeNode(*processedForwardModel, state, getPlayerID());
 
-		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
-		TreeNode rootNode = TreeNode(*processedForwardModel, state);
-
-		if (rootNode.actionSpace.size() == 1)
+		auto actionSpace = rootNode.getActionSpace(*forwardModel, getPlayerID());
+		if (actionSpace.size() == 1)
 		{
-			return ActionAssignment::fromSingleAction(rootNode.actionSpace.front());
+			return ActionAssignment::fromSingleAction(actionSpace.front());
 		}
 		else
-		{
+		{	
 			auto bestAction = beamSearch(*processedForwardModel, rootNode);
 			return ActionAssignment::fromSingleAction(bestAction);
 		}
 	}
 
-	Action BeamSearchAgent::beamSearch(TBSForwardModel& forwardModel, TreeNode& root)
+	Action BeamSearchAgent::beamSearch(ForwardModel& forwardModel, TreeNode& root)
 	{
-		parameters_.PLAYER_ID = root.gameState.currentPlayer;
-
 		std::vector<TreeNode*> bestSimulations = simulate(forwardModel, root);
 
 		for (size_t i = 1; i < parameters_.PLAYER_BEAM_DEPTH; i++)
@@ -56,17 +51,17 @@ namespace SGA
 			TreeNode* parent = bestChild->parentNode;
 			if (parent->parentNode == nullptr)
 			{
-				return parent->actionSpace.at(bestChild->childIndex);
+				return parent->getActionSpace(forwardModel, getPlayerID()).at(bestChild->childIndex);
 			}
 			bestChild = parent;
 		}
 
-		return root.actionSpace.at(0);
+		return root.getActionSpace(forwardModel, getPlayerID()).at(0);
 	}
 
 	bool BeamSearchAgent::sortByValue(const TreeNode* i, const TreeNode* j) { return i->value > j->value; }
 
-	std::vector<TreeNode*> BeamSearchAgent::simulate(TBSForwardModel& forwardModel, TreeNode& node)
+	std::vector<TreeNode*> BeamSearchAgent::simulate(ForwardModel& forwardModel, TreeNode& node)
 	{
 		std::vector<TreeNode*> bestSimulations = std::vector<TreeNode*>();
 		
@@ -77,7 +72,7 @@ namespace SGA
 		for (auto& i : node.children)
 		{
 			auto* child = i.get();
-			child->value = parameters_.OBJECTIVE->evaluateGameState(forwardModel, child->gameState, parameters_.PLAYER_ID);
+			child->value = parameters_.getStateHeuristic()->evaluateGameState(forwardModel, child->gameState, parameters_.PLAYER_ID);
 			bestSimulations.push_back(child);
 		}
 
@@ -90,5 +85,15 @@ namespace SGA
 			bestSimulations.erase(bestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, bestSimulations.end());
 			
 		return bestSimulations;
+	}
+
+
+	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	{
+		parameters_.PLAYER_ID = getPlayerID();
+		if (parameters_.heuristic == nullptr)
+		{
+			parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+		}
 	}
 }

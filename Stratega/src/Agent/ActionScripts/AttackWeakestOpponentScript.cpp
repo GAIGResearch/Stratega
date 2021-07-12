@@ -1,4 +1,5 @@
 #include <Stratega/Agent/ActionScripts/AttackWeakestOpponentScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <set>
 
 namespace SGA
@@ -6,7 +7,7 @@ namespace SGA
 
 	double AttackWeakestOpponentScript::getHealth(const Entity* entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->id].parameters)
+		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->getEntityTypeID()].parameters)
 		{
 			if (param.second.name == "Health")
 			{
@@ -16,9 +17,8 @@ namespace SGA
 		return 0;
 	}
 	
-	Action AttackWeakestOpponentScript::getAction(const GameState& gameState, std::vector<SGA::Action>& actionSpace) const
+	Action AttackWeakestOpponentScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
-	
 		if (actionSpace.size() > 1)
 		{
 			// create a map of action types to filter relevant actions
@@ -49,7 +49,7 @@ namespace SGA
 					weakestUnitID = entity.id;
 				}
 				
-				if (entity.ownerID == gameState.currentPlayer)
+				if (entity.ownerID == playerID)
 				{
 					myUnits.push_back(entity.id);
 				}
@@ -109,7 +109,7 @@ namespace SGA
 		return actionSpace[actionSpace.size() - 1];
 	}
 
-	Action AttackWeakestOpponentScript::getActionForUnit(const GameState& gameState, std::vector<SGA::Action>& actionSpace, int unitID) const
+	Action AttackWeakestOpponentScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
 	{
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
@@ -150,7 +150,7 @@ namespace SGA
 					weakestUnitID = entity.id;
 				}
 
-				if (entity.ownerID == gameState.currentPlayer)
+				if (entity.ownerID == playerID)
 				{
 					myUnits.push_back(entity.id);
 				}

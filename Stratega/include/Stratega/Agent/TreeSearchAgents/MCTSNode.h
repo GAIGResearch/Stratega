@@ -13,6 +13,7 @@ namespace SGA {
 	protected:
 		int nVisits = 0;
 		double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};
+				
 
 	public:
 		
@@ -20,12 +21,12 @@ namespace SGA {
 		void increaseTreeSize();
 
 		// tree policy phase
-		MCTSNode* treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
-		MCTSNode* expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
 		MCTSNode* uct(MCTSParameters& params, std::mt19937& randomGenerator);
 
 		// rollout phase
-		double rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		double rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
 		static bool rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params);
 
 		// backpropagation phase
@@ -37,20 +38,20 @@ namespace SGA {
 		// helper functions
 		static double normalize(double aValue, double aMin, double aMax);
 		static double noise(double input, double epsilon, double random);
-		void applyActionToGameState(TBSForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params) const;
+		void applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int playerID) const;
 		void setDepth(int depth);
 
 	public:
 		// Root Node Constructor
-		MCTSNode(TBSForwardModel& forwardModel, GameState gameState);
+		MCTSNode(ForwardModel& forwardModel, GameState gameState, int ownerID);
 
 		//void setRootGameState(shared_ptr<TreeNode> root);
-		void searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
 		int mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator);
 		void print() const override;
 
 	private:
-		MCTSNode(TBSForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex);
+		MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex, int ownerID);
 		
 	};
 }

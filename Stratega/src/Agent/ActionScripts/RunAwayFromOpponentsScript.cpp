@@ -1,10 +1,10 @@
 #include <Stratega/Agent/ActionScripts/RunAwayFromOpponentScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {
-	Action RunAwayFromOpponentScript::getAction(const GameState& gameState, std::vector<SGA::Action>& actionSpace) const
+	Action RunAwayFromOpponentScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
-		
 		if (actionSpace.size() > 1)
 		{
 			// create a map of action types to filter relevant actions
@@ -23,7 +23,7 @@ namespace SGA
 			for (auto& entity : gameState.entities) {
 				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
 
-				if (entity.ownerID == gameState.currentPlayer)
+				if (entity.ownerID == playerID)
 				{
 					myUnits.push_back(entity.id);
 				}
@@ -60,7 +60,7 @@ namespace SGA
 		return actionSpace[actionSpace.size()-1];
 	}
 
-	Action RunAwayFromOpponentScript::getActionForUnit(const GameState& gameState, std::vector<SGA::Action>& actionSpace, int unitID) const
+	Action RunAwayFromOpponentScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
 	{
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
@@ -89,7 +89,7 @@ namespace SGA
 			for (auto& entity : gameState.entities) {
 				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
 
-				if (entity.ownerID == gameState.currentPlayer)
+				if (entity.ownerID == playerID)
 				{
 					myUnits.push_back(entity.id);
 				}

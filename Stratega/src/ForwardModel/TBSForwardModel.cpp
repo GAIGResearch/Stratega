@@ -46,7 +46,7 @@ namespace SGA
 
 	std::vector<Action> TBSForwardModel::generateActions(const GameState& state) const
 	{
-		return generateActions(state, state.currentPlayer);
+		return generateActions(state, state.getCurrentTBSPlayer());
 	}
 
 	void TBSForwardModel::endTurn(GameState& state) const
@@ -54,7 +54,7 @@ namespace SGA
 		// Find the next player who's still able to play
 		for (auto i = 1; i <= state.players.size(); i++)
 		{
-			int nextPlayerID = (state.currentPlayer + i) % state.players.size();
+			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.players.size();
 			auto& targetPlayer = state.players[nextPlayerID];
 
 			// All players did play, we consider this as a tick
@@ -65,16 +65,12 @@ namespace SGA
 
 			if (targetPlayer.canPlay)
 			{
-				state.currentPlayer = nextPlayerID;
+				state.setCurrentTBSPlayer(nextPlayerID);
 				break;
 			}
 		}
 	}
 
-	bool TBSForwardModel::isValid(const GameState& /*state*/, const Action& /*action*/) const
-	{
-		return true;
-	}
 
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{

@@ -23,9 +23,10 @@ namespace SGA
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
 
 	private:
-		void search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes);
-		int getBestActionIdx(TBSForwardModel& forwardModel);
+		void search(ForwardModel& forwardModel, std::list<TreeNode*>& nodes);
+		int getBestActionIdx(ForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
-		void init(TBSForwardModel& forwardModel, GameState& gameState);
+		void init(ForwardModel& forwardModel, GameState& gameState);
+		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 	};
 }

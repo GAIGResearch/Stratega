@@ -5,9 +5,7 @@ GameConfig:
 
 Agents:
     - CombatAgent
-    - PMCTSAgent
-
-
+    - RandomAgent
 
 Tiles:
     Plain:

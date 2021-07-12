@@ -1,15 +1,18 @@
 #include <Stratega/Agent/TreeSearchAgents/MCTSNode.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState) :
-		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState))
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState, int ownerID) :
+		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), ownerID)
 	{
 	}
 
-	MCTSNode::MCTSNode(TBSForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex) :
-		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex)
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex, int ownerID) :
+		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex, ownerID)
 	{
+		computeActionSpace(forwardModel);
+		initializeNode();
 	}
 
 
@@ -57,7 +60,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
 		int numIterations = 0;
 		bool stop = false;
 		int prevCallCount = params.REMAINING_FM_CALLS;
@@ -85,7 +88,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		MCTSNode* cur = this;
 
@@ -102,17 +105,16 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& /*randomGenerator*/)
+	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& /*randomGenerator*/)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
-		childIndex = static_cast<int>(children.size());
-		applyActionToGameState(forwardModel, gsCopy, actionSpace.at(childIndex), params);
+		auto action = actionSpace.at(static_cast<int>(children.size()));
+		applyActionToGameState(forwardModel, gsCopy, action, params, playerID);
 
 		// generate child node and add it to the tree
-		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex)));
-
+		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
 		return children[childIndex].get();
 	}
 
@@ -132,7 +134,7 @@ namespace SGA
 
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
-		const bool iAmMoving = (gameState.currentPlayer == params.PLAYER_ID);
+		bool amIMoving = gameState.canPlay(params.PLAYER_ID);
 
 		std::vector<double> childValues(children.size(), 0);
 
@@ -152,10 +154,10 @@ namespace SGA
 		}
 
 		int which = -1;
-		double bestValue = iAmMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
+		double bestValue = amIMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
 
 		for (size_t i = 0; i < children.size(); ++i) {
-			if ((iAmMoving && childValues[i] > bestValue) || (!iAmMoving && childValues[i] < bestValue)) {
+			if ((amIMoving && childValues[i] > bestValue) || (!amIMoving && childValues[i] < bestValue)) {
 				which = static_cast<int>(i);
 				bestValue = childValues[i];
 			}
@@ -177,7 +179,7 @@ namespace SGA
 
 			//if(this.children.length == 0)
 			std::cout << "Warning! couldn't find the best UCT value " << which << " : " << children.size() << "\n";
-			std::cout << nodeDepth << ", AmIMoving? " << iAmMoving << "\n";
+			std::cout << nodeDepth << ", amIMoving? " << amIMoving << "\n";
 
 			for (size_t i = 0; i < children.size(); ++i)
 				std::cout << "\t" << childValues[i] << "\n";
@@ -191,24 +193,24 @@ namespace SGA
 		return children[which].get();
 	}
 
-	double MCTSNode::rollOut(TBSForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
-				auto actions = forwardModel.generateActions(gsCopy);
+				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
 					break;
 				std::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
-				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
+				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params, playerID);
 				thisDepth++;
 			}
-			return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			return normalize(params.getStateHeuristic()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
 		}
 
-		return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
+		return normalize(params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
 	}
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
@@ -220,23 +222,16 @@ namespace SGA
 		return rollerState.isGameOver;
 	}
 
-	void MCTSNode::applyActionToGameState(TBSForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params) const
+	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int playerID) const
 	{
-		params.REMAINING_FM_CALLS--;
-		forwardModel.advanceGameState(targetGameState, action);
-		while (targetGameState.currentPlayer != params.PLAYER_ID && !targetGameState.isGameOver)
+		//Roll the game state with our action.
+		params.REMAINING_FM_CALLS -= SGA::roll(targetGameState, forwardModel, action, playerID, params);
+
+		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
+		while (!targetGameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !targetGameState.isGameOver)
 		{
-			if (params.OPPONENT_MODEL) // use default opponentModel to choose actions until the turn has ended
-			{
-				params.REMAINING_FM_CALLS--;
-				auto actions = forwardModel.generateActions(targetGameState);
-				auto opAction = params.OPPONENT_MODEL->getAction(targetGameState, actions);
-				forwardModel.advanceGameState(targetGameState, opAction);
-			}
-			else // skip opponent turn
-			{
-				forwardModel.advanceGameState(targetGameState, Action::createEndAction(targetGameState.currentPlayer));
-			}
+			//Roll actions for the opponent(s).
+			params.REMAINING_FM_CALLS -= SGA::rollOppOnly(targetGameState, forwardModel, params);
 		}
 	}
 

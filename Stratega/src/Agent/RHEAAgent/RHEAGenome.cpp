@@ -1,55 +1,50 @@
 #include <Stratega/Agent/RHEAAgent/RHEAGenome.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA {
 
     RHEAGenome::RHEAGenome(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params)
     {
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
-        const int playerID = gameState.currentPlayer;
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
         while (!gameState.isGameOver && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose and apply random action
             //todo forward random generator to getRandomAction
             auto action = actionSpace.at(rand() % actionSpace.size());
-            applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
+            applyActionToGameState(forwardModel, gameState, action, params);
+            actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
             actions.emplace_back(action);
             length++;
         }
 
         // rate newly created individual
-        value = params.HEURISTIC.evaluateGameState(*forwardModel, gameState, playerID);
+        value = params.getStateHeuristic()->evaluateGameState(*forwardModel, gameState, params.PLAYER_ID);
     }
 
     RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
         actions(std::move(actions)), value(value) {}
 
-    void RHEAGenome::applyActionToGameState(const ForwardModel* forwardModel, GameState& gameState, std::vector<Action>& actionSpace, const Action& action, RHEAParams& params)
-    {
-        params.REMAINING_FM_CALLS--;
-        forwardModel->advanceGameState(gameState, action);
-        while (gameState.currentPlayer != params.PLAYER_ID && !gameState.isGameOver)
-        {
-            if (params.opponentModel) // use default opponentModel to choose actions until the turn has ended
-            {
-                params.REMAINING_FM_CALLS--;
-                auto opActionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
-                auto opAction = params.opponentModel->getAction(gameState, opActionSpace);
-                forwardModel->advanceGameState(gameState, opAction);
-            }
-            else // skip opponent turn
-            {
-                forwardModel->advanceGameState(gameState, Action::createEndAction(gameState.currentPlayer));
-            }
-        }
 
-        actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
+
+    void RHEAGenome::applyActionToGameState(const ForwardModel* forwardModel, GameState& gameState, const Action& action, RHEAParams& params)
+    {
+        //Roll the game state with our action.
+        params.REMAINING_FM_CALLS -= SGA::roll(gameState, *forwardModel, action, params.PLAYER_ID, params);
+
+        //Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
+        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
+        {
+            //Roll actions for the opponent(s).
+            params.REMAINING_FM_CALLS -= SGA::rollOppOnly(gameState, *forwardModel, params);
+        }
     }
+
 
     void RHEAGenome::mutate(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
     {
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
-        const int playerID = gameState.currentPlayer;
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
+
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
@@ -62,7 +57,8 @@ namespace SGA {
             if (mutate || (actIdx < actions.size()))
             {
                 auto action = actionSpace.at(rand() % actionSpace.size());
-                applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
+                applyActionToGameState(forwardModel, gameState, action, params);
+                actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
                 if (actIdx < actions.size())
                 {
                     actions[actIdx] = action;
@@ -79,21 +75,22 @@ namespace SGA {
                 {
                     actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
                 }
-                applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
+                applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
+                actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
             }
 
             actIdx++;
         }
 
         // rate mutated individual
-        this->value = params.HEURISTIC.evaluateGameState(*forwardModel, gameState, playerID);
+        this->value = params.getStateHeuristic()->evaluateGameState(*forwardModel, gameState, params.PLAYER_ID);
     }
+
 
     RHEAGenome RHEAGenome::crossover(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
-        const int playerID = gameState.currentPlayer;
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
     	// initialize variables for the new genome to be created
         std::vector<Action> actions;
@@ -110,7 +107,8 @@ namespace SGA {
             if (mutate)
             {
                 auto action = actionSpace.at(rand() % actionSpace.size());
-                applyActionToGameState(forwardModel, gameState, actionSpace, action, params);
+                applyActionToGameState(forwardModel, gameState, action, params);
+                actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
                 actions.emplace_back(action);
             }
             else
@@ -136,26 +134,26 @@ namespace SGA {
                         actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
                     }
                 }
-                applyActionToGameState(forwardModel, gameState, actionSpace, actions[actIdx], params);
+                applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
+                actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
             }
 
             actIdx++;
         }
 
-        const double value = params.HEURISTIC.evaluateGameState(*forwardModel, gameState, playerID);
+        const double value = params.getStateHeuristic()->evaluateGameState(*forwardModel, gameState, params.PLAYER_ID);
         return RHEAGenome(actions, value);
     }
 
     void RHEAGenome::shift(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params)
     {
-        const int playerID = gameState.currentPlayer;
-
         // reuse previous solution
         std::rotate(actions.begin(), actions.begin() + 1, actions.end());
 
         // check if actions are still applicable and if not sample a new one from portfolio
         // always re-sample the last action since it is the rotated action from the previous solution
-        auto actionSpace = forwardModel->generateActions(gameState, gameState.currentPlayer);
+
+        auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
         for (size_t i = 0; i < actions.size(); i++)
         {
             if (actionSpace.size() == 0)
@@ -164,16 +162,18 @@ namespace SGA {
             // test if a planned action is still valid. if not, replace with a random one
             // and always replace the last action with a new random one
             // (since the vector has been rotated it does not have any meaning)
+
             if (i == actions.size() - 1 || !actions[i].validate(gameState))
             {
                 actions[i] = actionSpace.at(rand() % actionSpace.size());
             }
     	
-            applyActionToGameState(forwardModel, gameState, actionSpace, actions[i], params);
+            applyActionToGameState(forwardModel, gameState, actions[i], params);
+            actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
         }
 
         // re-evaluate the shifted individual
-        value = params.HEURISTIC.evaluateGameState(*forwardModel, gameState, playerID);
+        value = params.getStateHeuristic()->evaluateGameState(*forwardModel, gameState, params.PLAYER_ID);
     }
 
     void RHEAGenome::toString() const

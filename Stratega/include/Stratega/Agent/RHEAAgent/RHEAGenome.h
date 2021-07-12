@@ -1,7 +1,7 @@
 #pragma once
 #include <Stratega/Agent/RHEAAgent/RHEAParams.h>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <iostream>
 #include <random>
@@ -30,13 +30,15 @@ namespace SGA {
 		[[nodiscard]] double getValue() const { return value; };
 		void setValue(double newValue) { this->value = newValue; };
 
+
 		void shift(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params);
 		void toString() const;
 		static RHEAGenome crossover(const ForwardModel* forwardModel, GameState gameState, RHEAParams& params, std::mt19937 & randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
 
 	private:
 		RHEAGenome(std::vector<Action>& actions, double value);
-		static void applyActionToGameState(const ForwardModel* forwardModel, GameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, RHEAParams& params);
+		static void applyActionToGameState(const ForwardModel* forwardModel, GameState& gameState, const Action& action, RHEAParams& params);
+
 		
 	};
 }

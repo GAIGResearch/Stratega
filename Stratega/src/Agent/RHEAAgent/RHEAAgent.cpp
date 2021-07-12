@@ -1,18 +1,14 @@
 #include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 
 namespace SGA
 {
     ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel* forwardModel, long /*timeBudgetMs*/)
     {
-        if (state.gameType != GameType::TBS)
-        {
-            throw std::runtime_error("RHEAAgent only supports TBS-Games");
-        }
-    	
+   	
         auto actionSpace = forwardModel->generateActions(state, getPlayerID());
         params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
-        params_.PLAYER_ID = getPlayerID();        // todo move into agent initialization
 
         // in case only one action is available the player turn ends
         // throw away previous solutions because we don't know what our opponent will do
@@ -47,6 +43,7 @@ namespace SGA
             pop_.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
     }
+
 
     std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
@@ -139,5 +136,15 @@ namespace SGA
         RHEAGenome& parent2 = tournament[0];
 
         return std::vector<RHEAGenome>{parent1, parent2};
+    }
+
+
+    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+    {
+        params_.PLAYER_ID = getPlayerID();
+        if (params_.heuristic == nullptr)
+        {
+            params_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        }
     }
 }
