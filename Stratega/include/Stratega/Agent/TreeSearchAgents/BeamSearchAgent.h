@@ -17,6 +17,7 @@ namespace SGA
 		BeamSearchParameters parameters_ = BeamSearchParameters();
 
 	public:
+		using Agent::Agent;
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
 
 	private:	

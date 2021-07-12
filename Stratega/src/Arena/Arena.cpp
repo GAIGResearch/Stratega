@@ -83,7 +83,8 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
+		std::cout << "Player " << i << " is controlled by " << allAgents[agentAssignment[i]]->agentName << std::endl;
+		//std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
 
 		//Check if agent is Human
@@ -134,7 +135,8 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
+		std::cout << "Player " << i << " is controlled by " << allAgents[agentAssignment[i]]->agentName << std::endl;
+		//std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
 
 		//Check if agent is Human

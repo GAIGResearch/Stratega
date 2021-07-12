@@ -17,8 +17,8 @@ namespace SGA
 		int remainingForwardModelCalls = forwardModelCalls;
 		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<RandomActionScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
-		DFSAgent() :
-			Agent{},
+		DFSAgent(const std::string& name) :
+			Agent{name},
 			_stateHeuristic()
 		{
 		}

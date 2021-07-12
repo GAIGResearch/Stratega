@@ -40,8 +40,8 @@ namespace SGA
 		{
 			return nullptr;
 		}
-
-		return std::unique_ptr<Agent>(it->second());
+		
+		return std::unique_ptr<Agent>(it->second(name));
 	}
 
 	std::unique_ptr<Agent> AgentFactory::createAgent(const std::string& name, YAML::Node params)
@@ -52,7 +52,7 @@ namespace SGA
 			return nullptr;
 		}
 
-		return std::unique_ptr<Agent>(it->second(params));
+		return std::unique_ptr<Agent>(it->second(name, params));
 	}
 
 	AgentFactory& AgentFactory::getDefaultFactory()

@@ -1105,7 +1105,8 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Agent ----
 	py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
-		.def(py::init<>())
+		.def(py::init<std::string>(), py::arg("name")="PythonAgent")
+		.def_readwrite("agent_name",&SGA::Agent::agentName)
 		.def("computeAction", &SGA::Agent::computeAction, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
 		.def("init", &SGA::Agent::init, "Function for initializing the agent. Override this function to receive a call just before starts.")
 		.def("get_player_id", &SGA::Agent::getPlayerID);
@@ -1113,7 +1114,6 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Arena ----
 	py::class_<Arena>(m, "Arena")
 		.def("run_games", py::overload_cast<int,int,int,int>(&Arena::runGames))
-		//.def("run_games", &Arena::runGames, py::call_guard<py::gil_scoped_release>(), py::arg("playerCount"), py::arg("seed"), py::arg("gamesNumber"), py::arg("mapNumber")=1)
 		.def("run_games",
 			[](Arena& a, int playerCount, int seed, int gamesNumber, int mapNumber, py::list agents)
 			{

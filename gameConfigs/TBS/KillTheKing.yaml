@@ -4,8 +4,9 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - HumanAgent
-    - RandomAgent
+    #- HumanAgent
+    - DoNothingAgent
+    - DoNothingAgent
 
 
 Tiles:

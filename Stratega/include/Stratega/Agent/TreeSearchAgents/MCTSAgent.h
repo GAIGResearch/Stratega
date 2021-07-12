@@ -10,11 +10,10 @@ namespace SGA
 	class MCTSAgent : public Agent
 	{
 	public:
-		explicit MCTSAgent(MCTSParameters&& params)
-			: parameters_(std::move(params))
+		explicit MCTSAgent(const std::string& name, MCTSParameters&& params)
+			:Agent{ name }, parameters_(std::move(params))
 		{
 		}
-
 
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
 

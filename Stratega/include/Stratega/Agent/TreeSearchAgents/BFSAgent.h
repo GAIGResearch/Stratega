@@ -12,6 +12,8 @@ namespace SGA
 
 	class BFSAgent : public Agent
 	{
+		using Agent::Agent;
+
 		std::unique_ptr<TreeNode> rootNode = nullptr;
 		std::list<TreeNode*> openNodes = std::list<TreeNode*>();
 		std::list<TreeNode*> knownLeaves = std::list<TreeNode*>();

@@ -10,9 +10,11 @@ namespace SGA
 	{
 	public:
 
+		std::string agentName="DefaultAgent";
 		//Constructors and destructors
-		Agent();
+		Agent(const std::string& name);
 		virtual ~Agent() = default;
+		Agent() = delete;
 		Agent(const Agent& other) = delete;
 		Agent(Agent&& other) noexcept = delete;
 		Agent& operator=(const Agent& other) = delete;

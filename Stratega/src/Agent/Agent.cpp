@@ -2,8 +2,8 @@
 
 namespace SGA
 {
-	Agent::Agent()
-		: playerID(-1), rngEngine(std::random_device{}())
+	Agent::Agent(const std::string& name)
+		: agentName(name), playerID(-1), rngEngine(std::random_device{}())
 	{
 	}
 
