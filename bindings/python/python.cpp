@@ -454,7 +454,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("__deepcopy__", [](const SGA::GameState& self, py::dict) {
 			return SGA::GameState(self);
 			})
-		.def_readwrite("current_player", &SGA::GameState::currentPlayer, "ID of the current player (TBS only)")
+		//.def_readwrite("current_player", &SGA::GameState::currentPlayer, "ID of the current player (TBS only)")
 		.def_readwrite("game_type", &SGA::GameState::gameType, "Type of game being played (TBS, RTS...), as defined SGA::GameType")
 		.def_readwrite("is_game_over", &SGA::GameState::isGameOver, "Indicates if the game is over.")
 		.def_readwrite("winner_player_id", &SGA::GameState::winnerPlayerID, "The ID of the player who won the game if the game is over. Value is -1 if game not over yet. ")
@@ -903,7 +903,7 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("num_players", &SGA::GameConfig::numPlayers)
 		.def_readwrite("tile_types", &SGA::GameConfig::tileTypes)
 
-		//.def_property_readonly("forward_model", [](const SGA::GameConfig& config) {return config.forwardModel.get(); }, py::return_value_policy::reference_internal)
+		.def_property_readonly("forward_model", [](const SGA::GameConfig& config) {return config.forwardModel.get(); }, py::return_value_policy::reference_internal)
 
 		//Players
 		.def_readwrite("player_parameter_types", &SGA::GameConfig::playerParameterTypes)
@@ -985,7 +985,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Heuristic ----
 	py::class_<SGA::MinimizeDistanceHeuristic>(m, "MinimizeDistanceHeuristic")
 		.def(py::init<>())
-		.def_static("get_name", &SGA::MinimizeDistanceHeuristic::getName)
+		.def("get_name", &SGA::MinimizeDistanceHeuristic::getName)
 		.def("evaluate_gamestate", &SGA::MinimizeDistanceHeuristic::evaluateGameState, py::arg("forwardModel"), py::arg("gameState"), py::arg("playerID"));
 
 	// ---- Action Assignment ----
@@ -1047,7 +1047,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes a list of actions.")
 
 		.def("end_turn", &SGA::TBSForwardModel::endTurn, py::arg("state"),"End the turn of the current player and if all the player has played it ends the current game turn.")
-		.def("is_valid", &SGA::TBSForwardModel::isValid, py::arg("state"), py::arg("action"),"Check if an action is valid in a given state")
+		//.def("is_valid", &SGA::TBSForwardModel::isValid, py::arg("state"), py::arg("action"),"Check if an action is valid in a given state")
 		.def("check_game_is_finished", &SGA::TBSForwardModel::checkGameIsFinished, py::arg("state")," Checks if the game is finished by current limit or because a player has won.")
 		;
 

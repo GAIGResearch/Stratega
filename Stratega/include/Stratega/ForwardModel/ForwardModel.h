@@ -167,6 +167,10 @@ namespace SGA
 		/// <param name="action">Action to execute.</param>
 		void executeAction(GameState& state, const Action& action) const;
 
+		void executeAbortContinuousAction(GameState& state, const Action& action) const;
+		void executeContinuousAction(GameState& state, const Action& action) const;
+		void executeNormalAction(GameState& state, const Action& action) const;
+
 
 		/// <summary>
 		/// After each turn/ tick the triggers from the configuration are executed and
@@ -176,6 +180,10 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State to finish its tick/turn.</param>
 		void endTick(GameState& state) const;
+
+		void executeOnTriggerEffects(GameState& state) const;
+		void checkEntitiesContinuousActionIsComplete(GameState& state) const;
+		void checkPlayerContinuousActionIsComplete(GameState& state) const;
 
 
 		/// <summary>
