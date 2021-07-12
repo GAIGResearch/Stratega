@@ -78,7 +78,7 @@ namespace SGA
 		std::uniform_int_distribution<unsigned int> distribution(0, 100);
        
 		//Get chance to attack
-		if(distribution(state.rngEngine) > probability)
+		if(distribution(state.getRndEngine()) > probability)
 		{
 			targetResource -= amount;
 			if (targetResource <= 0)

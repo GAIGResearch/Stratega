@@ -31,17 +31,17 @@ namespace SGA
 		}
 
 		//Remove entities
-		for (size_t i = 0; i < state.entities.size(); i++)
+		for (size_t i = 0; i < state.getEntities().size(); i++)
 		{
-			if (state.entities[i].flagged())
+			if (state.getEntities()[i].flagged())
 			{
-				state.entities.erase(state.entities.begin() + i);
+				state.removeEntity(i);
 				i--;
 			}
 		}
 
 		//Check game is finished
-		state.isGameOver = checkGameIsFinished(state);
+		state.setGameOver(checkGameIsFinished(state));
 	}
 
 	std::vector<Action> TBSForwardModel::generateActions(const GameState& state) const
@@ -52,10 +52,10 @@ namespace SGA
 	void TBSForwardModel::endTurn(GameState& state) const
 	{
 		// Find the next player who's still able to play
-		for (auto i = 1; i <= state.players.size(); i++)
+		for (auto i = 1; i <= state.getNumPlayers(); i++)
 		{
-			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.players.size();
-			auto& targetPlayer = state.players[nextPlayerID];
+			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.getNumPlayers();
+			auto& targetPlayer = state.getPlayers()[nextPlayerID];
 
 			// All players did play, we consider this as a tick
 			if (nextPlayerID == 0)
@@ -74,19 +74,19 @@ namespace SGA
 
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{
-		if (state.currentTick >= state.tickLimit)
+		if (state.getCurrentTick() >= state.getTickLimit())
 			return true;
 
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
-		for (Player& player : state.players)
+		for (Player& player : state.getPlayers())
 		{
 			//Check if player won
 			if (player.canPlay && checkPlayerWon(state, player.id))
 			{
 				winnerID = player.id;
 
-				state.winnerPlayerID = (winnerID);
+				state.setWinnerID(winnerID);
 				return true;
 			}
 			
@@ -103,7 +103,7 @@ namespace SGA
 
 		if (numberPlayerCanPlay <= 1)
 		{
-			state.winnerPlayerID = (winnerID);
+			state.setWinnerID(winnerID);
 			return true;
 		}
 

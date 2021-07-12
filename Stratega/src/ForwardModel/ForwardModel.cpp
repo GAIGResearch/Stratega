@@ -142,7 +142,7 @@ namespace SGA
 		//and we add the action to the list of continuous actions
 		if (actionType.sourceType == ActionSourceType::Entity)
 		{
-			auto& type = state.gameInfo->actionTypes->at(actionType.id);
+			auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 			for (auto& effect : type.OnStart)
 			{
 				effect->execute(state, *this, newAction.targets);
@@ -153,7 +153,7 @@ namespace SGA
 		}
 		else if (actionType.sourceType == ActionSourceType::Player)
 		{
-			auto& type = state.gameInfo->actionTypes->at(actionType.id);
+			auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 			for (auto& effect : type.OnStart)
 			{
 				effect->execute(state, *this, newAction.targets);
@@ -170,7 +170,7 @@ namespace SGA
 		if (actionType.sourceType == ActionSourceType::Entity)
 		{
 			auto& executingEntity = *action.targets[0].getEntity(state);
-			executingEntity.setActionTicks(action.getActionTypeID(), state.currentTick);
+			executingEntity.setActionTicks(action.getActionTypeID(), state.getCurrentTick());
 		}
 		else
 		{
@@ -181,7 +181,7 @@ namespace SGA
 			{
 				if (actionInfo.actionTypeID == action.getActionTypeID())
 				{
-					actionInfo.lastExecutedTick = state.currentTick;
+					actionInfo.lastExecutedTick = state.getCurrentTick();
 					break;
 				}
 			}
@@ -207,7 +207,7 @@ namespace SGA
 		// Execute OnTick-trigger
 		for (const auto& onTickEffect : onTickEffects)
 		{
-			for (const auto& entity : state.entities)
+			for (const auto& entity : state.getEntities())
 			{
 				if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
 					continue;
@@ -237,9 +237,9 @@ namespace SGA
 	void ForwardModel::checkEntitiesContinuousActionIsComplete(GameState& state) const
 	{
 		//Check if condition is complete
-		for (size_t j = 0; j < state.entities.size(); j++)
+		for (size_t j = 0; j < state.getEntities().size(); j++)
 		{
-			std::vector<Action>& continuousActions = state.entities[j].getContinuousActions();
+			std::vector<Action>& continuousActions = state.getEntities()[j].getContinuousActions();
 			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
 				auto& actionType = continuousActions[i].getActionType();
@@ -248,7 +248,7 @@ namespace SGA
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
-					auto& type = state.gameInfo->actionTypes->at(actionType.id);
+					auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
 						effect->execute(state, *this, continuousActions[i].targets);
@@ -286,7 +286,7 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.sourceType == ActionSourceType::Entity)
 						{
-							auto& type = state.gameInfo->actionTypes->at(actionType.id);
+							auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
 								effect->execute(state, *this, continuousActions[i].targets);
@@ -307,20 +307,21 @@ namespace SGA
 	void ForwardModel::checkPlayerContinuousActionIsComplete(GameState& state) const
 	{
 		//Player continuous Action
-		for (size_t j = 0; j < state.players.size(); j++)
+		std::vector<Player> players = state.getPlayers();
+		for (size_t j = 0; j < players.size(); j++)
 		{
-			for (size_t i = 0; i < state.players[j].continuousAction.size(); i++)
+			for (size_t i = 0; i < players[j].continuousAction.size(); i++)
 			{
-				auto& actionType = state.players[j].continuousAction[i].getActionType();
+				auto& actionType = players[j].continuousAction[i].getActionType();
 				//Add one elapsed tick
-				state.players[j].continuousAction[i].elapsedTicks++;
+				players[j].continuousAction[i].elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Player)
 				{
-					auto& type = state.gameInfo->actionTypes->at(actionType.id);
+					auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
-						effect->execute(state, *this, state.players[j].continuousAction[i].targets);
+						effect->execute(state, *this, players[j].continuousAction[i].targets);
 					}
 				}
 
@@ -328,7 +329,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
+					if (!condition->isFulfilled(state, players[j].continuousAction[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -356,16 +357,16 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.sourceType == ActionSourceType::Player)
 						{
-							auto& type = state.gameInfo->actionTypes->at(actionType.id);
+							auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
-								effect->execute(state, *this, state.players[j].continuousAction[i].targets);
+								effect->execute(state, *this, players[j].continuousAction[i].targets);
 							}
 						}
 					}
 
 					//Delete the ContinuousAction
-					state.players[j].continuousAction.erase(state.players[j].continuousAction.begin() + i);
+					players[j].continuousAction.erase(players[j].continuousAction.begin() + i);
 					i--;
 					//Stop executing this action
 					continue;
@@ -377,7 +378,7 @@ namespace SGA
 		
 	void ForwardModel::endTick(GameState& state) const
 	{
-		state.currentTick++;
+		state.incTick();
 
 		executeOnTriggerEffects(state);
 		checkEntitiesContinuousActionIsComplete(state);

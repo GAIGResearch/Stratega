@@ -45,7 +45,7 @@ namespace SGA
 	double DFSAgent::evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
-		if (depth == maxDepth || gameState.isGameOver || remainingForwardModelCalls <= 0)
+		if (depth == maxDepth || gameState.isGameOver() || remainingForwardModelCalls <= 0)
 		{
 			return _stateHeuristic.evaluateGameState(forwardModel, gameState, playerID);
 		}
@@ -76,7 +76,7 @@ namespace SGA
 		remainingForwardModelCalls -= SGA::roll(gameState, forwardModel, action, playerID, agentParams);
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-		while (!gameState.canPlay(getPlayerID()) && remainingForwardModelCalls>0 && !gameState.isGameOver)
+		while (!gameState.canPlay(getPlayerID()) && remainingForwardModelCalls>0 && !gameState.isGameOver())
 		{
 			//Roll actions for the opponent(s).
 			remainingForwardModelCalls -= SGA::rollOppOnly(gameState, forwardModel, agentParams);

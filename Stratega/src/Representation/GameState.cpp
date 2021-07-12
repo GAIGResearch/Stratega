@@ -6,7 +6,7 @@ namespace SGA
 	GameState::GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
 		currentPlayer(0),
 		gameType(GameType::TBS),
-		isGameOver(false),
+		gameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
@@ -20,7 +20,7 @@ namespace SGA
 	GameState::GameState() :
 		currentPlayer(0),
 		gameType(GameType::TBS),
-		isGameOver(false),
+		gameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
@@ -399,6 +399,13 @@ namespace SGA
 		researchedPairList->second.emplace_back(technologyID);
 	}
 
+	void GameState::initResearchTechs()
+	{
+		for(int i = 0; i < players.size(); ++i)
+			researchedTechnologies[i] = {};
+	}
+
+
 	/* BOARD */
 
 	bool GameState::isWalkable(const Vector2i& position)
@@ -418,6 +425,20 @@ namespace SGA
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 	}
+
+	void GameState::initBoard(int boardWidth, std::vector<Tile> tiles)
+	{
+		board = Grid2D<Tile>(boardWidth, tiles.begin(), tiles.end());
+	}
+
+
+	Tile GameState::getTileAt(Vector2i pos) const
+	{
+		if(isInBounds(pos))
+			return board[pos];
+		throw std::runtime_error("Access to board out of bounds: " + std::to_string(pos.x) + "," + std::to_string(pos.y));
+	}
+
 
 	/* PRINTS */
 

@@ -14,7 +14,7 @@ namespace SGA
 	{
 		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
-		while(!currentState->isGameOver)
+		while(!currentState->isGameOver())
 		{
 			ActionAssignment nextAction;
 			auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
@@ -83,7 +83,7 @@ namespace SGA
 
 	void TBSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
 	{
-		while (!currentState->isGameOver)
+		while (!currentState->isGameOver())
 		{
 			AgentResults results;
 			ActionAssignment actionAssignment;

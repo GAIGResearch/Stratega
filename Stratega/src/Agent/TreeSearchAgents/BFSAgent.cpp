@@ -103,7 +103,7 @@ namespace SGA
 				else
 				{
 					// sort child node into its respective group
-					if (child->gameState.isGameOver)
+					if (child->gameState.isGameOver())
 					{
 						knownLeaves.push_back(currentNode);
 					}
@@ -136,7 +136,7 @@ namespace SGA
 			candidateNodes.clear();
 			for (TreeNode* node : tmpNodes)
 			{
-				if (node->gameState.isGameOver)
+				if (node->gameState.isGameOver())
 					knownLeaves.push_back(node);
 				else if (!node->isFullyExpanded())
 					openNodes.push_back(node);

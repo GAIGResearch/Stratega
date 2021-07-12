@@ -219,7 +219,7 @@ namespace SGA
 				auto yLeft = std::min(prevMouseWorldPos.y, pos.y);
 				auto yRight = std::max(prevMouseWorldPos.y, pos.y);
 
-				for (auto& unit : state.entities)
+				for (auto& unit : state.getEntities())
 				{
 					sf::Vector2f screenPos = toISO(unit.position.x, unit.position.y);
 					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
@@ -320,7 +320,7 @@ namespace SGA
 
 
 		//Check if units are selected
-		for (const auto& unit : selectedGameStateCopy->entities)
+		for (const auto& unit : selectedGameStateCopy->getEntities())
 		{
 			if (actionsSettings.isSelected(unit.id))
 			{
@@ -334,12 +334,12 @@ namespace SGA
 		}
 
 		if (drawDebug) {
-			const dtNavMesh* mesh = selectedGameStateCopy->navigation->m_navMesh;
+			const dtNavMesh* mesh = selectedGameStateCopy->getRTSNavigation()->m_navMesh;
 
 			if (mesh)
 			{
 				//Draw navmesh polygons
-				for (int i = 0; i < selectedGameStateCopy->navigation->m_navMesh->getMaxTiles(); ++i)
+				for (int i = 0; i < selectedGameStateCopy->getRTSNavigation()->m_navMesh->getMaxTiles(); ++i)
 				{
 					const dtMeshTile* tile = mesh->getTile(i);
 
@@ -385,7 +385,7 @@ namespace SGA
 		}
 
 		//Draw paths of units
-		for (auto& unit : selectedGameStateCopy->entities)
+		for (auto& unit : selectedGameStateCopy->getEntities())
 		{
 			//Check if has a valid path
 			if (unit.path.m_nstraightPath > 0)
@@ -578,9 +578,7 @@ namespace SGA
 
 		ImGui::BeginChild("Scrolling");
 
-		auto& units = state.entities;
-
-		for (auto& unit : units)
+		for (auto& unit : state.getEntities())
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
@@ -663,7 +661,7 @@ namespace SGA
 							actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
 							break;
 						case ActionTarget::TechnologyReference:
-							actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+							actionInfo += " Technology: " + state.getGameInfo()->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 							break;
 						case ActionTarget::EntityTypeReference:
 							actionInfo += " Entity: " + targetType.getEntityType(state).name;
@@ -778,7 +776,7 @@ namespace SGA
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
 			const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
-			for (const auto& parameter : *state.gameInfo->playerParameterTypes)
+			for (const auto& parameter : *state.getGameInfo()->playerParameterTypes)
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;

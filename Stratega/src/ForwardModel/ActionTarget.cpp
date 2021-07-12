@@ -68,7 +68,7 @@ namespace SGA
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.gameInfo->playerSpawnableTypes;
+			return *state.getGameInfo()->playerSpawnableTypes;
 		}
 		else if (targetType == EntityReference)
 		{
@@ -156,7 +156,7 @@ namespace SGA
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.gameInfo->getEntityType(data.entityTypeID);
+			const auto& type = state.getGameInfo()->getEntityType(data.entityTypeID);
 			return type;
 		}
 		else if(targetType == EntityReference)
@@ -174,7 +174,7 @@ namespace SGA
 	{
 		if (targetType == TileTypeReference)
 		{
-			const auto& type = state.gameInfo->getTileType(data.entityTypeID);
+			const auto& type = state.getGameInfo()->getTileType(data.entityTypeID);
 			return type;
 		}
 		else
@@ -248,7 +248,7 @@ namespace SGA
 		case TechnologyReference:
 			{
 			int technologyID = getTechnologyID();
-			std::string technologyName = state.gameInfo->technologyTreeCollection->getTechnology(technologyID).name;
+			std::string technologyName = state.getGameInfo()->technologyTreeCollection->getTechnology(technologyID).name;
 			return technologyName;
 			}			
 			break;

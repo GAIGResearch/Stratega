@@ -49,8 +49,8 @@ namespace SGA
 	{
 		// Initialize state
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
-		state->gameType = gameType;
-		state->tickLimit = tickLimit;
+		state->setGameType(gameType);
+		state->setTickLimit(tickLimit);
 
 		//GameInfo
 		GameInfo gameInfo;		
@@ -64,7 +64,7 @@ namespace SGA
 		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
 		gameInfo.yamlPath = yamlPath;
 		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories, entityCategories);
-		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
+		state->setGameInfo(std::make_shared<GameInfo>(gameInfo));
 
 		
 		std::unordered_set<int> playerIDs;
@@ -75,8 +75,8 @@ namespace SGA
 
 		// Create some lookups for initializing the board and entities
 		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &state->gameInfo->tileTypes->begin()->second;
-		for(const auto& idTilePair : *state->gameInfo->tileTypes)
+		const auto* defaultTile = &state->getGameInfo()->tileTypes->begin()->second;
+		for(const auto& idTilePair : *state->getGameInfo()->tileTypes)
 		{
 			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
 			if (idTilePair.second.isDefaultTile)
@@ -84,7 +84,7 @@ namespace SGA
 		}
 
 		std::unordered_map<char, const EntityType*> entityLookup;
-		for(const auto& idEntityPair : *state->gameInfo->entityTypes)
+		for(const auto& idEntityPair : *state->getGameInfo()->entityTypes)
 		{
 			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
 		}
@@ -119,8 +119,8 @@ namespace SGA
 			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
 		}
 		
-		//Assign board to state
-		state->board = Grid2D<Tile>(board.getWidth(), tiles.begin(), tiles.end());
+		//Initialize board with size and set of tiles.
+		state->initBoard(board.getWidth(), tiles);
 
 		// Initialize Pathfinding
 		if(gameType == GameType::RTS)
@@ -129,11 +129,8 @@ namespace SGA
 			rtsFM->buildNavMesh(*state, NavigationConfig{});
 		}
 
-		//Initialize researched list for each player
-		for (int i = 0; i < getNumberOfPlayers(); i++)
-		{
-			state->researchedTechnologies[i] = {};
-		}
+		//Initialize researched list for all players
+		state->initResearchTechs();
 		
 		return std::move(state);
 	}

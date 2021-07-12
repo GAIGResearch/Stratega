@@ -172,7 +172,7 @@ namespace SGA
 		Entity* healTarget = heal.targets[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");
 		double targetHealth = target.getParameter("Health");
-		double maxHealth = (*gameState.gameInfo->entityTypes)[target.id].getParamMax("Health");
+		double maxHealth = (*gameState.getGameInfo()->entityTypes)[target.id].getParamMax("Health");
 		auto resultingHealth = std::min<double>(maxHealth, targetHealth + healAmount);
 		auto potentialDamage = getPotentialDamage(target.position, opponentUnits, gameState);
 
@@ -202,7 +202,7 @@ namespace SGA
 
 	ActionAssignment CombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
-		for (const auto a : *currentState.gameInfo->actionTypes)
+		for (const auto a : *currentState.getGameInfo()->actionTypes)
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.name;
 		}
@@ -262,8 +262,8 @@ namespace SGA
 		if (bestAttackTarget == nullptr)
 		{
 			auto& rngEngine = getRNGEngine();
-			std::uniform_int_distribution<int> widthDist(0, currentState.board.getWidth() - 1);
-			std::uniform_int_distribution<int> heightDist(0, currentState.board.getHeight() - 1);
+			std::uniform_int_distribution<int> widthDist(0, currentState.getBoardWidth() - 1);
+			std::uniform_int_distribution<int> heightDist(0, currentState.getBoardHeight() - 1);
 			moveTarget.x = widthDist(rngEngine);
 			moveTarget.y = heightDist(rngEngine);
 		}
@@ -307,7 +307,7 @@ namespace SGA
 					continue; // No healerino opponents units
 
 				double targetHealth = targetUnit.getParameter("Health");
-				double maxHealth = (*currentState.gameInfo->entityTypes)[targetUnit.id].getParamMax("Health");
+				double maxHealth = (*currentState.getGameInfo()->entityTypes)[targetUnit.id].getParamMax("Health");
 				if (targetHealth >= maxHealth)
 					continue; // Stop healing units that are already full
 

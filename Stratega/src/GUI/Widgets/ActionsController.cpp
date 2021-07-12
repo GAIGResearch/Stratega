@@ -61,7 +61,7 @@ namespace SGA::Widgets
 		if (settings.hasActionTypeSelected())
 		{
 			//Selected actiontype
-			const ActionType& actionType = state.gameInfo->getActionType(settings.actionTypeSelected);
+			const ActionType& actionType = state.getGameInfo()->getActionType(settings.actionTypeSelected);
 
 			//Check if we have selected each action target
 			if (settings.hasActionsTargetAvailable(actionType))
@@ -114,7 +114,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.gameInfo->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -178,7 +178,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.gameInfo->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -234,7 +234,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.gameInfo->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
 				{
 					bool canExecute = true;
 
@@ -273,7 +273,7 @@ namespace SGA::Widgets
 			{
 				bool canSpawn = true;
 
-				if (state.gameInfo->playerSpawnableTypes->find(possibleActionType) == state.gameInfo->playerSpawnableTypes->end())
+				if (state.getGameInfo()->playerSpawnableTypes->find(possibleActionType) == state.getGameInfo()->playerSpawnableTypes->end())
 				{
 					canSpawn = false;
 				}
@@ -282,7 +282,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.gameInfo->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
 				{
 					bool canExecute = true;
 
@@ -330,7 +330,7 @@ namespace SGA::Widgets
 	void verifyActionTargets(GameState& state, ActionsSettings& settings, int playerID, std::vector<Action>& actionsToExecute)
 	{
 		//Verify the selected targets are valid						
-		const ActionType& actionType = state.gameInfo->getActionType(settings.actionTypeSelected);
+		const ActionType& actionType = state.getGameInfo()->getActionType(settings.actionTypeSelected);
 
 		//Generate action with the current selected settings
 		Action newAction(&actionType);
@@ -360,7 +360,7 @@ namespace SGA::Widgets
 		
 		if (player->canExecuteAction(settings.actionTypeSelected))
 		{			
-			if (state.currentTick - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
 				return;			
 
 			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
@@ -389,7 +389,7 @@ namespace SGA::Widgets
 			if (!entityType.canExecuteAction(settings.actionTypeSelected))
 				continue;
 			// Check if this action can be executed		
-			if (state.currentTick - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
 				continue;			
 
 			//The entity should be able to execute this action type
@@ -435,7 +435,7 @@ namespace SGA::Widgets
 		for (auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
-			if (ImGui::Button(state.gameInfo->getActionType(actionType).name.c_str(), ImVec2(50, 50)))
+			if (ImGui::Button(state.getGameInfo()->getActionType(actionType).name.c_str(), ImVec2(50, 50)))
 			{
 				settings.actionTypeSelected = actionType;
 			}
@@ -464,7 +464,7 @@ namespace SGA::Widgets
 		{
 			int entityTypeID = state.getEntity(entity)->getEntityTypeID();
 
-			for (auto& actionID : state.gameInfo->getEntityType(entityTypeID).actionIds)
+			for (auto& actionID : state.getGameInfo()->getEntityType(entityTypeID).actionIds)
 			{
 				actionTypes.insert(actionID);
 			}

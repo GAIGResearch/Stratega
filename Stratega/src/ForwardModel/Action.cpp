@@ -6,7 +6,7 @@ namespace SGA
 {
 	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
-		auto& type = state.gameInfo->actionTypes->at(getActionTypeID());
+		auto& type = state.getGameInfo()->actionTypes->at(getActionTypeID());
 		for (auto& effect : type.effects)
 		{
 			effect->execute(state,fm, targets);
@@ -30,7 +30,7 @@ namespace SGA
 			if(entity!=nullptr)
 			{
 				// Check if this action can be executed		
-				if (state.currentTick - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
+				if (state.getCurrentTick() - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
 					return false;
 				
 				//Check preconditions
@@ -67,7 +67,7 @@ namespace SGA
 		{
 			// Check if this action can be executed		
 			auto* player = state.getPlayer(targets.at(0).getPlayerID());
-			if (state.currentTick - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
 				return true;
 
 			//Not found

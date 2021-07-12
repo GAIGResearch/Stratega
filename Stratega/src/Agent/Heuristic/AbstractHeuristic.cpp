@@ -9,9 +9,9 @@ namespace SGA
 	{
 		double score = 0.0;
 
-		if (gameState.isGameOver)
+		if (gameState.isGameOver())
 		{
-			if (gameState.winnerPlayerID == playerID)
+			if (gameState.getWinnerID() == playerID)
 				score += 1000;	// this score needs to be maximized. so winning gives you 1000 points, but in a fog of war game, this will never trigger
 			else
 				score -= 1000;
@@ -27,8 +27,8 @@ namespace SGA
 				std::vector<double> parameterValues;
 				double sum = 0;
 
-				for (auto entity : gameState.entities) {
-					const auto& entityType = gameState.gameInfo->getEntityType(entity.getEntityTypeID());
+				for (auto entity : gameState.getEntities()) {
+					const auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					for (const auto& parameter : entityType.parameters)
 					{
 						if (parameter.second.name == parameterName)
