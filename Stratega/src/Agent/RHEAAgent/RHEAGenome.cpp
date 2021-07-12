@@ -115,10 +115,13 @@ namespace SGA {
             {
                 const bool useParent1First = doubleDistribution_(randomGenerator) < 0.5;
                 RHEAGenome& from = useParent1First ? parent1 : parent2;
+                bool validAction = true;
                 // check the first parent and choose portfolio if available
                 if (actIdx < from.actions.size())
                 {
-                    actions.emplace_back(from.actions[actIdx]);
+                    validAction = from.actions[actIdx].validate(gameState);
+                    if (validAction)
+                        actions.emplace_back(from.actions[actIdx]);
                 }
                 else
                 {
@@ -126,14 +129,19 @@ namespace SGA {
                     from = useParent1First ? parent2 : parent1;
                     if (actIdx < from.actions.size())
                     {
-                        actions.emplace_back(from.actions[actIdx]);
+                        validAction = from.actions[actIdx].validate(gameState);
+                        if (validAction)
+                            actions.emplace_back(from.actions[actIdx]);
                     }
-                    else
-                    {
-                        // use a random portfolio by default
-                        actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
-                    }
+                    else validAction = false;
                 }
+
+                if (!validAction)
+                {
+                    // use a random portfolio by default
+                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                }
+
                 applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
                 actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
             }
