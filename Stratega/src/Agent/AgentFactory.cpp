@@ -7,9 +7,7 @@
 #include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
 #include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
 #include <Stratega/Agent/TreeSearchAgents/MCTSAgent.h>
-#include <Stratega/Agent/TreeSearchAgents/ActionAbstractionMCTSAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
-#include <Stratega/Agent/ScriptedAgent.h>
 
 namespace SGA
 {
@@ -42,8 +40,8 @@ namespace SGA
 		{
 			return nullptr;
 		}
-
-		return std::unique_ptr<Agent>(it->second());
+		
+		return std::unique_ptr<Agent>(it->second(name));
 	}
 
 	std::unique_ptr<Agent> AgentFactory::createAgent(const std::string& name, YAML::Node params)
@@ -54,7 +52,7 @@ namespace SGA
 			return nullptr;
 		}
 
-		return std::unique_ptr<Agent>(it->second(params));
+		return std::unique_ptr<Agent>(it->second(name, params));
 	}
 
 	AgentFactory& AgentFactory::getDefaultFactory()
@@ -70,9 +68,7 @@ namespace SGA
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
-		factory.registerAgent<ActionAbstractionMCTSAgent, MCTSParameters>("PMCTSAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
-		factory.registerAgent<ScriptedAgent>("ScriptedAgent");
 		
 		return factory;
 	}

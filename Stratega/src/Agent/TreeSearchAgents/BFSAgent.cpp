@@ -3,9 +3,9 @@
 
 namespace SGA
 {
-	ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+	ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
-		const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
+		const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
 		// if there is just one action and we don't spent the time on continuing our search
 		// instead we return it instantly
@@ -20,7 +20,7 @@ namespace SGA
 		else // else we run a full search
 		{
 			// ToDo Move preprocessing to init
-			const auto processedForwardModel = parameters_.preprocessForwardModel(*forwardModel);
+			const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
 
 			// init rootNode and node lists
 			init(*processedForwardModel, state);
@@ -30,7 +30,7 @@ namespace SGA
 
 			// retrieve best action
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-			auto action = rootNode->getActionSpace(*forwardModel, getPlayerID()).at(bestActionIndex);
+			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
 			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
@@ -38,7 +38,7 @@ namespace SGA
 		}
 	}
 
-	void BFSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	void BFSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
 	{
 		parameters_.PLAYER_ID = getPlayerID();
 		if (parameters_.heuristic == nullptr)

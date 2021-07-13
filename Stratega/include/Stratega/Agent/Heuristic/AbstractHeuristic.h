@@ -15,7 +15,7 @@ namespace SGA
 		AbstractHeuristic(std::map<std::string, double>& attributeWeights,
 			std::map<std::string, double>& attributeUValues,
 			GameState& gameState)
-		: attributeWeights(std::move(attributeWeights)), attributeUValues(std::move(attributeUValues))
+			: attributeWeights(std::move(attributeWeights)), attributeUValues(std::move(attributeUValues))
 		{
 			for (const auto entry : attributeWeights) {
 				const std::string parameterName = entry.first;
@@ -43,7 +43,8 @@ namespace SGA
 						{
 							attributeWeights[parameter.second.name] = 10;
 							attributeUValues[parameter.second.name] = 5.0;
-						} else
+						}
+						else
 						{
 							attributeWeights[parameter.second.name] = 1;
 							attributeUValues[parameter.second.name] = 1;
@@ -51,7 +52,7 @@ namespace SGA
 						maxValue[parameter.second.name] = parameter.second.maxValue;
 						minValue[parameter.second.name] = parameter.second.minValue;
 					}
-					else 
+					else
 					{
 						if (parameter.second.maxValue > maxValue[parameter.second.name])
 						{

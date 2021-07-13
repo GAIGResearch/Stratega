@@ -3,10 +3,10 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
 		remainingForwardModelCalls = forwardModelCalls;
-		auto actionSpace = forwardModel->generateActions(state, getPlayerID());
+		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		if (actionSpace.size() == 1)
 		{
 			return ActionAssignment::fromSingleAction(actionSpace.front());
@@ -18,8 +18,8 @@ namespace SGA
 			for (size_t i = 0; i < actionSpace.size(); i++)
 			{
 				auto gsCopy(state);
-				applyActionToGameState(*forwardModel, gsCopy, actionSpace.at(i), getPlayerID());
-				const double value = evaluateRollout(*forwardModel, state, 1, getPlayerID());
+				applyActionToGameState(forwardModel, gsCopy, actionSpace.at(i), getPlayerID());
+				const double value = evaluateRollout(forwardModel, state, 1, getPlayerID());
 
 				if (value > bestHeuristicValue)
 				{
@@ -37,7 +37,7 @@ namespace SGA
 	}
 
 
-	void DFSAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	void DFSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
 	{
 		agentParams.PLAYER_ID = getPlayerID();
 	}
@@ -76,7 +76,8 @@ namespace SGA
 		remainingForwardModelCalls -= SGA::roll(gameState, forwardModel, action, playerID, agentParams);
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-		while (!gameState.canPlay(getPlayerID()) && remainingForwardModelCalls>0 && !gameState.isGameOver())
+
+		while (!gameState.canPlay(getPlayerID()) && remainingForwardModelCalls > 0 && !gameState.isGameOver())
 		{
 			//Roll actions for the opponent(s).
 			remainingForwardModelCalls -= SGA::rollOppOnly(gameState, forwardModel, agentParams);

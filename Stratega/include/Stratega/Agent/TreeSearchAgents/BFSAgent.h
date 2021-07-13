@@ -12,6 +12,8 @@ namespace SGA
 
 	class BFSAgent : public Agent
 	{
+		using Agent::Agent;
+
 		std::unique_ptr<TreeNode> rootNode = nullptr;
 		std::list<TreeNode*> openNodes = std::list<TreeNode*>();
 		std::list<TreeNode*> knownLeaves = std::list<TreeNode*>();
@@ -20,13 +22,13 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 
 	private:
 		void search(ForwardModel& forwardModel, std::list<TreeNode*>& nodes);
 		int getBestActionIdx(ForwardModel& forwardModel);
 		void fillOpenNodeListWithLeaves();
 		void init(ForwardModel& forwardModel, GameState& gameState);
-		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
 	};
 }

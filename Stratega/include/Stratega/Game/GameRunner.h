@@ -107,13 +107,6 @@ namespace SGA
 	/// be kept in memory while this object exists.</param>
 	/// <returns>A pointer to the initialized GameRunner.</returns>
 	std::unique_ptr<GameRunner> createGameRunner(const GameConfig& config);
-
-
-	class GameRunnerPy : public GameRunner // helper type for exposing protected functions
-	{
-	public:
-		using GameRunner::initializeAgents; // inherited with different access modifier
-	};
 }
 
 

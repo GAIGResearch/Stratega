@@ -6,19 +6,19 @@
 
 namespace SGA
 {
-	
+
 	class AbstractState
 	{
 	private:
 		std::unordered_map<std::string, std::vector<double>> stateDescription;
-	
+
 	public:
 		AbstractState()
 		{
-			
+
 		}
 
-		void addAttribute(std::string parameter, std::vector<double>& values) 
+		void addAttribute(std::string parameter, std::vector<double>& values)
 		{
 			stateDescription[parameter] = std::move(values);
 		}
@@ -52,7 +52,7 @@ namespace SGA
 			if (stateDescription.size() == dt.stateDescription.size())
 			{
 				for (const auto& entry : stateDescription) {
-					if (dt.stateDescription.contains(entry.first)){	// check if the same keys are contained
+					if (dt.stateDescription.contains(entry.first)) {	// check if the same keys are contained
 						if (entry.second.size() != dt.stateDescription.at(entry.first).size()) {	// check if the length per key match
 							return false;
 						}
@@ -74,7 +74,7 @@ namespace SGA
 			}
 			return false;
 		}
-			
+
 
 		friend std::ostream& operator<<(std::ostream& os, const AbstractState& dt)
 		{
@@ -90,7 +90,6 @@ namespace SGA
 
 			return os;
 		}
-		
+
 	};
 }
-

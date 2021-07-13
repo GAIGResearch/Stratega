@@ -4,12 +4,12 @@
 
 namespace SGA
 {
-	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
+	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
-		const auto processedForwardModel = parameters_.preprocessForwardModel(*forwardModel);
+		const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
 		TreeNode rootNode = TreeNode(*processedForwardModel, state, getPlayerID());
 
-		auto actionSpace = rootNode.getActionSpace(*forwardModel, getPlayerID());
+		auto actionSpace = rootNode.getActionSpace(forwardModel, getPlayerID());
 		if (actionSpace.size() == 1)
 		{
 			return ActionAssignment::fromSingleAction(actionSpace.front());
@@ -88,7 +88,7 @@ namespace SGA
 	}
 
 
-	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs)
+	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
 	{
 		parameters_.PLAYER_ID = getPlayerID();
 		if (parameters_.heuristic == nullptr)

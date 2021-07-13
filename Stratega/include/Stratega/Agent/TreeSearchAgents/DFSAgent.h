@@ -19,14 +19,14 @@ namespace SGA
 
 		AgentParameters agentParams;
 
-		DFSAgent() :
-			Agent{},
+		DFSAgent(const std::string& name) :
+			Agent{name},
 			_stateHeuristic()
 		{
 		}
 
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
-		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
 
 		double evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
 		void applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, int playerID);

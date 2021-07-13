@@ -6,6 +6,7 @@ namespace SGA
 	class DoNothingAgent : public Agent
 	{
 	public:
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
+		using Agent::Agent;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 	};
 }

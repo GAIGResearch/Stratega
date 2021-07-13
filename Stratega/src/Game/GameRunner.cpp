@@ -152,7 +152,7 @@ namespace SGA
 					stateCopy.applyFogOfWar(agent->getPlayerID());
 
 					auto begin = std::chrono::high_resolution_clock::now();
-					agent->init(std::move(stateCopy), *forwardModel, initBudgetTimetMs);
+					agent->init(std::move(stateCopy), *forwardModel, Timer(initBudgetTimetMs));
 					auto end = std::chrono::high_resolution_clock::now();
 					auto initTime = std::chrono::duration_cast<std::chrono::milliseconds>
 						(end - begin);					

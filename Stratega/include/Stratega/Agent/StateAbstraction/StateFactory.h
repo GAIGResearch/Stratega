@@ -27,9 +27,9 @@ namespace SGA
 	public:
 		StateFactory(StateFactoryConfiguration _config) : config(_config)
 		{
-			
+
 		}
-		
+
 		StateFactory(GameState& tbs)
 		{
 			//bool flip = true;
@@ -54,9 +54,8 @@ namespace SGA
 			{
 				os << entry.first << ": " << entry.second << std::endl;
 			}
-			
+
 			return os;
 		}
 	};
 }
-

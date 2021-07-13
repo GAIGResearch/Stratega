@@ -303,7 +303,7 @@ namespace SGA
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
 		{
-			if (!precondition->isFulfilled(*this, { ActionTarget::createEntityActionTarget(entity.id) }))
+			if (!precondition->isFullfiled(*this, { ActionTarget::createEntityActionTarget(entity.id) }))
 			{
 				return false;
 			}
@@ -317,7 +317,7 @@ namespace SGA
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
 		{
-			if (!precondition->isFulfilled(*this, { ActionTarget::createPlayerActionTarget(player.id) }))
+			if (!precondition->isFullfiled(*this, { ActionTarget::createPlayerActionTarget(player.id) }))
 			{
 				return false;
 			}

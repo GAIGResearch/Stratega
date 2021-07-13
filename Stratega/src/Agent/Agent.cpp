@@ -2,12 +2,12 @@
 
 namespace SGA
 {
-	Agent::Agent()
-		: playerID(-1), rngEngine(std::random_device{}())
+	Agent::Agent(const std::string& name)
+		: agentName(name), playerID(-1), rngEngine(std::random_device{}())
 	{
 	}
 
-	void Agent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, long /*timeBudgetMs*/)
+	void Agent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		// Do nothing by default
 	}

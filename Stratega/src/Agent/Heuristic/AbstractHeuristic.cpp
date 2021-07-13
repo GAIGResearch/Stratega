@@ -21,7 +21,7 @@ namespace SGA
 		{
 			const std::string parameterName = entry.first;
 			const int parameterWeight = entry.second;
-			
+
 			if (parameterWeight != 0) {
 
 				std::vector<double> parameterValues;

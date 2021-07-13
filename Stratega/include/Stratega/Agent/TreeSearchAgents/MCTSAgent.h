@@ -11,13 +11,13 @@ namespace SGA
 	class MCTSAgent : public Agent
 	{
 	public:
-		explicit MCTSAgent(MCTSParameters&& params)
-			: parameters_(std::move(params))
+		explicit MCTSAgent(const std::string& name, MCTSParameters&& params)
+			:Agent{ name }, parameters_(std::move(params))
 		{
 		}
 
-		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 
 	private:
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
