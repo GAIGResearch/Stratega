@@ -348,9 +348,9 @@ namespace SGA
 		//Init stuff goes here.
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
+	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
-		return playTurn(state, *forwardModel);
+		return playTurn(state, forwardModel);
 	}
 }

@@ -162,7 +162,7 @@ namespace SGA
 			for (auto& actionTargetType : actionType.actionTargets)
 			for (const auto& condition : actionTargetType.second)
 			{
-				if (!condition->isFulfilled(state, action.targets))
+				if (!condition->isFullfiled(state, action.targets))
 				{
 					isValidAction = false;
 					break;
@@ -196,7 +196,7 @@ namespace SGA
 			for (auto& actionTargetType : actionType.actionTargets)
 				for (const auto& condition : actionTargetType.second)
 				{
-					if (!condition->isFulfilled(state, action.targets))
+					if (!condition->isFullfiled(state, action.targets))
 					{
 						isValidAction = false;
 						break;

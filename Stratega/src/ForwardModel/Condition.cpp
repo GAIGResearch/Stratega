@@ -11,7 +11,7 @@ namespace  SGA
 	{
 	}
 
-	bool ResourceLowerEqual::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceLowerEqual::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = lowerBoundParameter.getConstant(state,targets);
@@ -26,7 +26,7 @@ namespace  SGA
 	{
 	}
 
-	bool ResourceGreaterEqual::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool ResourceGreaterEqual::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getParameterValue(state, targets);
 		double lowerBound = lowerBoundParameter.getConstant(state,targets);
@@ -41,7 +41,7 @@ namespace  SGA
 	{
 	}
 
-	bool HasElapsedTime::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool HasElapsedTime::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		double lowerBound = lowerBoundParameter.getConstant(state, targets);
 		if(targets[0].getType()==ActionTarget::EntityReference)
@@ -82,7 +82,7 @@ namespace  SGA
 	{
 	}
 
-	bool SamePlayer::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool SamePlayer::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto& sourceEntity =targets[0].getEntityConst(state);
 		auto& targetEntity =targets[1].getEntityConst(state);
@@ -98,7 +98,7 @@ namespace  SGA
 	{
 	}
 
-	bool InRange::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool InRange::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& source = sourceEntity.getEntity(state, targets);
 		const auto& target = targetEntity.getPosition(state, targets);
@@ -113,7 +113,7 @@ namespace  SGA
 	{
 	}
 	
-	bool IsWalkable::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool IsWalkable::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
 		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
@@ -126,7 +126,7 @@ namespace  SGA
 	{
 	}
 	
-	bool IsTile::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool IsTile::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
@@ -140,7 +140,7 @@ namespace  SGA
 	{
 	}
 
-	bool IsPlayerEntity::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool IsPlayerEntity::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& entity = targetParam.getEntity(state, targets);
 		return !entity.isNeutral();
@@ -153,7 +153,7 @@ namespace  SGA
 	{
 	}
 
-	bool IsResearched::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool IsResearched::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
@@ -168,7 +168,7 @@ namespace  SGA
 	{
 	}
 
-	bool HasNoEntity::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool HasNoEntity::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
@@ -191,7 +191,7 @@ namespace  SGA
 	{
 	}
 
-	bool HasEntity::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool HasEntity::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
@@ -214,7 +214,7 @@ namespace  SGA
 	{
 	}
 
-	bool CanResearch::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool CanResearch::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
@@ -228,7 +228,7 @@ namespace  SGA
 	{
 	}
 
-	bool CanSpawnCondition::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool CanSpawnCondition::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		int playerID = sourceEntityParam.getPlayerID(state, targets);
 		//const auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
@@ -258,7 +258,7 @@ namespace  SGA
 	{
 	}
 
-	bool CanAfford::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	bool CanAfford::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 
 		//Get cost of target, parameterlist to look up and the parameters of the source

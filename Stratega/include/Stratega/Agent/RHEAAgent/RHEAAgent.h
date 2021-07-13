@@ -27,16 +27,16 @@ namespace SGA
 		}
 
 		void init(GameState initialState, const ForwardModel & forwardModel, Timer timer) override;
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 
 	private:
-		std::vector<RHEAGenome> shiftPopulation(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		void initializePopulation(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		void rheaLoop(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 
-		std::vector<RHEAGenome> nextGeneration(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator);
-		RHEAGenome getNextGenerationIndividual(const ForwardModel* forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> nextGeneration(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		RHEAGenome getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
 		std::vector<RHEAGenome> tournamentSelection();
 	};
 	

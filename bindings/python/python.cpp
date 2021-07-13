@@ -49,11 +49,12 @@ public:
 	using SGA::Condition::expr;
 
 	/* Trampoline (need one for each virtual function) */
-	bool isFulfilled(const SGA::GameState& state, const std::vector<SGA::ActionTarget>& targets)const override {
-		PYBIND11_OVERRIDE_PURE(
+	bool isFullfiled(const SGA::GameState& state, const std::vector<SGA::ActionTarget>& targets)const override {
+		PYBIND11_OVERRIDE_PURE_NAME(
 			bool, /* Return type */
 			SGA::Condition,      /* Parent class */
-			isFulfilled,          /* Name of function in C++ (must match Python name) */
+			"is_fullfiled",
+			isFullfiled,          /* Name of function in C++ (must match Python name) */
 			state,
 			targets/* Argument(s) */
 		);
@@ -68,9 +69,10 @@ public:
 	/* Trampoline (need one for each virtual function) */
 	std::vector<SGA::Vector2i>getPositions(const SGA::GameState& gameState, const SGA::Vector2f& position)const override
 	{
-		PYBIND11_OVERRIDE_PURE(
+		PYBIND11_OVERRIDE_PURE_NAME(
 			std::vector<SGA::Vector2i>, /* Return type */
 			SGA::SamplingMethod,      /* Parent class */
+			"get_positions",
 			getPositions,          /* Name of function in C++ (must match Python name) */
 			gameState,
 			position/* Argument(s) */
@@ -80,9 +82,10 @@ public:
 	/* Trampoline (need one for each virtual function) */
 	std::vector<int>getEntities(const SGA::GameState& gameState, const SGA::Vector2f& position, const std::unordered_set<int>& entityTypeIDs)const override
 	{
-		PYBIND11_OVERRIDE_PURE(
+		PYBIND11_OVERRIDE_PURE_NAME(
 			std::vector<int>, /* Return type */
 			SGA::SamplingMethod,      /* Parent class */
+			"get_entities",
 			getEntities,          /* Name of function in C++ (must match Python name) */
 			gameState,
 			position,/* Argument(s) */
@@ -103,7 +106,7 @@ public:
 			SGA::Effect,      /* Parent class */
 			execute,          /* Name of function in C++ (must match Python name) */
 			state,
-			fm,
+			&fm,
 			targets/* Argument(s) */
 		);
 	}
@@ -116,14 +119,29 @@ public:
 	using SGA::Agent::getPlayerID;
 
 	/* Trampoline (need one for each virtual function) */
-	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::ForwardModel* forwardModel, SGA::Timer timer) override
+	SGA::ActionAssignment computeAction(SGA::GameState state, const SGA::ForwardModel& forwardModel, SGA::Timer timer) override
 	{
-		PYBIND11_OVERRIDE_PURE(
+		PYBIND11_OVERRIDE_PURE_NAME(
 			SGA::ActionAssignment,
 			SGA::Agent,
+			"compute_action",
 			computeAction,
 			state,
-			forwardModel,
+			&forwardModel,
+			timer
+		);
+	}
+
+	/* Trampoline (need one for each virtual function) */
+	void init(SGA::GameState state, const SGA::ForwardModel& forwardModel, SGA::Timer timer) override
+	{
+		PYBIND11_OVERRIDE_PURE_NAME(
+			void,
+			SGA::Agent,
+			"init",
+			init,
+			state,
+			&forwardModel,
 			timer
 		);
 	}
@@ -641,7 +659,7 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- Condition ----	
 	py::class_<SGA::Condition, PyCondition, std::shared_ptr<SGA::Condition>>(m, "Condition")
-		.def("isFullfilled", &SGA:: Condition::isFulfilled, py::arg("state"), py::arg("targets"))
+		.def("is_fullfiled", &SGA:: Condition::isFullfiled, py::arg("state"), py::arg("targets"))
 		.def("expr", &SGA:: Condition::expr)
 		;
 	

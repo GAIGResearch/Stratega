@@ -36,7 +36,7 @@ namespace SGA
 				//Check preconditions
 				for (auto& precondition : actionType.preconditions)
 				{
-					if (!precondition->isFulfilled(state, targets))
+					if (!precondition->isFullfiled(state, targets))
 						return false;
 				}
 				
@@ -52,7 +52,7 @@ namespace SGA
 				{
 					for (auto& condition : actionTarget.second)
 					{
-						if (!condition->isFulfilled(state, targets))
+						if (!condition->isFullfiled(state, targets))
 							return false;
 					}
 				}

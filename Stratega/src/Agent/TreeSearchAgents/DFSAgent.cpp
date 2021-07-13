@@ -3,10 +3,10 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
+	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
 		remainingForwardModelCalls = forwardModelCalls;
-		auto actionSpace = forwardModel->generateActions(state, getPlayerID());
+		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		if (actionSpace.size() == 1)
 		{
 			return ActionAssignment::fromSingleAction(actionSpace.front());
@@ -18,8 +18,8 @@ namespace SGA
 			for (size_t i = 0; i < actionSpace.size(); i++)
 			{
 				auto gsCopy(state);
-				applyActionToGameState(*forwardModel, gsCopy, actionSpace.at(i), getPlayerID());
-				const double value = evaluateRollout(*forwardModel, state, 1, getPlayerID());
+				applyActionToGameState(forwardModel, gsCopy, actionSpace.at(i), getPlayerID());
+				const double value = evaluateRollout(forwardModel, state, 1, getPlayerID());
 
 				if (value > bestHeuristicValue)
 				{

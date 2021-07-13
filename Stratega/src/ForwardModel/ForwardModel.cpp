@@ -34,7 +34,7 @@ namespace SGA
 		{
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFulfilled(state, targets))
+				if (loseCondition->isFullfiled(state, targets))
 					return true;
 			}
 		}
@@ -59,7 +59,7 @@ namespace SGA
 			//Check condition list
 			for (auto& winCondition : winConditionType)
 			{
-				if (!winCondition->isFulfilled(state, targets))
+				if (!winCondition->isFullfiled(state, targets))
 				{
 					playerWon = false;
 					break;
@@ -216,7 +216,7 @@ namespace SGA
 				auto isValid = true;
 				for (const auto& condition : onTickEffect.conditions)
 				{
-					if (!condition->isFulfilled(state, targets))
+					if (!condition->isFullfiled(state, targets))
 					{
 						isValid = false;
 						break;
@@ -258,7 +258,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFulfilled(state, continuousActions[i].targets))
+					if (!condition->isFullfiled(state, continuousActions[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -328,7 +328,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFulfilled(state, state.players[j].continuousAction[i].targets))
+					if (!condition->isFullfiled(state, state.players[j].continuousAction[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -398,7 +398,7 @@ namespace SGA
 			auto isValid = true;
 			for (const auto& condition : onSpawnEffect.conditions)
 			{
-				if (!condition->isFulfilled(state, targets))
+				if (!condition->isFullfiled(state, targets))
 				{
 					isValid = false;
 					break;

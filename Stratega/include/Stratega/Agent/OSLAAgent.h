@@ -7,6 +7,6 @@ namespace SGA
 	{
 	public:
 		using Agent::Agent;
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 	};
 }

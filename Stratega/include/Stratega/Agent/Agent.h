@@ -12,6 +12,7 @@ namespace SGA
 	public:
 
 		std::string agentName="DefaultAgent";
+
 		//Constructors and destructors
 		Agent(const std::string& name);
 		virtual ~Agent() = default;
@@ -37,7 +38,7 @@ namespace SGA
 		/// <param name="forwardModel">Forward model of the game.</param>
 		/// <param name="timeBudgetMs">Time in milliseconds to return an action</param>
 		/// <returns></returns>
-		virtual ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) = 0;
+		virtual ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) = 0;
 
 		/// <summary>
 		/// Returns this player's ID.

@@ -22,7 +22,7 @@ namespace SGA
 		BFSParameters parameters_;
 		
 	public:
-		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 
 	private:
 		void search(ForwardModel& forwardModel, std::list<TreeNode*>& nodes);
