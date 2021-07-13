@@ -36,18 +36,23 @@ namespace SGA
 							// (u * x) / ((u*(x-minValue[parameterName])-x+maxValue[parameterName])
 							const double x = entity.getParameterAt(parameter.second.index);
 							const double u = attributeUValues[parameterName];
-							double URQValue = (u * x) / (u * (x - minValue[parameterName]) - x + maxValue[parameterName]);
-							//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
+							double den = (u * (x - minValue[parameterName]) - (x + maxValue[parameterName]));
+
+							if(den > 0.0)
+							{
+								double URQValue = (u * x) / den;
+								//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
 							
-							if (entity.ownerID == playerID) {
-								const double val = URQValue * parameterWeight;
-								parameterValues.push_back(val);
-								sum += val;
-							}
-							else {
-								const double val = URQValue * -parameterWeight;
-								parameterValues.push_back(val);
-								sum += val;
+								if (entity.ownerID == playerID) {
+									const double val = URQValue * parameterWeight;
+									parameterValues.push_back(val);
+									sum += val;
+								}
+								else {
+									const double val = URQValue * -parameterWeight;
+									parameterValues.push_back(val);
+									sum += val;
+								}
 							}
 							break;
 						}

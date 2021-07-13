@@ -51,6 +51,7 @@ namespace SGA
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
 		state->setGameType(gameType);
 		state->setTickLimit(tickLimit);
+		state->setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
 
 		//GameInfo
 		GameInfo gameInfo;		
