@@ -19,10 +19,11 @@ namespace SGA
 	public:
 		using Agent::Agent;
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
 
 	private:	
-		Action beamSearch(TBSForwardModel& forwardModel, TreeNode& root);
-		std::vector<TreeNode*> simulate(TBSForwardModel& forwardModel, TreeNode& node);
+		Action beamSearch(ForwardModel& forwardModel, TreeNode& root);
+		std::vector<TreeNode*> simulate(ForwardModel& forwardModel, TreeNode& node);
 		static bool sortByValue(const TreeNode* i, const TreeNode* j);
 	};
 }

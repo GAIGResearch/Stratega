@@ -126,13 +126,13 @@ namespace SGA
 	{
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
 		{
-			playerWarnings[currentState->currentPlayer]++;
+			playerWarnings[playerID]++;
 			std::cout << "WARNING: Player " << std::to_string(playerID) << " has exceeded the initialization time" << std::endl;
 		}
 		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the initialization time
-			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
+			currentState->getPlayer(playerID)->canPlay = false;
 			std::cout << "WARNING: Player " << std::to_string(playerID) << " disqualified for exceeding the initialization time" << std::endl;
 		}
 	}

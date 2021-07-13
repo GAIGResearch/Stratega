@@ -1,18 +1,12 @@
 #include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 namespace SGA
 {
 	ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel* forwardModel, Timer timer)
 	{
-		if (state.gameType != GameType::TBS)
-		{
-			throw std::runtime_error("BFSAgent only supports TBS-Games");
-		}
-
-		// ToDo Move preprocessing to init
-		const auto processedForwardModel = parameters_.preprocessForwardModel(dynamic_cast<const TBSForwardModel&>(*forwardModel));
-
 		const auto actionSpace = forwardModel->generateActions(state, getPlayerID());
+
 		// if there is just one action and we don't spent the time on continuing our search
 		// instead we return it instantly
 		if (actionSpace.size() == 1)
@@ -25,6 +19,9 @@ namespace SGA
 		}
 		else // else we run a full search
 		{
+			// ToDo Move preprocessing to init
+			const auto processedForwardModel = parameters_.preprocessForwardModel(*forwardModel);
+
 			// init rootNode and node lists
 			init(*processedForwardModel, state);
 
@@ -33,11 +30,20 @@ namespace SGA
 
 			// retrieve best action
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-			auto action = rootNode->actionSpace.at(bestActionIndex);\
+			auto action = rootNode->getActionSpace(*forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
 			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 			return ActionAssignment::fromSingleAction(action);
+		}
+	}
+
+	void BFSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+	{
+		parameters_.PLAYER_ID = getPlayerID();
+		if (parameters_.heuristic == nullptr)
+		{
+			parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
 		}
 	}
 
@@ -48,9 +54,8 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="gameState">the current game-state</param>
-	void BFSAgent::init(TBSForwardModel& forwardModel, GameState& gameState)
+	void BFSAgent::init(ForwardModel& forwardModel, GameState& gameState)
 	{
-		parameters_.PLAYER_ID = gameState.currentPlayer;
 		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
 		{
 			// in case of a deterministic game we know that the previously simulated action
@@ -64,7 +69,7 @@ namespace SGA
 			// in case of non-deterministic games we don't know the outcome of our action
 			// additionally, in case the opponent did something since our last search,
 			// we don't know the moves and need to restart our search
-			rootNode = std::make_unique<TreeNode>(forwardModel, gameState);
+			rootNode = std::make_unique<TreeNode>(forwardModel, gameState, getPlayerID());
 			openNodes.clear();
 			openNodes.push_back(rootNode.get());
 			knownLeaves.clear();
@@ -78,7 +83,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="nodes">list of known open nodes</param>
-	void BFSAgent::search(TBSForwardModel& forwardModel, std::list<TreeNode*>& nodes)
+	void BFSAgent::search(ForwardModel& forwardModel, std::list<TreeNode*>& nodes)
 	{
 		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
 		
@@ -131,23 +136,14 @@ namespace SGA
 			candidateNodes.clear();
 			for (TreeNode* node : tmpNodes)
 			{
-				
 				if (node->gameState.isGameOver)
-				{
 					knownLeaves.push_back(node);
-				}
-				else
-				{
-					if (node->children.size() != node->actionSpace.size())
-					{
-						openNodes.push_back(node);
-					}
-				}
-
+				else if (!node->isFullyExpanded())
+					openNodes.push_back(node);
+							
 				for (auto& i : node->children)
-				{
 					candidateNodes.push_back(i.get());
-				}
+				
 			}
 		}
 	}
@@ -157,10 +153,10 @@ namespace SGA
 	/// </summary>
 	/// <param name="forwardModel">the same model as it has been used for the search</param>
 	/// <returns>index of the best child node</returns>
-	int BFSAgent::getBestActionIdx(TBSForwardModel& forwardModel)
+	int BFSAgent::getBestActionIdx(ForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
-		StateHeuristic* heuristic = parameters_.OBJECTIVE.get();
+		std::shared_ptr<StateHeuristic> heuristic = parameters_.getStateHeuristic();
 		double bestHeuristicValue = -std::numeric_limits<double>::max();
 		TreeNode* bestChild = rootNode.get();
 

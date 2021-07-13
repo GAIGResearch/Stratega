@@ -88,6 +88,31 @@ namespace SGA
 		return nullptr;
 	}
 
+	
+	std::vector<int> GameState::whoCanPlay() const
+	{
+		std::vector<int> playerIDs;
+		if (currentPlayer != -1)
+		{
+			playerIDs.emplace_back(currentPlayer);
+		}
+		else
+		{
+			for (const auto& p : players)
+			{
+				playerIDs.emplace_back(p.id);
+			}
+		}		
+		return playerIDs;
+	}
+	
+
+	bool GameState::canPlay(int playerID) const
+	{
+		return (currentPlayer == playerID || currentPlayer == -1);
+	}
+	
+
 	std::vector<const Entity*> GameState::getPlayerEntities(int playerID) const
 	{
 		const auto* player = getPlayer(playerID);

@@ -16,6 +16,7 @@ namespace SGA
 		TBS,
 		RTS
 	};
+
 	/// <summary>
 	/// Contains the game data without any logic, offering access to the current board, a list of player and their units.
 	/// If the agent want access to the definition of entity types, actions or game config yaml  it should access to <see cref="SGA::GameInfo"/>
@@ -32,11 +33,6 @@ namespace SGA
 		/// Game Info (static information about this game)		
 		/// </summary>
 		std::shared_ptr<GameInfo> gameInfo;
-
-		/// <summary>
-		/// ID of the current player (TBS only)		
-		/// </summary>
-		int currentPlayer;
 
 		/// <summary>
 		/// Navigational Mesh (for RTS)	
@@ -238,6 +234,20 @@ namespace SGA
 		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
 		
 		/// <summary>
+		/// Returns a list with the ID of players that can play in this game state.
+		/// </summary>
+		/// <returns>A list with all IDs of player that can play now.</returns>
+		std::vector<int> whoCanPlay() const;
+		
+		/// <summary>
+		/// Indicates if the player with the provided ID can play in this game state.
+		/// </summary>
+		/// <param name="playerID">ID to check</param>
+		/// <returns>true if the player with ID playerID can play now.</returns>
+		bool canPlay(int playerID) const;
+
+
+		/// <summary>
 		/// Gets the number of players in this game state.
 		/// </summary>
 		/// <returns>Number of players in this game</returns>
@@ -351,6 +361,17 @@ namespace SGA
 		/// </summary>
 		std::mt19937 rngEngine;
 
+		/// <summary>
+		/// Returns the ID of the player that moves in this state for Turn Based Games.
+		/// For non-TBS, this value is -1.
+		/// </summary>
+		int getCurrentTBSPlayer() const { return currentPlayer; }
+
+		/// <summary>
+		/// Sets the current TBS player. For non-TBS, this should receive -1.
+		/// </summary>
+		void setCurrentTBSPlayer(int playerID) { currentPlayer = playerID; }
+
 	private:
 
 		/// <summary>
@@ -368,5 +389,10 @@ namespace SGA
 		/// </summary>
 		int continuousActionNextID = 0;
 
+		/// <summary>
+		/// ID of the current player if only one can play.
+		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with N-1 player IDs.
+		/// </summary>
+		int currentPlayer;
 	};
 }

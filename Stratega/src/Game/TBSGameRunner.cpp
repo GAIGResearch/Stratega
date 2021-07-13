@@ -17,7 +17,7 @@ namespace SGA
 		while(!currentState->isGameOver)
 		{
 			ActionAssignment nextAction;
-			auto& currentAgent = agents[currentState->currentPlayer];
+			auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
 			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
 				try
@@ -40,11 +40,8 @@ namespace SGA
 
 					//Check computation time
 					if (shouldCheckComputationTime)					
-						if (checkComputationTime(results.computationTime))
-							nextAction.clear();
-						else
+						if (!checkComputationTime(results.computationTime))
 							nextAction = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-					
 						
 				}				
 				catch (const std::exception& ex)
@@ -92,7 +89,7 @@ namespace SGA
 			ActionAssignment actionAssignment;
 			try
 			{
-				auto& currentAgent = agents[currentState->currentPlayer];
+				auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
 				results = runAgent(*currentAgent, *currentState, *forwardModel, budgetTimeMs);
 
 				//Check if agent throw exception and rethrow it
@@ -102,11 +99,8 @@ namespace SGA
 				actionAssignment = results.actions;
 				//Check computation time
 				if (shouldCheckComputationTime)
-					if (checkComputationTime(results.computationTime))
-						actionAssignment.clear();
-					else
-						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-						
+					if (!checkComputationTime(results.computationTime))
+						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));						
 			}
 			catch (const std::exception& ex)
 			{
@@ -121,25 +115,25 @@ namespace SGA
 
 	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
 	{
-		if (playerWarnings[currentState->currentPlayer] >= maxNumberWarnings)
+		if (playerWarnings[currentState->getCurrentTBSPlayer()] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
-			std::cout<<"WARNING: Player  " << std::to_string(currentState->currentPlayer) << " disqualified for exceeding warnings number" << std::endl;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			std::cout<<"WARNING: Player  " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding warnings number" << std::endl;
 			return false;
 		}
 		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
 		{
 			//add one warning
-			playerWarnings[currentState->currentPlayer]++;
-			std::cout<<"WARNING: Player " << std::to_string(currentState->currentPlayer) << " has exceeded the computation time"<<std::endl;
+			playerWarnings[currentState->getCurrentTBSPlayer()]++;
+			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " has exceeded the computation time"<<std::endl;
 			return true;
 		}
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentState->currentPlayer)->canPlay = false;
-			std::cout<<"WARNING: Player " << std::to_string(currentState->currentPlayer) << " disqualified for exceeding the computation time" << std::endl;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding the computation time" << std::endl;
 			return false;
 		}		
 	}

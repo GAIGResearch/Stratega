@@ -6,6 +6,7 @@ namespace SGA
 	RTSGameRunner::RTSGameRunner(const GameConfig& config)
 		: GameRunner(config)
 	{
+		currentState->setCurrentTBSPlayer(-1);
 	}
 
 	void RTSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
@@ -45,10 +46,16 @@ namespace SGA
 						}
 						//Check computation time
 						if (shouldCheckComputationTime)
+						{ 
 							if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
 							{
 								nextActions.merge(results.actions);
 							}
+						}
+						else
+						{
+							nextActions.merge(results.actions);
+						}
 					}
 					else
 					{
@@ -99,11 +106,16 @@ namespace SGA
 
 					//Check computation time
 					if (shouldCheckComputationTime)
+					{
 						if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
 						{
 							nextActions.merge(results.actions);
 						}
-
+					}
+					else
+					{
+						nextActions.merge(results.actions);
+					}
 				}
 			}
 			catch (const std::exception& ex)

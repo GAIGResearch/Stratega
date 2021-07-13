@@ -1,6 +1,7 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/TreeSearchAgents/MCTSNode.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 #include "MCTSParameters.h"
 
@@ -15,6 +16,7 @@ namespace SGA
 		{
 		}
 
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
 		ActionAssignment computeAction(GameState state, const ForwardModel* forwardModel, Timer timer) override;
 
 	private:

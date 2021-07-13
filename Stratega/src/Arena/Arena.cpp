@@ -83,13 +83,13 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << allAgents[agentAssignment[i]]->agentName << std::endl;
-		//std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
 
 		//Check if agent is Human
 		if (!agents[i])
 			throw std::runtime_error("Human agents cant play Arena");
+
+		std::cout << "Player " << i << " is controlled by " << agents[i]->agentName << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
 		agents[i]->setSeed(seedDist(rngEngine));
@@ -135,13 +135,13 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		std::cout << "Player " << i << " is controlled by " << allAgents[agentAssignment[i]]->agentName << std::endl;
-		//std::cout << "Player " << i << " is controlled by " << config->agentParams[agentAssignment[i]].first << std::endl;
 		agents[i] = std::move(allAgents[agentAssignment[i]]);
 
 		//Check if agent is Human
 		if (!agents[i])
 			throw std::runtime_error("Human agents cant play Arena");
+
+		std::cout << "Player " << i << " is controlled by " << agents[i]->agentName << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
 		agents[i]->setSeed(seedDist(rngEngine));
@@ -178,10 +178,10 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 {
 	if(state.gameType == SGA::GameType::TBS)
 	{
-		SGA::Log::logValue("ActivePlayer", state.currentPlayer);
+		SGA::Log::logValue("ActivePlayer", state.getCurrentTBSPlayer());
 
 		// ToDo getActions should accept const gameStates
-		auto actions = forwardModel.generateActions(state, state.currentPlayer);
+		auto actions = forwardModel.generateActions(state, state.getCurrentTBSPlayer());
 		SGA::Log::logValue("ActionCount", actions.size());
 	}
 	else if(state.gameType == SGA::GameType::RTS)
