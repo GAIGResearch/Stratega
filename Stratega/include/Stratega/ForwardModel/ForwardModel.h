@@ -45,16 +45,6 @@ namespace SGA
 
 	public:
 
-		/// <summary>
-		/// Effects applied on every tick of the game.
-		/// </summary>
-		std::vector<OnTickEffect> onTickEffects;
-
-		/// <summary>
-		/// Effects applied when a new entity is spawned in the game.
-		/// </summary>
-		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
-
 		//Constructor/destructor
 		virtual ~ForwardModel() = default;
 		ForwardModel();
@@ -161,8 +151,41 @@ namespace SGA
 		/// <returns>A list of sub-lists with all LOSE conditions</returns>
 		const std::vector<std::vector<std::shared_ptr<Condition>>> getLoseConditions() const { return loseConditions; }
 
+		/// <summary>
+		/// Adds an OnTickEffect to the forward mode, which will be executed every game tick.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnTickEffect(OnTickEffect ote);
+
+		/// <summary>
+		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnEntitySpawnEffect(OnEntitySpawnEffect ose);
+
+		/// <summary>
+		/// Returns all effects that are exxecuted on every tick of the game.
+		/// </summary>
+		const std::vector<OnTickEffect> getOnTickEffects() const { return onTickEffects; }
+
+		/// <summary>
+		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
+		/// </summary>
+		const std::vector<OnEntitySpawnEffect> getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
 
 	protected:
+
+
+		/// <summary>
+		/// Effects applied on every tick of the game.
+		/// </summary>
+		std::vector<OnTickEffect> onTickEffects;
+
+		/// <summary>
+		/// Effects applied when a new entity is spawned in the game.
+		/// </summary>
+		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
+
 
 		/// <summary>
 		/// Set of conditions required for a player to win the game.

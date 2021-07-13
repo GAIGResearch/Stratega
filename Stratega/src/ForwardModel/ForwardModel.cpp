@@ -425,4 +425,14 @@ namespace SGA
 	{
 		loseConditions.emplace_back(conditions);
 	}
+
+	void ForwardModel::addOnTickEffect(OnTickEffect ote) 
+	{ 
+		onTickEffects.emplace_back(ote); 
+	}
+
+	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect ose) 
+	{ 
+		onEntitySpawnEffects.emplace_back(ose); 
+	}
 }
