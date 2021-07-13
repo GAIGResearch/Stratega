@@ -118,7 +118,7 @@ namespace SGA
 		if (playerWarnings[currentState->getCurrentTBSPlayer()] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
 			std::cout<<"WARNING: Player  " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding warnings number" << std::endl;
 			return false;
 		}
@@ -132,7 +132,7 @@ namespace SGA
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
 			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding the computation time" << std::endl;
 			return false;
 		}		

@@ -83,20 +83,21 @@ namespace SGA
 			int continuousActionID = action.targets[1].getContinuousActionID();
 
 			//Search continuousAction to abort
-			for (size_t i = 0; i < sourcePlayer.continuousAction.size(); i++)
+			const auto& continuousActions = sourcePlayer.getContinuousActions();
+			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
-				if (sourcePlayer.continuousAction[i].continuousActionID == continuousActionID)
+				if (continuousActions[i].continuousActionID == continuousActionID)
 				{
-					auto& actionType = sourcePlayer.continuousAction[i].getActionType();
+					auto& actionType = continuousActions[i].getActionType();
 
 					//Execute OnAbort Effects				
 					for (auto& effect : actionType.OnAbort)
 					{
-						effect->execute(state, *this, sourcePlayer.continuousAction[i].targets);
+						effect->execute(state, *this, continuousActions[i].targets);
 					}
 
 					//Remove continuous action
-					sourcePlayer.continuousAction.erase(sourcePlayer.continuousAction.begin() + i);
+					sourcePlayer.removeContinuousAction(i);
 					i--;
 				}
 			}
@@ -160,7 +161,7 @@ namespace SGA
 			}
 
 			auto& executingPlayer = newAction.targets[0].getPlayer(state);
-			executingPlayer.continuousAction.emplace_back(newAction);
+			executingPlayer.addContinuousAction(newAction);
 		}
 	}
 
@@ -177,11 +178,12 @@ namespace SGA
 			// Remember when the action was executed
 			auto& executingPlayer = action.targets[0].getPlayer(state);
 			// ToDo We should probably find a way to avoid this loop
-			for (auto& actionInfo : executingPlayer.attachedActions)
+			for (size_t i = 0; i < executingPlayer.getAttachedActions().size(); i++)
 			{
+				auto& actionInfo = executingPlayer.getAttachedAction(i);
 				if (actionInfo.actionTypeID == action.getActionTypeID())
 				{
-					actionInfo.lastExecutedTick = state.getCurrentTick();
+					executingPlayer.setActionLastTick(i, state.getCurrentTick());
 					break;
 				}
 			}
@@ -310,18 +312,20 @@ namespace SGA
 		std::vector<Player> players = state.getPlayers();
 		for (size_t j = 0; j < players.size(); j++)
 		{
-			for (size_t i = 0; i < players[j].continuousAction.size(); i++)
+			const auto& continuousActions = players[j].getContinuousActions();
+			for (size_t i = 0; i < continuousActions.size(); i++)
 			{
-				auto& actionType = players[j].continuousAction[i].getActionType();
+				auto& actionType = continuousActions[i].getActionType();
 				//Add one elapsed tick
-				players[j].continuousAction[i].elapsedTicks++;
+				players[j].advanceContinuousAction(i);
+
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Player)
 				{
 					auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
-						effect->execute(state, *this, players[j].continuousAction[i].targets);
+						effect->execute(state, *this, continuousActions[i].targets);
 					}
 				}
 
@@ -329,7 +333,7 @@ namespace SGA
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfiled(state, players[j].continuousAction[i].targets))
+					if (!condition->isFullfiled(state, continuousActions[i].targets))
 					{
 						isComplete = false;
 						break;
@@ -360,13 +364,13 @@ namespace SGA
 							auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
-								effect->execute(state, *this, players[j].continuousAction[i].targets);
+								effect->execute(state, *this, continuousActions[i].targets);
 							}
 						}
 					}
 
 					//Delete the ContinuousAction
-					players[j].continuousAction.erase(players[j].continuousAction.begin() + i);
+					players[j].removeContinuousAction(i);
 					i--;
 					//Stop executing this action
 					continue;

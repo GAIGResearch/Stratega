@@ -561,23 +561,23 @@ namespace SGA
 		for (Player& player : state.getPlayers())
 		{
 			//Check if player won
-			if(player.canPlay && checkPlayerWon(state, player.id))
+			if(player.canPlay() && checkPlayerWon(state, player.getID()))
 			{
-				winnerID = player.id;
+				winnerID = player.getID();
 				
 				state.setWinnerID(winnerID);
 				return true;
 			}
 
 			//Check if player can play
-			if (player.canPlay && !checkPlayerLost(state, player.id))
+			if (player.canPlay() && !checkPlayerLost(state, player.getID()))
 			{
-				winnerID = player.id;
+				winnerID = player.getID();
 				numberPlayerCanPlay++;
 			}
 			else
 			{
-				player.canPlay = false;
+				player.setCanPlay(false);
 			}
 		}
 

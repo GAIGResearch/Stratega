@@ -28,21 +28,21 @@ namespace SGA
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
-		player.parameters.resize(gameInfo.playerParameterTypes->size());
+		player.resizeParameters(gameInfo.playerParameterTypes->size());
 		for (const auto& idParamPair : *gameInfo.playerParameterTypes)
 		{
-			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			player.setParameter(idParamPair.second.index, idParamPair.second.defaultValue);
 		}
 
 		// Add actions
-		player.attachedActions.reserve(playerActionIds.size());
+		player.resAttachedActions(playerActionIds.size());
 		for (auto actionTypeID : playerActionIds)
 		{
-			player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
+			player.addAttachedAction(ActionInfo{ actionTypeID, 0 });
 		}
 
 		state->addPlayer(player);
-		return player.id;
+		return player.getID();
 	}
 
 	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const

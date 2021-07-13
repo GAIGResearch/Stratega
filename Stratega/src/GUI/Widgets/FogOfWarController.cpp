@@ -38,10 +38,10 @@ namespace SGA::Widgets
 		{
 			for (const auto& player : state.getPlayers())
 			{
-				auto isSelected = fowSettings.selectedPlayerID == player.id;
-				if (ImGui::Selectable(("Player " + std::to_string(player.id)).c_str(), isSelected))
+				auto isSelected = fowSettings.selectedPlayerID == player.getID();
+				if (ImGui::Selectable(("Player " + std::to_string(player.getID())).c_str(), isSelected))
 				{
-					fowSettings.selectedPlayerID = player.id;
+					fowSettings.selectedPlayerID = player.getID();
 					selectionChanged = true;
 				}
 				if (isSelected)

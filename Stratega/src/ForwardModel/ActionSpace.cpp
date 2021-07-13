@@ -58,7 +58,7 @@ namespace SGA
 
 		//Generate player actions
 		auto& player = *gameState.getPlayer(playerID);
-		for (const auto& actionInfo : player.attachedActions)
+		for (const auto& actionInfo : player.getAttachedActions())
 		{
 			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 			bool generateContinuousAction = true;
@@ -66,7 +66,7 @@ namespace SGA
 			if (actionType.isContinuous)
 			{
 				//Check if entity is already executing it
-				for (auto& action : player.continuousAction)
+				for (auto& action : player.getContinuousActions())
 				{
 					if (action.getActionTypeID() == actionType.id)
 					{
@@ -74,7 +74,7 @@ namespace SGA
 						generateContinuousAction = false;
 
 						//Give the posibility to abort it
-						bucket.emplace_back(Action::createAbortAction(player.id, action.continuousActionID));
+						bucket.emplace_back(Action::createAbortAction(player.getID(), action.continuousActionID));
 					}
 				}
 			}
@@ -181,8 +181,8 @@ namespace SGA
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourcePlayer.id;
-			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+			action.ownerID = sourcePlayer.getID();
+			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
 
 			for (auto& target : targetsProduct)
 			{
@@ -372,7 +372,7 @@ namespace SGA
 	Action ActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };
+		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.getID()) };
 		return selfAction;
 	}
 

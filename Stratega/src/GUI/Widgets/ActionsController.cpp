@@ -156,7 +156,7 @@ namespace SGA::Widgets
 			for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
 			{
 				//If player is researching abort action
-				for (auto& action : state.getPlayer(playerID)->continuousAction)
+				for (auto& action : state.getPlayer(playerID)->getContinuousActions())
 				{
 					if (action.getActionTypeID() == settings.actionTypeSelected)
 					{
@@ -449,7 +449,7 @@ namespace SGA::Widgets
 		//Display actionTypes
 		ImGui::Text("Select action type");
 
-		for (auto& attachedActions : state.getPlayer(playerID)->attachedActions)
+		for (auto& attachedActions : state.getPlayer(playerID)->getAttachedActions())
 		{
 			actionTypes.insert(attachedActions.actionTypeID);
 		}

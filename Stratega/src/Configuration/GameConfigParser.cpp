@@ -866,7 +866,7 @@ namespace SGA
             if (entityIt != entityLookup.end())
             {
                 // Check if the entity was assigned to an player, we only look for players with ID 0-9
-                auto ownerID = Player::NEUTRAL_PLAYER_ID;
+                auto ownerID = Player::getNeutralPlayerID();
                 if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
                 {
                     ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer

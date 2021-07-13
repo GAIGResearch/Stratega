@@ -63,7 +63,7 @@ namespace  SGA
 		{
 			auto& sourceEntity = targets[0].getPlayerConst(state);
 
-			for (auto& action : sourceEntity.continuousAction)
+			for (auto& action : sourceEntity.getContinuousActions())
 			{
 				if (action.continuousActionID == targets[2].getContinuousActionID())
 				{
@@ -160,7 +160,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 		
-		return state.isResearched(targetPlayer.id, targetTechnology.id);
+		return state.isResearched(targetPlayer.getID(), targetTechnology.id);
 	}
 
 	HasNoEntity::HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -174,7 +174,7 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
 		
 		bool hasEntity = false;
 		for (auto& entity : entities)
@@ -197,7 +197,7 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
 
 		for (auto& entity : entities)
 		{
@@ -221,7 +221,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 
-		return state.canResearch(targetPlayer.id, targetTechnology.id);
+		return state.canResearch(targetPlayer.getID(), targetTechnology.id);
 	}
 
 	CanSpawnCondition::CanSpawnCondition(const std::string exp, const std::vector<FunctionParameter>& parameters)

@@ -81,7 +81,7 @@ namespace SGA
 	{
 		for (const auto& p : players)
 		{
-			if (p.id == playerID)
+			if (p.getID() == playerID)
 				return &p;
 		}
 
@@ -100,7 +100,7 @@ namespace SGA
 		{
 			for (const auto& p : players)
 			{
-				playerIDs.emplace_back(p.id);
+				playerIDs.emplace_back(p.getID());
 			}
 		}		
 		return playerIDs;
@@ -186,7 +186,7 @@ namespace SGA
 			{
 				if (param.second.name == paramName)
 				{
-					return p->parameters[param.second.index];
+					return p->getParameterConst(param.second.index);
 				}
 			}
 			throw std::runtime_error("No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
@@ -221,7 +221,7 @@ namespace SGA
 		const Player* p = getPlayer(playerID);
 		std::unordered_map<std::string, double> params;
 		if (p != nullptr) for (const auto& param : *gameInfo->playerParameterTypes)
-			params.emplace(param.second.name, p->parameters[param.second.index]);
+			params.emplace(param.second.name, p->getParameterConst(param.second.index));
 		else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
 
 		return params;
@@ -318,7 +318,7 @@ namespace SGA
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
 		{
-			if (!precondition->isFullfiled(*this, { ActionTarget::createPlayerActionTarget(player.id) }))
+			if (!precondition->isFullfiled(*this, { ActionTarget::createPlayerActionTarget(player.getID()) }))
 			{
 				return false;
 			}
@@ -331,7 +331,7 @@ namespace SGA
 	{
 		const Player* p = getPlayer(playerID);
 		std::vector<ActionType> aTypes;
-		if (p != nullptr) for (const ActionInfo aInfo : p->attachedActions)
+		if (p != nullptr) for (const ActionInfo aInfo : p->getAttachedActions())
 		{
 			ActionType at = gameInfo->getActionType(aInfo.actionTypeID);
 			aTypes.emplace_back(at);

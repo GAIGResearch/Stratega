@@ -6,7 +6,7 @@ namespace SGA
 {
 	bool Entity::isNeutral() const
 	{
-		return ownerID == Player::NEUTRAL_PLAYER_ID;
+		return ownerID == Player::getNeutralPlayerID();
 	}
 	
 	int Entity::getEntityTypeID() const

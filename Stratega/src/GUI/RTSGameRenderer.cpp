@@ -627,7 +627,7 @@ namespace SGA
 						{
 							//We need to find the continues action name that will abort
 							auto& sourcePlayer = action.targets[0].getPlayer(state);
-							for (auto& continueAction : sourcePlayer.continuousAction)
+							for (auto& continueAction : sourcePlayer.getContinuousActions())
 							{
 								if (continueAction.continuousActionID == action.continuousActionID)
 								{
@@ -780,7 +780,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+				stream << std::fixed << std::setprecision(2) << player->getParameterConst(parameter.second.index);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;

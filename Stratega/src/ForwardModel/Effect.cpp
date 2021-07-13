@@ -164,7 +164,7 @@ namespace SGA
 		auto sourceEntity = targets[0].getEntity(state);
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
-		targetEntity.setOwnerID(newOwner.id);
+		targetEntity.setOwnerID(newOwner.getID());
 	}
 
 	RemoveEntityEffect::RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -189,7 +189,7 @@ namespace SGA
 	void ResearchTechnology::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
-		state.researchTechnology(targetPlayer.id, targets[1].getTechnologyID());
+		state.researchTechnology(targetPlayer.getID(), targets[1].getTechnologyID());
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters)

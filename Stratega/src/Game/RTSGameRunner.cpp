@@ -134,7 +134,7 @@ namespace SGA
 		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings number" << std::endl;
 			return false;
 		}
@@ -148,7 +148,7 @@ namespace SGA
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time" << std::endl;
 			return false;
 		}		

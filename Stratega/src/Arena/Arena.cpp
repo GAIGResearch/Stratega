@@ -188,7 +188,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 	{
 		for (size_t i = 0; i < state.getNumPlayers(); i++)
 		{
-			int playerID = state.getPlayers()[i].id;
+			int playerID = state.getPlayers()[i].getID();
 			SGA::LoggingScope playerScope("Player" + std::to_string(playerID));
 			auto actions = forwardModel.generateActions(state, playerID);
 			SGA::Log::logValue("ActionCount", actions.size());

@@ -147,7 +147,7 @@ namespace SGA
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = getPlayer(state, actionTargets);
-				return player.parameters[param.index];
+				return player.getParameter(param.index);
 			}
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
@@ -155,7 +155,7 @@ namespace SGA
 			const auto& param = getParameter(state, actionTargets);
 			auto& entity = getEntity(state, actionTargets);
 			auto* player = state.getPlayer(entity.getOwnerID());
-			return player->parameters[param.index];
+			return player->getParameter(param.index);
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
@@ -336,7 +336,7 @@ namespace SGA
 		if (getType() == Type::EntityPlayerReference)
 		{
 			auto& player = getPlayer(state, actionTargets);
-			return player.parameters;
+			return player.getParameters();
 
 		}
 		else if (getType() == Type::ArgumentReference)
@@ -345,7 +345,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = target.getPlayer(const_cast<GameState&>(state));
-				return player.parameters;
+				return player.getParameters();
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
@@ -367,7 +367,7 @@ namespace SGA
 		if (getType() == Type::EntityPlayerReference)
 		{
 			auto& player = getPlayer(state, actionTargets);
-			return player.parameters;
+			return player.getParameters();
 
 		}
 		else if (getType() == Type::ArgumentReference)
@@ -376,7 +376,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = target.getPlayer(const_cast<GameState&>(state));
-				return player.parameters;
+				return player.getParameters();
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
