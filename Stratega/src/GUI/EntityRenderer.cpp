@@ -46,7 +46,7 @@ namespace SGA
 			
 			// define the 4 corners
 			auto spriteSize = atlas.getSpriteSize();
-			auto start = toISO(entity.position.x, entity.position.y) - sf::Vector2f{ spriteSize.x / 4.f, spriteSize.y / 1.4f };
+			auto start = toISO(entity.x(), entity.y()) - sf::Vector2f{ spriteSize.x / 4.f, spriteSize.y / 1.4f };
 			quadPtr[0].position = sf::Vector2f(start.x, start.y);
 			quadPtr[1].position = sf::Vector2f(start.x + spriteSize.x, start.y);
 			quadPtr[2].position = sf::Vector2f(start.x + spriteSize.x, start.y + spriteSize.y);
@@ -59,10 +59,10 @@ namespace SGA
 			quadPtr[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);
 			quadPtr[3].texCoords = sf::Vector2f(rect.left, rect.top + rect.height);
 
-			quadPtr[0].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
-			quadPtr[1].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
-			quadPtr[2].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
-			quadPtr[3].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.ownerID];
+			quadPtr[0].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.getOwnerID()];
+			quadPtr[1].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.getOwnerID()];
+			quadPtr[2].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.getOwnerID()];
+			quadPtr[3].color = entity.isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity.getOwnerID()];
 		}
 	}
 

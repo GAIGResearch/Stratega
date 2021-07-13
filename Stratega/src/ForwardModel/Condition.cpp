@@ -87,7 +87,7 @@ namespace  SGA
 		auto& sourceEntity =targets[0].getEntityConst(state);
 		auto& targetEntity =targets[1].getEntityConst(state);
 
-		return sourceEntity.ownerID == targetEntity.ownerID;
+		return sourceEntity.getOwnerID() == targetEntity.getOwnerID();
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -104,7 +104,7 @@ namespace  SGA
 		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
 
-		return source.position.distance(target) <= dist;
+		return source.getPosition().distance(target) <= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -116,7 +116,8 @@ namespace  SGA
 	bool IsWalkable::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) }).isWalkable && state.getEntityAt(pos) == nullptr;
+		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		return t.isWalkable && state.getEntityAt(pos) == nullptr;
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -131,7 +132,8 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) }).getTileTypeID()==tileType.id;
+		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		return t.getTileTypeID()==tileType.id;
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)

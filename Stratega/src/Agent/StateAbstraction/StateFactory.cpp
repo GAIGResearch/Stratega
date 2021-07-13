@@ -27,8 +27,8 @@ namespace SGA
 		{
 			std::vector<double> positions;
 			for (auto entity : tbsState.getEntities()) {
-				positions.push_back(entity.position.x);
-				positions.push_back(entity.position.y);
+				positions.push_back(entity.x());
+				positions.push_back(entity.y());
 			}
 			state.addAttribute("EntityPositions", positions);
 		}

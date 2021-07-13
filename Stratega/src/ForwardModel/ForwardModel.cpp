@@ -212,7 +212,7 @@ namespace SGA
 				if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
 					continue;
 				std::vector<ActionTarget> targets;
-				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.id));
+				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
 				auto isValid = true;
 				for (const auto& condition : onTickEffect.conditions)
 				{

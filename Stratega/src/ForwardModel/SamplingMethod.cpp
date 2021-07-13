@@ -32,7 +32,7 @@ std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, co
 	{
 		if (entityTypeIDs.find(entity.getEntityTypeID()) != entityTypeIDs.end())
 		{
-			targets.emplace_back(entity.id);
+			targets.emplace_back(entity.getID());
 		}
 	}
 	return targets;
@@ -109,8 +109,8 @@ std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const 
 	//Call base method
 	for (auto& entity : gameState.getEntities())
 	{
-		if (shapeType==ShapeType::AllPositions||entity.position.distance(position) <= shapeSize)
-			entitiesIDs.emplace_back(entity.id);
+		if (shapeType==ShapeType::AllPositions||entity.getPosition().distance(position) <= shapeSize)
+			entitiesIDs.emplace_back(entity.getID());
 	}
 	return entitiesIDs;
 }
@@ -259,7 +259,7 @@ std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Ve
 		auto* entity = gameState.getEntityAt(Vector2f(pos.x, pos.y));
 		if(entity)
 		{
-			entities.emplace_back(entity->id);
+			entities.emplace_back(entity->getID());
 		}
 	}
 	

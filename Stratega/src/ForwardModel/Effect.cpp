@@ -98,21 +98,21 @@ namespace SGA
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
 		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
 		{
-			entity.position = { std::floor(targetPosition.x), std::floor(targetPosition.y) };
+			entity.setPosition( { std::floor(targetPosition.x), std::floor(targetPosition.y) } );
 		}
 		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
 		{
 			//Get end position of current path
 			Vector2f oldTargetPos;
-			oldTargetPos.x = entity.path.m_straightPath[(entity.path.m_nstraightPath - 1) * 3];
-			oldTargetPos.y = entity.path.m_straightPath[((entity.path.m_nstraightPath - 1) * 3) + 2];
+			oldTargetPos.x = entity.getPath().m_straightPath[(entity.getPath().m_nstraightPath - 1) * 3];
+			oldTargetPos.y = entity.getPath().m_straightPath[((entity.getPath().m_nstraightPath - 1) * 3) + 2];
 
 			// Compute a new path if the entity doesn't have one or the new target is different from the old one
-			if (entity.path.isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
+			if (entity.getPath().isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
 			{
-				Path path = rtsFM->findPath(state, entity.position, targetPosition);
-				entity.path = path;
-				entity.path.currentPathIndex++;
+				Path path = rtsFM->findPath(state, entity.getPosition(), targetPosition);
+				entity.setPath(path);
+				entity.incPathIndex();
 			}
 		}
 	}
@@ -164,7 +164,7 @@ namespace SGA
 		auto sourceEntity = targets[0].getEntity(state);
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
-		targetEntity.ownerID = newOwner.id;
+		targetEntity.setOwnerID(newOwner.id);
 	}
 
 	RemoveEntityEffect::RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -209,11 +209,11 @@ namespace SGA
 			{
 				for (int dy = -1; dy <= 1; dy++)
 				{
-					Vector2i spawnPos{ static_cast<int>(sourceEntity.position.x) + dx, static_cast<int>(sourceEntity.position.y) + dy};
+					Vector2i spawnPos{ static_cast<int>(sourceEntity.x()) + dx, static_cast<int>(sourceEntity.y()) + dy};
 					if (!state.isInBounds(spawnPos)) continue;
 					if (!state.isWalkable(spawnPos)) continue;
 
-					fm.spawnEntity(state, targetEntityType, sourceEntity.ownerID, Vector2f(spawnPos.x, spawnPos.y));
+					fm.spawnEntity(state, targetEntityType, sourceEntity.getOwnerID(), Vector2f(spawnPos.x, spawnPos.y));
 					return;
 				}
 			}

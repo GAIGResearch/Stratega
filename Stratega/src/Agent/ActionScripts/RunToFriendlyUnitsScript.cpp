@@ -21,12 +21,12 @@ namespace SGA
 			std::vector<int> myUnits;
 			std::set<int> friendlyUnits;
 			for (auto& entity : gameState.getEntities()) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
-					friendlyUnits.insert(entity.id);
+					myUnits.push_back(entity.getID());
+					friendlyUnits.insert(entity.getID());
 				}
 			}
 
@@ -84,12 +84,12 @@ namespace SGA
 			std::vector<int> myUnits;
 			std::set<int> friendlyUnits;
 			for (auto& entity : gameState.getEntities()) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
-					friendlyUnits.insert(entity.id);
+					myUnits.push_back(entity.getID());
+					friendlyUnits.insert(entity.getID());
 				}
 			}
 

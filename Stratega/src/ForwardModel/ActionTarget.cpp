@@ -58,7 +58,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return state.getEntityConst(data.entityID)->ownerID;
+			return state.getEntityConst(data.entityID)->getOwnerID();
 		}
 
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
@@ -86,7 +86,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return getEntity(const_cast<GameState&>(state))->position;
+			return getEntity(const_cast<GameState&>(state))->getPosition();
 		}
 		else
 		{

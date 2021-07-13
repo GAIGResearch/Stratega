@@ -49,28 +49,29 @@ namespace SGA
 	{
 		for(auto& entity : state.getEntities())
 		{
-			if (entity.path.isEmpty())
+			if (entity.getPath().isEmpty())
 				continue;
 			
 			// Move to the next checkpoint in the path
-			auto targetPos = Vector2f(entity.path.m_straightPath[entity.path.currentPathIndex * 3], entity.path.m_straightPath[entity.path.currentPathIndex * 3 + 2]);
+			int cPathIdx = entity.getPath().currentPathIndex;
+			auto targetPos = Vector2f(entity.getPath().m_straightPath[cPathIdx * 3], entity.getPath().m_straightPath[cPathIdx * 3 + 2]);
 
-			auto movementDir = targetPos - entity.position;
+			auto movementDir = targetPos - entity.getPosition();
 			auto movementDistance = movementDir.magnitude();
-			auto movementSpeed = entity.movementSpeed * deltaTime;
+			auto movementSpeed = entity.getMovementSpeed() * deltaTime;
 			if (movementDistance <= movementSpeed)
 			{
-				entity.path.currentPathIndex++;
+				entity.incPathIndex();
 				// Did we reach the end of the path?
-				if (entity.path.m_nstraightPath <= entity.path.currentPathIndex)
+				if (entity.getPath().m_nstraightPath <= entity.getPath().currentPathIndex)
 				{
-						entity.position = targetPos;
-						entity.path = Path();
+						entity.setPosition(targetPos);
+						entity.setPath(Path());
 				}
 			}
 			else
 			{
-				entity.position = entity.position + (movementDir / movementDir.magnitude()) * movementSpeed;
+				entity.setPosition(entity.getPosition() + (movementDir / movementDir.magnitude()) * movementSpeed);
 			}
 		}
 	}
@@ -83,7 +84,7 @@ namespace SGA
 			for (auto& otherUnit : state.getEntities())
 			{
 				// Units cant collide with themselves, also idle units do not push busy units
-				if (unit.id == otherUnit.id /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
+				if (unit.getID() == otherUnit.getID() /*|| (unit.executingAction.type != RTSActionType::None && otherUnit.executingAction.type == RTSActionType::None)*/)
 					continue;
 
 				const auto& entityType = unit.getEntityType();
@@ -93,10 +94,10 @@ namespace SGA
 				if (!entityType.canExecuteAction(moveActionID))
 					continue;
 
-				auto dir = otherUnit.position - unit.position;
-				if (dir.magnitude() <= unit.collisionRadius + otherUnit.collisionRadius)
+				auto dir = otherUnit.getPosition() - unit.getPosition();
+				if (dir.magnitude() <= unit.getCollisionRadius() + otherUnit.getCollisionRadius())
 				{
-					auto penetrationDepth = unit.collisionRadius + otherUnit.collisionRadius - dir.magnitude();
+					auto penetrationDepth = unit.getCollisionRadius() + otherUnit.getCollisionRadius() - dir.magnitude();
 					pushDir = pushDir + dir.normalized() * 2 / (1 + penetrationDepth);
 					
 					//Soft collision
@@ -104,7 +105,7 @@ namespace SGA
 				}
 			}
 
-			unit.position = unit.position - pushDir * deltaTime;
+			unit.setPosition(unit.getPosition() - pushDir * deltaTime);
 		}
 	}
 
@@ -115,10 +116,10 @@ namespace SGA
 		// Collision
 		for (auto& unit : state.getEntities())
 		{
-			int startCheckPositionX = static_cast<int>(std::floor(unit.position.x - unit.collisionRadius - RECT_SIZE));
-			int endCheckPositionX = static_cast<int>(std::ceil(unit.position.x + unit.collisionRadius + RECT_SIZE));
-			int startCheckPositionY = static_cast<int>(std::floor(unit.position.y - unit.collisionRadius - RECT_SIZE));
-			int endCheckPositionY = static_cast<int>(std::ceil(unit.position.y + unit.collisionRadius + RECT_SIZE));
+			int startCheckPositionX = static_cast<int>(std::floor(unit.x() - unit.getCollisionRadius() - RECT_SIZE));
+			int endCheckPositionX = static_cast<int>(std::ceil(unit.x() + unit.getCollisionRadius() + RECT_SIZE));
+			int startCheckPositionY = static_cast<int>(std::floor(unit.y() - unit.getCollisionRadius() - RECT_SIZE));
+			int endCheckPositionY = static_cast<int>(std::ceil(unit.y() + unit.getCollisionRadius() + RECT_SIZE));
 
 			const auto& entityType = unit.getEntityType();
 			
@@ -139,11 +140,11 @@ namespace SGA
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
 					auto fx = static_cast<double>(x);
 					auto fy = static_cast<double>(y);
-					auto nearestX = std::max(fx, std::min(unit.position.x, fx + RECT_SIZE));
-					auto nearestY = std::max(fy, std::min(unit.position.y, fy + RECT_SIZE));
-					auto dist = unit.position - Vector2f(nearestX, nearestY);
+					auto nearestX = std::max(fx, std::min(unit.x(), fx + RECT_SIZE));
+					auto nearestY = std::max(fy, std::min(unit.y(), fy + RECT_SIZE));
+					auto dist = unit.getPosition() - Vector2f(nearestX, nearestY);
 
-					auto penetrationDepth = unit.collisionRadius - dist.magnitude();
+					auto penetrationDepth = unit.getCollisionRadius() - dist.magnitude();
 					// No collision detected
 					if (penetrationDepth <= 0)
 						continue;
@@ -154,7 +155,7 @@ namespace SGA
 				}
 			}
 
-			unit.position = unit.position + pushDir;
+			unit.setPosition(unit.getPosition() + pushDir);
 		}
 	}
 

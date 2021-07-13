@@ -39,23 +39,23 @@ namespace SGA
 			int weakestUnitID = -1;
 
 			for (auto& entity : gameState.getEntities()) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 				double health =  getHealth(&entity, gameState);
-				healthPerUnit.insert(std::pair<int, double>(entity.id, health));
+				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)
 				{
 					minimalHealth = health;
-					weakestUnitID = entity.id;
+					weakestUnitID = entity.getID();
 				}
 				
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
+					myUnits.push_back(entity.getID());
 				}
 				else
 				{
-					opponentUnits.insert(entity.id);
+					opponentUnits.insert(entity.getID());
 				}
 			}
 
@@ -140,23 +140,23 @@ namespace SGA
 			int weakestUnitID = -1;
 
 			for (auto& entity : gameState.getEntities()) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 				double health = getHealth(&entity, gameState);
-				healthPerUnit.insert(std::pair<int, double>(entity.id, health));
+				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)
 				{
 					minimalHealth = health;
-					weakestUnitID = entity.id;
+					weakestUnitID = entity.getID();
 				}
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
+					myUnits.push_back(entity.getID());
 				}
 				else
 				{
-					opponentUnits.insert(entity.id);
+					opponentUnits.insert(entity.getID());
 				}
 			}
 

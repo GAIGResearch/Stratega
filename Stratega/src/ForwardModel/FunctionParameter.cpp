@@ -154,7 +154,7 @@ namespace SGA
 		{
 			const auto& param = getParameter(state, actionTargets);
 			auto& entity = getEntity(state, actionTargets);
-			auto* player = state.getPlayer(entity.ownerID);
+			auto* player = state.getPlayer(entity.getOwnerID());
 			return player->parameters[param.index];
 		}
 
@@ -212,7 +212,7 @@ namespace SGA
 		case Type::EntityPlayerReference:
 		{
 			auto& entity = getEntity(state, actionTargets);
-			return *state.getPlayer(entity.ownerID);
+			return *state.getPlayer(entity.getOwnerID());
 		}
 		case Type::ArgumentReference:
 		{
@@ -232,7 +232,7 @@ namespace SGA
 		case Type::EntityPlayerReference:
 		{
 			const auto& entity = getEntity(state, actionTargets);
-			return entity.ownerID;
+			return entity.getOwnerID();
 		}
 		case Type::ArgumentReference:
 		{

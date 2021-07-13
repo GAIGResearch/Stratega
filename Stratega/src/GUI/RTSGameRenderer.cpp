@@ -175,7 +175,7 @@ namespace SGA
 						if (actionsSettings.waitingForEntity)
 						{
 							auto gridPos = toGridFloat(pos);
-							assignEntity(state, actionsSettings, unit->id);
+							assignEntity(state, actionsSettings, unit->getID());
 						}
 						else
 						{
@@ -221,11 +221,11 @@ namespace SGA
 
 				for (auto& unit : state.getEntities())
 				{
-					sf::Vector2f screenPos = toISO(unit.position.x, unit.position.y);
+					sf::Vector2f screenPos = toISO(unit.x(), unit.y());
 					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 					{
-						if (unit.ownerID == pointOfViewPlayerID)
-							actionsSettings.selectedEntities.emplace(unit.id);
+						if (unit.getOwnerID() == pointOfViewPlayerID)
+							actionsSettings.selectedEntities.emplace(unit.getID());
 					}
 				}
 			}
@@ -322,12 +322,12 @@ namespace SGA
 		//Check if units are selected
 		for (const auto& unit : selectedGameStateCopy->getEntities())
 		{
-			if (actionsSettings.isSelected(unit.id))
+			if (actionsSettings.isSelected(unit.getID()))
 			{
 				auto& selectionTexture = assetCache.getTexture("circleCollider");
 				sf::Sprite selectionSprite(selectionTexture);
 				selectionSprite.setOrigin(selectionTexture.getSize().x / 2.f, selectionTexture.getSize().y / 2.f);
-				selectionSprite.setPosition(toISO(unit.position.x, unit.position.y) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
+				selectionSprite.setPosition(toISO(unit.x(), unit.y()) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
 				selectionSprite.setColor(sf::Color::Blue);
 				window.draw(selectionSprite);
 			}
@@ -388,13 +388,13 @@ namespace SGA
 		for (auto& unit : selectedGameStateCopy->getEntities())
 		{
 			//Check if has a valid path
-			if (unit.path.m_nstraightPath > 0)
+			if (unit.getPath().m_nstraightPath > 0)
 			{
 				//Draw path lines
-				for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
+				for (int i = 0; i < unit.getPath().m_nstraightPath - 1; ++i)
 				{
-					auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
-					auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+					auto v1 = toISO(unit.getPath().m_straightPath[i * 3], unit.getPath().m_straightPath[i * 3 + 2]);
+					auto v2 = toISO(unit.getPath().m_straightPath[(i + 1) * 3], unit.getPath().m_straightPath[(i + 1) * 3 + 2]);
 
 					//Adjust to sprites offset
 					v1.x += TILE_WIDTH_HALF;
@@ -410,11 +410,11 @@ namespace SGA
 				}
 
 				//Draw path points
-				for (int i = 0; i < unit.path.m_nstraightPath; ++i)
+				for (int i = 0; i < unit.getPath().m_nstraightPath; ++i)
 				{
 					sf::CircleShape pathCircle;
-					float v1 = unit.path.m_straightPath[i * 3];
-					float v2 = unit.path.m_straightPath[i * 3 + 2];
+					float v1 = unit.getPath().m_straightPath[i * 3];
+					float v2 = unit.getPath().m_straightPath[i * 3 + 2];
 
 					auto pos = toISO(v1, v2);
 					pathCircle.setPosition(pos);
@@ -582,7 +582,7 @@ namespace SGA
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
-			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
+			unitInfo = type.name + " " + std::to_string(unit.getID()) + " PID: " + std::to_string(unit.getOwnerID());
 			ImGui::Text(unitInfo.c_str());
 		}
 

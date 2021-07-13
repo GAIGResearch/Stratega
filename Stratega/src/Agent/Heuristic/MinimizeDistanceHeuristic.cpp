@@ -22,14 +22,14 @@ namespace SGA
 
 		for (const auto& entity : gameState.getEntities())
 		{
-			positions.emplace(entity.id, entity.position);
-			if (entity.ownerID != playerID)
+			positions.emplace(entity.getID(), entity.getPosition());
+			if (entity.getOwnerID() != playerID)
 			{
-				opponentEntites.insert(entity.id);
+				opponentEntites.insert(entity.getID());
 			}
 			else
 			{
-				playerEntities.insert(entity.id);
+				playerEntities.insert(entity.getID());
 			}
 		}
 

@@ -33,14 +33,14 @@ namespace SGA
 	Entity* GameState::getEntity(int entityID)
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
-			[&](Entity const& p) { return p.id == entityID; });
+			[&](Entity const& p) { return p.getID() == entityID; });
 		return iter == entities.end() ? nullptr : &*iter;
 	}
 
 	const Entity* GameState::getEntityConst(int entityID) const
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
-			[&](Entity const& p) { return p.id == entityID; });
+			[&](Entity const& p) { return p.getID() == entityID; });
 		return iter == entities.end() ? nullptr : &*iter;
 
 	}
@@ -55,21 +55,21 @@ namespace SGA
 	int GameState::addEntity(const EntityType& type, int playerID, const Vector2f& position)
 	{
 		auto instance = type.instantiateEntity(nextEntityID);
-		instance.ownerID = playerID;
-		instance.position = position;
+		instance.setOwnerID(playerID);
+		instance.setPosition(std::move(position));
 		entities.emplace_back(std::move(instance));
 		nextEntityID++;
 
-		return instance.id;
+		return instance.getID();
 	}
 
 	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
 	{
 		for (auto& entity : entities)
 		{
-			if (entity.position == pos)
+			if (entity.getPosition() == pos)
 				return &entity;
-			else if (maxDistance > 0.0 && (entity.position.distance(pos) <= maxDistance))
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
 				return &entity;
 		}
 
@@ -122,7 +122,7 @@ namespace SGA
 		std::vector<const Entity*> ret;
 		for (const auto& entity : entities)
 		{
-			if (entity.ownerID == playerID)
+			if (entity.getOwnerID() == playerID)
 				ret.emplace_back(&entity);
 		}
 
@@ -139,7 +139,7 @@ namespace SGA
 		std::vector<Entity*> ret;
 		for (auto& entity : entities)
 		{
-			if (entity.ownerID == playerID)
+			if (entity.getOwnerID() == playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
 				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
@@ -156,7 +156,7 @@ namespace SGA
 		std::vector<Entity*> ret;
 		for (auto& entity : entities)
 		{
-			if (entity.ownerID != playerID)
+			if (entity.getOwnerID() != playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
 				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
@@ -234,15 +234,15 @@ namespace SGA
 		for (const auto* entity : getPlayerEntities(playerID))
 		{
 			// Compute maximum sized rectangle around entity
-			auto leftX = std::max<int>(0, static_cast<int>(entity->position.x - entity->lineOfSightRange));
-			auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity->position.x + entity->lineOfSightRange));
-			auto leftY = std::max<int>(0, static_cast<int>(entity->position.y - entity->lineOfSightRange));
-			auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity->position.y + entity->lineOfSightRange));
+			auto leftX = std::max<int>(0, static_cast<int>(entity->x() - entity->getLineOfSightRange()));
+			auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity->x() + entity->getLineOfSightRange()));
+			auto leftY = std::max<int>(0, static_cast<int>(entity->y() - entity->getLineOfSightRange()));
+			auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity->y() + entity->getLineOfSightRange()));
 
 			// Helper method for shadowcasting
 			auto rayCallback = [&](const Vector2i& pos) -> bool
 			{
-				if (entity->position.distance(Vector2f(pos)) > entity->lineOfSightRange)
+				if (entity->getPosition().distance(Vector2f(pos)) > entity->getLineOfSightRange())
 				{
 					return true;
 				}
@@ -252,7 +252,7 @@ namespace SGA
 			};
 
 			// Shadowcasting
-			Vector2i pos(static_cast<int>(entity->position.x), static_cast<int>(entity->position.y));
+			Vector2i pos(static_cast<int>(entity->x()), static_cast<int>(entity->y()));
 			for (int x = leftX; x <= rightX; x++)
 			{
 				visibilityMap.bresenhamRay(pos, Vector2i{ x, leftY }, rayCallback);
@@ -271,7 +271,8 @@ namespace SGA
 		auto it = entities.begin();
 		while (it != entities.end())
 		{
-			if (!board.isInBounds(static_cast<int>(it->position.x), static_cast<int>(it->position.y)) || !visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
+			if (!board.isInBounds(static_cast<int>(it->x()), static_cast<int>(it->y())) || 
+				!visibilityMap.get(static_cast<int>(it->x()), static_cast<int>(it->y())))
 			{
 				it = entities.erase(it);
 			}
@@ -303,7 +304,7 @@ namespace SGA
 		//Check preconditions
 		for (const auto& precondition : actionType.preconditions)
 		{
-			if (!precondition->isFullfiled(*this, { ActionTarget::createEntityActionTarget(entity.id) }))
+			if (!precondition->isFullfiled(*this, { ActionTarget::createEntityActionTarget(entity.getID()) }))
 			{
 				return false;
 			}
@@ -343,7 +344,7 @@ namespace SGA
 	{
 		for(const auto& entity : entities)
 		{
-			if(static_cast<int>(pos.x) == static_cast<int>(entity.position.x) && static_cast<int>(pos.y) == static_cast<int>(entity.position.y))
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
 			{
 				return &entity;
 			}
@@ -451,8 +452,8 @@ namespace SGA
 		//Print entities
 		for (auto& entity : entities)
 		{
-			std::cout << "[OwnerID]" <<entity.ownerID << std::endl;			
-			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).name << " [entityID]: "<<entity.id<< std::endl;
+			std::cout << "[OwnerID]" << entity.getOwnerID() << std::endl;			
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).name << " [entityID]: "<< entity.getID() << std::endl;
 		}
 	}
 
@@ -475,9 +476,9 @@ namespace SGA
 		//Add entities
 		for (auto& entity : entities)
 		{
-			auto& pos = entity.position;
+			auto& pos = entity.getPosition();
 			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).symbol;
-			const char ownerID = std::to_string(entity.ownerID)[0];
+			const char ownerID = std::to_string(entity.getOwnerID())[0];
 			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
 
 			map[entityMapIndex] = symbol;

@@ -142,7 +142,7 @@ namespace SGA
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
 					auto& entity = *possibleAction.targets[0].getEntity(state);
-					if (entity.id != *actionsSettings.selectedEntities.begin())
+					if (entity.getID() != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
 
@@ -185,7 +185,7 @@ namespace SGA
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
 					auto& entity = *possibleAction.targets[0].getEntity(state);
-					if (entity.id != *actionsSettings.selectedEntities.begin())
+					if (entity.getID() != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
 
@@ -265,15 +265,15 @@ namespace SGA
 				//Assign selected unit
 				if (actionsSettings.waitingForEntity)
 				{
-					assignEntity(state, actionsSettings, selectedEntity->id);
+					assignEntity(state, actionsSettings, selectedEntity->getID());
 				}
 				else
 				{
 					//actionsSettings.selectedEntities.clear();
 
 					//Pick up entity
-					if (selectedEntity->ownerID == pointOfViewPlayerID)
-						actionsSettings.selectedEntities.emplace(selectedEntity->id);
+					if (selectedEntity->getOwnerID() == pointOfViewPlayerID)
+						actionsSettings.selectedEntities.emplace(selectedEntity->getID());
 				}
 			}
 			else
@@ -477,7 +477,7 @@ namespace SGA
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
-			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
+			unitInfo = type.name + " " + std::to_string(unit.getID()) + " PID: " + std::to_string(unit.getOwnerID());
 			ImGui::Text(unitInfo.c_str());
 		}
 

@@ -8,7 +8,7 @@ namespace SGA
 		//Generate entities actions
 		for (const auto& sourceEntity : gameState.getEntities())
 		{
-			if (sourceEntity.ownerID != playerID)
+			if (sourceEntity.getOwnerID() != playerID)
 				continue;
 			
 			for (const auto& actionInfo : sourceEntity.getAttachedActions())
@@ -28,7 +28,7 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.id, action.continuousActionID));
+							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.getID(), action.continuousActionID));
 						}
 					}
 				}
@@ -147,8 +147,8 @@ namespace SGA
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourceEntity.ownerID;
-			action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
+			action.ownerID = sourceEntity.getOwnerID();
+			action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
 			
 			for (auto& target : targetsProduct)
 			{
@@ -219,9 +219,9 @@ namespace SGA
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.type)
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, entity.position, type.first.samplingMethod);
+			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.samplingMethod);
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.position, type.first.groupEntityTypes, type.first.samplingMethod);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.groupEntityTypes, type.first.samplingMethod);
 				break;
 			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
 				break;
@@ -365,7 +365,7 @@ namespace SGA
 	Action ActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
+		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.getID()) };
 		return selfAction;
 	}
 

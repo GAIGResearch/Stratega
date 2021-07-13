@@ -43,7 +43,7 @@ namespace SGA
 								double URQValue = (u * x) / den;
 								//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
 							
-								if (entity.ownerID == playerID) {
+								if (entity.getOwnerID() == playerID) {
 									const double val = URQValue * parameterWeight;
 									parameterValues.push_back(val);
 									sum += val;

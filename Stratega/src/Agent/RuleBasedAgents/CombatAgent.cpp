@@ -7,7 +7,7 @@ namespace SGA
 		std::vector<Action> filteredActions;
 		for (const auto& a : actions)
 		{
-			if (a.getActionTypeID() != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.id)
+			if (a.getActionTypeID() != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.getID())
 			{
 				filteredActions.emplace_back(a);
 			}
@@ -38,7 +38,7 @@ namespace SGA
 			double movementRange = unit->getParameter("MovementPoints");
 			double attackRange = unit->getParameter("AttackRange");
 
-			if (pos.manhattanDistance(unit->position) <= attackRange + movementRange);
+			if (pos.manhattanDistance(unit->getPosition()) <= attackRange + movementRange);
 			{
 				units.emplace_back(unit);
 			}
@@ -72,7 +72,7 @@ namespace SGA
 			// Check if the unit can heal
 			for (auto const& healingAction : healingActions)
 			{
-				if (healingAction.targets[0].getEntityID() == healer->id)
+				if (healingAction.targets[0].getEntityID() == healer->getID())
 				{
 					heal += healer->getParameter("HealAmount");
 					break;
@@ -86,7 +86,7 @@ namespace SGA
 
 	bool CombatAgent::getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity*>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const
 	{
-		if (u.position.manhattanDistance(pos) <= range)
+		if (u.getPosition().manhattanDistance(pos) <= range)
 			return false;
 
 		auto inRangeMoves = filterMovesInRange(moves, pos, range, gameState);
@@ -147,7 +147,7 @@ namespace SGA
 	{
 		Entity* attackTarget = attack.targets[0].getEntity(gameState); 
 		auto attackAmount = attackTarget->getParameter("AttackDamage");
-		auto healAmount = getPotentialHealing(actions, target.position, opponentUnits, gameState);
+		auto healAmount = getPotentialHealing(actions, target.getPosition(), opponentUnits, gameState);
 		double targetHealth = target.getParameter("Health");
 
 		if (attackAmount >= targetHealth)
@@ -172,9 +172,9 @@ namespace SGA
 		Entity* healTarget = heal.targets[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");
 		double targetHealth = target.getParameter("Health");
-		double maxHealth = (*gameState.getGameInfo()->entityTypes)[target.id].getParamMax("Health");
+		double maxHealth = (*gameState.getGameInfo()->entityTypes)[target.getID()].getParamMax("Health");
 		auto resultingHealth = std::min<double>(maxHealth, targetHealth + healAmount);
-		auto potentialDamage = getPotentialDamage(target.position, opponentUnits, gameState);
+		auto potentialDamage = getPotentialDamage(target.getPosition(), opponentUnits, gameState);
 
 		if (potentialDamage < 0.0001)
 		{
@@ -225,10 +225,10 @@ namespace SGA
 
 			for (auto* ally : opponentUnits)
 			{
-				if (ally->id == opp->id)
+				if (ally->getID() == opp->getID())
 					continue;
 
-				int dist = opp->position.manhattanDistance(ally->position);
+				int dist = opp->getPosition().manhattanDistance(ally->getPosition());
 				int movesToSupport = dist / ally->getParameter("MovementPoints");
 				avgSupportScore += unitScores.at(ally->getEntityTypeID()) / (1. + movesToSupport);
 			}
@@ -239,7 +239,7 @@ namespace SGA
 			double avgAttackScore = 0;
 			for (auto* attacker : myUnits)
 			{
-				int dist = opp->position.chebyshevDistance(attacker->position);
+				int dist = opp->getPosition().chebyshevDistance(attacker->getPosition());
 				double movementRange = attacker->getParameter("MovementPoints");
 				int movesToAttack = std::max(0, dist - static_cast<int>(movementRange)) / movementRange;
 				avgAttackScore += unitScores.at(attacker->getEntityTypeID()) / (1. + movesToAttack);
@@ -269,7 +269,7 @@ namespace SGA
 		}
 		else
 		{
-			moveTarget = bestAttackTarget->position;
+			moveTarget = bestAttackTarget->getPosition();
 		}
 
 		auto actions = fm.generateActions(currentState, getPlayerID());
@@ -283,7 +283,7 @@ namespace SGA
 			for (const auto& attack : filterActionTypes(subActions, "Attack"))
 			{
 				Entity& targetUnit = *attack.targets[1].getEntity(currentState);
-				if (targetUnit.ownerID == getPlayerID())
+				if (targetUnit.getOwnerID() == getPlayerID())
 					continue; // No attackerino my own units
 
 				auto score = getAttackScore(actions, targetUnit, attack, opponentUnits, currentState);
@@ -303,11 +303,11 @@ namespace SGA
 			for (const auto& heal : filterActionTypes(subActions, "Heal"))
 			{
 				Entity& targetUnit = *heal.targets[0].getEntity(currentState);
-				if (targetUnit.ownerID != getPlayerID())
+				if (targetUnit.getOwnerID() != getPlayerID())
 					continue; // No healerino opponents units
 
 				double targetHealth = targetUnit.getParameter("Health");
-				double maxHealth = (*currentState.getGameInfo()->entityTypes)[targetUnit.id].getParamMax("Health");
+				double maxHealth = (*currentState.getGameInfo()->entityTypes)[targetUnit.getID()].getParamMax("Health");
 				if (targetHealth >= maxHealth)
 					continue; // Stop healing units that are already full
 
