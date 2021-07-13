@@ -11,6 +11,7 @@
 #include <Stratega/Agent/PortfolioGreedySearchAgent.h>
 #include <Stratega/Agent/POEAgent/POEAgent.h>
 #include <Stratega/Agent/PRHEAAgent/PRHEAAgent.h>
+#include <Stratega/Agent/MOPRHEAAgent/MOPRHEAAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 #include <Stratega/Agent/ScriptedAgent.h>
 
@@ -75,6 +76,7 @@ namespace SGA
 		factory.registerAgent<PortfolioGreedySearchAgent, PortfolioGreedySearchParams>("PGSAgent");
 		factory.registerAgent<POEAgent, POEParams>("POEAgent");
 		factory.registerAgent<PRHEAAgent, PRHEAParameters>("PRHEAAgent");
+		factory.registerAgent<MOPRHEAAgent, MOPRHEAParameters>("MOPRHEAAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
 		factory.registerAgent<ActionAbstractionMCTSAgent, MCTSParameters>("PMCTSAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
