@@ -10,6 +10,7 @@
 #include <Stratega/Agent/TreeSearchAgents/ActionAbstractionMCTSAgent.h>
 #include <Stratega/Agent/PortfolioGreedySearchAgent.h>
 #include <Stratega/Agent/POEAgent/POEAgent.h>
+#include <Stratega/Agent/PRHEAAgent/PRHEAAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 #include <Stratega/Agent/ScriptedAgent.h>
 
@@ -73,6 +74,7 @@ namespace SGA
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<PortfolioGreedySearchAgent, PortfolioGreedySearchParams>("PGSAgent");
 		factory.registerAgent<POEAgent, POEParams>("POEAgent");
+		factory.registerAgent<PRHEAAgent, PRHEAParameters>("PRHEAAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
 		factory.registerAgent<ActionAbstractionMCTSAgent, MCTSParameters>("PMCTSAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
