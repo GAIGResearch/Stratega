@@ -8,7 +8,7 @@ namespace SGA {
         auto actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose and apply random action
             //todo forward random generator to getRandomAction
             auto action = actionSpace.at(rand() % actionSpace.size());
@@ -33,7 +33,7 @@ namespace SGA {
         params.REMAINING_FM_CALLS -= SGA::roll(gameState, *forwardModel, action, params.PLAYER_ID, params);
 
         //Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
+        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver())
         {
             //Roll actions for the opponent(s).
             params.REMAINING_FM_CALLS -= SGA::rollOppOnly(gameState, *forwardModel, params);
@@ -48,7 +48,7 @@ namespace SGA {
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
@@ -97,7 +97,7 @@ namespace SGA {
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
@@ -119,8 +119,7 @@ namespace SGA {
                 // check the first parent and choose portfolio if available
                 if (actIdx < from.actions.size())
                 {
-                    validAction = from.actions[actIdx].validate(gameState);
-                    if (validAction)
+                    if(validAction) 
                         actions.emplace_back(from.actions[actIdx]);
                 }
                 else

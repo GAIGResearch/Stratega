@@ -36,7 +36,7 @@ namespace SGA::Widgets
 		bool selectionChanged = false;
 		if (ImGui::BeginCombo("View", ("Player " + std::to_string(fowSettings.selectedPlayerID)).c_str()))
 		{
-			for (const auto& player : state.players)
+			for (const auto& player : state.getPlayers())
 			{
 				auto isSelected = fowSettings.selectedPlayerID == player.id;
 				if (ImGui::Selectable(("Player " + std::to_string(player.id)).c_str(), isSelected))

@@ -325,7 +325,7 @@ namespace SGA
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
 
 		ImGui::Begin("Info window");
-		std::string text = "Tick:" + std::to_string(state.currentTick);
+		std::string text = "Tick:" + std::to_string(state.getCurrentTick());
 		ImGui::Text(text.c_str());
 		text = "Current Player : " + std::to_string(state.getCurrentTBSPlayer());
 		ImGui::Text(text.c_str());
@@ -473,7 +473,7 @@ namespace SGA
 
 		ImGui::BeginChild("Scrolling");
 
-		for (auto& unit : state.entities)
+		for (auto& unit : state.getEntities())
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
@@ -556,7 +556,7 @@ namespace SGA
 						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
 						break;
 					case ActionTarget::TechnologyReference:
-						actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+						actionInfo += " Technology: " + state.getGameInfo()->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
 						actionInfo += " Entity: " + targetType.getEntityType(state).name;
@@ -594,7 +594,7 @@ namespace SGA
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
 			const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
-			for (const auto& parameter : *state.gameInfo->playerParameterTypes)
+			for (const auto& parameter : *state.getGameInfo()->playerParameterTypes)
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;

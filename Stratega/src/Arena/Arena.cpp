@@ -174,7 +174,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel)
 {
-	if(state.gameType == SGA::GameType::TBS)
+	if(state.getGameType() == SGA::GameType::TBS)
 	{
 		SGA::Log::logValue("ActivePlayer", state.getCurrentTBSPlayer());
 
@@ -182,11 +182,11 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 		auto actions = forwardModel.generateActions(state, state.getCurrentTBSPlayer());
 		SGA::Log::logValue("ActionCount", actions.size());
 	}
-	else if(state.gameType == SGA::GameType::RTS)
+	else if(state.getGameType() == SGA::GameType::RTS)
 	{
-		for (size_t i = 0; i < state.players.size(); i++)
+		for (size_t i = 0; i < state.getNumPlayers(); i++)
 		{
-			int playerID = state.players[i].id;
+			int playerID = state.getPlayers()[i].id;
 			SGA::LoggingScope playerScope("Player" + std::to_string(playerID));
 			auto actions = forwardModel.generateActions(state, playerID);
 			SGA::Log::logValue("ActionCount", actions.size());
@@ -196,14 +196,14 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 
 void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
 {
-	if (finalState.gameType == SGA::GameType::TBS)
+	if (finalState.getGameType() == SGA::GameType::TBS)
 	{
-		SGA::Log::logSingleValue("WinnerID", finalState.winnerPlayerID);
-		SGA::Log::logSingleValue("Turns", finalState.currentTick + 1);
+		SGA::Log::logSingleValue("WinnerID", finalState.getWinnerID());
+		SGA::Log::logSingleValue("Turns", finalState.getCurrentTick() + 1);
 	}
-	else if (finalState.gameType == SGA::GameType::RTS)
+	else if (finalState.getGameType() == SGA::GameType::RTS)
 	{
-		SGA::Log::logSingleValue("WinnerID", finalState.winnerPlayerID);
+		SGA::Log::logSingleValue("WinnerID", finalState.getWinnerID());
 	}
 }
 

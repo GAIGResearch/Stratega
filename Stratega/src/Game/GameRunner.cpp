@@ -56,7 +56,7 @@ namespace SGA
 
 	void GameRunner::run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer)
 	{
-		assert(agents.size() == currentState->players.size());
+		assert(agents.size() == currentState->getNumPlayers());
 		if(observer == nullptr)
 		{
 			observer = defaultObserver;
@@ -90,7 +90,7 @@ namespace SGA
 
 	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents)
 	{
-		assert(agents.size() == currentState->players.size());
+		assert(agents.size() == currentState->getNumPlayers());
 		try
 		{
 			// Check if a player is controlled by an human
@@ -180,7 +180,7 @@ namespace SGA
 	{
 		if (renderer == nullptr)
 		{
-			renderer = createRenderer(currentState->gameType);
+			renderer = createRenderer(currentState->getGameType());
 			renderer->init(*currentState, *config);
 		}
 	}

@@ -12,7 +12,7 @@ namespace SGA
 	void RTSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
 	{
 		std::vector<AgentThread> threads(agents.size());
-		while (!currentState->isGameOver && !renderer->isGameEndRequested())
+		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
 		{
 			// Run agents
 			for(size_t i = 0; i < agents.size(); i++)
@@ -80,7 +80,7 @@ namespace SGA
 	void RTSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
 	{
 		std::vector<AgentThread> threads(agents.size());
-		while (!currentState->isGameOver)
+		while (!currentState->isGameOver())
 		{
 			ActionAssignment nextActions;
 			try

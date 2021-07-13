@@ -92,7 +92,7 @@ namespace SGA
 	{
 		MCTSNode* cur = this;
 
-		while (!cur->gameState.isGameOver)// && cur->nodeDepth < params.ROLLOUT_LENGTH)
+		while (!cur->gameState.isGameOver())// && cur->nodeDepth < params.ROLLOUT_LENGTH)
 		{
 			if (!cur->isFullyExpanded()) {
 				return (cur->expand(forwardModel, params, randomGenerator));
@@ -199,7 +199,7 @@ namespace SGA
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
-			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver)) {
+			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
 					break;
@@ -219,7 +219,7 @@ namespace SGA
 			return true;
 
 		//end of game
-		return rollerState.isGameOver;
+		return rollerState.isGameOver();
 	}
 
 	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int playerID) const
@@ -228,7 +228,7 @@ namespace SGA
 		params.REMAINING_FM_CALLS -= SGA::roll(targetGameState, forwardModel, action, playerID, params);
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-		while (!targetGameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !targetGameState.isGameOver)
+		while (!targetGameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !targetGameState.isGameOver())
 		{
 			//Roll actions for the opponent(s).
 			params.REMAINING_FM_CALLS -= SGA::rollOppOnly(targetGameState, forwardModel, params);

@@ -6,14 +6,14 @@ namespace SGA
 	{
 		std::vector<Action> bucket;
 		//Generate entities actions
-		for (const auto& sourceEntity : gameState.entities)
+		for (const auto& sourceEntity : gameState.getEntities())
 		{
 			if (sourceEntity.ownerID != playerID)
 				continue;
 			
 			for (const auto& actionInfo : sourceEntity.getAttachedActions())
 			{
-				auto& actionType = gameState.gameInfo->getActionType(actionInfo.actionTypeID);
+				auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 				
 				bool generateContinuousAction = true;
 				//Check if action is continuos
@@ -37,7 +37,7 @@ namespace SGA
 					continue;
 				
 				// Check if this action can be executed		
-				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.cooldownTicks)
 					continue;
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
@@ -60,7 +60,7 @@ namespace SGA
 		auto& player = *gameState.getPlayer(playerID);
 		for (const auto& actionInfo : player.attachedActions)
 		{
-			auto& actionType = gameState.gameInfo->getActionType(actionInfo.actionTypeID);
+			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 			bool generateContinuousAction = true;
 			//Check if action is continuos
 			if (actionType.isContinuous)
@@ -84,7 +84,7 @@ namespace SGA
 			
 			// Check if this action can be executed
 			
-			if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+			if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.cooldownTicks)
 				continue;
 			if (!gameState.canExecuteAction(player, actionType))
 				continue;
@@ -103,7 +103,7 @@ namespace SGA
 		}		
 		
 		//Generate EndTurnAction
-		if(gameState.gameType == GameType::TBS)
+		if(gameState.getGameType() == GameType::TBS)
 		{
 			bucket.emplace_back(Action::createEndAction(playerID));
 		}
@@ -338,7 +338,7 @@ namespace SGA
 	{
 		std::vector<ActionTarget> targets;
 		
-		for (const auto& technoloTreeType : gameState.gameInfo->technologyTreeCollection->technologyTreeTypes)
+		for (const auto& technoloTreeType : gameState.getGameInfo()->technologyTreeCollection->technologyTreeTypes)
 		{
 			for (auto& technology : technoloTreeType.second.technologies)
 			{

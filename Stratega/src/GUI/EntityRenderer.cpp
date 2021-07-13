@@ -37,11 +37,11 @@ namespace SGA
 	void EntityRenderer::update(const GameState& state)
 	{
 		// Ensure the vertex array has the correct size
-		vertices.resize(4 * state.entities.size());
+		vertices.resize(4 * state.getEntities().size());
 
-		for(size_t i = 0; i < state.entities.size(); i++)
+		for(size_t i = 0; i < state.getEntities().size(); i++)
 		{
-			const auto& entity = state.entities.at(i);
+			const auto& entity = state.getEntities()[i];
 			auto* quadPtr = &vertices[i * 4];
 			
 			// define the 4 corners

@@ -116,7 +116,7 @@ namespace  SGA
 	bool IsWalkable::isFulfilled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
+		return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) }).isWalkable && state.getEntityAt(pos) == nullptr;
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -131,7 +131,7 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).getTileTypeID()==tileType.id;
+		return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) }).getTileTypeID()==tileType.id;
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)

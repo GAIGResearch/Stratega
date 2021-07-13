@@ -7,7 +7,7 @@ namespace SGA
 
 	double AttackWeakestOpponentScript::getHealth(const Entity* entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->getEntityTypeID()].parameters)
+		for (const auto& param : (*gamestate.getGameInfo()->entityTypes)[entity->getEntityTypeID()].parameters)
 		{
 			if (param.second.name == "Health")
 			{
@@ -23,7 +23,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+			for (auto a : *gameState.getGameInfo()->actionTypes)
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.name;
 			}
@@ -38,7 +38,7 @@ namespace SGA
 			double minimalHealth = std::numeric_limits<double>::max();
 			int weakestUnitID = -1;
 
-			for (auto& entity : gameState.entities) {
+			for (auto& entity : gameState.getEntities()) {
 				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
 				double health =  getHealth(&entity, gameState);
 				healthPerUnit.insert(std::pair<int, double>(entity.id, health));
@@ -124,7 +124,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+			for (auto a : *gameState.getGameInfo()->actionTypes)
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.name;
 			}
@@ -139,7 +139,7 @@ namespace SGA
 			double minimalHealth = std::numeric_limits<double>::max();
 			int weakestUnitID = -1;
 
-			for (auto& entity : gameState.entities) {
+			for (auto& entity : gameState.getEntities()) {
 				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
 				double health = getHealth(&entity, gameState);
 				healthPerUnit.insert(std::pair<int, double>(entity.id, health));

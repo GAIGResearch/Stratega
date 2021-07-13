@@ -26,68 +26,11 @@ namespace SGA
 
 	public:
 
+		/***** CONSTRUCTORS *****/
+
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
 		GameState();
 
-		/// <summary>
-		/// Game Info (static information about this game)		
-		/// </summary>
-		std::shared_ptr<GameInfo> gameInfo;
-
-		/// <summary>
-		/// Navigational Mesh (for RTS)	
-		/// </summary>
-		std::shared_ptr<Navigation> navigation;
-
-		/// <summary>
-		/// Type of game being played (TBS, RTS...), as defined <here cref="SGA::GameType"/>
-		/// </summary>
-		GameType gameType;
-
-		/// <summary>
-		/// Indicates if the game is over.
-		/// </summary>
-		bool isGameOver;
-
-		/// <summary>
-		/// The ID of the player who won the game if the game is over. Value is -1 if game not over yet. 
-		/// </summary>
-		int winnerPlayerID;
-
-		/// <summary>
-		/// Current turn (for turn based games) or frame (real-time) of the game.
-		/// </summary>
-		int currentTick;
-
-		/// <summary>
-		/// Number of turns (TBS) or frames (RTS) when the game will finish.
-		/// </summary>
-		int tickLimit;
-
-		/// <summary>
-		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
-		/// </summary>
-		Grid2D<Tile> board;
-
-		/// <summary>
-		/// List of entities in this game	
-		/// </summary>
-		std::vector<Entity> entities;
-
-		/// <summary>
-		/// List of players in this game	
-		/// </summary>
-		std::vector<Player> players;
-
-		/// <summary>
-		/// Map that indicates if a technology is researched by a player. Key is the player ID and maps to a vector of technology IDs.
-		/// </summary>
-		std::unordered_map<int, std::vector<int>> researchedTechnologies;
-
-		/// <summary>
-		/// The id that will be assigned to the next entity that is added to the game.
-		/// </summary>
-		int nextEntityID = 0;
 
 		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
 
@@ -136,6 +79,10 @@ namespace SGA
 		/// <param name="technologyID">ID of the technology to research</param>
 		void researchTechnology(int playerID, int technologyID);
 
+		/// <summary>
+		/// Initializes the research technologies to all players, to none.
+		/// </summary>
+		void initResearchTechs();
 
 
 
@@ -162,8 +109,31 @@ namespace SGA
 		/// <returns>A boolean indicating if tile map contains the position</returns>
 		bool isInBounds(Vector2f pos) const;
 
+		/// <summary>
+		/// Returns the width of the board.
+		/// </summary>
+		/// <returns>The width of the board.</returns>
+		int getBoardWidth() const { return board.getWidth(); }
 
+		/// <summary>
+		/// Returns the height of the board.
+		/// </summary>
+		/// <returns>The height of the board.</returns>
+		int getBoardHeight() const { return board.getHeight(); }
 
+		/// <summary>
+		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="pos">Position of the tile to retrieve</param>
+		/// <returns>The tile at 'pos'</returns>
+		Tile getTileAt(Vector2i pos) const;
+
+		/// <summary>
+		/// Initializes the board with the tiles passed by parameter. 
+		/// </summary>
+		/// <param name="tiles">Tiles to fill the board with.</param>
+		/// <param name="boardWidth">Width of the board to initialize.</param>
+		void initBoard(int boardWidth, std::vector<Tile> tiles);
 
 
 		/***** GAME ENTITIES FUNCTIONS *****/
@@ -195,6 +165,17 @@ namespace SGA
 		/// <returns>Returns the unique ID of the entity created.</returns>
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
 
+		/// <summary>
+		/// Gets the list of all entities.
+		/// </summary>
+		/// <returns>A vector with all entities in the game.</returns>
+		std::vector<Entity> getEntities() const { return entities; };
+
+		/// <summary>
+		/// Removes an entity from the vector of entities of the game.
+		/// </summary>
+		/// <param name="idx">IDx of the entity to remove.</param>
+		void removeEntity(int idx) { entities.erase(entities.begin() + idx); }
 
 		/// <summary>
 		/// Gets the list of entities of the specified player.
@@ -246,6 +227,11 @@ namespace SGA
 		/// <returns>true if the player with ID playerID can play now.</returns>
 		bool canPlay(int playerID) const;
 
+		/// <summary>
+		/// Returns all players of this game.
+		/// </summary>
+		/// <returns>Players of the game.</returns>
+		std::vector<Player> getPlayers() const { return players; };
 
 		/// <summary>
 		/// Gets the number of players in this game state.
@@ -357,11 +343,6 @@ namespace SGA
 		int getFogOfWarTileId() const { return fogOfWarId; }
 
 		/// <summary>
-		/// Random number generator engine
-		/// </summary>
-		std::mt19937 rngEngine;
-
-		/// <summary>
 		/// Returns the ID of the player that moves in this state for Turn Based Games.
 		/// For non-TBS, this value is -1.
 		/// </summary>
@@ -372,7 +353,156 @@ namespace SGA
 		/// </summary>
 		void setCurrentTBSPlayer(int playerID) { currentPlayer = playerID; }
 
+		/// <summary>
+		/// Returns true if the game is over.
+		/// </summary>
+		/// <returns>Whether the game is over (true) or not (false).</returns>
+		bool isGameOver() const { return gameOver; }
+
+		/// <summary>
+		/// Sets if the game is over
+		/// </summary>
+		/// <param name="over">Indicates if the game is over</param>
+		void setGameOver(bool over) { gameOver = over; }
+
+		/// <summary>
+		/// Returns the player ID of the winner. If game is not over, this returns -1.
+		/// </summary>
+		/// <returns>ID of the winner player.</returns>
+		int getWinnerID() const { return winnerPlayerID; }
+
+		/// <summary>
+		/// Sets the winner of the game.
+		/// </summary>
+		/// <param name="winnerID">Player ID of the winner</param>
+		void setWinnerID(int winnerID) { winnerPlayerID = winnerID; }
+
+		/// <summary>
+		/// Returns the current tick of the game.
+		/// </summary>
+		int getCurrentTick() const { return currentTick; }
+		
+		/// <summary>
+		/// Increments the current tick in the game by 1.
+		/// </summary>
+		void incTick() { currentTick++; }
+
+		/// <summary>
+		/// Returns the current game tick limit.
+		/// </summary>
+		int getTickLimit() { return tickLimit; }
+		
+		/// <summary>
+		/// Sets the time limit of the game, measured in ticks.
+		/// </summary>
+		/// <param name="tickL"></param>
+		void setTickLimit(int tickL) { tickLimit = tickL; }
+
+		/// <summary>
+		/// Returns a pointer to the struct with static information about the game.
+		/// </summary>
+		std::shared_ptr<GameInfo> getGameInfo() const { return gameInfo; }
+		
+		/// <summary>
+		/// Sets the pointer to the game information struct.
+		/// </summary>
+		void setGameInfo(std::shared_ptr<GameInfo> gameInfoPtr) { gameInfo = gameInfoPtr; }
+
+		/// <summary>
+		/// Returns the type of the game, of GameType
+		/// </summary>
+		GameType getGameType() const { return gameType; }
+
+		/// <summary>
+		/// Sets the type of game (enum type GameType)
+		/// </summary>
+		void setGameType(GameType gt) { gameType = gt; }
+
+		/// <summary>
+		/// Returns a pointer to the Navigation object used by the RTS engine for pathfinding. 
+		/// </summary>
+		std::shared_ptr<Navigation> getRTSNavigation() const { return navigation; }
+		
+		/// <summary>
+		/// Sets the pointer to the Navigation object used by the RTS engine for pathfinding. 
+		/// </summary>
+		void setRTSNavigation(std::shared_ptr<Navigation> nav) { navigation = nav; }
+
+		/// <summary>
+		/// Returns the game's random number generator.
+		/// </summary>
+		/// <returns></returns>
+		std::mt19937 getRndEngine() { return rngEngine; }
+
 	private:
+
+		/// <summary>
+		/// Indicates if the game is over.
+		/// </summary>
+		bool gameOver;
+
+		/// <summary>
+		/// The ID of the player who won the game if the game is over. Value is -1 if game not over yet. 
+		/// </summary>
+		int winnerPlayerID;
+
+		/// <summary>
+		/// Current turn (for turn based games) or frame (real-time) of the game.
+		/// </summary>
+		int currentTick;
+
+
+		/// <summary>
+		/// The id that will be assigned to the next entity that is added to the game.
+		/// </summary>
+		int nextEntityID = 0;
+
+		/// <summary>
+		/// Number of turns (TBS) or frames (RTS) when the game will finish.
+		/// </summary>
+		int tickLimit;
+
+		/// <summary>
+		/// Game Info (static information about this game)		
+		/// </summary>
+		std::shared_ptr<GameInfo> gameInfo;
+
+		/// <summary>
+		/// Type of game being played (TBS, RTS...), as defined <here cref="SGA::GameType"/>
+		/// </summary>
+		GameType gameType;
+
+		/// <summary>
+		/// Navigational Mesh (for RTS)	
+		/// </summary>
+		std::shared_ptr<Navigation> navigation;
+
+		/// <summary>
+		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
+		/// </summary>
+		Grid2D<Tile> board;
+
+		/// <summary>
+		/// Map that indicates if a technology is researched by a player. Key is the player ID and maps to a vector of technology IDs.
+		/// </summary>
+		std::unordered_map<int, std::vector<int>> researchedTechnologies;
+
+		/// <summary>
+		/// List of entities in this game	
+		/// </summary>
+		std::vector<Entity> entities;
+
+
+		/// <summary>
+		/// List of players in this game	
+		/// </summary>
+		std::vector<Player> players;
+
+
+		/// <summary>
+		/// Random number generator engine
+		/// </summary>
+		std::mt19937 rngEngine;
 
 		/// <summary>
 		/// Tile used for fog of war.

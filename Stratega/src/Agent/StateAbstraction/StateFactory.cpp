@@ -6,17 +6,17 @@ namespace SGA
 	AbstractState StateFactory::createAbstractState(GameState& tbsState)
 	{
 		AbstractState state = AbstractState();
-		std::vector<double> stateInfo = { static_cast<double>(tbsState.getCurrentTBSPlayer()), static_cast<double>(tbsState.currentTick) };
+		std::vector<double> stateInfo = { static_cast<double>(tbsState.getCurrentTBSPlayer()), static_cast<double>(tbsState.getCurrentTick()) };
 		state.addAttribute("StateInfo", stateInfo);
 
 		if (config.insertMap)
 		{
 			std::vector<double> mapDescription;
-			for (int i = 0; i < tbsState.board.getWidth(); i++) 
+			for (int i = 0; i < tbsState.getBoardWidth(); i++)
 			{
-				for (int j = 0; j < tbsState.board.getHeight(); j++) 
+				for (int j = 0; j < tbsState.getBoardHeight(); j++)
 				{
-					auto tile = tbsState.board[Vector2i(i, j)];
+					auto tile = tbsState.getTileAt(Vector2i(i, j));
 					mapDescription.push_back(tile.getTileTypeID());
 				}
 			}
@@ -26,7 +26,7 @@ namespace SGA
 		if (config.insertEntityPositions) 
 		{
 			std::vector<double> positions;
-			for (auto entity : tbsState.entities) {
+			for (auto entity : tbsState.getEntities()) {
 				positions.push_back(entity.position.x);
 				positions.push_back(entity.position.y);
 			}
@@ -38,8 +38,8 @@ namespace SGA
 			if (entry.second == true) {
 				std::vector<double> parameterValues;
 				//int globalParameterID = tbsState.getParameterGlobalID(entry.first);
-				for (auto entity : tbsState.entities) {
-					const auto& entityType = tbsState.gameInfo->getEntityType(entity.getEntityTypeID());
+				for (auto entity : tbsState.getEntities()) {
+					const auto& entityType = tbsState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					for (const auto& parameter : entityType.parameters)
 					{
 						if (parameter.second.name == entry.first)
