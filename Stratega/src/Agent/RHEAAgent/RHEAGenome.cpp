@@ -97,6 +97,7 @@ namespace SGA {
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
+
         while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
@@ -119,6 +120,7 @@ namespace SGA {
                 // check the first parent and choose portfolio if available
                 if (actIdx < from.actions.size())
                 {
+                    validAction = from.actions[actIdx].validate(gameState);
                     if(validAction) 
                         actions.emplace_back(from.actions[actIdx]);
                 }
@@ -144,7 +146,6 @@ namespace SGA {
                 applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
                 actionSpace = forwardModel->generateActions(gameState, params.PLAYER_ID);
             }
-
             actIdx++;
         }
 

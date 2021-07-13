@@ -486,7 +486,7 @@ namespace SGA
         	
             auto conditions = winCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions<Condition>(conditions, conditionList, context);
-            fm->winConditions.emplace_back(conditionList);
+            fm->addWinConditions(conditionList);
         }
 
         //Parse Lose Conditions
@@ -498,7 +498,7 @@ namespace SGA
 
             auto conditions = loseCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions<Condition>(conditions, conditionList, context);
-            fm->loseConditions.emplace_back(conditionList);
+            fm->addLoseConditions(conditionList);
         }
 		
 		// Parse Triggers

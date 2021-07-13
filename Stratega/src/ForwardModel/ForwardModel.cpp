@@ -415,4 +415,14 @@ namespace SGA
 			}
 		}
 	}
+
+	void ForwardModel::addWinConditions(std::vector<std::shared_ptr<Condition>> conditions)
+	{
+		winConditions.emplace_back(conditions);
+	}
+
+	void ForwardModel::addLoseConditions(std::vector<std::shared_ptr<Condition>> conditions)
+	{
+		loseConditions.emplace_back(conditions);
+	}
 }
