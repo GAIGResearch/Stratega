@@ -258,7 +258,7 @@ namespace SGA
 			return std::to_string(getContinuousActionID());
 			break;
 		case TileTypeReference:
-			return getTileType(state).name;
+			return getTileType(state).getName();
 			break;
 		default:
 			return "Not defined";

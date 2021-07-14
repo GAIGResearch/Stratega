@@ -457,7 +457,7 @@ namespace SGA
 			for (int x = 0; x < board.getWidth(); ++x)
 			{
 				//Get tile type
-				map += gameInfo->getTileType(board.get(x, y).getTileTypeID()).symbol;
+				map += gameInfo->getTileType(board.get(x, y).getTileTypeID()).getSymbol();
 				map += "  ";
 			}
 			map += "\n";

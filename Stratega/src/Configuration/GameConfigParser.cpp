@@ -148,22 +148,22 @@ namespace SGA
 
         //Add fog of war tile
         TileType fogOfWarType;
-        fogOfWarType.id = idCounter++;
-        fogOfWarType.name = "FogOfWar";
-        fogOfWarType.isWalkable = false;
-        fogOfWarType.symbol = '_';
-        config.tileTypes.emplace(fogOfWarType.id, std::move(fogOfWarType));
+        fogOfWarType.setID(idCounter++);
+        fogOfWarType.setName("FogOfWar");
+        fogOfWarType.setWalkable(false);
+        fogOfWarType.setSymbol('_');
+        config.tileTypes.emplace(fogOfWarType.getID(), std::move(fogOfWarType));
 
 		for(const auto& nameConfigPair : tileConfigs)
 		{
             TileType type;
-            type.id = idCounter++;
-            type.name = nameConfigPair.first;
-			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
-			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
-            type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
-			type.symbol = nameConfigPair.second["Symbol"].as<char>();
-            config.tileTypes.emplace(type.id, std::move(type));
+            type.setID(idCounter++);
+            type.setName(nameConfigPair.first);
+			type.setWalkable(nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable()));
+			type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
+            type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
+			type.setSymbol(nameConfigPair.second["Symbol"].as<char>());
+            config.tileTypes.emplace(type.getID(), std::move(type));
 		}
 	}
 
@@ -826,8 +826,8 @@ namespace SGA
         const auto* defaultTile = &config.tileTypes.begin()->second;
         for (const auto& idTilePair : config.tileTypes)
         {
-            tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
-            if (idTilePair.second.isDefaultTile)
+            tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+            if (idTilePair.second.isDefaultTile())
                 defaultTile = &idTilePair.second;
         }
 

@@ -24,7 +24,7 @@ namespace SGA
 
 		for (const auto& tileType : config.tileTypes)
 		{
-			context.tileTypeIDs.emplace(tileType.second.name, tileType.first);
+			context.tileTypeIDs.emplace(tileType.second.getName(), tileType.first);
 		}
 		return context;
 	}

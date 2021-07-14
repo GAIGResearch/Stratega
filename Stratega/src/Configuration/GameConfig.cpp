@@ -79,8 +79,8 @@ namespace SGA
 		const auto* defaultTile = &state->getGameInfo()->tileTypes->begin()->second;
 		for(const auto& idTilePair : *state->getGameInfo()->tileTypes)
 		{
-			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
-			if (idTilePair.second.isDefaultTile)
+			tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+			if (idTilePair.second.isDefaultTile())
 				defaultTile = &idTilePair.second;
 		}
 
@@ -181,7 +181,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : tileTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 

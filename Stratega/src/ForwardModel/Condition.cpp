@@ -133,7 +133,7 @@ namespace  SGA
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
 		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
-		return t.getTileTypeID()==tileType.id;
+		return t.getTileTypeID()==tileType.getID();
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
