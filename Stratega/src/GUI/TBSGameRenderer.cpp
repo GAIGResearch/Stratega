@@ -404,10 +404,10 @@ namespace SGA
 			ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
 
 
-			for (auto& entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
+			for (auto entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto& entityType = entity->getEntityType();
+				auto entityType = entity.getEntityType();
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.name);
 

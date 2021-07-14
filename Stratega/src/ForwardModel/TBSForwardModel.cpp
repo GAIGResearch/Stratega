@@ -30,14 +30,13 @@ namespace SGA
 			executeAction(state, action);
 		}
 
-		//Remove entities
-		for (size_t i = 0; i < state.getEntities().size(); i++)
+		//Remove flagged entities
+		auto& entities = state.getEntities();
+		auto it = entities.begin();
+		while(it != entities.end())
 		{
-			if (state.getEntities()[i].flagged())
-			{
-				state.removeEntity(i);
-				i--;
-			}
+			if (it->flagged())  it = entities.erase(it);
+			else 				it++;
 		}
 
 		//Check game is finished

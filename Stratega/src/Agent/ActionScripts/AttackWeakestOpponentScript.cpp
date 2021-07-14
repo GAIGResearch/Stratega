@@ -5,13 +5,13 @@
 namespace SGA
 {
 
-	double AttackWeakestOpponentScript::getHealth(const Entity* entity, const GameState& gamestate) const
+	double AttackWeakestOpponentScript::getHealth(const Entity& entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.getGameInfo()->entityTypes)[entity->getEntityTypeID()].parameters)
+		for (const auto& param : (*gamestate.getGameInfo()->entityTypes)[entity.getEntityTypeID()].parameters)
 		{
 			if (param.second.name == "Health")
 			{
-				return entity->getParamValues()[param.second.index];
+				return entity.getParamValues()[param.second.index];
 			}
 		}
 		return 0;
@@ -40,7 +40,7 @@ namespace SGA
 
 			for (auto& entity : gameState.getEntities()) {
 				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
-				double health =  getHealth(&entity, gameState);
+				double health =  getHealth(entity, gameState);
 				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)
@@ -141,7 +141,7 @@ namespace SGA
 
 			for (auto& entity : gameState.getEntities()) {
 				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
-				double health = getHealth(&entity, gameState);
+				double health = getHealth(entity, gameState);
 				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)

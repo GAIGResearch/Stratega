@@ -179,7 +179,7 @@ namespace  SGA
 		bool hasEntity = false;
 		for (auto& entity : entities)
 		{
-			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
 				hasEntity = true;
 		}
 
@@ -201,7 +201,7 @@ namespace  SGA
 
 		for (auto& entity : entities)
 		{
-			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
 				return true;
 		}
 	

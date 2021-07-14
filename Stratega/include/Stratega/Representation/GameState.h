@@ -53,7 +53,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="playerID">ID of the player we get the action types from.</param>
 		/// <returns>Vector with action types this player can execute in this game</returns>
-		const std::vector<ActionType> getPlayerActionTypes(int playerID) const;
+		std::vector<ActionType> getPlayerActionTypes(int playerID) const;
 
 		/// <summary>
 		/// Checks if given technology has been researched by a player.
@@ -100,14 +100,14 @@ namespace SGA
 		/// </summary>
 		/// <param name="pos">The position to be checked</param>
 		/// <returns>A boolean indicating if tile map contains the position</returns>
-		bool isInBounds(Vector2i pos) const;
+		bool isInBounds(const Vector2i& pos) const;
 
 		/// <summary>
 		/// Checks if position is inside of the tile map
 		/// </summary>
 		/// <param name="pos">The position to be checked</param>
 		/// <returns>A boolean indicating if tile map contains the position</returns>
-		bool isInBounds(Vector2f pos) const;
+		bool isInBounds(const Vector2f& pos) const;
 
 		/// <summary>
 		/// Returns the width of the board.
@@ -126,14 +126,14 @@ namespace SGA
 		/// </summary>
 		/// <param name="pos">Position of the tile to retrieve</param>
 		/// <returns>The tile at 'pos'</returns>
-		Tile getTileAt(Vector2i pos) const;
+		const Tile& getTileAt(const Vector2i& pos) const;
 
 		/// <summary>
 		/// Initializes the board with the tiles passed by parameter. 
 		/// </summary>
 		/// <param name="tiles">Tiles to fill the board with.</param>
 		/// <param name="boardWidth">Width of the board to initialize.</param>
-		void initBoard(int boardWidth, std::vector<Tile> tiles);
+		void initBoard(int boardWidth, std::vector<Tile>& tiles);
 
 
 		/***** GAME ENTITIES FUNCTIONS *****/
@@ -169,21 +169,8 @@ namespace SGA
 		/// Gets the list of all entities.
 		/// </summary>
 		/// <returns>A vector with all entities in the game.</returns>
-		std::vector<Entity> getEntities() const { return entities; };
-
-		/// <summary>
-		/// Removes an entity from the vector of entities of the game.
-		/// </summary>
-		/// <param name="idx">IDx of the entity to remove.</param>
-		void removeEntity(int idx) { entities.erase(entities.begin() + idx); }
-
-		/// <summary>
-		/// Gets the list of entities of the specified player.
-		/// </summary>
-		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
-		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
-		//std::vector< Entity*> getPlayerEntities(int playerID);
-		std::vector<const Entity*> getPlayerEntities(int playerID) const;
+		std::vector<Entity>& getEntities() { return entities; };
+		const std::vector<Entity>& getEntities() const { return entities; };
 
 		/// <summary>
 		/// Gets the list of entities of the specified player.
@@ -191,7 +178,7 @@ namespace SGA
 		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
 		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
-		std::vector<Entity*> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
+		std::vector<Entity> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null) const;
 
 		/// <summary>
 		/// Gets the list of entities that do not belong to the specified player.
@@ -199,8 +186,7 @@ namespace SGA
 		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
 		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
 		/// <returns>The list of entities not own by the given player.</returns>
-		std::vector<Entity*> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null);
-
+		std::vector<Entity> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null) const;
 
 
 
@@ -231,7 +217,8 @@ namespace SGA
 		/// Returns all players of this game.
 		/// </summary>
 		/// <returns>Players of the game.</returns>
-		std::vector<Player> getPlayers() const { return players; };
+		const std::vector<Player>& getPlayers() const { return players; };
+		std::vector<Player>& getPlayers() { return players; };
 
 		/// <summary>
 		/// Gets the number of players in this game state.
@@ -244,7 +231,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="p">The player to add.</param>
 		/// <returns>Returns the ID of the player added to the game, equal to the number of players -1.</returns>
-		int addPlayer(Player p);
+		int addPlayer(Player& p);
 
 		/// <summary>
 		/// Gets the value of a player parameter.
@@ -253,19 +240,20 @@ namespace SGA
 		/// <param name="playerID">ID of the player to get the parameter from</param>
 		/// <param name="paramName">Name of the parameter which value is requested</param>
 		/// <returns>Returns the value of the parameter indicated for the player whose ID is given.</returns>
-		double getPlayerParameter(int playerID, std::string paramName) const;
+		double getPlayerParameter(int playerID, const std::string& paramName) const;
 
 		/// <summary>
 		/// Indicates if the player has a specific parameter
 		/// </summary>
 		/// <param name="paramName">Name of the parameter which want to be checked</param>
 		/// /// <returns>A bool indicating if player has that parameter</returns>
-		bool hasPlayerParameter(std::string paramName) const;
+		bool hasPlayerParameter(const std::string& paramName) const;
 		
 		/// <summary>
 		/// Returns a list will all the parameter names of the player of which ID is given
 		/// </summary>
-		/// <param name="playerID">ID of the player to get the parameter from. For the moment, all players have the same parameter names (hence playerID is not used).</param>
+		/// <param name="playerID">ID of the player to get the parameter from. 
+		/// For the moment, all players have the same parameter names (hence playerID is not used).</param>
 		/// <returns>A vector with all the parameter names of the requested player.</returns>
 		std::vector<std::string> getPlayerParameterNames(int playerID) const;
 
@@ -312,7 +300,7 @@ namespace SGA
 		/// <summary>
 		/// Print information of a specific action
 		/// </summary>
-		void printActionInfo(Action& action) const;
+		void printActionInfo(const Action& action) const;
 
 		/// <summary>
 		/// Increments the ID for the next continuous action.
@@ -432,7 +420,7 @@ namespace SGA
 		/// Returns the game's random number generator.
 		/// </summary>
 		/// <returns></returns>
-		std::mt19937 getRndEngine() { return rngEngine; }
+		std::mt19937& getRndEngine() { return rngEngine; }
 
 	private:
 

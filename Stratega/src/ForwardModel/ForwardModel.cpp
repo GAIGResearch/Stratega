@@ -239,28 +239,30 @@ namespace SGA
 	void ForwardModel::checkEntitiesContinuousActionIsComplete(GameState& state) const
 	{
 		//Check if condition is complete
-		for (size_t j = 0; j < state.getEntities().size(); j++)
+		auto& entities = state.getEntities();
+		for(auto et = entities.begin(); et != entities.end(); et++)
 		{
-			std::vector<Action>& continuousActions = state.getEntities()[j].getContinuousActions();
-			for (size_t i = 0; i < continuousActions.size(); i++)
+			auto& continuousActions = et->getContinuousActions();
+			auto it = continuousActions.begin();
+			while(it != continuousActions.end())
 			{
-				auto& actionType = continuousActions[i].getActionType();
+				auto& actionType = it->getActionType();
 				//Add one elapsed tick
-				continuousActions[i].elapsedTicks++;
+				it->elapsedTicks++;
 				//Execute OnTick Effects
 				if (actionType.sourceType == ActionSourceType::Entity)
 				{
 					auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 					for (auto& effect : type.OnTick)
 					{
-						effect->execute(state, *this, continuousActions[i].targets);
+						effect->execute(state, *this, it->targets);
 					}
 				}
 				//Check if action is complete
 				bool isComplete = true;
 				for (const auto& condition : actionType.triggerComplete)
 				{
-					if (!condition->isFullfiled(state, continuousActions[i].targets))
+					if (!condition->isFullfiled(state, it->targets))
 					{
 						isComplete = false;
 						break;
@@ -291,17 +293,15 @@ namespace SGA
 							auto& type = state.getGameInfo()->actionTypes->at(actionType.id);
 							for (auto& effect : type.OnComplete)
 							{
-								effect->execute(state, *this, continuousActions[i].targets);
+								effect->execute(state, *this, it->targets);
 							}
 						}
 					}
 
 					//Delete the ContinuousAction
-					continuousActions.erase(continuousActions.begin() + i);
-					i--;
-					//Stop executing this action
-					continue;
+					it = continuousActions.erase(it);
 				}
+				else it++;
 			}
 		}
 	}

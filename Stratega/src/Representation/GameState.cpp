@@ -45,7 +45,7 @@ namespace SGA
 
 	}
 
-	int GameState::addPlayer(Player p)
+	int GameState::addPlayer(Player& p)
 	{
 		int playerID = players.size();
 		players.emplace_back(p);
@@ -112,31 +112,14 @@ namespace SGA
 		return (currentPlayer == playerID || currentPlayer == -1);
 	}
 	
-
-	std::vector<const Entity*> GameState::getPlayerEntities(int playerID) const
+	
+	std::vector<Entity> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory) const
 	{
-		const auto* player = getPlayer(playerID);
+		auto* player = getPlayer(playerID);
 		if (player == nullptr)
-			return {};
+			throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 
-		std::vector<const Entity*> ret;
-		for (const auto& entity : entities)
-		{
-			if (entity.getOwnerID() == playerID)
-				ret.emplace_back(&entity);
-		}
-
-		return ret;
-	}
-
-
-	std::vector<Entity*> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory)
-	{
-		const auto* player = getPlayer(playerID);
-		if (player == nullptr)
-			return {};
-
-		std::vector<Entity*> ret;
+		std::vector<Entity> ret;
 		for (auto& entity : entities)
 		{
 			if (entity.getOwnerID() == playerID)
@@ -144,16 +127,16 @@ namespace SGA
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
 				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
 				{
-					ret.emplace_back(&entity);
+					ret.emplace_back(entity);
 				}
 			}
 		}
 		return ret;
 	}
 
-	std::vector<Entity*> GameState::getNonPlayerEntities(int playerID, EntityCategory entityCategory)
+	std::vector<Entity> GameState::getNonPlayerEntities(int playerID, EntityCategory entityCategory) const
 	{
-		std::vector<Entity*> ret;
+		std::vector<Entity> ret;
 		for (auto& entity : entities)
 		{
 			if (entity.getOwnerID() != playerID)
@@ -161,7 +144,7 @@ namespace SGA
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
 				if (entityCategory == EntityCategory::Null || this->gameInfo->gameDescription->isFromCategory(entityCategory, entity.getEntityTypeID()))
 				{
-					ret.emplace_back(&entity);
+					ret.emplace_back(entity);
 				}
 			}
 		}
@@ -177,7 +160,7 @@ namespace SGA
 		return 0; 
 	}
 
-	double GameState::getPlayerParameter(int playerID, std::string paramName) const
+	double GameState::getPlayerParameter(int playerID, const std::string& paramName) const
 	{
 		const Player* p = getPlayer(playerID);
 		if (p != nullptr)
@@ -194,7 +177,7 @@ namespace SGA
 		}else throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 	}
 
-	bool GameState::hasPlayerParameter(std::string paramName) const
+	bool GameState::hasPlayerParameter(const std::string& paramName) const
 	{
 		for (const auto& param : *gameInfo->playerParameterTypes)
 		{
@@ -219,11 +202,13 @@ namespace SGA
 	std::unordered_map<std::string, double> GameState::getPlayerParameters(int playerID) const
 	{
 		const Player* p = getPlayer(playerID);
-		std::unordered_map<std::string, double> params;
-		if (p != nullptr) for (const auto& param : *gameInfo->playerParameterTypes)
-			params.emplace(param.second.name, p->getParameterConst(param.second.index));
-		else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
+		if (p == nullptr)
+			throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 
+		std::unordered_map<std::string, double> params;
+		for (const auto& param : *gameInfo->playerParameterTypes)
+			params.emplace(param.second.name, p->getParameterConst(param.second.index));
+		
 		return params;
 	}
 
@@ -231,39 +216,42 @@ namespace SGA
 	void GameState::applyFogOfWar(int playerID)
 	{
 		Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
-		for (const auto* entity : getPlayerEntities(playerID))
+		for (auto entity : entities)
 		{
-			// Compute maximum sized rectangle around entity
-			auto leftX = std::max<int>(0, static_cast<int>(entity->x() - entity->getLineOfSightRange()));
-			auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity->x() + entity->getLineOfSightRange()));
-			auto leftY = std::max<int>(0, static_cast<int>(entity->y() - entity->getLineOfSightRange()));
-			auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity->y() + entity->getLineOfSightRange()));
-
-			// Helper method for shadowcasting
-			auto rayCallback = [&](const Vector2i& pos) -> bool
+			if(entity.getOwnerID() == playerID)
 			{
-				if (entity->getPosition().distance(Vector2f(pos)) > entity->getLineOfSightRange())
+				// Compute maximum sized rectangle around entity
+				auto leftX = std::max<int>(0, static_cast<int>(entity.x() - entity.getLineOfSightRange()));
+				auto rightX = std::min<int>(static_cast<int>(board.getWidth() - 1), static_cast<int>(entity.x() + entity.getLineOfSightRange()));
+				auto leftY = std::max<int>(0, static_cast<int>(entity.y() - entity.getLineOfSightRange()));
+				auto rightY = std::min<int>(static_cast<int>(board.getHeight() - 1), static_cast<int>(entity.y() + entity.getLineOfSightRange()));
+
+				// Helper method for shadowcasting
+				auto rayCallback = [&](const Vector2i& pos) -> bool
 				{
-					return true;
+					if (entity.getPosition().distance(Vector2f(pos)) > entity.getLineOfSightRange())
+					{
+						return true;
+					}
+
+					visibilityMap[pos] = true;
+					return board[pos].blocksSight;
+				};
+
+				// Shadowcasting
+				Vector2i pos(static_cast<int>(entity.x()), static_cast<int>(entity.y()));
+				for (int x = leftX; x <= rightX; x++)
+				{
+					visibilityMap.bresenhamRay(pos, Vector2i{ x, leftY }, rayCallback);
+					visibilityMap.bresenhamRay(pos, Vector2i{ x, rightY }, rayCallback);
 				}
 
-				visibilityMap[pos] = true;
-				return board[pos].blocksSight;
-			};
 
-			// Shadowcasting
-			Vector2i pos(static_cast<int>(entity->x()), static_cast<int>(entity->y()));
-			for (int x = leftX; x <= rightX; x++)
-			{
-				visibilityMap.bresenhamRay(pos, Vector2i{ x, leftY }, rayCallback);
-				visibilityMap.bresenhamRay(pos, Vector2i{ x, rightY }, rayCallback);
-			}
-
-
-			for (int y = leftY; y <= rightY; y++)
-			{
-				visibilityMap.bresenhamRay(pos, Vector2i{ leftX, y }, rayCallback);
-				visibilityMap.bresenhamRay(pos, Vector2i{ rightX, y }, rayCallback);
+				for (int y = leftY; y <= rightY; y++)
+				{
+					visibilityMap.bresenhamRay(pos, Vector2i{ leftX, y }, rayCallback);
+					visibilityMap.bresenhamRay(pos, Vector2i{ rightX, y }, rayCallback);
+				}
 			}
 		}
 
@@ -327,16 +315,18 @@ namespace SGA
 		return true;
 	}
 
-	const std::vector<ActionType> GameState::getPlayerActionTypes(int playerID) const
+	std::vector<ActionType> GameState::getPlayerActionTypes(int playerID) const
 	{
 		const Player* p = getPlayer(playerID);
+		if(p == nullptr)
+			throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
+
 		std::vector<ActionType> aTypes;
-		if (p != nullptr) for (const ActionInfo aInfo : p->getAttachedActions())
+		for (const ActionInfo aInfo : p->getAttachedActions())
 		{
 			ActionType at = gameInfo->getActionType(aInfo.actionTypeID);
 			aTypes.emplace_back(at);
 		}
-		else throw std::runtime_error("WARNING: No player associated to ID " + std::to_string(playerID));
 		return aTypes;
 	}
 
@@ -417,23 +407,23 @@ namespace SGA
 		return targetUnit == nullptr && targetTile.isWalkable;
 	}
 
-	bool GameState::isInBounds(Vector2i pos) const
+	bool GameState::isInBounds(const Vector2i& pos) const
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 	}
 
-	bool GameState::isInBounds(Vector2f pos) const
+	bool GameState::isInBounds(const Vector2f& pos) const
 	{
 		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
 	}
 
-	void GameState::initBoard(int boardWidth, std::vector<Tile> tiles)
+	void GameState::initBoard(int boardWidth, std::vector<Tile>& tiles)
 	{
 		board = Grid2D<Tile>(boardWidth, tiles.begin(), tiles.end());
 	}
 
 
-	Tile GameState::getTileAt(Vector2i pos) const
+	const Tile& GameState::getTileAt(const Vector2i& pos) const
 	{
 		if(isInBounds(pos))
 			return board[pos];
@@ -513,7 +503,7 @@ namespace SGA
 			std::cout << "Entity not found" << std::endl;
 	}
 
-	void GameState::printActionInfo(Action& action) const
+	void GameState::printActionInfo(const Action& action) const
 	{
 		std::cout << "ActionInfo";
 		if(action.actionTypeFlags== ActionFlag::AbortContinuousAction)
