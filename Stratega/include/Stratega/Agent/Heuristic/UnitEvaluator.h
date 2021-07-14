@@ -118,24 +118,24 @@ namespace SGA
 				for (auto actionID : entry.second.actionIds)
 				{
 					const auto& action = (*gameState.getGameInfo()->actionTypes)[actionID];
-					if (action.name == "Attack")
+					if (action.getName() == "Attack")
 					{
 						score += (attackDamage / static_cast<double>(maxDamage)) * actionRangePerc;
 						continue;
 					}
-					if (action.name == "Move")
+					if (action.getName() == "Move")
 					{
 						score += movementRange / static_cast<double>(maxMovementRange);
 						continue;
 					}
-					if (action.name == "Heal")
+					if (action.getName() == "Heal")
 					{
 						score += (healAmount / static_cast<double>(maxHeal)) * actionRangePerc;
 						continue;
 					}
 					else
 					{
-						std::cout << "action unknown" << action.name;
+						std::cout << "action unknown" << action.getName();
 					}
 				}
 

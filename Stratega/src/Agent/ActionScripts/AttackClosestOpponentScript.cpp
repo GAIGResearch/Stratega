@@ -13,7 +13,7 @@ namespace SGA
 			std::map<int, std::string> actionTypeIDToActionTypeString;
 			for (const auto a : *gameState.getGameInfo()->actionTypes)
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 
@@ -112,7 +112,7 @@ namespace SGA
 			std::map<int, std::string> actionTypeIDToActionTypeString;
 			for (const auto a : *gameState.getGameInfo()->actionTypes)
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 

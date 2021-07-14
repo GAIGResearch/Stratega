@@ -308,8 +308,8 @@ namespace SGA
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
-            type.id = static_cast<int>(config.actionTypes.size());
-            type.name = nameTypePair.first;
+            type.setID(static_cast<int>(config.actionTypes.size()));
+            type.setName(nameTypePair.first);
         	
             context.targetIDs.emplace("Source", 0);
         	
@@ -324,63 +324,63 @@ namespace SGA
                 //// Parse target conditions
 		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
 		        parser.parseFunctions(targetConditions, targetConditionsList, context);            	
-                type.actionTargets.emplace_back(newTarget, targetConditionsList);
+                type.getActionTargets().emplace_back(newTarget, targetConditionsList);
             }
         	
-            type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
-            type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
+            type.setSourceType(nameTypePair.second["Type"].as<ActionSourceType>());
+            type.setCooldown(nameTypePair.second["Cooldown"].as<int>(0));
         	
             // Parse preconditions            
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(preconditions, type.preconditions, context);
+            parser.parseFunctions(preconditions, type.getProconditions(), context);
 
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(effects, type.effects, context);
+            parser.parseFunctions(effects, type.getEffects(), context);
 
-            type.isContinuous = false;
+            type.setContinuous(false);
         	
         	//Continuous Action Stuff
             if (nameTypePair.second["TriggerComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
                 auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+                parser.parseFunctions(targetConditions, type.getTriggerComplete(), context);
             }
         	
             if (nameTypePair.second["OnStart"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnStart, context);
+                parser.parseFunctions(effectStrings, type.getOnStart(), context);
             }
 
             if (nameTypePair.second["OnTick"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnTick, context);
+                parser.parseFunctions(effectStrings, type.getOnTick(), context);
             }
 
             if (nameTypePair.second["OnComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnComplete, context);
+                parser.parseFunctions(effectStrings, type.getOnComplete(), context);
             }
 
             if (nameTypePair.second["OnAbort"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnAbort, context);
+                parser.parseFunctions(effectStrings, type.getOnAbort(), context);
             }
         	
-            config.actionTypes.emplace(type.id, std::move(type));
+            config.actionTypes.emplace(type.getID(), std::move(type));
             context.targetIDs.clear();
         }
     }

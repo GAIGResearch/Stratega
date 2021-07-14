@@ -44,8 +44,8 @@ namespace SGA
 		int foundId = -1;
 		for (const auto& element : *actionTypes)
 		{
-			if (element.second.name == actionName)
-				return element.second.id;
+			if (element.second.getName() == actionName)
+				return element.second.getID();
 		}
 
 		return foundId;

@@ -619,7 +619,7 @@ namespace SGA
 								if (continueAction.continuousActionID == action.continuousActionID)
 								{
 									const ActionType& actionType = continueAction.getActionType();
-									actionInfo += " Abort " + actionType.name;
+									actionInfo += " Abort " + actionType.getName();
 								}
 							}
 						}
@@ -632,7 +632,7 @@ namespace SGA
 								if (continueAction.continuousActionID == action.continuousActionID)
 								{
 									const ActionType& actionType = continueAction.getActionType();
-									actionInfo += " Abort " + actionType.name;
+									actionInfo += " Abort " + actionType.getName();
 								}
 							}
 						}
@@ -644,7 +644,7 @@ namespace SGA
 				{
 					const ActionType& actionType = action.getActionType();
 
-					actionInfo += " " + actionType.name;
+					actionInfo += " " + actionType.getName();
 
 					//TODO Clean this :D IS TEMPORAL
 					for (auto& targetType : action.targets)

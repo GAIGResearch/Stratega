@@ -190,7 +190,7 @@ namespace SGA {
         std::cout << "\tactions=" << "\n";
         for (const auto& action : actions)
         {
-            std::cout << "\t\t" << action.ownerID << ";" << "Type=" << action.getActionType().name << "\n";
+            std::cout << "\t\t" << action.ownerID << ";" << "Type=" << action.getActionType().getName() << "\n";
         }
 
         std::cout << "\tvalue=" << value << "\n;";

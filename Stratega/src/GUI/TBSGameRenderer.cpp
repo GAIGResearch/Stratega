@@ -139,7 +139,7 @@ namespace SGA
 				//Get source
 				const auto& actionType = possibleAction.getActionType();
 				//Check the source and the selected entity is the same
-				if (actionType.sourceType == ActionSourceType::Entity)
+				if (actionType.getSourceType() == ActionSourceType::Entity)
 				{
 					auto& entity = *possibleAction.targets[0].getEntity(state);
 					if (entity.getID() != *actionsSettings.selectedEntities.begin())
@@ -182,7 +182,7 @@ namespace SGA
 				const auto& actionType = possibleAction.getActionType();
 
 				//Check the source and the selected entity is the same
-				if (actionType.sourceType == ActionSourceType::Entity)
+				if (actionType.getSourceType() == ActionSourceType::Entity)
 				{
 					auto& entity = *possibleAction.targets[0].getEntity(state);
 					if (entity.getID() != *actionsSettings.selectedEntities.begin())
@@ -511,7 +511,7 @@ namespace SGA
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
 								const ActionType& actionType = continueAction.getActionType();
-								actionInfo += " Abort " + actionType.name;
+								actionInfo += " Abort " + actionType.getName();
 							}
 						}
 					}
@@ -524,7 +524,7 @@ namespace SGA
 							if (continueAction.continuousActionID == action.continuousActionID)
 							{
 								const ActionType& actionType = continueAction.getActionType();
-								actionInfo += " Abort " + actionType.name;
+								actionInfo += " Abort " + actionType.getName();
 							}
 						}
 					}
@@ -539,7 +539,7 @@ namespace SGA
 			{
 				const ActionType& actionType = action.getActionType();
 
-				actionInfo += " " + actionType.name;
+				actionInfo += " " + actionType.getName();
 
 				//TODO Clean this :D IS TEMPORAL
 				for (auto& targetType : action.targets)

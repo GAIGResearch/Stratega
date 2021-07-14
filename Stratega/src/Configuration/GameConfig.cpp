@@ -156,7 +156,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : actionTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 

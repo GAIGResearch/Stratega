@@ -20,6 +20,9 @@ namespace SGA
 	/// </summary>
 	struct ActionType
 	{
+
+	private:
+
 		/// <summary>
 		/// Name of this action type.
 		/// </summary>
@@ -29,6 +32,7 @@ namespace SGA
 		/// Unique ID of this action type
 		/// </summary>
 		int id;
+
 
 		/// <summary>
 		///  Source of this action (entity, player...)
@@ -51,13 +55,12 @@ namespace SGA
 		/// List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>.
 		/// These are tier 2 conditions (i.e. situational), to be checked during action generation.
 		/// </summary>
-		std::vector<std::pair<TargetType,std::vector<std::shared_ptr<Condition>>>> actionTargets;
-
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
 
 		/// <summary>
 		/// Indicates if action is continuous: if the execution of this action extends beyond the tick it was started.
 		/// </summary>
-		bool isContinuous;
+		bool continuous;
 
 		/// <summary>
 		/// Continuous actions finish when certain conditions are met. This vector indicates those conditions.
@@ -91,6 +94,10 @@ namespace SGA
 		/// </summary>
 		std::vector<std::shared_ptr<Effect>> OnAbort;
 
+
+	public: 
+
+
 		/// <summary>
 		/// Returns a list of conditions linked to the searched target.
 		/// </summary>
@@ -104,5 +111,49 @@ namespace SGA
 					return actionTarget.second;
 			}
 		}
+
+		/* Getters and setters for default type variables. */
+		const std::string& getName() const { return name; }
+		void setName(const std::string& name) { this->name = name; }
+
+		int getID() const { return id; }
+		void setID(int id) { this->id = id; }
+
+		const ActionSourceType& getSourceType() const { return sourceType; }
+		void setSourceType(ActionSourceType ast) { sourceType = ast; }
+
+		int getCooldown() const { return cooldownTicks; }
+		void setCooldown(int cd) { cooldownTicks = cd; }
+
+		bool isContinuous() const { return continuous; }
+		void setContinuous(bool c) { continuous = c; }
+
+
+		/* Getters for conditions, effects and targets */
+
+		const std::vector<std::shared_ptr<Condition>>& getProconditions() const { return preconditions; }
+		std::vector<std::shared_ptr<Condition>>& getProconditions() { return preconditions; }
+
+		const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getActionTargets() const { return actionTargets; }
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getActionTargets() { return actionTargets; }
+
+		const std::vector<std::shared_ptr<Condition>>& getTriggerComplete() const { return triggerComplete; }
+		std::vector<std::shared_ptr<Condition>> getTriggerComplete() { return triggerComplete; }
+
+		const std::vector<std::shared_ptr<Effect>>& getEffects() const { return effects; }
+		std::vector<std::shared_ptr<Effect>>& getEffects() { return effects; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnStart() const { return OnStart; }
+		std::vector<std::shared_ptr<Effect>>& getOnStart() { return OnStart; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnTick() const { return OnTick; }
+		std::vector<std::shared_ptr<Effect>>& getOnTick() { return OnTick; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnComplete() const { return OnComplete; }
+		std::vector<std::shared_ptr<Effect>>& getOnComplete() { return OnComplete; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnAbort() const { return OnAbort; }
+		std::vector<std::shared_ptr<Effect>>& getOnAbort() { return OnAbort; }
+
 	};
 }

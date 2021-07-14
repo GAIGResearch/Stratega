@@ -10,13 +10,13 @@ namespace SGA::Widgets
 {
 	bool ActionsSettings::hasActionsTargetAvailable(const ActionType& actionType) const
 	{
-		return selectedTargets.size() < actionType.actionTargets.size();
+		return selectedTargets.size() < actionType.getActionTargets().size();
 	}
 
 	void getActionTarget(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
-		auto& targetType = actionType.actionTargets[settings.selectedTargets.size()].first;
+		auto& targetType = actionType.getActionTargets()[settings.selectedTargets.size()].first;
 		switch (targetType.type)
 		{
 			case TargetType::EntityType:
@@ -86,7 +86,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
+			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.technologyTypes)
 			{
 				//If player is researching abort action
 				for (auto& entityID : settings.selectedEntities)
@@ -129,7 +129,7 @@ namespace SGA::Widgets
 						actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
 						//Check if we fullfil the conditions to spawn the entity
-						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
+						for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
 						{
 							if (!condition->isFullfiled(state, actionTargets))
 							{
@@ -153,7 +153,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.actionTargets[settings.selectedTargets.size()].first.technologyTypes)
+			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.technologyTypes)
 			{
 				//If player is researching abort action
 				for (auto& action : state.getPlayer(playerID)->getContinuousActions())
@@ -189,7 +189,7 @@ namespace SGA::Widgets
 					actionTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
 
 					//Check if player fullfil the conditions to spawn the entity
-					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
+					for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
 					{
 						if (!condition->isFullfiled(state, actionTargets))
 						{
@@ -216,7 +216,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.actionTargets[settings.selectedTargets.size()].first.groupEntityTypes)
+			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.groupEntityTypes)
 			{
 				bool canSpawn = true;
 
@@ -249,7 +249,7 @@ namespace SGA::Widgets
 						actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
 						//Check if we fullfil the conditions to spawn the entity
-						for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
+						for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
 						{
 							if (!condition->isFullfiled(state, actionTargets))
 							{
@@ -269,7 +269,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.actionTargets[settings.selectedTargets.size()].first.groupEntityTypes)
+			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.groupEntityTypes)
 			{
 				bool canSpawn = true;
 
@@ -292,7 +292,7 @@ namespace SGA::Widgets
 					actionTargets.emplace_back(ActionTarget::createEntityTypeActionTarget(possibleActionType));
 
 					//Check if player fullfil the conditions to spawn the entity
-					for (auto& condition : actionType.actionTargets[settings.selectedTargets.size()].second)
+					for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
 					{
 						if (!condition->isFullfiled(state, actionTargets))
 						{
@@ -335,7 +335,7 @@ namespace SGA::Widgets
 		//Generate action with the current selected settings
 		Action newAction(&actionType);
 
-		if (actionType.isContinuous)
+		if (actionType.isContinuous())
 			newAction.actionTypeFlags = ActionFlag::ContinuousAction;
 		
 		if (settings.selectedEntities.empty())
@@ -360,7 +360,7 @@ namespace SGA::Widgets
 		
 		if (player->canExecuteAction(settings.actionTypeSelected))
 		{			
-			if (state.getCurrentTick() - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.getCooldown())
 				return;			
 
 			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
@@ -389,7 +389,7 @@ namespace SGA::Widgets
 			if (!entityType.canExecuteAction(settings.actionTypeSelected))
 				continue;
 			// Check if this action can be executed		
-			if (state.getCurrentTick() - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - entity->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.getCooldown())
 				continue;			
 
 			//The entity should be able to execute this action type
@@ -435,7 +435,7 @@ namespace SGA::Widgets
 		for (auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
-			if (ImGui::Button(state.getGameInfo()->getActionType(actionType).name.c_str(), ImVec2(50, 50)))
+			if (ImGui::Button(state.getGameInfo()->getActionType(actionType).getName().c_str(), ImVec2(50, 50)))
 			{
 				settings.actionTypeSelected = actionType;
 			}

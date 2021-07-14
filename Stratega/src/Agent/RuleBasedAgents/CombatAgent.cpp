@@ -204,7 +204,7 @@ namespace SGA
 	{
 		for (const auto a : *currentState.getGameInfo()->actionTypes)
 		{
-			actionTypeIDToActionTypeString[a.first] = a.second.name;
+			actionTypeIDToActionTypeString[a.first] = a.second.getName();
 		}
 		actionTypeIDToActionTypeString[-1] = "EndTurn";
 

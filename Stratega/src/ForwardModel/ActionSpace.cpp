@@ -17,12 +17,12 @@ namespace SGA
 				
 				bool generateContinuousAction = true;
 				//Check if action is continuos
-				if (actionType.isContinuous)
+				if (actionType.isContinuous())
 				{
 					//Check if entity is already executing it
 					for (const auto& action : sourceEntity.getContinuousActions())
 					{
-						if (action.getActionTypeID() == actionType.id)
+						if (action.getActionTypeID() == actionType.getID())
 						{
 							//This entity cant execute the action
 							generateContinuousAction = false;
@@ -37,13 +37,13 @@ namespace SGA
 					continue;
 				
 				// Check if this action can be executed		
-				if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.getCooldown())
 					continue;
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
 
 				// Generate all actions
-				if(actionType.actionTargets.size() == 0/*TargetType::None*/)
+				if(actionType.getActionTargets().size() == 0/*TargetType::None*/)
 				{
 					// Self-actions do not have a target, only a source
 					bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
@@ -63,12 +63,12 @@ namespace SGA
 			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 			bool generateContinuousAction = true;
 			//Check if action is continuos
-			if (actionType.isContinuous)
+			if (actionType.isContinuous())
 			{
 				//Check if entity is already executing it
 				for (auto& action : player.getContinuousActions())
 				{
-					if (action.getActionTypeID() == actionType.id)
+					if (action.getActionTypeID() == actionType.getID())
 					{
 						//This entity cant execute the action
 						generateContinuousAction = false;
@@ -84,13 +84,13 @@ namespace SGA
 			
 			// Check if this action can be executed
 			
-			if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+			if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.getCooldown())
 				continue;
 			if (!gameState.canExecuteAction(player, actionType))
 				continue;
 
 			// Generate all actions
-			if (actionType.actionTargets.size() == 0/*TargetType::None*/)
+			if (actionType.getActionTargets().size() == 0/*TargetType::None*/)
 			{
 				// Self-actions do not have a target, only a source
 				bucket.emplace_back(generateSelfAction(player, actionType));
@@ -155,11 +155,11 @@ namespace SGA
 				action.targets.emplace_back(target);
 			}
 
-			if (actionType.isContinuous)
+			if (actionType.isContinuous())
 				action.actionTypeFlags = ActionFlag::ContinuousAction;
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.actionTargets)
+			for (auto& actionTargetType : actionType.getActionTargets())
 			for (const auto& condition : actionTargetType.second)
 			{
 				if (!condition->isFullfiled(state, action.targets))
@@ -189,11 +189,11 @@ namespace SGA
 				action.targets.emplace_back(target);
 			}
 
-			if (actionType.isContinuous)
+			if (actionType.isContinuous())
 				action.actionTypeFlags = ActionFlag::ContinuousAction;
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.actionTargets)
+			for (auto& actionTargetType : actionType.getActionTargets())
 				for (const auto& condition : actionTargetType.second)
 				{
 					if (!condition->isFullfiled(state, action.targets))
@@ -214,7 +214,7 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 		
-		for (auto& type : action.actionTargets)
+		for (auto& type : action.getActionTargets())
 		{
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.type)
@@ -242,7 +242,7 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
-		for (auto& type : action.actionTargets)
+		for (auto& type : action.getActionTargets())
 		{
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.type)

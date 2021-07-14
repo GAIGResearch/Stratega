@@ -290,7 +290,7 @@ namespace SGA
 	bool GameState::canExecuteAction(const Entity& entity, const ActionType& actionType) const
 	{
 		//Check preconditions
-		for (const auto& precondition : actionType.preconditions)
+		for (const auto& precondition : actionType.getProconditions())
 		{
 			if (!precondition->isFullfiled(*this, { ActionTarget::createEntityActionTarget(entity.getID()) }))
 			{
@@ -304,7 +304,7 @@ namespace SGA
 	bool GameState::canExecuteAction(const Player& player, const ActionType& actionType) const
 	{
 		//Check preconditions
-		for (const auto& precondition : actionType.preconditions)
+		for (const auto& precondition : actionType.getProconditions())
 		{
 			if (!precondition->isFullfiled(*this, { ActionTarget::createPlayerActionTarget(player.getID()) }))
 			{
@@ -517,10 +517,10 @@ namespace SGA
 		else
 		{
 			const ActionType& actionType = action.getActionType();
-			std::cout << "["<< actionType.name <<"]," ;
+			std::cout << "["<< actionType.getName() <<"]," ;
 			
 			//Print source
-			if (actionType.sourceType == ActionSourceType::Player)
+			if (actionType.getSourceType() == ActionSourceType::Player)
 				std::cout << " [SourceType Player: " << action.ownerID << "],";
 			else
 			{				
@@ -531,9 +531,9 @@ namespace SGA
 			}
 
 			std::cout << " [ActionTargets" ;
-			for (size_t i = 0; i < actionType.actionTargets.size(); i++)
+			for (size_t i = 0; i < actionType.getActionTargets().size(); i++)
 			{
-				std::cout << "(Target: "<<actionType.actionTargets[i].first.getTypeString()<<", " << action.targets[i + 1].getValueString(*this) << ")";
+				std::cout << "(Target: "<<actionType.getActionTargets()[i].first.getTypeString()<<", " << action.targets[i + 1].getValueString(*this) << ")";
 			}
 			std::cout << "]"<<std::endl;
 		}
