@@ -76,12 +76,12 @@ namespace SGA
 		/// <summary>
 		/// Returns the list of parameters, can't be modified.
 		/// </summary>
-		const std::vector<double> getParametersConst() const { return parameters; }
+		const std::vector<double>& getParameters() const { return parameters; }
 
 		/// <summary>
 		/// Returns the list of parameters of this player (can be modified)
 		/// </summary>
-		std::vector<double> getParameters() const { return parameters; }
+		std::vector<double>& getParameters() { return parameters; }
 
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
@@ -91,7 +91,7 @@ namespace SGA
 		/// <summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		double getParameterConst(int paramIdx) const { return parameters[paramIdx]; }
+		const double& getParameter(int paramIdx) const { return parameters[paramIdx]; }
 
 		/// <summary>
 		/// Sets the parameter of this player to a certain value
@@ -124,24 +124,24 @@ namespace SGA
 		/// <summary>
 		/// Returns the list of continuous actions this player is executing.
 		/// </summary>
-		const std::vector<Action> getContinuousActions() const { return continuousActions; }
+		const std::vector<Action>& getContinuousActions() const { return continuousActions; }
 
 
 
 		/// <summary>
 		/// Returns the list of attached actions to this player.
 		/// </summary>
-		const std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+		const std::vector<ActionInfo>& getAttachedActions() const { return attachedActions; }
 
 		/// <summary>
 		/// Returns the action info of the attached action with index 'idx'.
 		/// </summary>
-		ActionInfo getAttachedAction(int idx) const { return attachedActions[idx]; }
+		const ActionInfo& getAttachedAction(int idx) const { return attachedActions[idx]; }
 
 		/// <summary>
 		/// Adds a new attached action to this player.
 		/// </summary>
-		void addAttachedAction(ActionInfo newActionInfo) { attachedActions.emplace_back(newActionInfo); }
+		void addAttachedAction(int actionTypeID, int lastExecutedTick) { attachedActions.emplace_back(ActionInfo{actionTypeID, lastExecutedTick}); }
 
 		/// <summary>
 		/// Sets the last tick on an attached action, indexed by 'idx'

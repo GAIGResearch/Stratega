@@ -29,7 +29,7 @@ namespace SGA
 		return filteredActions;
 	}
 
-	std::vector<Entity> CombatAgent::filterUnitsByReach(const std::vector<Entity>& targetUnits, const Vector2f& pos, GameState& currentState) const
+	std::vector<Entity> CombatAgent::filterUnitsByReach(const std::vector<Entity>& targetUnits, const Vector2f& pos, GameState& /*currentState*/) const
 	{
 		std::vector<Entity> units;
 
@@ -38,7 +38,7 @@ namespace SGA
 			double movementRange = unit.getParameter("MovementPoints");
 			double attackRange = unit.getParameter("AttackRange");
 
-			if (pos.manhattanDistance(unit.getPosition()) <= attackRange + movementRange);
+			if (pos.manhattanDistance(unit.getPosition()) <= attackRange + movementRange)
 			{
 				units.emplace_back(unit);
 			}
@@ -167,7 +167,7 @@ namespace SGA
 		return 0;
 	}
 
-	double CombatAgent::getHealScore(std::vector<Action>& actions, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const
+	double CombatAgent::getHealScore(std::vector<Action>& /*actions*/, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const
 	{
 		Entity* healTarget = heal.targets[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");

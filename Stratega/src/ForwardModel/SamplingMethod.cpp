@@ -103,7 +103,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	return targets;
 }
 
-std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
+std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	std::vector<int> entitiesIDs;
 	//Call base method
@@ -247,7 +247,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 	return positions;
 }
 
-std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
+std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	//Call base method
 	auto possiblePositions = getPositions(gameState, position);

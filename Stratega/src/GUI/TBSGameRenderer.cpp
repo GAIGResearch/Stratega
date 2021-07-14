@@ -598,7 +598,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->getParameterConst(parameter.second.index);
+				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.index);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;

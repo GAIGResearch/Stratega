@@ -38,7 +38,7 @@ namespace SGA
 		player.resAttachedActions(playerActionIds.size());
 		for (auto actionTypeID : playerActionIds)
 		{
-			player.addAttachedAction(ActionInfo{ actionTypeID, 0 });
+			player.addAttachedAction(actionTypeID, 0);
 		}
 
 		state->addPlayer(player);

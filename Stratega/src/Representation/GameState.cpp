@@ -56,7 +56,7 @@ namespace SGA
 	{
 		auto instance = type.instantiateEntity(nextEntityID);
 		instance.setOwnerID(playerID);
-		instance.setPosition(std::move(position));
+		instance.setPosition(position);
 		entities.emplace_back(std::move(instance));
 		nextEntityID++;
 
@@ -169,7 +169,7 @@ namespace SGA
 			{
 				if (param.second.name == paramName)
 				{
-					return p->getParameterConst(param.second.index);
+					return p->getParameter(param.second.index);
 				}
 			}
 			throw std::runtime_error("No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
@@ -207,7 +207,7 @@ namespace SGA
 
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : *gameInfo->playerParameterTypes)
-			params.emplace(param.second.name, p->getParameterConst(param.second.index));
+			params.emplace(param.second.name, p->getParameter(param.second.index));
 		
 		return params;
 	}

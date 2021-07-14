@@ -266,7 +266,7 @@ namespace SGA
 		// We're recalculating this, since we've changed the view
 		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 	}
-	void RTSGameRenderer::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::keyPressed(const sf::Event& /*event*/, sf::View& view, sf::RenderWindow& window)
 	{
 		// Camera movement
 		sf::Vector2f movementDir;
@@ -780,7 +780,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->getParameterConst(parameter.second.index);
+				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.index);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
