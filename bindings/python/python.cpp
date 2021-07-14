@@ -29,7 +29,6 @@
 #include <Stratega/Utils/Timer.h>
 
 namespace py = pybind11;
-class PythonAgent;
 
 // STL
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Action>);
@@ -38,7 +37,6 @@ PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity*>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
-PYBIND11_MAKE_OPAQUE(std::vector<PythonAgent>);
 
 
 class PyCondition : public SGA::Condition {
