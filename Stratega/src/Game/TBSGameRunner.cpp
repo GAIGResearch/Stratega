@@ -10,7 +10,7 @@ namespace SGA
 	{
 	}
 
-	void TBSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
+	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
 		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
@@ -81,7 +81,7 @@ namespace SGA
 		tbsRenderer->closeWindow();
 	}
 
-	void TBSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
+	void TBSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)
 	{
 		while (!currentState->isGameOver)
 		{

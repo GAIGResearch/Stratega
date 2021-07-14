@@ -108,7 +108,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	// Run the game
 	try
 	{
-		runner->run(agents, this);
+		runner->run(agents.begin(), agents.end(), this);
 	}
 	catch (const std::exception& ex)
 	{
@@ -160,7 +160,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	// Run the game
 	try
 	{
-		runner->run(agents, this);
+		runner->run(agents.begin(), agents.end(), this);
 	}
 	catch (const std::exception& ex)
 	{

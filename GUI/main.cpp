@@ -21,7 +21,7 @@ int main()
 	}
 	
 	auto gameRunner = SGA::createGameRunner(*gameConfig);
-	gameRunner->play(agents);
+	gameRunner->play(agents.begin(), agents.end());
 	
     return 0;
 }

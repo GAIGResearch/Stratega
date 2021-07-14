@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <cassert>
 
 #include <Stratega/GUI/GameRenderer.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
@@ -8,6 +9,7 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Game/GameObserver.h>
+#include <Stratega/Utils/IteratorToPtrVector.h>
 
 namespace SGA
 {
@@ -58,14 +60,83 @@ namespace SGA
 		/// </summary>
 		/// <param name="agents">A list of agents to obtain actions from.</param>
 		/// <param name="observer">An optional observer who is notified about important events in the game.</param>
-		void run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer = nullptr);
+		template<typename Iterator>
+		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
+		{
+			assert(std::distance(begin, end) == currentState->players.size());
+			if (observer == nullptr)
+			{
+				observer = defaultObserver;
+			}
+
+			auto agents = IteratorToPtrVector<Iterator, Agent>::convert(begin, end);
+			try
+			{
+				// Check that no player is controlled by a human
+				for (int i = 0; i < agents.size(); i++)
+				{
+					if (agents[i] == nullptr)
+					{
+						throw std::runtime_error("No player can be controlled by a human in an arena.");
+					}
+					else
+					{
+						agents[i]->setPlayerID(i);
+					}
+				}
+
+				initializeAgents(agents);
+				observer->onGameStarted(*currentState, *forwardModel);
+				runInternal(agents, *observer);
+				observer->onGameFinished(*currentState, *forwardModel);
+			}
+			catch (const std::exception& ex)
+			{
+				std::cout << "GameRunner crashed error: " << ex.what() << std::endl;
+			}
+		}
 		
 		/// <summary>
 		/// Renders a visual representation of the game and allows interactive action selection.
 		/// </summary>
 		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
-		void play(std::vector<std::shared_ptr<Agent>>& agents);
+		template<typename Iterator>
+		void play(Iterator begin, Iterator end)
+		{
+			assert(std::distance(begin, end) == currentState->players.size());
+
+			auto agents = IteratorToPtrVector<Iterator, Agent>::convert(begin, end);
+			try
+			{
+				// Check if a player is controlled by an human
+				int humanIndex = GameRenderer::NO_PLAYER_ID;
+				for (int i = 0; i < agents.size(); i++)
+				{
+					if (agents[i] == nullptr)
+					{
+						if (humanIndex != GameRenderer::NO_PLAYER_ID)
+						{
+							throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
+						}
+						humanIndex = i;
+					}
+					else
+					{
+						agents[i]->setPlayerID(i);
+					}
+				}
+
+				initializeAgents(agents);
+				ensureRendererInitialized();
+				renderer->setPlayerPointOfView(humanIndex);
+				playInternal(agents, humanIndex);
+			}
+			catch (const std::exception& ex)
+			{
+				std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
+			}
+		}
 		
 		/// <summary>
 		/// Returns a reference to the current state of the game.
@@ -73,11 +144,11 @@ namespace SGA
 		[[nodiscard]] const GameState& getGameState() const;
 
 	protected:
-		void initializeAgents(std::vector<std::shared_ptr<Agent>>& agents);
+		void initializeAgents(std::vector<Agent*>& agents);
 		void ensureRendererInitialized();
 
-		virtual void runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer) = 0;
-		virtual void playInternal(std::vector<std::shared_ptr<Agent>>& agents, int humanIndex) = 0;
+		virtual void runInternal(std::vector<Agent*>& agents, GameObserver& observer) = 0;
+		virtual void playInternal(std::vector<Agent*>& agents, int humanIndex) = 0;
 		
 		virtual void checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID);
 

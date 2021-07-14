@@ -13,10 +13,10 @@ namespace SGA
 		: currentState(),
 		  config(&config),
 		shouldCheckComputationTime(config.shouldCheckComputationTime),
-		shouldCheckInitTime(config.shouldCheckInitTime),
 		budgetTimeMs(config.budgetTimeMs),
 		disqualificationBudgetTimeMs(config.disqualificationBudgetTimeMs),
 		maxNumberWarnings(config.maxNumberWarnings),
+		shouldCheckInitTime(config.shouldCheckInitTime),
 		initBudgetTimetMs(config.initBudgetTimetMs),
 		initDisqualificationBudgetTimeMs(config.initDisqualificationBudgetTimeMs)
 	{
@@ -54,74 +54,6 @@ namespace SGA
 		renderer->render();
 	}
 
-	void GameRunner::run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer)
-	{
-		assert(agents.size() == currentState->players.size());
-		if(observer == nullptr)
-		{
-			observer = defaultObserver;
-		}
-		
-		try
-		{		
-			// Check that no player is controlled by a human
-			for (int i = 0; i < agents.size(); i++)
-			{
-				if (agents[i] == nullptr)
-				{
-					throw std::runtime_error("No player can be controlled by a human in an arena.");
-				}
-				else
-				{
-					agents[i]->setPlayerID(i);
-				}
-			}
-
-			initializeAgents(agents);
-			observer->onGameStarted(*currentState, *forwardModel);
-			runInternal(agents, *observer);
-			observer->onGameFinished(*currentState, *forwardModel);
-		}
-		catch (const std::exception& ex)
-		{
-			std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
-		}
-	}
-
-	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents)
-	{
-		assert(agents.size() == currentState->players.size());
-		try
-		{
-			// Check if a player is controlled by an human
-			int humanIndex = GameRenderer::NO_PLAYER_ID;
-			for (int i = 0; i < agents.size(); i++)
-			{
-				if (agents[i] == nullptr)
-				{
-					if (humanIndex != GameRenderer::NO_PLAYER_ID)
-					{
-						throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
-					}
-					humanIndex = i;
-				}
-				else
-				{
-					agents[i]->setPlayerID(i);
-				}
-			}
-
-			initializeAgents(agents);
-			ensureRendererInitialized();
-			renderer->setPlayerPointOfView(humanIndex);
-			playInternal(agents, humanIndex);
-		}
-		catch (const std::exception& ex)
-		{
-			std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
-		}
-	}
-
 	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)
 	{
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
@@ -137,7 +69,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::initializeAgents(std::vector<std::shared_ptr<Agent>>& agents)
+	void GameRunner::initializeAgents(std::vector<Agent*>& agents)
 	{
 		try
 		{			
