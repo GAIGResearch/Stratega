@@ -155,7 +155,7 @@ public:
 	 return SGA::createGameRunner(*gameConfig);
  }
 
- std::vector<std::shared_ptr<SGA::Agent>> generateAgents(const SGA::GameConfig* gameConfig)
+ std::vector<std::unique_ptr<SGA::Agent>> generateAgents(const SGA::GameConfig* gameConfig)
  {
 	 return gameConfig->generateAgents();
  }
