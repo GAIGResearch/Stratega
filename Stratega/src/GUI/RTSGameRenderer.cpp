@@ -10,18 +10,18 @@
 
 namespace SGA
 {
-	RTSGameRenderer::RTSGameRenderer()
+	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& resolution)
 		: state(),
 		fowState(),
 		assignment(),
-		window(sf::VideoMode(1200, 800), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		pointOfViewPlayerID(NO_PLAYER_ID),
 		fowSettings(),
 		zoomValue(5.f),
 		dragging(false)
 	{
 		fowSettings.selectedPlayerID = pointOfViewPlayerID;
-		fowSettings.renderFogOfWar = true;
+		fowSettings.renderFogOfWar = config->applyFogOfWar;
 		fowSettings.renderType = FogRenderType::Fog;
 
 		// Initialize View
@@ -36,6 +36,8 @@ namespace SGA
 	{
 		config = &gameConfig;
 		
+		fowSettings.renderFogOfWar = config->applyFogOfWar;
+
 		// Load textures
 		for (const auto& namePathPair : gameConfig.renderConfig->entitySpritePaths)
 		{
@@ -61,11 +63,17 @@ namespace SGA
 		this->fowState.applyFogOfWar(fowSettings.selectedPlayerID);
 		assignment.clear();
 
+		GameState currentState;
+		if (config->applyFogOfWar)
+			currentState = state;
+		else
+			currentState = fowState;
+
 		auto it = futureActionsToPlay.begin();
 		//Assign entity actions if they are still valid
 		while (it != futureActionsToPlay.end())
 		{
-			if (!it->validate(fowState)) {
+			if (!it->validate(currentState)) {
 
 				it = futureActionsToPlay.erase(it);
 			}
@@ -153,7 +161,7 @@ namespace SGA
 			moving = false;
 		}
 
-		if (event.mouseButton.button == sf::Mouse::Left && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
+		if (event.mouseButton.button == sf::Mouse::Left )
 		{
 			dragging = false;
 
@@ -755,7 +763,13 @@ namespace SGA
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
+
 		ImGui::Begin("Fog of War window");
+
+		if (config->applyFogOfWar)
+			ImGui::Text("Is enabled in config");
+		else
+			ImGui::Text("Is disabled in config");
 
 		if (Widgets::fowController(state, fowSettings))
 		{

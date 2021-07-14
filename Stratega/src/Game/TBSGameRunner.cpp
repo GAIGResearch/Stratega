@@ -22,7 +22,7 @@ namespace SGA
 			{
 				try
 				{
-					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, budgetTimeMs);
+					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
 					// Render
 					auto startTime = std::chrono::high_resolution_clock::now();
 					while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(budgetTimeMs))
@@ -90,7 +90,7 @@ namespace SGA
 			try
 			{
 				auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
-				results = runAgent(*currentAgent, *currentState, *forwardModel, budgetTimeMs);
+				results = runAgent(*currentAgent, *currentState, *forwardModel, *config ,budgetTimeMs);
 
 				//Check if agent throw exception and rethrow it
 				if (results.error)

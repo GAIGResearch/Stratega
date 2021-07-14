@@ -19,7 +19,7 @@ namespace SGA
 			{
 				if(agents[i] != nullptr)
 				{
-					threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
+					threads[i].startComputing(*agents[i], *currentState, *forwardModel, *config, budgetTimeMs);
 				}				
 			}
 
@@ -90,7 +90,7 @@ namespace SGA
 				{
 					if (agents[i] != nullptr)
 					{
-						threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
+						threads[i].startComputing(*agents[i], *currentState, *forwardModel, *config, budgetTimeMs);
 					}
 				}
 

@@ -22,6 +22,8 @@ namespace SGA
 
         int tickLimit = 100;
         int numPlayers = -1;
+
+        bool applyFogOfWar=true;
     	
     	// Other stuff
         std::vector<std::pair<std::string, YAML::Node>> agentParams;

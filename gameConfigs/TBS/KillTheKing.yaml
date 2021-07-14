@@ -2,10 +2,11 @@ GameConfig:
     Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
+    FogOfWar: false
 
 Agents:
     - RandomAgent
-    - DoNothingAgent
+    - HumanAgent
 
 Tiles:
     Plain:

@@ -6,15 +6,15 @@
 
 namespace SGA
 {
-	std::unique_ptr<GameRenderer> createRenderer(GameType type)
+	std::unique_ptr<GameRenderer> createRenderer(GameType& type, SGA::Vector2f& resolution)
 	{
 		if (type == GameType::TBS)
 		{
-			return std::make_unique<TBSGameRenderer>();
+			return std::make_unique<TBSGameRenderer>(resolution);
 		}
 		if (type == GameType::RTS)
 		{
-			return std::make_unique<RTSGameRenderer>();
+			return std::make_unique<RTSGameRenderer>(resolution);
 		}
 
 		assert(false);

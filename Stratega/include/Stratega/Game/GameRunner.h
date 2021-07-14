@@ -51,7 +51,7 @@ namespace SGA
 		/// <summary>
 		/// Renders a visual representation of the game. May create a new window when called for the first time.
 		/// </summary>
-		void render();
+		void render(SGA::Vector2f& resolution);
 		
 		/// <summary>
 		/// Advances the game until it has ended.
@@ -65,7 +65,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
-		void play(std::vector<std::shared_ptr<Agent>>& agents);
+		void play(std::vector<std::shared_ptr<Agent>>& agents, SGA::Vector2f& resolution);
 		
 		/// <summary>
 		/// Returns a reference to the current state of the game.
@@ -74,7 +74,7 @@ namespace SGA
 
 	protected:
 		void initializeAgents(std::vector<std::shared_ptr<Agent>>& agents);
-		void ensureRendererInitialized();
+		void ensureRendererInitialized(SGA::Vector2f& resolution);
 
 		virtual void runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<std::shared_ptr<Agent>>& agents, int humanIndex) = 0;
