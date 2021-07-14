@@ -19,8 +19,13 @@ namespace  SGA
 	/// </summary>
 	class RTSForwardModel : public ForwardModel
 	{
-	public:
+
+	private:
+
 		double deltaTime;
+
+	public:
+		
 		
 		RTSForwardModel()
 			: deltaTime(1. / 60.)

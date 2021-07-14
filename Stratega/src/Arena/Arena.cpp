@@ -89,7 +89,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		if (!agents[i])
 			throw std::runtime_error("Human agents cant play Arena");
 
-		std::cout << "Player " << i << " is controlled by " << agents[i]->agentName << std::endl;
+		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
 		agents[i]->setSeed(seedDist(rngEngine));
@@ -141,7 +141,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		if (!agents[i])
 			throw std::runtime_error("Human agents cant play Arena");
 
-		std::cout << "Player " << i << " is controlled by " << agents[i]->agentName << std::endl;
+		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
 		agents[i]->setSeed(seedDist(rngEngine));
