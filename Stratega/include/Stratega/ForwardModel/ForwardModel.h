@@ -127,13 +127,13 @@ namespace SGA
 		/// Adds a list of conditions for the game to be won for a player.
 		/// </summary>
 		/// <param name="conditions">List of conditions that, once fullfiled, cause a player to WIN.</param>
-		void addWinConditions(std::vector<std::shared_ptr<Condition>> conditions);
+		void addWinConditions(std::vector<std::shared_ptr<Condition>>& conditions);
 
 		/// <summary>
 		/// Adds a list of conditions for the game to be lost for a player.
 		/// </summary>
 		/// <param name="conditions">List of conditions that, once fullfiled, cause a player to LOSE.</param>
-		void addLoseConditions(std::vector<std::shared_ptr<Condition>> conditions);
+		void addLoseConditions(std::vector<std::shared_ptr<Condition>>& conditions);
 
 		/// <summary>
 		/// Returns a list of sub-lists with all WIN conditions. Each sub-list contains a group of conditions
@@ -141,7 +141,7 @@ namespace SGA
 		/// conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. 
 		/// </summary>
 		/// <returns>A list of sub-lists with all WIN conditions</returns>
-		const std::vector<std::vector<std::shared_ptr<Condition>>> getWinConditions() const { return winConditions; }
+		const std::vector<std::vector<std::shared_ptr<Condition>>>& getWinConditions() const { return winConditions; }
 
 		/// <summary>
 		/// Returns a list of sub-lists with all LOSE conditions. Each sub-list contains a group of conditions
@@ -149,29 +149,29 @@ namespace SGA
 		/// conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. 
 		/// </summary>
 		/// <returns>A list of sub-lists with all LOSE conditions</returns>
-		const std::vector<std::vector<std::shared_ptr<Condition>>> getLoseConditions() const { return loseConditions; }
+		const std::vector<std::vector<std::shared_ptr<Condition>>>& getLoseConditions() const { return loseConditions; }
 
 		/// <summary>
 		/// Adds an OnTickEffect to the forward mode, which will be executed every game tick.
 		/// </summary>
 		/// <param name="ote">Effect to add.</param>
-		void addOnTickEffect(OnTickEffect ote);
+		void addOnTickEffect(OnTickEffect& ote);
 
 		/// <summary>
 		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
 		/// </summary>
 		/// <param name="ote">Effect to add.</param>
-		void addOnEntitySpawnEffect(OnEntitySpawnEffect ose);
+		void addOnEntitySpawnEffect(OnEntitySpawnEffect& ose);
 
 		/// <summary>
 		/// Returns all effects that are exxecuted on every tick of the game.
 		/// </summary>
-		const std::vector<OnTickEffect> getOnTickEffects() const { return onTickEffects; }
+		const std::vector<OnTickEffect>& getOnTickEffects() const { return onTickEffects; }
 
 		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
 		/// </summary>
-		const std::vector<OnEntitySpawnEffect> getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
+		const std::vector<OnEntitySpawnEffect>& getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
 
 	protected:
 

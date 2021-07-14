@@ -519,7 +519,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
-                fm->addOnTickEffect(std::move(onTickEffect));
+                fm->addOnTickEffect(onTickEffect);
 			}
             else if(map.find("OnSpawn") != map.end())
             {
@@ -535,7 +535,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
                 // Add it to the fm
-                fm->addOnEntitySpawnEffect(std::move(onSpawnEffect));
+                fm->addOnEntitySpawnEffect(onSpawnEffect);
             }
             else
             {

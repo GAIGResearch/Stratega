@@ -420,22 +420,22 @@ namespace SGA
 		}
 	}
 
-	void ForwardModel::addWinConditions(std::vector<std::shared_ptr<Condition>> conditions)
+	void ForwardModel::addWinConditions(std::vector<std::shared_ptr<Condition>>& conditions)
 	{
 		winConditions.emplace_back(conditions);
 	}
 
-	void ForwardModel::addLoseConditions(std::vector<std::shared_ptr<Condition>> conditions)
+	void ForwardModel::addLoseConditions(std::vector<std::shared_ptr<Condition>>& conditions)
 	{
 		loseConditions.emplace_back(conditions);
 	}
 
-	void ForwardModel::addOnTickEffect(OnTickEffect ote) 
+	void ForwardModel::addOnTickEffect(OnTickEffect& ote) 
 	{ 
 		onTickEffects.emplace_back(ote); 
 	}
 
-	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect ose) 
+	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose) 
 	{ 
 		onEntitySpawnEffects.emplace_back(ose); 
 	}
