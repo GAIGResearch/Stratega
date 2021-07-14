@@ -35,7 +35,7 @@ namespace SGA
 		}
 	}
 
-	double Entity::getParameter(std::string paramName) const
+	double Entity::getParameter(const std::string& paramName) const
 	{
 		for (const auto& param : type->parameters)
 		{
@@ -91,7 +91,7 @@ namespace SGA
 	}
 
 
-	const std::vector<ActionType> Entity::getActionTypes(const GameInfo& gameInfo) const
+	std::vector<ActionType> Entity::getActionTypes(const GameInfo& gameInfo) const
 	{
 		std::vector<ActionType> aTypes;
 		for (const ActionInfo aInfo : attachedActions)

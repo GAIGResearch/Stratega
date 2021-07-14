@@ -136,14 +136,14 @@ namespace SGA
 		/// Returns the actions attached to this entity.
 		/// <summary>
 		/// <returns>The list of <see cref="SGA::ActionInfo"/> attached to this entity.</returns>
-		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+		const std::vector<ActionInfo>& getAttachedActions() const { return attachedActions; }
 
 		/// <summary>
 		/// Retrieves the list of action types this entity can execute.
 		/// </summary>
 		/// <param name="gameInfo">Reference to the game information object (from GameState)</param>
 		/// <returns>Vector with all action types this entity can execute</returns>
-		const std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
+		std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
 
 		/// <summary>
 		/// Sets the last executed game ticks to the tick passed by parameter for the action corresponding to the type received.
@@ -197,7 +197,7 @@ namespace SGA
 		/// Gets the value of a specific parameter, by name 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameter(std::string paramName) const;
+		double getParameter(const std::string& paramName) const;
 		
 		/// <summary>
 		/// Gets a specific parameters, by index 
@@ -262,7 +262,7 @@ namespace SGA
 		/// <summary>
 		/// Returns position of this entity.
 		/// </summary>
-		const Vector2f getPosition() const { return position; }
+		const Vector2f& getPosition() const { return position; }
 
 		/// <summary>
 		/// Sets the position of this entity in the board. Does not modify the board.
@@ -273,7 +273,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the path that this entity is following (RTS games only) 
 		/// </summary>
-		const Path getPath() const { return path; }
+		const Path& getPath() const { return path; }
 
 		/// <summary>
 		/// Increments the current index of the path that this entity is following (RTS games only) 
