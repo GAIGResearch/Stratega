@@ -15,7 +15,7 @@ namespace SGA
 	class GameRenderer
 	{
 	public:
-		static inline int NO_PLAYER_ID = -1;
+		static inline int NO_PLAYER_ID = -2;
 		
 		virtual ~GameRenderer() = default;
 
