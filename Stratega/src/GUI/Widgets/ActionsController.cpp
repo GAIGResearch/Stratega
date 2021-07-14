@@ -17,7 +17,7 @@ namespace SGA::Widgets
 	{
 		//Draw target
 		auto& targetType = actionType.getActionTargets()[settings.selectedTargets.size()].first;
-		switch (targetType.type)
+		switch (targetType.getType())
 		{
 			case TargetType::EntityType:
 			{
@@ -86,7 +86,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.technologyTypes)
+			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
 			{
 				//If player is researching abort action
 				for (auto& entityID : settings.selectedEntities)
@@ -153,7 +153,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.technologyTypes)
+			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
 			{
 				//If player is researching abort action
 				for (auto& action : state.getPlayer(playerID)->getContinuousActions())
@@ -216,7 +216,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.groupEntityTypes)
+			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
 			{
 				bool canSpawn = true;
 
@@ -269,7 +269,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.groupEntityTypes)
+			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
 			{
 				bool canSpawn = true;
 

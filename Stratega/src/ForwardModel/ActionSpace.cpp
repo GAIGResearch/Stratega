@@ -217,15 +217,15 @@ namespace SGA
 		for (auto& type : action.getActionTargets())
 		{
 			std::vector<ActionTarget> newTargets;
-			switch (type.first.type)
+			switch (type.first.getType())
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.samplingMethod);
+			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.getSamplingMethod());
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.groupEntityTypes, type.first.samplingMethod);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
 				break;
-			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
 				break;
@@ -245,15 +245,15 @@ namespace SGA
 		for (auto& type : action.getActionTargets())
 		{
 			std::vector<ActionTarget> newTargets;
-			switch (type.first.type)
+			switch (type.first.getType())
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.samplingMethod);
+			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.getSamplingMethod());
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.groupEntityTypes, type.first.samplingMethod);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
 				break;
-			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::None: return {};
 			}

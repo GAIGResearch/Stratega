@@ -388,19 +388,19 @@ namespace SGA
     TargetType GameConfigParser::parseTargetType(const YAML::Node& node, const GameConfig& config) const
     {
         TargetType targetType;
-        targetType.type = node["Type"].as<TargetType::Type>();
-        if (targetType.type == TargetType::Position)
+        targetType.setType(node["Type"].as<TargetType::Type>());
+        if (targetType.getType() == TargetType::Position)
         {        	
-        	targetType.samplingMethod= node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+        	targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
         	if(targetType == TargetType::Entity)
-				targetType.samplingMethod = node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+				targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         	
-            targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
+            targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
         }
-        else if (targetType.type == TargetType::Technology)
+        else if (targetType.getType() == TargetType::Technology)
         {
             auto techNode = node["ValidTargets"];
         	if(techNode.IsScalar() && techNode.as<std::string>() == "All")
@@ -408,7 +408,7 @@ namespace SGA
         		for(const auto& tree: config.technologyTreeCollection.technologyTreeTypes)
         		{
         			for(const auto& tech : tree.second.technologies)
-						targetType.technologyTypes.insert(tech.first);
+						targetType.getTechnologyTypes().insert(tech.first);
         		}
         	}
             else if(techNode.IsSequence())
@@ -417,7 +417,7 @@ namespace SGA
                 //Assigne technology IDs to the technologytypes map
                 for (auto& technology : technologies)
                 {
-                    targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+                    targetType.getTechnologyTypes().insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
                 }
             }
         }
