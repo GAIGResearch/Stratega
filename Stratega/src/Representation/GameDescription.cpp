@@ -15,20 +15,45 @@ namespace SGA
 
 	const std::vector<ActionType> GameDescription::getActionTypes(ActionCategory category, const GameInfo& gameInfo) const
 	{
+		std::vector<ActionType> actionTypes;
 		auto it = actionCategories.find(category);
 		if (it != actionCategories.end())
 		{
-			std::vector<ActionType> actionTypes;
 			for (auto& actionTypeID : it->second)
 			{
 				actionTypes.emplace_back(gameInfo.getActionType(actionTypeID));
 			}
+		}		
 
-			return actionTypes;
-		}			
-		else
-			return std::vector<ActionType>();
+		return actionTypes;
 	}
+
+
+	const std::vector<int> GameDescription::getEntityTypesIDs(EntityCategory category) const
+	{
+		auto it = entityCategories.find(category);
+		if (it != entityCategories.end())
+			return it->second;
+		else
+			return std::vector<int>();
+	}
+
+
+	const std::vector<EntityType> GameDescription::getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const
+	{
+		std::vector<EntityType> entityTypes;
+		auto it = entityCategories.find(category);
+		if (it != entityCategories.end())
+		{
+			for (auto& entityTypeID : it->second)
+			{
+				entityTypes.emplace_back(gameInfo.getEntityType(entityTypeID));
+			}
+		}
+
+		return entityTypes;
+	}
+
 
 	bool GameDescription::isFromCategory(EntityCategory category, int entityTypeId) const
 	{
