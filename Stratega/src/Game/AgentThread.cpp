@@ -23,7 +23,6 @@ namespace SGA
 			//results.computationTime = end - begin;
 			results.computationTime = std::chrono::duration_cast<std::chrono::milliseconds>
 				(end - begin);
-			
 		}
 		catch (...)
 		{
@@ -54,7 +53,9 @@ namespace SGA
 	{
 		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);
+		assert(joined);
 		computing = true;
+		joined = false;
 
 		// Setup computation
 		this->agent = &agent;
@@ -62,6 +63,7 @@ namespace SGA
 		this->forwardModel = &forwardModel;
 		this->gameConfig = &gameConfig;
 		resultCache = AgentResults{};
+		
 
 		// Start thread to compute
 		thread = std::thread(&AgentThread::runAgentThread, this, timeBudgetMs);
@@ -69,16 +71,16 @@ namespace SGA
 
 	AgentResults AgentThread::join()
 	{
-		assert(computing);
-		computing = false;
-
+		assert(!joined);
 		thread.join();
+		joined = true;
 		return resultCache;
 	}
 
 	void AgentThread::runAgentThread(long timeBudgetMs)
 	{
 		resultCache = runAgent(*this->agent, *this->state, *this->forwardModel, *this->gameConfig, timeBudgetMs);
+		computing = false;
 	}
 
 	

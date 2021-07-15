@@ -21,7 +21,7 @@ namespace SGA
 		dragging(false)
 	{
 		fowSettings.selectedPlayerID = pointOfViewPlayerID;
-		fowSettings.renderFogOfWar = config->applyFogOfWar;
+		fowSettings.renderFogOfWar = false;
 		fowSettings.renderType = FogRenderType::Fog;
 
 		// Initialize View

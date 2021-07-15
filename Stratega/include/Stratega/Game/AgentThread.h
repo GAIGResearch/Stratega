@@ -42,6 +42,15 @@ namespace SGA
 		/// <returns>The results obtained by executing the agent.</returns>
 		AgentResults join();
 
+		bool isComputing()
+		{
+			return computing;
+		}
+
+		bool isJoined()
+		{
+			return joined;
+		}
 	private:
 		void runAgentThread(long timeBudgetMs);
 		
@@ -52,6 +61,7 @@ namespace SGA
 		std::thread thread;
 		
 		bool computing;
+		bool joined;
 		AgentResults resultCache;
 	};
 }
