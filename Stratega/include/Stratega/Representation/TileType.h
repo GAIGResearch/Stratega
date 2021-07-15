@@ -50,7 +50,7 @@ namespace SGA
 		/// <returns>A Tile object of this type in the position <x,y></returns>
 		Tile toTile(int x, int y) const
 		{
-			Tile instance(id, this, x, y);
+			Tile instance(this, x, y);
 			instance.setWalkable(walkable);
 			instance.setBlockSight(blocksSight);
 			return instance;

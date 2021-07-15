@@ -31,7 +31,7 @@ namespace SGA
 
 	public:
 
-		Tile(int typeID,const TileType* tileType,int x, int y):
+		Tile(const TileType* tileType,int x, int y):
 			tileType(tileType),
 			walkable(true),
 			blockSight(false),

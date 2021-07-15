@@ -10,7 +10,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, nullptr, 0, 0),
+		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(std::move(board)),
 		players()
@@ -24,7 +24,7 @@ namespace SGA
 		winnerPlayerID(-1),
 		currentTick(1),
 		tickLimit(-1),
-		fogOfWarTile(-1, nullptr, 0, 0),
+		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(0, 0, fogOfWarTile)
 	{
@@ -165,7 +165,8 @@ namespace SGA
 		const Player* p = getPlayer(playerID);
 		if (p != nullptr)
 		{
-			for (const auto& param : *gameInfo->getPlayerParameterTypes())
+			const auto parameterTypes = gameInfo->getPlayerParameterTypes();
+			for (const auto& param : *parameterTypes)
 			{
 				if (param.second.getName() == paramName)
 				{
@@ -179,7 +180,8 @@ namespace SGA
 
 	bool GameState::hasPlayerParameter(const std::string& paramName) const
 	{
-		for (const auto& param : *gameInfo->getPlayerParameterTypes())
+		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
+		for (const auto& param : *parameterTypes)
 		{
 			if (param.second.getName() == paramName)
 			{
@@ -193,7 +195,8 @@ namespace SGA
 	std::vector<std::string> GameState::getPlayerParameterNames(int playerID) const
 	{
 		std::vector<std::string> paramNames;
-		for (const auto& param : *gameInfo->getPlayerParameterTypes())
+		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
+		for (const auto& param : *parameterTypes)
 			paramNames.emplace_back(param.second.getName());
 		
 		return paramNames;
@@ -206,7 +209,8 @@ namespace SGA
 			throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 
 		std::unordered_map<std::string, double> params;
-		for (const auto& param : *gameInfo->getPlayerParameterTypes())
+		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
+		for (const auto& param : *parameterTypes)
 			params.emplace(param.second.getName(), p->getParameter(param.second.getIndex()));
 		
 		return params;
