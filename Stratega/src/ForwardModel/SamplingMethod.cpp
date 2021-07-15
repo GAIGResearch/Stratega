@@ -175,7 +175,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
-				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable
+				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
 					|| std::floor(totalCost + 1) > searchSize
 					)
 					return false;

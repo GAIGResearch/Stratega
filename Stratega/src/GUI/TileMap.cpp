@@ -61,7 +61,7 @@ namespace SGA
 	void TileMap::updateTileQuad(sf::Vertex* quadPtr, const Tile& tile, const sf::Color& quadColor) const
 	{
 		// define the 4 corners
-		auto start = toISO(tile.position.x, tile.position.y) - sf::Vector2f{TILE_ORIGIN_X, TILE_ORIGIN_Y};
+		auto start = toISO(tile.x(), tile.y()) - sf::Vector2f{TILE_ORIGIN_X, TILE_ORIGIN_Y};
 		auto tileSize = tileset.getSpriteSize();
 		quadPtr[0].position = sf::Vector2f(start.x, start.y);
 		quadPtr[1].position = sf::Vector2f(start.x + tileSize.x, start.y);

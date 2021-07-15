@@ -235,7 +235,7 @@ namespace SGA
 					}
 
 					visibilityMap[pos] = true;
-					return board[pos].blocksSight;
+					return board[pos].blocksSight();
 				};
 
 				// Shadowcasting
@@ -279,7 +279,7 @@ namespace SGA
 				{
 					auto& tile = board.get(x, y);
 					tile = fogOfWarTile;
-					tile.position = Vector2i(x, y);
+					tile.setPosition(x, y);
 				}
 			}
 		}
@@ -404,7 +404,7 @@ namespace SGA
 		Tile& targetTile = board.get(position.x, position.y);
 		Entity* targetUnit = getEntity(Vector2f(position));
 
-		return targetUnit == nullptr && targetTile.isWalkable;
+		return targetUnit == nullptr && targetTile.isWalkable();
 	}
 
 	bool GameState::isInBounds(const Vector2i& pos) const

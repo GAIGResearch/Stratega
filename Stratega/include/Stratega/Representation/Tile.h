@@ -6,13 +6,37 @@ namespace SGA
 	
 	struct Tile
 	{
+
+	private:
+
+		/// <summary>
+		/// Type of tile
+		/// </summary>
+		const TileType* tileType;
+
+		/// <summary>
+		/// Indicates if this tile is walkable for units to occupy it.
+		/// </summary>
+		bool walkable;
+
+		/// <summary>
+		/// Indicates if this tile blocks the line of sight for entities in the game. 
+		/// </summary>
+		bool blockSight;
+
+		/// <summary>
+		/// Position <x,y> of this tile in the board.
+		/// </summary>
+		Vector2i position;
+
+	public:
+
 		Tile(int typeID,const TileType* tileType,int x, int y):
 			tileType(tileType),
-			isWalkable(true),
-			blocksSight(false),
+			walkable(true),
+			blockSight(false),
 			position(x, y)
 		{
-
 		}
 
 		/// <summary>
@@ -22,33 +46,22 @@ namespace SGA
 		int getTileTypeID() const;
 		
 		/// <summary>
-		/// Indicates if this tile is walkable for units to occupy it.
-		/// </summary>
-		bool isWalkable;
-
-		/// <summary>
-		/// Indicates if this tile blocks the line of sight for entities in the game. 
-		/// </summary>
-		bool blocksSight;
-
-		/// <summary>
-		/// Position <x,y> of this tile in the board.
-		/// </summary>
-		Vector2i position;
-
-
-		/// <summary>
 		/// Returns the name of this tile type
 		/// </summary>
 		/// <returns>Name ot the tile type of this type.</returns>
 		const std::string name() const;
 		
-	private:
+		/*Getters and setters for Tile*/
 
-		/// <summary>
-		/// Type of tile
-		/// </summary>
-		const TileType* tileType;
+		bool isWalkable() const { return walkable; }
+		void setWalkable(bool w) { walkable = w; }
+
+		bool blocksSight() const { return blockSight; }
+		void setBlockSight(bool b) { blockSight = b; }
+
+		void setPosition(int x, int y) { position = Vector2i(x,y); }
+		int x() const { return position.x; }
+		int y() const { return position.y; }
 	};
 
 }

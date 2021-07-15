@@ -117,7 +117,7 @@ namespace  SGA
 	{
 		auto pos = targetPosition.getPosition(state, targets);
 		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
-		return t.isWalkable && state.getEntityAt(pos) == nullptr;
+		return t.isWalkable() && state.getEntityAt(pos) == nullptr;
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
