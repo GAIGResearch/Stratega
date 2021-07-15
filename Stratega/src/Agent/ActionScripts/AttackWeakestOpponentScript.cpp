@@ -9,9 +9,9 @@ namespace SGA
 	{
 		for (const auto& param : (*gamestate.getGameInfo()->getEntityTypes())[entity.getEntityTypeID()].getParameters())
 		{
-			if (param.second.name == "Health")
+			if (param.second.getName() == "Health")
 			{
-				return entity.getParamValues()[param.second.index];
+				return entity.getParamValues()[param.second.getIndex()];
 			}
 		}
 		return 0;

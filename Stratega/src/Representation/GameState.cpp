@@ -167,9 +167,9 @@ namespace SGA
 		{
 			for (const auto& param : *gameInfo->getPlayerParameterTypes())
 			{
-				if (param.second.name == paramName)
+				if (param.second.getName() == paramName)
 				{
-					return p->getParameter(param.second.index);
+					return p->getParameter(param.second.getIndex());
 				}
 			}
 			throw std::runtime_error("No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
@@ -181,7 +181,7 @@ namespace SGA
 	{
 		for (const auto& param : *gameInfo->getPlayerParameterTypes())
 		{
-			if (param.second.name == paramName)
+			if (param.second.getName() == paramName)
 			{
 				return true;
 			}
@@ -194,7 +194,7 @@ namespace SGA
 	{
 		std::vector<std::string> paramNames;
 		for (const auto& param : *gameInfo->getPlayerParameterTypes())
-			paramNames.emplace_back(param.second.name);
+			paramNames.emplace_back(param.second.getName());
 		
 		return paramNames;
 	}
@@ -207,7 +207,7 @@ namespace SGA
 
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : *gameInfo->getPlayerParameterTypes())
-			params.emplace(param.second.name, p->getParameter(param.second.index));
+			params.emplace(param.second.getName(), p->getParameter(param.second.getIndex()));
 		
 		return params;
 	}

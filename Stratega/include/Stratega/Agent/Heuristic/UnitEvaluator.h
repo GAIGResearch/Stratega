@@ -41,34 +41,34 @@ namespace SGA
 			{
 				for (const auto& parameter : entry.second.getParameters())
 				{
-					if (parameter.second.name == "AttackDamage")
+					if (parameter.second.getName() == "AttackDamage")
 					{
-						maxDamage = std::max(parameter.second.maxValue, maxDamage);
+						maxDamage = std::max(parameter.second.getMaxValue(), maxDamage);
 						continue;
 					}
-					if (parameter.second.name == "AttackRange" || parameter.second.name == "HealRange")
+					if (parameter.second.getName() == "AttackRange" || parameter.second.getName() == "HealRange")
 					{
-						maxActionRange = std::max(parameter.second.maxValue, maxActionRange);
+						maxActionRange = std::max(parameter.second.getMaxValue(), maxActionRange);
 						continue;
 					}
-					if (parameter.second.name == "Health")
+					if (parameter.second.getName() == "Health")
 					{
-						maxHealth = std::max(parameter.second.maxValue, maxHealth);
+						maxHealth = std::max(parameter.second.getMaxValue(), maxHealth);
 						continue;
 					}
-					if (parameter.second.name == "MovementPoints")
+					if (parameter.second.getName() == "MovementPoints")
 					{
-						maxMovementRange = std::max(parameter.second.maxValue, maxMovementRange);
+						maxMovementRange = std::max(parameter.second.getMaxValue(), maxMovementRange);
 						continue;
 					}
-					if (parameter.second.name == "HealAmount")
+					if (parameter.second.getName() == "HealAmount")
 					{
-						maxHeal = std::max(parameter.second.maxValue, maxHeal);
+						maxHeal = std::max(parameter.second.getMaxValue(), maxHeal);
 						continue;
 					}
 					else
 					{
-						std::cout << parameter.second.name;
+						std::cout << parameter.second.getName();
 					}
 				}
 			}
@@ -85,33 +85,33 @@ namespace SGA
 
 				for (const auto& parameter : entry.second.getParameters())
 				{
-					if (parameter.second.name == "AttackDamage")
+					if (parameter.second.getName() == "AttackDamage")
 					{
 						continue;
 					}
-					if (parameter.second.name == "AttackRange" || parameter.second.name == "HealRange")
+					if (parameter.second.getName() == "AttackRange" || parameter.second.getName() == "HealRange")
 					{
-						actionRangePerc = parameter.second.defaultValue / static_cast<double>(maxActionRange);
+						actionRangePerc = parameter.second.getDefaultValue() / static_cast<double>(maxActionRange);
 						continue;
 					}
-					if (parameter.second.name == "Health")
+					if (parameter.second.getName() == "Health")
 					{
-						score += parameter.second.maxValue / static_cast<double>(maxHealth);
+						score += parameter.second.getMaxValue() / static_cast<double>(maxHealth);
 						continue;
 					}
-					if (parameter.second.name == "MovementPoints")
+					if (parameter.second.getName() == "MovementPoints")
 					{
-						movementRange = parameter.second.defaultValue;
+						movementRange = parameter.second.getDefaultValue();
 						continue;
 					}
-					if (parameter.second.name == "HealAmount")
+					if (parameter.second.getName() == "HealAmount")
 					{
-						healAmount += parameter.second.defaultValue / static_cast<double>(maxHeal);
+						healAmount += parameter.second.getDefaultValue() / static_cast<double>(maxHeal);
 						continue;
 					}
 					else
 					{
-						std::cout << parameter.second.name;
+						std::cout << parameter.second.getName();
 					}
 				}
 

@@ -31,10 +31,10 @@ namespace SGA
 					const auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					for (const auto& parameter : entityType.getParameters())
 					{
-						if (parameter.second.name == parameterName)
+						if (parameter.second.getName() == parameterName)
 						{
 							// (u * x) / ((u*(x-minValue[parameterName])-x+maxValue[parameterName])
-							const double x = entity.getParameterAt(parameter.second.index);
+							const double x = entity.getParameterAt(parameter.second.getIndex());
 							const double u = attributeUValues[parameterName];
 							double den = (u * (x - minValue[parameterName]) - (x + maxValue[parameterName]));
 

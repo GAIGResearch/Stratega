@@ -31,7 +31,7 @@ namespace SGA
 		player.resizeParameters(gameInfo.getPlayerParameterTypes()->size());
 		for (const auto& idParamPair : *gameInfo.getPlayerParameterTypes())
 		{
-			player.setParameter(idParamPair.second.index, idParamPair.second.defaultValue);
+			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
 		}
 
 		// Add actions

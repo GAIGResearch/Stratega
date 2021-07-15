@@ -67,7 +67,7 @@ namespace SGA
 		const auto& entityType = getEntityType(entityTypeID);
 		for (const auto& parameter : entityType.getParameters())
 		{
-			if (parameter.second.name == parameterName)
+			if (parameter.second.getName() == parameterName)
 				return true;
 		}
 

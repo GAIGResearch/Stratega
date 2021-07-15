@@ -391,7 +391,7 @@ namespace SGA
 				stream << std::fixed << std::setprecision(2) << selectedEntity->getParameterAt(parameterIndex++);
 				std::string valueParameter = stream.str();
 
-				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
 				ImGui::BulletText(parameterInfo.c_str());
 			}
 
@@ -598,10 +598,10 @@ namespace SGA
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.index);
+				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.getIndex());
 				std::string valueParameter = stream.str();
 
-				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
 				ImGui::BulletText(parameterInfo.c_str());
 			}
 		}		

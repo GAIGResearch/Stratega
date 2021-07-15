@@ -31,7 +31,7 @@ namespace SGA
 		parameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
-			parameters.emplace_back(idParamPair.second.defaultValue);
+			parameters.emplace_back(idParamPair.second.getDefaultValue());
 		}
 	}
 
@@ -39,9 +39,9 @@ namespace SGA
 	{
 		for (const auto& param : type->getParameters())
 		{
-			if (param.second.name == paramName)
+			if (param.second.getName() == paramName)
 			{
-				return parameters[param.second.index];
+				return parameters[param.second.getIndex()];
 			}
 		}
 	}
@@ -51,7 +51,7 @@ namespace SGA
 	{
 		std::vector<std::string> paramNames;
 		for (const auto& param : type->getParameters())
-			paramNames.emplace_back(param.second.name);
+			paramNames.emplace_back(param.second.getName());
 
 		return paramNames;
 	}
@@ -61,7 +61,7 @@ namespace SGA
 	{
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : type->getParameters())
-			params.emplace(param.second.name, parameters[param.second.index]);
+			params.emplace(param.second.getName(), parameters[param.second.getIndex()]);
 		return params;
 	}
 
@@ -120,7 +120,7 @@ namespace SGA
 		std::cout << ", [Parameters: ";
 		for (auto& parameter : parameters)
 		{
-			std::cout << "(" << type->getParameters().find(parameterID++)->second.name << ": " << parameter << ")";
+			std::cout << "(" << type->getParameters().find(parameterID++)->second.getName() << ": " << parameter << ")";
 		}
 
 		std::cout << "]" << std::endl;

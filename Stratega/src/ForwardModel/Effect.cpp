@@ -128,7 +128,7 @@ namespace SGA
 		const auto& param = targetResource.getParameter(state, targets);
 		auto& paramValue = targetResource.getParameterValue(state, targets);
 
-		paramValue = param.maxValue;
+		paramValue = param.getMaxValue();
 	}
 
 	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -145,7 +145,7 @@ namespace SGA
 		auto amount = amountParam.getConstant(state, targets);
 
 		// Compute how much the source can transfer, if the source does not have enough just take everything
-		amount = std::min(amount, sourceValue - sourceType.minValue);
+		amount = std::min(amount, sourceValue - sourceType.getMinValue());
 		// Transfer
 		sourceValue -= amount;
 		// ToDo should check the maximum, but currently we have no way to set the maximum in the configuration
@@ -272,7 +272,7 @@ namespace SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			parameters[param.index] -= idCostPair.second;
+			parameters[param.getIndex()] -= idCostPair.second;
 		}
 	}
 }

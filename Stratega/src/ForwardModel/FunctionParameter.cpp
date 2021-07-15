@@ -142,12 +142,12 @@ namespace SGA
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
-				return entity.getParameterAt(param.index);
+				return entity.getParameterAt(param.getIndex());
 			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = getPlayer(state, actionTargets);
-				return player.getParameter(param.index);
+				return player.getParameter(param.getIndex());
 			}
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
@@ -155,7 +155,7 @@ namespace SGA
 			const auto& param = getParameter(state, actionTargets);
 			auto& entity = getEntity(state, actionTargets);
 			auto* player = state.getPlayer(entity.getOwnerID());
-			return player->getParameter(param.index);
+			return player->getParameter(param.getIndex());
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");

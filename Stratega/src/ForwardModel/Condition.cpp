@@ -272,7 +272,7 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters[param.index] < idCostPair.second)
+			if (parameters[param.getIndex()] < idCostPair.second)
 				return false;
 		}
 

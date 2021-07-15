@@ -42,9 +42,9 @@ namespace SGA
 					const auto& entityType = tbsState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					for (const auto& parameter : entityType.getParameters())
 					{
-						if (parameter.second.name == entry.first)
+						if (parameter.second.getName() == entry.first)
 						{
-							parameterValues.push_back(entity.getParameterAt(parameter.second.index));
+							parameterValues.push_back(entity.getParameterAt(parameter.second.getIndex()));
 							break;
 						}
 					}

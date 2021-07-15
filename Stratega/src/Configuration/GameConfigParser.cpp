@@ -710,13 +710,13 @@ namespace SGA
 
             // Construct the parameter
             Parameter param;
-            param.id = config.parameters.at(nameParamPair.first);
-            param.name = nameParamPair.first;
-            param.minValue = 0;
-            param.maxValue = nameParamPair.second;
-            param.defaultValue = param.maxValue;
-            param.index = static_cast<int>(parameterBucket.size());
-            parameterBucket.insert({ param.id, std::move(param) });
+            param.setID(config.parameters.at(nameParamPair.first));
+            param.setName(nameParamPair.first);
+            param.setMinValue(0);
+            param.setMaxValue(nameParamPair.second);
+            param.setDefaultValue(param.getMaxValue());
+            param.setIndex(static_cast<int>(parameterBucket.size()));
+            parameterBucket.insert({ param.getID(), std::move(param) });
         }
 	}
 
