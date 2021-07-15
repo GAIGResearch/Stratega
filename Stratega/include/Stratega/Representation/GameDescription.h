@@ -57,7 +57,17 @@ namespace SGA
 		{
 			
 		}
-	
+
+		/// <summary>
+		/// Returns the action categories of this game.
+		/// </summary>
+		const std::unordered_map<ActionCategory, std::vector<int>>& getActionCategories() const { return actionCategories; };
+
+		/// <summary>
+		/// Returns the entity categories of this game.
+		/// </summary>
+		const std::unordered_map<EntityCategory, std::vector<int>>& getEntityCategories() const { return entityCategories; };
+			
 		/// <summary>
 		/// Returns all the actiontypes IDs of the selected action category.
 		/// </summary>

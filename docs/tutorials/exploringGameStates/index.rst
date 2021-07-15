@@ -44,7 +44,7 @@ like this:
         :title: C/C++
         :linenos:
 
-        std::string yamlPath = state.gameInfo->yamlPath;
+        std::string yamlPath = state.getGameInfo()->getYAMLPath();
         std::ifstream infile(yamlPath);
         std::string line;
         while (std::getline(infile, line))
@@ -83,17 +83,17 @@ The following code snippet shows how to access these maps and prints the name of
         :title: C/C++
         :linenos:
 
-        auto entityTypes = state.gameInfo->entityTypes;
-        for (const auto& [id, eType] : *entityTypes) 
-            std::cout << "[Entity] id: " << id << ", name: " << eType.name << std::endl;
+		auto entityTypes = state.getGameInfo()->getEntityTypes();
+		for (const auto& [id, eType] : *entityTypes) 
+			std::cout << "[Entity] id: " << id << ", name: " << eType.getName() << std::endl;
 
-        auto tileTypes = state.gameInfo->tileTypes;
-        for (const auto& [id, tType] : *tileTypes) 
-            std::cout << "[Tile] id: " <<  id << ", name: " << tType.name << std::endl;
+		auto tileTypes = state.getGameInfo()->getTileTypes();
+		for (const auto& [id, tType] : *tileTypes) 
+			std::cout << "[Tile] id: " <<  id << ", name: " << tType.getName() << std::endl;
 
-        auto actionTypes = state.gameInfo->actionTypes;
-        for (const auto& [id, aType] : *actionTypes) 
-            std::cout << "[Action] id: " << id << ", name: " << aType.name << std::endl;
+		auto actionTypes = state.getGameInfo()->getActionTypes();
+		for (const auto& [id, aType] : *actionTypes) 
+			std::cout << "[Action] id: " << id << ", name: " << aType.getName() << std::endl;
 
     .. code-tab:: python
         :title: python
@@ -174,14 +174,14 @@ These descriptors can be retrieved using the *gameDescription* member of the Gam
         :title: C/C++
         :linenos:
 
-        for (const auto& [ac, actionTypes] : state.gameInfo->gameDescription->actionCategories)
+        for (const auto& [ac, actionTypes] : state.getGameInfo()->getGameDescription()->getActionCategories())
         {
             std::string actionCategoryName = GameDescription::toString(ac);
             std::cout << "[Action Category] " << actionCategoryName << ": ";
             for (int actionTypeID : actionTypes)
             {
                 auto actionType = state.gameInfo->getActionType(actionTypeID);
-                std::cout << actionType.name << " (" << actionType.id << "), ";
+                std::cout << actionType.getName() << " (" << actionType.getID() << "), ";
             }
             std::cout << std::endl;
         }
@@ -223,13 +223,13 @@ Similarly, it's possible to extract information about entity categories. The fol
         :title: C/C++
         :linenos:
 
-        for (const auto& [ec, entityTypes] : state.gameInfo->gameDescription->entityCategories)
+        for (const auto& [ec, entityTypes] : state.getGameInfo()->getGameDescription()->getEntityCategories())
         {
             std::cout << "[Entity Category] " << GameDescription::toString(ec) << ": ";
             for (int entityTypeID : entityTypes)
             {
-                auto entityType = state.gameInfo->getEntityType(entityTypeID);
-                std::cout << entityType.name << " (" << entityType.id << "), ";
+                auto entityType = state.getGameInfo()->getEntityType(entityTypeID);
+				std::cout << entityType.getName() << " (" << entityType.getID() << "), ";
             }
             std::cout << std::endl;
         }
@@ -286,23 +286,23 @@ As an example, the following code snippet accesses and prints the number of prec
         :linenos:
 
         //PRECONDITIONS
-        auto preconditions = actionType.preconditions;
+        auto preconditions = actionType.getProconditions();
         if (preconditions.size() > 0) std::cout << " Preconditions: " << preconditions.size() << std::endl;
         for (const auto& precondition : preconditions)
             std::cout << "\t" << precondition->expr() << std::endl;
-        
-    
+
+
         //TARGET CONDITIONS
-        if (actionType.actionTargets.size() > 0) std::cout << " Target Conditions: " << actionType.actionTargets.size() << std::endl;
-        for (const auto& actionTarget : actionType.actionTargets)
+        if (actionType.getTargets().size() > 0) std::cout << " Target Conditions: " << actionType.getTargets().size() << std::endl;
+        for (const auto& actionTarget : actionType.getTargets())
         {
             for (auto condition : actionTarget.second)
                 std::cout << "\t" << condition->expr() << std::endl;
         }
-    
+
         //One-shot effects
-        if (actionType.effects.size() > 0) std::cout << " Effects: " << actionType.effects.size() << std::endl;
-        for (const auto& effect : actionType.effects)
+        if (actionType.getEffects().size() > 0) std::cout << " Effects: " << actionType.getEffects().size() << std::endl;
+        for (const auto& effect : actionType.getEffects())
             std::cout << "\t" << effect->expr() << std::endl;
 
     .. code-tab:: python
@@ -389,7 +389,7 @@ using the function 'getTechnologyCounts()':
         :title: C/C++
         :linenos:
 
-        std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
+        std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
         for (const auto& [id, count] : techCounts)
         {
             //'id' is the technology tree ID, 'count' is the number of technologies on each tree.
@@ -412,13 +412,13 @@ iterates through the technologies of all trees and prints the information to con
         :title: C/C++
         :linenos:
 
-        std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
-        for (const auto& [id, count] : techCounts)
-        {
-            std::vector<TechnologyTreeNode> techs = state.gameInfo->getTreeNodes(id);
-            for (TechnologyTreeNode t : techs)
-                std::cout << t.toString(*state.gameInfo) << std::endl;
-        }
+		std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
+		for (const auto& [id, count] : techCounts)
+		{
+			std::vector<TechnologyTreeNode> techs = state.getGameInfo()->getTreeNodes(id);
+			for (TechnologyTreeNode t : techs)
+				std::cout << t.toString(*state.getGameInfo()) << std::endl;
+		}
 
     .. code-tab:: python
         :title: python
@@ -469,11 +469,11 @@ tile has a tile type and certain properties regarding visibility and the ability
         :title: C/C++
         :linenos:
 
-        for (int x = 0; x < state.board.getWidth(); ++x){
-            for (int y = 0; y < state.board.getHeight(); ++y){
-            Tile t = state.board.get(x, y);
+		for (int x = 0; x < state.getBoardWidth(); ++x){
+			for (int y = 0; y < state.getBoardHeight(); ++y){
+            Tile t = state.getTileAt(x, y);
             std::cout << "x: " << x << ", y: " << y << "; tile type: " << t.getTileTypeID() << " (" << t.name() << "), walkable: " <<
-                t.isWalkable << ", blocks view: " << t.blocksSight << std::endl;
+				t.isWalkable() << ", blocks view: " << t.blocksSight() << std::endl;
             }
         }
 
@@ -528,21 +528,22 @@ following example code expands the previous snippet including how to retrive ent
         :title: C/C++
         :linenos:
 
-        for (int x = 0; x < state.board.getWidth(); ++x){
-            for (int y = 0; y < state.board.getHeight(); ++y){
-            Tile t = state.board.get(x, y);
-            std::cout << "x: " << x << ", y: " << y << "; tile type: " << t.getTileTypeID() << " (" << t.name() << "), walkable: " <<
-                t.isWalkable << ", blocks view: " << t.blocksSight << std::endl;
-                    
-            Entity* ent = state.getEntity(Vector2f(x, y));
-            if (ent != nullptr){
-                std::cout << "\tEntity: " << ent->getEntityType().name << ", owner's player ID: " << ent->ownerID <<
+		for (int x = 0; x < state.getBoardWidth(); ++x){
+			for (int y = 0; y < state.getBoardHeight(); ++y){
+                Tile t = state.getTileAt(x, y);
+                std::cout << "x: " << x << ", y: " << y << "; tile type: " << t.getTileTypeID() << " (" << t.name() << "), walkable: " <<
+                    t.isWalkable() << ", blocks view: " << t.blocksSight() << std::endl;
+                        
+                Entity* ent = state.getEntity(Vector2f(x, y));
+                if (ent != nullptr)
+                {
+                    std::cout << "\tEntity: " << ent->getEntityType().getName() << ", owner's player ID: " << ent->getOwnerID() <<
                         ", parameters: " << std::endl;
-    
-                std::unordered_map<std::string, double> params = ent->getEntityParameters();
-                for (const auto& [paramName, value] : params)
-                std::cout << "\t\t" << paramName << ": " << value << std::endl;
-            }
+
+                    std::unordered_map<std::string, double> params = ent->getEntityParameters();
+                    for (const auto& [paramName, value] : params)
+                        std::cout << "\t\t" << paramName << ": " << value << std::endl;
+                }
             }
         }
 
@@ -591,16 +592,15 @@ entity directly from the Entity object:
         :title: C/C++
         :linenos:
 
-        std::vector<Entity*> myEntities = state.getPlayerEntities(this->getPlayerID());
-        for (const Entity* ent : myEntities)
-        {
-            std::cout << "Entity: " << ent->getEntityType().name << ", owner's player ID: " << ent->ownerID <<
-                ", position (x:" << ent->position.x << ", y:" << ent->position.y << "), parameters: " << std::endl;
-    
-            std::unordered_map<std::string, double> params = ent->getEntityParameters();
-            for (const auto& [paramName, value] : params)
-                std::cout << "\t" << paramName << ": " << value << std::endl;
-        }
+		for (Entity ent : state.getPlayerEntities(this->getPlayerID()))
+		{
+			std::cout << "Entity: " << ent.getEntityType().getName() << ", owner's player ID: " << ent.getOwnerID() <<
+				", position (x:" << ent.x() << ", y:" << ent.y() << "), parameters: " << std::endl;
+
+			std::unordered_map<std::string, double> params = ent.getEntityParameters();
+			for (const auto& [paramName, value] : params)
+				std::cout << "\t" << paramName << ": " << value << std::endl;
+		}
 
     .. code-tab:: python
         :title: python
@@ -681,7 +681,7 @@ Hence, a call like this:
         :title: C/C++
         :linenos:
 
-        std::vector<Entity*> myFigherUnits = state.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
+        std::vector<Entity> myFigherUnits = state.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
 
     .. code-tab:: python
         :title: python
@@ -724,6 +724,31 @@ For instance, the following snippet prints the parameter of the current player:
             print(param, ":", params[param])
 
 
+To summarize, the following C++ code puts parameters, entities and players together. If shows, for all players in the game, the entites they control
+and their parameters:
+
+.. code-tabs::
+
+    .. code-tab:: c
+        :title: C/C++
+        :linenos:
+
+        int nplayers = state.getNumPlayers();
+        for (int ip = 0; ip < nplayers; ++ip)
+        {
+            std::vector<Entity> myEntities = state.getPlayerEntities(ip);
+            for (const Entity ent : myEntities)
+            {
+                std::cout << ip << "; Entity: " << ent.getEntityType().getName() << ", owner's player ID: " << ent.getOwnerID() <<
+                    ", position (x:" << ent.x() << ", y:" << ent.y() << "), parameters: " << std::endl;
+
+                std::unordered_map<std::string, double> params = ent.getEntityParameters();
+                for (const auto& [paramName, value] : params)
+                    std::cout << "\t" << paramName << ": " << value << std::endl;
+            }
+        }
+
+
         
 Technologies
 ************************
@@ -739,17 +764,17 @@ dynamic information (lines 7-9), which depends on a particular instant in the ga
         :title: C/C++
         :linenos:
         
-        std::unordered_map<int, int> techCounts = state.gameInfo->getTechnologyCounts();
-        for (const auto& [id, count] : techCounts)
-        {
-            std::vector<TechnologyTreeNode> techs = state.gameInfo->getTreeNodes(id);
-            for (TechnologyTreeNode t : techs)
-            {
-                bool isResearched = state.isResearched(getPlayerID(), t.id);
-                bool canBeResearched = state.canResearch(getPlayerID(), t.id);
-                std::cout << "Tech: " << t.name << " researched: " << isResearched << ", available: " << canBeResearched << std::endl;
-            }
-        }
+		std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
+		for (const auto& [id, count] : techCounts)
+		{
+			std::vector<TechnologyTreeNode> techs = state.getGameInfo()->getTreeNodes(id);
+			for (TechnologyTreeNode t : techs)
+			{
+				bool isResearched = state.isResearched(getPlayerID(), t.id);
+				bool canBeResearched = state.canResearch(getPlayerID(), t.id);
+				std::cout << "Tech: " << t.name << " researched: " << isResearched << ", available: " << canBeResearched << std::endl;
+			}
+		}
 
     .. code-tab:: python
         :title: python
@@ -839,31 +864,31 @@ Extending the previous code snippet, we can access (and print to console) extra 
         :linenos:
         
         std::vector<Action> actions = forwardModel.generateActions(state, getPlayerID());
-        for (Action act : actions)
-        {
-            std::cout << act.getActionName();
-            for (ActionTarget at : act.targets)
-            {
-                switch (at.getType())
-                {
-                case SGA::ActionTarget::Type::PlayerReference:
-                    std::cout << ", for player " << at.getPlayerID();
-                    break;
-                case SGA::ActionTarget::Type::Position:
-                    std::cout << ", at position " << at.getPosition(state).x << "," << at.getPosition(state).y;
-                    break;
-                case SGA::ActionTarget::Type::EntityTypeReference:
-                    std::cout << ", entity type " << at.getEntityType(state).id;
-                    break;
-                case SGA::ActionTarget::Type::EntityReference:
-                    std::cout << ", by entity " << at.getEntityID();
-                    break;
-                case SGA::ActionTarget::Type::TechnologyReference:
-                    std::cout << ", for technology with ID " << at.getTechnologyID();
-                }
-            }
-            std::cout << std::endl;
-        }
+		for (Action act : actions)
+		{
+			std::cout << act.getActionName();
+			for (ActionTarget at : act.getTargets())
+			{
+				switch (at.getType())
+				{
+				case SGA::ActionTarget::Type::PlayerReference:
+					std::cout << ", for player " << at.getPlayerID();
+					break;
+				case SGA::ActionTarget::Type::Position:
+					std::cout << ", at position " << at.getPosition(state).x << "," << at.getPosition(state).y;
+					break;
+				case SGA::ActionTarget::Type::EntityTypeReference:
+					std::cout << ", entity type " << at.getEntityType(state).getID();
+					break;
+				case SGA::ActionTarget::Type::EntityReference:
+					std::cout << ", by entity " << at.getEntityID();
+					break;
+				case SGA::ActionTarget::Type::TechnologyReference:
+					std::cout << ", for technology with ID " << at.getTechnologyID();
+				}
+			}
+			std::cout << std::endl;
+		}
 
     .. code-tab:: python
         :title: python

@@ -130,6 +130,14 @@ namespace SGA
 		const Tile& getTileAt(const Vector2i& pos) const;
 
 		/// <summary>
+		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="x">X Position of the tile to retrieve</param>
+		/// <param name="y">Y Position of the tile to retrieve</param>
+		/// <returns>The tile at position (x,y)</returns>
+		const Tile& getTileAt(int x, int y) const;
+
+		/// <summary>
 		/// Initializes the board with the tiles passed by parameter. 
 		/// </summary>
 		/// <param name="tiles">Tiles to fill the board with.</param>

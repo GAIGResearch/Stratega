@@ -434,6 +434,11 @@ namespace SGA
 		throw std::runtime_error("Access to board out of bounds: " + std::to_string(pos.x) + "," + std::to_string(pos.y));
 	}
 
+	const Tile& GameState::getTileAt(int x, int y) const
+	{
+		return getTileAt({x,y});
+	}
+
 
 	/* PRINTS */
 

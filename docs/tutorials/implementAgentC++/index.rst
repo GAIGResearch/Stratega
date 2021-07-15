@@ -57,7 +57,8 @@ We'll call our agent's class ``DoNothing`` and we plan to override the method *c
         class DoNothing : public Agent
         {
         public:
-            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		    using Agent::Agent;
+            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
         };
     }
 
@@ -76,7 +77,7 @@ The code would look like this now:
     #include <Stratega/Agent/DoNothing/DoNothing.h>
     namespace SGA
     {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
         {
         
         }
@@ -92,45 +93,14 @@ As simple as shown in the next snippet:
 
     namespace SGA
     {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
         {
             return ActionAssignment();
         }
     }
 
-While this would be enough to run this agent in any RTS game in Statega, it's convenient to also make it compatible with Turn-Based Games. The
-type of game is stored in the `state` object received by parameter in the *computeAction* function, and can be checked as follows:
+And this is all. This code is compatible with the RTS and TBS types of games in Stratega, so you can use this agent for any of them straightaway.
 
-.. code-block:: c++
-
-    if (state.gameType == GameType::RTS)
-        return ActionAssignment();
-    else
-    // return ?
-
-
-For TBS, we need to return an action assignment that ends the turn of the current player. As this is a useful action, the class ActionAssignment has a method that creates this ActionAssignment for us. 
-We use it in the following snippet to complete the code for our agent:
-
-.. code-block:: c++
-
-    #include <Stratega/Agent/DoNothing/DoNothing.h>
-
-    namespace SGA
-    {
-        ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
-        {
-            if (state.gameType == GameType::RTS)
-                return ActionAssignment();
-            else
-                return ActionAssignment::createEndActionAssignment(getPlayerID());
-        }
-    }
-
-
-..
-
- In Stratega, most of the functionality is common between RTS and TBS games, with just a few exceptions like this one.
 
 
 ++++++++++++++++++
@@ -198,7 +168,8 @@ set up this agent is the same as for the DoNothing agent (and any other agent in
         class MyAgent : public Agent
         {
         public:
-            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+		    using Agent::Agent;
+            ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
         };
     }
 
