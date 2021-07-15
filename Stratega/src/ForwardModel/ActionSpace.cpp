@@ -338,7 +338,7 @@ namespace SGA
 	{
 		std::vector<ActionTarget> targets;
 		
-		for (const auto& technoloTreeType : gameState.getGameInfo()->technologyTreeCollection->technologyTreeTypes)
+		for (const auto& technoloTreeType : gameState.getGameInfo()->getTechnologyTreeCollection()->technologyTreeTypes)
 		{
 			for (auto& technology : technoloTreeType.second.technologies)
 			{

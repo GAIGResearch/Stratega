@@ -245,7 +245,7 @@ namespace  SGA
 		
 		// Check if we are allowed to spawn this entity
 		//const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-		const auto& spawneableEntities = sourceEntityParam.getSpawneableEntities(state, targets);
+		const auto& spawneableEntities = sourceEntityParam.getSpawnableEntities(state, targets);
 		if(spawneableEntities.find(targetEntityType.getID()) == spawneableEntities.end())
 		{
 			return false;

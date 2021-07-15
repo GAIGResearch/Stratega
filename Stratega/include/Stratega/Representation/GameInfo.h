@@ -21,30 +21,61 @@ namespace SGA
 	/// </summary>
 	struct GameInfo
 	{
-		//Yaml
+
+	private:
+
+		/// <summary>
+		/// Path to game YAML file
+		/// </summary>
 		std::string yamlPath;
-		
-        //Type information
-        std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
-        std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
-        std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
-        std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
-        std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
-        std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
 
-        //Technology tree
-        std::shared_ptr<TechnologyTreeCollection> technologyTreeCollection;
-        std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
-
-		//GameDescription
+		/// <summary>
+		/// Pointer to the description of the game.
+		/// </summary>
 		std::shared_ptr <GameDescription> gameDescription;
 
 		/// <summary>
-		/// Returns the game description of the game.
+		/// Relation of parameters defined in the game: name -> id
 		/// </summary>
-		/// <returns>GameDescription.</returns>
-		GameDescription& getGameDescription() const;
-		
+		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
+
+		/// <summary>
+		/// Relation of parameters defined in the game: id -> parameter object.
+		/// </summary>
+		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
+
+		/// <summary>
+		/// Set of entity type IDs of this game.
+		/// </summary>
+		std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
+
+		/// <summary>
+		/// Relation of entity types in this game: id -> entity type object
+		/// </summary>
+		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
+
+		/// <summary>
+		/// Relation of action types in this game: id -> action type object
+		/// </summary>
+		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
+
+		/// <summary>
+		/// Relation of tile types in this game: id -> tile type object
+		/// </summary>
+		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
+
+		/// <summary>
+		/// Pointer to the technology tree for this game.
+		/// </summary>
+		std::shared_ptr<TechnologyTreeCollection> technologyTreeCollection;
+
+		/// <summary>
+		/// Relation of entity types in the Entity Groups of this game: name (of entity group) -> set<entity type id>
+		/// </summary>
+		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
+
+	public:
+
 		/// <summary>
 		/// Returns the entity type.
 		/// </summary>
@@ -152,6 +183,33 @@ namespace SGA
 		/// </summary>
 		/// <returns>Returns the IDs of the tech trees of this game.</returns>
 		std::vector<int> getTechTreesIDs() const; 
+
+
+		/* Setters for the members of this struct.*/
+		void setYAMLPath(const std::string& path) { yamlPath = path; }
+		void setGameDescription(std::shared_ptr <GameDescription> gd) { gameDescription = gd; }
+		void setParameterIDLookup(std::shared_ptr<std::unordered_map<std::string, ParameterID>> pID) { parameterIDLookup = pID; }
+		void setPlayerParameterTypes(std::shared_ptr<std::unordered_map<ParameterID, Parameter>> pt) { playerParameterTypes = pt; }
+		void setPlayerSpawnableTypes(std::shared_ptr<std::unordered_set<EntityTypeID>> pt) { playerSpawnableTypes = pt; }
+		void setEntityTypes(std::shared_ptr<std::unordered_map<int, EntityType>> et) { entityTypes = et; }
+		void setActionTypes(std::shared_ptr<std::unordered_map<int, ActionType>> at) { actionTypes = at; }
+		void setTileTypes(std::shared_ptr<std::unordered_map<int, TileType>> tt) { tileTypes = tt; }
+		void setTechnologyTreeCollection(std::shared_ptr<TechnologyTreeCollection> tt) { technologyTreeCollection = tt; }
+		void setEntityGroups(std::unordered_map<std::string, std::unordered_set<EntityTypeID>> eg) { entityGroups = eg; }
+
+
+		/* Getters for the members of this struct */
+		const std::string& getYAMLPath() const { return yamlPath; }
+		const std::shared_ptr <GameDescription>& getGameDescription() const { return gameDescription; }
+		const std::shared_ptr<std::unordered_map<std::string, ParameterID>> getParameterIDLookup() const { return parameterIDLookup; }
+		const std::shared_ptr<std::unordered_map<ParameterID, Parameter>> getPlayerParameterTypes() const { return playerParameterTypes; }
+		const std::shared_ptr<std::unordered_set<EntityTypeID>> getPlayerSpawnableTypes() const { return playerSpawnableTypes; }
+		const std::shared_ptr<std::unordered_map<int, EntityType>> getEntityTypes() const { return entityTypes; }
+		const std::shared_ptr<std::unordered_map<int, ActionType>> getActionTypes() const { return actionTypes; }
+		const std::shared_ptr<std::unordered_map<int, TileType>> getTileTypes() const { return tileTypes; }
+		const std::shared_ptr<TechnologyTreeCollection> getTechnologyTreeCollection() const { return technologyTreeCollection; }
+		const std::unordered_map<std::string, std::unordered_set<EntityTypeID>> getEntityGroups() const { return entityGroups; }
+
 	};
 
 }

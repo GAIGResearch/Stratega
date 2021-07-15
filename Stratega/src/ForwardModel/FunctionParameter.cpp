@@ -85,7 +85,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::TechnologyReference)
 			{
 				auto technologyID = target.getTechnologyID();
-				return state.getGameInfo()->technologyTreeCollection->getTechnology(technologyID).continuousActionTime;
+				return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(technologyID).continuousActionTime;
 			}
 			else if (target.getType() == ActionTarget::EntityReference
 				|| target.getType() == ActionTarget::EntityTypeReference)
@@ -121,7 +121,7 @@ namespace SGA
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
-			const auto& param = state.getGameInfo()->playerParameterTypes->at(data.parameterData.parameterID);
+			const auto& param = state.getGameInfo()->getPlayerParameterTypes()->at(data.parameterData.parameterID);
 			return param;
 		}
 
@@ -263,13 +263,13 @@ namespace SGA
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
-	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawneableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const std::unordered_set<EntityTypeID>& FunctionParameter::getSpawnableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		switch (parameterType)
 		{
 		case Type::ParameterReference:
 		{
-			return actionTargets[data.parameterData.argumentIndex].getSpawneableEntities(state);
+			return actionTargets[data.parameterData.argumentIndex].getSpawnableEntities(state);
 		}
 		case Type::EntityPlayerParameterReference:
 		case Type::EntityPlayerReference:
@@ -279,7 +279,7 @@ namespace SGA
 		}
 		case Type::ArgumentReference:
 		{
-			return actionTargets[data.argumentIndex].getSpawneableEntities(state);
+			return actionTargets[data.argumentIndex].getSpawnableEntities(state);
 		}
 		default:
 			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
@@ -292,11 +292,11 @@ namespace SGA
 		if (parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return state.getGameInfo()->technologyTreeCollection->getTechnology(actionTarget.getTechnologyID());
+			return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(actionTarget.getTechnologyID());
 		}
 		else if (parameterType == Type::TechnologyTypeReference)
 		{	
-			return state.getGameInfo()->technologyTreeCollection->getTechnology(data.technologyTypeID);
+			return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(data.technologyTypeID);
 		}
 		else
 		{
@@ -397,7 +397,7 @@ namespace SGA
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{
-			return *state.getGameInfo()->playerParameterTypes;
+			return *state.getGameInfo()->getPlayerParameterTypes();
 			
 		}
 		if (getType() == Type::ArgumentReference)
@@ -405,7 +405,7 @@ namespace SGA
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
-				return *state.getGameInfo()->playerParameterTypes;
+				return *state.getGameInfo()->getPlayerParameterTypes();
 			}
 			if (target.getType() == ActionTarget::EntityReference)
 			{

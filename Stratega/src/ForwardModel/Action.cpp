@@ -6,7 +6,7 @@ namespace SGA
 {
 	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
-		auto& type = state.getGameInfo()->actionTypes->at(getActionTypeID());
+		auto& type = state.getGameInfo()->getActionTypes()->at(getActionTypeID());
 		for (auto& effect : type.getEffects())
 		{
 			effect->execute(state,fm, targets);

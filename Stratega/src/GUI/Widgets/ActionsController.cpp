@@ -114,7 +114,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.getGameInfo()->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -178,7 +178,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.getGameInfo()->technologyTreeCollection->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -273,7 +273,7 @@ namespace SGA::Widgets
 			{
 				bool canSpawn = true;
 
-				if (state.getGameInfo()->playerSpawnableTypes->find(possibleActionType) == state.getGameInfo()->playerSpawnableTypes->end())
+				if (state.getGameInfo()->getPlayerSpawnableTypes()->find(possibleActionType) == state.getGameInfo()->getPlayerSpawnableTypes()->end())
 				{
 					canSpawn = false;
 				}

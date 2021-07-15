@@ -37,7 +37,7 @@ namespace SGA
 			double maxMovementRange = 0;
 			double maxActionRange = 0;
 
-			for (const auto& entry : *gameState.getGameInfo()->entityTypes)
+			for (const auto& entry : *gameState.getGameInfo()->getEntityTypes())
 			{
 				for (const auto& parameter : entry.second.getParameters())
 				{
@@ -75,7 +75,7 @@ namespace SGA
 
 
 			UnitTypeStrengthLookup strengthLookup;
-			for (const auto& entry : *gameState.getGameInfo()->entityTypes)
+			for (const auto& entry : *gameState.getGameInfo()->getEntityTypes())
 			{
 				double score = 0;
 				auto actionRangePerc = 1;
@@ -117,7 +117,7 @@ namespace SGA
 
 				for (auto actionID : entry.second.getActionIDs())
 				{
-					const auto& action = (*gameState.getGameInfo()->actionTypes)[actionID];
+					const auto& action = (*gameState.getGameInfo()->getActionTypes())[actionID];
 					if (action.getName() == "Attack")
 					{
 						score += (attackDamage / static_cast<double>(maxDamage)) * actionRangePerc;

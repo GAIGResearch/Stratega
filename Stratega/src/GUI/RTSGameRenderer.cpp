@@ -661,7 +661,7 @@ namespace SGA
 							actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
 							break;
 						case ActionTarget::TechnologyReference:
-							actionInfo += " Technology: " + state.getGameInfo()->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+							actionInfo += " Technology: " + state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(targetType.getTechnologyID()).name;
 							break;
 						case ActionTarget::EntityTypeReference:
 							actionInfo += " Entity: " + targetType.getEntityType(state).getName();
@@ -776,7 +776,7 @@ namespace SGA
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
 			const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
-			for (const auto& parameter : *state.getGameInfo()->playerParameterTypes)
+			for (const auto& parameter : *state.getGameInfo()->getPlayerParameterTypes())
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;

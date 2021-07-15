@@ -64,11 +64,11 @@ namespace SGA
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 	
-	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
+	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawnableEntities(const GameState& state) const
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.getGameInfo()->playerSpawnableTypes;
+			return *state.getGameInfo()->getPlayerSpawnableTypes();
 		}
 		else if (targetType == EntityReference)
 		{
@@ -250,7 +250,7 @@ namespace SGA
 		case TechnologyReference:
 			{
 			int technologyID = getTechnologyID();
-			std::string technologyName = state.getGameInfo()->technologyTreeCollection->getTechnology(technologyID).name;
+			std::string technologyName = state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(technologyID).name;
 			return technologyName;
 			}			
 			break;
