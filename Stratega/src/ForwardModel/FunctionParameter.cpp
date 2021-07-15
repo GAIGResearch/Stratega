@@ -91,7 +91,7 @@ namespace SGA
 				|| target.getType() == ActionTarget::EntityTypeReference)
 			{
 				auto& entityType = target.getEntityType(state);
-				return entityType.continuousActionTime;
+				return entityType.getContinuousActionTime();
 			}
 
 		}
@@ -275,7 +275,7 @@ namespace SGA
 		case Type::EntityPlayerReference:
 		{
 			const auto& entity = getEntityType(state, actionTargets);
-			return entity.spawnableEntityTypes;
+			return entity.getSpawnableEntityTypes();
 		}
 		case Type::ArgumentReference:
 		{
@@ -312,7 +312,7 @@ namespace SGA
 			const auto& actionTarget = actionTargets[data.argumentIndex];
 			if(actionTarget.getType() == ActionTarget::EntityTypeReference)
 			{
-				return getEntityType(state, actionTargets).cost;
+				return getEntityType(state, actionTargets).getCosts();
 			}
 			else if(actionTarget.getType() == ActionTarget::TechnologyReference)
 			{
@@ -325,7 +325,7 @@ namespace SGA
 		}
 		else if(parameterType == Type::EntityTypeReference)
 		{
-			return getEntityType(state, actionTargets).cost;
+			return getEntityType(state, actionTargets).getCosts();
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
@@ -411,14 +411,14 @@ namespace SGA
 			{
 				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
 				const auto& sourceEntityType = sourceEntity.getEntityType();
-				return sourceEntityType.parameters;
+				return sourceEntityType.getParameters();
 			}
 		}
 		else
 		{
 			const auto& sourceEntity = getEntity(state, actionTargets);
 			const auto& sourceEntityType = sourceEntity.getEntityType();
-			return sourceEntityType.parameters;
+			return sourceEntityType.getParameters();
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");

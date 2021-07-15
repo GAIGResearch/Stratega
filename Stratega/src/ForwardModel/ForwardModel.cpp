@@ -397,7 +397,7 @@ namespace SGA
 		std::vector<ActionTarget> targets = { ActionTarget::createEntityActionTarget(entityID) };
 		for(const auto& onSpawnEffect : onEntitySpawnEffects)
 		{
-			if (onSpawnEffect.validTargets.find(entityType.id) == onSpawnEffect.validTargets.end())
+			if (onSpawnEffect.validTargets.find(entityType.getID()) == onSpawnEffect.validTargets.end())
 				continue;
 
 			auto isValid = true;

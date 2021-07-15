@@ -40,7 +40,7 @@ namespace SGA
 				//int globalParameterID = tbsState.getParameterGlobalID(entry.first);
 				for (auto entity : tbsState.getEntities()) {
 					const auto& entityType = tbsState.getGameInfo()->getEntityType(entity.getEntityTypeID());
-					for (const auto& parameter : entityType.parameters)
+					for (const auto& parameter : entityType.getParameters())
 					{
 						if (parameter.second.name == entry.first)
 						{

@@ -39,7 +39,7 @@ namespace SGA
 
 			for (const auto& entry : *gameState.getGameInfo()->entityTypes)
 			{
-				for (const auto& parameter : entry.second.parameters)
+				for (const auto& parameter : entry.second.getParameters())
 				{
 					if (parameter.second.name == "AttackDamage")
 					{
@@ -83,7 +83,7 @@ namespace SGA
 				double healAmount = 0;
 				double movementRange = 0;
 
-				for (const auto& parameter : entry.second.parameters)
+				for (const auto& parameter : entry.second.getParameters())
 				{
 					if (parameter.second.name == "AttackDamage")
 					{
@@ -115,7 +115,7 @@ namespace SGA
 					}
 				}
 
-				for (auto actionID : entry.second.actionIds)
+				for (auto actionID : entry.second.getActionIDs())
 				{
 					const auto& action = (*gameState.getGameInfo()->actionTypes)[actionID];
 					if (action.getName() == "Attack")
@@ -139,7 +139,7 @@ namespace SGA
 					}
 				}
 
-				strengthLookup[entry.second.id] = score;
+				strengthLookup[entry.second.getID()] = score;
 			}
 
 			return strengthLookup;

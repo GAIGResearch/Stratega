@@ -179,7 +179,7 @@ namespace  SGA
 		bool hasEntity = false;
 		for (auto& entity : entities)
 		{
-			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).getID())
 				hasEntity = true;
 		}
 
@@ -201,7 +201,7 @@ namespace  SGA
 
 		for (auto& entity : entities)
 		{
-			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).getID())
 				return true;
 		}
 	
@@ -237,8 +237,8 @@ namespace  SGA
 		const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
 		// Check if we fullfill the technology-requirements for the target entity
-		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.isResearched(playerID, targetEntityType.requiredTechnologyID))
+		if(targetEntityType.getRequiredTechID() != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID &&
+			!state.isResearched(playerID, targetEntityType.getRequiredTechID()))
 		{
 			return false;
 		}
@@ -246,7 +246,7 @@ namespace  SGA
 		// Check if we are allowed to spawn this entity
 		//const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
 		const auto& spawneableEntities = sourceEntityParam.getSpawneableEntities(state, targets);
-		if(spawneableEntities.find(targetEntityType.id) == spawneableEntities.end())
+		if(spawneableEntities.find(targetEntityType.getID()) == spawneableEntities.end())
 		{
 			return false;
 		}

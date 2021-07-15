@@ -224,7 +224,7 @@ namespace SGA::Widgets
 				for (auto& entity : settings.selectedEntities)
 				{
 					auto& entityType = state.getEntity(entity)->getEntityType();
-					if (entityType.spawnableEntityTypes.find(possibleActionType) == entityType.spawnableEntityTypes.end())
+					if (entityType.getSpawnableEntityTypes().find(possibleActionType) == entityType.getSpawnableEntityTypes().end())
 					{
 						canSpawn = false;
 					}
@@ -234,7 +234,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
 				{
 					bool canExecute = true;
 
@@ -282,7 +282,7 @@ namespace SGA::Widgets
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state.getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
 				{
 					bool canExecute = true;
 
@@ -464,7 +464,7 @@ namespace SGA::Widgets
 		{
 			int entityTypeID = state.getEntity(entity)->getEntityTypeID();
 
-			for (auto& actionID : state.getGameInfo()->getEntityType(entityTypeID).actionIds)
+			for (auto& actionID : state.getGameInfo()->getEntityType(entityTypeID).getActionIDs())
 			{
 				actionTypes.insert(actionID);
 			}

@@ -87,7 +87,7 @@ namespace SGA
 		std::unordered_map<char, const EntityType*> entityLookup;
 		for(const auto& idEntityPair : *state->getGameInfo()->entityTypes)
 		{
-			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+			entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
 		}
 
 		// Configure board and spawn entities
@@ -145,7 +145,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : entityTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 

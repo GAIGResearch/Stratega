@@ -11,7 +11,7 @@ namespace SGA
 	
 	int Entity::getEntityTypeID() const
 	{
-		return type->id;
+		return type->getID();
 	}
 
 	void Entity::init(const EntityType* type, int entityID)
@@ -20,16 +20,16 @@ namespace SGA
 		this->id = entityID;
 		
 		// Add actions
-		attachedActions.reserve(type->actionIds.size());
-		for (auto actionTypeID : type->actionIds)
+		attachedActions.reserve(type->getActionIDs().size());
+		for (auto actionTypeID : type->getActionIDs())
 		{
 			attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->lineOfSightRange;
-		parameters.reserve(type->parameters.size());
-		for (const auto& idParamPair : type->parameters)
+		lineOfSightRange = type->getLoSRange();
+		parameters.reserve(type->getParameters().size());
+		for (const auto& idParamPair : type->getParameters())
 		{
 			parameters.emplace_back(idParamPair.second.defaultValue);
 		}
@@ -37,7 +37,7 @@ namespace SGA
 
 	double Entity::getParameter(const std::string& paramName) const
 	{
-		for (const auto& param : type->parameters)
+		for (const auto& param : type->getParameters())
 		{
 			if (param.second.name == paramName)
 			{
@@ -50,7 +50,7 @@ namespace SGA
 	std::vector<std::string> Entity::getEntityParameterNames() const
 	{
 		std::vector<std::string> paramNames;
-		for (const auto& param : type->parameters)
+		for (const auto& param : type->getParameters())
 			paramNames.emplace_back(param.second.name);
 
 		return paramNames;
@@ -60,7 +60,7 @@ namespace SGA
 	std::unordered_map<std::string, double> Entity::getEntityParameters() const
 	{
 		std::unordered_map<std::string, double> params;
-		for (const auto& param : type->parameters)
+		for (const auto& param : type->getParameters())
 			params.emplace(param.second.name, parameters[param.second.index]);
 		return params;
 	}
@@ -105,7 +105,7 @@ namespace SGA
 
 	void Entity::printInfo() const
 	{
-		std::cout << "[" << type->name << "],";
+		std::cout << "[" << type->getName() << "],";
 		std::cout << " [ID: " << id << "],";
 		std::cout << " [OwnerID: " << ownerID << "],";
 		std::cout << " [Position: " << position.x << "," << position.y << "]";
@@ -120,7 +120,7 @@ namespace SGA
 		std::cout << ", [Parameters: ";
 		for (auto& parameter : parameters)
 		{
-			std::cout << "(" << type->parameters.find(parameterID++)->second.name << ": " << parameter << ")";
+			std::cout << "(" << type->getParameters().find(parameterID++)->second.name << ": " << parameter << ")";
 		}
 
 		std::cout << "]" << std::endl;

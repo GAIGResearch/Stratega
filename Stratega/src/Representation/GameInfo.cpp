@@ -64,13 +64,13 @@ namespace SGA
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const
 	{
 		const auto& entityType = getEntityType(entityTypeID);
-		return entityType.parameters.find(globalParameterID)->second;
+		return entityType.getParameters().find(globalParameterID)->second;
 	}
 
 	bool GameInfo::checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
 	{
 		const auto& entityType = getEntityType(entityTypeID);
-		for (const auto& parameter : entityType.parameters)
+		for (const auto& parameter : entityType.getParameters())
 		{
 			if (parameter.second.name == parameterName)
 				return true;

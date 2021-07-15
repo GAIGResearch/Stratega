@@ -72,7 +72,7 @@ namespace SGA
 		}
 		else if (targetType == EntityReference)
 		{
-			return getEntityConst(state).getEntityType().spawnableEntityTypes;
+			return getEntityConst(state).getEntityType().getSpawnableEntityTypes();
 		}
 
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
@@ -222,7 +222,7 @@ namespace SGA
 		{
 		case EntityReference:
 			
-			return getEntityType(state).name +" "+std::to_string(getEntityID());
+			return getEntityType(state).getName() +" "+std::to_string(getEntityID());
 			break;
 		case Position:
 		{
@@ -244,7 +244,7 @@ namespace SGA
 		case EntityTypeReference:
 			{
 			const auto& entityType = getEntityType(state);
-			return entityType.name;
+			return entityType.getName();
 			}			
 			break;
 		case TechnologyReference:

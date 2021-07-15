@@ -443,7 +443,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			std::cout << "[OwnerID]" << entity.getOwnerID() << std::endl;			
-			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).name << " [entityID]: "<< entity.getID() << std::endl;
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).getName() << " [entityID]: "<< entity.getID() << std::endl;
 		}
 	}
 
@@ -467,7 +467,7 @@ namespace SGA
 		for (auto& entity : entities)
 		{
 			auto& pos = entity.getPosition();
-			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).symbol;
+			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).getSymbol();
 			const char ownerID = std::to_string(entity.getOwnerID())[0];
 			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
 
@@ -527,7 +527,7 @@ namespace SGA
 				int entityID = action.getSourceID();
 				auto& entityType = getEntityConst(entityID)->getEntityType();
 				
-				std::cout << " [SourceType Entity: "<<entityType.name<<" "<<entityID<<"],";
+				std::cout << " [SourceType Entity: "<<entityType.getName() <<" "<<entityID<<"],";
 			}
 
 			std::cout << " [ActionTargets" ;

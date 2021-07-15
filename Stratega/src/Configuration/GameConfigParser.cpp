@@ -84,18 +84,18 @@ namespace SGA
         for (auto& type : config->entityTypes)
         {
             // Assign actions to entities
-            auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+            auto actions = types[type.second.getName()]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
-                type.second.actionIds.emplace_back(config->getActionID(actionName));
+                type.second.getActionIDs().emplace_back(config->getActionID(actionName));
             }
 
             // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], *config);
-            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
-            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name);
+            type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], *config));
+            auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
+            type.second.setRequiredTechID( name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name));
         	// Hardcoded cost information
-            type.second.cost = parseCost(types[type.second.name]["Cost"], *config);
+            type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], *config));
         }
 		
 		//Assign player actions
@@ -257,15 +257,15 @@ namespace SGA
         for (const auto& nameTypePair : types)
         {
             EntityType type;
-            type.name = nameTypePair.first;
-            type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
-            type.id = static_cast<int>(config.entityTypes.size());
-            type.lineOfSightRange = nameTypePair.second["LineOfSightRange"].as<double>();
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+            type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
 
-            parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
+            parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
-            config.entityTypes.emplace(type.id, std::move(type));
+            config.entityTypes.emplace(type.getID(), std::move(type));
         }
     }
 
@@ -291,7 +291,7 @@ namespace SGA
             // Group that contains all entities
             config.entityGroups.at("All").emplace(idEntityPair.first);
         	// Group that contains one entity
-            config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
+            config.entityGroups.emplace(idEntityPair.second.getName(), std::initializer_list<int>{ idEntityPair.first });
         }
     }
 
@@ -834,7 +834,7 @@ namespace SGA
         std::unordered_map<char, const EntityType*> entityLookup;
         for (const auto& idEntityPair : config.entityTypes)
         {
-            entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+            entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
         }
     	
         // Configure new level definition and entity placements
@@ -872,7 +872,7 @@ namespace SGA
                     ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
                     if (ownerID>=config.getNumberOfPlayers())
                     {
-                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
+                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->getName() + " to an unknown player " + std::to_string(ownerID));
                     }
                     i++;
                 }

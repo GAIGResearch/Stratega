@@ -368,14 +368,14 @@ namespace SGA
 			
 			auto& entityType = selectedEntity->getEntityType();
 
-			ImGui::Text(entityType.name.c_str());
+			ImGui::Text(entityType.getName().c_str());
 			ImGui::Columns(2, "mixed");
 			ImGui::SetColumnWidth(0, 100.0f);
 
 			ImGui::Separator();
 
 			//Add units
-			sf::Texture& texture = assetCache.getTexture(entityType.name);
+			sf::Texture& texture = assetCache.getTexture(entityType.getName());
 
 			ImGui::Image(texture, ImVec2(100, 100), sf::Color::White, sf::Color::Transparent);
 
@@ -384,7 +384,7 @@ namespace SGA
 			ImGui::Text("Parameters: ");
 
 			int parameterIndex = 0;
-			for (const auto& parameter : entityType.parameters)
+			for (const auto& parameter : entityType.getParameters())
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
@@ -409,7 +409,7 @@ namespace SGA
 				//Check if entity have sprite
 				auto entityType = entity.getEntityType();
 				//Add units
-				sf::Texture& texture = assetCache.getTexture(entityType.name);
+				sf::Texture& texture = assetCache.getTexture(entityType.getName());
 
 				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
 				{
@@ -477,7 +477,7 @@ namespace SGA
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
-			unitInfo = type.name + " " + std::to_string(unit.getID()) + " PID: " + std::to_string(unit.getOwnerID());
+			unitInfo = type.getName() + " " + std::to_string(unit.getID()) + " PID: " + std::to_string(unit.getOwnerID());
 			ImGui::Text(unitInfo.c_str());
 		}
 
@@ -550,7 +550,7 @@ namespace SGA
 						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 						break;
 					case ActionTarget::EntityReference:
-						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().name;
+						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().getName();
 						break;
 					case ActionTarget::PlayerReference:
 						actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
@@ -559,7 +559,7 @@ namespace SGA
 						actionInfo += " Technology: " + state.getGameInfo()->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
 						break;
 					case ActionTarget::EntityTypeReference:
-						actionInfo += " Entity: " + targetType.getEntityType(state).name;
+						actionInfo += " Entity: " + targetType.getEntityType(state).getName();
 						break;
 					case ActionTarget::ContinuousActionReference:
 						break;

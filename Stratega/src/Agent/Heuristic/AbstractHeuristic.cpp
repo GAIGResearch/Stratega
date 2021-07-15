@@ -29,7 +29,7 @@ namespace SGA
 
 				for (auto entity : gameState.getEntities()) {
 					const auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
-					for (const auto& parameter : entityType.parameters)
+					for (const auto& parameter : entityType.getParameters())
 					{
 						if (parameter.second.name == parameterName)
 						{
