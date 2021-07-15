@@ -506,11 +506,11 @@ namespace SGA
 	void GameState::printActionInfo(const Action& action) const
 	{
 		std::cout << "ActionInfo";
-		if(action.actionTypeFlags== ActionFlag::AbortContinuousAction)
+		if(action.getActionFlag() == ActionFlag::AbortContinuousAction)
 		{
 			std::cout << "[AbortContinuousAction]" << std::endl;
 		}
-		else if (action.actionTypeFlags == ActionFlag::EndTickAction)
+		else if (action.getActionFlag() == ActionFlag::EndTickAction)
 		{
 			std::cout << "[EndTick]"  << std::endl;
 		}
@@ -521,7 +521,7 @@ namespace SGA
 			
 			//Print source
 			if (actionType.getSourceType() == ActionSourceType::Player)
-				std::cout << " [SourceType Player: " << action.ownerID << "],";
+				std::cout << " [SourceType Player: " << action.getOwnerID() << "],";
 			else
 			{				
 				int entityID = action.getSourceID();
@@ -531,9 +531,9 @@ namespace SGA
 			}
 
 			std::cout << " [ActionTargets" ;
-			for (size_t i = 0; i < actionType.getActionTargets().size(); i++)
+			for (size_t i = 0; i < actionType.getTargets().size(); i++)
 			{
-				std::cout << "(Target: "<<actionType.getActionTargets()[i].first.getTypeString()<<", " << action.targets[i + 1].getValueString(*this) << ")";
+				std::cout << "(Target: "<<actionType.getTargets()[i].first.getTypeString()<<", " << action.getTargets()[i + 1].getValueString(*this) << ")";
 			}
 			std::cout << "]"<<std::endl;
 		}

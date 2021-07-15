@@ -28,7 +28,7 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.getID(), action.continuousActionID));
+							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
 						}
 					}
 				}
@@ -43,7 +43,7 @@ namespace SGA
 					continue;
 
 				// Generate all actions
-				if(actionType.getActionTargets().size() == 0/*TargetType::None*/)
+				if(actionType.getTargets().size() == 0/*TargetType::None*/)
 				{
 					// Self-actions do not have a target, only a source
 					bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
@@ -74,7 +74,7 @@ namespace SGA
 						generateContinuousAction = false;
 
 						//Give the posibility to abort it
-						bucket.emplace_back(Action::createAbortAction(player.getID(), action.continuousActionID));
+						bucket.emplace_back(Action::createAbortAction(player.getID(), action.getContinuousActionID()));
 					}
 				}
 			}
@@ -90,7 +90,7 @@ namespace SGA
 				continue;
 
 			// Generate all actions
-			if (actionType.getActionTargets().size() == 0/*TargetType::None*/)
+			if (actionType.getTargets().size() == 0/*TargetType::None*/)
 			{
 				// Self-actions do not have a target, only a source
 				bucket.emplace_back(generateSelfAction(player, actionType));
@@ -147,22 +147,22 @@ namespace SGA
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourceEntity.getOwnerID();
-			action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
+			action.setOwnerID(sourceEntity.getOwnerID());
+			action.getTargets().emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
 			
 			for (auto& target : targetsProduct)
 			{
-				action.targets.emplace_back(target);
+				action.getTargets().emplace_back(target);
 			}
 
 			if (actionType.isContinuous())
-				action.actionTypeFlags = ActionFlag::ContinuousAction;
+				action.setActionFlag(ActionFlag::ContinuousAction);
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.getActionTargets())
+			for (auto& actionTargetType : actionType.getTargets())
 			for (const auto& condition : actionTargetType.second)
 			{
-				if (!condition->isFullfiled(state, action.targets))
+				if (!condition->isFullfiled(state, action.getTargets()))
 				{
 					isValidAction = false;
 					break;
@@ -181,22 +181,22 @@ namespace SGA
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourcePlayer.getID();
-			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
+			action.setOwnerID(sourcePlayer.getID());
+			action.getTargets().emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
 
 			for (auto& target : targetsProduct)
 			{
-				action.targets.emplace_back(target);
+				action.getTargets().emplace_back(target);
 			}
 
 			if (actionType.isContinuous())
-				action.actionTypeFlags = ActionFlag::ContinuousAction;
+				action.setActionFlag(ActionFlag::ContinuousAction);
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.getActionTargets())
+			for (auto& actionTargetType : actionType.getTargets())
 				for (const auto& condition : actionTargetType.second)
 				{
-					if (!condition->isFullfiled(state, action.targets))
+					if (!condition->isFullfiled(state, action.getTargets()))
 					{
 						isValidAction = false;
 						break;
@@ -214,7 +214,7 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 		
-		for (auto& type : action.getActionTargets())
+		for (auto& type : action.getTargets())
 		{
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.getType())
@@ -242,7 +242,7 @@ namespace SGA
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
-		for (auto& type : action.getActionTargets())
+		for (auto& type : action.getTargets())
 		{
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.getType())
@@ -357,7 +357,7 @@ namespace SGA
 
 		for (const auto& action : sourceEntity.getContinuousActions())
 		{
-			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.continuousActionID));
+			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.getContinuousActionID()));
 		}
 		return targets;
 	}
@@ -365,14 +365,18 @@ namespace SGA
 	Action ActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.getID()) };
+		std::vector<ActionTarget> actionTargets;
+		actionTargets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
+		selfAction.setActionTargets(actionTargets);
 		return selfAction;
 	}
 
 	Action ActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.getID()) };
+		std::vector<ActionTarget> actionTargets;
+		actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
+		selfAction.setActionTargets(actionTargets);
 		return selfAction;
 	}
 

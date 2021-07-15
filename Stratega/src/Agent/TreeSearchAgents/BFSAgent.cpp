@@ -32,7 +32,7 @@ namespace SGA
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
 			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
-			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 			return ActionAssignment::fromSingleAction(action);
 		}

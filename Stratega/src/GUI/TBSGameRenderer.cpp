@@ -131,8 +131,8 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
-					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.getActionFlag() == ActionFlag::ContinuousAction
+					|| possibleAction.getActionFlag() == ActionFlag::AbortContinuousAction
 					|| possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
@@ -141,12 +141,12 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if (actionType.getSourceType() == ActionSourceType::Entity)
 				{
-					auto& entity = *possibleAction.targets[0].getEntity(state);
+					auto& entity = *possibleAction.getTargets()[0].getEntity(state);
 					if (entity.getID() != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
 
-				for (auto& actionTarget : possibleAction.targets)
+				for (auto& actionTarget : possibleAction.getTargets())
 				{
 					if (actionTarget.getType() == ActionTarget::Position)
 					{
@@ -173,8 +173,8 @@ namespace SGA
 			for (auto& possibleAction : actionsSettings.actionsHumanPlayer)
 			{
 				//Check if action is compatible with the selected type and targets
-				if (possibleAction.getActionTypeID() == -1 || possibleAction.actionTypeFlags == ActionFlag::ContinuousAction
-					|| possibleAction.actionTypeFlags == ActionFlag::AbortContinuousAction ||
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.getActionFlag() == ActionFlag::ContinuousAction
+					|| possibleAction.getActionFlag() == ActionFlag::AbortContinuousAction ||
 					possibleAction.getActionTypeID() != actionsSettings.actionTypeSelected)
 					continue;
 
@@ -184,17 +184,17 @@ namespace SGA
 				//Check the source and the selected entity is the same
 				if (actionType.getSourceType() == ActionSourceType::Entity)
 				{
-					auto& entity = *possibleAction.targets[0].getEntity(state);
+					auto& entity = *possibleAction.getTargets()[0].getEntity(state);
 					if (entity.getID() != *actionsSettings.selectedEntities.begin())
 						continue;
 				}
 
 				//Avoid source entity
-				for (int i = 1; i < possibleAction.targets.size(); ++i)
+				for (int i = 1; i < possibleAction.getTargets().size(); ++i)
 				{
-					if (possibleAction.targets[i].getType() == ActionTarget::EntityReference)
+					if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
 					{
-						auto position = possibleAction.targets[i].getPosition(state);
+						auto position = possibleAction.getTargets()[i].getPosition(state);
 
 						sf::CircleShape possibleActionPositionShape(15);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
@@ -500,15 +500,15 @@ namespace SGA
 			std::string actionInfo = std::to_string(index);
 			if (action.getActionTypeID() == -1)
 			{
-				if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+				if (action.getActionFlag() == ActionFlag::AbortContinuousAction)
 				{
-					if (action.targets[0].getType() == ActionTarget::EntityReference)
+					if (action.getTargets()[0].getType() == ActionTarget::EntityReference)
 					{
 						//We need to find the continues action name that will abort
-						auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
+						auto& sourceEntity = *state.getEntityConst(action.getTargets()[0].getEntityID());
 						for (const auto& continueAction : sourceEntity.getContinuousActions())
 						{
-							if (continueAction.continuousActionID == action.continuousActionID)
+							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 							{
 								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.getName();
@@ -518,10 +518,10 @@ namespace SGA
 					else
 					{
 						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.targets[0].getPlayer(const_cast<GameState&>(state));
+						auto& sourcePlayer = action.getTargets()[0].getPlayer(const_cast<GameState&>(state));
 						for (auto& continueAction : sourcePlayer.getContinuousActions())
 						{
-							if (continueAction.continuousActionID == action.continuousActionID)
+							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 							{
 								const ActionType& actionType = continueAction.getActionType();
 								actionInfo += " Abort " + actionType.getName();
@@ -542,7 +542,7 @@ namespace SGA
 				actionInfo += " " + actionType.getName();
 
 				//TODO Clean this :D IS TEMPORAL
-				for (auto& targetType : action.targets)
+				for (auto& targetType : action.getTargets())
 				{
 					switch (targetType.getType())
 					{

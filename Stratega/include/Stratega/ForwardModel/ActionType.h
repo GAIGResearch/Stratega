@@ -134,8 +134,8 @@ namespace SGA
 		const std::vector<std::shared_ptr<Condition>>& getProconditions() const { return preconditions; }
 		std::vector<std::shared_ptr<Condition>>& getProconditions() { return preconditions; }
 
-		const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getActionTargets() const { return actionTargets; }
-		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getActionTargets() { return actionTargets; }
+		const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getTargets() const { return actionTargets; }
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getTargets() { return actionTargets; }
 
 		const std::vector<std::shared_ptr<Condition>>& getTriggerComplete() const { return triggerComplete; }
 		std::vector<std::shared_ptr<Condition>> getTriggerComplete() { return triggerComplete; }

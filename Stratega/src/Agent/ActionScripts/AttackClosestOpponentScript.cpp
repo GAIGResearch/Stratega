@@ -46,9 +46,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 					
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double dist = positions[action.targets[0].getEntityID()].manhattanDistance(positions[action.targets[1].getEntityID()]);
+						const double dist = positions[action.getTargets()[0].getEntityID()].manhattanDistance(positions[action.getTargets()[1].getEntityID()]);
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
@@ -69,7 +69,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = minimalDistanceToOpponents(action.targets[1].getPosition(gameState), positions, opponentUnits);
+					const double dist = minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -100,7 +100,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -144,9 +144,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double dist = action.targets[0].getPosition(gameState).manhattanDistance(positions[action.targets[1].getEntityID()]);
+						const double dist = action.getTargets()[0].getPosition(gameState).manhattanDistance(positions[action.getTargets()[1].getEntityID()]);
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
@@ -167,7 +167,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = minimalDistanceToOpponents(positions[action.targets[1].getEntityID()], positions, opponentUnits);
+					const double dist = minimalDistanceToOpponents(positions[action.getTargets()[1].getEntityID()], positions, opponentUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;

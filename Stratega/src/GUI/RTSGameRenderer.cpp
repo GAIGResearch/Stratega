@@ -608,15 +608,15 @@ namespace SGA
 				std::string actionInfo = std::to_string(index);
 				if (action.getActionTypeID() == -1)
 				{
-					if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+					if (action.getActionFlag() == ActionFlag::AbortContinuousAction)
 					{
-						if (action.targets[0].getType() == ActionTarget::EntityReference)
+						if (action.getTargets()[0].getType() == ActionTarget::EntityReference)
 						{
 							//We need to find the continues action name that will abort
-							auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
+							auto& sourceEntity = *state.getEntityConst(action.getTargets()[0].getEntityID());
 							for (const auto& continueAction : sourceEntity.getContinuousActions())
 							{
-								if (continueAction.continuousActionID == action.continuousActionID)
+								if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 								{
 									const ActionType& actionType = continueAction.getActionType();
 									actionInfo += " Abort " + actionType.getName();
@@ -626,10 +626,10 @@ namespace SGA
 						else
 						{
 							//We need to find the continues action name that will abort
-							auto& sourcePlayer = action.targets[0].getPlayer(state);
+							auto& sourcePlayer = action.getTargets()[0].getPlayer(state);
 							for (auto& continueAction : sourcePlayer.getContinuousActions())
 							{
-								if (continueAction.continuousActionID == action.continuousActionID)
+								if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 								{
 									const ActionType& actionType = continueAction.getActionType();
 									actionInfo += " Abort " + actionType.getName();
@@ -647,7 +647,7 @@ namespace SGA
 					actionInfo += " " + actionType.getName();
 
 					//TODO Clean this :D IS TEMPORAL
-					for (auto& targetType : action.targets)
+					for (auto& targetType : action.getTargets())
 					{
 						switch (targetType.getType())
 						{

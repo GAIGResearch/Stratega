@@ -7,7 +7,7 @@ namespace SGA
 		std::vector<Action> filteredActions;
 		for (const auto& a : actions)
 		{
-			if (a.getActionTypeID() != -1 && a.isEntityAction() && a.targets[0].getEntityID() == unit.getID())
+			if (a.getActionTypeID() != -1 && a.isEntityAction() && a.getTargets()[0].getEntityID() == unit.getID())
 			{
 				filteredActions.emplace_back(a);
 			}
@@ -53,7 +53,7 @@ namespace SGA
 
 		for (const auto& move : moves)
 		{
-			if (move.targets[1].getPosition(gameState).manhattanDistance(position) <= range)
+			if (move.getTargets()[1].getPosition(gameState).manhattanDistance(position) <= range)
 				filteredMoves.emplace_back(move);
 		}
 
@@ -72,7 +72,7 @@ namespace SGA
 			// Check if the unit can heal
 			for (auto const& healingAction : healingActions)
 			{
-				if (healingAction.targets[0].getEntityID() == healer.getID())
+				if (healingAction.getTargets()[0].getEntityID() == healer.getID())
 				{
 					heal += healer.getParameter("HealAmount");
 					break;
@@ -99,7 +99,7 @@ namespace SGA
 			for (const auto& move : moves)
 			{
 
-				auto dist = pos.manhattanDistance(move.targets[1].getPosition(gameState));
+				auto dist = pos.manhattanDistance(move.getTargets()[1].getPosition(gameState));
 				auto score = -dist;
 				if (score > bestScore)
 				{
@@ -115,7 +115,7 @@ namespace SGA
 			// Choose the best strategic position
 			for (const auto& move : inRangeMoves)
 			{
-				auto score = -getPotentialDamage(move.targets[1].getPosition(gameState), opponentUnits, gameState);
+				auto score = -getPotentialDamage(move.getTargets()[1].getPosition(gameState), opponentUnits, gameState);
 				if (score > bestScore)
 				{
 					bestScore = score;
@@ -145,7 +145,7 @@ namespace SGA
 
 	double CombatAgent::getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity>& opponentUnits, GameState& gameState) const
 	{
-		Entity* attackTarget = attack.targets[0].getEntity(gameState); 
+		Entity* attackTarget = attack.getTargets()[0].getEntity(gameState);
 		auto attackAmount = attackTarget->getParameter("AttackDamage");
 		auto healAmount = getPotentialHealing(actions, target.getPosition(), opponentUnits, gameState);
 		double targetHealth = target.getParameter("Health");
@@ -169,7 +169,7 @@ namespace SGA
 
 	double CombatAgent::getHealScore(std::vector<Action>& /*actions*/, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const
 	{
-		Entity* healTarget = heal.targets[0].getEntity(gameState);
+		Entity* healTarget = heal.getTargets()[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");
 		double targetHealth = target.getParameter("Health");
 		double maxHealth = (*gameState.getGameInfo()->entityTypes)[target.getID()].getParamMax("Health");
@@ -282,7 +282,7 @@ namespace SGA
 			highestScore = std::numeric_limits<double>::lowest();
 			for (const auto& attack : filterActionTypes(subActions, "Attack"))
 			{
-				Entity& targetUnit = *attack.targets[1].getEntity(currentState);
+				Entity& targetUnit = *attack.getTargets()[1].getEntity(currentState);
 				if (targetUnit.getOwnerID() == getPlayerID())
 					continue; // No attackerino my own units
 
@@ -302,7 +302,7 @@ namespace SGA
 			highestScore = std::numeric_limits<double>::lowest();
 			for (const auto& heal : filterActionTypes(subActions, "Heal"))
 			{
-				Entity& targetUnit = *heal.targets[0].getEntity(currentState);
+				Entity& targetUnit = *heal.getTargets()[0].getEntity(currentState);
 				if (targetUnit.getOwnerID() != getPlayerID())
 					continue; // No healerino opponents units
 
@@ -331,7 +331,7 @@ namespace SGA
 				break;
 			}
 		}
-		if (nextAction.actionTypeFlags == ActionFlag::EndTickAction)
+		if (nextAction.getActionFlag() == ActionFlag::EndTickAction)
 		{
 			//std::cout << "Combat Agent " << "end round" << std::endl;
 		}

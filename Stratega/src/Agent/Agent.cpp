@@ -56,7 +56,7 @@ namespace SGA
 	{
 		std::vector<Action> fActions;
 		for (Action ac : actions)
-			if (ac.actionTypeFlags == flag)
+			if (ac.getActionFlag() == flag)
 				fActions.emplace_back(ac);
 		return fActions;
 	}
@@ -76,9 +76,9 @@ namespace SGA
 		std::vector<Action> fActions;
 		for (Action ac : actions)
 		{
-			if (ac.targets.size() > 0 && (ac.targets[0].getType() == ActionTarget::Type::EntityReference))
+			if (ac.getTargets().size() > 0 && (ac.getTargets()[0].getType() == ActionTarget::Type::EntityReference))
 			{
-				if (ac.targets[0].getEntityID() == entityID) 
+				if (ac.getTargets()[0].getEntityID() == entityID)
 					fActions.emplace_back(ac);
 			}
 		}		
@@ -90,9 +90,9 @@ namespace SGA
 		std::vector<Action> fActions;
 		for (Action ac : actions)
 		{
-			if (ac.targets.size() > 0 && (ac.targets[0].getType() == ActionTarget::Type::PlayerReference))
+			if (ac.getTargets().size() > 0 && (ac.getTargets()[0].getType() == ActionTarget::Type::PlayerReference))
 			{
-				if (ac.targets[0].getPlayerID() == playerID)
+				if (ac.getTargets()[0].getPlayerID() == playerID)
 					fActions.emplace_back(ac);
 			}
 		}

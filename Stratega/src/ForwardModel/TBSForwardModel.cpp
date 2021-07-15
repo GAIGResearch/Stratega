@@ -20,7 +20,7 @@ namespace SGA
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		if (action.actionTypeFlags == ActionFlag::EndTickAction)
+		if (action.getActionFlag() == ActionFlag::EndTickAction)
 		{
 			endTurn(state);
 		}

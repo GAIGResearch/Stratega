@@ -198,7 +198,7 @@ namespace SGA
 	{
 		auto isValid = true;
 		int i = 0;
-		for(auto& actionTarget : actionType.getActionTargets())
+		for(auto& actionTarget : actionType.getTargets())
 		{
 			//Check valid targets
 			if (!actionTarget.first.isValid(state, actionTargets[i + 1], actionTargets[0]))

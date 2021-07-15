@@ -34,7 +34,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}

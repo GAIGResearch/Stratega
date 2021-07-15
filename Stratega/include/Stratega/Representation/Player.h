@@ -119,7 +119,7 @@ namespace SGA
 		/// <summary>
 		/// Advances the tick counter of the continuous action with index 'idx'
 		/// </summary>
-		void advanceContinuousAction(int idx) { continuousActions[idx].elapsedTicks++; }
+		void advanceContinuousAction(int idx) { continuousActions[idx].incTicks(); }
 
 		/// <summary>
 		/// Returns the list of continuous actions this player is executing.

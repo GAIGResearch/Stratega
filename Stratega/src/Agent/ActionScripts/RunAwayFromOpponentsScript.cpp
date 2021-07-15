@@ -44,7 +44,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = minimalDistanceToOpponents(action.targets[1].getPosition(gameState), positions, opponentUnits);
+					const int dist = minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -65,7 +65,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -110,7 +110,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = minimalDistanceToOpponents(action.targets[1].getPosition(gameState), positions, opponentUnits);
+					const int dist = minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits);
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;

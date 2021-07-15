@@ -44,7 +44,7 @@ namespace SGA
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 
             // return best action
-            previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
+            previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }

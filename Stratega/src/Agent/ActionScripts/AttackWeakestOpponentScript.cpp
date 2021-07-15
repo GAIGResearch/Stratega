@@ -70,9 +70,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double health = healthPerUnit[action.targets[1].getEntityID()];
+						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
@@ -93,7 +93,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = action.targets[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
+					const double dist = action.getTargets()[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -114,7 +114,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -171,9 +171,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double health = healthPerUnit[action.targets[1].getEntityID()];
+						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
@@ -194,7 +194,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = action.targets[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
+					const double dist = action.getTargets()[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;

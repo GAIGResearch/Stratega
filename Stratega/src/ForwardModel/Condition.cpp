@@ -50,11 +50,11 @@ namespace  SGA
 
 			for (const auto& action : sourceEntity.getContinuousActions())
 			{
-				if (action.continuousActionID == targets[2].getContinuousActionID())
+				if (action.getContinuousActionID() == targets[2].getContinuousActionID())
 				{
 					//We reached the action
 					//Tick amount
-					if (action.elapsedTicks >= lowerBound)
+					if (action.getElapsedTicks() >= lowerBound)
 						return true;
 				}
 			}
@@ -65,11 +65,11 @@ namespace  SGA
 
 			for (auto& action : sourceEntity.getContinuousActions())
 			{
-				if (action.continuousActionID == targets[2].getContinuousActionID())
+				if (action.getContinuousActionID() == targets[2].getContinuousActionID())
 				{
 					//We reached the action
 					//Tick amount
-					if (action.elapsedTicks >= lowerBound)
+					if (action.getElapsedTicks() >= lowerBound)
 						return true;
 				}
 			}

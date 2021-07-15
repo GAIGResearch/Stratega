@@ -48,7 +48,7 @@ namespace SGA
 				}
 				
 				//Check target conditions
-				for (auto& actionTarget : actionType.getActionTargets())
+				for (auto& actionTarget : actionType.getTargets())
 				{
 					for (auto& condition : actionTarget.second)
 					{

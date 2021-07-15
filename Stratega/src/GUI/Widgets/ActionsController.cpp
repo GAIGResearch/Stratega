@@ -10,13 +10,13 @@ namespace SGA::Widgets
 {
 	bool ActionsSettings::hasActionsTargetAvailable(const ActionType& actionType) const
 	{
-		return selectedTargets.size() < actionType.getActionTargets().size();
+		return selectedTargets.size() < actionType.getTargets().size();
 	}
 
 	void getActionTarget(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
-		auto& targetType = actionType.getActionTargets()[settings.selectedTargets.size()].first;
+		auto& targetType = actionType.getTargets()[settings.selectedTargets.size()].first;
 		switch (targetType.getType())
 		{
 			case TargetType::EntityType:
@@ -86,7 +86,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
+			for (auto& possibleTechnology : actionType.getTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
 			{
 				//If player is researching abort action
 				for (auto& entityID : settings.selectedEntities)
@@ -100,7 +100,7 @@ namespace SGA::Widgets
 							ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 							if (ImGui::Button("Abort", ImVec2(50, 50)))
 							{
-								actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->getID(), action.continuousActionID));
+								actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
 							}
 							ImGui::PopStyleColor(3);
 
@@ -129,7 +129,7 @@ namespace SGA::Widgets
 						actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
 						//Check if we fullfil the conditions to spawn the entity
-						for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
+						for (auto& condition : actionType.getTargets()[settings.selectedTargets.size()].second)
 						{
 							if (!condition->isFullfiled(state, actionTargets))
 							{
@@ -153,7 +153,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleTechnology : actionType.getActionTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
+			for (auto& possibleTechnology : actionType.getTargets()[settings.selectedTargets.size()].first.getTechnologyTypes())
 			{
 				//If player is researching abort action
 				for (auto& action : state.getPlayer(playerID)->getContinuousActions())
@@ -165,7 +165,7 @@ namespace SGA::Widgets
 						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 						if (ImGui::Button("Abort", ImVec2(50, 50)))
 						{
-							actionsToExecute.emplace_back(Action::createAbortAction(playerID, action.continuousActionID));
+							actionsToExecute.emplace_back(Action::createAbortAction(playerID, action.getContinuousActionID()));
 						}
 						ImGui::PopStyleColor(3);
 
@@ -189,7 +189,7 @@ namespace SGA::Widgets
 					actionTargets.emplace_back(ActionTarget::createTechnologyEntityActionTarget(possibleTechnology));
 
 					//Check if player fullfil the conditions to spawn the entity
-					for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
+					for (auto& condition : actionType.getTargets()[settings.selectedTargets.size()].second)
 					{
 						if (!condition->isFullfiled(state, actionTargets))
 						{
@@ -216,7 +216,7 @@ namespace SGA::Widgets
 		if(settings.hasEntitiesSelected())
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
+			for (auto& possibleActionType : actionType.getTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
 			{
 				bool canSpawn = true;
 
@@ -249,7 +249,7 @@ namespace SGA::Widgets
 						actionTargets[0] = (ActionTarget::createEntityActionTarget(entity));
 
 						//Check if we fullfil the conditions to spawn the entity
-						for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
+						for (auto& condition : actionType.getTargets()[settings.selectedTargets.size()].second)
 						{
 							if (!condition->isFullfiled(state, actionTargets))
 							{
@@ -269,7 +269,7 @@ namespace SGA::Widgets
 		else
 		{
 			int elementNumber = 0;
-			for (auto& possibleActionType : actionType.getActionTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
+			for (auto& possibleActionType : actionType.getTargets()[settings.selectedTargets.size()].first.getGroupEntityTypes())
 			{
 				bool canSpawn = true;
 
@@ -292,7 +292,7 @@ namespace SGA::Widgets
 					actionTargets.emplace_back(ActionTarget::createEntityTypeActionTarget(possibleActionType));
 
 					//Check if player fullfil the conditions to spawn the entity
-					for (auto& condition : actionType.getActionTargets()[settings.selectedTargets.size()].second)
+					for (auto& condition : actionType.getTargets()[settings.selectedTargets.size()].second)
 					{
 						if (!condition->isFullfiled(state, actionTargets))
 						{
@@ -336,7 +336,7 @@ namespace SGA::Widgets
 		Action newAction(&actionType);
 
 		if (actionType.isContinuous())
-			newAction.actionTypeFlags = ActionFlag::ContinuousAction;
+			newAction.setActionFlag(ActionFlag::ContinuousAction);
 		
 		if (settings.selectedEntities.empty())
 			verifyPlayerActionTargets(state, settings, playerID, actionsToExecute, actionType, newAction);
@@ -353,8 +353,8 @@ namespace SGA::Widgets
 		actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
-		newAction.targets = actionTargets;
-		newAction.ownerID = playerID;
+		newAction.setActionTargets(actionTargets);
+		newAction.setOwnerID(playerID);
 		
 		auto* player = state.getPlayer(playerID);
 		
@@ -363,7 +363,7 @@ namespace SGA::Widgets
 			if (state.getCurrentTick() - player->getActionInfo(settings.actionTypeSelected).lastExecutedTick < actionType.getCooldown())
 				return;			
 
-			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
+			if (ActionTarget::isValidWithTargets(state, actionType, newAction.getTargets()))
 				actionsToExecute.emplace_back(newAction);
 		}
 	}
@@ -375,8 +375,8 @@ namespace SGA::Widgets
 		actionTargets.emplace_back(ActionTarget::createEntityActionTarget(0));
 		actionTargets.insert(actionTargets.end(), settings.selectedTargets.begin(), settings.selectedTargets.end());
 
-		newAction.targets = actionTargets;
-		newAction.ownerID = playerID;
+		newAction.setActionTargets(actionTargets);
+		newAction.setOwnerID(playerID);
 
 		//Generate all action for each entity
 		for (auto& entityID : settings.selectedEntities)
@@ -393,9 +393,9 @@ namespace SGA::Widgets
 				continue;			
 
 			//The entity should be able to execute this action type
-			newAction.targets[0] = ActionTarget::createEntityActionTarget(entityID);
+			newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
 
-			if (ActionTarget::isValidWithTargets(state, actionType, newAction.targets))
+			if (ActionTarget::isValidWithTargets(state, actionType, newAction.getTargets()))
 				actionsToExecute.emplace_back(newAction);
 		}
 	}
