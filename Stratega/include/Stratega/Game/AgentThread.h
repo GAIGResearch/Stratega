@@ -36,17 +36,24 @@ namespace SGA
 		/// <param name="state">The game state that the agent should use to compute the action.</param>
 		/// <param name="forwardModel">The forward model that the agent should use to compute the action.</param>
 		void startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs);
+
 		/// <summary>
-		/// Waits for the agent-thread to finish computing.
+		/// Join the agent thread and returns the results obtained by executing the agent.
 		/// </summary>
 		/// <returns>The results obtained by executing the agent.</returns>
 		AgentResults join();
 
+		/// <summary>
+		/// Check if the agent is still computing.
+		/// </summary>
 		bool isComputing()
 		{
 			return computing;
 		}
 
+		/// <summary>
+		/// Check if the agent-thread was joined.
+		/// </summary>
 		bool isJoined()
 		{
 			return joined;
