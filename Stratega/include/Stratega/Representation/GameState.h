@@ -32,6 +32,7 @@ namespace SGA
 		GameState();
 
 
+
 		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
 
 		/// <summary>
@@ -399,7 +400,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the type of the game, of GameType
 		/// </summary>
-		GameType getGameType() const { return gameType; }
+		const GameType& getGameType() const { return gameType; }
 
 		/// <summary>
 		/// Sets the type of game (enum type GameType)
@@ -421,6 +422,7 @@ namespace SGA
 		/// </summary>
 		/// <returns></returns>
 		std::mt19937& getRndEngine() { return rngEngine; }
+
 
 	private:
 
@@ -512,5 +514,11 @@ namespace SGA
 		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with N-1 player IDs.
 		/// </summary>
 		int currentPlayer;
+
+		/// <summary>
+		/// Used to know if fog of war has been applied to this state
+		/// </summary>
+		bool fogOfWarApplied;
+
 	};
 }

@@ -48,9 +48,9 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::render()
+	void GameRunner::render(SGA::Vector2f& resolution)
 	{
-		ensureRendererInitialized();
+		ensureRendererInitialized(resolution);
 		renderer->render();
 	}
 
@@ -88,7 +88,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents)
+	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents, SGA::Vector2f& resolution)
 	{
 		assert(agents.size() == currentState->getNumPlayers());
 		try
@@ -112,7 +112,7 @@ namespace SGA
 			}
 
 			initializeAgents(agents);
-			ensureRendererInitialized();
+			ensureRendererInitialized(resolution);
 			renderer->setPlayerPointOfView(humanIndex);
 			playInternal(agents, humanIndex);
 		}
@@ -149,7 +149,9 @@ namespace SGA
 				if (agent != nullptr)
 				{
 					auto stateCopy(*currentState);
-					stateCopy.applyFogOfWar(agent->getPlayerID());
+
+					if(config->applyFogOfWar)
+						stateCopy.applyFogOfWar(agent->getPlayerID());
 
 					auto begin = std::chrono::high_resolution_clock::now();
 					agent->init(std::move(stateCopy), *forwardModel, Timer(initBudgetTimetMs));
@@ -176,11 +178,11 @@ namespace SGA
 		return *currentState;
 	}
 
-	void GameRunner::ensureRendererInitialized()
+	void GameRunner::ensureRendererInitialized(SGA::Vector2f& resolution)
 	{
 		if (renderer == nullptr)
 		{
-			renderer = createRenderer(currentState->getGameType());
+			renderer = createRenderer(currentState->getGameType(), resolution);
 			renderer->init(*currentState, *config);
 		}
 	}

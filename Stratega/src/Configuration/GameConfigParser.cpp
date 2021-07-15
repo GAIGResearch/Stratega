@@ -57,6 +57,8 @@ namespace SGA
         config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
         config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
 
+        config->applyFogOfWar = configNode["GameConfig"]["FogOfWar"].as<bool>(config->applyFogOfWar);
+
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
 		parseEntities(configNode["Entities"], *config);

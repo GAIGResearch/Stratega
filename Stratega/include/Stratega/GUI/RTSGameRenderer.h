@@ -15,7 +15,7 @@ namespace SGA
 	class RTSGameRenderer : public GameRenderer
 	{
 	public:
-		RTSGameRenderer();
+		RTSGameRenderer(SGA::Vector2f& resolution);
 		
 		void init(const GameState& initialState, const GameConfig& gameConfig) override;
 		void update(const GameState& state) override;

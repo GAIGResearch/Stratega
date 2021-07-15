@@ -7,10 +7,11 @@ namespace SGA
 		: GameRunner(config)
 	{
 	}
-
+	
 	void RTSGameRunner::playInternal(std::vector<std::shared_ptr<Agent>>& agents, int /*humanIndex*/)
 	{
 		std::vector<AgentThread> threads(agents.size());
+		std::vector<AgentThread> results(agents.size());
 		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
 		{
 			// Run agents
@@ -18,13 +19,15 @@ namespace SGA
 			{
 				if(agents[i] != nullptr)
 				{
-					threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
+					//Start thread only if it is not computing and is joined
+					if(!threads[i].isComputing() && threads[i].isJoined())
+						threads[i].startComputing(*agents[i], *currentState, *forwardModel, *config, budgetTimeMs);
 				}				
 			}
 
 			// Render
 			auto startTime = std::chrono::high_resolution_clock::now();
-			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(40))
+			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(16))
 			{
 				renderer->render();
 			}
@@ -37,6 +40,9 @@ namespace SGA
 				{
 					if (agents[i] != nullptr)
 					{
+						if (threads[i].isComputing())
+							continue;
+
 						auto results = threads[i].join();
 						//Check if agent throw exception and rethrow it
 						if (results.error)
@@ -89,7 +95,7 @@ namespace SGA
 				{
 					if (agents[i] != nullptr)
 					{
-						threads[i].startComputing(*agents[i], *currentState, *forwardModel, budgetTimeMs);
+						threads[i].startComputing(*agents[i], *currentState, *forwardModel, *config, budgetTimeMs);
 					}
 				}
 
