@@ -85,7 +85,7 @@ namespace SGA
 			if (target.getType() == ActionTarget::TechnologyReference)
 			{
 				auto technologyID = target.getTechnologyID();
-				return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(technologyID).continuousActionTime;
+				return state.getGameInfo()->getTechnologyTreeCollection().getTechnology(technologyID).continuousActionTime;
 			}
 			else if (target.getType() == ActionTarget::EntityReference
 				|| target.getType() == ActionTarget::EntityTypeReference)
@@ -121,7 +121,7 @@ namespace SGA
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
 		{
-			const auto& param = state.getGameInfo()->getPlayerParameterTypes()->at(data.parameterData.parameterID);
+			const auto& param = state.getGameInfo()->getPlayerParameterTypes().at(data.parameterData.parameterID);
 			return param;
 		}
 
@@ -292,11 +292,11 @@ namespace SGA
 		if (parameterType == Type::ArgumentReference)
 		{
 			const auto& actionTarget = actionTargets[data.argumentIndex];
-			return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(actionTarget.getTechnologyID());
+			return state.getGameInfo()->getTechnologyTreeCollection().getTechnology(actionTarget.getTechnologyID());
 		}
 		else if (parameterType == Type::TechnologyTypeReference)
 		{	
-			return state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(data.technologyTypeID);
+			return state.getGameInfo()->getTechnologyTreeCollection().getTechnology(data.technologyTypeID);
 		}
 		else
 		{
@@ -397,7 +397,7 @@ namespace SGA
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{
-			return *state.getGameInfo()->getPlayerParameterTypes();
+			return state.getGameInfo()->getPlayerParameterTypes();
 			
 		}
 		if (getType() == Type::ArgumentReference)
@@ -405,7 +405,7 @@ namespace SGA
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
-				return *state.getGameInfo()->getPlayerParameterTypes();
+				return state.getGameInfo()->getPlayerParameterTypes();
 			}
 			if (target.getType() == ActionTarget::EntityReference)
 			{
@@ -426,7 +426,6 @@ namespace SGA
 
 	const TileType& FunctionParameter::getTileType(const GameState& state, const std::vector<ActionTarget>& /*actionTargets*/) const
 	{
-		
 		if (parameterType == Type::TileTypeReference)
 		{
 			return state.getGameInfo()->getTileType(data.tileTypeID);

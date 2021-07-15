@@ -4,7 +4,18 @@
 
 namespace SGA
 {
-	const std::vector<int> GameDescription::getActionTypesIDs(ActionCategory category) const
+
+	std::vector<int> GameDescription::getEntityTypesIDs(EntityCategory category) const
+	{
+		auto it = entityCategories.find(category);
+		if (it != entityCategories.end())
+			return it->second;
+		else
+			return std::vector<int>();
+	}
+
+
+	std::vector<int> GameDescription::getActionTypesIDs(ActionCategory category) const
 	{
 		auto it = actionCategories.find(category);
 		if (it != actionCategories.end())
@@ -13,7 +24,7 @@ namespace SGA
 			return std::vector<int>();
 	}
 
-	const std::vector<ActionType> GameDescription::getActionTypes(ActionCategory category, const GameInfo& gameInfo) const
+	std::vector<ActionType> GameDescription::getActionTypes(ActionCategory category, const GameInfo& gameInfo) const
 	{
 		std::vector<ActionType> actionTypes;
 		auto it = actionCategories.find(category);
@@ -29,17 +40,7 @@ namespace SGA
 	}
 
 
-	const std::vector<int> GameDescription::getEntityTypesIDs(EntityCategory category) const
-	{
-		auto it = entityCategories.find(category);
-		if (it != entityCategories.end())
-			return it->second;
-		else
-			return std::vector<int>();
-	}
-
-
-	const std::vector<EntityType> GameDescription::getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const
+	std::vector<EntityType> GameDescription::getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const
 	{
 		std::vector<EntityType> entityTypes;
 		auto it = entityCategories.find(category);
@@ -53,7 +54,6 @@ namespace SGA
 
 		return entityTypes;
 	}
-
 
 	bool GameDescription::isFromCategory(EntityCategory category, int entityTypeId) const
 	{

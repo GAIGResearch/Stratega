@@ -20,7 +20,7 @@ namespace SGA
 			for (const auto entry : attributeWeights) {
 				const std::string parameterName = entry.first;
 				maxValue[parameterName] = 0;
-				for (const auto entityType : *gameState.getGameInfo()->getEntityTypes()) {
+				for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
 					for (const auto parameter : entityType.second.getParameters()) {
 						if (parameter.second.getName() == parameterName && parameter.second.getMaxValue() > maxValue[parameterName]) {
 							maxValue[parameterName] = parameter.second.getMaxValue();
@@ -35,8 +35,8 @@ namespace SGA
 
 		AbstractHeuristic(GameState& gameState)
 		{
- 			for (const auto entityType : *gameState.getGameInfo()->getEntityTypes()) {
-				for (const auto parameter : entityType.second.getParameters()) {
+ 			for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
+				for (const auto& parameter : entityType.second.getParameters()) {
 					if (!attributeWeights.contains(parameter.second.getName()))
 					{
 						if (parameter.second.getName() == "Health")

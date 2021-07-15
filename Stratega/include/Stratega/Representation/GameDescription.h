@@ -73,15 +73,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="category">The category group to be searched.</param>
 		/// <returns>List of action type IDs.</returns>
-		const std::vector<int> getActionTypesIDs(ActionCategory category) const;
-
-		/// <summary>
-		/// Returns all the actiontypes IDs of the selected action category.
-		/// </summary>
-		/// <param name="category">The category group to be searched.</param>
-		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
-		/// <returns>List of action types</returns>
-		const std::vector<ActionType> getActionTypes(ActionCategory category, const GameInfo& gameInfo) const;
+		std::vector<int> getActionTypesIDs(ActionCategory category) const;
 
 
 		/// <summary>
@@ -89,8 +81,16 @@ namespace SGA
 		/// </summary>
 		/// <param name="category">The category group to be searched.</param>
 		/// <returns>List of entity type IDs.</returns>
-		const std::vector<int> getEntityTypesIDs(EntityCategory category) const;
+		std::vector<int> getEntityTypesIDs(EntityCategory category) const;
 
+
+		/// <summary>
+		/// Returns all the actiontypes IDs of the selected action category.
+		/// </summary>
+		/// <param name="category">The category group to be searched.</param>
+		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
+		/// <returns>List of action types</returns>
+		std::vector<ActionType> getActionTypes(ActionCategory category, const GameInfo& gameInfo) const;
 
 		/// <summary>
 		/// Returns all the entity type  IDs of the selected entity category.
@@ -98,7 +98,7 @@ namespace SGA
 		/// <param name="category">The category group to be searched.</param>
 		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
 		/// <returns>List of entity types</returns>
-		const std::vector<EntityType> getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const;
+		std::vector<EntityType> getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const;
 
 
 

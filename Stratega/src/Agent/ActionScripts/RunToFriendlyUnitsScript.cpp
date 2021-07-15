@@ -9,7 +9,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.getGameInfo()->getActionTypes())
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
@@ -20,7 +20,7 @@ namespace SGA
 			std::map<int, Vector2f> positions = std::map<int, Vector2f>();
 			std::vector<int> myUnits;
 			std::set<int> friendlyUnits;
-			for (auto& entity : gameState.getEntities()) {
+			for (const auto& entity : gameState.getEntities()) {
 				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 
 				if (entity.getOwnerID() == playerID)
@@ -72,7 +72,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.getGameInfo()->getActionTypes())
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}

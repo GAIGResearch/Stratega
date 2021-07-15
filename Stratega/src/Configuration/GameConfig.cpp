@@ -28,9 +28,9 @@ namespace SGA
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
-		player.resizeParameters(gameInfo.getPlayerParameterTypes()->size());
+		player.resizeParameters(gameInfo.getPlayerParameterTypes().size());
 		const auto parameterTypes = gameInfo.getPlayerParameterTypes();
-		for (const auto& idParamPair : *parameterTypes)
+		for (const auto& idParamPair : parameterTypes)
 		{
 			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
 		}
@@ -77,9 +77,9 @@ namespace SGA
 
 		// Create some lookups for initializing the board and entities
 		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &state->getGameInfo()->getTileTypes()->begin()->second;
-		const auto tileTypes = state->getGameInfo()->getTileTypes();
-		for(const auto& idTilePair : *tileTypes)
+		const auto* defaultTile = &state->getGameInfo()->getTileTypes().begin()->second;
+		const auto& tileTypes = state->getGameInfo()->getTileTypes();
+		for(const auto& idTilePair : tileTypes)
 		{
 			tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
 			if (idTilePair.second.isDefaultTile())
@@ -87,8 +87,7 @@ namespace SGA
 		}
 
 		std::unordered_map<char, const EntityType*> entityLookup;
-		const auto entityTypes = state->getGameInfo()->getEntityTypes();
-		for(const auto& idEntityPair : *entityTypes)
+		for(const auto& idEntityPair : state->getGameInfo()->getEntityTypes())
 		{
 			entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
 		}

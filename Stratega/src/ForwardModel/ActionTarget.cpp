@@ -68,7 +68,7 @@ namespace SGA
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.getGameInfo()->getPlayerSpawnableTypes();
+			return state.getGameInfo()->getPlayerSpawnableTypes();
 		}
 		else if (targetType == EntityReference)
 		{
@@ -250,7 +250,7 @@ namespace SGA
 		case TechnologyReference:
 			{
 			int technologyID = getTechnologyID();
-			std::string technologyName = state.getGameInfo()->getTechnologyTreeCollection()->getTechnology(technologyID).name;
+			std::string technologyName = state.getGameInfo()->getTechnologyTreeCollection().getTechnology(technologyID).name;
 			return technologyName;
 			}			
 			break;

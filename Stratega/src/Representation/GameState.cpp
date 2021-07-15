@@ -125,7 +125,7 @@ namespace SGA
 			if (entity.getOwnerID() == playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
-				if (entityCategory == EntityCategory::Null || this->gameInfo->getGameDescription()->isFromCategory(entityCategory, entity.getEntityTypeID()))
+				if (entityCategory == EntityCategory::Null || gameInfo->getGameDescription().isFromCategory(entityCategory, entity.getEntityTypeID()))
 				{
 					ret.emplace_back(entity);
 				}
@@ -142,7 +142,7 @@ namespace SGA
 			if (entity.getOwnerID() != playerID)
 			{
 				//Either no category was especified (default argment) or the entity type id belongs to this category.
-				if (entityCategory == EntityCategory::Null || this->gameInfo->getGameDescription()->isFromCategory(entityCategory, entity.getEntityTypeID()))
+				if (entityCategory == EntityCategory::Null || gameInfo->getGameDescription().isFromCategory(entityCategory, entity.getEntityTypeID()))
 				{
 					ret.emplace_back(entity);
 				}
@@ -166,7 +166,7 @@ namespace SGA
 		if (p != nullptr)
 		{
 			const auto parameterTypes = gameInfo->getPlayerParameterTypes();
-			for (const auto& param : *parameterTypes)
+			for (const auto& param : parameterTypes)
 			{
 				if (param.second.getName() == paramName)
 				{
@@ -181,7 +181,7 @@ namespace SGA
 	bool GameState::hasPlayerParameter(const std::string& paramName) const
 	{
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
-		for (const auto& param : *parameterTypes)
+		for (const auto& param : parameterTypes)
 		{
 			if (param.second.getName() == paramName)
 			{
@@ -196,7 +196,7 @@ namespace SGA
 	{
 		std::vector<std::string> paramNames;
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
-		for (const auto& param : *parameterTypes)
+		for (const auto& param : parameterTypes)
 			paramNames.emplace_back(param.second.getName());
 		
 		return paramNames;
@@ -210,7 +210,7 @@ namespace SGA
 
 		std::unordered_map<std::string, double> params;
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
-		for (const auto& param : *parameterTypes)
+		for (const auto& param : parameterTypes)
 			params.emplace(param.second.getName(), p->getParameter(param.second.getIndex()));
 		
 		return params;
@@ -356,13 +356,13 @@ namespace SGA
 			return false;
 
 		//Check if technology parents are researched		
-		const TechnologyTreeNode& technologyNode = gameInfo->getTechnologyTreeCollection()->getTechnology(technologyID);
+		const TechnologyTreeNode& technologyNode = gameInfo->getTechnologyTreeCollection().getTechnology(technologyID);
 
 		const std::vector<int>& parentsIDs = technologyNode.parentIDs;
 
 		for (auto& parent : parentsIDs)
 		{
-			const TechnologyTreeNode& technologyParentNode = gameInfo->getTechnologyTreeCollection()->getTechnology(parent);
+			const TechnologyTreeNode& technologyParentNode = gameInfo->getTechnologyTreeCollection().getTechnology(parent);
 
 			if (!isResearched(playerID, technologyParentNode.id))
 			{

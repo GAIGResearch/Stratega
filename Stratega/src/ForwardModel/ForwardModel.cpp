@@ -143,8 +143,8 @@ namespace SGA
 		//and we add the action to the list of continuous actions
 		if (actionType.getSourceType() == ActionSourceType::Entity)
 		{
-			auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-			for (auto& effect : type.getOnStart())
+			const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+			for (const auto& effect : type.getOnStart())
 			{
 				effect->execute(state, *this, newAction.getTargets());
 			}
@@ -154,8 +154,8 @@ namespace SGA
 		}
 		else if (actionType.getSourceType() == ActionSourceType::Player)
 		{
-			auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-			for (auto& effect : type.getOnStart())
+			const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+			for (const auto& effect : type.getOnStart())
 			{
 				effect->execute(state, *this, newAction.getTargets());
 			}
@@ -252,8 +252,8 @@ namespace SGA
 				//Execute OnTick Effects
 				if (actionType.getSourceType() == ActionSourceType::Entity)
 				{
-					auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-					for (auto& effect : type.getOnTick())
+					const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+					for (const auto& effect : type.getOnTick())
 					{
 						effect->execute(state, *this, it->getTargets());
 					}
@@ -290,8 +290,8 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.getSourceType() == ActionSourceType::Entity)
 						{
-							auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-							for (auto& effect : type.getOnComplete())
+							const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+							for (const auto& effect : type.getOnComplete())
 							{
 								effect->execute(state, *this, it->getTargets());
 							}
@@ -322,8 +322,8 @@ namespace SGA
 				//Execute OnTick Effects
 				if (actionType.getSourceType() == ActionSourceType::Player)
 				{
-					auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-					for (auto& effect : type.getOnTick())
+					const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+					for (const auto& effect : type.getOnTick())
 					{
 						effect->execute(state, *this, continuousActions[i].getTargets());
 					}
@@ -361,8 +361,8 @@ namespace SGA
 						//Execute OnComplete Effects
 						if (actionType.getSourceType() == ActionSourceType::Player)
 						{
-							auto& type = state.getGameInfo()->getActionTypes()->at(actionType.getID());
-							for (auto& effect : type.getOnComplete())
+							const auto& type = state.getGameInfo()->getActionTypes().at(actionType.getID());
+							for (const auto& effect : type.getOnComplete())
 							{
 								effect->execute(state, *this, continuousActions[i].getTargets());
 							}

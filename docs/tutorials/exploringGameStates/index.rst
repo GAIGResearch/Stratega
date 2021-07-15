@@ -84,15 +84,15 @@ The following code snippet shows how to access these maps and prints the name of
         :linenos:
 
 		auto entityTypes = state.getGameInfo()->getEntityTypes();
-		for (const auto& [id, eType] : *entityTypes) 
+		for (const auto& [id, eType] : entityTypes)
 			std::cout << "[Entity] id: " << id << ", name: " << eType.getName() << std::endl;
 
 		auto tileTypes = state.getGameInfo()->getTileTypes();
-		for (const auto& [id, tType] : *tileTypes) 
+		for (const auto& [id, tType] : tileTypes)
 			std::cout << "[Tile] id: " <<  id << ", name: " << tType.getName() << std::endl;
 
 		auto actionTypes = state.getGameInfo()->getActionTypes();
-		for (const auto& [id, aType] : *actionTypes) 
+		for (const auto& [id, aType] : actionTypes)
 			std::cout << "[Action] id: " << id << ", name: " << aType.getName() << std::endl;
 
     .. code-tab:: python
@@ -174,7 +174,7 @@ These descriptors can be retrieved using the *gameDescription* member of the Gam
         :title: C/C++
         :linenos:
 
-        for (const auto& [ac, actionTypes] : state.getGameInfo()->getGameDescription()->getActionCategories())
+        for (const auto& [ac, actionTypes] : state.getGameInfo()->getGameDescription().getActionCategories())
         {
             std::string actionCategoryName = GameDescription::toString(ac);
             std::cout << "[Action Category] " << actionCategoryName << ": ";
@@ -223,7 +223,7 @@ Similarly, it's possible to extract information about entity categories. The fol
         :title: C/C++
         :linenos:
 
-        for (const auto& [ec, entityTypes] : state.getGameInfo()->getGameDescription()->getEntityCategories())
+        for (const auto& [ec, entityTypes] : state.getGameInfo()->getGameDescription().getEntityCategories())
         {
             std::cout << "[Entity Category] " << GameDescription::toString(ec) << ": ";
             for (int entityTypeID : entityTypes)

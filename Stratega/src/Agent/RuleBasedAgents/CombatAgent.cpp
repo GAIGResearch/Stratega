@@ -172,7 +172,7 @@ namespace SGA
 		Entity* healTarget = heal.getTargets()[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");
 		double targetHealth = target.getParameter("Health");
-		double maxHealth = (*gameState.getGameInfo()->getEntityTypes())[target.getID()].getParamMax("Health");
+		double maxHealth = (gameState.getGameInfo()->getEntityTypes()).at(target.getID()).getParamMax("Health");
 		auto resultingHealth = std::min<double>(maxHealth, targetHealth + healAmount);
 		auto potentialDamage = getPotentialDamage(target.getPosition(), opponentUnits, gameState);
 
@@ -202,7 +202,7 @@ namespace SGA
 
 	ActionAssignment CombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
-		for (const auto a : *currentState.getGameInfo()->getActionTypes())
+		for (const auto& a : currentState.getGameInfo()->getActionTypes())
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.getName();
 		}
@@ -307,7 +307,7 @@ namespace SGA
 					continue; // No healerino opponents units
 
 				double targetHealth = targetUnit.getParameter("Health");
-				double maxHealth = (*currentState.getGameInfo()->getEntityTypes())[targetUnit.getID()].getParamMax("Health");
+				double maxHealth = (currentState.getGameInfo()->getEntityTypes()).at(targetUnit.getID()).getParamMax("Health");
 				if (targetHealth >= maxHealth)
 					continue; // Stop healing units that are already full
 

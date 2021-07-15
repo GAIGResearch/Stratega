@@ -7,7 +7,7 @@ namespace SGA
 
 	double AttackWeakestOpponentScript::getHealth(const Entity& entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.getGameInfo()->getEntityTypes())[entity.getEntityTypeID()].getParameters())
+		for (const auto& param : (gamestate.getGameInfo()->getEntityTypes()).at(entity.getEntityTypeID()).getParameters())
 		{
 			if (param.second.getName() == "Health")
 			{
@@ -24,8 +24,7 @@ namespace SGA
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
 
-			const auto actionTypes = gameState.getGameInfo()->getActionTypes();
-			for (auto a : *actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
@@ -126,8 +125,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			const auto actionTypes = gameState.getGameInfo()->getActionTypes();
-			for (auto a : *actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}

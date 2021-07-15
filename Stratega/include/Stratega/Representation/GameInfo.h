@@ -200,15 +200,15 @@ namespace SGA
 
 		/* Getters for the members of this struct */
 		const std::string& getYAMLPath() const { return yamlPath; }
-		const std::shared_ptr <GameDescription>& getGameDescription() const { return gameDescription; }
-		const std::shared_ptr<std::unordered_map<std::string, ParameterID>> getParameterIDLookup() const { return parameterIDLookup; }
-		const std::shared_ptr<std::unordered_map<ParameterID, Parameter>> getPlayerParameterTypes() const { return playerParameterTypes; }
-		const std::shared_ptr<std::unordered_set<EntityTypeID>> getPlayerSpawnableTypes() const { return playerSpawnableTypes; }
-		const std::shared_ptr<std::unordered_map<int, EntityType>> getEntityTypes() const { return entityTypes; }
-		const std::shared_ptr<std::unordered_map<int, ActionType>> getActionTypes() const { return actionTypes; }
-		const std::shared_ptr<std::unordered_map<int, TileType>> getTileTypes() const { return tileTypes; }
-		const std::shared_ptr<TechnologyTreeCollection> getTechnologyTreeCollection() const { return technologyTreeCollection; }
-		const std::unordered_map<std::string, std::unordered_set<EntityTypeID>> getEntityGroups() const { return entityGroups; }
+		const GameDescription& getGameDescription() const { return *gameDescription; }
+		const std::unordered_map<std::string, ParameterID>& getParameterIDLookup() const { return *parameterIDLookup; }
+		const std::unordered_map<ParameterID, Parameter>& getPlayerParameterTypes() const { return *playerParameterTypes; }
+		const std::unordered_set<EntityTypeID>& getPlayerSpawnableTypes() const { return *playerSpawnableTypes; }
+		const std::unordered_map<int, EntityType>& getEntityTypes() const { return *entityTypes; }
+		const std::unordered_map<int, ActionType>& getActionTypes() const { return *actionTypes; }
+		const std::unordered_map<int, TileType>& getTileTypes() const { return *tileTypes; }
+		const TechnologyTreeCollection& getTechnologyTreeCollection() const { return *technologyTreeCollection; }
+		const std::unordered_map<std::string, std::unordered_set<EntityTypeID>>& getEntityGroups() const { return entityGroups; }
 
 	};
 

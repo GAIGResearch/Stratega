@@ -13,7 +13,7 @@ namespace SGA
 			
 			for (const auto& actionInfo : sourceEntity.getAttachedActions())
 			{
-				auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
+				const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 				
 				bool generateContinuousAction = true;
 				//Check if action is continuos
@@ -60,7 +60,7 @@ namespace SGA
 		auto& player = *gameState.getPlayer(playerID);
 		for (const auto& actionInfo : player.getAttachedActions())
 		{
-			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
+			const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 			bool generateContinuousAction = true;
 			//Check if action is continuos
 			if (actionType.isContinuous())
@@ -338,7 +338,7 @@ namespace SGA
 	{
 		std::vector<ActionTarget> targets;
 		
-		for (const auto& technoloTreeType : gameState.getGameInfo()->getTechnologyTreeCollection()->technologyTreeTypes)
+		for (const auto& technoloTreeType : gameState.getGameInfo()->getTechnologyTreeCollection().technologyTreeTypes)
 		{
 			for (auto& technology : technoloTreeType.second.technologies)
 			{

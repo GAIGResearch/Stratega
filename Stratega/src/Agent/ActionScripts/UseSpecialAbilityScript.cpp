@@ -9,8 +9,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			const auto actionTypes = gameState.getGameInfo()->getActionTypes();
-			for (auto a : *actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
@@ -45,8 +44,7 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			const auto actionTypes = gameState.getGameInfo()->getActionTypes();
-			for (auto a : *actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
 				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}

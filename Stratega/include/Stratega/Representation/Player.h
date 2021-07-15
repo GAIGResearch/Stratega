@@ -56,7 +56,7 @@ namespace SGA
 		/// Returns the player ID defined for a neutral player.
 		/// </summary>
 		/// <returns>A constant ID for neutral player.</returns>
-		static const int getNeutralPlayerID() { return -1; }
+		static int getNeutralPlayerID() { return -1; }
 
 		/// <summary>
 		/// Returns the ID of this player
