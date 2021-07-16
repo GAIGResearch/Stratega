@@ -53,12 +53,13 @@ namespace SGA
 		/// <summary>
 		/// Renders a visual representation of the game. May create a new window when called for the first time.
 		/// </summary>
-		void render(SGA::Vector2f& resolution);
+		void render(Vector2f& resolution);
 		
 		/// <summary>
 		/// Advances the game until it has ended.
 		/// </summary>
-		/// <param name="agents">A list of agents to obtain actions from.</param>
+		/// <param name="begin">The beginning of the range containing the agents to obtain actions from</param>
+		/// <param name="end">The end of the range containing the agents to obtain actions from</param>
 		/// <param name="observer">An optional observer who is notified about important events in the game.</param>
 		template<typename Iterator>
 		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
@@ -99,10 +100,12 @@ namespace SGA
 		/// <summary>
 		/// Renders a visual representation of the game and allows interactive action selection.
 		/// </summary>
-		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
+		/// <param name="begin">The beginning of a range containing agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
+		/// <param name="end">The end of the range containing the agents to obtain actions from.</param>
+		/// <param name="resolution">The resolution of the window that should be used to display the game.</param>
 		template<typename Iterator>
-		void play(Iterator begin, Iterator end, SGA::Vector2f& resolution)
+		void play(Iterator begin, Iterator end, Vector2f& resolution)
 		{
 			assert(std::distance(begin, end) == currentState->players.size());
 
@@ -134,7 +137,7 @@ namespace SGA
 			}
 			catch (const std::exception& ex)
 			{
-				std::cout << "Gamme runner crashed error: " << ex.what() << std::endl;
+				std::cout << "GameRunner crashed error: " << ex.what() << std::endl;
 			}
 		}
 		
@@ -145,7 +148,7 @@ namespace SGA
 
 	protected:
 		void initializeAgents(std::vector<Agent*>& agents);
-		void ensureRendererInitialized(SGA::Vector2f& resolution);
+		void ensureRendererInitialized(Vector2f& resolution);
 
 		virtual void runInternal(std::vector<Agent*>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<Agent*>& agents, int humanIndex) = 0;
