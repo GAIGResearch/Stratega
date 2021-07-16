@@ -15,7 +15,7 @@ namespace SGA
 	class TBSGameRenderer : public GameRenderer
 	{
 	public:
-		TBSGameRenderer();
+		TBSGameRenderer(SGA::Vector2f& resolution);
 		
 		void init(const GameState& initialState, const GameConfig& gameConfig) override;
 		void update(const GameState& state) override;

@@ -776,7 +776,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("play",
-			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, int seed = 0)
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2f& resolution,int seed = 0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
@@ -798,12 +798,12 @@ PYBIND11_MODULE(stratega, m)
 
 				std::cout << "Run GUI" << std::endl;
 				py::gil_scoped_release release;
-				a.play(newAgents.begin(), newAgents.end());
+				a.play(newAgents.begin(), newAgents.end(), resolution);
 				py::gil_scoped_acquire acquire;
 			}
 		)
 		.def("play",
-			[](SGA::GameRunner& a, py::list agents, int seed=0)
+			[](SGA::GameRunner& a, py::list agents, SGA::Vector2f& resolution,int seed=0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
@@ -839,7 +839,7 @@ PYBIND11_MODULE(stratega, m)
 
 				std::cout << "Run GUI" << std::endl;
 				py::gil_scoped_release release;
-				a.play(newAgents.begin(), newAgents.end());
+				a.play(newAgents.begin(), newAgents.end(), resolution);
 				py::gil_scoped_acquire acquire;
 			}
 		)

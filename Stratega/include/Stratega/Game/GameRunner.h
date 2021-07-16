@@ -53,7 +53,7 @@ namespace SGA
 		/// <summary>
 		/// Renders a visual representation of the game. May create a new window when called for the first time.
 		/// </summary>
-		void render();
+		void render(SGA::Vector2f& resolution);
 		
 		/// <summary>
 		/// Advances the game until it has ended.
@@ -102,7 +102,7 @@ namespace SGA
 		/// <param name="agents">A list of agents to obtain actions from. Exactly one agent can be left empty, which is 
 		/// then controlled by the human player.</param>
 		template<typename Iterator>
-		void play(Iterator begin, Iterator end)
+		void play(Iterator begin, Iterator end, SGA::Vector2f& resolution)
 		{
 			assert(std::distance(begin, end) == currentState->players.size());
 
@@ -128,7 +128,7 @@ namespace SGA
 				}
 
 				initializeAgents(agents);
-				ensureRendererInitialized();
+				ensureRendererInitialized(resolution);
 				renderer->setPlayerPointOfView(humanIndex);
 				playInternal(agents, humanIndex);
 			}
@@ -145,7 +145,7 @@ namespace SGA
 
 	protected:
 		void initializeAgents(std::vector<Agent*>& agents);
-		void ensureRendererInitialized();
+		void ensureRendererInitialized(SGA::Vector2f& resolution);
 
 		virtual void runInternal(std::vector<Agent*>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<Agent*>& agents, int humanIndex) = 0;

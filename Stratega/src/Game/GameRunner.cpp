@@ -48,12 +48,12 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::render()
+	void GameRunner::render(SGA::Vector2f& resolution)
 	{
-		ensureRendererInitialized();
+		ensureRendererInitialized(resolution);
 		renderer->render();
 	}
-
+	
 	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)
 	{
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
@@ -81,7 +81,9 @@ namespace SGA
 				if (agent != nullptr)
 				{
 					auto stateCopy(*currentState);
-					stateCopy.applyFogOfWar(agent->getPlayerID());
+
+					if(config->applyFogOfWar)
+						stateCopy.applyFogOfWar(agent->getPlayerID());
 
 					auto begin = std::chrono::high_resolution_clock::now();
 					agent->init(std::move(stateCopy), *forwardModel, Timer(initBudgetTimetMs));
@@ -108,11 +110,11 @@ namespace SGA
 		return *currentState;
 	}
 
-	void GameRunner::ensureRendererInitialized()
+	void GameRunner::ensureRendererInitialized(SGA::Vector2f& resolution)
 	{
 		if (renderer == nullptr)
 		{
-			renderer = createRenderer(currentState->gameType);
+			renderer = createRenderer(currentState->gameType, resolution);
 			renderer->init(*currentState, *config);
 		}
 	}

@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - HumanAgent
-    - RandomAgent
+    - RHEAAgent
+    - MCTSAgent
 
 Player:
     Actions: [Build, Research]

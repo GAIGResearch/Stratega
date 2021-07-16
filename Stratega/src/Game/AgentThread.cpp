@@ -4,12 +4,16 @@
 
 namespace SGA
 {
-	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
+	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs)
 	{
 		assert(0 <= agent.getPlayerID() && agent.getPlayerID() < state.players.size());
 
 		auto stateCopy(state);
-		stateCopy.applyFogOfWar(agent.getPlayerID());
+
+		//Apply fog of war
+		if(gameConfig.applyFogOfWar)
+			stateCopy.applyFogOfWar(agent.getPlayerID());
+
 		AgentResults results;
 		try
 		{
@@ -19,7 +23,6 @@ namespace SGA
 			//results.computationTime = end - begin;
 			results.computationTime = std::chrono::duration_cast<std::chrono::milliseconds>
 				(end - begin);
-			
 		}
 		catch (...)
 		{
@@ -32,6 +35,7 @@ namespace SGA
 		agent(nullptr),
 		state(nullptr),
 		forwardModel(nullptr),
+		gameConfig(nullptr),
 		computing(false),
 		resultCache()
 	{
@@ -45,17 +49,21 @@ namespace SGA
 		}
 	}
 
-	void AgentThread::startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, long timeBudgetMs)
+	void AgentThread::startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs)
 	{
 		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);
+		assert(joined);
 		computing = true;
+		joined = false;
 
 		// Setup computation
 		this->agent = &agent;
 		this->state = &state;
 		this->forwardModel = &forwardModel;
+		this->gameConfig = &gameConfig;
 		resultCache = AgentResults{};
+		
 
 		// Start thread to compute
 		thread = std::thread(&AgentThread::runAgentThread, this, timeBudgetMs);
@@ -63,16 +71,16 @@ namespace SGA
 
 	AgentResults AgentThread::join()
 	{
-		assert(computing);
-		computing = false;
-
+		assert(!joined);
 		thread.join();
+		joined = true;
 		return resultCache;
 	}
 
 	void AgentThread::runAgentThread(long timeBudgetMs)
 	{
-		resultCache = runAgent(*this->agent, *this->state, *this->forwardModel, timeBudgetMs);
+		resultCache = runAgent(*this->agent, *this->state, *this->forwardModel, *this->gameConfig, timeBudgetMs);
+		computing = false;
 	}
 
 	

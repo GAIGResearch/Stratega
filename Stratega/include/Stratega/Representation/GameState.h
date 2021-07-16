@@ -65,6 +65,11 @@ namespace SGA
 		int tickLimit;
 
 		/// <summary>
+		/// Used to know if fog of war has been applied to this state
+		/// </summary>
+		bool fogOfWarApplied;
+
+		/// <summary>
 		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
 		/// </summary>
 		Grid2D<Tile> board;

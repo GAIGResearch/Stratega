@@ -473,7 +473,10 @@ namespace SGA
 		if(playerID < players.size())
 		{
 			GameState stateWithFOG = *this;
-			stateWithFOG.applyFogOfWar(playerID);
+			
+			if(fogOfWarApplied)
+				stateWithFOG.applyFogOfWar(playerID);
+
 			stateWithFOG.printBoard();
 		}
 		else

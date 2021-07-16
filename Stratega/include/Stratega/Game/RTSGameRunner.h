@@ -3,6 +3,7 @@
 
 namespace SGA
 {
+	class AgentThread;
 	class RTSGameRunner final : public GameRunner
 	{
 	public:

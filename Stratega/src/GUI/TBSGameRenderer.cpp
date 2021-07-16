@@ -10,12 +10,12 @@
 
 namespace SGA
 {
-	TBSGameRenderer::TBSGameRenderer()
+	TBSGameRenderer::TBSGameRenderer(SGA::Vector2f& resolution)
 		: config(nullptr),
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode(800, 600), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
@@ -37,6 +37,8 @@ namespace SGA
 	{
 		config = &gameConfig;
 		
+		fowSettings.renderFogOfWar = config->applyFogOfWar;
+
 		// Load textures
 		for (const auto& namePathPair : gameConfig.renderConfig->entitySpritePaths)
 		{
@@ -243,21 +245,19 @@ namespace SGA
 		{
 			sf::Vector2i pos = toGrid(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 			//If selected unit we check if there is action in tile
-			if (fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID || !fowSettings.renderFogOfWar))
+			if (actionsSettings.waitingForPosition)
 			{
-				if (actionsSettings.waitingForPosition)
+				assignPosition(state, actionsSettings, { (float)pos.x,(float)pos.y });
+			}
+			else
+			{
+				if (!actionsSettings.waitingForEntity)
 				{
-					assignPosition(state, actionsSettings, { (float)pos.x,(float)pos.y });
-				}
-				else
-				{
-					if (!actionsSettings.waitingForEntity)
-					{
-						actionsSettings.selectedEntities.clear();
-						actionsSettings.actionTypeSelected = -1;
-					}
+					actionsSettings.selectedEntities.clear();
+					actionsSettings.actionTypeSelected = -1;
 				}
 			}
+			
 
 			auto* selectedEntity = const_cast<GameState&>(state).getEntity(Vector2f(pos.x, pos.y));
 			if (selectedEntity && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
@@ -336,8 +336,14 @@ namespace SGA
 	{
 		ImGui::SetNextWindowSize(ImVec2(250, 100), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_FirstUseEver);
-
+		
 		ImGui::Begin("Fog of War window");
+
+		if (config->applyFogOfWar)
+			ImGui::Text("Is enabled in config");
+		else
+			ImGui::Text("Is disabled in config");
+
 		if(fowController(state, fowSettings))
 		{
 			updateFow();
@@ -637,6 +643,7 @@ namespace SGA
 	void TBSGameRenderer::updateFow()
 	{
 		fowState = state;
+		
 		fowState.applyFogOfWar(fowSettings.selectedPlayerID);
 	}
 
