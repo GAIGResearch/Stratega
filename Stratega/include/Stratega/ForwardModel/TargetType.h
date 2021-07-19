@@ -94,7 +94,7 @@ namespace SGA
 		void setSamplingMethod(std::shared_ptr<SamplingMethod> samplingMethod) { this->samplingMethod = samplingMethod; }
 
 		const std::unordered_set<int>& getGroupEntityTypes() const { return groupEntityTypes; }
-		void setGroupEntityTypes(std::unordered_set<int>& groupTypes) { groupEntityTypes = groupTypes; }
+		void setGroupEntityTypes(const std::unordered_set<int>& groupTypes) { groupEntityTypes = groupTypes; }
 
 		const std::unordered_set<int>& getTechnologyTypes() const { return technologyTypes; }
 		std::unordered_set<int>& getTechnologyTypes() { return technologyTypes; }

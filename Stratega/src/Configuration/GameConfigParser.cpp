@@ -334,7 +334,7 @@ namespace SGA
         	
             // Parse preconditions            
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(preconditions, type.getProconditions(), context);
+            parser.parseFunctions(preconditions, type.getPreconditions(), context);
 
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());

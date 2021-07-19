@@ -131,14 +131,14 @@ namespace SGA
 
 		/* Getters for conditions, effects and targets */
 
-		const std::vector<std::shared_ptr<Condition>>& getProconditions() const { return preconditions; }
-		std::vector<std::shared_ptr<Condition>>& getProconditions() { return preconditions; }
+		const std::vector<std::shared_ptr<Condition>>& getPreconditions() const { return preconditions; }
+		std::vector<std::shared_ptr<Condition>>& getPreconditions() { return preconditions; }
 
 		const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getTargets() const { return actionTargets; }
 		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& getTargets() { return actionTargets; }
 
 		const std::vector<std::shared_ptr<Condition>>& getTriggerComplete() const { return triggerComplete; }
-		std::vector<std::shared_ptr<Condition>> getTriggerComplete() { return triggerComplete; }
+		std::vector<std::shared_ptr<Condition>>& getTriggerComplete() { return triggerComplete; }
 
 		const std::vector<std::shared_ptr<Effect>>& getEffects() const { return effects; }
 		std::vector<std::shared_ptr<Effect>>& getEffects() { return effects; }

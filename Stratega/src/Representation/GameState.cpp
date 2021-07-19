@@ -294,7 +294,7 @@ namespace SGA
 	bool GameState::canExecuteAction(const Entity& entity, const ActionType& actionType) const
 	{
 		//Check preconditions
-		for (const auto& precondition : actionType.getProconditions())
+		for (const auto& precondition : actionType.getPreconditions())
 		{
 			if (!precondition->isFullfiled(*this, { ActionTarget::createEntityActionTarget(entity.getID()) }))
 			{
@@ -308,7 +308,7 @@ namespace SGA
 	bool GameState::canExecuteAction(const Player& player, const ActionType& actionType) const
 	{
 		//Check preconditions
-		for (const auto& precondition : actionType.getProconditions())
+		for (const auto& precondition : actionType.getPreconditions())
 		{
 			if (!precondition->isFullfiled(*this, { ActionTarget::createPlayerActionTarget(player.getID()) }))
 			{

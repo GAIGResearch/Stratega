@@ -56,7 +56,7 @@ like this:
         :title: python
         :linenos:
 
-        yaml_path=state.game_info.yaml_path
+        yaml_path=state.get_game_info().get_yaml_path()
         yaml=open(yaml_path, "r")
         lines = yaml.readlines()
         for line in lines:
@@ -99,17 +99,17 @@ The following code snippet shows how to access these maps and prints the name of
         :title: python
         :linenos:
         
-        entity_types=state.game_info.get_entity_types()
-        for id,eType in entity_types.items():
-            print("[Entity] id:",id, "name",eType.name)
+        entity_types = state.get_game_info().get_entity_types()
+        for id, eType in entity_types.items():
+            print("[Entity] id:", id, "name", eType.get_name())
 
-        tile_types = state.game_info.get_tile_types()
+        tile_types = state.get_game_info().get_tile_types()
         for id, tType in tile_types.items():
-            print("[Tile] id:", id, "name", tType.name)
+            print("[Tile] id:", id, "name", tType.get_name())
 
-        action_types = state.game_info.get_action_types()
+        action_types = state.get_game_info().get_action_types()
         for id, aType in action_types.items():
-            print("[Action] id:", id, "name", aType.name)
+            print("[Action] id:", id, "name", aType.get_name())
 
 This code produces the following output for the game 'KillTheKing': 
 
@@ -190,12 +190,12 @@ These descriptors can be retrieved using the *gameDescription* member of the Gam
         :title: python
         :linenos:
         
-        for ac in state.game_info.game_description.action_categories:
-            action_category_name=stratega.GameDescription.to_string(ac)
+        for ac in state.get_game_info().get_game_description().get_action_categories():
+            action_category_name = stratega.GameDescription.to_string(ac)
             print("[Action Category]", action_category_name, ":", end=" ")
-            for action_type_id in state.game_info.game_description.action_categories[ac]:
-                action_type=state.game_info.get_action_type(action_type_id)
-                print(action_type.name,"(",action_type.id,"),")
+            for action_type_id in state.get_game_info().get_game_description().get_action_categories()[ac]:
+                action_type = state.get_game_info().get_action_type(action_type_id)
+                print(action_type.get_name(), "(", action_type.get_id(), "),")
     
 
 Line 1 accesses the actionCategories map, which is indexed by a category and whose value is the set of action types that correspond to that category. Each category key is a value of 
@@ -238,12 +238,12 @@ Similarly, it's possible to extract information about entity categories. The fol
         :title: python
         :linenos:
 
-        for ec in state.game_info.game_description.entity_categories:
-            entity_category_name=stratega.GameDescription.to_string(ec)
-            print("[Entity Category]", entity_category_name,":", end=" ")
-            for entity_type_id in state.game_info.game_description.entity_categories[ec]:
-                entity_type=state.game_info.get_entity_type(entity_type_id)
-                print(entity_type.name,"(",entity_type.id,"),")
+        for ec in state.get_game_info().get_game_description().get_entity_categories():
+            entity_category_name = stratega.GameDescription.to_string(ec)
+            print("[Entity Category]", entity_category_name, ":", end=" ")
+            for entity_type_id in state.get_game_info().get_game_description().get_entity_categories()[ec]:
+                entity_type = state.get_game_info().get_entity_type(entity_type_id)
+                print(entity_type.get_name(), "(", entity_type.get_id(), "),")
     
 
 produces this output:
@@ -286,7 +286,7 @@ As an example, the following code snippet accesses and prints the number of prec
         :linenos:
 
         //PRECONDITIONS
-        auto preconditions = actionType.getProconditions();
+        auto preconditions = actionType.getPreconditions();
         if (preconditions.size() > 0) std::cout << " Preconditions: " << preconditions.size() << std::endl;
         for (const auto& precondition : preconditions)
             std::cout << "\t" << precondition->expr() << std::endl;
@@ -309,25 +309,25 @@ As an example, the following code snippet accesses and prints the number of prec
         :title: python
         :linenos:
 
-        #PRECONDITIONS
-        preconditions=action_type.preconditions
+        # PRECONDITIONS
+        preconditions = action_type.get_preconditions()
         if preconditions:
-            print("Preconditions:",len(preconditions))
+            print("Preconditions:", len(preconditions))
             for precondition in preconditions:
-                print("\t",precondition.expr())
+                print("\t", precondition.expr())
 
-        #TARGET CONDITIONS
-        if action_type.action_targets:
-            print("Target Conditions:", len(action_type.action_targets))
-            for action_target in action_type.action_targets:
+        # TARGET CONDITIONS
+        if action_type.get_targets():
+            print("Target Conditions:", len(action_type.get_targets()))
+            for action_target in action_type.get_targets():
                 for condition in action_target[1]:
-                    print("\t",condition.expr())
+                    print("\t", condition.expr())
 
-        #One-shot effects
-        if action_type.effects:
-            print("Effects:", len(action_type.effects))
-            for effect in action_type.effects:
-                    print("\t", effect.expr())
+        # One-shot effects
+        if action_type.get_effects():
+            print("Effects:", len(action_type.get_effects()))
+            for effect in action_type.get_effects():
+                print("\t", effect.expr())
 
 
 When applied to the "KillTheKing" game, the output of executing this code is as follows:
@@ -399,7 +399,7 @@ using the function 'getTechnologyCounts()':
         :title: python
         :linenos:
 
-        tech_counts=state.game_info.get_technology_counts()
+        tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
             #'id' is the technology tree ID.
 
@@ -424,11 +424,11 @@ iterates through the technologies of all trees and prints the information to con
         :title: python
         :linenos:
 
-        tech_counts=state.game_info.get_technology_counts()
+        tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
-            techs=state.game_info.get_tree_nodes(id)
+            techs=state.get_game_info().get_tree_nodes(id)
             for t in techs:
-                print(t.to_string(state.game_info))
+                print(t.to_string(state.get_game_info()))
 
 This is part of the output obtained by this code for the BasicTBS game:
 
@@ -481,10 +481,10 @@ tile has a tile type and certain properties regarding visibility and the ability
         :title: python
         :linenos:
 
-        for x in range(0, state.board.get_width()):
-            for y in range(0, state.board.get_height()):
-                t=state.board.get(x,y)
-                print("x:",x,",y: ",y,"; tile type:", t.get_tile_type_id()," (",t.name(),"), walkable:",t.is_walkable, ", blocks view:", t.blocks_sight)
+        for x in range(0, state.get_board_width()):
+            for y in range(0, state.get_board_height()):
+                t=state.get_tile_at(x,y)
+                print("x:",x,",y: ",y,"; tile type:", t.get_tile_type_id()," (",t.name(),"), walkable:",t.is_walkable(), ", blocks view:", t.blocks_sight())
 
 
 The following extract shows a portion of the output produced for this snippet: 
@@ -551,14 +551,14 @@ following example code expands the previous snippet including how to retrive ent
         :title: python
         :linenos:
         
-        for x in range(0, state.board.get_width()):
-            for y in range(0, state.board.get_height()):
-                t=state.board.get(x,y)
-                print("x:",x,",y: ",y,"; tile type:", t.get_tile_type_id()," (",t.name(),"), walkable:",t.is_walkable, ", blocks view:", t.blocks_sight)
+        for x in range(0, state.get_board_width()):
+            for y in range(0, state.get_board_height()):
+                t=state.get_tile_at(x,y)
+                print("x:",x,",y: ",y,"; tile type:", t.get_tile_type_id()," (",t.name(),"), walkable:",t.is_walkable(), ", blocks view:", t.blocks_sight())
 
                 ent = state.get_entity(stratega.Vector2f(x, y), 0)
                 if ent:
-                    print("\tEntity: ", ent.get_entitytype().name, ", owner's player ID", ent.owner_id, "parameters:")
+                    print("\tEntity: ", ent.get_entitytype().get_name(), ", owner's player ID", ent.get_owner_id(), "parameters:")
 
                     params=ent.get_entity_parameters()
                     for param in params:
@@ -608,7 +608,7 @@ entity directly from the Entity object:
         
         my_entities=state.get_player_entities(self.get_player_id())
         for ent in my_entities:
-            print("\tEntity: ", ent.get_entitytype().name, ", owner's player ID", ", position (x:" , ent.position.x , ", y:" , ent.position.y , ")",ent.owner_id, "parameters:")
+            print("\tEntity: ", ent.get_entitytype().get_name(), ", owner's player ID", ", position (x:" , ent.x() , ", y:" , ent.y() , ")",ent.get_owner_id(), "parameters:")
 
             params = ent.get_entity_parameters()
             for param in params:
@@ -748,6 +748,19 @@ and their parameters:
             }
         }
 
+    .. code-tab:: python
+        :title: python
+        :linenos:        
+        
+        nplayers=state.get_num_players()
+        for ip in range(0, nplayers):
+            my_entities=state.get_player_entities(ip)
+            for ent in my_entities:
+                print(ip,"; Entity:", ent.get_entity_type().get_name(),", owne's player ID:", ent.get_owner_id(), ", position (x", ent.x(), ", y:", ent.y(), ")parameters:")
+                params = state.get_player_parameters(self.get_player_id())
+                for param in params:
+                    print("\t paramName",param, ":", params[param])
+
 
         
 Technologies
@@ -780,13 +793,13 @@ dynamic information (lines 7-9), which depends on a particular instant in the ga
         :title: python
         :linenos:        
         
-        tech_counts=state.game_info.get_technology_counts()
+        tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
-            techs=state.game_info.get_tree_nodes(id)
+            techs=state.get_game_info().get_tree_nodes(id)
             for t in techs:
                 is_researched=state.is_researched(self.get_player_id(), t.id)
                 can_be_researched = state.can_research(self.get_player_id(), t.id)
-                print("Tech:",t.name,"researched",is_researched,", available",can_be_researched)
+                print("Tech:",t.get_name(),"researched",is_researched(),", available",can_be_researched)
 
 For the initial state in the game BasicTBS, the output of the code above is as follows:
 
@@ -898,7 +911,7 @@ Extending the previous code snippet, we can access (and print to console) extra 
         for act in actions:
             print(act.get_action_name(), end=" ")
 
-            for at in act.targets:
+            for at in act.get_targets():
                 type = at.get_type()
                 if type==stratega.ActionTargetEnum.PlayerReference:
                     print(", for player" , at.get_player_id(), end=" ")

@@ -34,7 +34,7 @@ namespace SGA
 					return false;
 				
 				//Check preconditions
-				for (auto& precondition : actionType.getProconditions())
+				for (auto& precondition : actionType.getPreconditions())
 				{
 					if (!precondition->isFullfiled(state, targets))
 						return false;

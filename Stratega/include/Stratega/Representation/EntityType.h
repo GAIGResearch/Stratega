@@ -126,10 +126,10 @@ namespace SGA
 		std::vector<int>& getActionIDs() { return actionIds; }
 
 		const std::unordered_set<EntityTypeID>& getSpawnableEntityTypes() const { return spawnableEntityTypes; }
-		void setSpawnableEntityTypes(std::unordered_set<EntityTypeID>& set) { spawnableEntityTypes = set; }
+		void setSpawnableEntityTypes(const std::unordered_set<EntityTypeID>& set) { spawnableEntityTypes = set; }
 
 		const std::unordered_map<ParameterID, double>& getCosts() const { return cost; }
-		void setCosts(std::unordered_map<ParameterID, double>& c) { cost = c; }
+		void setCosts(const std::unordered_map<ParameterID, double>& c) { cost = c; }
 
 	};
 }
