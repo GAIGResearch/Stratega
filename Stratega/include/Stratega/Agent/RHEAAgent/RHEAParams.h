@@ -3,6 +3,7 @@
 #include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/AgentParameters.h>
+#include <yaml-cpp/yaml.h>
 
 namespace SGA {
 	struct RHEAParams : AgentParameters {
@@ -31,5 +32,27 @@ namespace SGA {
 		double EPSILON = 1e-2;					// the amount of noise for randomly modifying an individuals value
 		
 		void printDetails() const;
+	};
+}
+
+
+namespace YAML
+{
+	template<>
+	struct convert<SGA::RHEAParams>
+	{
+		static bool decode(const Node& node, SGA::RHEAParams& rhs)
+		{
+			rhs.maxFMCalls = node["FmCalls"].as<int>(rhs.maxFMCalls);
+			rhs.maxIterations = node["Iterations"].as<int>(rhs.maxIterations);
+			if (node["Budget"].as<std::string>("") == "TIME")
+				rhs.budgetType = SGA::Budget::TIME;
+			else if (node["Budget"].as<std::string>("") == "FMCALLS")
+				rhs.budgetType = SGA::Budget::FMCALLS;
+			else if (node["Budget"].as<std::string>("") == "ITERATIONS")
+				rhs.budgetType = SGA::Budget::ITERATIONS;
+
+			return true;
+		}
 	};
 }

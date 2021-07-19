@@ -1,5 +1,4 @@
 #include <Stratega/Agent/RHEAAgent/RHEAParams.h>
-#include <yaml-cpp/yaml.h>
 
 #include <iostream>
 
@@ -24,25 +23,3 @@ namespace SGA {
 	}
 }
 
-
-namespace YAML
-{
-    template<>
-    struct convert<SGA::RHEAParams>
-    {
-        static bool decode(const Node& node, SGA::RHEAParams& rhs)
-        {
-
-            rhs.maxFMCalls = node["FmCalls"].as<int>(rhs.maxFMCalls);
-            rhs.maxIterations = node["Iterations"].as<int>(rhs.maxIterations);
-            if (node["Budget"].as<std::string>("") == "TIME")
-                rhs.budgetType = SGA::Budget::TIME;
-            else if (node["Budget"].as<std::string>("") == "FMCALLS")
-                rhs.budgetType = SGA::Budget::FMCALLS;
-            else if (node["Budget"].as<std::string>("") == "ITERATIONS")
-                rhs.budgetType = SGA::Budget::ITERATIONS;
-
-            return true;
-        }
-    };
-}

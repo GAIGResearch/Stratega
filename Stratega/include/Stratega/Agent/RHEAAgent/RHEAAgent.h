@@ -21,8 +21,8 @@ namespace SGA
 		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
 	public:
-		RHEAAgent(const std::string& name) :
-			Agent{name}, params_(RHEAParams())
+		RHEAAgent(const std::string& name, RHEAParams&& params) :
+			Agent{name}, params_(std::move(params))
 		{
 		}
 
