@@ -6,14 +6,11 @@
 namespace SGA {
 	void MCTSParameters::printDetails() const
 	{
-		std::cout << "MCTSParameters" << "\n";
-		std::cout << "\tK = " << K << "\n";
-		std::cout << "\tROLLOUT_LENGTH= " << ROLLOUT_LENGTH << "\n";
-		std::cout << "\tROLLOUTS_ENABLED= " << ROLLOUTS_ENABLED << "\n";
-		std::cout << "\tFORCE_TURN_END= " << FORCE_TURN_END << "\n";
-		std::cout << "\tPRIORITIZE_ROOT= " << PRIORITIZE_ROOT << "\n";
-		std::cout << "\tMAX_FM_CALLS= " << maxFMCalls << "\n";
-		std::cout << "\tEPSILON = " << EPSILON << "\n";
-		std::cout << "\tPLAYER_ID = " << PLAYER_ID << "\n";
+		AgentParameters::printDetails();
+		std::cout << "MCTS Parameters:" << "\n";
+		std::cout << "\tK: " << K << "\n";
+		std::cout << "\tRollout length: " << rolloutLength << "\n";
+		std::cout << "\tRollouts enabled: " << (rolloutsEnabled ? "True" : "False") << "\n";
+		std::cout << "\tEpsilon = " << epsilon << "\n";
 	}
 }

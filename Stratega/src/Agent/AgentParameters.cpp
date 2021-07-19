@@ -2,11 +2,78 @@
 
 namespace SGA {
 	
+
+	AgentParameters::AgentParameters()
+	{
+		//std::shared_ptr<BaseActionScript> random = std::make_shared<RandomActionScript>();
+		//portfolio.emplace_back(random);
+		//heuristic = std::make_unique<MinimizeDistanceHeuristic>();
+		portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
+		opponentModel = std::make_shared<RandomActionScript>();
+		budgetType = Budget::UNDEFINED;
+	};
+
+	void AgentParameters::initBudget(const Timer& timer)
+	{
+		this->timer = timer;
+		currentFMCalls = 0;
+		currentIterations = 0;
+	}
+
+	bool AgentParameters::isBudgetOver() const
+	{
+		switch (budgetType)
+		{
+		case Budget::TIME:
+			return timer.exceededMaxTime();
+		case Budget::ITERATIONS:
+			return currentIterations >= maxIterations;
+		case Budget::FMCALLS:
+			return currentFMCalls >= maxFMCalls;
+		}
+		return false;
+
+	}
+
+	std::unique_ptr<ForwardModel> AgentParameters::preprocessForwardModel(const ForwardModel& forwardModel)
+	{
+		bool isPortfolio = !portfolio.empty();
+
+		if (forwardModel.getGameType() == SGA::GameType::TBS)
+			if (isPortfolio)	return std::make_unique<PortfolioTBSForwardModel>(dynamic_cast<const TBSForwardModel&>(forwardModel), portfolio);
+			else				return std::make_unique<TBSForwardModel>(dynamic_cast<const TBSForwardModel&>(forwardModel));
+
+		else if (forwardModel.getGameType() == SGA::GameType::RTS)
+			if (isPortfolio)	return std::make_unique<PortfolioRTSForwardModel>(dynamic_cast<const RTSForwardModel&>(forwardModel), portfolio);
+			else				return std::make_unique<RTSForwardModel>(dynamic_cast<const RTSForwardModel&>(forwardModel));
+
+		else throw std::exception("Unrecognized forward model type in Agent Parameters.");
+	}
+
+	void AgentParameters::decode(const YAML::Node& node)
+	{
+		maxFMCalls = node["FmCalls"].as<int>(maxFMCalls);
+		maxIterations = node["Iterations"].as<int>(maxIterations);
+		if (node["Budget"].as<std::string>("") == "TIME")
+			budgetType = SGA::Budget::TIME;
+		else if (node["Budget"].as<std::string>("") == "FMCALLS")
+			budgetType = SGA::Budget::FMCALLS;
+		else if (node["Budget"].as<std::string>("") == "ITERATIONS")
+			budgetType = SGA::Budget::ITERATIONS;
+	}
+
+
 	void AgentParameters::printDetails() const
 	{
-		std::cout << "AgentParameters" << "\n";
-		std::cout << "\tMAX_FM_CALLS= " << maxFMCalls << "\n";
-		std::cout << "\tCURRENT_FM_CALLS = " << currentFMCalls << "\n";
-		std::cout << "\tPLAYER_ID = " << PLAYER_ID << "\n";
+		std::cout << "Agent with parameters:" << "\n";
+		std::cout << "\tPLAYER_ID: " << PLAYER_ID << "\n";
+		std::cout << "\tBudget type: " << budgetTypeStr(budgetType) << std::endl;
+		std::cout << "\tMax FM Calls (" << (budgetType == Budget::FMCALLS ? "active" : "inactive") << "): " << maxFMCalls << std::endl;
+		std::cout << "\tMax Iterations (" << (budgetType == Budget::ITERATIONS ? "active" : "inactive") << "): " << maxIterations << std::endl;
+		std::cout << "\tCurrent FM Calls: " << currentFMCalls << std::endl;
+		std::cout << "\tCurrent iterations: " << currentIterations << std::endl;
+		std::cout << "\tScripts in portfolio: " << portfolio.size() << std::endl;
+		std::cout << "\tOpponent model by script: " << opponentModel->toString() << std::endl;
+		std::cout << "\tState evaluation heuristic: " << heuristic->getName() << std::endl;
 	}
 }

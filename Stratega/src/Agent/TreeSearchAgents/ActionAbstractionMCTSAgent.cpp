@@ -20,7 +20,7 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-            if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration

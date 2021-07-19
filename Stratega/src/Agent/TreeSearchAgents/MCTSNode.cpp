@@ -82,7 +82,7 @@ namespace SGA
 	{
 		MCTSNode* cur = this;
 
-		while (!cur->gameState.isGameOver())// && cur->nodeDepth < params.ROLLOUT_LENGTH)
+		while (!cur->gameState.isGameOver())// && cur->nodeDepth < params.rolloutLength)
 		{
 			if (!cur->isFullyExpanded()) {
 				return (cur->expand(forwardModel, params, randomGenerator));
@@ -133,13 +133,13 @@ namespace SGA
 			MCTSNode* child = children[i].get();
 
 			const double hvVal = child->value;
-			double childValue = hvVal / (child->nVisits + params.EPSILON);
+			double childValue = hvVal / (child->nVisits + params.epsilon);
 			childValue = normalize(childValue, bounds[0], bounds[1]);
 
 			double uctValue = childValue +
-				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.EPSILON));
+				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
 
-			uctValue = noise(uctValue, params.EPSILON, params.doubleDistribution_(randomGenerator));     //break ties randomly
+			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
 			childValues[i] = uctValue;
 		}
 
@@ -185,7 +185,7 @@ namespace SGA
 
 	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
-		if (params.ROLLOUTS_ENABLED) {
+		if (params.rolloutsEnabled) {
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
@@ -197,15 +197,15 @@ namespace SGA
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params, playerID);
 				thisDepth++;
 			}
-			return normalize(params.getStateHeuristic()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
 		}
 
-		return normalize(params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
+		return normalize(params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
 	}
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
 	{
-		if (depth >= params.ROLLOUT_LENGTH)      //rollout end condition.
+		if (depth >= params.rolloutLength)      //rollout end condition.
 			return true;
 
 		//end of game
@@ -275,7 +275,7 @@ namespace SGA
 
 				double childValue = children[i]->nVisits;
 				//double childValue = children[i]->totValue / children[i]->nVisits ;
-				childValue = noise(childValue, params.EPSILON, params.doubleDistribution_(randomGenerator));     //break ties randomly
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -305,8 +305,8 @@ namespace SGA
 		for (size_t i = 0; i < children.size(); i++) {
 
 			if (children[i] != nullptr) {
-				double childValue = children[i]->value / (children[i]->nVisits + params.EPSILON);
-				childValue = noise(childValue, params.EPSILON, params.doubleDistribution_(randomGenerator));     //break ties randomly
+				double childValue = children[i]->value / (children[i]->nVisits + params.epsilon);
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);

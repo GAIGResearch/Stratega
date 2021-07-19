@@ -69,6 +69,6 @@ namespace SGA
 		}
 
 		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override;
-		static std::string getName() { return "AbstractHeuristic"; }
+		std::string getName() const override  { return "Abstract Heuristic"; }
 	};
 }

@@ -8,6 +8,8 @@ namespace SGA
     {
         params_.initBudget(timer);
 
+        params_.printDetails();
+
         auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
         // in case only one action is available the player turn ends
@@ -20,7 +22,7 @@ namespace SGA
         else
         {
             // either shift previous population or initialize a new population
-            if (params_.CONTINUE_SEARCH && !pop_.empty())
+            if (params_.continuePreviousSearch && !pop_.empty())
             {
                 pop_ = shiftPopulation(forwardModel, state, getRNGEngine());
             }
@@ -31,19 +33,18 @@ namespace SGA
 
             // run rhea and return the best individual of the previous generation
             rheaLoop(forwardModel, state, getRNGEngine());
-            std::cout << timer.elapsedMilliseconds() << std::endl;
             return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
     }
 
     void RHEAAgent::initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937&)
     {
-        // create params_.POP_SIZE new random individuals
+        // create params_.popSize new random individuals
         pop_.clear();
-        for (size_t i = 0; i < params_.POP_SIZE; i++) {
+        for (size_t i = 0; i < params_.popSize; i++) {
             pop_.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
-        params_.currentIterations += params_.POP_SIZE;
+        params_.currentIterations += params_.popSize;
     }
 
 
@@ -56,21 +57,21 @@ namespace SGA
         newPop.emplace_back(pop_[0]);
 
         // from 1 to (1+params._MUTATE_BEST), mutate the best individual
-        for (size_t i = 1; i <= params_.MUTATE_BEST && i < params_.POP_SIZE; ++i)
+        for (size_t i = 1; i <= params_.mutateBestN && i < params_.popSize; ++i)
         {
             RHEAGenome mutGen(pop_[0]);
             mutGen.mutate(forwardModel, gameState, params_, randomGenerator);
             newPop.emplace_back(mutGen);
         }
 
-        // from 1+params.MUTATE_BEST to params_.POP_SIZE, generate at random
-        for (size_t i = 1 + params_.MUTATE_BEST; i < params_.POP_SIZE; ++i) {
+        // from 1+params.mutateBestN to params_.popSize, generate at random
+        for (size_t i = 1 + params_.mutateBestN; i < params_.popSize; ++i) {
             newPop.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
 
 
         //In RHEA, we count iterations as individual evaluations.
-        params_.currentIterations += (params_.POP_SIZE-1);
+        params_.currentIterations += (params_.popSize-1);
 
         return newPop;
     }
@@ -93,15 +94,15 @@ namespace SGA
         // placeholder for the next generation
         std::vector<RHEAGenome> newPop;
 
-        // sort the population and add the best to the next generation (ELITISM)
+        // sort the population and add the best to the next generation (elitism)
         sort(pop_.begin(), pop_.end(), sortByFitness);
-        if (params_.ELITISM && params_.POP_SIZE > 1)
+        if (params_.elitism && params_.popSize > 1)
         {
             newPop.emplace_back(pop_[0]);
         }
 
         // add further individuals until the generation is full
-        while (newPop.size() < params_.POP_SIZE) {
+        while (newPop.size() < params_.popSize) {
             newPop.emplace_back(getNextGenerationIndividual(forwardModel, gameState, randomGenerator));
         }
 
@@ -111,7 +112,7 @@ namespace SGA
     RHEAGenome RHEAAgent::getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         params_.currentIterations++;
-        if (params_.POP_SIZE > 1)
+        if (params_.popSize > 1)
         {
             std::vector<RHEAGenome> parents = tournamentSelection();
             return RHEAGenome::crossover(forwardModel, gameState, params_, randomGenerator, parents[0], parents[1]);
@@ -129,7 +130,7 @@ namespace SGA
         // sample subset, sort by fitness, select best individual
         // parent 1
         std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.TOURNAMENT_SIZE, std::mt19937{ std::random_device{}() });
+            params_.tournamentSize, std::mt19937{ std::random_device{}() });
 
         sort(tournament.begin(), tournament.end(), sortByFitness);
         RHEAGenome& parent1 = tournament[0];
@@ -138,7 +139,7 @@ namespace SGA
         // parent 2
         tournament.clear();
         std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.TOURNAMENT_SIZE, std::mt19937{ std::random_device{}() });
+            params_.tournamentSize, std::mt19937{ std::random_device{}() });
 
         std::sort(tournament.begin(), tournament.end(), sortByFitness);
         RHEAGenome& parent2 = tournament[0];

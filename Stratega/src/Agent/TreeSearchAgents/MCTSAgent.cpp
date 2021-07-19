@@ -5,6 +5,7 @@ namespace SGA
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
         parameters_.initBudget(timer);
+        //parameters_.printDetails();
 
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -12,7 +13,7 @@ namespace SGA
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
         // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-        if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
+        if (actionSpace.size() == 1 || !parameters_.continuePreviousSearch)
         {
             rootNode = nullptr;
             previousActionIndex = -1;
@@ -21,7 +22,7 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-            if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration

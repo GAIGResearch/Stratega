@@ -6,20 +6,16 @@
 namespace SGA {
 	void RHEAParams::printDetails() const
 	{
-		std::cout << "RHEAParams" << std::endl;
-		std::cout << "\tPOP_SIZE = " << POP_SIZE << std::endl;
-		std::cout << "\tINDIVIDUAL_LENGTH = " << INDIVIDUAL_LENGTH << std::endl;
-
-		std::cout << "\tMUTATION_RATE = " << MUTATION_RATE << std::endl;
-		std::cout << "\tTOURNAMENT_SIZE = " << TOURNAMENT_SIZE << std::endl;
-		std::cout << "\tELITISM = " << ELITISM << std::endl;
-
-		std::cout << "\tCONTINUE_SEARCH = " << CONTINUE_SEARCH << std::endl;
-		std::cout << "\tMUTATE_BEST = " << MUTATE_BEST << std::endl;
-		std::cout << "\tPLAYER_ID = " << PLAYER_ID << std::endl;
-
-		std::cout << "\tHEURISTIC = " << getStateHeuristic()->getName() << std::endl;
-		std::cout << "\tEPSILON = " << EPSILON << std::endl;
+		AgentParameters::printDetails();
+		std::cout << "RHEA Parameters:" << std::endl;
+		std::cout << "\tPopulation size: " << popSize << std::endl;
+		std::cout << "\tIndividual length: " << individualLength << std::endl;
+		std::cout << "\tMutation rate: " << mutationRate << std::endl;
+		std::cout << "\tTournament size: " << tournamentSize << std::endl;
+		std::cout << "\tElitism: " << elitism << std::endl;
+		std::cout << "\tContinue search: " << (continuePreviousSearch ? "True" : "False") << std::endl;
+		std::cout << "\tMutate best individual count: " << mutateBestN << std::endl;
+		std::cout << "\tEpsilon: " << epsilon << std::endl;
 	}
 }
 

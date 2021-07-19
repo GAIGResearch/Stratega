@@ -72,7 +72,7 @@ namespace SGA
 		for (auto& i : node.children)
 		{
 			auto* child = i.get();
-			child->value = parameters_.getStateHeuristic()->evaluateGameState(forwardModel, child->gameState, parameters_.PLAYER_ID);
+			child->value = parameters_.heuristic->evaluateGameState(forwardModel, child->gameState, parameters_.PLAYER_ID);
 			bestSimulations.push_back(child);
 		}
 

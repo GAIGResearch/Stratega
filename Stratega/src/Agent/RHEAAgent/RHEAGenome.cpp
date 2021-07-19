@@ -8,7 +8,7 @@ namespace SGA {
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
-        while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.individualLength) {
             // choose and apply random action
             //todo forward random generator to getRandomAction
             auto action = actionSpace.at(rand() % actionSpace.size());
@@ -19,7 +19,7 @@ namespace SGA {
         }
 
         // rate newly created individual
-        value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+        value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
     }
 
     RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
@@ -48,10 +48,10 @@ namespace SGA {
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
-        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.individualLength)
         {
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
-            const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
+            const bool mutate = doubleDistribution_(randomGenerator) < params.mutationRate;
 
             // replace with random portfolio in case of mutate or no portfolio available
             if (mutate || (actIdx < actions.size()))
@@ -83,7 +83,7 @@ namespace SGA {
         }
 
         // rate mutated individual
-        this->value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+        this->value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
     }
 
 
@@ -98,11 +98,11 @@ namespace SGA {
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
 
-        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.individualLength)
         {
             // if mutate do a random mutation else apply uniform crossover
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
-            const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
+            const bool mutate = doubleDistribution_(randomGenerator) < params.mutationRate;
 
             // mutation = randomly select a new action for gameStateCopy
             if (mutate)
@@ -149,7 +149,7 @@ namespace SGA {
             actIdx++;
         }
 
-        const double value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+        const double value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
         return RHEAGenome(actions, value);
     }
 
@@ -181,7 +181,7 @@ namespace SGA {
         }
 
         // re-evaluate the shifted individual
-        value = params.getStateHeuristic()->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+        value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
     }
 
     void RHEAGenome::toString() const

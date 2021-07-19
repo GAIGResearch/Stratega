@@ -16,12 +16,10 @@ namespace SGA {
         }
 
         double K = sqrt(2);
-        int ROLLOUT_LENGTH = 3;
-        bool ROLLOUTS_ENABLED = true;
-        bool FORCE_TURN_END = true;
-        bool PRIORITIZE_ROOT = true;
-        double EPSILON = 1e-2;
-        bool CONTINUE_PREVIOUS_SEARCH = true;
+        int rolloutLength = 3;
+        bool rolloutsEnabled = true;
+        double epsilon = 1e-2;
+        bool continuePreviousSearch = true;
 
         std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
 
@@ -36,19 +34,11 @@ namespace YAML
     {
         static bool decode(const Node& node, SGA::MCTSParameters& rhs)
         {
+            rhs.decode(node);
             rhs.K = node["K"].as<double>(rhs.K);
-            rhs.ROLLOUT_LENGTH= node["RolloutLength"].as<int>(rhs.ROLLOUT_LENGTH);
-            rhs.ROLLOUTS_ENABLED = node["EnableRollouts"].as<bool>(rhs.ROLLOUTS_ENABLED);
-
-        	rhs.maxFMCalls = node["FmCalls"].as<int>(rhs.maxFMCalls);
-            rhs.maxIterations = node["Iterations"].as<int>(rhs.maxIterations);
-            if (node["Budget"].as<std::string>("") == "TIME")
-                rhs.budgetType = SGA::Budget::TIME;
-            else if (node["Budget"].as<std::string>("") == "FMCALLS")
-                rhs.budgetType = SGA::Budget::FMCALLS;
-            else if (node["Budget"].as<std::string>("") == "ITERATIONS")
-                rhs.budgetType = SGA::Budget::ITERATIONS;
-
+            rhs.rolloutLength= node["RolloutLength"].as<int>(rhs.rolloutLength);
+            rhs.rolloutsEnabled = node["EnableRollouts"].as<bool>(rhs.rolloutsEnabled);
+            rhs.continuePreviousSearch = node["ContPreviousSearch"].as<bool>(rhs.continuePreviousSearch);
             return true;
         }
     };

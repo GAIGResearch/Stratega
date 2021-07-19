@@ -33,7 +33,7 @@ namespace SGA
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
 			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
-			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+			previousActionIndex = parameters_.continuePreviousSearch && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 			return ActionAssignment::fromSingleAction(action);
 		}
@@ -57,7 +57,7 @@ namespace SGA
 	/// <param name="gameState">the current game-state</param>
 	void BFSAgent::init(ForwardModel& forwardModel, GameState& gameState)
 	{
-		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+		if (parameters_.continuePreviousSearch && previousActionIndex != -1)
 		{
 			// in case of a deterministic game we know that the previously simulated action
 			// should result in the same game-state as we predicted
@@ -157,7 +157,7 @@ namespace SGA
 	int BFSAgent::getBestActionIdx(ForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
-		std::shared_ptr<StateHeuristic> heuristic = parameters_.getStateHeuristic();
+		std::shared_ptr<StateHeuristic> heuristic = parameters_.heuristic;
 		double bestHeuristicValue = -std::numeric_limits<double>::max();
 		TreeNode* bestChild = rootNode.get();
 
