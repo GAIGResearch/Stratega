@@ -12,7 +12,7 @@ namespace SGA {
 		std::cout << "\tROLLOUTS_ENABLED= " << ROLLOUTS_ENABLED << "\n";
 		std::cout << "\tFORCE_TURN_END= " << FORCE_TURN_END << "\n";
 		std::cout << "\tPRIORITIZE_ROOT= " << PRIORITIZE_ROOT << "\n";
-		std::cout << "\tMAX_FM_CALLS= " << MAX_FM_CALLS << "\n";
+		std::cout << "\tMAX_FM_CALLS= " << maxFMCalls << "\n";
 		std::cout << "\tEPSILON = " << EPSILON << "\n";
 		std::cout << "\tPLAYER_ID = " << PLAYER_ID << "\n";
 	}

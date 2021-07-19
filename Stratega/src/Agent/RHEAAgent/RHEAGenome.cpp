@@ -30,13 +30,13 @@ namespace SGA {
     void RHEAGenome::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, RHEAParams& params)
     {
         //Roll the game state with our action.
-        params.REMAINING_FM_CALLS -= SGA::roll(gameState, forwardModel, action, params.PLAYER_ID, params);
+        params.currentFMCalls += SGA::roll(gameState, forwardModel, action, params.PLAYER_ID, params);
 
         //Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver())
+        while (!gameState.canPlay(params.PLAYER_ID) && !params.isBudgetOver() > 0 && !gameState.isGameOver())
         {
             //Roll actions for the opponent(s).
-            params.REMAINING_FM_CALLS -= SGA::rollOppOnly(gameState, forwardModel, params);
+            params.currentFMCalls += SGA::rollOppOnly(gameState, forwardModel, params);
         }
     }
 

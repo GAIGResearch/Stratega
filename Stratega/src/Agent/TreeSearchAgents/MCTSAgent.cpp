@@ -4,6 +4,7 @@ namespace SGA
 {
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        parameters_.initBudget(timer);
 
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -35,7 +36,6 @@ namespace SGA
             }
 
             //params.printDetails();
-            parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
             //rootNode->printTree();
 
@@ -53,10 +53,9 @@ namespace SGA
     {
         parameters_.PLAYER_ID = getPlayerID();
         if (parameters_.heuristic == nullptr)
-        {
             parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        }
-
+        if (parameters_.budgetType == Budget::UNDEFINED)
+            parameters_.budgetType = Budget::TIME;
     }
 
 }

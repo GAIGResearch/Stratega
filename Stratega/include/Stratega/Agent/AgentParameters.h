@@ -5,9 +5,19 @@
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/PortfolioForwardModel.h>
 #include <Stratega/Agent/StateAbstraction/StateFactory.h>
+#include <Stratega/Utils/Timer.h>
 
 
 namespace SGA {
+
+	enum class Budget
+	{
+		TIME, 
+		ITERATIONS, 
+		FMCALLS,
+		UNDEFINED
+	};
+
 	struct AgentParameters {
 
 	protected:
@@ -21,24 +31,85 @@ namespace SGA {
 	public: 
 
 		// agent parameters
-		int MAX_FM_CALLS = 2000;					// the maximum number of forward model calls (can be slightly exceeded in case the next generation takes more evaluations)
-		int REMAINING_FM_CALLS = MAX_FM_CALLS;	// the number of remaining forward model calls
-		int PLAYER_ID = -1;						// the agents ID in the current game
 
+
+		/// <summary>
+		/// The maximum number of forward model calls. To be used if this->budgetType == FMCALLS;
+		/// </summary>
+		int maxFMCalls = 100;					
+
+		/// <summary>
+		/// Maximum number of iterations for a decision making round. Applies when this->budgetType == ITERATIONS;
+		/// </summary>
+		int maxIterations = 10;
+
+		/// <summary>
+		/// Current number of FM calls remaining in this cycle. To be updated by the agent.
+		/// </summary>
+		int currentFMCalls;
+
+		/// <summary>
+		/// Current number of iterations executed. To be updated and initialized by the agent.
+		/// </summary>
+		int currentIterations;
+
+		/// <summary>
+		/// ID of this player.
+		/// </summary>
+		int PLAYER_ID = -1;
+
+		/// <summary>
+		/// Type of budget for the agent's decision making.
+		/// </summary>
+		Budget budgetType;
+
+		/// <summary>
+		/// Heuristic to evaluate states.
+		/// </summary>
 		std::shared_ptr<StateHeuristic> heuristic;
 
-		// the portfolio used to sample actions of a genome
-		// if empty the original forwardModel will be used to generate actions
+		/// <summary>
+		/// This is the portfolio used to sample actions 
+		/// if empty the original forwardModel will be used to generate actions
+		/// </summary>
 		std::vector<std::shared_ptr<BaseActionScript>> portfolio;
+
+		/// <summary>
+		/// Timer for action decision, as received by the game. Must be updated by agent at each step.
+		/// </summary>
+		Timer timer;
 
 		AgentParameters()
 		{
 			//std::shared_ptr<BaseActionScript> random = std::make_shared<RandomActionScript>();
 			//portfolio.emplace_back(random);
+			//heuristic = std::make_unique<MinimizeDistanceHeuristic>();
 			portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
 			opponentModel = std::make_shared<RandomActionScript>();
-			//heuristic = std::make_unique<MinimizeDistanceHeuristic>();
+			budgetType = Budget::UNDEFINED;
 		};
+
+		void initBudget(const Timer& timer)
+		{
+			this->timer = timer;
+			currentFMCalls = 0;
+			currentIterations = 0;
+		}
+
+		bool isBudgetOver() const 
+		{
+			switch (budgetType)
+			{
+			case Budget::TIME:
+				return timer.exceededMaxTime();
+			case Budget::ITERATIONS:
+				return currentIterations >= maxIterations;
+			case Budget::FMCALLS:
+				return currentFMCalls >= maxFMCalls;
+			}
+			return false;
+
+		}
 
 		void printDetails() const;
 

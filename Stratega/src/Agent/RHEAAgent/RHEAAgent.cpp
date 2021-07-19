@@ -4,11 +4,11 @@
 
 namespace SGA
 {
-    ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
+    ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        params_.initBudget(timer);
 
         auto actionSpace = forwardModel.generateActions(state, getPlayerID());
-        params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;  // reset number of available forward model calls
 
         // in case only one action is available the player turn ends
         // throw away previous solutions because we don't know what our opponent will do
@@ -31,6 +31,7 @@ namespace SGA
 
             // run rhea and return the best individual of the previous generation
             rheaLoop(forwardModel, state, getRNGEngine());
+            std::cout << timer.elapsedMilliseconds() << std::endl;
             return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
     }
@@ -42,6 +43,7 @@ namespace SGA
         for (size_t i = 0; i < params_.POP_SIZE; i++) {
             pop_.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
+        params_.currentIterations += params_.POP_SIZE;
     }
 
 
@@ -65,6 +67,11 @@ namespace SGA
         for (size_t i = 1 + params_.MUTATE_BEST; i < params_.POP_SIZE; ++i) {
             newPop.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
+
+
+        //In RHEA, we count iterations as individual evaluations.
+        params_.currentIterations += (params_.POP_SIZE-1);
+
         return newPop;
     }
 
@@ -74,7 +81,7 @@ namespace SGA
     void RHEAAgent::rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
-        while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver())
+        while (!params_.isBudgetOver() && !gameState.isGameOver())
         {
             pop_ = nextGeneration(forwardModel, gameState, randomGenerator);
         }
@@ -103,6 +110,7 @@ namespace SGA
 
     RHEAGenome RHEAAgent::getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
+        params_.currentIterations++;
         if (params_.POP_SIZE > 1)
         {
             std::vector<RHEAGenome> parents = tournamentSelection();
@@ -143,8 +151,8 @@ namespace SGA
     {
         params_.PLAYER_ID = getPlayerID();
         if (params_.heuristic == nullptr)
-        {
             params_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        }
+        if (params_.budgetType == Budget::UNDEFINED)
+            params_.budgetType = Budget::TIME;
     }
 }

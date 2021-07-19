@@ -39,8 +39,16 @@ namespace YAML
             rhs.K = node["K"].as<double>(rhs.K);
             rhs.ROLLOUT_LENGTH= node["RolloutLength"].as<int>(rhs.ROLLOUT_LENGTH);
             rhs.ROLLOUTS_ENABLED = node["EnableRollouts"].as<bool>(rhs.ROLLOUTS_ENABLED);
-        	rhs.MAX_FM_CALLS = node["FmCalls"].as<int>(rhs.MAX_FM_CALLS);
-            rhs.REMAINING_FM_CALLS = rhs.MAX_FM_CALLS;
+
+        	rhs.maxFMCalls = node["FmCalls"].as<int>(rhs.maxFMCalls);
+            rhs.maxIterations = node["Iterations"].as<int>(rhs.maxIterations);
+            if (node["Budget"].as<std::string>("") == "TIME")
+                rhs.budgetType = SGA::Budget::TIME;
+            else if (node["Budget"].as<std::string>("") == "FMCALLS")
+                rhs.budgetType = SGA::Budget::FMCALLS;
+            else if (node["Budget"].as<std::string>("") == "ITERATIONS")
+                rhs.budgetType = SGA::Budget::ITERATIONS;
+
             return true;
         }
     };

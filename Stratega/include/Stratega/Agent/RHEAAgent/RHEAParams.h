@@ -28,11 +28,6 @@ namespace SGA {
 		bool CONTINUE_SEARCH = true;		// initialize new population with shifted best individual of the previous iteration
 		size_t MUTATE_BEST = 9;				// include Mutate_best additional copies of the shifted best individual in the next population
 
-		// agent parameters
-		int MAX_FM_CALLS = 2000;				// the maximum number of forward model calls (can be slightly exceeded in case the next generation takes more evaluations)
-		int REMAINING_FM_CALLS = MAX_FM_CALLS;	// the number of remaining forward model calls
-		int PLAYER_ID = -1;						// the agents ID in the current game
-
 		double EPSILON = 1e-2;					// the amount of noise for randomly modifying an individuals value
 		
 		void printDetails() const;

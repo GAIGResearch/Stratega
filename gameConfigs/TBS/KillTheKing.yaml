@@ -7,7 +7,10 @@ GameConfig:
 Agents:
     - HumanAgent
     #- OSLAAgent
-    - MCTSAgent
+    - MCTSAgent:
+        FmCalls: 100
+        Budget: TIME
+        RolloutLength: 10
 
 Tiles:
     Plain:
@@ -181,6 +184,6 @@ GameRunner:
         DisqualificationTimeMs: 70
     AgentComputationTime:
         Enabled: false
-        BudgetTimeMs: 50
+        BudgetTimeMs: 1000
         DisqualificationTimeMs: 70
         MaxNumberWarnings: 5

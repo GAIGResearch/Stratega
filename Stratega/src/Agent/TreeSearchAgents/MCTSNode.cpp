@@ -61,22 +61,12 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
-		int numIterations = 0;
-		bool stop = false;
-		int prevCallCount = params.REMAINING_FM_CALLS;
-
 		// stop in case the set number of fmCalls has been reached
-		while (!stop) {
+		while (!params.isBudgetOver()) {
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
-
 			const double delta = selected->rollOut(forwardModel, params, randomGenerator);
-			//cout << "delta: " << delta << "\n";
 			backUp(selected, delta);
-			numIterations++;
-			//printTree();
-
-			stop = params.REMAINING_FM_CALLS <= 0 || numIterations == params.MAX_FM_CALLS;
-			prevCallCount = params.REMAINING_FM_CALLS;
+			params.currentIterations++; 
 		}
 	}
 
@@ -225,13 +215,13 @@ namespace SGA
 	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int playerID) const
 	{
 		//Roll the game state with our action.
-		params.REMAINING_FM_CALLS -= SGA::roll(targetGameState, forwardModel, action, playerID, params);
+		params.currentFMCalls += SGA::roll(targetGameState, forwardModel, action, playerID, params);
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-		while (!targetGameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !targetGameState.isGameOver())
+		while (!targetGameState.canPlay(params.PLAYER_ID) && !params.isBudgetOver() && !targetGameState.isGameOver())
 		{
 			//Roll actions for the opponent(s).
-			params.REMAINING_FM_CALLS -= SGA::rollOppOnly(targetGameState, forwardModel, params);
+			params.currentFMCalls += SGA::rollOppOnly(targetGameState, forwardModel, params);
 		}
 	}
 

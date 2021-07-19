@@ -31,7 +31,7 @@ namespace SGA
 		// roll the state using a the next action that hasn't been expanded yet
 		auto gsCopy(gameState);
 		auto action = actionSpace.at(static_cast<int>(children.size()));
-		agentParameters.REMAINING_FM_CALLS -= SGA::roll(gsCopy, forwardModel, action, playerID, agentParameters);
+		agentParameters.currentFMCalls += SGA::roll(gsCopy, forwardModel, action, playerID, agentParameters);
 				
 		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, static_cast<int>(children.size()), this->ownerID)));
 		return children[children.size()-1].get();
