@@ -34,35 +34,35 @@ namespace SGA
 		/// <summary>
 		/// Filters out all units that can't reach the specified position within one turn.
 		/// </summary>
-		std::vector<Entity*> filterUnitsByReach(const std::vector<Entity*>& targetUnits, const Vector2f& pos, GameState& gameState) const;
+		std::vector<Entity> filterUnitsByReach(const std::vector<Entity>& targetUnits, const Vector2f& pos, GameState& gameState) const;
 
 		/// <summary>
 		/// Returns an estimate of how much healing one could receive when standing on an given position.
 		/// </summary>
-		int getPotentialHealing(std::vector<Action>& actions, const Vector2f& pos, const std::vector<Entity*>& potentialHealers, GameState& gameState) const;
+		int getPotentialHealing(std::vector<Action>& actions, const Vector2f& pos, const std::vector<Entity>& potentialHealers, GameState& gameState) const;
 
 		/// <summary>
 		/// Returns an estimate of how much damage one could receive when standing on an given position.
 		/// </summary>
-		double getPotentialDamage(const Vector2f& pos, const std::vector<Entity*>& potentialAttackers, GameState& gameState) const;
+		double getPotentialDamage(const Vector2f& pos, const std::vector<Entity>& potentialAttackers, GameState& gameState) const;
 
 
 		/// <summary>
 		/// A heuristic to estimate how good an attack action is.
 		/// </summary>
-		double getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity*>& opponentUnits, GameState& gameState) const;
+		double getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity>& opponentUnits, GameState& gameState) const;
 
 		/// <summary>
 		/// A heuristic to estimate how good an healing action is.
 		/// </summary>
-		double getHealScore(std::vector<Action>& actions, const Entity& target, const Action& heal, const std::vector<Entity*>& opponentUnits, GameState& gameState) const;
+		double getHealScore(std::vector<Action>& actions, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const;
 
 		/// <summary>
 		/// Returns the best move for a unit to reach an target within an specified radius.
 		/// If the unit can't reach the target immediately, this function will return a move that gets close to the target.
 		/// The action will be stored in the bucket, the returned boolean indicates if a move was necessary to reach the target
 		/// </summary>
-		bool getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity*>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const;
+		bool getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const;
 
 	};
 }

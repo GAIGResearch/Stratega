@@ -9,10 +9,10 @@ namespace SGA
 	/// <summary>
 	/// Test
 	/// </summary>
-	class EntityActionSpace
+	class ActionSpace
 	{
 	public:
-		virtual ~EntityActionSpace() = default;
+		virtual ~ActionSpace() = default;
 		
 		std::vector<Action> generateActions(const GameState& gameState, int player) const;
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const;

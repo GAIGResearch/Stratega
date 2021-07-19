@@ -44,7 +44,7 @@ namespace SGA
 			else
 			{
 				//Check if entity type
-				if (groupEntityTypes.find(actionTarget.getEntityType(state).id) == groupEntityTypes.end())
+				if (groupEntityTypes.find(actionTarget.getEntityType(state).getID()) == groupEntityTypes.end())
 					return false;
 
 				//Verify if position is in shape

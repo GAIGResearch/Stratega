@@ -8,7 +8,7 @@ namespace SGA {
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.INDIVIDUAL_LENGTH) {
             // choose and apply random action
             //todo forward random generator to getRandomAction
             auto action = actionSpace.at(rand() % actionSpace.size());
@@ -33,7 +33,7 @@ namespace SGA {
         params.REMAINING_FM_CALLS -= SGA::roll(gameState, forwardModel, action, params.PLAYER_ID, params);
 
         //Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
+        while (!gameState.canPlay(params.PLAYER_ID) && params.REMAINING_FM_CALLS > 0 && !gameState.isGameOver())
         {
             //Roll actions for the opponent(s).
             params.REMAINING_FM_CALLS -= SGA::rollOppOnly(gameState, forwardModel, params);
@@ -48,7 +48,7 @@ namespace SGA {
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.MUTATION_RATE;
@@ -97,7 +97,8 @@ namespace SGA {
 
         // step-wise add actions by mutation or crossover
         size_t actIdx = 0;
-        while (!gameState.isGameOver && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
+
+        while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.INDIVIDUAL_LENGTH)
         {
             // if mutate do a random mutation else apply uniform crossover
             std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
@@ -115,10 +116,13 @@ namespace SGA {
             {
                 const bool useParent1First = doubleDistribution_(randomGenerator) < 0.5;
                 RHEAGenome& from = useParent1First ? parent1 : parent2;
+                bool validAction = true;
                 // check the first parent and choose portfolio if available
                 if (actIdx < from.actions.size())
                 {
-                    actions.emplace_back(from.actions[actIdx]);
+                    validAction = from.actions[actIdx].validate(gameState);
+                    if(validAction) 
+                        actions.emplace_back(from.actions[actIdx]);
                 }
                 else
                 {
@@ -126,18 +130,22 @@ namespace SGA {
                     from = useParent1First ? parent2 : parent1;
                     if (actIdx < from.actions.size())
                     {
-                        actions.emplace_back(from.actions[actIdx]);
+                        validAction = from.actions[actIdx].validate(gameState);
+                        if (validAction)
+                            actions.emplace_back(from.actions[actIdx]);
                     }
-                    else
-                    {
-                        // use a random portfolio by default
-                        actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
-                    }
+                    else validAction = false;
                 }
+
+                if (!validAction)
+                {
+                    // use a random portfolio by default
+                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                }
+
                 applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
                 actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
             }
-
             actIdx++;
         }
 
@@ -182,7 +190,7 @@ namespace SGA {
         std::cout << "\tactions=" << "\n";
         for (const auto& action : actions)
         {
-            std::cout << "\t\t" << action.ownerID << ";" << "Type=" << action.getActionType().name << "\n";
+            std::cout << "\t\t" << action.getOwnerID() << ";" << "Type=" << action.getActionType().getName() << "\n";
         }
 
         std::cout << "\tvalue=" << value << "\n;";

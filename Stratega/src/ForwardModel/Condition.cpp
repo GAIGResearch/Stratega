@@ -50,11 +50,11 @@ namespace  SGA
 
 			for (const auto& action : sourceEntity.getContinuousActions())
 			{
-				if (action.continuousActionID == targets[2].getContinuousActionID())
+				if (action.getContinuousActionID() == targets[2].getContinuousActionID())
 				{
 					//We reached the action
 					//Tick amount
-					if (action.elapsedTicks >= lowerBound)
+					if (action.getElapsedTicks() >= lowerBound)
 						return true;
 				}
 			}
@@ -63,13 +63,13 @@ namespace  SGA
 		{
 			auto& sourceEntity = targets[0].getPlayerConst(state);
 
-			for (auto& action : sourceEntity.continuousAction)
+			for (auto& action : sourceEntity.getContinuousActions())
 			{
-				if (action.continuousActionID == targets[2].getContinuousActionID())
+				if (action.getContinuousActionID() == targets[2].getContinuousActionID())
 				{
 					//We reached the action
 					//Tick amount
-					if (action.elapsedTicks >= lowerBound)
+					if (action.getElapsedTicks() >= lowerBound)
 						return true;
 				}
 			}
@@ -87,7 +87,7 @@ namespace  SGA
 		auto& sourceEntity =targets[0].getEntityConst(state);
 		auto& targetEntity =targets[1].getEntityConst(state);
 
-		return sourceEntity.ownerID == targetEntity.ownerID;
+		return sourceEntity.getOwnerID() == targetEntity.getOwnerID();
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -104,7 +104,7 @@ namespace  SGA
 		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
 
-		return source.position.distance(target) <= dist;
+		return source.getPosition().distance(target) <= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -116,7 +116,8 @@ namespace  SGA
 	bool IsWalkable::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).isWalkable && state.getEntityAt(pos) == nullptr;
+		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		return t.isWalkable() && state.getEntityAt(pos) == nullptr;
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -131,7 +132,8 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		return state.board.get(static_cast<int>(pos.x), static_cast<int>(pos.y)).getTileTypeID()==tileType.id;
+		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		return t.getTileTypeID()==tileType.getID();
 	}
 
 	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -158,7 +160,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 		
-		return state.isResearched(targetPlayer.id, targetTechnology.id);
+		return state.isResearched(targetPlayer.getID(), targetTechnology.id);
 	}
 
 	HasNoEntity::HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -172,12 +174,12 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
 		
 		bool hasEntity = false;
 		for (auto& entity : entities)
 		{
-			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).getID())
 				hasEntity = true;
 		}
 
@@ -195,11 +197,11 @@ namespace  SGA
 	{
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 
-		auto entities = state.getPlayerEntities(targetPlayer.id);
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
 
 		for (auto& entity : entities)
 		{
-			if (entity->getEntityTypeID() == entityTypeParam.getEntityType(state, targets).id)
+			if (entity.getEntityTypeID() == entityTypeParam.getEntityType(state, targets).getID())
 				return true;
 		}
 	
@@ -219,7 +221,7 @@ namespace  SGA
 		const auto& targetPlayer = playerParam.getPlayer(state, targets);
 		const auto& targetTechnology = technologyTypeParam.getTechnology(state, targets);
 
-		return state.canResearch(targetPlayer.id, targetTechnology.id);
+		return state.canResearch(targetPlayer.getID(), targetTechnology.id);
 	}
 
 	CanSpawnCondition::CanSpawnCondition(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -235,16 +237,16 @@ namespace  SGA
 		const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
 		// Check if we fullfill the technology-requirements for the target entity
-		if(targetEntityType.requiredTechnologyID != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID && 
-			!state.isResearched(playerID, targetEntityType.requiredTechnologyID))
+		if(targetEntityType.getRequiredTechID() != TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID &&
+			!state.isResearched(playerID, targetEntityType.getRequiredTechID()))
 		{
 			return false;
 		}
 		
 		// Check if we are allowed to spawn this entity
 		//const auto& sourceEntityType = state.getEntityType(sourceEntity.typeID);
-		const auto& spawneableEntities = sourceEntityParam.getSpawneableEntities(state, targets);
-		if(spawneableEntities.find(targetEntityType.id) == spawneableEntities.end())
+		const auto& spawneableEntities = sourceEntityParam.getSpawnableEntities(state, targets);
+		if(spawneableEntities.find(targetEntityType.getID()) == spawneableEntities.end())
 		{
 			return false;
 		}
@@ -270,7 +272,7 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters[param.index] < idCostPair.second)
+			if (parameters[param.getIndex()] < idCostPair.second)
 				return false;
 		}
 

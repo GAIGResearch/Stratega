@@ -19,7 +19,7 @@ namespace SGA
 	struct Entity
 	{
 
-	public:
+	private:
 
 		/// <summary>
 		//ID of this entity in the game.
@@ -41,25 +41,6 @@ namespace SGA
 		/// <summary>
 		double lineOfSightRange;
 
-		/* Variables for continuous movement of the unit in RTS games. */
-
-		/// <summary>
-		/// Path that this entity is following (RTS)
-		/// <summary>
-		Path path;
-
-		/// <summary>
-		/// Movement speed for this entity (RTS)
-		/// <summary>
-		double movementSpeed;
-		
-		/// <summary>
-		/// Collision radius for this entity (RTS)
-		/// <summary>
-		double collisionRadius;
-
-	private:
-		
 		/// <summary>
 		/// Flag that indicates if this entity will be removed from the game.
 		/// </summary>
@@ -84,6 +65,23 @@ namespace SGA
 		/// Entity type
 		/// <summary>
 		const EntityType* type;
+
+		/* Variables for continuous movement of the unit in RTS games. */
+
+		/// <summary>
+		/// Path that this entity is following (RTS)
+		/// <summary>
+		Path path;
+
+		/// <summary>
+		/// Movement speed for this entity (RTS)
+		/// <summary>
+		double movementSpeed;
+
+		/// <summary>
+		/// Collision radius for this entity (RTS)
+		/// <summary>
+		double collisionRadius;
 
 	public:
 
@@ -138,14 +136,14 @@ namespace SGA
 		/// Returns the actions attached to this entity.
 		/// <summary>
 		/// <returns>The list of <see cref="SGA::ActionInfo"/> attached to this entity.</returns>
-		std::vector<ActionInfo> getAttachedActions() const { return attachedActions; }
+		const std::vector<ActionInfo>& getAttachedActions() const { return attachedActions; }
 
 		/// <summary>
 		/// Retrieves the list of action types this entity can execute.
 		/// </summary>
 		/// <param name="gameInfo">Reference to the game information object (from GameState)</param>
 		/// <returns>Vector with all action types this entity can execute</returns>
-		const std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
+		std::vector<ActionType> getActionTypes(const GameInfo& gameInfo) const;
 
 		/// <summary>
 		/// Sets the last executed game ticks to the tick passed by parameter for the action corresponding to the type received.
@@ -199,7 +197,7 @@ namespace SGA
 		/// Gets the value of a specific parameter, by name 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameter(std::string paramName) const;
+		double getParameter(const std::string& paramName) const;
 		
 		/// <summary>
 		/// Gets a specific parameters, by index 
@@ -218,5 +216,74 @@ namespace SGA
 		/// <summary>
 		/// <returns>The list of continuous actions attached to this entity.</returns>
 		const std::vector<Action>& getContinuousActions() const { return continuousAction; }
+
+
+		/// <summary>
+		/// Returns the movement speed of this entity.
+		/// </summary>
+		double getMovementSpeed() const { return movementSpeed; }
+
+		/// <summary>
+		/// Returns the collision radius of this entity.
+		/// </summary>
+		double getCollisionRadius() const { return collisionRadius; }
+
+		/// <summary>
+		/// Returns theID of this entity.
+		/// </summary>
+		int getID() const { return id; }
+
+		/// <summary>
+		/// Returns the owner ID (i.e. player ID) who controls this entity.
+		/// </summary>
+		int getOwnerID() const { return ownerID; }
+
+		/// <summary>
+		/// Sets the owner ID (player ID) in control of this entity..
+		/// </summary>
+		void setOwnerID(int oID) { ownerID = oID; }
+
+		/// <summary>
+		/// Returns the line of sight of this entity.
+		/// </summary>
+		double getLineOfSightRange() const { return lineOfSightRange; }
+
+
+		/// <summary>
+		/// Returns x position of this entity.
+		/// </summary>
+		double x() const { return position.x; }
+
+		/// <summary>
+		/// Returns y position of this entity.
+		/// </summary>
+		double y() const { return position.y; }
+
+		/// <summary>
+		/// Returns position of this entity.
+		/// </summary>
+		const Vector2f& getPosition() const { return position; }
+
+		/// <summary>
+		/// Sets the position of this entity in the board. Does not modify the board.
+		/// </summary>
+		void setPosition(Vector2f v) { position = v; }
+
+
+		/// <summary>
+		/// Returns the path that this entity is following (RTS games only) 
+		/// </summary>
+		const Path& getPath() const { return path; }
+
+		/// <summary>
+		/// Increments the current index of the path that this entity is following (RTS games only) 
+		/// </summary>
+		void incPathIndex() { path.currentPathIndex++; }
+
+		/// <summary>
+		/// Sets the path this entity is following (RTS games only) 
+		/// </summary>
+		void setPath(Path p) { path = p; }
+
 	};
 }

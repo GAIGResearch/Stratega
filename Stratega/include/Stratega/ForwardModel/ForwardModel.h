@@ -1,7 +1,7 @@
 #pragma once
 #include <random>
 #include <Stratega/Representation/GameState.h>
-#include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
 
 #include "Condition.h"
@@ -31,7 +31,7 @@ namespace SGA
 
 	/// <summary>
 	/// Is the driving component of Stratega, with a provided gamestate it can generate a new set of available
-	/// actions thanks to the <see cref="SGA::EntityActionSpace"/>.
+	/// actions thanks to the <see cref="SGA::ActionSpace"/>.
 	/// The returned actions store the action type and a list of sources and targets the action will be applied to.
 	/// Each <see cref="SGA::RTSForwardModel"/> and <see cref="SGA::TBSForwardModel"/> by default contains the definition of how to advance the game
 	/// and other utility methods used in each specific game type.
@@ -45,26 +45,6 @@ namespace SGA
 
 	public:
 
-		/// <summary>
-		/// Effects applied on every tick of the game.
-		/// </summary>
-		std::vector<OnTickEffect> onTickEffects;
-
-		/// <summary>
-		/// Effects applied when a new entity is spawned in the game.
-		/// </summary>
-		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
-
-		/// <summary>
-		/// Set of conditions required for a player to win the game.
-		/// </summary>
-		std::vector<std::vector<std::shared_ptr<Condition>>> winConditions;
-
-		/// <summary>
-		/// Set of conditions required for a player to lose the game.
-		/// </summary>
-		std::vector<std::vector<std::shared_ptr<Condition>>> loseConditions;
-		
 		//Constructor/destructor
 		virtual ~ForwardModel() = default;
 		ForwardModel();
@@ -105,7 +85,6 @@ namespace SGA
 		/// <returns>A copy of this forward model.</returns>
 		virtual std::unique_ptr<ForwardModel> clone() const = 0;
 
-
 		/// <summary>
 		/// Indicates the game type this forward model is for. GameType is an enum defined in GameState.h
 		/// </summary>
@@ -142,22 +121,87 @@ namespace SGA
 		/// Returns the action space of this forward model
 		/// </summary>
 		/// <returns>Action space of this forward model.</returns>
-		std::shared_ptr<EntityActionSpace> getActionSpace() const
-		{
-			return actionSpace;
-		}
+		std::shared_ptr<ActionSpace> getActionSpace() const { return actionSpace; }
+
+		/// <summary>
+		/// Adds a list of conditions for the game to be won for a player.
+		/// </summary>
+		/// <param name="conditions">List of conditions that, once fullfiled, cause a player to WIN.</param>
+		void addWinConditions(std::vector<std::shared_ptr<Condition>>& conditions);
+
+		/// <summary>
+		/// Adds a list of conditions for the game to be lost for a player.
+		/// </summary>
+		/// <param name="conditions">List of conditions that, once fullfiled, cause a player to LOSE.</param>
+		void addLoseConditions(std::vector<std::shared_ptr<Condition>>& conditions);
+
+		/// <summary>
+		/// Returns a list of sub-lists with all WIN conditions. Each sub-list contains a group of conditions
+		/// that must be fulfilled for the game to be over for a player. The game will be WON by a player if all
+		/// conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. 
+		/// </summary>
+		/// <returns>A list of sub-lists with all WIN conditions</returns>
+		const std::vector<std::vector<std::shared_ptr<Condition>>>& getWinConditions() const { return winConditions; }
+
+		/// <summary>
+		/// Returns a list of sub-lists with all LOSE conditions. Each sub-list contains a group of conditions
+		/// that must be fulfilled for the game to be over for a player. The game will be LOST by a player if all
+		/// conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. 
+		/// </summary>
+		/// <returns>A list of sub-lists with all LOSE conditions</returns>
+		const std::vector<std::vector<std::shared_ptr<Condition>>>& getLoseConditions() const { return loseConditions; }
+
+		/// <summary>
+		/// Adds an OnTickEffect to the forward mode, which will be executed every game tick.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnTickEffect(OnTickEffect& ote);
+
+		/// <summary>
+		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnEntitySpawnEffect(OnEntitySpawnEffect& ose);
+
+		/// <summary>
+		/// Returns all effects that are exxecuted on every tick of the game.
+		/// </summary>
+		const std::vector<OnTickEffect>& getOnTickEffects() const { return onTickEffects; }
+
+		/// <summary>
+		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
+		/// </summary>
+		const std::vector<OnEntitySpawnEffect>& getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
 
 	protected:
+
+
+		/// <summary>
+		/// Effects applied on every tick of the game.
+		/// </summary>
+		std::vector<OnTickEffect> onTickEffects;
+
+		/// <summary>
+		/// Effects applied when a new entity is spawned in the game.
+		/// </summary>
+		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
+
+
+		/// <summary>
+		/// Set of conditions required for a player to win the game.
+		/// </summary>
+		std::vector<std::vector<std::shared_ptr<Condition>>> winConditions;
+
+		/// <summary>
+		/// Set of conditions required for a player to lose the game.
+		/// </summary>
+		std::vector<std::vector<std::shared_ptr<Condition>>> loseConditions;
+
 
 		/// <summary>
 		/// Action space (generator) for this forward model.
 		/// </summary>
-		std::shared_ptr<EntityActionSpace> actionSpace;
-
-
-		// Not in use.
-		///std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
-		///virtual bool isValid(const GameState & state, const Action & action) const;
+		std::shared_ptr<ActionSpace> actionSpace;
 
 		/// <summary>
 		/// Executes the action in the given game state. This is used by subclasses of this forward model to
@@ -167,8 +211,25 @@ namespace SGA
 		/// <param name="action">Action to execute.</param>
 		void executeAction(GameState& state, const Action& action) const;
 
+		/// <summary>
+		/// Executes an action of action_type ABORT
+		/// </summary>
+		/// <param name="state">State where the action is to be executed.</param>
+		/// <param name="action">Action to execute.</param>
 		void executeAbortContinuousAction(GameState& state, const Action& action) const;
+
+		/// <summary>
+		/// Executes an action of action_type CONTINUOUS
+		/// </summary>
+		/// <param name="state">State where the action is to be executed.</param>
+		/// <param name="action">Action to execute.
 		void executeContinuousAction(GameState& state, const Action& action) const;
+
+		/// <summary>
+		/// Executes a regular action in the state provided.
+		/// </summary>
+		/// <param name="state">State where the action is to be executed.</param>
+		/// <param name="action">Action to execute.
 		void executeNormalAction(GameState& state, const Action& action) const;
 
 
@@ -181,8 +242,23 @@ namespace SGA
 		/// <param name="state">State to finish its tick/turn.</param>
 		void endTick(GameState& state) const;
 
+
+		/// <summary>
+		/// Executes the OnTrigger effects in the state provided
+		/// </summary>
+		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
+
+		/// <summary>
+		/// Verifies if the continuous actions of the game entities should complete.
+		/// </summary>
+		/// <param name="state">State where these continuous actions are checked.</param>
 		void checkEntitiesContinuousActionIsComplete(GameState& state) const;
+
+		/// <summary>
+		/// Verifies if the continuous actions of the players should complete.
+		/// </summary>
+		/// <param name="state">State where these continuous actions are checked.</param>
 		void checkPlayerContinuousActionIsComplete(GameState& state) const;
 
 
@@ -190,16 +266,16 @@ namespace SGA
 		/// It generates a default action space unique pointer.
 		/// </summary>
 		/// <returns>Returns an empty action space.</returns>
-		std::unique_ptr<EntityActionSpace> generateDefaultActionSpace() const
+		std::unique_ptr<ActionSpace> generateDefaultActionSpace() const
 		{
-			return std::make_unique<EntityActionSpace>();
+			return std::make_unique<ActionSpace>();
 		}
 
 		/// <summary>
 		/// Sets the action space of this objet to the oen passed by parameter.
 		/// </summary>
 		/// <param name="newActionSpace">Action space to set.</param>
-		void setActionSpace(std::unique_ptr<EntityActionSpace> newActionSpace)
+		void setActionSpace(std::unique_ptr<ActionSpace> newActionSpace)
 		{
 			this->actionSpace = std::move(newActionSpace);
 		}

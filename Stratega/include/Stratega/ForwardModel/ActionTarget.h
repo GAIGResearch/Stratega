@@ -52,7 +52,7 @@ namespace SGA
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
 		const TileType& getTileType(const GameState& state) const;
-		const std::unordered_set<EntityTypeID>& getSpawneableEntities(const GameState& state) const;
+		const std::unordered_set<EntityTypeID>& getSpawnableEntities(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;

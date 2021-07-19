@@ -16,6 +16,8 @@ namespace SGA
 	/// </summary>
 	struct EntityType
 	{
+
+	private:
 		/// <summary>
 		/// Unique entity type ID
 		/// </summary>
@@ -32,6 +34,21 @@ namespace SGA
 		char symbol;
 
 		/// <summary>
+		/// ID of the technology that needs to be researched so this entity can be spawned/built/created in the game.
+		/// </summary>
+		int requiredTechnologyID;
+
+		/// <summary>
+		/// Continuous Action Time
+		/// </summary>
+		double continuousActionTime;
+
+		/// <summary>
+		/// Range of the line of sight of this unit.
+		/// </summary>
+		double lineOfSightRange;
+
+		/// <summary>
 		/// Map of parameters of this entity. Key is an integer (ID of the parameter) and value is the paramter object.
 		/// The parameter defines the min, max and default value this parameter can take.
 		/// </summary>
@@ -43,11 +60,6 @@ namespace SGA
 		std::vector<int> actionIds;
 
 		/// <summary>
-		/// ID of the technology that needs to be researched so this entity can be spawned/built/created in the game.
-		/// </summary>
-		int requiredTechnologyID;
-
-		/// <summary>
 		/// List of entity types this entity can spwan in the game.
 		/// </summary>
 		std::unordered_set<EntityTypeID> spawnableEntityTypes;
@@ -57,15 +69,7 @@ namespace SGA
 		/// </summary>
 		std::unordered_map<ParameterID, double> cost;
 
-		/// <summary>
-		/// Continuous Action Time
-		/// </summary>
-		double continuousActionTime;
-		
-		/// <summary>
-		/// Range of the line of sight of this unit.
-		/// </summary>
-		double lineOfSightRange;
+	public:
 
 		/// <summary>
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
@@ -91,5 +95,41 @@ namespace SGA
 		/// Returns the minimum value of a given parameter
 		/// </summary>
 		double getParamMin(std::string paramName) const;
+
+
+		/* Getters and setters for EntityType*/
+
+
+		int getID() const { return id; }
+		void setID(int id) { this->id = id; }
+
+		const std::string& getName() const { return name; }
+		void setName(std::string name) { this->name = name; }
+
+		char getSymbol() const { return symbol; }
+		void setSymbol(char s) { symbol = s; }
+
+		int getRequiredTechID() const { return requiredTechnologyID; }
+		void setRequiredTechID(int id) { requiredTechnologyID = id; }
+
+		double getContinuousActionTime() const { return continuousActionTime; }
+		void setContinuousActionTime(double d) { continuousActionTime = d; }
+
+		double getLoSRange() const { return lineOfSightRange; }
+		void setLoSRange(double d) { lineOfSightRange = d; }
+
+
+		const std::unordered_map<ParameterID, Parameter>& getParameters() const { return parameters; }
+		std::unordered_map<ParameterID, Parameter>& getParameters() { return parameters; }
+
+		const std::vector<int>& getActionIDs() const { return actionIds; }
+		std::vector<int>& getActionIDs() { return actionIds; }
+
+		const std::unordered_set<EntityTypeID>& getSpawnableEntityTypes() const { return spawnableEntityTypes; }
+		void setSpawnableEntityTypes(const std::unordered_set<EntityTypeID>& set) { spawnableEntityTypes = set; }
+
+		const std::unordered_map<ParameterID, double>& getCosts() const { return cost; }
+		void setCosts(const std::unordered_map<ParameterID, double>& c) { cost = c; }
+
 	};
 }

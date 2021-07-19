@@ -6,14 +6,13 @@ namespace SGA
 	RTSGameRunner::RTSGameRunner(const GameConfig& config)
 		: GameRunner(config)
 	{
-		currentState->setCurrentTBSPlayer(-1);
 	}
 	
 	void RTSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
 		std::vector<AgentThread> threads(agents.size());
 		std::vector<AgentThread> results(agents.size());
-		while (!currentState->isGameOver && !renderer->isGameEndRequested())
+		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
 		{
 			// Run agents
 			for(size_t i = 0; i < agents.size(); i++)
@@ -86,7 +85,7 @@ namespace SGA
 	void RTSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)
 	{
 		std::vector<AgentThread> threads(agents.size());
-		while (!currentState->isGameOver)
+		while (!currentState->isGameOver())
 		{
 			ActionAssignment nextActions;
 			try
@@ -141,7 +140,7 @@ namespace SGA
 		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings number" << std::endl;
 			return false;
 		}
@@ -155,7 +154,7 @@ namespace SGA
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentPlayerID)->canPlay = false;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time" << std::endl;
 			return false;
 		}		

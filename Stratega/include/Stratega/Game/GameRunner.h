@@ -64,7 +64,7 @@ namespace SGA
 		template<typename Iterator>
 		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
 		{
-			assert(std::distance(begin, end) == currentState->players.size());
+			assert(std::distance(begin, end) == currentState->getPlayers().size());
 			if (observer == nullptr)
 			{
 				observer = defaultObserver;
@@ -107,7 +107,7 @@ namespace SGA
 		template<typename Iterator>
 		void play(Iterator begin, Iterator end, Vector2f& resolution)
 		{
-			assert(std::distance(begin, end) == currentState->players.size());
+			assert(std::distance(begin, end) == currentState->getPlayers().size());
 
 			auto agents = IteratorToPtrVector<Iterator, Agent>::convert(begin, end);
 			try

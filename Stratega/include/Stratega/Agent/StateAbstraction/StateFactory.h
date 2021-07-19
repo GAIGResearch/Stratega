@@ -34,7 +34,8 @@ namespace SGA
 		{
 			//bool flip = true;
 			config = StateFactoryConfiguration();
-			for (auto entry : *tbs.gameInfo->parameterIDLookup) {
+			const auto& parameters = tbs.getGameInfo()->getParameterIDLookup();
+			for (auto entry : parameters) {
 				if (!config.insertEntityParameters.contains(entry.first))
 				{
 					config.insertEntityParameters[entry.first] = true;

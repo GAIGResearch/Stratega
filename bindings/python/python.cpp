@@ -313,39 +313,138 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Action type ----
 	py::class_<SGA::ActionType, std::shared_ptr<SGA::ActionType>>(m, "ActionType", "Contains the definition of an action. Which type is the source SGA::ActionSourceType , a set effects,preconditions and a list of action targets linked to their target conditions.If the action is continuous it will have a set of effects as events:OnStart, OnTick, OnComplete, OnAbort and the list of conditions that triggers the completed action.")
 		.def(py::init<>())
-		.def_readwrite("name", &SGA::ActionType::name, "Name of this action type.")
-		.def_readwrite("source_type", &SGA::ActionType::sourceType, "Source of this action (entity, player...)")
-		.def_readwrite("id", &SGA::ActionType::id, "Unique ID of this action type")
-		.def_readwrite("cooldown_ticks", &SGA::ActionType::cooldownTicks, "Number of ticks/turn that must happen between two uses of this action.")
-		.def_readwrite("action_targets", &SGA::ActionType::actionTargets, "List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>. These are tier 2 conditions (i.e. situational), to be checked during action generation.")
-		.def_readwrite("preconditions", &SGA::ActionType::preconditions, "List of preconditions for this action to be run. These are tier 1 conditions: if they can't be fulfilled the action is not possible. If the conditions are true, the action may be possible based on situational circumstances.  (Example: having a resource to create an entity but no space in the board to spawn it).")
-		.def_readwrite("effects", &SGA::ActionType::effects, " List of effects this action causes when executed. This list is populated only for non continuous actions.")
-		.def_readwrite("is_continuous", &SGA::ActionType::isContinuous, "Indicates if action is continuous: if the execution of this action extends beyond the tick it was started.")
-		.def_readwrite("trigger_complete", &SGA::ActionType::triggerComplete, "Continuous actions finish when certain conditions are met. This vector indicates those conditions.")
-		.def_readwrite("on_start", &SGA::ActionType::OnStart, "For continuous actions, list of effects that are applied when this action starts.")
-		.def_readwrite("on_tick", &SGA::ActionType::OnTick, "For continuous actions, list of effects that are applied on every tick/turn. This effect is *not* applied on the tick this action starts, but it *will* also be applied in the tick it ends.")
-		.def_readwrite("on_complete", &SGA::ActionType::OnComplete, "For continuous actions, list of effects that are applied when this action ends.")
-		.def_readwrite("on_abort", &SGA::ActionType::OnAbort, "For continuous actions, list of effects that are applied when this action is aborted. Aborted actions do not execute the OnTick effect in the game tick they have been aborted.")
-		.def("get_target_conditions", &SGA::ActionType::getTargetConditions, py::arg("searchingTarget"), "Returns a list of conditions linked to the searched target.");
+		.def("get_target_conditions", &SGA::ActionType::getTargetConditions, py::arg("searchingTarget"), "Returns a list of conditions linked to the searched target.")
+		.def("get_name", &SGA::ActionType::getName, "Name of this action type.")
+		.def("set_name", &SGA::ActionType::setName, py::arg("name"), "Name of this action type.")
+
+		.def("get_id", &SGA::ActionType::getID, "Unique ID of this action type")
+		.def("set_id", &SGA::ActionType::setID, py::arg("id"), "Unique ID of this action type")
+		
+		.def("get_source_type", &SGA::ActionType::getSourceType, "Source of this action (entity, player...)")
+		.def("set_source_type", &SGA::ActionType::setSourceType, py::arg("ast"), "Source of this action (entity, player...)")
+
+		.def("get_cooldown", &SGA::ActionType::getCooldown, "Number of ticks/turn that must happen between two uses of this action.")
+		.def("set_Cooldown", &SGA::ActionType::setCooldown, py::arg("cd"), "Number of ticks/turn that must happen between two uses of this action.")
+
+		.def("is_continuous", &SGA::ActionType::isContinuous)
+		.def("set_continuous", &SGA::ActionType::setContinuous, py::arg("c"))
+
+		.def("get_preconditions",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getPreconditions();
+			}
+			, "List of preconditions for this action to be run. These are tier 1 conditions: if they can't be fulfilled the action is not possible. If the conditions are true, the action may be possible based on situational circumstances.  (Example: having a resource to create an entity but no space in the board to spawn it)."
+			)
+		.def("get_targets",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getTargets();
+			}
+			, "List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>. These are tier 2 conditions (i.e. situational), to be checked during action generation."
+			)
+		.def("get_trigger_complete",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getTriggerComplete();
+			}
+			,"Continuous actions finish when certain conditions are met. This vector indicates those conditions."
+			)
+		.def("get_effects",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getEffects();
+			}
+			," List of effects this action causes when executed. This list is populated only for non continuous actions."
+			)
+		.def("get_on_start",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getOnStart();
+			}
+			,"For continuous actions, list of effects that are applied when this action starts."
+			)
+		.def("get_on_tick",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getOnTick();
+			}
+			,"For continuous actions, list of effects that are applied on every tick/turn. This effect is *not* applied on the tick this action starts, but it *will* also be applied in the tick it ends."
+			)
+		.def("get_on_complete",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getOnComplete();
+			}
+			,"For continuous actions, list of effects that are applied when this action ends."
+			)
+		.def("get_on_abort",
+			[](SGA::ActionType& actionType)
+			{
+				return actionType.getOnAbort();
+			}
+			,"For continuous actions, list of effects that are applied when this action is aborted. Aborted actions do not execute the OnTick effect in the game tick they have been aborted."
+			)
+		;
 
 	// ---- Entity type ----
 	py::class_<SGA::EntityType, std::shared_ptr<SGA::EntityType>>(m, "EntityType", "Contains the definition of the entity type. This information includes a list of parameters definitions, the actions that can execute, required technologies to spawn a entity, a list of spawnable entity types and a list of cost assigned to this entity type.")
 		.def(py::init<>())
-		.def_readwrite("name", &SGA::EntityType::name, "Name of this type, as defined in the YAML file.")
-		.def_readwrite("id", &SGA::EntityType::id, "Unique entity type ID")
-		.def_readwrite("symbol", &SGA::EntityType::symbol, "Symbol for this entity used in YAML for level placement.")
-		.def_readwrite("parameters", &SGA::EntityType::parameters, "Map of parameters of this entity. Key is an integer (ID of the parameter) and value is the paramter object. The parameter defines the min, max and default value this parameter can take.")
-		.def_readwrite("action_ids", &SGA::EntityType::actionIds, "List of action IDs this entity can execute.")
-		.def_readwrite("required_technology_id", &SGA::EntityType::requiredTechnologyID, "ID of the technology that needs to be researched so this entity can be spawned/built/created in the game.")
-		.def_readwrite("spawnable_entitytypes", &SGA::EntityType::spawnableEntityTypes, "List of entity types this entity can spwan in the game.")
-		.def_readwrite("cost", &SGA::EntityType::cost, "List of parameters and values that must be spent to spawn/build/create this unit.")
-		.def_readwrite("continuous_action_time", &SGA::EntityType::continuousActionTime, "Continuous Action Time")
-		.def_readwrite("line_of_sight_range", &SGA::EntityType::lineOfSightRange, "Range of the line of sight of this unit.")
-		.def("get_parameter", &SGA::EntityType::getParameter, py::arg("id"), "Returns a SGA::Parameter reference that contains the parameter defintion")
+		
+		.def("get_parameter", &SGA::EntityType::getParameter, py::arg("id"), "Returns a SGA::Parameter reference that contains the parameter defintion")		
 		.def("can_execute_action", &SGA::EntityType::canExecuteAction, py::arg("actionTypeID"), "Checks if this entity type is allowed to execute an action type")
 		.def("instantiate_entity", &SGA::EntityType::instantiateEntity, py::arg("entityID"), "Generate a new empty instance of this entity type ")
 		.def("get_param_max", &SGA::EntityType::getParamMax, py::arg("paramName"), "Returns the maximum value of a given parameter")
 		.def("get_param_min", &SGA::EntityType::getParamMin, py::arg("paramName"), " Returns the minimum value of a given parameter")
+
+		.def("get_id", &SGA::EntityType::getID, "Unique ID of this entity type")
+		.def("set_id", &SGA::EntityType::setID, py::arg("id"), "Unique ID of this entity type")
+
+		.def("get_name", &SGA::EntityType::getName, "Name of this type, as defined in the YAML file.")
+		.def("set_name", &SGA::EntityType::setName, py::arg("name"), "Name of this type, as defined in the YAML file.")
+
+		.def("get_symbol", &SGA::EntityType::getSymbol, "Symbol for this entity used in YAML for level placement.")
+		.def("set_symbol", &SGA::EntityType::setSymbol, py::arg("s"), "Symbol for this entity used in YAML for level placement.")
+		
+		.def("get_required_tech_id", &SGA::EntityType::getRequiredTechID, "ID of the technology that needs to be researched so this entity can be spawned/built/created in the game.")
+		.def("setRequiredTechID", &SGA::EntityType::setRequiredTechID, py::arg("id"), "ID of the technology that needs to be researched so this entity can be spawned/built/created in the game.")
+		
+		.def("get_continuous_action_time", &SGA::EntityType::getContinuousActionTime, "Continuous Action Time")
+		.def("set_continuous_action_time", &SGA::EntityType::setContinuousActionTime, py::arg("d"), "Continuous Action Time")
+		
+		.def("get_line_of_sight_range", &SGA::EntityType::getLoSRange, "Range of the line of sight of this unit.")
+		.def("set_line_of_sight_range", &SGA::EntityType::setLoSRange, py::arg("d"), "Range of the line of sight of this unit.")
+		
+		.def("get_parameters",
+			[](SGA::EntityType& entityType)
+			{
+				return entityType.getParameters();
+			}
+			, "Map of parameters of this entity. Key is an integer (ID of the parameter) and value is the paramter object. The parameter defines the min, max and default value this parameter can take."
+				)
+
+		.def("get_action_ids",
+			[](SGA::EntityType& entityType)
+			{
+				return entityType.getActionIDs();
+			}
+			, "List of action IDs this entity can execute."
+				)
+		.def("get_spawnable_entity_types",
+			[](SGA::EntityType& entityType)
+			{
+				return entityType.getSpawnableEntityTypes();
+			}
+			, "For continuous actions, list of effects that are applied when this action is aborted. Aborted actions do not execute the OnTick effect in the game tick they have been aborted."
+				)
+		.def("get_costs",
+			[](SGA::EntityType& entityType)
+			{
+				return entityType.getCosts();
+			}
+			, "List of parameters and values that must be spent to spawn/build/create this unit."
+				)
+
 		;
 
 	// ---- Player ----
@@ -356,17 +455,46 @@ PYBIND11_MODULE(stratega, m)
 		.def("__deepcopy__", [](const SGA::Player& self, py::dict) {
 				return SGA::Player(self);
 			})
-		.def(py::init<>())
 
-		.def_readwrite("id", &SGA::Player::id, "ID of this player, unique for players.")
-		//.def_readwrite("score", &SGA::Player::score)
-		.def_readwrite("can_play", &SGA::Player::canPlay, "Indicates if this player can play at this time.")
-		.def_readwrite("continuous_action", &SGA::Player::continuousAction, "Array of actions currently being executed by this player")
-		.def_readwrite("parameters", &SGA::Player::parameters, "List of parameter values. Use GameState.getPlayerParameter(...) functions to retrieve this.")
-		.def_readwrite("attached_actions", &SGA::Player::attachedActions, "Actions that this player can execute in this game.")
+		.def(py::init<int, bool>(), py::arg("id"), py::arg("canPlay"))
 
 		.def("can_execute_action", &SGA::Player::canExecuteAction, py::arg("actionTypeID"), "Indicates if a given action type can be executed by this player.")
 		.def("get_action_info", &SGA::Player::getActionInfo, py::arg("actionTypeID"), " Returns the ActionInfo of an action type this player can execute.")
+
+		.def("get_neutral_player_id", &SGA::Player::getNeutralPlayerID, "Returns the player ID defined for a neutral player.")
+		.def("get_id", &SGA::Player::getID, "Returns the ID of this player")
+		.def("can_play", &SGA::Player::canPlay, "Indicates if this player can play at this time.")
+		.def("set_can_play", &SGA::Player::setCanPlay, py::arg("can"), "Sets if the player can play now or not.")
+		.def("get_parameters",
+			[](SGA::Player& player)
+			{
+				return player.getParameters();
+			}
+			, "Returns the list of parameters, can't be modified."
+				)
+		.def("get_parameter",
+			[](SGA::Player& player, int paramIdx)
+			{
+				return player.getParameter(paramIdx);
+			}
+			, "Returns a const value of a parameter of this player."
+				)
+
+
+		.def("set_parameter", &SGA::Player::setParameter, py::arg("paramIdx"), py::arg("val"), " Sets the parameter of this player to a certain value")
+		.def("resize_parameters", &SGA::Player::resizeParameters, py::arg("cap"), " Sets a size for the vector of parameters of this player.")
+		.def("remove_continuous_action", &SGA::Player::removeContinuousAction, py::arg("idx"), " Sets a size for the vector of parameters of this player.")
+		.def("add_continuous_action", &SGA::Player::addContinuousAction, py::arg("newAction"), " Adds a continuous action to the list of this player.")
+		.def("advance_continuous_action", &SGA::Player::advanceContinuousAction, py::arg("idx"), "Advances the tick counter of the continuous action with index 'idx'")
+		.def("get_continuous_actions", &SGA::Player::getContinuousActions, "Returns the list of continuous actions this player is executing.")
+
+		.def("get_attached_actions", &SGA::Player::getAttachedActions, " Returns the list of attached actions to this player.")
+		.def("get_attached_action", &SGA::Player::getAttachedAction, py::arg("idx"), " Returns the action info of the attached action with index 'idx'.")
+
+		.def("add_attached_action", &SGA::Player::addAttachedAction, py::arg("actionTypeID"),py::arg("lastExecutedTick"), "Adds a new attached action to this player.")
+		.def("set_action_last_tick", &SGA::Player::setActionLastTick, py::arg("idx"),py::arg("lastTick"), "Sets the last tick on an attached action, indexed by 'idx'")
+		
+		.def("res_attached_actions", &SGA::Player::resAttachedActions, py::arg("cap"), "Reserves space for attached actions.")
 		;
 
 	// ---- Entity ----
@@ -380,16 +508,8 @@ PYBIND11_MODULE(stratega, m)
 		.def(py::init<>())
 		.def("init", &SGA::Entity::init, py::arg("type"), py::arg("entityID"), "Initializes the entity with a given ID. Creates default attached actions and parameters list from the entity type.")
 
-		.def_readwrite("id", &SGA::Entity::id, "ID of this entity in the game.")
-		.def_readwrite("owner_id", &SGA::Entity::ownerID, "ID of the player who owns this entity.")
-		.def_readwrite("position", &SGA::Entity::position, "Position of the entity in the board.")
-		.def_readwrite("line_of_sight_range", &SGA::Entity::lineOfSightRange, "Range of the line of sight of this entity.")
-		.def_readwrite("movement_speed", &SGA::Entity::movementSpeed, "Movement speed for this entity (RTS)")
-		.def_readwrite("path", &SGA::Entity::path, "Path that this entity is following (RTS)")
-		.def_readwrite("collision_radius", &SGA::Entity::collisionRadius, "Collision radius for this entity (RTS)")
-
-		.def("get_entitytype", &SGA::Entity::getEntityType, "Return entity type")
-		.def("get_entitytype_id", &SGA::Entity::getEntityTypeID, "Return entity type id")
+		.def("get_entity_type", &SGA::Entity::getEntityType, "Return entity type")
+		.def("get_entity_type_id", &SGA::Entity::getEntityTypeID, "Return entity type id")
 		.def("is_neutral", &SGA::Entity::isNeutral, "Indicates if this unit is neutral (i.e. does not belong to any playing faction).")
 		.def("get_action_info", &SGA::Entity::getActionInfo, py::arg("actionTypeID"), "Returns a SGA::ActionInfo object linked to action type,")
 		.def("get_attached_actions", &SGA::Entity::getAttachedActions, "Returns the actions attached to this entity.")
@@ -408,6 +528,20 @@ PYBIND11_MODULE(stratega, m)
 
 		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions, py::const_), "Gets the list of continuous actions attached to this entity. Modifiable.")
 		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions), "Gets the list of continuous actions attached to this entity. ")
+
+		.def("get_movement_speed", &SGA::Entity::getMovementSpeed, "Returns the movement speed of this entity.")
+		.def("get_collision_radius", &SGA::Entity::getCollisionRadius, " Returns the collision radius of this entity.")
+		.def("get_id", &SGA::Entity::getID, "Returns theID of this entity.")
+		.def("get_owner_id", &SGA::Entity::getOwnerID, "Returns the owner ID (i.e. player ID) who controls this entity.")
+		.def("set_owner_id", &SGA::Entity::setOwnerID, py::arg("oID"), "Returns the owner ID (i.e. player ID) who controls this entity.")
+		.def("get_line_of_sight_range", &SGA::Entity::getLineOfSightRange,  "Returns the line of sight of this entity.")
+		.def("x", &SGA::Entity::x,  "Returns y position of this entity.")
+		.def("y", &SGA::Entity::y,  "Returns y position of this entity.")
+		.def("get_position", &SGA::Entity::getPosition,  "Returns y position of this entity.")
+		.def("set_position", &SGA::Entity::setPosition, py::arg("v"), "Sets the position of this entity in the board. Does not modify the board.")
+		.def("get_path", &SGA::Entity::getPath, "Returns the path that this entity is following (RTS games only) ")
+		.def("inc_path_index", &SGA::Entity::incPathIndex, "Increments the current index of the path that this entity is following (RTS games only) ")
+		.def("set_path", &SGA::Entity::setPath, "Sets the path this entity is following (RTS games only) ")
 		;
 
 	// ---- GameType ----
@@ -417,10 +551,12 @@ PYBIND11_MODULE(stratega, m)
 
 	//---- GameDescription ----
 	py::class_<SGA::GameDescription,std::shared_ptr<SGA::GameDescription>>(m, "GameDescription")
-		.def_readwrite("action_categories", &SGA::GameDescription::actionCategories, "//List of action IDs grouped by action categories")
-		.def_readwrite("entity_categories", &SGA::GameDescription::entityCategories, "//List of entity IDs grouped by entity categories")
+		.def("get_action_categories", &SGA::GameDescription::getActionCategories, "Returns the action categories of this game.")
+		.def("get_entity_categories", &SGA::GameDescription::getEntityCategories, "Returns the entity categories of this game.")
 		.def("get_action_types_ids", &SGA::GameDescription::getActionTypesIDs, py::arg("category"), "Returns all the actiontypes IDs of the selected action category.")
+		.def("get_entity_types_ids", &SGA::GameDescription::getEntityTypesIDs, py::arg("category"), "Returns all the entitytypes IDs of the selected action category.")
 		.def("get_action_types", &SGA::GameDescription::getActionTypes, py::arg("category"), py::arg("gameInfo"), "Returns all the actiontypes IDs of the selected action category.")
+		.def("get_entity_types", &SGA::GameDescription::getEntityTypes, py::arg("category"), py::arg("gameInfo"), "Returns all the entitytypes IDs of the selected action category.")
 		.def("is_from_category", &SGA::GameDescription::isFromCategory, py::arg("category"), py::arg("entityTypeId"), "Checks if a given entity type ID belongs to a given category")
 
 		.def_static("to_string", py::overload_cast<SGA::ActionCategory>(&SGA::GameDescription::toString))
@@ -455,7 +591,7 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- GameState ----
 	py::class_<SGA::GameState>(m, "GameState", "Contains the game data without any logic, offering access to the current board, a list of player and their units.  If the agent want access to the definition of entity types, actions or game config yaml  it should access to SGA::GameInfo")
-		//.def(py::init<SGA::GameState>())
+		.def(py::init<SGA::GameState>())
 		.def(py::init([]()
 		{
 			py::scoped_ostream_redirect stream(
@@ -473,50 +609,66 @@ PYBIND11_MODULE(stratega, m)
 		.def("__deepcopy__", [](const SGA::GameState& self, py::dict) {
 			return SGA::GameState(self);
 			})
-		//.def_readwrite("current_player", &SGA::GameState::currentPlayer, "ID of the current player (TBS only)")
-		.def_readwrite("game_type", &SGA::GameState::gameType, "Type of game being played (TBS, RTS...), as defined SGA::GameType")
-		.def_readwrite("is_game_over", &SGA::GameState::isGameOver, "Indicates if the game is over.")
-		.def_readwrite("winner_player_id", &SGA::GameState::winnerPlayerID, "The ID of the player who won the game if the game is over. Value is -1 if game not over yet. ")
-		.def_readwrite("current_tick", &SGA::GameState::currentTick, "Current turn (for turn based games) or frame (real-time) of the game.")
-		.def_readwrite("tick_limit", &SGA::GameState::tickLimit, "Number of turns (TBS) or frames (RTS) when the game will finish.")
-		.def_readwrite("board", &SGA::GameState::board, "Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.")
-		.def_readwrite("entities", &SGA::GameState::entities, "List of entities in this game")
-		.def_readwrite("players", &SGA::GameState::players, "List of players in this game")
-		.def_readwrite("game_info", &SGA::GameState::gameInfo, "Game Info (static information about this game)")
-		.def_readwrite("researched_technologies", &SGA::GameState::researchedTechnologies, "Map that indicates if a technology is researched by a player. Key is the player ID and maps to a vector of technology IDs.")
 
-		//Technologies
-		.def("is_researched", &SGA::GameState::isResearched, py::arg("playerID"), py::arg("technologyID"), "Check if technology is researched")
-		.def("can_research", &SGA::GameState::canResearch, py::arg("playerID"), py::arg("technologyID"), "Check if player can research an technology")
-		.def("research_technology", &SGA::GameState::researchTechnology, py::arg("playerID"), py::arg("technologyID"), "Research technology")
 		
 		//Other
 		.def("can_execute_action", py::overload_cast<const SGA::Entity&, const SGA::ActionType& >(&SGA::GameState::canExecuteAction, py::const_), "Checks if a Entity can execute a given actionType")
 		.def("can_execute_action", py::overload_cast<const SGA::Player&, const SGA::ActionType& >(&SGA::GameState::canExecuteAction, py::const_), "Checks if a Player can execute a given actionType")
 		.def("get_player_action_types", &SGA::GameState::getPlayerActionTypes, py::arg("playerID"), "Returns a list with all the action types that a player can execute")
 		
+		//Technologies
+		.def("is_researched", &SGA::GameState::isResearched, py::arg("playerID"), py::arg("technologyID"), "Check if technology is researched")
+		.def("can_research", &SGA::GameState::canResearch, py::arg("playerID"), py::arg("technologyID"), "Check if player can research an technology")
+		.def("research_technology", &SGA::GameState::researchTechnology, py::arg("playerID"), py::arg("technologyID"), "Research technology")
+		.def("init_research_techs", &SGA::GameState::initResearchTechs, "Initializes the research technologies to all players, to none.")
+
+		////Grid
+		.def("is_walkable", &SGA::GameState::isWalkable, py::arg("position"), "Checks if tile is occupied or the tile is walkable")
+		.def("is_in_bounds", py::overload_cast<const SGA::Vector2f&>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
+		.def("is_in_bounds", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
+
+		.def("initBoard", &SGA::GameState::initBoard, py::arg("boardWidth"), py::arg("tiles"),"Initializes the board with the tiles passed by parameter. ")
+
+		.def("get_board_height", &SGA::GameState::getBoardHeight,"Returns the height of the board.")
+		.def("get_board_width", &SGA::GameState::getBoardWidth,"Returns the width of the board.")
+
+		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
+		
 		////Entities
-		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference,  "Get entity")
+		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
 		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity by id")
 		.def("get_entity_at", &SGA::GameState::getEntityAt, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
 		.def("get_entity_const", &SGA::GameState::getEntityConst, py::arg("entityID"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
 		.def("add_entity", &SGA::GameState::addEntity, py::arg("type"), py::arg("playerID"), py::arg("position"), "Adds a new entity of a given type to the game, in a given position, belonging to a specific player. ")
 		
-		////Grid
-		.def("is_walkable", &SGA::GameState::isWalkable, py::arg("position"), "Checks if tile is occupied or the tile is walkable")
-		.def("is_in_bounds", py::overload_cast<SGA::Vector2f>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
-		.def("is_in_bounds", py::overload_cast<SGA::Vector2i>(&SGA::GameState::isInBounds, py::const_), "Checks if position is inside of the tile map")
-		
+		.def("get_player_entities", &SGA::GameState::getPlayerEntities, py::arg("playerID"), py::arg("entityCategory")=SGA::EntityCategory::Null, "Gets the list of entities of the specified player.")
+		.def("get_non_player_entities", &SGA::GameState::getNonPlayerEntities, py::arg("playerID"), py::arg("entityCategory") = SGA::EntityCategory::Null, "Gets the list of entities of the specified player.")
+		.def("get_entities",
+			[](SGA::GameState& state)
+			{
+				return state.getEntities();
+			}
+		)
 		////Player
-		.def("get_player", py::overload_cast<int>(&SGA::GameState::getPlayer, py::const_),py::return_value_policy::reference, "Get player")
-		.def("get_player", py::overload_cast<int>(&SGA::GameState::getPlayer), py::return_value_policy::reference, "Get player")
+		.def("get_player",
+			[](SGA::GameState& state, int id)
+			{
+				return state.getPlayer(id);
+			}
+			, py::return_value_policy::reference, "Get player"
+		)
+		.def("who_can_play", &SGA::GameState::whoCanPlay, "Returns a list with the ID of players that can play in this game state.")
+		.def("can_play", &SGA::GameState::canPlay, py::arg("playerID"), "Indicates if the player with the provided ID can play in this game state.")
+		.def("get_players",
+			[](SGA::GameState& state)
+			{
+				return state.getPlayers();
+			}
+			, py::return_value_policy::reference, "Get player"
+				)
 		.def("get_num_players", &SGA::GameState::getNumPlayers, "Gets the number of players in this game state.")
-		
-		.def("get_player_entities", py::overload_cast<int>(&SGA::GameState::getPlayerEntities,py::const_), py::return_value_policy::reference, "Gets the list of entities of the specified player.")
-		.def("get_player_entities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getPlayerEntities), py::return_value_policy::reference, "Gets the list of entities of the specified player.")
-		.def("get_non_player_entities", py::overload_cast<int, SGA::EntityCategory>(&SGA::GameState::getNonPlayerEntities), py::return_value_policy::reference, "Gets the list of entities that do not belong to the specified player.")
-		
 		.def("add_player", &SGA::GameState::addPlayer, py::arg("p"), "Adds player to gamestate")
 		.def("get_player_parameter", &SGA::GameState::getPlayerParameter, py::arg("playerID"), py::arg("paramName"), "Gets the value of a player parameter. Be sure to check first is the parameter you are asking for exist using SGA::GameState::hasPlayerParameter()")
 		.def("has_player_parameter", &SGA::GameState::hasPlayerParameter,py::arg("paramName"), "Indicates if the player has a specific parameter")
@@ -526,6 +678,21 @@ PYBIND11_MODULE(stratega, m)
 		
 		.def("apply_fog_of_war", &SGA::GameState::applyFogOfWar, py::arg("playerID"), "Removes entities and hide tiles that are not visible from the point of view of the given player.")
 		.def("get_fog_of_war_tile_id", &SGA::GameState::getFogOfWarTileId, "Returns the ID of the tile that represents the fog of war.")
+
+		.def("get_current_tbs_player", &SGA::GameState::getCurrentTBSPlayer, "Returns the ID of the player that moves in this state for Turn Based Games. For non-TBS, this value is -1.")
+		.def("set_current_tbs_player", &SGA::GameState::setCurrentTBSPlayer, py::arg("playerID"), "Sets the current TBS player. For non-TBS, this should receive -1.")
+		.def("is_game_over", &SGA::GameState::isGameOver, "Returns true if the game is over.")
+		.def("set_game_over", &SGA::GameState::setGameOver, py::arg("over"), "Sets if the game is over")
+		.def("get_winner_id", &SGA::GameState::getWinnerID, "Returns the player ID of the winner. If game is not over, this returns -1.")
+		.def("set_winner_id", &SGA::GameState::setWinnerID, py::arg("winnerID"), "Sets the winner of the game.")
+
+		.def("get_current_tick", &SGA::GameState::getCurrentTick, "Returns the current tick of the game.")
+		.def("inc_tick", &SGA::GameState::incTick, "Increments the current tick in the game by 1.")
+		.def("set_tick_limit", &SGA::GameState::setTickLimit, py::arg("tickL"), "Returns the current game tick limit.")
+		.def("get_game_info", &SGA::GameState::getGameInfo, "Returns a pointer to the struct with static information about the game.")
+		.def("set_game_info", &SGA::GameState::setGameInfo, py::arg("gameInfoPtr"), "Sets the pointer to the game information struct.")
+		.def("set_game_type", &SGA::GameState::setGameType, py::arg("gt"), "Sets the type of game (enum type GameType)")
+		.def("get_game_type", &SGA::GameState::getGameType, "Returns the type of the game, of GameType")
 		
 		//Print information
 		.def("print_state_info", &SGA::GameState::printStateInfo,"Print all the entities of the current state")
@@ -542,35 +709,63 @@ PYBIND11_MODULE(stratega, m)
 
 	// ---- TileType ----
 	py::class_<SGA::TileType, std::shared_ptr<SGA::TileType>>(m, "TileType")
-		.def(py::init<>())
-		.def_readwrite("name", &SGA::TileType::name, "Name of the tile as given in YAML>")
-		.def_readwrite("symbol", &SGA::TileType::symbol, "Symbol of this tile as used in YAML for level placement.")
-		.def_readwrite("id", &SGA::TileType::id ,"Unique ID for this tile type.")
-		.def_readwrite("is_walkable", &SGA::TileType::isWalkable, "Indicates if the tile is walkable by units")
-		.def_readwrite("block_sight", &SGA::TileType::blocksSight, "Indicates if this tile blocks the line of sight")
-		.def_readwrite("is_default_tile", &SGA::TileType::isDefaultTile, "Indicates if this is a default tile. Default tiles are used for fog of war (to substitute elements that should be hidden) and to be place in positions where units are defined in the YAML level layout.")
-		.def("to_tile", &SGA::TileType::toTile, py::arg("x"), py::arg("y"), "Creates an instantiation of this tile given a position");
+		.def("to_tile", &SGA::TileType::toTile, py::arg("x"), py::arg("y"), "Creates an instantiation of this tile given a position")
+		
+		.def("get_name", &SGA::TileType::getName)
+		.def("set_name", &SGA::TileType::setName, py::arg("name"))
+
+		.def("get_symbol", &SGA::TileType::getSymbol)
+		.def("set_symbol", &SGA::TileType::setSymbol, py::arg("c"))
+
+		.def("get_id", &SGA::TileType::getID)
+		.def("set_id", &SGA::TileType::setID, py::arg("id"))
+
+		.def("is_walkable", &SGA::TileType::isWalkable)
+		.def("set_walkable", &SGA::TileType::setWalkable, py::arg("w"))
+
+		.def("block_sight", &SGA::TileType::blockSight)
+		.def("set_block_sight", &SGA::TileType::setBlockSight, py::arg("b"))
+
+		.def("is_default_tile", &SGA::TileType::isDefaultTile)
+		.def("set_default_tile", &SGA::TileType::setDefaultTile, py::arg("defaultTile"))
+		;
 
 	// ---- Tile ----
 	py::class_<SGA::Tile>(m, "Tile")
-		.def(py::init<int, const SGA::TileType*, int, int>(), py::arg("typeID"), py::arg("tileType"), py::arg("x"), py::arg("y"))
-		.def_readwrite("is_walkable", &SGA::Tile::isWalkable, "Indicates if this tile is walkable for units to occupy it.")
-		.def_readwrite("blocks_sight", &SGA::Tile::blocksSight, "Indicates if this tile blocks the line of sight for entities in the game. ")
-		.def_readwrite("position", &SGA::Tile::position, "Position <x,y> of this tile in the board.")
-		.def_readwrite("position", &SGA::Tile::position, "Returns the name of this tile type")
-		
+		.def(py::init<const SGA::TileType*, int, int>(), py::arg("tileType"), py::arg("x"), py::arg("y"))
 		.def("get_tile_type_id", &SGA::Tile::getTileTypeID, "Returns the tile type ID of this tile")
-		.def("name", &SGA::Tile::name, "Returns the tile name");
+		.def("name", &SGA::Tile::name, "Returns the tile name")
+		
+		.def("is_walkable", &SGA::Tile::isWalkable)
+		.def("set_walkable", &SGA::Tile::setWalkable, py::arg("w"))
+
+		.def("blocks_sight", &SGA::Tile::blocksSight)
+		.def("set_block_sight", &SGA::Tile::setBlockSight, py::arg("b"))
+
+		.def("set_position", &SGA::Tile::setPosition, py::arg("x"), py::arg("y"))
+
+		.def("x", &SGA::Tile::x)
+		.def("y", &SGA::Tile::y)
+		;
 
 	// ---- Parameter ----
 	py::class_<SGA::Parameter>(m, "Parameter")
 		.def(py::init<>())
-		.def_readwrite("id", &SGA::Parameter::id)
-		.def_readwrite("name", &SGA::Parameter::name)
-		.def_readwrite("index", &SGA::Parameter::index)
-		.def_readwrite("default_value", &SGA::Parameter::defaultValue)
-		.def_readwrite("min_value", &SGA::Parameter::minValue)
-		.def_readwrite("max_value", &SGA::Parameter::maxValue);
+
+		.def("get_min_value", &SGA::Parameter::getMinValue)
+		.def("get_max_value", &SGA::Parameter::getMaxValue)
+		.def("get_default_value", &SGA::Parameter::getDefaultValue)
+		.def("get_index", &SGA::Parameter::getIndex)
+		.def("get_name", &SGA::Parameter::getName)
+		.def("get_id", &SGA::Parameter::getID)
+
+		.def("set_id", &SGA::Parameter::setID, py::arg("id"))
+		.def("set_name", &SGA::Parameter::setName, py::arg("name"))
+		.def("set_index", &SGA::Parameter::setIndex, py::arg("idx"))
+		.def("set_default_value", &SGA::Parameter::setDefaultValue, py::arg("val"))
+		.def("set_min_value", &SGA::Parameter::setMinValue, py::arg("val"))
+		.def("set_max_value", &SGA::Parameter::setMaxValue, py::arg("val"))
+		;
 
 	// ---- ActionFlag ----
 	py::enum_<SGA::ActionFlag>(m, "ActionFlag", " Used to define how the SGA::ForwardModel::executeAction() will execute this action.")
@@ -595,12 +790,7 @@ PYBIND11_MODULE(stratega, m)
 				return SGA::Action(self);
 			})
 		.def(py::init<const SGA::ActionType*>(), py::arg("actionType"))
-		.def_readwrite("action_type_flags", &SGA::Action::actionTypeFlags, "Used to define how the SGA::ForwardModel::executeAction() will execute this action.")
-		.def_readwrite("targets", &SGA::Action::targets, "Vector with all targets involved in this action. For a UnitAction, index 0 contains the source and index 1 the target of the action. For a PlayerAction, index 0 contains the target of the action. ")
-		.def_readwrite("owner_id", &SGA::Action::ownerID, "ID of the owner of this action.")
-		.def_readwrite("continuous_action_id", &SGA::Action::continuousActionID, "For continuous action, ID of this action.")
-		.def_readwrite("elapsed_ticks", &SGA::Action::elapsedTicks, "Ticks elapsed since this action started.")
-		
+
 		.def("execute", &SGA::Action::execute, py::arg("state"), py::arg("fm"), "Execute the effects defined in the SGA::ActionType linked to this action.")
 		.def("validate", &SGA::Action::validate, py::arg("state"), "Checks if this action can be executed. It verifies if the conditions defined in the SGA::ActionType linked to this action are passed. This method also checks if the last time of the action execution is higher than the cooldown, and if all the preconditions and target conditions are fullfilled. It also checks that all the actions targets are valid.")
 		.def("is_entity_action", &SGA::Action::isEntityAction, "Checks if this action is to be executed over an entity.")
@@ -614,6 +804,29 @@ PYBIND11_MODULE(stratega, m)
 		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), "Generates an Action used by the game to end the tick/turn.")
 		.def_static("create_abort_action", py::overload_cast<int,int,int>(&SGA::Action::createAbortAction), "Generates an Action which the owner is a entity, used by the game to abort a continuous action.")
 		.def_static("create_abort_action", py::overload_cast<int,int>(&SGA::Action::createAbortAction), "Generates an Action which the owner is a player, used by the game to abort a continuous action.")
+		
+		.def("get_owner_id", &SGA::Action::getOwnerID)
+		.def("set_owner_id", &SGA::Action::setOwnerID, py::arg("id"))
+
+		.def("get_continuous_action_id", &SGA::Action::getContinuousActionID)
+		.def("set_continuous_action_id", &SGA::Action::setContinuousActionID, py::arg("id"))
+
+		.def("get_elapsed_ticks", &SGA::Action::getElapsedTicks)
+		.def("incTicks", &SGA::Action::incTicks)
+		.def("set_elapsed_ticks", &SGA::Action::setElapsedTicks, py::arg("elapsed"))
+
+
+		.def("get_action_flag", &SGA::Action::getActionFlag)
+		.def("set_action_flag", &SGA::Action::setActionFlag, py::arg("flag"))
+
+		.def("get_targets",
+			[](SGA::Action& action)
+			{
+				return action.getTargets();
+			}
+		)
+		.def("set_action_targets", &SGA::Action::setActionTargets, py::arg("actionTargets"))
+
 		;
 
 	// --- ActionSourceType ---
@@ -635,12 +848,25 @@ PYBIND11_MODULE(stratega, m)
 	// ---- TargetType ----	
 	py::class_<SGA::TargetType>(m, "TargetType")
 		.def(py::init<>())
-		.def_readwrite("type", &SGA::TargetType::type)
-		.def_readwrite("sampling_method", &SGA::TargetType::samplingMethod)
-		.def_readwrite("group_entity_types", &SGA::TargetType::groupEntityTypes)
-		.def_readwrite("technology_types", &SGA::TargetType::technologyTypes)
-		.def("get_type_string", &SGA::TargetType::getTypeString)
+
+		.def("get_type_string", &SGA::TargetType::getTypeString)		
 		.def("is_valid", &SGA::TargetType::isValid, py::arg("state"), py::arg("actionTarget"), py::arg("sourceActionTarget"))
+
+		.def("get_type", &SGA::TargetType::getType)
+		.def("set_type", &SGA::TargetType::setType, py::arg("type"))
+
+		.def("get_sampling_method", &SGA::TargetType::getSamplingMethod)
+		.def("set_sampling_method", &SGA::TargetType::setSamplingMethod, py::arg("samplingMethod"))
+
+		.def("get_group_entity_types", &SGA::TargetType::getGroupEntityTypes)
+		.def("set_group_entity_types", &SGA::TargetType::setGroupEntityTypes, py::arg("groupTypes"))
+
+		.def("get_technology_types",
+			[](SGA::TargetType& targetType)
+			{
+				return targetType.getTechnologyTypes();
+			}
+			)
 		;
 
 	// ---- SamplingMethod ----	
@@ -694,7 +920,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_player_const", &SGA::ActionTarget::getPlayerConst, py::arg("state"))
 		.def("get_entity_type", &SGA::ActionTarget::getEntityType, py::arg("state"))
 		.def("get_tile_type", &SGA::ActionTarget::getTileType, py::arg("state"))
-		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawneableEntities, py::arg("state"))
+		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawnableEntities, py::arg("state"))
 
 		.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
 		.def("get_technology_id", &SGA::ActionTarget::getTechnologyID)
@@ -755,7 +981,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Grid2D<Tile> ----
 	py::class_<SGA::Grid2D<SGA::Tile>>(m, "BoardTiles")
 		.def(py::init<int, int, SGA::Tile>(), py::arg("width"), py::arg("height"), py::arg("default_tile"))
-		.def_readwrite("grid", &SGA::Grid2D<SGA::Tile>::grid)
+		//.def_readwrite("grid", &SGA::Grid2D<SGA::Tile>::grid)
 		.def("get", [](SGA::Grid2D<SGA::Tile>& b, int x, int y) {return b.get(x, y); })
 		.def("get_width", &SGA::Grid2D<SGA::Tile>::getWidth)
 		.def("get_height", &SGA::Grid2D<SGA::Tile>::getHeight)
@@ -765,7 +991,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Grid2D<TileType> ----
 	py::class_<SGA::Grid2D<std::shared_ptr<SGA::TileType>>>(m, "BoardTileTypes")
 		.def(py::init<int, int, std::shared_ptr<SGA::TileType>>(), py::arg("width"), py::arg("height"), py::arg("default_tile"))
-		.def_readwrite("grid", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::grid)
+		//.def_readwrite("grid", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::grid)
 		.def("get", [](const SGA::Grid2D<std::shared_ptr<SGA::TileType>>& b, int x, int y) {return b.get(x, y); })
 		.def("get_width", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::getWidth)
 		.def("get_height", &SGA::Grid2D<std::shared_ptr<SGA::TileType>>::getHeight)
@@ -970,15 +1196,7 @@ PYBIND11_MODULE(stratega, m)
 		;
 	// ---- GameInfo ----
 	py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo")
-		.def_readwrite("yaml_path", &SGA::GameInfo::yamlPath)
 
-		
-		.def_readwrite("technology_tree_collection", &SGA::GameInfo::technologyTreeCollection)
-		.def_readwrite("entity_groups", &SGA::GameInfo::entityGroups)
-
-		.def_readwrite("game_description", &SGA::GameInfo::gameDescription)
-
-		.def("get_game_description", &SGA::GameInfo::getGameDescription,"Returns the game description of the game.")
 		.def("get_entity_type", &SGA::GameInfo::getEntityType, py::arg("entityTypeID"),"Returns the entity type.")
 		.def("get_tile_type", &SGA::GameInfo::getTileType, py::arg("tileTypeID"), "Returns the tile type.")
 
@@ -997,24 +1215,27 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_tree_nodes", &SGA::GameInfo::getTreeNodes, py::arg("techTreeID"), "Returns a list with all technologies of a given tree, specified by its ID")
 		.def("get_tech_trees_ids", &SGA::GameInfo::getTechTreesIDs, "Returns the IDs of the tech trees of this game.")
 
-		.def("get_entity_types",
-			[](SGA::GameInfo& a)
-			{
-				return a.entityTypes.get();
-			}
-		)
-		.def("get_action_types",
-			[](SGA::GameInfo& a)
-			{
-				return a.actionTypes.get();
-			}
-		)
-		.def("get_tile_types",
-			[](SGA::GameInfo& a)
-			{
-				return a.tileTypes.get();
-			}
-		)
+		.def("get_game_description", &SGA::GameInfo::getGameDescription, "Returns the game description of the game.")
+		.def("get_yaml_path", &SGA::GameInfo::getYAMLPath)
+		.def("get_parameter_id_lookup", &SGA::GameInfo::getParameterIDLookup)
+		.def("get_player_parameter_types", &SGA::GameInfo::getPlayerParameterTypes)
+		.def("get_player_spawnable_types", &SGA::GameInfo::getPlayerSpawnableTypes)
+		.def("get_entity_types", &SGA::GameInfo::getEntityTypes)
+		.def("get_action_types", &SGA::GameInfo::getActionTypes)
+		.def("get_tile_types", &SGA::GameInfo::getTileTypes)
+		.def("get_technology_tree_collection", &SGA::GameInfo::getTechnologyTreeCollection)
+		.def("get_entity_groups", &SGA::GameInfo::getEntityGroups)
+
+		.def("set_yaml_path", &SGA::GameInfo::setYAMLPath,py::arg("path"))
+		//.def("set_game_description", &SGA::GameInfo::setGameDescription,py::arg("gd"))
+		//.def("set_parameter_id_lookup", &SGA::GameInfo::setParameterIDLookup, py::arg("pID"))
+		//.def("set_player_parameter_types", &SGA::GameInfo::setPlayerParameterTypes, py::arg("pt"))
+		//.def("set_player_spawnable_types", &SGA::GameInfo::setPlayerSpawnableTypes,py::arg("pt"))
+		//.def("set_entity_types", &SGA::GameInfo::setEntityTypes, py::arg("et"))
+		//.def("set_action_types", &SGA::GameInfo::setActionTypes,py::arg("at"))
+		//.def("set_tile_types", &SGA::GameInfo::setTileTypes,py::arg("tt"))
+		.def("set_technology_tree_collection", &SGA::GameInfo::setTechnologyTreeCollection,py::arg("tt"))
+		.def("set_entity_groups", &SGA::GameInfo::setEntityGroups,py::arg("tg"))
 		;
 
 	// ---- GameObserver ----
@@ -1063,22 +1284,29 @@ PYBIND11_MODULE(stratega, m)
 		;
 		
 	// ---- Forward model ----
-	py::class_<SGA::ForwardModel>(m, "EntityForwardModel")
-
-		.def_readwrite("on_tick_effects", &SGA::ForwardModel::onTickEffects)
-		.def_readwrite("on_entity_spawn_effects", &SGA::ForwardModel::onEntitySpawnEffects)
-		.def_readwrite("win_conditions", &SGA::ForwardModel::winConditions)
-		.def_readwrite("lose_conditions", &SGA::ForwardModel::loseConditions)
-		//.def_readwrite("action_targets", &SGA::ForwardModel::actionTargets)
-
+	py::class_<SGA::ForwardModel>(m, "EntityForwardModel")		
 		.def("can_player_lost", &SGA::ForwardModel::checkPlayerLost, py::arg("state"), py::arg("player"),"Checks if a player has lost the game due to the game's lose conditions.")
 		.def("check_player_won", &SGA::ForwardModel::checkPlayerWon, py::arg("state"), py::arg("player"),"Returns if a player won the game by attending to the winning conditions defined in the rules.")
 		.def("spawn_entity", &SGA::ForwardModel::spawnEntity, py::arg("state"), py::arg("entityType"), py::arg("playerID"), py::arg("position"),"Spawns an entity in the game with the default spawn entity method. A list of On Spawn effects are  executed just after spawning the entity")
+		
+		.def("add_win_conditions", &SGA::ForwardModel::addWinConditions, py::arg("conditions"), " Adds a list of conditions for the game to be won for a player.")
+		.def("add_lose_conditions", &SGA::ForwardModel::addLoseConditions, py::arg("conditions"), "Adds a list of conditions for the game to be lost for a player.")
+		.def("get_win_conditions", &SGA::ForwardModel::getWinConditions, "Returns a list of sub-lists with all WIN conditions. Each sub-list contains a group of conditions that must be fulfilled for the game to be over for a player. The game will be WON by a player if all conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. ")
+		.def("get_lose_conditions", &SGA::ForwardModel::getLoseConditions, "Returns a list of sub-lists with all LOSE conditions. Each sub-list contains a group of conditions  that must be fulfilled for the game to be over for a player. The game will be LOST by a player if all  conditions in a sub-list are fullfiled, for at least one of the sub-lists returned. ")
+		
+		.def("add_on_tick_effect", &SGA::ForwardModel::addOnTickEffect, py::arg("ote"), "Adds an OnTickEffect to the forward mode, which will be executed every game tick.")
+		.def("add_on_entity_spawn_effect", &SGA::ForwardModel::addOnEntitySpawnEffect, py::arg("ose"), "Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.")
+		
+		.def("get_on_tick_effects", &SGA::ForwardModel::getOnTickEffects, "Returns all effects that are exxecuted on every tick of the game.")
+		.def("get_on_entity_spawn_effects", &SGA::ForwardModel::getOnEntitySpawnEffects, "Returns all effects that are exxecuted every time an entity is spawned in the game.")
 		;
 		
 		
 	py::class_<SGA::TBSForwardModel, SGA::ForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
+
+		.def("get_game_type", &SGA::TBSForwardModel::getGameType)
+
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int>(&SGA::ForwardModel::generateActions, py::const_)," Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
 
@@ -1086,13 +1314,12 @@ PYBIND11_MODULE(stratega, m)
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes a list of actions.")
 
 		.def("end_turn", &SGA::TBSForwardModel::endTurn, py::arg("state"),"End the turn of the current player and if all the player has played it ends the current game turn.")
-		//.def("is_valid", &SGA::TBSForwardModel::isValid, py::arg("state"), py::arg("action"),"Check if an action is valid in a given state")
 		.def("check_game_is_finished", &SGA::TBSForwardModel::checkGameIsFinished, py::arg("state")," Checks if the game is finished by current limit or because a player has won.")
 		;
 
 	py::class_<SGA::RTSForwardModel, SGA::ForwardModel>(m, "RTSForwardModel")
 		.def(py::init<>())
-		.def_readwrite("delta_time", &SGA::RTSForwardModel::deltaTime)
+		.def("get_game_type", &SGA::RTSForwardModel::getGameType)
 
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int>(&SGA::ForwardModel::generateActions, py::const_), " Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
@@ -1122,7 +1349,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- Agent ----
 	py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
 		.def(py::init<std::string>(), py::arg("name")="PythonAgent")
-		.def_readwrite("agent_name",&SGA::Agent::agentName)
+		//.def_readwrite("agent_name",&SGA::Agent::agentName)
 		.def("computeAction", &SGA::Agent::computeAction, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
 		.def("init", &SGA::Agent::init, "Function for initializing the agent. Override this function to receive a call just before starts.")
 		.def("get_player_id", &SGA::Agent::getPlayerID);

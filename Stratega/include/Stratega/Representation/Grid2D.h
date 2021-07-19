@@ -12,9 +12,10 @@ namespace SGA
 		size_t height;
 		typedef typename std::vector<Type>::reference reference;
 		typedef typename std::vector<Type>::const_reference const_reference;
-		
-	public:
+
 		std::vector<Type> grid;
+
+	public:
 
 		template<typename InputIterator>
 		Grid2D(size_t width, InputIterator begin, InputIterator end)

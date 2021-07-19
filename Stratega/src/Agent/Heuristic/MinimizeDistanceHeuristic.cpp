@@ -8,9 +8,9 @@ namespace SGA
 	{
 		double score = 0.0;
 
-		if (gameState.isGameOver)
+		if (gameState.isGameOver())
 		{
-			if (gameState.winnerPlayerID == playerID)
+			if (gameState.getWinnerID() == playerID)
 				score -= 1000;	// since this score should be minimized we need to deduct points for winning
 			else
 				score += 1000;
@@ -20,16 +20,16 @@ namespace SGA
 		std::set<int> opponentEntites = std::set<int>();
 		std::set<int> playerEntities = std::set<int>();
 
-		for (const auto& entity : gameState.entities)
+		for (const auto& entity : gameState.getEntities())
 		{
-			positions.emplace(entity.id, entity.position);
-			if (entity.ownerID != playerID)
+			positions.emplace(entity.getID(), entity.getPosition());
+			if (entity.getOwnerID() != playerID)
 			{
-				opponentEntites.insert(entity.id);
+				opponentEntites.insert(entity.getID());
 			}
 			else
 			{
-				playerEntities.insert(entity.id);
+				playerEntities.insert(entity.getID());
 			}
 		}
 

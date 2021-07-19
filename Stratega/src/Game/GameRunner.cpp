@@ -53,7 +53,7 @@ namespace SGA
 		ensureRendererInitialized(resolution);
 		renderer->render();
 	}
-	
+
 	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)
 	{
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
@@ -64,7 +64,7 @@ namespace SGA
 		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the initialization time
-			currentState->getPlayer(playerID)->canPlay = false;
+			currentState->getPlayer(playerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(playerID) << " disqualified for exceeding the initialization time" << std::endl;
 		}
 	}
@@ -114,7 +114,7 @@ namespace SGA
 	{
 		if (renderer == nullptr)
 		{
-			renderer = createRenderer(currentState->gameType, resolution);
+			renderer = createRenderer(currentState->getGameType(), resolution);
 			renderer->init(*currentState, *config);
 		}
 	}

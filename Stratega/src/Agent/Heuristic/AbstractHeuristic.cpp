@@ -9,9 +9,9 @@ namespace SGA
 	{
 		double score = 0.0;
 
-		if (gameState.isGameOver)
+		if (gameState.isGameOver())
 		{
-			if (gameState.winnerPlayerID == playerID)
+			if (gameState.getWinnerID() == playerID)
 				score += 1000;	// this score needs to be maximized. so winning gives you 1000 points, but in a fog of war game, this will never trigger
 			else
 				score -= 1000;
@@ -27,27 +27,32 @@ namespace SGA
 				std::vector<double> parameterValues;
 				double sum = 0;
 
-				for (auto entity : gameState.entities) {
-					const auto& entityType = gameState.gameInfo->getEntityType(entity.getEntityTypeID());
-					for (const auto& parameter : entityType.parameters)
+				for (auto entity : gameState.getEntities()) {
+					const auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
+					for (const auto& parameter : entityType.getParameters())
 					{
-						if (parameter.second.name == parameterName)
+						if (parameter.second.getName() == parameterName)
 						{
 							// (u * x) / ((u*(x-minValue[parameterName])-x+maxValue[parameterName])
-							const double x = entity.getParameterAt(parameter.second.index);
+							const double x = entity.getParameterAt(parameter.second.getIndex());
 							const double u = attributeUValues[parameterName];
-							double URQValue = (u * x) / (u * (x - minValue[parameterName]) - x + maxValue[parameterName]);
-							//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
+							double den = (u * (x - minValue[parameterName]) - (x + maxValue[parameterName]));
 
-							if (entity.ownerID == playerID) {
-								const double val = URQValue * parameterWeight;
-								parameterValues.push_back(val);
-								sum += val;
-							}
-							else {
-								const double val = URQValue * -parameterWeight;
-								parameterValues.push_back(val);
-								sum += val;
+							if(den > 0.0)
+							{
+								double URQValue = (u * x) / den;
+								//double URQValue = entity.parameters[parameter.second.index] / maxValue[parameterName];
+							
+								if (entity.getOwnerID() == playerID) {
+									const double val = URQValue * parameterWeight;
+									parameterValues.push_back(val);
+									sum += val;
+								}
+								else {
+									const double val = URQValue * -parameterWeight;
+									parameterValues.push_back(val);
+									sum += val;
+								}
 							}
 							break;
 						}

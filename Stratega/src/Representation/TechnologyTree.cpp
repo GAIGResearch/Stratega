@@ -10,7 +10,7 @@ namespace SGA
 		str = str + "\n\t Costs: ";
 		for (const auto& [id, c] : cost)
 		{
-			std::string name = gameInfo.getPlayerParameter(id).name;
+			std::string name = gameInfo.getPlayerParameter(id).getName();
 			str = str + name + ": " + std::to_string(c) + "; ";
 		}
 		str = str + "\n\t Tech requirements (IDs): ";

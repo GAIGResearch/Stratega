@@ -3,11 +3,6 @@
 
 namespace SGA
 {
-	GameDescription& GameInfo::getGameDescription() const
-	{
-		return *gameDescription;
-	}
-	
 	const EntityType& GameInfo::getEntityType(int entityTypeID) const
 	{
 		auto it = entityTypes->find(entityTypeID);
@@ -44,8 +39,8 @@ namespace SGA
 		int foundId = -1;
 		for (const auto& element : *actionTypes)
 		{
-			if (element.second.name == actionName)
-				return element.second.id;
+			if (element.second.getName() == actionName)
+				return element.second.getID();
 		}
 
 		return foundId;
@@ -64,15 +59,15 @@ namespace SGA
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const
 	{
 		const auto& entityType = getEntityType(entityTypeID);
-		return entityType.parameters.find(globalParameterID)->second;
+		return entityType.getParameters().find(globalParameterID)->second;
 	}
 
 	bool GameInfo::checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
 	{
 		const auto& entityType = getEntityType(entityTypeID);
-		for (const auto& parameter : entityType.parameters)
+		for (const auto& parameter : entityType.getParameters())
 		{
-			if (parameter.second.name == parameterName)
+			if (parameter.second.getName() == parameterName)
 				return true;
 		}
 

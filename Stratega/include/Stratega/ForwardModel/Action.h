@@ -35,25 +35,12 @@ namespace SGA
 	/// </summary>
 	struct Action
 	{
-		Action(const ActionType* actionType):
-			actionTypeFlags(ActionFlag::None),
-			actionType(actionType),
-			ownerID(0),
-			continuousActionID(-1),
-			elapsedTicks(0)
-		{
-		}
-		
+
+	private:
 		/// <summary>
-		/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
+		/// Type associated with this action.
 		/// </summary>
-		ActionFlag actionTypeFlags;
-		
-		/// <summary>
-		/// Vector with all targets involved in this action. For a UnitAction, index 0 contains the source and index 1 the target of the action.
-		/// For a PlayerAction, index 0 contains the target of the action. 
-		/// </summary>
-		std::vector<ActionTarget> targets;
+		const ActionType* actionType;
 
 		/// <summary>
 		/// ID of the owner of this action.
@@ -69,7 +56,30 @@ namespace SGA
 		/// Ticks elapsed since this action started.
 		/// </summary>
 		int elapsedTicks;
-		
+
+		/// <summary>
+		/// Used to define how the <see cref="SGA::ForwardModel::executeAction()"/> will execute this action.
+		/// </summary>
+		ActionFlag actionTypeFlags;
+
+		/// <summary>
+		/// Vector with all targets involved in this action. For a UnitAction, index 0 contains the source and index 1 the target of the action.
+		/// For a PlayerAction, index 0 contains the target of the action. 
+		/// </summary>
+		std::vector<ActionTarget> targets;
+
+
+	public:
+
+		Action(const ActionType* actionType):
+			actionTypeFlags(ActionFlag::None),
+			actionType(actionType),
+			ownerID(0),
+			continuousActionID(-1),
+			elapsedTicks(0)
+		{
+		}
+
 		/// <summary>
 		/// Execute the effects defined in the <see cref="SGA::ActionType"/> linked to this action.
 		/// </summary>
@@ -130,15 +140,7 @@ namespace SGA
 		/// <returns>Action source type</returns>
 		const ActionSourceType getActionSourceType() const;
 
-	private:
-		/// <summary>
-		/// Type associated with this action.
-		/// </summary>
-		const ActionType* actionType;
-
-
-	public:  //Static Action functions.
- 
+		 
 		/// <summary>
 		/// Generates an Action used by the game to end the tick/turn.
 		/// </summary>
@@ -187,5 +189,27 @@ namespace SGA
 			a.targets.emplace_back(ActionTarget::createContinuousActionActionTarget(continuousActionID));
 			return a;
 		}
+
+		/* Getters and setters for Action */
+
+
+		int getOwnerID() const { return ownerID; }
+		void setOwnerID(int id) { ownerID = id; }
+
+		int getContinuousActionID() const { return continuousActionID; }
+		void setContinuousActionID(int id) { continuousActionID = id; }
+
+		int getElapsedTicks() const { return elapsedTicks; }
+		void setElapsedTicks(int elapsed) { elapsedTicks = elapsed; }
+		void incTicks() { elapsedTicks++; }
+
+		const ActionFlag& getActionFlag() const { return actionTypeFlags; }
+		void setActionFlag(ActionFlag flag) { actionTypeFlags = flag; }
+
+		const std::vector<ActionTarget>& getTargets() const { return targets; }
+		std::vector<ActionTarget>& getTargets() { return targets; }
+		void setActionTargets(std::vector<ActionTarget>& actionTargets) { targets = actionTargets; }
+
+
 	};
 }

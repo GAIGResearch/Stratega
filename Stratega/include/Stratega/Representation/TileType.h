@@ -5,6 +5,9 @@ namespace SGA
 {
 	struct TileType
 	{
+
+	private:
+
 		/// <summary>
 		/// Name of the tile as given in YAML>
 		/// </summary>
@@ -23,7 +26,7 @@ namespace SGA
 		/// <summary>
 		/// Indicates if the tile is walkable by units
 		/// </summary>
-		bool isWalkable = true;
+		bool walkable = true;
 
 		/// <summary>
 		/// Indicates if this tile blocks the line of sight
@@ -34,7 +37,10 @@ namespace SGA
 		/// Indicates if this is a default tile. Default tiles are used for fog of war (to substitute
 		///  elements that should be hidden) and to be place in positions where units are defined in the YAML level layout.
 		/// </summary>
-		bool isDefaultTile = false;
+		bool defaultTile = false;
+
+
+	public:
 
 		/// <summary>
 		/// Creates an instantiation of this tile given a position
@@ -44,10 +50,33 @@ namespace SGA
 		/// <returns>A Tile object of this type in the position <x,y></returns>
 		Tile toTile(int x, int y) const
 		{
-			Tile instance(id, this, x, y);
-			instance.isWalkable = isWalkable;
-			instance.blocksSight = blocksSight;
+			Tile instance(this, x, y);
+			instance.setWalkable(walkable);
+			instance.setBlockSight(blocksSight);
 			return instance;
 		}
+
+		/* Getters and setters for this type */
+
+
+		const std::string& getName() const { return name; }
+		void setName(const std::string& name) { this->name = name; }
+
+		char getSymbol() const { return symbol; }
+		void setSymbol(char c) { symbol = c; }
+
+		int getID() const { return id; }
+		void setID(int id) { this->id = id; }
+
+		bool isWalkable() const { return walkable; }
+		void setWalkable(bool w) { walkable = w; }
+
+		bool blockSight() const { return blocksSight; }
+		void setBlockSight(bool b) { blocksSight = b; }
+
+		bool isDefaultTile() const { return defaultTile; }
+		void setDefaultTile(bool defaultTile) { this->defaultTile = defaultTile; }
+
+
 	};
 }

@@ -86,18 +86,18 @@ namespace SGA
         for (auto& type : config->entityTypes)
         {
             // Assign actions to entities
-            auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+            auto actions = types[type.second.getName()]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
-                type.second.actionIds.emplace_back(config->getActionID(actionName));
+                type.second.getActionIDs().emplace_back(config->getActionID(actionName));
             }
 
             // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], *config);
-            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
-            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name);
+            type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], *config));
+            auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
+            type.second.setRequiredTechID( name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name));
         	// Hardcoded cost information
-            type.second.cost = parseCost(types[type.second.name]["Cost"], *config);
+            type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], *config));
         }
 		
 		//Assign player actions
@@ -150,22 +150,22 @@ namespace SGA
 
         //Add fog of war tile
         TileType fogOfWarType;
-        fogOfWarType.id = idCounter++;
-        fogOfWarType.name = "FogOfWar";
-        fogOfWarType.isWalkable = false;
-        fogOfWarType.symbol = '_';
-        config.tileTypes.emplace(fogOfWarType.id, std::move(fogOfWarType));
+        fogOfWarType.setID(idCounter++);
+        fogOfWarType.setName("FogOfWar");
+        fogOfWarType.setWalkable(false);
+        fogOfWarType.setSymbol('_');
+        config.tileTypes.emplace(fogOfWarType.getID(), std::move(fogOfWarType));
 
 		for(const auto& nameConfigPair : tileConfigs)
 		{
             TileType type;
-            type.id = idCounter++;
-            type.name = nameConfigPair.first;
-			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
-			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
-            type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
-			type.symbol = nameConfigPair.second["Symbol"].as<char>();
-            config.tileTypes.emplace(type.id, std::move(type));
+            type.setID(idCounter++);
+            type.setName(nameConfigPair.first);
+			type.setWalkable(nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable()));
+			type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
+            type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
+			type.setSymbol(nameConfigPair.second["Symbol"].as<char>());
+            config.tileTypes.emplace(type.getID(), std::move(type));
 		}
 	}
 
@@ -259,15 +259,15 @@ namespace SGA
         for (const auto& nameTypePair : types)
         {
             EntityType type;
-            type.name = nameTypePair.first;
-            type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
-            type.id = static_cast<int>(config.entityTypes.size());
-            type.lineOfSightRange = nameTypePair.second["LineOfSightRange"].as<double>();
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+            type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
 
-            parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
+            parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
-            config.entityTypes.emplace(type.id, std::move(type));
+            config.entityTypes.emplace(type.getID(), std::move(type));
         }
     }
 
@@ -293,7 +293,7 @@ namespace SGA
             // Group that contains all entities
             config.entityGroups.at("All").emplace(idEntityPair.first);
         	// Group that contains one entity
-            config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
+            config.entityGroups.emplace(idEntityPair.second.getName(), std::initializer_list<int>{ idEntityPair.first });
         }
     }
 
@@ -310,8 +310,8 @@ namespace SGA
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
-            type.id = static_cast<int>(config.actionTypes.size());
-            type.name = nameTypePair.first;
+            type.setID(static_cast<int>(config.actionTypes.size()));
+            type.setName(nameTypePair.first);
         	
             context.targetIDs.emplace("Source", 0);
         	
@@ -326,63 +326,63 @@ namespace SGA
                 //// Parse target conditions
 		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
 		        parser.parseFunctions(targetConditions, targetConditionsList, context);            	
-                type.actionTargets.emplace_back(newTarget, targetConditionsList);
+                type.getTargets().emplace_back(newTarget, targetConditionsList);
             }
         	
-            type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
-            type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
+            type.setSourceType(nameTypePair.second["Type"].as<ActionSourceType>());
+            type.setCooldown(nameTypePair.second["Cooldown"].as<int>(0));
         	
             // Parse preconditions            
         	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(preconditions, type.preconditions, context);
+            parser.parseFunctions(preconditions, type.getPreconditions(), context);
 
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(effects, type.effects, context);
+            parser.parseFunctions(effects, type.getEffects(), context);
 
-            type.isContinuous = false;
+            type.setContinuous(false);
         	
         	//Continuous Action Stuff
             if (nameTypePair.second["TriggerComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
                 auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+                parser.parseFunctions(targetConditions, type.getTriggerComplete(), context);
             }
         	
             if (nameTypePair.second["OnStart"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnStart, context);
+                parser.parseFunctions(effectStrings, type.getOnStart(), context);
             }
 
             if (nameTypePair.second["OnTick"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnTick, context);
+                parser.parseFunctions(effectStrings, type.getOnTick(), context);
             }
 
             if (nameTypePair.second["OnComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnComplete, context);
+                parser.parseFunctions(effectStrings, type.getOnComplete(), context);
             }
 
             if (nameTypePair.second["OnAbort"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
                 auto effectStrings = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effectStrings, type.OnAbort, context);
+                parser.parseFunctions(effectStrings, type.getOnAbort(), context);
             }
         	
-            config.actionTypes.emplace(type.id, std::move(type));
+            config.actionTypes.emplace(type.getID(), std::move(type));
             context.targetIDs.clear();
         }
     }
@@ -390,19 +390,19 @@ namespace SGA
     TargetType GameConfigParser::parseTargetType(const YAML::Node& node, const GameConfig& config) const
     {
         TargetType targetType;
-        targetType.type = node["Type"].as<TargetType::Type>();
-        if (targetType.type == TargetType::Position)
+        targetType.setType(node["Type"].as<TargetType::Type>());
+        if (targetType.getType() == TargetType::Position)
         {        	
-        	targetType.samplingMethod= node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+        	targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
         	if(targetType == TargetType::Entity)
-				targetType.samplingMethod = node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>();
+				targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         	
-            targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
+            targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
         }
-        else if (targetType.type == TargetType::Technology)
+        else if (targetType.getType() == TargetType::Technology)
         {
             auto techNode = node["ValidTargets"];
         	if(techNode.IsScalar() && techNode.as<std::string>() == "All")
@@ -410,7 +410,7 @@ namespace SGA
         		for(const auto& tree: config.technologyTreeCollection.technologyTreeTypes)
         		{
         			for(const auto& tech : tree.second.technologies)
-						targetType.technologyTypes.insert(tech.first);
+						targetType.getTechnologyTypes().insert(tech.first);
         		}
         	}
             else if(techNode.IsSequence())
@@ -419,7 +419,7 @@ namespace SGA
                 //Assigne technology IDs to the technologytypes map
                 for (auto& technology : technologies)
                 {
-                    targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+                    targetType.getTechnologyTypes().insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
                 }
             }
         }
@@ -488,7 +488,7 @@ namespace SGA
         	
             auto conditions = winCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions<Condition>(conditions, conditionList, context);
-            fm->winConditions.emplace_back(conditionList);
+            fm->addWinConditions(conditionList);
         }
 
         //Parse Lose Conditions
@@ -500,7 +500,7 @@ namespace SGA
 
             auto conditions = loseCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions<Condition>(conditions, conditionList, context);
-            fm->loseConditions.emplace_back(conditionList);
+            fm->addLoseConditions(conditionList);
         }
 		
 		// Parse Triggers
@@ -521,7 +521,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
-                fm->onTickEffects.emplace_back(std::move(onTickEffect));
+                fm->addOnTickEffect(onTickEffect);
 			}
             else if(map.find("OnSpawn") != map.end())
             {
@@ -537,7 +537,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
                 // Add it to the fm
-                fm->onEntitySpawnEffects.emplace_back(std::move(onSpawnEffect));
+                fm->addOnEntitySpawnEffect(onSpawnEffect);
             }
             else
             {
@@ -712,13 +712,13 @@ namespace SGA
 
             // Construct the parameter
             Parameter param;
-            param.id = config.parameters.at(nameParamPair.first);
-            param.name = nameParamPair.first;
-            param.minValue = 0;
-            param.maxValue = nameParamPair.second;
-            param.defaultValue = param.maxValue;
-            param.index = static_cast<int>(parameterBucket.size());
-            parameterBucket.insert({ param.id, std::move(param) });
+            param.setID(config.parameters.at(nameParamPair.first));
+            param.setName(nameParamPair.first);
+            param.setMinValue(0);
+            param.setMaxValue(nameParamPair.second);
+            param.setDefaultValue(param.getMaxValue());
+            param.setIndex(static_cast<int>(parameterBucket.size()));
+            parameterBucket.insert({ param.getID(), std::move(param) });
         }
 	}
 
@@ -828,15 +828,15 @@ namespace SGA
         const auto* defaultTile = &config.tileTypes.begin()->second;
         for (const auto& idTilePair : config.tileTypes)
         {
-            tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
-            if (idTilePair.second.isDefaultTile)
+            tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+            if (idTilePair.second.isDefaultTile())
                 defaultTile = &idTilePair.second;
         }
 
         std::unordered_map<char, const EntityType*> entityLookup;
         for (const auto& idEntityPair : config.entityTypes)
         {
-            entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+            entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
         }
     	
         // Configure new level definition and entity placements
@@ -868,13 +868,13 @@ namespace SGA
             if (entityIt != entityLookup.end())
             {
                 // Check if the entity was assigned to an player, we only look for players with ID 0-9
-                auto ownerID = Player::NEUTRAL_PLAYER_ID;
+                auto ownerID = Player::getNeutralPlayerID();
                 if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
                 {
                     ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
                     if (ownerID>=config.getNumberOfPlayers())
                     {
-                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
+                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->getName() + " to an unknown player " + std::to_string(ownerID));
                     }
                     i++;
                 }

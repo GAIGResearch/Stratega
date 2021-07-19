@@ -10,10 +10,14 @@ namespace SGA
 	/// </summary>
 	class ActionAssignment
 	{
+
+	private: 
+
 		std::unordered_map<int, Action> entityActions;
 		std::unordered_map<int, Action> playerActions;
 
 	public:
+
 		/// <summary>
 		/// Assigns the action to the corresponding entity or player. Any existing assignment will be overwritten.
 		/// </summary>

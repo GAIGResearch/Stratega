@@ -5,13 +5,13 @@
 namespace SGA
 {
 
-	double AttackWeakestOpponentScript::getHealth(const Entity* entity, const GameState& gamestate) const
+	double AttackWeakestOpponentScript::getHealth(const Entity& entity, const GameState& gamestate) const
 	{
-		for (const auto& param : (*gamestate.gameInfo->entityTypes)[entity->getEntityTypeID()].parameters)
+		for (const auto& param : (gamestate.getGameInfo()->getEntityTypes()).at(entity.getEntityTypeID()).getParameters())
 		{
-			if (param.second.name == "Health")
+			if (param.second.getName() == "Health")
 			{
-				return entity->getParamValues()[param.second.index];
+				return entity.getParamValues()[param.second.getIndex()];
 			}
 		}
 		return 0;
@@ -23,9 +23,10 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 
@@ -38,24 +39,24 @@ namespace SGA
 			double minimalHealth = std::numeric_limits<double>::max();
 			int weakestUnitID = -1;
 
-			for (auto& entity : gameState.entities) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
-				double health =  getHealth(&entity, gameState);
-				healthPerUnit.insert(std::pair<int, double>(entity.id, health));
+			for (auto& entity : gameState.getEntities()) {
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
+				double health =  getHealth(entity, gameState);
+				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)
 				{
 					minimalHealth = health;
-					weakestUnitID = entity.id;
+					weakestUnitID = entity.getID();
 				}
 				
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
+					myUnits.push_back(entity.getID());
 				}
 				else
 				{
-					opponentUnits.insert(entity.id);
+					opponentUnits.insert(entity.getID());
 				}
 			}
 
@@ -70,9 +71,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double health = healthPerUnit[action.targets[1].getEntityID()];
+						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
@@ -93,7 +94,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = action.targets[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
+					const double dist = action.getTargets()[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -114,7 +115,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -124,9 +125,9 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 
@@ -139,24 +140,24 @@ namespace SGA
 			double minimalHealth = std::numeric_limits<double>::max();
 			int weakestUnitID = -1;
 
-			for (auto& entity : gameState.entities) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
-				double health = getHealth(&entity, gameState);
-				healthPerUnit.insert(std::pair<int, double>(entity.id, health));
+			for (auto& entity : gameState.getEntities()) {
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
+				double health = getHealth(entity, gameState);
+				healthPerUnit.insert(std::pair<int, double>(entity.getID(), health));
 
 				if (health < minimalHealth)
 				{
 					minimalHealth = health;
-					weakestUnitID = entity.id;
+					weakestUnitID = entity.getID();
 				}
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
+					myUnits.push_back(entity.getID());
 				}
 				else
 				{
-					opponentUnits.insert(entity.id);
+					opponentUnits.insert(entity.getID());
 				}
 			}
 
@@ -171,9 +172,9 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.targets[1].getEntityID()))
+					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
-						const double health = healthPerUnit[action.targets[1].getEntityID()];
+						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
@@ -194,7 +195,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const double dist = action.targets[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
+					const double dist = action.getTargets()[1].getPosition(gameState).manhattanDistance(positions[weakestUnitID]);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;

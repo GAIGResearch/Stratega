@@ -36,7 +36,7 @@ snippet, which also runs through all actions in the returned list:
 .. code-block:: python
 
     class OSLAPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
+        def computeAction(self, state, forward_model, timer):
             for index, action in enumerate(actions):
                #...
             
@@ -65,9 +65,9 @@ which rewards states with a short average distance between the player's entities
         opponent_entites=state.get_non_player_entities(player_id, stratega.EntityCategory.Null)
         player_entites=state.get_player_entities(player_id, stratega.EntityCategory.Null)
 
-        if state.is_game_over and state.winner_player_id == player_id:
+        if state.is_game_over() and state.get_winner_id() == player_id:
             score=1000
-        elif state.is_game_over and state.winner_player_id != player_id:
+        elif state.is_game_over() and state.get_winner_id() != player_id:
             score=-1000
 
         sum_of_average_distances = 0
@@ -75,7 +75,7 @@ which rewards states with a short average distance between the player's entities
             for p in player_entites:
                 sum_of_distances=0
                 for o in opponent_entites:
-                    sum_of_distances+= abs(p.position.x-o.position.x)+ abs(p.position.y-o.position.y)
+                    sum_of_distances+= abs(p.x()-o.x())+ abs(p.y()-o.y())
 
                 sum_of_average_distances=sum_of_distances/len(opponent_entites)
 

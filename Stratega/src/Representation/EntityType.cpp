@@ -31,9 +31,9 @@ double SGA::EntityType::getParamMax(std::string paramName) const
 {
 	for (const auto& param : parameters)
 	{
-		if (param.second.name == paramName)
+		if (param.second.getName() == paramName)
 		{
-			return param.second.maxValue;
+			return param.second.getMaxValue();
 		}
 	}
 	return 0;
@@ -44,9 +44,9 @@ double SGA::EntityType::getParamMin(std::string paramName) const
 {
 	for (const auto& param : parameters)
 	{
-		if (param.second.name == paramName)
+		if (param.second.getName() == paramName)
 		{
-			return param.second.minValue;
+			return param.second.getMinValue();
 		}
 	}
 	return 0;

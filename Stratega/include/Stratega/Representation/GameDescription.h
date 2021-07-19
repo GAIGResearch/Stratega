@@ -38,6 +38,18 @@ namespace SGA
 
 	struct GameDescription
 	{
+
+	private:
+
+		//List of action IDs grouped by action categories
+		std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+
+		//List of entity IDs grouped by entity categories
+		std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
+
+
+	public:
+
 		GameDescription(std::unordered_map<ActionCategory, std::vector<int>> actionCat, 
 						std::unordered_map<EntityCategory, std::vector<int>> entityCat):
 			actionCategories(actionCat),
@@ -45,19 +57,32 @@ namespace SGA
 		{
 			
 		}
-		
-		//List of action IDs grouped by action categories
-		std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
 
-		//List of entity IDs grouped by entity categories
-		std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
+		/// <summary>
+		/// Returns the action categories of this game.
+		/// </summary>
+		const std::unordered_map<ActionCategory, std::vector<int>>& getActionCategories() const { return actionCategories; };
 
+		/// <summary>
+		/// Returns the entity categories of this game.
+		/// </summary>
+		const std::unordered_map<EntityCategory, std::vector<int>>& getEntityCategories() const { return entityCategories; };
+			
 		/// <summary>
 		/// Returns all the actiontypes IDs of the selected action category.
 		/// </summary>
 		/// <param name="category">The category group to be searched.</param>
 		/// <returns>List of action type IDs.</returns>
-		const std::vector<int> getActionTypesIDs(ActionCategory category) const;
+		std::vector<int> getActionTypesIDs(ActionCategory category) const;
+
+
+		/// <summary>
+		/// Returns all the entity type IDs of the selected entity category.
+		/// </summary>
+		/// <param name="category">The category group to be searched.</param>
+		/// <returns>List of entity type IDs.</returns>
+		std::vector<int> getEntityTypesIDs(EntityCategory category) const;
+
 
 		/// <summary>
 		/// Returns all the actiontypes IDs of the selected action category.
@@ -65,7 +90,16 @@ namespace SGA
 		/// <param name="category">The category group to be searched.</param>
 		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
 		/// <returns>List of action types</returns>
-		const std::vector<ActionType> getActionTypes(ActionCategory category, const GameInfo& gameInfo) const;
+		std::vector<ActionType> getActionTypes(ActionCategory category, const GameInfo& gameInfo) const;
+
+		/// <summary>
+		/// Returns all the entity type  IDs of the selected entity category.
+		/// </summary>
+		/// <param name="category">The category group to be searched.</param>
+		/// <param name="gameInfo">The gameInfo object wich contains all the type of actions.</param>
+		/// <returns>List of entity types</returns>
+		std::vector<EntityType> getEntityTypes(EntityCategory category, const GameInfo& gameInfo) const;
+
 
 
 		/// <summary>

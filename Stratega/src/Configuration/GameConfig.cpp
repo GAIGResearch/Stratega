@@ -28,43 +28,45 @@ namespace SGA
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
-		player.parameters.resize(gameInfo.playerParameterTypes->size());
-		for (const auto& idParamPair : *gameInfo.playerParameterTypes)
+		player.resizeParameters(gameInfo.getPlayerParameterTypes().size());
+		const auto parameterTypes = gameInfo.getPlayerParameterTypes();
+		for (const auto& idParamPair : parameterTypes)
 		{
-			player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
+			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
 		}
 
 		// Add actions
-		player.attachedActions.reserve(playerActionIds.size());
+		player.resAttachedActions(playerActionIds.size());
 		for (auto actionTypeID : playerActionIds)
 		{
-			player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
+			player.addAttachedAction(actionTypeID, 0);
 		}
 
 		state->addPlayer(player);
-		return player.id;
+		return player.getID();
 	}
 
 	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const
 	{
 		// Initialize state
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
-		state->gameType = gameType;
-		state->tickLimit = tickLimit;
+		state->setGameType(gameType);
+		state->setTickLimit(tickLimit);
+		state->setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
 
 		//GameInfo
 		GameInfo gameInfo;		
-		gameInfo.entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
-		gameInfo.tileTypes = std::make_shared<std::unordered_map<int, TileType>>(tileTypes);
-		gameInfo.playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
-		gameInfo.entityGroups = entityGroups;
-		gameInfo.actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
-		gameInfo.parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
-		gameInfo.technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
-		gameInfo.playerSpawnableTypes = std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes);
-		gameInfo.yamlPath = yamlPath;
-		gameInfo.gameDescription = std::make_shared<GameDescription>(actionCategories, entityCategories);
-		state->gameInfo = std::make_shared<GameInfo>(gameInfo);
+		gameInfo.setEntityTypes(std::make_shared<std::unordered_map<int, EntityType>>(entityTypes));
+		gameInfo.setTileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes));
+		gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
+		gameInfo.setEntityGroups(entityGroups);
+		gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
+		gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
+		gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
+		gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));
+		gameInfo.setYAMLPath(yamlPath);
+		gameInfo.setGameDescription(std::make_shared<GameDescription>(actionCategories, entityCategories));
+		state->setGameInfo(std::make_shared<GameInfo>(gameInfo));
 
 		
 		std::unordered_set<int> playerIDs;
@@ -75,18 +77,19 @@ namespace SGA
 
 		// Create some lookups for initializing the board and entities
 		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &state->gameInfo->tileTypes->begin()->second;
-		for(const auto& idTilePair : *state->gameInfo->tileTypes)
+		const auto* defaultTile = &state->getGameInfo()->getTileTypes().begin()->second;
+		const auto& tileTypes = state->getGameInfo()->getTileTypes();
+		for(const auto& idTilePair : tileTypes)
 		{
-			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
-			if (idTilePair.second.isDefaultTile)
+			tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+			if (idTilePair.second.isDefaultTile())
 				defaultTile = &idTilePair.second;
 		}
 
 		std::unordered_map<char, const EntityType*> entityLookup;
-		for(const auto& idEntityPair : *state->gameInfo->entityTypes)
+		for(const auto& idEntityPair : state->getGameInfo()->getEntityTypes())
 		{
-			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+			entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
 		}
 
 		// Configure board and spawn entities
@@ -119,8 +122,8 @@ namespace SGA
 			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
 		}
 		
-		//Assign board to state
-		state->board = Grid2D<Tile>(board.getWidth(), tiles.begin(), tiles.end());
+		//Initialize board with size and set of tiles.
+		state->initBoard(board.getWidth(), tiles);
 
 		// Initialize Pathfinding
 		if(gameType == GameType::RTS)
@@ -129,11 +132,8 @@ namespace SGA
 			rtsFM->buildNavMesh(*state, NavigationConfig{});
 		}
 
-		//Initialize researched list for each player
-		for (int i = 0; i < getNumberOfPlayers(); i++)
-		{
-			state->researchedTechnologies[i] = {};
-		}
+		//Initialize researched list for all players
+		state->initResearchTechs();
 		
 		return std::move(state);
 	}
@@ -147,7 +147,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : entityTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 
@@ -158,7 +158,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : actionTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 
@@ -183,7 +183,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : tileTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 

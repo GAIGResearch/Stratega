@@ -11,8 +11,6 @@ namespace SGA
 	{
 	public:
 
-		std::string agentName="DefaultAgent";
-
 		//Constructors and destructors
 		Agent(const std::string& name);
 		virtual ~Agent() = default;
@@ -58,6 +56,11 @@ namespace SGA
 		/// <param name="seed">Seed for the generator</param>
 		void setSeed(std::mt19937::result_type seed = 0);
 
+		/// <summary>
+		/// Returns the name of this agent.
+		/// </summary>
+		const std::string& getName() const { return agentName; }
+
 
 	private:
 		/// <summary>
@@ -78,6 +81,11 @@ namespace SGA
 		/// </summary>
 		/// <returns>The random number generator of this agent</returns>
 		std::mt19937& getRNGEngine();
+
+		/// <summary>
+		/// Name of this agent. Useful for bindings.
+		/// </summary>
+		std::string agentName = "DefaultAgent";
 
 
 		/* AGENT UTILITY FUNCTIONS*/

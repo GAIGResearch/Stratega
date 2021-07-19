@@ -7,7 +7,7 @@ namespace SGA {
 	class AttackWeakestOpponentScript : public BaseActionScript
 	{
 	private:
-		double getHealth(const Entity* entity, const GameState& gamestate) const;
+		double getHealth(const Entity& entity, const GameState& gamestate) const;
 
 
 	public:

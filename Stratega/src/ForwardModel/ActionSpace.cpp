@@ -1,34 +1,34 @@
-#include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 
 namespace SGA
 {
-	std::vector<Action> EntityActionSpace::generateActions(const GameState& gameState, int playerID) const
+	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const
 	{
 		std::vector<Action> bucket;
 		//Generate entities actions
-		for (const auto& sourceEntity : gameState.entities)
+		for (const auto& sourceEntity : gameState.getEntities())
 		{
-			if (sourceEntity.ownerID != playerID)
+			if (sourceEntity.getOwnerID() != playerID)
 				continue;
 			
 			for (const auto& actionInfo : sourceEntity.getAttachedActions())
 			{
-				auto& actionType = gameState.gameInfo->getActionType(actionInfo.actionTypeID);
+				const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 				
 				bool generateContinuousAction = true;
 				//Check if action is continuos
-				if (actionType.isContinuous)
+				if (actionType.isContinuous())
 				{
 					//Check if entity is already executing it
 					for (const auto& action : sourceEntity.getContinuousActions())
 					{
-						if (action.getActionTypeID() == actionType.id)
+						if (action.getActionTypeID() == actionType.getID())
 						{
 							//This entity cant execute the action
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.id, action.continuousActionID));
+							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
 						}
 					}
 				}
@@ -37,13 +37,13 @@ namespace SGA
 					continue;
 				
 				// Check if this action can be executed		
-				if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+				if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.getCooldown())
 					continue;
 				if (!gameState.canExecuteAction(sourceEntity, actionType))
 					continue;
 
 				// Generate all actions
-				if(actionType.actionTargets.size() == 0/*TargetType::None*/)
+				if(actionType.getTargets().size() == 0/*TargetType::None*/)
 				{
 					// Self-actions do not have a target, only a source
 					bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
@@ -58,23 +58,23 @@ namespace SGA
 
 		//Generate player actions
 		auto& player = *gameState.getPlayer(playerID);
-		for (const auto& actionInfo : player.attachedActions)
+		for (const auto& actionInfo : player.getAttachedActions())
 		{
-			auto& actionType = gameState.gameInfo->getActionType(actionInfo.actionTypeID);
+			const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 			bool generateContinuousAction = true;
 			//Check if action is continuos
-			if (actionType.isContinuous)
+			if (actionType.isContinuous())
 			{
 				//Check if entity is already executing it
-				for (auto& action : player.continuousAction)
+				for (auto& action : player.getContinuousActions())
 				{
-					if (action.getActionTypeID() == actionType.id)
+					if (action.getActionTypeID() == actionType.getID())
 					{
 						//This entity cant execute the action
 						generateContinuousAction = false;
 
 						//Give the posibility to abort it
-						bucket.emplace_back(Action::createAbortAction(player.id, action.continuousActionID));
+						bucket.emplace_back(Action::createAbortAction(player.getID(), action.getContinuousActionID()));
 					}
 				}
 			}
@@ -84,13 +84,13 @@ namespace SGA
 			
 			// Check if this action can be executed
 			
-			if (gameState.currentTick - actionInfo.lastExecutedTick < actionType.cooldownTicks)
+			if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.getCooldown())
 				continue;
 			if (!gameState.canExecuteAction(player, actionType))
 				continue;
 
 			// Generate all actions
-			if (actionType.actionTargets.size() == 0/*TargetType::None*/)
+			if (actionType.getTargets().size() == 0/*TargetType::None*/)
 			{
 				// Self-actions do not have a target, only a source
 				bucket.emplace_back(generateSelfAction(player, actionType));
@@ -103,7 +103,7 @@ namespace SGA
 		}		
 		
 		//Generate EndTurnAction
-		if(gameState.gameType == GameType::TBS)
+		if(gameState.getGameType() == GameType::TBS)
 		{
 			bucket.emplace_back(Action::createEndAction(playerID));
 		}
@@ -142,27 +142,27 @@ namespace SGA
 		return result;
 	}
 	
-	void EntityActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
+	void ActionSpace::generateActions(const GameState& state, const Entity& sourceEntity, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{		
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourceEntity.ownerID;
-			action.targets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.id));
+			action.setOwnerID(sourceEntity.getOwnerID());
+			action.getTargets().emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
 			
 			for (auto& target : targetsProduct)
 			{
-				action.targets.emplace_back(target);
+				action.getTargets().emplace_back(target);
 			}
 
-			if (actionType.isContinuous)
-				action.actionTypeFlags = ActionFlag::ContinuousAction;
+			if (actionType.isContinuous())
+				action.setActionFlag(ActionFlag::ContinuousAction);
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.actionTargets)
+			for (auto& actionTargetType : actionType.getTargets())
 			for (const auto& condition : actionTargetType.second)
 			{
-				if (!condition->isFullfiled(state, action.targets))
+				if (!condition->isFullfiled(state, action.getTargets()))
 				{
 					isValidAction = false;
 					break;
@@ -176,27 +176,27 @@ namespace SGA
 		}
 	}
 
-	void EntityActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
+	void ActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
 	{
 		for (auto& targetsProduct : productActionTargets(targets))
 		{
 			Action action(&actionType);
-			action.ownerID = sourcePlayer.id;
-			action.targets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.id));
+			action.setOwnerID(sourcePlayer.getID());
+			action.getTargets().emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
 
 			for (auto& target : targetsProduct)
 			{
-				action.targets.emplace_back(target);
+				action.getTargets().emplace_back(target);
 			}
 
-			if (actionType.isContinuous)
-				action.actionTypeFlags = ActionFlag::ContinuousAction;
+			if (actionType.isContinuous())
+				action.setActionFlag(ActionFlag::ContinuousAction);
 
 			bool isValidAction = true;
-			for (auto& actionTargetType : actionType.actionTargets)
+			for (auto& actionTargetType : actionType.getTargets())
 				for (const auto& condition : actionTargetType.second)
 				{
-					if (!condition->isFullfiled(state, action.targets))
+					if (!condition->isFullfiled(state, action.getTargets()))
 					{
 						isValidAction = false;
 						break;
@@ -210,22 +210,22 @@ namespace SGA
 		}
 	}
 	
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 		
-		for (auto& type : action.actionTargets)
+		for (auto& type : action.getTargets())
 		{
 			std::vector<ActionTarget> newTargets;
-			switch (type.first.type)
+			switch (type.first.getType())
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, entity.position, type.first.samplingMethod);
+			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.getSamplingMethod());
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.position, type.first.groupEntityTypes, type.first.samplingMethod);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
 				break;
-			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
 				break;
@@ -238,22 +238,22 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<std::vector<ActionTarget>> EntityActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
-		for (auto& type : action.actionTargets)
+		for (auto& type : action.getTargets())
 		{
 			std::vector<ActionTarget> newTargets;
-			switch (type.first.type)
+			switch (type.first.getType())
 			{
-			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.samplingMethod);
+			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.getSamplingMethod());
 				break;
-			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.groupEntityTypes, type.first.samplingMethod);
+			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
 				break;
-			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.groupEntityTypes);
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.technologyTypes);
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::None: return {};
 			}
@@ -264,7 +264,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generatePositionTargets(const GameState& gameState, const Vector2f& position, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -278,7 +278,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -291,7 +291,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateEntityTypeTargets(const GameState& /*gameState*/, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		for(const auto& entityTypeID : entityTypeIDs)
@@ -302,7 +302,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generateGroupTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -318,7 +318,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateGroupTargets(const GameState& gameState,  const Vector2f& position, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
+	std::vector<ActionTarget> ActionSpace::generateGroupTargets(const GameState& gameState,  const Vector2f& position, const std::unordered_set<EntityTypeID>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -334,11 +334,11 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateTechnologyTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 		
-		for (const auto& technoloTreeType : gameState.gameInfo->technologyTreeCollection->technologyTreeTypes)
+		for (const auto& technoloTreeType : gameState.getGameInfo()->getTechnologyTreeCollection().technologyTreeTypes)
 		{
 			for (auto& technology : technoloTreeType.second.technologies)
 			{
@@ -351,28 +351,32 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> EntityActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity) const
+	std::vector<ActionTarget> ActionSpace::generateContinuousActionTargets(const GameState& /*gameState*/, const Entity& sourceEntity) const
 	{
 		std::vector<ActionTarget> targets;
 
 		for (const auto& action : sourceEntity.getContinuousActions())
 		{
-			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.continuousActionID));
+			targets.emplace_back(ActionTarget::createContinuousActionActionTarget(action.getContinuousActionID()));
 		}
 		return targets;
 	}
 	
-	Action EntityActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
+	Action ActionSpace::generateSelfAction(const Entity& sourceEntity, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createEntityActionTarget(sourceEntity.id) };
+		std::vector<ActionTarget> actionTargets;
+		actionTargets.emplace_back(ActionTarget::createEntityActionTarget(sourceEntity.getID()));
+		selfAction.setActionTargets(actionTargets);
 		return selfAction;
 	}
 
-	Action EntityActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
+	Action ActionSpace::generateSelfAction(const Player& sourcePlayer, const ActionType& actionType) const
 	{
 		Action selfAction(&actionType);
-		selfAction.targets = { ActionTarget::createPlayerActionTarget(sourcePlayer.id) };
+		std::vector<ActionTarget> actionTargets;
+		actionTargets.emplace_back(ActionTarget::createPlayerActionTarget(sourcePlayer.getID()));
+		selfAction.setActionTargets(actionTargets);
 		return selfAction;
 	}
 

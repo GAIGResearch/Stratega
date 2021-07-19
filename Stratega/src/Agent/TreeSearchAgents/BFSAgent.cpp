@@ -32,7 +32,7 @@ namespace SGA
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
 			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
-			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.actionTypeFlags == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 			return ActionAssignment::fromSingleAction(action);
 		}
@@ -103,7 +103,7 @@ namespace SGA
 				else
 				{
 					// sort child node into its respective group
-					if (child->gameState.isGameOver)
+					if (child->gameState.isGameOver())
 					{
 						knownLeaves.push_back(currentNode);
 					}
@@ -136,7 +136,7 @@ namespace SGA
 			candidateNodes.clear();
 			for (TreeNode* node : tmpNodes)
 			{
-				if (node->gameState.isGameOver)
+				if (node->gameState.isGameOver())
 					knownLeaves.push_back(node);
 				else if (!node->isFullyExpanded())
 					openNodes.push_back(node);

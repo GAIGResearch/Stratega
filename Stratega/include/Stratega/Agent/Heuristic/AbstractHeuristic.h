@@ -20,13 +20,13 @@ namespace SGA
 			for (const auto entry : attributeWeights) {
 				const std::string parameterName = entry.first;
 				maxValue[parameterName] = 0;
-				for (const auto entityType : *gameState.gameInfo->entityTypes) {
-					for (const auto parameter : entityType.second.parameters) {
-						if (parameter.second.name == parameterName && parameter.second.maxValue > maxValue[parameterName]) {
-							maxValue[parameterName] = parameter.second.maxValue;
+				for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
+					for (const auto parameter : entityType.second.getParameters()) {
+						if (parameter.second.getName() == parameterName && parameter.second.getMaxValue() > maxValue[parameterName]) {
+							maxValue[parameterName] = parameter.second.getMaxValue();
 						}
-						if (parameter.second.name == parameterName && parameter.second.minValue < minValue[parameterName]) {
-							minValue[parameterName] = parameter.second.minValue;
+						if (parameter.second.getName() == parameterName && parameter.second.getMinValue() < minValue[parameterName]) {
+							minValue[parameterName] = parameter.second.getMinValue();
 						}
 					}
 				}
@@ -35,32 +35,32 @@ namespace SGA
 
 		AbstractHeuristic(GameState& gameState)
 		{
-			for (const auto entityType : *gameState.gameInfo->entityTypes) {
-				for (const auto parameter : entityType.second.parameters) {
-					if (!attributeWeights.contains(parameter.second.name))
+ 			for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
+				for (const auto& parameter : entityType.second.getParameters()) {
+					if (!attributeWeights.contains(parameter.second.getName()))
 					{
-						if (parameter.second.name == "Health")
+						if (parameter.second.getName() == "Health")
 						{
-							attributeWeights[parameter.second.name] = 10;
-							attributeUValues[parameter.second.name] = 5.0;
+							attributeWeights[parameter.second.getName()] = 10;
+							attributeUValues[parameter.second.getName()] = 5.0;
 						}
 						else
 						{
-							attributeWeights[parameter.second.name] = 1;
-							attributeUValues[parameter.second.name] = 1;
+							attributeWeights[parameter.second.getName()] = 1;
+							attributeUValues[parameter.second.getName()] = 1;
 						}
-						maxValue[parameter.second.name] = parameter.second.maxValue;
-						minValue[parameter.second.name] = parameter.second.minValue;
+						maxValue[parameter.second.getName()] = parameter.second.getMaxValue();
+						minValue[parameter.second.getName()] = parameter.second.getMinValue();
 					}
 					else
 					{
-						if (parameter.second.maxValue > maxValue[parameter.second.name])
+						if (parameter.second.getMaxValue() > maxValue[parameter.second.getName()])
 						{
-							maxValue[parameter.second.name] = parameter.second.maxValue;
+							maxValue[parameter.second.getName()] = parameter.second.getMaxValue();
 						}
-						if (parameter.second.minValue < minValue[parameter.second.name])
+						if (parameter.second.getMinValue() < minValue[parameter.second.getName()])
 						{
-							minValue[parameter.second.name] = parameter.second.minValue;
+							minValue[parameter.second.getName()] = parameter.second.getMinValue();
 						}
 					}
 				}

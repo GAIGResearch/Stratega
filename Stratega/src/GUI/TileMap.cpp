@@ -20,27 +20,23 @@ namespace SGA
 		tileset.init(filePaths);
 
 		// resize the vertex array to fit the level size
-		const auto& board = state.board;
 		m_vertices.setPrimitiveType(sf::Quads);
-		m_vertices.resize(board.getWidth() * board.getHeight() * 4);
+		m_vertices.resize(state.getBoardWidth() * state.getBoardHeight() * 4);
 	}
 
 	void TileMap::update(const GameState& state, const GameState& fowState, bool renderFow, FogRenderType fogType)
 	{
-		const auto& board = state.board;
-		const auto& fowBoard = fowState.board;
-		
 		// populate the vertex array, with one quad per tile
-		for (int x = 0; x < board.getWidth(); ++x)
+		for (int x = 0; x < state.getBoardWidth(); ++x)
 		{
-			for (int y = 0; y < board.getHeight(); ++y)
+			for (int y = 0; y < state.getBoardHeight(); ++y)
 			{
 				// get the current tile
-				const auto& tile = board[{x, y}];
-				const auto& fogTile = fowBoard[{x, y}];
+				const auto& tile = state.getTileAt({x, y});
+				const auto& fogTile = fowState.getTileAt({x, y});
 
 				// get a pointer to the current tile's quad
-				sf::Vertex* quad = &m_vertices[(x + y * board.getWidth()) * 4];
+				sf::Vertex* quad = &m_vertices[(x + y * state.getBoardWidth()) * 4];
 				if(!renderFow)
 				{
 					updateTileQuad(quad, tile, sf::Color::White);
@@ -65,7 +61,7 @@ namespace SGA
 	void TileMap::updateTileQuad(sf::Vertex* quadPtr, const Tile& tile, const sf::Color& quadColor) const
 	{
 		// define the 4 corners
-		auto start = toISO(tile.position.x, tile.position.y) - sf::Vector2f{TILE_ORIGIN_X, TILE_ORIGIN_Y};
+		auto start = toISO(tile.x(), tile.y()) - sf::Vector2f{TILE_ORIGIN_X, TILE_ORIGIN_Y};
 		auto tileSize = tileset.getSpriteSize();
 		quadPtr[0].position = sf::Vector2f(start.x, start.y);
 		quadPtr[1].position = sf::Vector2f(start.x + tileSize.x, start.y);
