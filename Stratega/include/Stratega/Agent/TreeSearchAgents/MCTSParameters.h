@@ -11,18 +11,19 @@ namespace SGA {
 
     public:
 
-        MCTSParameters() 
-        {
-        }
+        MCTSParameters() {}
 
-        double K = sqrt(2);
-        int rolloutLength = 3;
-        bool rolloutsEnabled = true;
-        double epsilon = 1e-2;
-        bool continuePreviousSearch = true;
+        double K = sqrt(2);                     //Balance constant for tree policy (UCT)
+        int rolloutLength = 3;                  //Lenght of the complete playout.
+        bool rolloutsEnabled = true;            //If the simulation/rollout phase should be executed or not.
+        bool continuePreviousSearch = true;     //Indicates if tree should be kept between two consecutive decision making steps.
 
-        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
+        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
+        double epsilon = 1e-2;                  //Small number to avoid /0
 
+        /// <summary>
+        /// Prints the details of this parameters object.
+        /// </summary>
         void printDetails() const;
     };
 }
@@ -32,6 +33,13 @@ namespace YAML
     template<>
     struct convert<SGA::MCTSParameters>
     {
+        /// <summary>
+        /// Reads Agent generic (via call rhs.decode(node)) and MCTS-specific parameters received in a YAML node.
+        /// Add lines to this method to capture more parameters.
+        /// </summary>
+        /// <param name="node">YAML Node with the parameters for the agent.</param>
+        /// <param name="rhs">Parameters object to be modified with the contents of the YAML node.</param>
+        /// <returns>True if there was no problem.</returns>
         static bool decode(const Node& node, SGA::MCTSParameters& rhs)
         {
             rhs.decode(node);

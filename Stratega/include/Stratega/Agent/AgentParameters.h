@@ -40,20 +40,17 @@ namespace SGA {
 
 	struct AgentParameters {
 
-	protected:
+	public:
 
 		/// <summary>
 		/// The script the opponent is simulated with. Never set this to be a nullptr, use SkipTurnScript instead
 		/// </summary>
 		std::shared_ptr<BaseActionScript> opponentModel;
 
-
 		/// <summary>
 		/// A factory of abstracted states.
 		/// </summary>
 		std::unique_ptr<StateFactory> stateFactory = nullptr;
-
-	public: 
 
 		/// <summary>
 		/// The maximum number of forward model calls. To be used if this->budgetType == FMCALLS;

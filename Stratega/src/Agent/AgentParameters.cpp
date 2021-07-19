@@ -1,16 +1,14 @@
 #include <Stratega/Agent/AgentParameters.h>
+#include <Stratega/Agent/ActionScripts/SkipTurnScript.h>
 
 namespace SGA {
 	
 
 	AgentParameters::AgentParameters()
 	{
-		//std::shared_ptr<BaseActionScript> random = std::make_shared<RandomActionScript>();
-		//portfolio.emplace_back(random);
-		//heuristic = std::make_unique<MinimizeDistanceHeuristic>();
-		portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
-		opponentModel = std::make_shared<RandomActionScript>();
+		opponentModel = std::make_shared<SkipTurnScript>();
 		budgetType = Budget::UNDEFINED;
+		portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
 	};
 
 	void AgentParameters::initBudget(const Timer& timer)

@@ -10,26 +10,18 @@ namespace SGA {
 
 	public:
 
-		RHEAParams()
-		{
-			opponentModel = std::make_shared<RandomActionScript>();
-			heuristic = std::make_shared<MinimizeDistanceHeuristic>();
-		}
+		RHEAParams() { }
 
-		// basic parameters
 		size_t popSize = 10;				// population size
 		size_t individualLength = 10;		// planning horizon of an individual
-
-		// evolution and selection
 		double mutationRate = 0.1;			// mutation rate when transferring one individual to the next generation
-		int tournamentSize = 3;			// number of individuals per tournament selection
+		int tournamentSize = 3;				// number of individuals per tournament selection
 		bool elitism = true;				// if true, always transfer the best individual to the next generation
-
-		// re-use previous iteration?
-		bool continuePreviousSearch = true;		// initialize new population with shifted best individual of the previous iteration
+		bool continuePreviousSearch = true;	// initialize new population with shifted best individual of the previous iteration
 		size_t mutateBestN = 9;				// include Mutate_best additional copies of the shifted best individual in the next population
 
-		double epsilon = 1e-2;					// the amount of noise for randomly modifying an individuals value
+		double epsilon = 1e-2;				// the amount of noise for randomly modifying an individuals value
+		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
 		
 		void printDetails() const;
 	};
@@ -41,6 +33,13 @@ namespace YAML
 	template<>
 	struct convert<SGA::RHEAParams>
 	{
+		/// <summary>
+		/// Reads Agent generic (via call rhs.decode(node)) and RHEA-specific parameters received in a YAML node.
+		/// Add lines to this method to capture more parameters.
+		/// </summary>
+		/// <param name="node">YAML Node with the parameters for the agent.</param>
+		/// <param name="rhs">Parameters object to be modified with the contents of the YAML node.</param>
+		/// <returns>True if there was no problem.</returns>
 		static bool decode(const Node& node, SGA::RHEAParams& rhs)
 		{
 			rhs.decode(node);

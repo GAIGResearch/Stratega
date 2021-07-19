@@ -2,8 +2,21 @@
 
 namespace SGA
 {
+
+    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    {
+        parameters_.PLAYER_ID = getPlayerID();
+        if (parameters_.heuristic == nullptr)
+            parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        if (parameters_.budgetType == Budget::UNDEFINED)
+            parameters_.budgetType = Budget::TIME;
+        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+    }
+
+
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        //Initialize the budget for this action call.
         parameters_.initBudget(timer);
         //parameters_.printDetails();
 
@@ -36,9 +49,8 @@ namespace SGA
                 rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state, getPlayerID());
             }
 
-            //params.printDetails();
+            //Do search!
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
-            //rootNode->printTree();
 
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
@@ -48,15 +60,6 @@ namespace SGA
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             return ActionAssignment::fromSingleAction(bestAction);
         }
-    }
-
-    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
-    {
-        parameters_.PLAYER_ID = getPlayerID();
-        if (parameters_.heuristic == nullptr)
-            parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        if (parameters_.budgetType == Budget::UNDEFINED)
-            parameters_.budgetType = Budget::TIME;
     }
 
 }

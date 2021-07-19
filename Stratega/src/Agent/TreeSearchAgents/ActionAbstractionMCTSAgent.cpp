@@ -56,6 +56,14 @@ namespace SGA
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
 
+
+        // Scripts={AC AW }
+        parameters_.portfolio.clear();
+        std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
+        parameters_.portfolio.emplace_back(std::move(attackClose));
+        std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
+        parameters_.portfolio.emplace_back(std::move(attackWeak));
+
     }
 
 }

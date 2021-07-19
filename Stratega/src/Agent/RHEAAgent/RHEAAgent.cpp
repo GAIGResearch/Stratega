@@ -4,12 +4,24 @@
 
 namespace SGA
 {
+    //Initializes the agent. Sets player ID, heuristic and opponent model.
+    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    {
+        params_.PLAYER_ID = getPlayerID();
+        if (params_.heuristic == nullptr)
+            params_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        if (params_.budgetType == Budget::UNDEFINED)
+            params_.budgetType = Budget::TIME;
+        params_.opponentModel = std::make_shared<RandomActionScript>();
+    }
+
     ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        //Initialize the budget for this action call.
         params_.initBudget(timer);
+        //params_.printDetails();
 
-        params_.printDetails();
-
+        //Action space from this state, for this plaer.
         auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
         // in case only one action is available the player turn ends
@@ -31,7 +43,7 @@ namespace SGA
                 initializePopulation(forwardModel, state, getRNGEngine());
             }
 
-            // run rhea and return the best individual of the previous generation
+            // run rhea and return the best individual of the last generation
             rheaLoop(forwardModel, state, getRNGEngine());
             return ActionAssignment::fromSingleAction(pop_[0].getActions().front());
         }
@@ -147,13 +159,4 @@ namespace SGA
         return std::vector<RHEAGenome>{parent1, parent2};
     }
 
-
-    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
-    {
-        params_.PLAYER_ID = getPlayerID();
-        if (params_.heuristic == nullptr)
-            params_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        if (params_.budgetType == Budget::UNDEFINED)
-            params_.budgetType = Budget::TIME;
-    }
 }

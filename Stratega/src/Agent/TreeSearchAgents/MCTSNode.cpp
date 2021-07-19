@@ -31,30 +31,6 @@ namespace SGA
 		}
 	}
 
-	void MCTSNode::setDepth(int depth)
-	{
-		nodeDepth = depth;
-		for (size_t i = 0; i < this->children.size(); i++) {
-			children.at(i)->setDepth(depth + 1);
-		}
-	}
-
-	void MCTSNode::increaseTreeSize()
-	{
-		treesize++;
-
-		if (parentNode)
-		{
-			parentNode->increaseTreeSize();
-		}
-		else
-		{
-			if (treesize % 500 == 0)
-				std::cout << "tree size: " << treesize << "\n";
-		}
-	}
-
-
 	/// <summary>
 	/// Start MCTS with the provided parameters
 	/// </summary>
@@ -82,13 +58,14 @@ namespace SGA
 	{
 		MCTSNode* cur = this;
 
-		while (!cur->gameState.isGameOver())// && cur->nodeDepth < params.rolloutLength)
+		while (!cur->gameState.isGameOver() && cur->nodeDepth < params.rolloutLength)
 		{
+			//If not fully expanded, add a new child
 			if (!cur->isFullyExpanded()) {
 				return (cur->expand(forwardModel, params, randomGenerator));
 			}
 			else {
-				//printTree();
+				//otherwise apply UCT to navigate the tree.
 				cur = cur->uct(params, randomGenerator);
 			}
 		}
@@ -108,41 +85,31 @@ namespace SGA
 		return children[childIndex].get();
 	}
 
-	double MCTSNode::normalize(const double aValue, const double aMin, const double aMax)
-	{
-		if (aMin < aMax)
-			return (aValue - aMin) / (aMax - aMin);
-
-		// if bounds are invalid, then return same value
-		return aValue;
-	}
-
-	double MCTSNode::noise(const double input, const double epsilon, const double random)
-	{
-		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
-	}
-
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
+		//Find out if this node corresponds to a state where I can move.
 		bool amIMoving = gameState.canPlay(params.PLAYER_ID);
-
 		std::vector<double> childValues(children.size(), 0);
 
 		for (size_t i = 0; i < children.size(); ++i)
 		{
 			MCTSNode* child = children[i].get();
 
+			//Compute the value of the child. First the exploitation value:
 			const double hvVal = child->value;
 			double childValue = hvVal / (child->nVisits + params.epsilon);
 			childValue = normalize(childValue, bounds[0], bounds[1]);
 
+			//Then add the exploration factor multiplied by constant K.
 			double uctValue = childValue +
 				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
 
-			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
+			//Add a small noise to break ties randomly
+			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 			childValues[i] = uctValue;
 		}
 
+		//Keep the best action as decided by UCT. If I'm moving in this node, we'll aim to maximize the UCT value. Otherwise, minimize. 
 		int which = -1;
 		double bestValue = amIMoving ? -std::numeric_limits<double>::max() : std::numeric_limits<double>::max();
 
@@ -155,6 +122,7 @@ namespace SGA
 
 		if (which == -1)
 		{
+			//This shouldn't happen, MCTS can't find a node to pick. Use this printing for debug:
 			std::cout << "this subtree:" << "\n";
 			printTree();
 
@@ -183,20 +151,32 @@ namespace SGA
 		return children[which].get();
 	}
 
+	//Executes the rollout phase of MCTS
 	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
 	{
+		//... only if rollouts are enabled in the parameter settings.
 		if (params.rolloutsEnabled) {
+
+			//Create a copy and mark our depth on the tree.
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
+			//If we must keep rolling.
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
+				
+				//Find my action space.
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
 					break;
+
+				//Pick one action at random and apply it to the current game state. 
 				std::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params, playerID);
 				thisDepth++;
 			}
+
+			//We evaluate the state at the end of the rollout using the heuristic specified in the parameter settings. 
+			//We then return this reward to the last node expanded in the tree.
 			return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
 		}
 
@@ -225,6 +205,7 @@ namespace SGA
 		}
 	}
 
+	//Backpropagation in MCTS. Update number of visits, accummulated reward value and node reward bounds.
 	void MCTSNode::backUp(MCTSNode* node, const double result)
 	{
 		MCTSNode* n = node;
@@ -242,6 +223,7 @@ namespace SGA
 		}
 	}
 
+	//Returns the index of the most visited child of this node.
 	int MCTSNode::mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		int selected = -1;
@@ -249,19 +231,7 @@ namespace SGA
 		bool allEqual = true;
 		double first = -1;
 
-		//cout << "Remaining budget: " << params.REMAINING_FM_CALLS << "\n";
-		//printTree();
-
-		//auto* childValues = new double[children.size()];
-		std::vector<double> childValues(children.size(), 0);
-		for (size_t i = 0; i < children.size(); ++i)
-		{
-			MCTSNode* child = children[i].get();
-
-			const double hvVal = child->value;
-			childValues[i] = hvVal;
-		}
-
+		//See the visits to all children, keep the one with the highest.
 		for (size_t i = 0; i < children.size(); i++) {
 
 			if (children[i] != nullptr)
@@ -274,8 +244,9 @@ namespace SGA
 				}
 
 				double childValue = children[i]->nVisits;
-				//double childValue = children[i]->totValue / children[i]->nVisits ;
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
+
+				//Add a small noise (<<1) to all values to break ties randomly
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -283,30 +254,29 @@ namespace SGA
 			}
 		}
 
-		if (selected == -1)
-		{
-			selected = 0;
-		}
-		else if (allEqual)
+		if (selected == -1 || allEqual)
 		{
 			//If all are equal, we opt to choose for the one with the best Q.
 			selected = bestAction(params, randomGenerator);
 		}
-		//cout << "best action: " << actions.at(selected)->getName() << "\n";
 
 		return selected;
 	}
 
+	//Selects the index of the child with the highest average reward value.
 	int MCTSNode::bestAction(MCTSParameters& params, std::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();
 
+		//Check the values for all children.
 		for (size_t i = 0; i < children.size(); i++) {
 
 			if (children[i] != nullptr) {
 				double childValue = children[i]->value / (children[i]->nVisits + params.epsilon);
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     //break ties randomly
+
+				//Add a small random noise to break ties randomly
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -316,11 +286,52 @@ namespace SGA
 
 		if (selected == -1)
 		{
+			//This shouldn't happen, just pick the first action.
 			//cout << "Unexpected selection!" << "\n";
 			selected = 0;
 		}
 
 		return selected;
+	}
+
+	// helper function: normalizes a value between a range aMin - aMax.
+	double MCTSNode::normalize(const double aValue, const double aMin, const double aMax)
+	{
+		if (aMin < aMax)
+			return (aValue - aMin) / (aMax - aMin);
+
+		// if bounds are invalid, then return same value
+		return aValue;
+	}
+
+	// helper function: adds a small random noise to a value and returns it.
+	double MCTSNode::noise(const double input, const double epsilon, const double random)
+	{
+		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
+	}
+
+	// setter for the depth of this node and all nodes in the sub-tree this is root of.
+	void MCTSNode::setDepth(int depth)
+	{
+		nodeDepth = depth;
+		for (size_t i = 0; i < this->children.size(); i++) {
+			children.at(i)->setDepth(depth + 1);
+		}
+	}
+
+	// Increments the counter of nodes below this one.
+	void MCTSNode::increaseTreeSize()
+	{
+		treesize++;
+		if (parentNode)
+		{
+			parentNode->increaseTreeSize();
+		}
+		else
+		{
+			if (treesize % 500 == 0)
+				std::cout << "tree size: " << treesize << "\n";
+		}
 	}
 
 	void MCTSNode::print() const

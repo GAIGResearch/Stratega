@@ -3,22 +3,26 @@
 
 namespace SGA {
 
+    /// <summary>
+    /// Creates and evaluates a genome
+    /// </summary>
     RHEAGenome::RHEAGenome(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params)
     {
+        //Actions available in this state, always starting with our player.
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
 
         size_t length = 0;
         while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.individualLength) {
-            // choose and apply random action
-            //todo forward random generator to getRandomAction
+            // Until the end of the sequence: choose and apply a random action to the state with the forward model.
             auto action = actionSpace.at(rand() % actionSpace.size());
             applyActionToGameState(forwardModel, gameState, action, params);
+            //new state will have new available actions.
             actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
             actions.emplace_back(action);
             length++;
         }
 
-        // rate newly created individual
+        // Calculate the fitness of the newly created individual
         value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
     }
 
@@ -43,8 +47,8 @@ namespace SGA {
 
     void RHEAGenome::mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
     {
+        //Retrieve the action space for this state.
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
-
 
         // go through the actions and fill the actionVector of its child
         unsigned long long actIdx = 0;
@@ -139,17 +143,19 @@ namespace SGA {
 
                 if (!validAction)
                 {
-                    // use a random portfolio by default
+                    // use a random action by default
                     actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
                 }
 
+                //Apply the chosen action to the game state and generate the new set of possible actions for the next step.
                 applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
                 actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
             }
             actIdx++;
         }
 
-        const double value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+        //Compute the fitness of this individual and assign it to a new genome.
+        double value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
         return RHEAGenome(actions, value);
     }
 

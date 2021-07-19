@@ -16,12 +16,6 @@ namespace SGA
 		explicit ActionAbstractionMCTSAgent(const std::string& name, MCTSParameters&& params)
 			: Agent(name),parameters_(std::move(params))
 		{
-			// Scripts={AC AW }
-			parameters_.portfolio.clear();
-			std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
-			parameters_.portfolio.emplace_back(std::move(attackClose));
-			std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
-			parameters_.portfolio.emplace_back(std::move(attackWeak));
 		}
 
 
