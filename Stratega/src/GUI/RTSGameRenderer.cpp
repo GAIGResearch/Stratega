@@ -183,7 +183,7 @@ namespace SGA
 						if (actionsSettings.waitingForEntity)
 						{
 							auto gridPos = toGridFloat(pos);
-							assignEntity(state, actionsSettings, unit->id);
+							assignEntity(state, actionsSettings, unit->getID());
 						}
 						else
 						{
@@ -227,13 +227,13 @@ namespace SGA
 				auto yLeft = std::min(prevMouseWorldPos.y, pos.y);
 				auto yRight = std::max(prevMouseWorldPos.y, pos.y);
 
-				for (auto& unit : state.entities)
+				for (auto& unit : state.getEntities())
 				{
-					sf::Vector2f screenPos = toISO(unit.position.x, unit.position.y);
+					sf::Vector2f screenPos = toISO(unit.x(), unit.y());
 					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
 					{
-						if (unit.ownerID == pointOfViewPlayerID)
-							actionsSettings.selectedEntities.emplace(unit.id);
+						if (unit.getOwnerID() == pointOfViewPlayerID)
+							actionsSettings.selectedEntities.emplace(unit.getID());
 					}
 				}
 			}
@@ -274,7 +274,7 @@ namespace SGA
 		// We're recalculating this, since we've changed the view
 		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 	}
-	void RTSGameRenderer::keyPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::keyPressed(const sf::Event& /*event*/, sf::View& view, sf::RenderWindow& window)
 	{
 		// Camera movement
 		sf::Vector2f movementDir;
@@ -328,26 +328,26 @@ namespace SGA
 
 
 		//Check if units are selected
-		for (const auto& unit : selectedGameStateCopy->entities)
+		for (const auto& unit : selectedGameStateCopy->getEntities())
 		{
-			if (actionsSettings.isSelected(unit.id))
+			if (actionsSettings.isSelected(unit.getID()))
 			{
 				auto& selectionTexture = assetCache.getTexture("circleCollider");
 				sf::Sprite selectionSprite(selectionTexture);
 				selectionSprite.setOrigin(selectionTexture.getSize().x / 2.f, selectionTexture.getSize().y / 2.f);
-				selectionSprite.setPosition(toISO(unit.position.x, unit.position.y) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
+				selectionSprite.setPosition(toISO(unit.x(), unit.y()) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
 				selectionSprite.setColor(sf::Color::Blue);
 				window.draw(selectionSprite);
 			}
 		}
 
 		if (drawDebug) {
-			const dtNavMesh* mesh = selectedGameStateCopy->navigation->m_navMesh;
+			const dtNavMesh* mesh = selectedGameStateCopy->getRTSNavigation()->m_navMesh;
 
 			if (mesh)
 			{
 				//Draw navmesh polygons
-				for (int i = 0; i < selectedGameStateCopy->navigation->m_navMesh->getMaxTiles(); ++i)
+				for (int i = 0; i < selectedGameStateCopy->getRTSNavigation()->m_navMesh->getMaxTiles(); ++i)
 				{
 					const dtMeshTile* tile = mesh->getTile(i);
 
@@ -393,16 +393,16 @@ namespace SGA
 		}
 
 		//Draw paths of units
-		for (auto& unit : selectedGameStateCopy->entities)
+		for (auto& unit : selectedGameStateCopy->getEntities())
 		{
 			//Check if has a valid path
-			if (unit.path.m_nstraightPath > 0)
+			if (unit.getPath().m_nstraightPath > 0)
 			{
 				//Draw path lines
-				for (int i = 0; i < unit.path.m_nstraightPath - 1; ++i)
+				for (int i = 0; i < unit.getPath().m_nstraightPath - 1; ++i)
 				{
-					auto v1 = toISO(unit.path.m_straightPath[i * 3], unit.path.m_straightPath[i * 3 + 2]);
-					auto v2 = toISO(unit.path.m_straightPath[(i + 1) * 3], unit.path.m_straightPath[(i + 1) * 3 + 2]);
+					auto v1 = toISO(unit.getPath().m_straightPath[i * 3], unit.getPath().m_straightPath[i * 3 + 2]);
+					auto v2 = toISO(unit.getPath().m_straightPath[(i + 1) * 3], unit.getPath().m_straightPath[(i + 1) * 3 + 2]);
 
 					//Adjust to sprites offset
 					v1.x += TILE_WIDTH_HALF;
@@ -418,11 +418,11 @@ namespace SGA
 				}
 
 				//Draw path points
-				for (int i = 0; i < unit.path.m_nstraightPath; ++i)
+				for (int i = 0; i < unit.getPath().m_nstraightPath; ++i)
 				{
 					sf::CircleShape pathCircle;
-					float v1 = unit.path.m_straightPath[i * 3];
-					float v2 = unit.path.m_straightPath[i * 3 + 2];
+					float v1 = unit.getPath().m_straightPath[i * 3];
+					float v2 = unit.getPath().m_straightPath[i * 3 + 2];
 
 					auto pos = toISO(v1, v2);
 					pathCircle.setPosition(pos);
@@ -524,7 +524,7 @@ namespace SGA
 				//Check if entity have sprite
 				auto& entityType = state.getEntity(entity)->getEntityType();
 				//Add units
-				sf::Texture& texture = assetCache.getTexture(entityType.name);
+				sf::Texture& texture = assetCache.getTexture(entityType.getName());
 
 				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
 				{
@@ -586,13 +586,11 @@ namespace SGA
 
 		ImGui::BeginChild("Scrolling");
 
-		auto& units = state.entities;
-
-		for (auto& unit : units)
+		for (auto& unit : state.getEntities())
 		{
 			auto& type = unit.getEntityType();
 			std::string unitInfo;
-			unitInfo = type.name + " " + std::to_string(unit.id) + " PID: " + std::to_string(unit.ownerID);
+			unitInfo = type.getName() + " " + std::to_string(unit.getID()) + " PID: " + std::to_string(unit.getOwnerID());
 			ImGui::Text(unitInfo.c_str());
 		}
 
@@ -618,31 +616,31 @@ namespace SGA
 				std::string actionInfo = std::to_string(index);
 				if (action.getActionTypeID() == -1)
 				{
-					if (action.actionTypeFlags == ActionFlag::AbortContinuousAction)
+					if (action.getActionFlag() == ActionFlag::AbortContinuousAction)
 					{
-						if (action.targets[0].getType() == ActionTarget::EntityReference)
+						if (action.getTargets()[0].getType() == ActionTarget::EntityReference)
 						{
 							//We need to find the continues action name that will abort
-							auto& sourceEntity = *state.getEntityConst(action.targets[0].getEntityID());
+							auto& sourceEntity = *state.getEntityConst(action.getTargets()[0].getEntityID());
 							for (const auto& continueAction : sourceEntity.getContinuousActions())
 							{
-								if (continueAction.continuousActionID == action.continuousActionID)
+								if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 								{
 									const ActionType& actionType = continueAction.getActionType();
-									actionInfo += " Abort " + actionType.name;
+									actionInfo += " Abort " + actionType.getName();
 								}
 							}
 						}
 						else
 						{
 							//We need to find the continues action name that will abort
-							auto& sourcePlayer = action.targets[0].getPlayer(state);
-							for (auto& continueAction : sourcePlayer.continuousAction)
+							auto& sourcePlayer = action.getTargets()[0].getPlayer(state);
+							for (auto& continueAction : sourcePlayer.getContinuousActions())
 							{
-								if (continueAction.continuousActionID == action.continuousActionID)
+								if (continueAction.getContinuousActionID() == action.getContinuousActionID())
 								{
 									const ActionType& actionType = continueAction.getActionType();
-									actionInfo += " Abort " + actionType.name;
+									actionInfo += " Abort " + actionType.getName();
 								}
 							}
 						}
@@ -654,10 +652,10 @@ namespace SGA
 				{
 					const ActionType& actionType = action.getActionType();
 
-					actionInfo += " " + actionType.name;
+					actionInfo += " " + actionType.getName();
 
 					//TODO Clean this :D IS TEMPORAL
-					for (auto& targetType : action.targets)
+					for (auto& targetType : action.getTargets())
 					{
 						switch (targetType.getType())
 						{
@@ -665,16 +663,16 @@ namespace SGA
 							actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
 							break;
 						case ActionTarget::EntityReference:
-							actionInfo += state.getEntity(targetType.getEntityID())->getEntityType().name;
+							actionInfo += state.getEntity(targetType.getEntityID())->getEntityType().getName();
 							break;
 						case ActionTarget::PlayerReference:
 							actionInfo += " Player: " + std::to_string(pointOfViewPlayerID);
 							break;
 						case ActionTarget::TechnologyReference:
-							actionInfo += " Technology: " + state.gameInfo->technologyTreeCollection->getTechnology(targetType.getTechnologyID()).name;
+							actionInfo += " Technology: " + state.getGameInfo()->getTechnologyTreeCollection().getTechnology(targetType.getTechnologyID()).name;
 							break;
 						case ActionTarget::EntityTypeReference:
-							actionInfo += " Entity: " + targetType.getEntityType(state).name;
+							actionInfo += " Entity: " + targetType.getEntityType(state).getName();
 							break;
 						case ActionTarget::ContinuousActionReference:
 							break;
@@ -792,14 +790,14 @@ namespace SGA
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
 			const auto* player = state.getPlayer(fowSettings.selectedPlayerID);
-			for (const auto& parameter : *state.gameInfo->playerParameterTypes)
+			for (const auto& parameter : state.getGameInfo()->getPlayerParameterTypes())
 			{
 				//Double to string with 2 precision				
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->parameters[parameter.second.index];
+				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.getIndex());
 				std::string valueParameter = stream.str();
 
-				std::string parameterInfo = parameter.second.name + ": " + valueParameter;
+				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
 				ImGui::BulletText(parameterInfo.c_str());
 			}
 		}

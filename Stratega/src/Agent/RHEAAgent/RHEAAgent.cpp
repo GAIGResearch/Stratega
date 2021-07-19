@@ -74,7 +74,7 @@ namespace SGA
     void RHEAAgent::rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
-        while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
+        while (params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver())
         {
             pop_ = nextGeneration(forwardModel, gameState, randomGenerator);
         }

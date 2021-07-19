@@ -9,9 +9,9 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 
@@ -20,13 +20,13 @@ namespace SGA
 			std::map<int, Vector2f> positions = std::map<int, Vector2f>();
 			std::vector<int> myUnits;
 			std::set<int> friendlyUnits;
-			for (auto& entity : gameState.entities) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+			for (const auto& entity : gameState.getEntities()) {
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
-					friendlyUnits.insert(entity.id);
+					myUnits.push_back(entity.getID());
+					friendlyUnits.insert(entity.getID());
 				}
 			}
 
@@ -41,7 +41,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = maximalDistanceToFriends(action.targets[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -62,7 +62,7 @@ namespace SGA
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)
 		{
-			if (action.targets[0].getEntityID() == unitID)
+			if (action.getTargets()[0].getEntityID() == unitID)
 			{
 				suitableActions.push_back(action);
 			}
@@ -72,9 +72,9 @@ namespace SGA
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
-			for (auto a : *gameState.gameInfo->actionTypes)
+			for (const auto& a : gameState.getGameInfo()->getActionTypes())
 			{
-				actionTypeIDToActionTypeString[a.first] = a.second.name;
+				actionTypeIDToActionTypeString[a.first] = a.second.getName();
 			}
 			actionTypeIDToActionTypeString[-1] = "EndTurn";
 
@@ -83,13 +83,13 @@ namespace SGA
 			std::map<int, Vector2f> positions = std::map<int, Vector2f>();
 			std::vector<int> myUnits;
 			std::set<int> friendlyUnits;
-			for (auto& entity : gameState.entities) {
-				positions.insert(std::pair<int, Vector2f>(entity.id, entity.position));
+			for (auto& entity : gameState.getEntities()) {
+				positions.insert(std::pair<int, Vector2f>(entity.getID(), entity.getPosition()));
 
-				if (entity.ownerID == playerID)
+				if (entity.getOwnerID() == playerID)
 				{
-					myUnits.push_back(entity.id);
-					friendlyUnits.insert(entity.id);
+					myUnits.push_back(entity.getID());
+					friendlyUnits.insert(entity.getID());
 				}
 			}
 
@@ -104,7 +104,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = maximalDistanceToFriends(action.targets[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;

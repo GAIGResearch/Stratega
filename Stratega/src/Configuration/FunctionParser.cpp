@@ -10,7 +10,7 @@ namespace SGA
 		context.parameterIDs = config.parameters;
 		for (const auto& entityType : config.entityTypes)
 		{
-			context.entityTypeIDs.emplace(entityType.second.name, entityType.first);
+			context.entityTypeIDs.emplace(entityType.second.getName(), entityType.first);
 		}
 
 		for (const auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
@@ -24,7 +24,7 @@ namespace SGA
 
 		for (const auto& tileType : config.tileTypes)
 		{
-			context.tileTypeIDs.emplace(tileType.second.name, tileType.first);
+			context.tileTypeIDs.emplace(tileType.second.getName(), tileType.first);
 		}
 		return context;
 	}

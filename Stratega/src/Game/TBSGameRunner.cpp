@@ -14,7 +14,7 @@ namespace SGA
 	{
 		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
-		while(!currentState->isGameOver)
+		while(!currentState->isGameOver())
 		{
 			ActionAssignment nextAction;
 			auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
@@ -83,7 +83,7 @@ namespace SGA
 
 	void TBSGameRunner::runInternal(std::vector<std::shared_ptr<Agent>>& agents, GameObserver& observer)
 	{
-		while (!currentState->isGameOver)
+		while (!currentState->isGameOver())
 		{
 			AgentResults results;
 			ActionAssignment actionAssignment;
@@ -118,7 +118,7 @@ namespace SGA
 		if (playerWarnings[currentState->getCurrentTBSPlayer()] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
 			std::cout<<"WARNING: Player  " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding warnings number" << std::endl;
 			return false;
 		}
@@ -132,7 +132,7 @@ namespace SGA
 		else if (computationTime.count() >= disqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->canPlay = false;
+			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
 			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding the computation time" << std::endl;
 			return false;
 		}		

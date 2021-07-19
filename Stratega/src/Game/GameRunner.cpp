@@ -56,7 +56,7 @@ namespace SGA
 
 	void GameRunner::run(std::vector<std::shared_ptr<Agent>>& agents, GameObserver* observer)
 	{
-		assert(agents.size() == currentState->players.size());
+		assert(agents.size() == currentState->getNumPlayers());
 		if(observer == nullptr)
 		{
 			observer = defaultObserver;
@@ -90,7 +90,7 @@ namespace SGA
 
 	void GameRunner::play(std::vector<std::shared_ptr<Agent>>& agents, SGA::Vector2f& resolution)
 	{
-		assert(agents.size() == currentState->players.size());
+		assert(agents.size() == currentState->getNumPlayers());
 		try
 		{
 			// Check if a player is controlled by an human
@@ -132,7 +132,7 @@ namespace SGA
 		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)
 		{
 			//Disqualify player for exceeding the initialization time
-			currentState->getPlayer(playerID)->canPlay = false;
+			currentState->getPlayer(playerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(playerID) << " disqualified for exceeding the initialization time" << std::endl;
 		}
 	}
@@ -182,7 +182,7 @@ namespace SGA
 	{
 		if (renderer == nullptr)
 		{
-			renderer = createRenderer(currentState->gameType, resolution);
+			renderer = createRenderer(currentState->getGameType(), resolution);
 			renderer->init(*currentState, *config);
 		}
 	}

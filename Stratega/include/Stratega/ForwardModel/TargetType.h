@@ -20,20 +20,44 @@ namespace SGA
 	struct TargetType
 	{
 		enum Type { None, Position, EntityType, Entity, Technology, ContinuousAction};
-		
+	
+
+
+	private:
+
+		/// <summary>
+		/// Type of this target, defined in enum Type {};
+		/// </summary>
 		Type type = Type::None;
 
+		/// <summary>
+		/// Pointer to the sampling method for this target type.
+		/// </summary>
 		std::shared_ptr<SamplingMethod> samplingMethod;
-		
-		// Specific variables for targetType=Unit
+
+		/// <summary>
+		/// Set of entity type IDs for this target
+		/// Specific variables for targetType=Unit
+		/// </summary>
 		std::unordered_set<int> groupEntityTypes;
-		
-		// Specific variables for targetType=Technology
+
+		/// <summary>
+		/// Set of technology type IDs for this target
+		/// Specific variables for targetType=Technology
+		/// </summary>
 		std::unordered_set<int> technologyTypes;
 
+	public:
+
+		/// <summary>
+		/// Operator for type comparison
+		/// </summary>
 		operator Type() const { return type; }
 
-		std::string getTypeString() const
+		/// <summary>
+		/// Returns a string that represents this target.
+		/// </summary>
+		const std::string getTypeString() const
 		{
 			switch (type)
 			{
@@ -57,8 +81,23 @@ namespace SGA
 				break;
 			}
 		}
+
 		//Check if is a valid target
 		bool isValid(const GameState& state, const ActionTarget& actionTarget, const ActionTarget& sourceActionTarget) const;
+
+		/* Getters and setters for this target type */
+
+		const Type& getType() const { return type; }
+		void setType(const Type& type) { this->type = type; }
+
+		std::shared_ptr<SamplingMethod> getSamplingMethod() const { return samplingMethod; }
+		void setSamplingMethod(std::shared_ptr<SamplingMethod> samplingMethod) { this->samplingMethod = samplingMethod; }
+
+		const std::unordered_set<int>& getGroupEntityTypes() const { return groupEntityTypes; }
+		void setGroupEntityTypes(const std::unordered_set<int>& groupTypes) { groupEntityTypes = groupTypes; }
+
+		const std::unordered_set<int>& getTechnologyTypes() const { return technologyTypes; }
+		std::unordered_set<int>& getTechnologyTypes() { return technologyTypes; }
 
 	};
 }

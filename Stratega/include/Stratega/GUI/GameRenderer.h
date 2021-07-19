@@ -15,7 +15,7 @@ namespace SGA
 	class GameRenderer
 	{
 	public:
-		static inline int NO_PLAYER_ID = -1;
+		static inline int NO_PLAYER_ID = -2;
 		
 		virtual ~GameRenderer() = default;
 
@@ -64,5 +64,5 @@ namespace SGA
 	/// </summary>
 	/// <param name="type">The type of the game that you want to render.</param>
 	/// <returns>A pointer to the initialized GameRenderer.</returns>
-	std::unique_ptr<GameRenderer> createRenderer(GameType& type, SGA::Vector2f& resolution);
+	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2f& resolution);
 }

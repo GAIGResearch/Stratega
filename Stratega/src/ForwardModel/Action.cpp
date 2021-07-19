@@ -6,8 +6,8 @@ namespace SGA
 {
 	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
-		auto& type = state.gameInfo->actionTypes->at(getActionTypeID());
-		for (auto& effect : type.effects)
+		const auto& type = state.getGameInfo()->getActionTypes().at(getActionTypeID());
+		for (const auto& effect : type.getEffects())
 		{
 			effect->execute(state,fm, targets);
 		}
@@ -30,11 +30,11 @@ namespace SGA
 			if(entity!=nullptr)
 			{
 				// Check if this action can be executed		
-				if (state.currentTick - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
+				if (state.getCurrentTick() - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.getCooldown())
 					return false;
 				
 				//Check preconditions
-				for (auto& precondition : actionType.preconditions)
+				for (auto& precondition : actionType.getPreconditions())
 				{
 					if (!precondition->isFullfiled(state, targets))
 						return false;
@@ -48,7 +48,7 @@ namespace SGA
 				}
 				
 				//Check target conditions
-				for (auto& actionTarget : actionType.actionTargets)
+				for (auto& actionTarget : actionType.getTargets())
 				{
 					for (auto& condition : actionTarget.second)
 					{
@@ -67,7 +67,7 @@ namespace SGA
 		{
 			// Check if this action can be executed		
 			auto* player = state.getPlayer(targets.at(0).getPlayerID());
-			if (state.currentTick - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.cooldownTicks)
+			if (state.getCurrentTick() - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.getCooldown())
 				return true;
 
 			//Not found
@@ -94,7 +94,7 @@ namespace SGA
 	{
 		int actionTypeID = -1;
 		if (actionType)
-			actionTypeID = actionType->id;
+			actionTypeID = actionType->getID();
 		
 		return actionTypeID;
 	}
@@ -107,7 +107,7 @@ namespace SGA
 			name = "End Turn / Pass Action";
 
 		if (actionType)
-			name = actionType->name;
+			name = actionType->getName();
 
 		return name;
 	}
@@ -119,7 +119,7 @@ namespace SGA
 			return SGA::ActionSourceType::Player;
 
 		if (actionType)
-			return actionType->sourceType;
+			return actionType->getSourceType();
 
 		return SGA::ActionSourceType::Player;
 	}

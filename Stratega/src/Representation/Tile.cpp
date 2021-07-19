@@ -6,7 +6,7 @@ namespace SGA
 	{
 		int tileTypeID = -1;
 		if (tileType)
-			tileTypeID = tileType->id;
+			tileTypeID = tileType->getID();
 
 		return tileTypeID;
 	}
@@ -15,7 +15,7 @@ namespace SGA
 	const std::string Tile::name() const {
 	
 		if(tileType != nullptr)
-			return tileType->name;
+			return tileType->getName();
 		return "Fog";
 	}
 

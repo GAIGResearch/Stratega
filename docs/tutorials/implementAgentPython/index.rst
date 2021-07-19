@@ -33,7 +33,7 @@ We plan to override the virtual method *computeAction*. Hence, our class definit
 .. code-block:: python
 
     class DoNothingPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
+        def computeAction(self, state, forward_model, timer):
         
 
 Now, let's add the code require to do... nothing. For the moment, let's assume we're playing an RTS game. Given that RTS games don't have turns, we just return an empty action assignment. 
@@ -42,38 +42,10 @@ As simple as shown in the next snippet:
 .. code-block:: python
 
     class DoNothingPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
+        def computeAction(self, state, forward_model, timer):
                 return stratega.ActionAssignment()
 
-While this would be enough to run this agent in any RTS game in Statega, it's convenient to also make it compatible with Turn-Based Games. The
-type of game is stored in the `state` object received by parameter in the *computeAction* function, and can be checked as follows:
-
-.. code-block:: python
-    if state.game_type == stratega.GameType.RTS:
-        return stratega.ActionAssignment()
-    else:
-        # return ?    
-
-
-For TBS, we need to return an action assignment that ends the turn of the current player. As this is a useful action, the class ActionAssignment has a method that creates this ActionAssignment for us. 
-We use it in the following snippet to complete the code for our agent:
-
-.. code-block:: c++
-    import stratega
-
-    class DoNothingPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
-
-            if state.game_type == stratega.GameType.RTS:
-            return stratega.ActionAssignment()
-            else:
-                action=stratega.Action.create_end_action(self.get_player_id())
-                action_assignment=stratega.ActionAssignment.from_single_action(action)
-                return action_assignment
-..
-
- In Stratega, most of the functionality is common between RTS and TBS games, with just a few exceptions like this one.
-
+And this is all. This code is compatible with the RTS and TBS types of games in Stratega, so you can use this agent for any of them straightaway.
 
 ++++++++++++++++++++
 Random Agent
@@ -86,7 +58,7 @@ set up this agent is the same as for the DoNothing agent (and any other agent in
 .. code-block:: python
 
     class RandomPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
+        def computeAction(self, state, forward_model, timer):
 
 
 What differs from the DoNothing agent is the content of the *computeAction* method. First, in order to be able to select which action to return, we need the collection of actions
@@ -118,7 +90,7 @@ line completes the code for this function:
     import stratega
 
     class RandomPythonAgent(stratega.Agent):
-        def computeAction(self, state, forward_model, time_budget_ms):
+        def computeAction(self, state, forward_model, timer):
 
             action_index=random.randint(0, actions.count()-1)
             action=actions.__getitem__(action_index)

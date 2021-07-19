@@ -35,10 +35,10 @@ snippet, which also runs through all actions in the returned list:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/DoNothing/MyAgent.h>
+    #include <Stratega/Agent/MyAgent/MyAgent.h>
     namespace SGA
     {
-        ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+        ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
         {
             std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
             for (int i = 0; i < actionSpace.size(); i++)
@@ -69,19 +69,18 @@ which rewards states with a short average distance between the player's entities
     double evaluateState(GameState& state, int playerID)
     {
         double score = 0.0;
-        std::vector<Entity*> opponentEntites = state.getNonPlayerEntities(playerID);
-        std::vector<Entity*> playerEntities = state.getPlayerEntities(playerID);
+        std::vector<Entity> opponentEntites = state.getNonPlayerEntities(playerID);
+        std::vector<Entity> playerEntities = state.getPlayerEntities(playerID);
 
-        //It also provides high rewards for winning the game, low for losing it.
-        if (state.isGameOver && state.winnerPlayerID == playerID) score = 1000;
-        else if (state.isGameOver && state.winnerPlayerID != playerID) score = -1000;
+        if (state.isGameOver() && state.getWinnerID() == playerID) score = 1000;
+        else if (state.isGameOver() && state.getWinnerID() != playerID) score = -1000;
 
         double sumOfAverageDistances = 0;
         for (const auto& p : playerEntities)
         {
             double sumOfDistances = 0;
             for (const auto& o : opponentEntites)
-                sumOfDistances += abs(p->position.x - o->position.x) + abs(p->position.y - o->position.y);
+                sumOfDistances += abs(p.x() - o.x()) + abs(p.y() - o.y());
 
             sumOfAverageDistances = sumOfDistances / opponentEntites.size();
         }
@@ -105,26 +104,23 @@ The only thing missing now is to include the logic that keeps a reference to the
 
 .. code-block:: c++
 
-    ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+    std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
+
+    int bestActionIndex = 0;
+    double bestHeuristicValue = -std::numeric_limits<double>::max();
+    for (int i = 0; i < actionSpace.size(); i++)
     {
-        std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
-
-        int bestActionIndex = 0;
-        double bestHeuristicValue = -std::numeric_limits<double>::max();
-        for (int i = 0; i < actionSpace.size(); i++)
+        GameState gsCopy(state);
+        forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
+        double value = evaluateState(gsCopy, getPlayerID());
+        if (value > bestHeuristicValue)
         {
-            GameState gsCopy(state);
-            forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-            double value = evaluateState(gsCopy, getPlayerID());
-            if (value > bestHeuristicValue)
-            {
-                bestHeuristicValue = value;
-                bestActionIndex = i;
-            }
+            bestHeuristicValue = value;
+            bestActionIndex = i;
         }
-
-        return ActionAssignment::fromSingleAction(actionSpace.at(bestActionIndex));
     }
+
+    return ActionAssignment::fromSingleAction(actionSpace.at(bestActionIndex));
 
 
 Of course, this agent is not very strong as the heuristic function does not consider the complexities of a full strategy game - hence more

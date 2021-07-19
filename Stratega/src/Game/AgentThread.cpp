@@ -6,7 +6,7 @@ namespace SGA
 {
 	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs)
 	{
-		assert(0 <= agent.getPlayerID() && agent.getPlayerID() < state.players.size());
+		assert(0 <= agent.getPlayerID() && agent.getPlayerID() < state.getNumPlayers());
 
 		auto stateCopy(state);
 

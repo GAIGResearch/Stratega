@@ -20,7 +20,7 @@ namespace SGA
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
-		if (action.actionTypeFlags == ActionFlag::EndTickAction)
+		if (action.getActionFlag() == ActionFlag::EndTickAction)
 		{
 			endTurn(state);
 		}
@@ -30,18 +30,17 @@ namespace SGA
 			executeAction(state, action);
 		}
 
-		//Remove entities
-		for (size_t i = 0; i < state.entities.size(); i++)
+		//Remove flagged entities
+		auto& entities = state.getEntities();
+		auto it = entities.begin();
+		while(it != entities.end())
 		{
-			if (state.entities[i].flagged())
-			{
-				state.entities.erase(state.entities.begin() + i);
-				i--;
-			}
+			if (it->flagged())  it = entities.erase(it);
+			else 				it++;
 		}
 
 		//Check game is finished
-		state.isGameOver = checkGameIsFinished(state);
+		state.setGameOver(checkGameIsFinished(state));
 	}
 
 	std::vector<Action> TBSForwardModel::generateActions(const GameState& state) const
@@ -52,10 +51,10 @@ namespace SGA
 	void TBSForwardModel::endTurn(GameState& state) const
 	{
 		// Find the next player who's still able to play
-		for (auto i = 1; i <= state.players.size(); i++)
+		for (auto i = 1; i <= state.getNumPlayers(); i++)
 		{
-			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.players.size();
-			auto& targetPlayer = state.players[nextPlayerID];
+			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.getNumPlayers();
+			auto& targetPlayer = state.getPlayers()[nextPlayerID];
 
 			// All players did play, we consider this as a tick
 			if (nextPlayerID == 0)
@@ -63,7 +62,7 @@ namespace SGA
 				endTick(state);
 			}
 
-			if (targetPlayer.canPlay)
+			if (targetPlayer.canPlay())
 			{
 				state.setCurrentTBSPlayer(nextPlayerID);
 				break;
@@ -74,36 +73,36 @@ namespace SGA
 
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{
-		if (state.currentTick >= state.tickLimit)
+		if (state.getCurrentTick() >= state.getTickLimit())
 			return true;
 
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
-		for (Player& player : state.players)
+		for (Player& player : state.getPlayers())
 		{
 			//Check if player won
-			if (player.canPlay && checkPlayerWon(state, player.id))
+			if (player.canPlay() && checkPlayerWon(state, player.getID()))
 			{
-				winnerID = player.id;
+				winnerID = player.getID();
 
-				state.winnerPlayerID = (winnerID);
+				state.setWinnerID(winnerID);
 				return true;
 			}
 			
-			if (player.canPlay && !checkPlayerLost(state, player.id))
+			if (player.canPlay() && !checkPlayerLost(state, player.getID()))
 			{
-				winnerID = player.id;
+				winnerID = player.getID();
 				numberPlayerCanPlay++;
 			}
 			else
 			{
-				player.canPlay = false;
+				player.setCanPlay(false);
 			}
 		}
 
 		if (numberPlayerCanPlay <= 1)
 		{
-			state.winnerPlayerID = (winnerID);
+			state.setWinnerID(winnerID);
 			return true;
 		}
 

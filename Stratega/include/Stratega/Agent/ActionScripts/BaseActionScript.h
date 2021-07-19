@@ -1,7 +1,7 @@
 #pragma once
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Action.h>
-#include <Stratega/ForwardModel/EntityActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 #include <map>
 
 namespace SGA {

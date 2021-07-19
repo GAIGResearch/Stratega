@@ -58,21 +58,21 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return state.getEntityConst(data.entityID)->ownerID;
+			return state.getEntityConst(data.entityID)->getOwnerID();
 		}
 
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 	
-	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawneableEntities(const GameState& state) const
+	const std::unordered_set<EntityTypeID>& ActionTarget::getSpawnableEntities(const GameState& state) const
 	{
 		if (targetType == PlayerReference)
 		{
-			return *state.gameInfo->playerSpawnableTypes;
+			return state.getGameInfo()->getPlayerSpawnableTypes();
 		}
 		else if (targetType == EntityReference)
 		{
-			return getEntityConst(state).getEntityType().spawnableEntityTypes;
+			return getEntityConst(state).getEntityType().getSpawnableEntityTypes();
 		}
 
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
@@ -86,7 +86,7 @@ namespace SGA
 		}
 		else if(targetType == EntityReference)
 		{
-			return getEntity(const_cast<GameState&>(state))->position;
+			return getEntity(const_cast<GameState&>(state))->getPosition();
 		}
 		else
 		{
@@ -156,7 +156,7 @@ namespace SGA
 	{
 		if (targetType == EntityTypeReference)
 		{
-			const auto& type = state.gameInfo->getEntityType(data.entityTypeID);
+			const auto& type = state.getGameInfo()->getEntityType(data.entityTypeID);
 			return type;
 		}
 		else if(targetType == EntityReference)
@@ -174,7 +174,7 @@ namespace SGA
 	{
 		if (targetType == TileTypeReference)
 		{
-			const auto& type = state.gameInfo->getTileType(data.entityTypeID);
+			const auto& type = state.getGameInfo()->getTileType(data.entityTypeID);
 			return type;
 		}
 		else
@@ -197,18 +197,20 @@ namespace SGA
 	bool ActionTarget::isValidWithTargets(const GameState& state,const  ActionType& actionType, const std::vector<ActionTarget>& actionTargets)
 	{
 		auto isValid = true;
-		for (size_t i = 0; i < actionType.actionTargets.size(); ++i)		
+		int i = 0;
+		for(auto& actionTarget : actionType.getTargets())
 		{
 			//Check valid targets
-			if (!actionType.actionTargets[i].first.isValid(state, actionTargets[i + 1], actionTargets[0]))
+			if (!actionTarget.first.isValid(state, actionTargets[i + 1], actionTargets[0]))
 				return false;
 			
 			
-			for (const auto& condition : actionType.actionTargets[i].second)
+			for (const auto& condition : actionTarget.second)
 			{
 				if (!condition->isFullfiled(state, actionTargets))
 					isValid = false;
 			}
+			i++;
 		}
 		
 		return isValid;
@@ -220,7 +222,7 @@ namespace SGA
 		{
 		case EntityReference:
 			
-			return getEntityType(state).name +" "+std::to_string(getEntityID());
+			return getEntityType(state).getName() +" "+std::to_string(getEntityID());
 			break;
 		case Position:
 		{
@@ -242,13 +244,13 @@ namespace SGA
 		case EntityTypeReference:
 			{
 			const auto& entityType = getEntityType(state);
-			return entityType.name;
+			return entityType.getName();
 			}			
 			break;
 		case TechnologyReference:
 			{
 			int technologyID = getTechnologyID();
-			std::string technologyName = state.gameInfo->technologyTreeCollection->getTechnology(technologyID).name;
+			std::string technologyName = state.getGameInfo()->getTechnologyTreeCollection().getTechnology(technologyID).name;
 			return technologyName;
 			}			
 			break;
@@ -256,7 +258,7 @@ namespace SGA
 			return std::to_string(getContinuousActionID());
 			break;
 		case TileTypeReference:
-			return getTileType(state).name;
+			return getTileType(state).getName();
 			break;
 		default:
 			return "Not defined";

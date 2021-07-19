@@ -10,12 +10,12 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 
 	auto isValidPos = [&](int x, int y)
 	{
-		return gameState.board.get(x, y).getTileTypeID() != -1;
-	};
+		return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
+	}; 
 
-	for (int x = 0; x < static_cast<int>(gameState.board.getWidth()); x++)
+	for (int x = 0; x < static_cast<int>(gameState.getBoardWidth()); x++)
 	{
-		for (int y = 0; y < static_cast<int>(gameState.board.getHeight()); y++)
+		for (int y = 0; y < static_cast<int>(gameState.getBoardHeight()); y++)
 		{
 			if (isValidPos(x, y))
 				targets.emplace_back(x, y);
@@ -28,11 +28,11 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs) const
 {
 	std::vector<int> targets;
-	for (const auto& entity : gameState.entities)
+	for (const auto& entity : gameState.getEntities())
 	{
 		if (entityTypeIDs.find(entity.getEntityTypeID()) != entityTypeIDs.end())
 		{
-			targets.emplace_back(entity.id);
+			targets.emplace_back(entity.getID());
 		}
 	}
 	return targets;
@@ -45,7 +45,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vec
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.board.get(targetPosition.x, targetPosition.y).getTileTypeID() != -1;
+	return gameState.getTileAt({ (int)targetPosition.x, (int)targetPosition.y }).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -57,12 +57,12 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			return gameState.board.get(x, y).getTileTypeID() != -1;
+			return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
 		};
 
-		for (int x = 0; x < static_cast<int>(gameState.board.getWidth()); x++)
+		for (int x = 0; x < static_cast<int>(gameState.getBoardWidth()); x++)
 		{
-			for (int y = 0; y < static_cast<int>(gameState.board.getHeight()); y++)
+			for (int y = 0; y < static_cast<int>(gameState.getBoardHeight()); y++)
 			{
 				if (isValidPos(x, y))
 					targets.emplace_back(x, y);
@@ -73,7 +73,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			if (gameState.board.get(x, y).getTileTypeID() == -1)
+			if (gameState.getTileAt({ x, y }).getTileTypeID() == -1)
 				return false;
 
 			switch (shapeType)
@@ -86,9 +86,9 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 		
 		// Iterate over an rectangle as large as 'shapeSize' and take every valid position
 		auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x - shapeSize));
-		auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(position.x + shapeSize));
+		auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.getBoardWidth() - 1), static_cast<int>(position.x + shapeSize));
 		auto startCheckPositionY = std::max<int>(0, static_cast<int>(position.y - shapeSize));
-		auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(position.y + shapeSize));
+		auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.getBoardHeight() - 1), static_cast<int>(position.y + shapeSize));
 
 		for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
 		{
@@ -103,14 +103,14 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	return targets;
 }
 
-std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
+std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	std::vector<int> entitiesIDs;
 	//Call base method
-	for (auto& entity : gameState.entities)
+	for (auto& entity : gameState.getEntities())
 	{
-		if (shapeType==ShapeType::AllPositions||entity.position.distance(position) <= shapeSize)
-			entitiesIDs.emplace_back(entity.id);
+		if (shapeType==ShapeType::AllPositions||entity.getPosition().distance(position) <= shapeSize)
+			entitiesIDs.emplace_back(entity.getID());
 	}
 	return entitiesIDs;
 }
@@ -169,13 +169,13 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 		std::vector<Node> neighbours;
 		{
 			auto startCheckPositionX = std::max<int>(0, static_cast<int>(currentNode.posX - 1));
-			auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.board.getWidth() - 1), static_cast<int>(currentNode.posX + 1));
+			auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.getBoardWidth() - 1), static_cast<int>(currentNode.posX + 1));
 			auto startCheckPositionY = std::max<int>(0, static_cast<int>(currentNode.posY - 1));
-			auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.board.getHeight() - 1), static_cast<int>(currentNode.posY + 1));
+			auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.getBoardHeight() - 1), static_cast<int>(currentNode.posY + 1));
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
-				if (gameState.board.get(x, y).getTileTypeID() == -1 || !gameState.board.get(x, y).isWalkable
+				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
 					|| std::floor(totalCost + 1) > searchSize
 					)
 					return false;
@@ -247,7 +247,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 	return positions;
 }
 
-std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const
+std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	//Call base method
 	auto possiblePositions = getPositions(gameState, position);
@@ -259,7 +259,7 @@ std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Ve
 		auto* entity = gameState.getEntityAt(Vector2f(pos.x, pos.y));
 		if(entity)
 		{
-			entities.emplace_back(entity->id);
+			entities.emplace_back(entity->getID());
 		}
 	}
 	
