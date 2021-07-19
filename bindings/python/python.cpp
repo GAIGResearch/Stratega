@@ -29,7 +29,6 @@
 #include <Stratega/Utils/Timer.h>
 
 namespace py = pybind11;
-class PythonAgent;
 
 // STL
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Action>);
@@ -38,7 +37,6 @@ PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Entity*>);
 PYBIND11_MAKE_OPAQUE(std::vector<SGA::Agent*>);
 PYBIND11_MAKE_OPAQUE(std::vector<std::shared_ptr<SGA::Agent>>);
-PYBIND11_MAKE_OPAQUE(std::vector<PythonAgent>);
 
 
 class PyCondition : public SGA::Condition {
@@ -157,7 +155,7 @@ public:
 	 return SGA::createGameRunner(*gameConfig);
  }
 
- std::vector<std::shared_ptr<SGA::Agent>> generateAgents(const SGA::GameConfig* gameConfig)
+ std::vector<std::unique_ptr<SGA::Agent>> generateAgents(const SGA::GameConfig* gameConfig)
  {
 	 return gameConfig->generateAgents();
  }
@@ -1026,7 +1024,7 @@ PYBIND11_MODULE(stratega, m)
 
 				std::cout << "Run GUI" << std::endl;
 				py::gil_scoped_release release;
-				a.play(newAgents, resolution);
+				a.play(newAgents.begin(), newAgents.end(), resolution);
 				py::gil_scoped_acquire acquire;
 			}
 		)
@@ -1067,7 +1065,7 @@ PYBIND11_MODULE(stratega, m)
 
 				std::cout << "Run GUI" << std::endl;
 				py::gil_scoped_release release;
-				a.play(newAgents, resolution);
+				a.play(newAgents.begin(), newAgents.end(), resolution);
 				py::gil_scoped_acquire acquire;
 			}
 		)
@@ -1107,7 +1105,7 @@ PYBIND11_MODULE(stratega, m)
 				}
 				std::cout << "Run arena" << std::endl;
 				py::gil_scoped_release release;				
-				a.run(newAgents);
+				a.run(newAgents.begin(), newAgents.end());
 				py::gil_scoped_acquire acquire;
 			}
 		)
@@ -1133,7 +1131,7 @@ PYBIND11_MODULE(stratega, m)
 				}
 				std::cout << "Run arena" << std::endl;
 				py::gil_scoped_release release;				
-				a.run(newAgents);
+				a.run(newAgents.begin(), newAgents.end());
 				py::gil_scoped_acquire acquire;
 			}
 		)

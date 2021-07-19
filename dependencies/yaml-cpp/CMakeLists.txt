@@ -1,3 +1,8 @@
+set(YAML_CPP_VERSION 0.6.3)
+FetchContent_Declare (
+	yaml_cpp
+	URL "https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-${YAML_CPP_VERSION}.zip"
+)
 FetchContent_GetProperties(yaml_cpp)
 
 if(NOT yaml_cpp_POPULATED)

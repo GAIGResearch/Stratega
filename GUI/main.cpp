@@ -31,7 +31,7 @@ int main()
 	}
 	
 	auto gameRunner = SGA::createGameRunner(*gameConfig);
-	gameRunner->play(agents, resolution);
+	gameRunner->play(agents.begin(), agents.end(), resolution);
 	
     return 0;
 }
