@@ -6,7 +6,7 @@
 #include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
 #include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
 #include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
-#include <Stratega/Agent/TreeSearchAgents/MCTSAgent.h>
+#include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 
 namespace SGA

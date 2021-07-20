@@ -1,5 +1,5 @@
 #pragma once
-#include <Stratega/Agent/TreeSearchAgents/MCTSParameters.h>
+#include <Stratega/Agent/MCTSAgent/MCTSParameters.h>
 #include <Stratega/Agent/TreeSearchAgents/TreeNode.h>
 
 namespace SGA {

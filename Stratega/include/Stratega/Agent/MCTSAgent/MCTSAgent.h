@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Agent/TreeSearchAgents/MCTSNode.h>
+#include <Stratega/Agent/MCTSAgent/MCTSNode.h>
 #include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 #include "MCTSParameters.h"
