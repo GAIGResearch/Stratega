@@ -7,7 +7,7 @@ GameConfig:
 Agents:
     - HumanAgent
     #- OSLAAgent
-    - MCTSAgent
+    - DoNothingAgent
 
 Tiles:
     Plain:

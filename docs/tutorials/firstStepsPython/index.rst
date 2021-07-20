@@ -57,11 +57,12 @@ Now, lets generate the list of agents from the configuration:
 
     config_agents = stratega.generate_agents(config)
 
-The last step is to call the *play* method of the the GameRunner and  pass a list of agents with a seed to intialize them.
+The last step is to call the *play* method of the the GameRunner and  pass a list of agents with a seed to intialize them and a window resolution.
 
 .. code-block:: python
 
-    runner.play(config_agents, 0)
+    resolution=stratega.Vector2f(1920,1080)
+    runner.play(config_agents, resolution, 0)
 
 The complete GUI call would looks as follows:
 
@@ -76,7 +77,8 @@ The complete GUI call would looks as follows:
         
         config_agents = stratega.generate_agents(config)
 
-        runner.play(config_agents, 0)
+        resolution=stratega.Vector2f(1920,1080)
+        runner.play(config_agents, resolution, 0)
 
 To execute Stratega with your own python agents, check the next section below: Testing your Python agent
 
@@ -197,7 +199,8 @@ The method *play* can be overloaded with a list of agents. The agents are define
 
 .. code-block:: python
 
-    runner.play(["HumanAgent", RandomPythonAgent()], 0)
+    resolution=stratega.Vector2f(1920,1080)
+    runner.play(["HumanAgent", RandomPythonAgent()], resolution, 0)
 
 
 The complete GUI call would looks as follows:
@@ -213,7 +216,8 @@ The complete GUI call would looks as follows:
         
         config_agents = stratega.generate_agents(config)
 
-        runner.play(["HumanAgent", RandomPythonAgent()], 0)
+        resolution=stratega.Vector2f(1920,1080)
+        runner.play(["HumanAgent", RandomPythonAgent()], resolution, 0)
 
 Arena mode
 ++++++++++

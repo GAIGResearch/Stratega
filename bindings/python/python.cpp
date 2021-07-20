@@ -152,12 +152,12 @@ public:
 
  std::unique_ptr<SGA::GameRunner> createRunner(const SGA::GameConfig* gameConfig)
  {
-	 return SGA::createGameRunner(*gameConfig);
+	 return std::move(SGA::createGameRunner(*gameConfig));
  }
 
  std::vector<std::unique_ptr<SGA::Agent>> generateAgents(const SGA::GameConfig* gameConfig)
  {
-	 return gameConfig->generateAgents();
+	 return std::move(gameConfig->generateAgents());
  }
 
  void initializeAgents(std::vector<std::shared_ptr<SGA::Agent>>& agents, int seed)

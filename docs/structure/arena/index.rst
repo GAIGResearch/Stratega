@@ -73,6 +73,26 @@ Arguments:
 | logPath    |   yes      | ./sgaLog.yaml    |
 +------------+------------+------------------+
 
+Computation budget time
+-----------------------
+        
+The arena can limit the computation and initialization time of the agents, these settings can be added to any game configuration.
+If the agents exceed the budged time they will receive and warning, if the agent exceeds the number of warnings or the disqualification time will lose the battle.
+
+.. code-block:: yaml
+    :caption: Note that times are defined in milliseconds.
+
+    GameRunner:
+        AgentInitializationTime:
+            Enabled: true
+            BudgetTimeMs: 50
+            DisqualificationTimeMs: 70
+        AgentComputationTime:
+            Enabled: true
+            BudgetTimeMs: 50
+            DisqualificationTimeMs: 70
+            MaxNumberWarnings: 5
+
 
 Single map
 ----------------

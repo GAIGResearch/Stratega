@@ -31,13 +31,10 @@ Stratega Docs
    :maxdepth: 1
    :caption: Tutorials
 
-   tutorials/implementAgentC++/index
-   tutorials/implementOSLAC++/index
-
    tutorials/firstStepsPython/index
-   tutorials/implementAgentPython/index
-   tutorials/implementOSLAPython/index
-   
+
+   tutorials/implementAgent/index
+   tutorials/implementOSLA/index   
 
    tutorials/exploringGameStates/index
    tutorials/definingANewGame/index
@@ -57,6 +54,12 @@ Stratega Docs
    :caption: Games
 
    games/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Extra Information
+
+   extraInformation/faq/index
 
 .. toctree::
    :maxdepth: 2
