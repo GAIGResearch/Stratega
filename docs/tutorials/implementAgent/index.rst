@@ -60,7 +60,7 @@ We'll call our agent's class ``DoNothing`` and we plan to override the method *c
         class DoNothing : public Agent
         {
         public:
-		    using Agent::Agent;
+            using Agent::Agent;
             ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
         };
     }
@@ -169,7 +169,7 @@ set up this agent is the same as for the DoNothing agent (and any other agent in
         class MyAgent : public Agent
         {
         public:
-		    using Agent::Agent;
+            using Agent::Agent;
             ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
         };
     }
@@ -209,7 +209,7 @@ line completes the code for this function:
 
     namespace SGA
     {
-        ActionAssignment RandomAgent::computeAction(GameState state, const ForwardModel& forwardModel, long /*timeBudgetMs*/)
+        ActionAssignment RandomAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
         {
             // Generate all available actions
             auto actions = forwardModel.generateActions(state, getPlayerID());

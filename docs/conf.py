@@ -59,7 +59,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
-    'sphinx_code_tabs'
+    #'sphinx_code_tabs',
+    'sphinx_tabs.tabs'
     ]
 autosummary_generate = True
 
