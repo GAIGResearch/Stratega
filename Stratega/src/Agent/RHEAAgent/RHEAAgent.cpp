@@ -83,7 +83,7 @@ namespace SGA
 
 
         //In RHEA, we count iterations as individual evaluations.
-        params_.currentIterations += (params_.popSize-1);
+        params_.currentIterations += params_.popSize;
 
         return newPop;
     }
