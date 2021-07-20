@@ -6,7 +6,7 @@ namespace SGA {
     /// <summary>
     /// Creates and evaluates a genome
     /// </summary>
-    RHEAGenome::RHEAGenome(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params)
+    RHEAGenome::RHEAGenome(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params)
     {
         //Actions available in this state, always starting with our player.
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -31,7 +31,7 @@ namespace SGA {
 
 
 
-    void RHEAGenome::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, RHEAParams& params)
+    void RHEAGenome::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, RHEAParameters& params)
     {
         //Roll the game state with our action.
         params.currentFMCalls += SGA::roll(gameState, forwardModel, action, params.PLAYER_ID, params);
@@ -45,7 +45,7 @@ namespace SGA {
     }
 
 
-    void RHEAGenome::mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator)
+    void RHEAGenome::mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator)
     {
         //Retrieve the action space for this state.
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -91,7 +91,7 @@ namespace SGA {
     }
 
 
-    RHEAGenome RHEAGenome::crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
+    RHEAGenome RHEAGenome::crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -159,7 +159,7 @@ namespace SGA {
         return RHEAGenome(actions, value);
     }
 
-    void RHEAGenome::shift(const ForwardModel& forwardModel, GameState gameState, RHEAParams& params)
+    void RHEAGenome::shift(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params)
     {
         // reuse previous solution
         std::rotate(actions.begin(), actions.begin() + 1, actions.end());

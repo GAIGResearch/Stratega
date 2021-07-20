@@ -6,11 +6,11 @@
 #include <yaml-cpp/yaml.h>
 
 namespace SGA {
-	struct RHEAParams : AgentParameters {
+	struct RHEAParameters : AgentParameters {
 
 	public:
 
-		RHEAParams() { }
+		RHEAParameters() { }
 
 		size_t popSize = 10;				// population size
 		size_t individualLength = 10;		// planning horizon of an individual
@@ -31,7 +31,7 @@ namespace SGA {
 namespace YAML
 {
 	template<>
-	struct convert<SGA::RHEAParams>
+	struct convert<SGA::RHEAParameters>
 	{
 		/// <summary>
 		/// Reads Agent generic (via call rhs.decode(node)) and RHEA-specific parameters received in a YAML node.
@@ -40,7 +40,7 @@ namespace YAML
 		/// <param name="node">YAML Node with the parameters for the agent.</param>
 		/// <param name="rhs">Parameters object to be modified with the contents of the YAML node.</param>
 		/// <returns>True if there was no problem.</returns>
-		static bool decode(const Node& node, SGA::RHEAParams& rhs)
+		static bool decode(const Node& node, SGA::RHEAParameters& rhs)
 		{
 			rhs.decode(node);
 			rhs.popSize = node["PopSize"].as<size_t>(rhs.popSize);

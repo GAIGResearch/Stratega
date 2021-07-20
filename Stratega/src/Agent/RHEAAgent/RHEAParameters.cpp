@@ -1,10 +1,10 @@
-#include <Stratega/Agent/RHEAAgent/RHEAParams.h>
+#include <Stratega/Agent/RHEAAgent/RHEAParameters.h>
 
 #include <iostream>
 
 
 namespace SGA {
-	void RHEAParams::printDetails() const
+	void RHEAParameters::printDetails() const
 	{
 		AgentParameters::printDetails();
 		std::cout << "RHEA Parameters:" << std::endl;

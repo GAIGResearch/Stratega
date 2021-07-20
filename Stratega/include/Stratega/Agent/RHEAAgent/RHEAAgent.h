@@ -6,7 +6,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <Stratega/Agent/RHEAAgent/RHEAGenome.h>
-#include <Stratega/Agent/RHEAAgent/RHEAParams.h>
+#include <Stratega/Agent/RHEAAgent/RHEAParameters.h>
 
 namespace SGA
 {
@@ -15,10 +15,10 @@ namespace SGA
 
 	private:
 		std::vector<RHEAGenome> pop_;						//Population of individuals for RHEA
-		RHEAParams params_;									//Configuration of RHEA
+		RHEAParameters params_;									//Configuration of RHEA
 
 	public:
-		RHEAAgent(const std::string& name, RHEAParams&& params) :
+		RHEAAgent(const std::string& name, RHEAParameters&& params) :
 			Agent{name}, params_(std::move(params))
 		{
 		}
