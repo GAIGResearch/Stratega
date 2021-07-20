@@ -73,6 +73,11 @@ namespace SGA {
 		int currentIterations = 0;
 
 		/// <summary>
+		/// Proportion of the timer that must have passed before the function isBudgetOver triggers.
+		/// </summary>
+		double percTimeBudget = 0.9;
+
+		/// <summary>
 		/// ID of this player.
 		/// </summary>
 		int PLAYER_ID = -1;

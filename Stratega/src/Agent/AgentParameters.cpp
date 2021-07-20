@@ -23,7 +23,7 @@ namespace SGA {
 		switch (budgetType)
 		{
 		case Budget::TIME:
-			return timer.exceededMaxTime();
+			return timer.percCompletedTime() > percTimeBudget;
 		case Budget::ITERATIONS:
 			return currentIterations >= maxIterations;
 		case Budget::FMCALLS:
@@ -52,6 +52,7 @@ namespace SGA {
 	{
 		maxFMCalls = node["FmCalls"].as<int>(maxFMCalls);
 		maxIterations = node["Iterations"].as<int>(maxIterations);
+		percTimeBudget = node["PercTime"].as<double>(percTimeBudget);
 		if (node["Budget"].as<std::string>("") == "TIME")
 			budgetType = SGA::Budget::TIME;
 		else if (node["Budget"].as<std::string>("") == "FMCALLS")
@@ -68,6 +69,7 @@ namespace SGA {
 		std::cout << "\tBudget type: " << budgetTypeStr(budgetType) << std::endl;
 		std::cout << "\tMax FM Calls (" << (budgetType == Budget::FMCALLS ? "active" : "inactive") << "): " << maxFMCalls << std::endl;
 		std::cout << "\tMax Iterations (" << (budgetType == Budget::ITERATIONS ? "active" : "inactive") << "): " << maxIterations << std::endl;
+		std::cout << "\tStop at Perc Time (" << (budgetType == Budget::TIME ? "active" : "inactive") << "): " << percTimeBudget << std::endl;
 		std::cout << "\tCurrent FM Calls: " << currentFMCalls << std::endl;
 		std::cout << "\tCurrent iterations: " << currentIterations << std::endl;
 		std::cout << "\tScripts in portfolio: " << portfolio.size() << std::endl;

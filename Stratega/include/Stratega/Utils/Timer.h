@@ -141,5 +141,14 @@ namespace SGA
 		{
 			return maxTimeMs;
 		}
+
+		/// <summary>
+		/// Returns the proportion of time completed of this timer.
+		/// </summary>
+		/// <returns>A proportion of the time completed. 0.0 means timer just started, while 1.0 means time is exactly complete. </returns>
+		double percCompletedTime() const
+		{
+			return elapsedMilliseconds() / maxTimeMs;
+		}
 	};
 }
