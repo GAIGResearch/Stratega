@@ -433,10 +433,10 @@ GameDescription:
 GameRunner:
     AgentInitializationTime:
         Enabled: false
-        BudgetTimeMs: 50
+        BudgetTimeMs: 40
         DisqualificationTimeMs: 70
     AgentComputationTime:
         Enabled: false
-        BudgetTimeMs: 50
+        BudgetTimeMs: 40
         DisqualificationTimeMs: 70
         MaxNumberWarnings: 5

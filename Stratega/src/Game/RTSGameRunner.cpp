@@ -27,7 +27,7 @@ namespace SGA
 
 			// Render
 			auto startTime = std::chrono::high_resolution_clock::now();
-			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(16))
+			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(config->budgetTimeMs))
 			{
 				renderer->render();
 			}

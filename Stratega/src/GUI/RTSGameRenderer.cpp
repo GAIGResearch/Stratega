@@ -480,16 +480,16 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(0, 590));
-		ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window.getSize().x), 300));
+		ImGui::SetNextWindowPos(ImVec2(0, window.getSize().y- window.getSize().y/4));
+		ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window.getSize().x), window.getSize().y/4));
 
 		//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
 		ImGui::Columns(3, "mixed");
-		ImGui::SetColumnWidth(0, 250.0f);
-		ImGui::SetColumnWidth(1, 600.0f);
-		ImGui::SetColumnWidth(2, 250);
+		ImGui::SetColumnWidth(0, window.getSize().x/4);
+		ImGui::SetColumnWidth(1, (window.getSize().x/4)*2);
+		ImGui::SetColumnWidth(2, window.getSize().x/4);
 		ImGui::Separator();
 
 		//Ask widget to get	
