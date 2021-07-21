@@ -5,7 +5,7 @@ namespace SGA
 {
 	ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
-		parameters_.reset(timer);
+		parameters_.resetCounters(timer);
 		const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
 		// if there is just one action and we don't spent the time on continuing our search

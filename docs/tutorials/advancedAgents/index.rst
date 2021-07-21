@@ -218,7 +218,7 @@ Both MCTS and RHEA reset their budget counters at the beginning of their *comput
     {
 	    ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	    {
-		    parameters_.reset(timer);
+		    parameters_.resetCounters(timer);
             //...
         }
     }

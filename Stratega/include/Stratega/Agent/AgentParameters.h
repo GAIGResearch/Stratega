@@ -112,7 +112,7 @@ namespace SGA {
 		/// Initializes the budget for a  decision making step.
 		/// </summary>
 		/// <param name="timer">The timer as provided by Stratega to the agent.</param>
-		void reset(const Timer& timer);
+		void resetCounters(const Timer& timer);
 
 		/// <summary>
 		/// Indicates if the budget to return an action is exhausted.

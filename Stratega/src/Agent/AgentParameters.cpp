@@ -11,7 +11,7 @@ namespace SGA {
 		portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
 	};
 
-	void AgentParameters::reset(const Timer& timer)
+	void AgentParameters::resetCounters(const Timer& timer)
 	{
 		this->timer = timer;
 		currentFMCalls = 0;

@@ -4,7 +4,7 @@ namespace SGA
 {
     ActionAssignment ActionAbstractionMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
-        parameters_.reset(timer);
+        parameters_.resetCounters(timer);
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
