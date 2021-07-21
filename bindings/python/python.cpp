@@ -1102,72 +1102,72 @@ PYBIND11_MODULE(stratega, m)
 				py::gil_scoped_acquire acquire;
 			}
 		)
-		//.def("run",
-		//	[](SGA::GameRunner& a, py::list agents, int seed=0)
-		//	{
-		//		py::scoped_ostream_redirect stream(
-		//			std::cout,                               // std::ostream&
-		//			py::module_::import("sys").attr("stdout") // Python output
-		//		);
+		.def("run",
+			[](SGA::GameRunner& a, py::list agents, int seed=0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
 
-		//		std::vector<std::shared_ptr<SGA::Agent>> newAgents;
-		//		for (auto& agent : agents)
-		//		{
-		//			if (pybind11::str(agent, true).check())
-		//			{
-		//				newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
-		//			}
-		//			else
-		//			{
-		//				auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
-		//				newAgents.emplace_back(castedAgent);
-		//			}
-		//		}
+				std::vector<std::shared_ptr<SGA::Agent>> newAgents;
+				for (auto& agent : agents)
+				{
+					if (pybind11::str(agent, true).check())
+					{
+						newAgents.emplace_back(SGA::AgentFactory::get().createAgent(agent.cast<std::string>()));
+					}
+					else
+					{
+						auto castedAgent = agent.cast<std::shared_ptr<PyAgent>>();
+						newAgents.emplace_back(castedAgent);
+					}
+				}
 
-		//		std::mt19937 rngEngine(seed);
-		//		// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-		//		std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
-		//		for (auto& agent : newAgents)
-		//		{
-		//			auto seed = seedDist(rngEngine);
-		//			// Ignore human player
-		//			if (agent != nullptr)
-		//			{
-		//				agent->setSeed(seed);
-		//			}
-		//		}
-		//		std::cout << "Run arena" << std::endl;
-		//		py::gil_scoped_release release;				
-		//		a.run(newAgents.begin(), newAgents.end());
-		//		py::gil_scoped_acquire acquire;
-		//	}
-		//)
-		//.def("run",
-		//	[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, int seed=0)
-		//	{
-		//		py::scoped_ostream_redirect stream(
-		//			std::cout,                               // std::ostream&
-		//			py::module_::import("sys").attr("stdout") // Python output
-		//		);
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+				std::cout << "Run arena" << std::endl;
+				py::gil_scoped_release release;				
+				a.run(newAgents.begin(), newAgents.end());
+				py::gil_scoped_acquire acquire;
+			}
+		)
+		.def("run",
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, int seed=0)
+			{
+				py::scoped_ostream_redirect stream(
+					std::cout,                               // std::ostream&
+					py::module_::import("sys").attr("stdout") // Python output
+				);
 
-		//		std::mt19937 rngEngine(seed);
-		//		// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-		//		std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
-		//		for (auto& agent : newAgents)
-		//		{
-		//			auto seed = seedDist(rngEngine);
-		//			// Ignore human player
-		//			if (agent != nullptr)
-		//			{
-		//				agent->setSeed(seed);
-		//			}
-		//		}
-		//		std::cout << "Run arena" << std::endl;
-		//		py::gil_scoped_release release;				
-		//		a.run(newAgents.begin(), newAgents.end());
-		//		py::gil_scoped_acquire acquire;
-		//	}
-		//)
+				std::mt19937 rngEngine(seed);
+				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
+				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				for (auto& agent : newAgents)
+				{
+					auto seed = seedDist(rngEngine);
+					// Ignore human player
+					if (agent != nullptr)
+					{
+						agent->setSeed(seed);
+					}
+				}
+				std::cout << "Run arena" << std::endl;
+				py::gil_scoped_release release;				
+				a.run(newAgents.begin(), newAgents.end());
+				py::gil_scoped_acquire acquire;
+			}
+		)
 		.def("reset", py::overload_cast<int>(&SGA::GameRunner::reset),py::arg("levelID"),"Resets the game to an initial state.")
 		.def("reset", py::overload_cast<>(&SGA::GameRunner::reset),"Resets the game to an initial state with a specific map.")
 		.def("step", &SGA::GameRunner::step, py::arg("actions"),"Advances the game by one timestep. When the game has ended, you are responsible for calling GameRunner::reset() to reset the environments state.")
