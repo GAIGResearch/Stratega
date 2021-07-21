@@ -38,11 +38,9 @@ Game Information
 First of all, the YAML description file of the game being played is accessible to the agents at all times. You can retrieve the filename and parse the YAML file yourself. For instance, 
 like this:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         std::string yamlPath = state.getGameInfo()->getYAMLPath();
         std::ifstream infile(yamlPath);
@@ -52,9 +50,7 @@ like this:
             // Each iteration is a 'line' in the YAML file.
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         yaml_path=state.get_game_info().get_yaml_path()
         yaml=open(yaml_path, "r")
@@ -77,11 +73,9 @@ entities and actions. These types can be accessed directly in their data structu
 The following code snippet shows how to access these maps and prints the name of the different elements in the game:
 
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
 		auto entityTypes = state.getGameInfo()->getEntityTypes();
 		for (const auto& [id, eType] : entityTypes)
@@ -95,9 +89,7 @@ The following code snippet shows how to access these maps and prints the name of
 		for (const auto& [id, aType] : actionTypes)
 			std::cout << "[Action] id: " << id << ", name: " << aType.getName() << std::endl;
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
         
         entity_types = state.get_game_info().get_entity_types()
         for id, eType in entity_types.items():
@@ -168,11 +160,9 @@ framework, the following groups are defined:
 These descriptors can be retrieved using the *gameDescription* member of the GameInfo object. The following snippet prints the action categories for a player in the BasicTBS game.
 
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         for (const auto& [ac, actionTypes] : state.getGameInfo()->getGameDescription().getActionCategories())
         {
@@ -186,9 +176,7 @@ These descriptors can be retrieved using the *gameDescription* member of the Gam
             std::cout << std::endl;
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
         
         for ac in state.get_game_info().get_game_description().get_action_categories():
             action_category_name = stratega.GameDescription.to_string(ac)
@@ -217,11 +205,9 @@ The output of the above snippet is as follows:
 
 Similarly, it's possible to extract information about entity categories. The following snippet:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         for (const auto& [ec, entityTypes] : state.getGameInfo()->getGameDescription().getEntityCategories())
         {
@@ -234,9 +220,7 @@ Similarly, it's possible to extract information about entity categories. The fol
             std::cout << std::endl;
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         for ec in state.get_game_info().get_game_description().get_entity_categories():
             entity_category_name = stratega.GameDescription.to_string(ec)
@@ -279,11 +263,9 @@ through the ActionType object, they are used as follows:
 
 As an example, the following code snippet accesses and prints the number of preconditions, conditions and effects of a given action type: 
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         //PRECONDITIONS
         auto preconditions = actionType.getPreconditions();
@@ -305,9 +287,7 @@ As an example, the following code snippet accesses and prints the number of prec
         for (const auto& effect : actionType.getEffects())
             std::cout << "\t" << effect->expr() << std::endl;
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         # PRECONDITIONS
         preconditions = action_type.get_preconditions()
@@ -383,11 +363,9 @@ possible to query the number of trees in the game and how many technologies each
 using the function 'getTechnologyCounts()':
 
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
         for (const auto& [id, count] : techCounts)
@@ -395,9 +373,7 @@ using the function 'getTechnologyCounts()':
             //'id' is the technology tree ID, 'count' is the number of technologies on each tree.
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
@@ -406,11 +382,9 @@ using the function 'getTechnologyCounts()':
 Also, it is possible to retrieve the list of all technologies in a tree. The following code snippet
 iterates through the technologies of all trees and prints the information to console:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
 		std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
 		for (const auto& [id, count] : techCounts)
@@ -420,9 +394,7 @@ iterates through the technologies of all trees and prints the information to con
 				std::cout << t.toString(*state.getGameInfo()) << std::endl;
 		}
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
@@ -463,11 +435,9 @@ which provides acces to its bounds (width x height) and the tiles it contains.
 For instance, the following snippet runs through all the tiles in the board and prints some basic information. Each
 tile has a tile type and certain properties regarding visibility and the ability of being traversed:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
 		for (int x = 0; x < state.getBoardWidth(); ++x){
 			for (int y = 0; y < state.getBoardHeight(); ++y){
@@ -477,9 +447,7 @@ tile has a tile type and certain properties regarding visibility and the ability
             }
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
 
         for x in range(0, state.get_board_width()):
             for y in range(0, state.get_board_height()):
@@ -522,11 +490,9 @@ it's possible to query if there's an entity at that position with the function "
 entity type, an owner and a certain set of parameters that be retrieved from the Entity object. The
 following example code expands the previous snippet including how to retrive entities and print its parameters:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
 		for (int x = 0; x < state.getBoardWidth(); ++x){
 			for (int y = 0; y < state.getBoardHeight(); ++y){
@@ -547,9 +513,7 @@ following example code expands the previous snippet including how to retrive ent
             }
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:
+    .. code-tab:: py
         
         for x in range(0, state.get_board_width()):
             for y in range(0, state.get_board_height()):
@@ -586,11 +550,9 @@ whose ID has been provided. The following code retrieves all the entities for th
 be obtained using the "getPlayerID()" method in the Agent class. Note that now we are printing the position of 
 entity directly from the Entity object:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
 		for (Entity ent : state.getPlayerEntities(this->getPlayerID()))
 		{
@@ -602,9 +564,7 @@ entity directly from the Entity object:
 				std::cout << "\t" << paramName << ": " << value << std::endl;
 		}
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py   
         
         my_entities=state.get_player_entities(self.get_player_id())
         for ent in my_entities:
@@ -675,17 +635,13 @@ entity categories are defined as follows:
 
 Hence, a call like this:
 
-.. code-tabs::
+.. tabs::
 
     .. code-tab:: c
-        :title: C/C++
-        :linenos:
 
         std::vector<Entity> myFigherUnits = state.getPlayerEntities(getPlayerID(), SGA::EntityCategory::Fighter);
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py
         
         my_figher_units = state.get_player_entities(self.get_player_id(), stratega.EntityCategory.Fighter)
 
@@ -705,19 +661,15 @@ by name, or all parameters in pairs <name, value>. Some useful functions from Ga
 
 For instance, the following snippet prints the parameter of the current player:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         std::unordered_map<std::string, double> params = state.getPlayerParameters(getPlayerID());
         for (const auto& [param, val] : params)
             std::cout << param << ": " << val << std::endl;
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py    
         
         params = state.get_player_parameters(self.get_player_id())
         for param in params:
@@ -727,11 +679,9 @@ For instance, the following snippet prints the parameter of the current player:
 To summarize, the following C++ code puts parameters, entities and players together. If shows, for all players in the game, the entites they control
 and their parameters:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
 
         int nplayers = state.getNumPlayers();
         for (int ip = 0; ip < nplayers; ++ip)
@@ -748,9 +698,7 @@ and their parameters:
             }
         }
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py    
         
         nplayers=state.get_num_players()
         for ip in range(0, nplayers):
@@ -771,11 +719,9 @@ following snippet shows the technologies in a research tree, indicating which on
 available. Note that this code blends two types of data: static information (lines 1-5), which is constant through the game, and
 dynamic information (lines 7-9), which depends on a particular instant in the game:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
         
 		std::unordered_map<int, int> techCounts = state.getGameInfo()->getTechnologyCounts();
 		for (const auto& [id, count] : techCounts)
@@ -789,9 +735,7 @@ dynamic information (lines 7-9), which depends on a particular instant in the ga
 			}
 		}
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py    
         
         tech_counts=state.get_game_info().get_technology_counts()
         for id in tech_counts:
@@ -839,19 +783,15 @@ For instance, the following snippets retrieves all actions from a given state an
 Note that these are actions that can be executed at this game state, and they differ from action types in that the
 latter are part of the *static* information of the game.
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
         
         std::vector<Action> actions = forwardModel.generateActions(state, getPlayerID());
         for (Action act : actions)
             std::cout << act.getActionName() << ", is entity action: " << act.isEntityAction() << std::endl;
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py   
         
         actions = forward_model.generate_actions(state, self.get_player_id())
         for act in actions:
@@ -870,11 +810,9 @@ These ActionTargets have many variables that can be consulted. Among them, the m
 
 Extending the previous code snippet, we can access (and print to console) extra information about the targets of the actions:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
         
         std::vector<Action> actions = forwardModel.generateActions(state, getPlayerID());
 		for (Action act : actions)
@@ -903,9 +841,7 @@ Extending the previous code snippet, we can access (and print to console) extra 
 			std::cout << std::endl;
 		}
 
-    .. code-tab:: python
-        :title: python
-        :linenos:        
+    .. code-tab:: py     
         
         actions = forward_model.generate_actions(state, self.get_player_id())
         for act in actions:
@@ -972,17 +908,13 @@ Forward Model: Advance and Copy
 The main objective of the forward model is to apply these actions to the game state. This can be done with a simple
 call:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
         
         forwardModel.advanceGameState(state, action);
 
-    .. code-tab:: python
-        :title: python
-        :linenos:   
+    .. code-tab:: py
 
         forward_model.advance_gamestate(gs_copy, action)
 
@@ -991,17 +923,13 @@ Therefore, in order to try different actions from a single state, it's necessary
 Stratega, copies of a GameState object can be obtained using the *copy constructor*. Hence, for a GameState variable 
 "state", the following expression creates a "gsCopy" variable which is an exact copy of "state":
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: c
-        :title: C/C++
-        :linenos:
+    .. code-tab:: c++
         
         auto gsCopy(state);
 
-    .. code-tab:: python
-        :title: python
-        :linenos:   
+    .. code-tab:: py 
              
         gs_copy = copy.deepcopy(state)
 

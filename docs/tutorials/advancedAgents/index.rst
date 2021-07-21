@@ -181,29 +181,23 @@ field 'budgetType', of type 'enum class BudgetType', and there are three configu
 algorithm iterations to run) and FMCALLS (which determines the number of calls to the *advance* function of the forward model). This budget type can also be initialized via
 YAML, as well as the specific counts for the different modes. See the examples below for the three implemented stopping criteria:
 
-.. code-tabs::
+.. tabs::
 
-    .. code-tab:: yaml
-        :title: Time
-        :linenos:
+    .. code-tab:: yaml Time
 
         Agents:
             - MCTSAgent:
                 Budget: TIME
                 PercTime: 0.9
 
-    .. code-tab:: yaml
-        :title: Iterations
-        :linenos:
+    .. code-tab:: yaml Iterations
 
         Agents:
             - MCTSAgent:
                 Budget: ITERATIONS
                 Iterations: 200
 
-    .. code-tab:: yaml
-        :title: FM Calls
-        :linenos:
+    .. code-tab:: yaml FM Calls
 
         Agents:
             - MCTSAgent:
