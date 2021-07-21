@@ -115,25 +115,32 @@ namespace SGA
 
 	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
 	{
+		int currentPlayerID = currentState->getCurrentTBSPlayer();
+		int budgetTimeWarningLimit = int(budgetTimeMs * 1.1);
+		int disqualificationBudgetTimeMsLimit = int(disqualificationBudgetTimeMs * 1.05);
+
+
 		if (playerWarnings[currentState->getCurrentTBSPlayer()] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
-			std::cout<<"WARNING: Player  " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding warnings number" << std::endl;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings (" << maxNumberWarnings << ")" << std::endl;
 			return false;
 		}
-		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
+		else if (computationTime.count() > budgetTimeWarningLimit && computationTime.count() < disqualificationBudgetTimeMs)
 		{
-			//add one warning
-			playerWarnings[currentState->getCurrentTBSPlayer()]++;
-			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " has exceeded the computation time"<<std::endl;
+			//add one warning 
+			playerWarnings[currentPlayerID]++;
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " has exceeded the computation time (" << computationTime.count()
+				<< ">" << budgetTimeWarningLimit << ")" << std::endl;
 			return true;
 		}
-		else if (computationTime.count() >= disqualificationBudgetTimeMs)
+		else if (computationTime.count() >= disqualificationBudgetTimeMsLimit)
 		{
 			//Disqualify player for exceeding the computation time
-			currentState->getPlayer(currentState->getCurrentTBSPlayer())->setCanPlay(false);
-			std::cout<<"WARNING: Player " << std::to_string(currentState->getCurrentTBSPlayer()) << " disqualified for exceeding the computation time" << std::endl;
+			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
+			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time (" << computationTime.count()
+				<< ">" << disqualificationBudgetTimeMsLimit << ")" << std::endl;
 			return false;
 		}		
 	}

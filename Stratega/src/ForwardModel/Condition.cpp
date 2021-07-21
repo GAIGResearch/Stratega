@@ -90,6 +90,18 @@ namespace  SGA
 		return sourceEntity.getOwnerID() == targetEntity.getOwnerID();
 	}
 
+	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool DifferentPlayer::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& sourceEntity = targets[0].getEntityConst(state);
+		auto& targetEntity = targets[1].getEntityConst(state);
+
+		return sourceEntity.getOwnerID() != targetEntity.getOwnerID();
+	}
+
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: sourceEntity(parameters.at(0)),
 		targetEntity(parameters.at(1)),

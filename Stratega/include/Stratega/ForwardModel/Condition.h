@@ -63,6 +63,14 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class DifferentPlayer : public Condition
+	{
+	public:
+		DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class InRange : public Condition
 	{
 		FunctionParameter sourceEntity;

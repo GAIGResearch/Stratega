@@ -14,6 +14,7 @@ namespace SGA
 		factory.registerFunction<ResourceGreaterEqual>("ResourceGreaterEqual");
 		factory.registerFunction<ResourceLowerEqual>("ResourceLowerEqual");
 		factory.registerFunction<SamePlayer>("SamePlayer");
+		factory.registerFunction<DifferentPlayer>("DifferentPlayer");
 		factory.registerFunction<InRange>("InRange");
 		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
