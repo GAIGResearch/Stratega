@@ -68,7 +68,7 @@ namespace SGA
 			}
 		}
 		
-		if (actionSpace.size() > 1)
+		if (suitableActions.size() > 1)
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;

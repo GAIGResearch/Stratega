@@ -3,14 +3,8 @@
 
 namespace SGA
 {
-	//todo only works for 2 players
 	ActionAssignment PortfolioGreedySearchAgent::computeAction(GameState state, const ForwardModel* forwardModel, long timeBudgetMs)
 	{
-		if (state.gameType != GameType::TBS)
-		{
-			throw std::runtime_error("PGSAgent only supports TBS-Games");
-		}
-		
 		auto actionSpace = forwardModel->generateActions(state, getPlayerID());
 
 		if (actionSpace.size() == 1)
@@ -22,30 +16,34 @@ namespace SGA
 			params_.REMAINING_FM_CALLS = params_.MAX_FM_CALLS;
 					
 			// retrieving unit sets
-			std::vector<Entity*> playerUnits = state.getPlayerEntities(getPlayerID());
-			std::vector<Entity*> opponentUnits = state.getNonPlayerEntities(getPlayerID());
+			std::map<int, std::vector<Entity*>> unitsPerPlayer = std::map<int, std::vector<Entity*>>();
+			for (auto player : state.players)
+			{
+				unitsPerPlayer[player.id] = state.getPlayerEntities(player.id);
+			}
 
-			// initializing script assignments
-			std::map<int, BaseActionScript*> playerPortfolios = std::map<int, BaseActionScript*>();
-			std::map<int, BaseActionScript*> opponentPortfolios = std::map<int, BaseActionScript*>();
+			// sets a random portfolio for each unit per player
+			std::map<int, BaseActionScript*> unitScriptAssignments;
+			InitializePortfolios(unitsPerPlayer, unitScriptAssignments);
 
-			// sets a random portfolio for each player
-			InitializePortfolios(playerUnits, playerPortfolios);
-			InitializePortfolios(opponentUnits, opponentPortfolios);
-
+			
 			// improve the portfolio until the number of available forward model calls has been used
 			while (params_.REMAINING_FM_CALLS > 0)
 			{
-				Improve(*forwardModel, state, opponentUnits, opponentPortfolios, playerPortfolios);
-				if (params_.REMAINING_FM_CALLS <= 0)
-					break;
-
-				Improve(*forwardModel, state, playerUnits, playerPortfolios, opponentPortfolios);
+				// first improve the script assignment of all opponents:
+				for (auto opponent : state.players)
+				{
+					if (opponent.id != getPlayerID())
+						Improve(*forwardModel, state, unitScriptAssignments, opponent.id);
+				}
+			
+				Improve(*forwardModel, state, unitScriptAssignments, getPlayerID());
 			}
 
-			std::cout << "action returned by PGS" << std::endl;
 			// return the first action of the player's portfolio
-			return ActionAssignment::fromSingleAction(GetPortfolioAction(state, actionSpace, playerPortfolios, opponentPortfolios));
+			auto action = GetPortfolioAction(state, actionSpace, unitScriptAssignments);
+			std::cout << action.getActionName() << std::endl;
+			return ActionAssignment::fromSingleAction(action);
 		}
 	}
 
@@ -60,38 +58,42 @@ namespace SGA
 	}
 	
 	// initialize the player's portfolio map with random scripts
-	void PortfolioGreedySearchAgent::InitializePortfolios(std::vector<Entity*>& units, std::map<int, BaseActionScript*>& portfolioMap)
+	void PortfolioGreedySearchAgent::InitializePortfolios(std::map<int, std::vector<Entity*>>& unitsPerPlayer, std::map<int, BaseActionScript*>& unitScriptAssignments)
 	{
-		for (Entity* u : units)
+		for (auto playerEntry : unitsPerPlayer)
 		{
-			portfolioMap[u->id] = params_.portfolio[rand() % params_.portfolio.size()].get();
+			for (Entity* u : playerEntry.second)
+			{
+				unitScriptAssignments[u->id] = params_.portfolio[rand() % params_.portfolio.size()].get();
+			}
 		}
 	}
 
-	void PortfolioGreedySearchAgent::Improve(const ForwardModel& forwardModel, GameState& gameState, std::vector<Entity*>& playerUnits, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios)
+	void PortfolioGreedySearchAgent::Improve(const ForwardModel& forwardModel, GameState& gameState, std::map<int, BaseActionScript*>& unitScriptAssignments, int playerID)
 	{		
-		double currentPortfolioValue = Playout(forwardModel, gameState, playerPortfolios, opponentPortfolios);
-
+		double currentPortfolioValue = Playout(forwardModel, gameState, unitScriptAssignments, playerID);
+		std::vector<Entity*> playerEntities = gameState.getPlayerEntities(playerID);
+		
 		for (int i = 0; i < params_.ITERATIONS_PER_IMPROVE; i++)
 		{
-			for (auto unit : playerUnits)
+			for (auto unit : playerEntities)
 			{
 				int unitId = unit->id;
-				BaseActionScript* previousBestScript = playerPortfolios[unitId];
+				BaseActionScript* previousBestScript = unitScriptAssignments[unitId];
 				double bestNewScriptValue = -std::numeric_limits<double>::max();
 				int bestScriptIndex = -1;
 
 				// search for best script for the current unit
-				for (int i = 0; i < params_.portfolio.size(); i++)
+				for (int j = 0; j < params_.portfolio.size(); j++)
 				{
 					//if (params_.PORTFOLIO[i].get() == previousBestScript) 
 					//	continue;	// skip the playout from the previousBestScript
 					
-					playerPortfolios[unitId] = params_.portfolio[i].get();
-					const double currentScriptValue = Playout(forwardModel, gameState, playerPortfolios, opponentPortfolios);
+					unitScriptAssignments[unitId] = params_.portfolio[j].get();
+					const double currentScriptValue = Playout(forwardModel, gameState, unitScriptAssignments, playerID);
 					if (currentScriptValue > bestNewScriptValue)
 					{
-						bestScriptIndex = i;
+						bestScriptIndex = j;
 						bestNewScriptValue = currentScriptValue;
 					} 
 				}
@@ -100,13 +102,13 @@ namespace SGA
 				if (bestNewScriptValue > currentPortfolioValue)
 				{
 					// in case we found a better script, permanently replace the old one
-					playerPortfolios[unitId] = params_.portfolio[bestScriptIndex].get();
+					unitScriptAssignments[unitId] = params_.portfolio[bestScriptIndex].get();
 					currentPortfolioValue = bestNewScriptValue;
 				}
 				else
 				{
 					// if no script has been better than the previous best one, we just reset the portfolio
-					playerPortfolios[unitId] = previousBestScript;
+					unitScriptAssignments[unitId] = previousBestScript;
 				}
 
 				if (params_.REMAINING_FM_CALLS <= 0)
@@ -117,52 +119,140 @@ namespace SGA
 
 	// Simulated the players PORTFOLIO until a maximum number of turns has been simulated or the game has ended
 	// returns the heuristic value of the simulated game state
-	double PortfolioGreedySearchAgent::Playout(const ForwardModel& forwardModel, GameState gameState, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios)
+	double PortfolioGreedySearchAgent::Playout(const ForwardModel& forwardModel, GameState gameState, std::map<int, BaseActionScript*>& unitScriptAssignments, int playerID)
 	{
-		const int playerID = gameState.getCurrentTBSPlayer();
+		int initialTick = gameState.currentTick;
 		auto actionSpace = forwardModel.generateActions(gameState, gameState.getCurrentTBSPlayer());
-		int simulatedTurns = 0;
-		while (simulatedTurns < params_.NR_OF_TURNS_PLANNED && !gameState.isGameOver && actionSpace.size()!=0)
+		
+		while (gameState.currentTick - initialTick < params_.NR_OF_TICKS_PLANNED && !gameState.isGameOver && actionSpace.size() != 0)
 		{
-			if (actionSpace.size() == 1)
-			{
-				applyActionToGameState(forwardModel, gameState, actionSpace, actionSpace.at(0));
-				simulatedTurns++;
-			}
-			else
-			{
-				applyActionToGameState(forwardModel, gameState, actionSpace, GetPortfolioAction(gameState, actionSpace, playerPortfolios, opponentPortfolios));
-			}
+			applyActionToGameState(forwardModel, gameState, actionSpace, GetPortfolioAction(gameState, actionSpace, unitScriptAssignments), unitScriptAssignments, playerID);	
 		}
 		
 		return params_.heuristic->evaluateGameState(forwardModel, gameState, playerID);
 	}
 
 	// returns the action defined by the player's portfolio
-	Action PortfolioGreedySearchAgent::GetPortfolioAction(GameState& gameState, std::vector<SGA::Action>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2)
+	Action PortfolioGreedySearchAgent::GetPortfolioAction(GameState& gameState, std::vector<SGA::Action>& actionSpace, const std::map<int, BaseActionScript*>& unitScriptAssignments)
 	{
+		if (actionSpace.size() == 1)
+		{
+			return actionSpace[0];
+		}
+		
 		//todo check if it is an entity action, search for the first action of an entity
 		const int nextUnit = actionSpace.at(0).getSourceID();
 		const int ownerID = gameState.getEntityConst(nextUnit)->ownerID;
 		
-		if (portfolioMap1.contains(nextUnit))
+		if (unitScriptAssignments.contains(nextUnit))
 		{
-			return portfolioMap1[nextUnit]->getActionForUnit(gameState, actionSpace, ownerID, nextUnit);
+			auto action = unitScriptAssignments.at(nextUnit)->getActionForUnit(gameState, actionSpace, ownerID, nextUnit);
+
+			// some scripts immediately try to end the turn in case they cannot find a suitable action
+			// check the other units instead
+			if (action.actionTypeFlags == ActionFlag::EndTickAction)
+			{
+				// check if there is another unit that would be able to do something
+				for (auto entity : gameState.getPlayerEntities(ownerID))
+				{
+					if (entity->id != nextUnit)
+					{
+						action = unitScriptAssignments.at(entity->id)->getActionForUnit(gameState, actionSpace, ownerID, entity->id);
+						if (action.actionTypeFlags != ActionFlag::EndTickAction)
+						{
+							return action;
+						}
+					}
+				}
+			}
+
+			// only end the turn in case all unit script assignments want to end it
+			return action;
 		}
-		if (portfolioMap2.contains(nextUnit))
-		{
-			
-			portfolioMap2[nextUnit]->getActionForUnit(gameState, actionSpace, ownerID, nextUnit);
-		}
-		
-		return params_.portfolio[rand() % params_.portfolio.size()].get()->getActionForUnit(gameState, actionSpace, ownerID, nextUnit);
+
+		// there might be something wrong here, return a random action instead
+		const std::uniform_int_distribution distribution(0, static_cast<int>(params_.portfolio.size() - 1));
+		return params_.portfolio[distribution(getRNGEngine())].get()->getActionForUnit(gameState, actionSpace, ownerID, nextUnit);
 	}
 
 	// applies an action to the current game state, reduces the number of remaining forward model calls and updates the action space
-	void PortfolioGreedySearchAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action)
+	void PortfolioGreedySearchAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, std::map<int, BaseActionScript*>& unitScriptAssignments, int playerID)
 	{
-		params_.REMAINING_FM_CALLS--;
-		forwardModel.advanceGameState(gameState, action);
+		//Roll the game state with our action.
+		params_.REMAINING_FM_CALLS -= PortfolioGreedySearchAgent::roll(gameState, forwardModel, action, playerID, unitScriptAssignments);
+
+		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
+		while (!gameState.canPlay(params_.PLAYER_ID) && params_.REMAINING_FM_CALLS > 0 && !gameState.isGameOver)
+		{
+			//Roll actions for the opponent(s).
+			params_.REMAINING_FM_CALLS -= PortfolioGreedySearchAgent::rollOppOnly(gameState, forwardModel, unitScriptAssignments);
+		}
+
+		//params_.REMAINING_FM_CALLS--;
+		//forwardModel.advanceGameState(gameState, action);
 		actionSpace = forwardModel.generateActions(gameState, gameState.getCurrentTBSPlayer());
 	}
+
+
+	/// <summary>
+	/// Rolls the state forward for all players in the game. For the player with an ID == agParams.PLAYER_ID, the action 'act' will be executed. 
+	/// For the rest, the opponent model from agParams is used to decide the action. If no opponent model is defined, nothing / skip turn is executed.
+	/// </summary>
+	/// <param name="gs">Game state to roll forward</param>
+	/// <param name="fm">Forward model to roll the state forward and quering available actions.</param>
+	/// <param name="act">Action to execute for the player with id equals to agParams.PLAYER_ID</param>
+	/// <param name="agParams">Parameters of the agent who's calling this method.</param>
+	/// <returns>The number of actions executed by this function.</returns>
+	inline int PortfolioGreedySearchAgent::roll(GameState& gs, const ForwardModel& fm, const Action& act, int playerID, const std::map<int, BaseActionScript*>& unitScriptAssignments)
+	{
+		int actionsExecuted = 0;
+		std::vector<int> whoCanPlay = gs.whoCanPlay();
+
+		for (int id : whoCanPlay)
+		{
+			if (id == playerID)
+			{
+				//This is the player for which we passed the action to execute.
+				fm.advanceGameState(gs, act);
+				actionsExecuted++;
+			}
+			//An opponent is to play in this state, execute:
+			else if (playerID != id)
+			{
+				rollOppAction(gs, fm, unitScriptAssignments, id);
+				actionsExecuted++;
+			}
+		}
+		return actionsExecuted;
+	}
+
+	inline int PortfolioGreedySearchAgent::rollOppOnly(GameState& gs, const ForwardModel& fm, const std::map<int, BaseActionScript*>& unitScriptAssignments)
+	{
+		int actionsExecuted = 0;
+		std::vector<int> canPlay = gs.whoCanPlay();
+		for (int id : canPlay)
+		{
+			//Try to execute an action for this player if it's an opponent opponent
+			if (id != getPlayerID() && rollOppAction(gs, fm, unitScriptAssignments, id))  actionsExecuted++;
+		}
+		return actionsExecuted;
+	}
+
+	/// <summary>
+	/// Given an opponent ID, it rolls the state forward executing an action dictated by the opponent model from agParams.
+	/// If no opponent model is set, nothing / skip turn is executed.
+	/// </summary>
+	/// <param name="gs">Game state to roll forward</param>
+	/// <param name="fm">Forward model to roll the state forward and quering available actions.</param>
+	/// <param name="agParams">Parameters of the agent who's calling this method.</param>
+	/// <param name="oppID">ID of the opponent who will roll the state forward with an action.</param>
+	/// <returns>True if one action was executed.</returns>
+	inline bool PortfolioGreedySearchAgent::rollOppAction(GameState& gs, const ForwardModel& fm, const std::map<int, BaseActionScript*>& unitScriptAssignments, int oppID)
+	{
+		//An opponent is to play in this state.
+		auto actions = fm.generateActions(gs, oppID);
+		fm.advanceGameState(gs, GetPortfolioAction(gs, actions, unitScriptAssignments));
+		return true;
+	}
+	
 }

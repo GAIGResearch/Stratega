@@ -14,7 +14,7 @@ namespace  SGA
 {
 	struct PortfolioGreedySearchParams : AgentParameters {
 		// additional agent parameters
-		int NR_OF_TURNS_PLANNED = 3;			// the agents ID in the current game
+		int NR_OF_TICKS_PLANNED = 3;			// the number of turns/amount of time that the agent looks into the future
 		int ITERATIONS_PER_IMPROVE = 4;			// the number of iterations for one call of the improve method
 
 		PortfolioGreedySearchParams()
