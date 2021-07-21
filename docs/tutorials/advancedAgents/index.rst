@@ -183,13 +183,6 @@ YAML, as well as the specific counts for the different modes. See the examples b
 
 .. tabs::
 
-    .. code-tab:: yaml Time
-
-        Agents:
-            - MCTSAgent:
-                Budget: TIME
-                PercTime: 0.9
-
     .. code-tab:: yaml Iterations
 
         Agents:
@@ -203,4 +196,45 @@ YAML, as well as the specific counts for the different modes. See the examples b
             - MCTSAgent:
                 Budget: FMCALLS
                 FmCalls: 2000
-    
+
+    .. code-tab:: yaml Time
+
+        Agents:
+            - MCTSAgent:
+                Budget: TIME
+                PercTime: 0.9
+
+
+Each budget type should define a secondary parameter that refers to the actual amount of budget available. Iterations and forward model calls are straightforward, while 
+'PercTime' indicates the proportion of time that is considered to be over. For instance, a value of 0.9 means that the function *isBudgetOver()* in the AgentParameter class
+will return 'true' when 90% of the thinking time has been consumed. This is useful to adjust computation effort to an amount that avoids overtiming.
+
+Both MCTS and RHEA reset their budget counters at the beginning of their *computeAction* methods:
+
+.. code-block:: c++
+    :linenos:
+
+    namespace SGA
+    {
+	    ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
+	    {
+		    parameters_.reset(timer);
+            //...
+        }
+    }
+
+which allows agents to call the function *isBudgetOver()* in the AgentParameter class to determine if the budget is over, independently of the type of budget 
+set in the parameters. For instance, the main loop of MCTS, in 'MCTSNode.cpp', uses this function to determine the stopping criteria:
+
+.. code-block:: c++
+    :linenos:
+
+    void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+        // stop in case the budget is over.
+        while (!params.isBudgetOver()) {
+            MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+            double delta = selected->rollOut(forwardModel, params, randomGenerator);
+            backUp(selected, delta);
+            params.currentIterations++; 
+        }
+    }

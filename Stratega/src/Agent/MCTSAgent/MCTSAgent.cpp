@@ -17,7 +17,7 @@ namespace SGA
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
         //Initialize the budget for this action call.
-        parameters_.initBudget(timer);
+        parameters_.reset(timer);
         //parameters_.printDetails();
 
         // generate actions

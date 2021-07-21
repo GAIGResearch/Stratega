@@ -37,10 +37,10 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
-		// stop in case the set number of fmCalls has been reached
+		// stop in case the budget is over.
 		while (!params.isBudgetOver()) {
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
-			const double delta = selected->rollOut(forwardModel, params, randomGenerator);
+			double delta = selected->rollOut(forwardModel, params, randomGenerator);
 			backUp(selected, delta);
 			params.currentIterations++; 
 		}

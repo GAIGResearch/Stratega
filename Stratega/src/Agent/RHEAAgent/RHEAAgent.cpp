@@ -18,7 +18,7 @@ namespace SGA
     ActionAssignment RHEAAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
         //Initialize the budget for this action call.
-        params_.initBudget(timer);
+        params_.reset(timer);
         //params_.printDetails();
 
         //Action space from this state, for this plaer.
