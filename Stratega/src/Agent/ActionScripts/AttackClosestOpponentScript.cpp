@@ -188,7 +188,7 @@ namespace SGA
 			}
 		}
 
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[actionSpace.size()-1];
 	}
 
 	double AttackClosestOpponentScript::minimalDistanceToOpponents(const Vector2f position,  std::map<int, Vector2f>& unitPositions, const std::set<int>& opponentUnits)

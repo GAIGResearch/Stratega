@@ -63,6 +63,6 @@ namespace SGA
 		}
 		
 		
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[actionSpace.size()-1];
 	}
 }
