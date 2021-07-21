@@ -33,14 +33,23 @@ namespace SGA
 		void init(GameState initialState, const ForwardModel& forwardModel, long timeBudgetMs) override;
 
 	private:
-		void Improve(const ForwardModel& forwardModel, GameState& gameState, std::vector<Entity*>& playerUnits, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios);
+		void Improve(const ForwardModel& forwardModel, GameState& gameState, std::map<int, BaseActionScript*>& unitScriptAssignment, int playerID);
 
-		double Playout(const ForwardModel& forwardModel, GameState gameState, std::map<int, BaseActionScript*>& playerPortfolios, std::map<int, BaseActionScript*>& opponentPortfolios);
+		double Playout(const ForwardModel& forwardModel, GameState gameState, std::map<int, BaseActionScript*>& unitScriptAssignments, int playerID);
 
-		void InitializePortfolios(std::vector<Entity*>& units, std::map<int, BaseActionScript*>& portfolioMap);
+		void InitializePortfolios(std::map<int, std::vector<Entity*>>& unitsPerPlayer, std::map<int, BaseActionScript*>& portfolioMap);
 		
-		Action GetPortfolioAction(GameState& gameState, std::vector<SGA::Action>& actionSpace, std::map<int, BaseActionScript*>& portfolioMap1, std::map<int, BaseActionScript*>& portfolioMap2);
+		Action GetPortfolioAction(GameState& gameState, std::vector<SGA::Action>& actionSpace, const std::map<int, BaseActionScript*>& unitScriptAssignments);
 
-		void applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action);
+		void applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, std::vector<SGA::Action>& actionSpace, const Action& action, std::map<int, BaseActionScript*>& unitScriptAssignments, int playerID);
+
+		inline int roll(GameState& gs, const ForwardModel& fm, const Action& act, int playerID, const std::map<int, BaseActionScript*>& unitScriptAssignments);
+		
+		inline int rollOppOnly(GameState& gs, const ForwardModel& fm, const std::map<int, BaseActionScript*>& unitScriptAssignments);
+
+		inline bool rollOppAction(GameState& gs, const ForwardModel& fm, const std::map<int, BaseActionScript*>& unitScriptAssignments, int oppID);
+
 	};
+
+
 }
