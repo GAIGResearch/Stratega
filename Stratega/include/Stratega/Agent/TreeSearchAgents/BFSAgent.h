@@ -7,7 +7,7 @@ namespace SGA
 {
 	struct BFSParameters : public AgentParameters
 	{
-		bool CONTINUE_PREVIOUS_SEARCH = true;
+		bool continuePreviousSearch = true;
 	};
 
 	class BFSAgent : public Agent

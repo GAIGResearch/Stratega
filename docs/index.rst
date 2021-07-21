@@ -38,6 +38,7 @@ Stratega Docs
 
    tutorials/exploringGameStates/index
    tutorials/definingANewGame/index
+   tutorials/advancedAgents/index
 
 .. toctree::
    :maxdepth: 1

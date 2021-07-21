@@ -4,8 +4,10 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - RHEAAgent
-    - MCTSAgent
+    - RHEAAgent:
+        Budget: TIME
+    - MCTSAgent:
+        Budget: TIME
 
 Player:
     Actions: [Build, Research]

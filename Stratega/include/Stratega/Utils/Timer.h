@@ -62,7 +62,7 @@ namespace SGA
 		/// <summary>
 		// Returns the elapsed time in milliseconds.
 		/// <summary>		
-		long elapsedMilliseconds()
+		long elapsedMilliseconds() const
 		{
 			std::chrono::time_point<std::chrono::system_clock> tempEndTime;
 
@@ -81,7 +81,7 @@ namespace SGA
 		/// <summary>
 		// Returns the elapsed time in seconds.
 		/// <summary>
-		double elapsedSeconds()
+		double elapsedSeconds() const
 		{
 			return elapsedMilliseconds()/1000.0;
 		}
@@ -89,7 +89,7 @@ namespace SGA
 		/// <summary>
 		// Returns the elapsed time in minutes.
 		/// <summary>
-		double elapsedMinutes()
+		double elapsedMinutes() const
 		{
 			return elapsedSeconds()/60.0;
 		}
@@ -97,7 +97,7 @@ namespace SGA
 		/// <summary>
 		// Returns the elapsed time in hours.
 		/// <summary>
-		double elapsedHours()
+		double elapsedHours() const
 		{
 			return elapsedMinutes()/60.0;
 		}
@@ -114,7 +114,7 @@ namespace SGA
 		/// <summary>
 		// Checks the remaining time.
 		/// <summary>
-		double remainingTimeMilliseconds()
+		double remainingTimeMilliseconds() const
 		{
 			long diff = maxTimeMs - elapsedMilliseconds();
 			if (diff < 0)
@@ -126,7 +126,7 @@ namespace SGA
 		/// <summary>
 		// Checks if the elapsed time exceeded max time.
 		/// <summary>
-		bool exceededMaxTime()
+		bool exceededMaxTime() const
 		{
 			if (elapsedMilliseconds() > maxTimeMs) {
 				return true;
@@ -137,9 +137,18 @@ namespace SGA
 		/// <summary>
 		// Checks if the elapsed time exceeded max time.
 		/// <summary>
-		long getMaxTimeMilliseconds()
+		long getMaxTimeMilliseconds() const
 		{
 			return maxTimeMs;
+		}
+
+		/// <summary>
+		/// Returns the proportion of time completed of this timer.
+		/// </summary>
+		/// <returns>A proportion of the time completed. 0.0 means timer just started, while 1.0 means time is exactly complete. </returns>
+		double percCompletedTime() const
+		{
+			return elapsedMilliseconds() / maxTimeMs;
 		}
 	};
 }

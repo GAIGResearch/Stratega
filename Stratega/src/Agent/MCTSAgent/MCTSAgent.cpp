@@ -1,9 +1,24 @@
-#include <Stratega/Agent/TreeSearchAgents/MCTSAgent.h>
+#include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 
 namespace SGA
 {
+
+    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    {
+        parameters_.PLAYER_ID = getPlayerID();
+        if (parameters_.heuristic == nullptr)
+            parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        if (parameters_.budgetType == Budget::UNDEFINED)
+            parameters_.budgetType = Budget::TIME;
+        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+    }
+
+
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        //Initialize the budget for this action call.
+        parameters_.resetCounters(timer);
+        //parameters_.printDetails();
 
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -11,7 +26,7 @@ namespace SGA
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
         // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-        if (actionSpace.size() == 1 || !parameters_.CONTINUE_PREVIOUS_SEARCH)
+        if (actionSpace.size() == 1 || !parameters_.continuePreviousSearch)
         {
             rootNode = nullptr;
             previousActionIndex = -1;
@@ -20,7 +35,7 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-            if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration
@@ -34,10 +49,8 @@ namespace SGA
                 rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state, getPlayerID());
             }
 
-            //params.printDetails();
-            parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
+            //Do search!
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
-            //rootNode->printTree();
 
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
@@ -47,16 +60,6 @@ namespace SGA
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             return ActionAssignment::fromSingleAction(bestAction);
         }
-    }
-
-    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
-    {
-        parameters_.PLAYER_ID = getPlayerID();
-        if (parameters_.heuristic == nullptr)
-        {
-            parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        }
-
     }
 
 }

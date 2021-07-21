@@ -5,6 +5,7 @@ namespace SGA
 {
 	ActionAssignment BFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
 	{
+		parameters_.resetCounters(timer);
 		const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
 		// if there is just one action and we don't spent the time on continuing our search
@@ -32,7 +33,7 @@ namespace SGA
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
 			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 			// remember latest action in case the search should be continued
-			previousActionIndex = parameters_.CONTINUE_PREVIOUS_SEARCH && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
+			previousActionIndex = parameters_.continuePreviousSearch && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
 			return ActionAssignment::fromSingleAction(action);
 		}
@@ -42,9 +43,9 @@ namespace SGA
 	{
 		parameters_.PLAYER_ID = getPlayerID();
 		if (parameters_.heuristic == nullptr)
-		{
 			parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-		}
+		if (parameters_.budgetType == Budget::UNDEFINED)
+			parameters_.budgetType = Budget::TIME;
 	}
 
 	/// <summary>
@@ -56,7 +57,7 @@ namespace SGA
 	/// <param name="gameState">the current game-state</param>
 	void BFSAgent::init(ForwardModel& forwardModel, GameState& gameState)
 	{
-		if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+		if (parameters_.continuePreviousSearch && previousActionIndex != -1)
 		{
 			// in case of a deterministic game we know that the previously simulated action
 			// should result in the same game-state as we predicted
@@ -84,10 +85,8 @@ namespace SGA
 	/// <param name="forwardModel">the same forward model as used during the search</param>
 	/// <param name="nodes">list of known open nodes</param>
 	void BFSAgent::search(ForwardModel& forwardModel, std::list<TreeNode*>& nodes)
-	{
-		parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
-		
-		while (parameters_.REMAINING_FM_CALLS > 0)
+	{		
+		while (!parameters_.isBudgetOver())
 		{
 			TreeNode* child = nullptr;
 			while (child == nullptr && !nodes.empty())
@@ -113,6 +112,8 @@ namespace SGA
 					}
 				}
 			}
+
+			parameters_.currentIterations++;
 
 			if (child == nullptr) // tree fully explored
 				break;
@@ -156,7 +157,7 @@ namespace SGA
 	int BFSAgent::getBestActionIdx(ForwardModel& forwardModel)
 	{
 		// iterate over all openNodes since they represent the tree's leafs
-		std::shared_ptr<StateHeuristic> heuristic = parameters_.getStateHeuristic();
+		std::shared_ptr<StateHeuristic> heuristic = parameters_.heuristic;
 		double bestHeuristicValue = -std::numeric_limits<double>::max();
 		TreeNode* bestChild = rootNode.get();
 

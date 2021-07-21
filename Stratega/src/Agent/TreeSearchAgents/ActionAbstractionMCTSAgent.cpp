@@ -4,6 +4,7 @@ namespace SGA
 {
     ActionAssignment ActionAbstractionMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+        parameters_.resetCounters(timer);
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
@@ -19,7 +20,7 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-            if (parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration
@@ -34,7 +35,6 @@ namespace SGA
             }
 
             //params.printDetails();
-            parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
             //rootNode->printTree();
 
@@ -52,9 +52,17 @@ namespace SGA
     {
         parameters_.PLAYER_ID = getPlayerID();
         if (parameters_.heuristic == nullptr)
-        {
             parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        }
+        if (parameters_.budgetType == Budget::UNDEFINED)
+            parameters_.budgetType = Budget::TIME;
+
+
+        // Scripts={AC AW }
+        parameters_.portfolio.clear();
+        std::unique_ptr<BaseActionScript> attackClose = std::make_unique<AttackClosestOpponentScript>();
+        parameters_.portfolio.emplace_back(std::move(attackClose));
+        std::unique_ptr<BaseActionScript> attackWeak = std::make_unique<AttackWeakestOpponentScript>();
+        parameters_.portfolio.emplace_back(std::move(attackWeak));
 
     }
 
