@@ -29,8 +29,8 @@ namespace  SGA
 			portfolio.emplace_back(std::move(useSpecialAbility));
 			std::unique_ptr<BaseActionScript> runToFriends = std::make_unique<RunToFriendlyUnitsScript>();
 			portfolio.emplace_back(std::move(runToFriends));
-			std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
-			portfolio.emplace_back(std::move(random));
+			//std::unique_ptr<BaseActionScript> random = std::make_unique<RandomActionScript>();
+			//portfolio.emplace_back(std::move(random));
 		}
 	};
 }

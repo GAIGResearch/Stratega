@@ -42,7 +42,7 @@ namespace SGA
 
 			// return the first action of the player's portfolio
 			auto action = GetPortfolioAction(state, actionSpace, unitScriptAssignments);
-			std::cout << action.getActionName() << std::endl;
+
 			return ActionAssignment::fromSingleAction(action);
 		}
 	}
@@ -111,8 +111,8 @@ namespace SGA
 					unitScriptAssignments[unitId] = previousBestScript;
 				}
 
-				if (params_.REMAINING_FM_CALLS <= 0)
-					return;
+				//if (params_.REMAINING_FM_CALLS <= 0)
+				//	return;
 			}
 		}
 	}
