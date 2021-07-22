@@ -116,7 +116,7 @@ namespace SGA
 	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
 	{
 		int currentPlayerID = currentState->getCurrentTBSPlayer();
-		int budgetTimeWarningLimit = int(budgetTimeMs * 1.1);
+		int budgetTimeWarningLimit = int(budgetTimeMs * 1.05);
 		int disqualificationBudgetTimeMsLimit = int(disqualificationBudgetTimeMs * 1.05);
 
 
