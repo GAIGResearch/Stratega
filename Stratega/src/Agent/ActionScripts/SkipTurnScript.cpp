@@ -2,13 +2,13 @@
 
 namespace SGA
 {
-	Action SkipTurnScript::getAction(TBSGameState& gameState, std::vector<SGA::Action>& actionSpace) const
+	Action SkipTurnScript::getAction(const GameState& /*gameState*/, std::vector<Action>& /*actionSpace*/, int playerID) const
 	{
-		return Action::createEndAction(gameState.currentPlayer);
+		return Action::createEndAction(playerID);
 	}
 
-	Action SkipTurnScript::getActionForUnit(TBSGameState& gameState, std::vector<SGA::Action>& actionSpace, int unitID) const
+	Action SkipTurnScript::getActionForUnit(const GameState& /*gameState*/, std::vector<Action>& /*actionSpace*/, int playerID, int) const
 	{
-		return Action::createEndAction(gameState.currentPlayer);
+		return Action::createEndAction(playerID);
 	}
 }

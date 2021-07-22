@@ -1,61 +1,117 @@
+#include <filesystem>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Configuration/WinConditionType.h>
-#include <Stratega/Configuration/YamlHeaders.h>
+#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <yaml-cpp/yaml.h>
+#include <fstream>
 
 namespace SGA
 {
-	GameConfig GameConfigParser::parseFromFile(const std::string& filePath) const
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath)
+    {
+        GameConfigParser parser;
+        return parser.parseFromFile(filePath);
+    }
+
+	std::unordered_map<int, LevelDefinition> loadLevelsFromYAML(const std::string& fileMapsPath, const GameConfig& config)
+	{        
+        GameConfigParser parser;
+        return parser.parseLevelsFromFile(fileMapsPath, config);
+	}
+
+	std::unordered_map<int, LevelDefinition> GameConfigParser::parseLevelsFromFile(const std::string& fileMapsPath, const GameConfig& config) const
+	{
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+    	
+        //Load maps from a different path
+        //Check if is path        
+        std::ifstream file(fileMapsPath);
+        if (file)
+        {
+            std::cout << "The maps file exist" << std::endl;
+
+            //Lets read the yaml file
+            auto mapsConfig = YAML::LoadFile(fileMapsPath);
+
+            //Read maps
+            if (mapsConfig["Maps"].IsDefined())
+            {
+                parseMaps(mapsConfig, levelDefinitions, config);
+            }
+            else
+            {
+                throw std::runtime_error("Cannot find definition for the maps");
+            }
+        }
+
+        return levelDefinitions;
+	}
+
+	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
 	{
 		auto configNode = YAML::LoadFile(filePath);
-        GameConfig config;
-        config.gameType = configNode["GameConfig"]["Type"].as<ForwardModelType>();
-        config.tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config.tickLimit);
-        config.numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config.numPlayers);
+        auto config = std::make_unique<GameConfig>();
+        config->yamlPath = filePath;
+        config->gameType = configNode["GameConfig"]["Type"].as<GameType>();
+        config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
+        config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
+
+        config->applyFogOfWar = configNode["GameConfig"]["FogOfWar"].as<bool>(config->applyFogOfWar);
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(configNode["Entities"], config);
-        parseEntityGroups(configNode["EntityGroups"], config);
-        parseAgents(configNode["Agents"], config);
-        parseTileTypes(configNode["Tiles"], config);
-        parseBoardGenerator(configNode["Board"], config);
-        parsePlayers(configNode["Player"], config);
+		parseEntities(configNode["Entities"], *config);
+        parseEntityGroups(configNode["EntityGroups"], *config);
+        parseAgents(configNode["Agents"], *config);
+        parseTileTypes(configNode["Tiles"], *config);
+        
+        parsePlayers(configNode["Player"], *config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
-			parseTechnologyTrees(configNode["TechnologyTrees"], config);
+			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
 		
-        parseActions(configNode["Actions"], config);
-        parseForwardModel(configNode["ForwardModel"], config);
+        parseActions(configNode["Actions"], *config);
+        parseForwardModel(configNode["ForwardModel"], *config);
 
+        if (configNode["GameDescription"].IsDefined())
+            parseGameDescription(configNode["GameDescription"], *config);
+
+        if (configNode["GameRunner"].IsDefined())
+            parseGameRunner(configNode["GameRunner"], *config);
 
 		//Assign actions to entities
         // Parse additional configurations for entities that couldn't be handled previously
         auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
-        for (auto& type : config.entityTypes)
+        for (auto& type : config->entityTypes)
         {
             // Assign actions to entities
-            auto actions = types[type.second.name]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+            auto actions = types[type.second.getName()]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
             for (const auto& actionName : actions)
             {
-                type.second.actionIds.emplace_back(config.getActionID(actionName));
+                type.second.getActionIDs().emplace_back(config->getActionID(actionName));
             }
 
             // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.spawnableEntityTypes = parseEntityGroup(types[type.second.name]["CanSpawn"], config);
-            auto name = types[type.second.name]["RequiredTechnology"].as<std::string>("");
-            type.second.requiredTechnologyID = name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name);
+            type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], *config));
+            auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
+            type.second.setRequiredTechID( name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name));
         	// Hardcoded cost information
-            type.second.cost = parseCost(types[type.second.name]["Cost"], config);
+            type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], *config));
         }
 		
 		//Assign player actions
         auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
         for (const auto& actionName : actions)
         {
-            config.playerActionIds.emplace_back(config.getActionID(actionName));
-        }	
-		    		
+            config->playerActionIds.emplace_back(config->getActionID(actionName));
+        }
+
+    	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
+        parseRenderConfig(configNode, *config);
+
+    	//Parse last the boards after adding the actions to entities
+        parseBoardGenerator(configNode["Board"], *config);
         return config;
 	}
 
@@ -93,23 +149,23 @@ namespace SGA
         auto idCounter = -1;
 
         //Add fog of war tile
-        TileType type;
-        type.id = idCounter++;
-        type.name = "FogOfWar";
-        type.isWalkable = false;
-        type.symbol = '_';
-        config.tileTypes.emplace(type.id, std::move(type));
+        TileType fogOfWarType;
+        fogOfWarType.setID(idCounter++);
+        fogOfWarType.setName("FogOfWar");
+        fogOfWarType.setWalkable(false);
+        fogOfWarType.setSymbol('_');
+        config.tileTypes.emplace(fogOfWarType.getID(), std::move(fogOfWarType));
 
 		for(const auto& nameConfigPair : tileConfigs)
 		{
             TileType type;
-            type.id = idCounter++;
-            type.name = nameConfigPair.first;
-			type.isWalkable = nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable);
-			type.blocksSight = nameConfigPair.second["BlocksSight"].as<bool>(type.blocksSight);
-            type.isDefaultTile = nameConfigPair.second["DefaultTile"].as<bool>(false);
-			type.symbol = nameConfigPair.second["Symbol"].as<char>();
-            config.tileTypes.emplace(type.id, std::move(type));
+            type.setID(idCounter++);
+            type.setName(nameConfigPair.first);
+			type.setWalkable(nameConfigPair.second["IsWalkable"].as<bool>(type.isWalkable()));
+			type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
+            type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
+			type.setSymbol(nameConfigPair.second["Symbol"].as<char>());
+            config.tileTypes.emplace(type.getID(), std::move(type));
 		}
 	}
 
@@ -119,18 +175,77 @@ namespace SGA
 		{
             throw std::runtime_error("Cannot find definition for the Board");
 		}
-
+    	
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+    	
+        //Load maps from file    	
         if (boardNode["GenerationType"].as<std::string>() == "Manual")
         {
-            config.boardString = boardNode["Layout"].as<std::string>();
-        	// Remove whitespaces but keep newLines
-            config.boardString.erase(std::remove_if(config.boardString.begin(), config.boardString.end(), 
-                [](char x) { return x != '\n' && std::isspace(x); }), config.boardString.end());
+            
+
+            //Check if user has defined multiple maps
+            if (boardNode["Maps"].IsDefined())
+            {
+                if (boardNode["Maps"].IsScalar())
+                {
+                    auto path = boardNode["Maps"].as<std::string>();
+
+                    //Check if is path
+                    std::ifstream file(path);
+                    if (file)
+                    {
+                        std::cout << "The file exist" << std::endl;
+
+                        //Lets read the yaml file
+                        auto mapsConfig = YAML::LoadFile(path);
+
+                        //Read maps
+                        if (mapsConfig["Maps"].IsDefined())
+                        {
+                            parseMaps(mapsConfig, levelDefinitions, config);
+                        }
+                        else
+                        {
+                            throw std::runtime_error("Cannot find definition for the maps");
+                        }
+                    }
+                }
+                else
+                {
+                    parseMaps(boardNode, levelDefinitions, config);
+                }
+            }
+
+            std::string boardString = boardNode["Layout"].as<std::string>();
+            //Check if user choose one from the loaded maps
+            bool found = false;
+            int indexMap = 0;
+            for (auto& levelDefinition : levelDefinitions)
+            {
+                if (levelDefinition.second.name == boardString)
+                {
+                    found = true;
+                    config.selectedLevel = indexMap;
+                }
+                indexMap++;
+            }
+
+            if (!found)
+            {
+                //Parse definition
+                parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
+                config.selectedLevel = (int)levelDefinitions.size() - 1;
+            }
+
+            config.levelDefinitions = levelDefinitions;
         }
         else
         {
             throw std::runtime_error("Unknown board-generation type " + boardNode["GenerationType"].as<std::string>());
         }
+    	
+       
+
 	}
 
     void GameConfigParser::parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const
@@ -144,14 +259,21 @@ namespace SGA
         for (const auto& nameTypePair : types)
         {
             EntityType type;
-            type.name = nameTypePair.first;
-            type.symbol = nameTypePair.second["Symbol"].as<char>('\0');
-            type.id = config.entityTypes.size();
-            type.lineOfSight = nameTypePair.second["LineOfSightRange"].as<float>();
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+            
+            
+            if (nameTypePair.second["LineOfSightRange"] == nullptr)
+                type.setLoSRange(0);
+            else
+                type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
+            
+            if (nameTypePair.second["Parameters"] != nullptr)
+                parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
-            parseParameterList(nameTypePair.second["Parameters"], config, type.parameters);
-
-            config.entityTypes.emplace(type.id, std::move(type));
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            config.entityTypes.emplace(type.getID(), std::move(type));
         }
     }
 
@@ -177,7 +299,7 @@ namespace SGA
             // Group that contains all entities
             config.entityGroups.at("All").emplace(idEntityPair.first);
         	// Group that contains one entity
-            config.entityGroups.emplace(idEntityPair.second.name, std::initializer_list<int>{ idEntityPair.first });
+            config.entityGroups.emplace(idEntityPair.second.getName(), std::initializer_list<int>{ idEntityPair.first });
         }
     }
 
@@ -189,74 +311,84 @@ namespace SGA
         }
 
         FunctionParser parser;
-
+        
         auto context = ParseContext::fromGameConfig(config);      
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
-            type.id = config.actionTypes.size();
-            type.name = nameTypePair.first;
-            type.actionTargets = parseTargetType(nameTypePair.second["Target"], config);
-            type.sourceType = nameTypePair.second["Type"].as<ActionSourceType>();
-            type.cooldownTicks = nameTypePair.second["Cooldown"].as<int>(0);
-
-            // Parse preconditions
-            context.targetIDs.emplace("Source", 0);
-        	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(preconditions, type.preconditions, context);
-
-            // Parse target conditions
-            context.targetIDs.emplace("Target", 1);
-            auto targetConditions = nameTypePair.second["Target"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(targetConditions, type.targetConditions, context);
+            type.setID(static_cast<int>(config.actionTypes.size()));
+            type.setName(nameTypePair.first);
         	
+            context.targetIDs.emplace("Source", 0);
+        	
+        	//Parse all the targets
+            for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
+            {
+                TargetType newTarget;
+                context.targetIDs.emplace(target.first, context.targetIDs.size());
+                newTarget = parseTargetType(target.second, config);
+            	
+                std::vector<std::shared_ptr<Condition>> targetConditionsList;            	
+                //// Parse target conditions
+		        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+		        parser.parseFunctions(targetConditions, targetConditionsList, context);            	
+                type.getTargets().emplace_back(newTarget, targetConditionsList);
+            }
+        	
+            type.setSourceType(nameTypePair.second["Type"].as<ActionSourceType>());
+            type.setCooldown(nameTypePair.second["Cooldown"].as<int>(0));
+        	
+            // Parse preconditions            
+        	auto preconditions = nameTypePair.second["Preconditions"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions(preconditions, type.getPreconditions(), context);
+
             // Parse effects
             auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(effects, type.effects, context);
+            parser.parseFunctions(effects, type.getEffects(), context);
 
-            type.isContinuous = false;
+            type.setContinuous(false);
         	
         	//Continuous Action Stuff
             if (nameTypePair.second["TriggerComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
                 auto targetConditions = nameTypePair.second["TriggerComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(targetConditions, type.triggerComplete, context);
+                parser.parseFunctions(targetConditions, type.getTriggerComplete(), context);
             }
         	
             if (nameTypePair.second["OnStart"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
-                auto effects = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnStart, context);
+                auto effectStrings = nameTypePair.second["OnStart"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.getOnStart(), context);
             }
 
             if (nameTypePair.second["OnTick"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
-                auto effects = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnTick, context);
+                auto effectStrings = nameTypePair.second["OnTick"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.getOnTick(), context);
             }
 
             if (nameTypePair.second["OnComplete"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
-                auto effects = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnComplete, context);
+                auto effectStrings = nameTypePair.second["OnComplete"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.getOnComplete(), context);
             }
 
             if (nameTypePair.second["OnAbort"].IsDefined())
             {
-                type.isContinuous = true;
+                type.setContinuous(true);
 
-                auto effects = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
-                parser.parseFunctions(effects, type.OnAbort, context);
+                auto effectStrings = nameTypePair.second["OnAbort"].as<std::vector<std::string>>(std::vector<std::string>());
+                parser.parseFunctions(effectStrings, type.getOnAbort(), context);
             }
         	
-            config.actionTypes.emplace(type.id, std::move(type));
+            config.actionTypes.emplace(type.getID(), std::move(type));
             context.targetIDs.clear();
         }
     }
@@ -264,21 +396,19 @@ namespace SGA
     TargetType GameConfigParser::parseTargetType(const YAML::Node& node, const GameConfig& config) const
     {
         TargetType targetType;
-        targetType.type = node["Type"].as<TargetType::Type>();
-        if (targetType.type == TargetType::Position)
-        {
-        	if(node["Shape"].IsDefined())
-        	{
-
-                targetType.shapeType = node["Shape"].as<ShapeType>();
-                targetType.shapeSize = node["Size"].as<int>();
-        	}
+        targetType.setType(node["Type"].as<TargetType::Type>());
+        if (targetType.getType() == TargetType::Position)
+        {        	
+        	targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
-            targetType.groupEntityTypes = parseEntityGroup(node["ValidTargets"], config);
+        	if(targetType == TargetType::Entity)
+				targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+        	
+            targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
         }
-        else if (targetType.type == TargetType::Technology)
+        else if (targetType.getType() == TargetType::Technology)
         {
             auto techNode = node["ValidTargets"];
         	if(techNode.IsScalar() && techNode.as<std::string>() == "All")
@@ -286,7 +416,7 @@ namespace SGA
         		for(const auto& tree: config.technologyTreeCollection.technologyTreeTypes)
         		{
         			for(const auto& tech : tree.second.technologies)
-						targetType.technologyTypes.insert(tech.first);
+						targetType.getTechnologyTypes().insert(tech.first);
         		}
         	}
             else if(techNode.IsSequence())
@@ -295,11 +425,43 @@ namespace SGA
                 //Assigne technology IDs to the technologytypes map
                 for (auto& technology : technologies)
                 {
-                    targetType.technologyTypes.insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
+                    targetType.getTechnologyTypes().insert(config.technologyTreeCollection.getTechnologyTypeID(technology));
                 }
             }
         }
         return targetType;
+    }
+
+    ActionCategory GameConfigParser::parseActionCategory(const std::string& name) const
+    {
+        ActionCategory actionCategory;
+              
+        if (name == "Attack")        actionCategory = SGA::ActionCategory::Attack;
+        else if (name == "Heal")     actionCategory = SGA::ActionCategory::Heal;
+        else if (name == "Research") actionCategory = SGA::ActionCategory::Research;
+        else if (name == "Gather")   actionCategory = SGA::ActionCategory::Gather;
+        else if (name == "Move")     actionCategory = SGA::ActionCategory::Move;
+        else if (name == "Spawn")    actionCategory = SGA::ActionCategory::Spawn;
+        else throw std::runtime_error("Cannot find action category: " + name);
+		
+        return actionCategory;
+    }
+
+    EntityCategory GameConfigParser::parseEntityCategory(const std::string& name) const
+    {
+        EntityCategory entityCategory;
+
+        if (name == "Base")           entityCategory = SGA::EntityCategory::Base;
+        else if (name == "Building")  entityCategory = SGA::EntityCategory::Building;
+        else if (name == "Spawner")   entityCategory = SGA::EntityCategory::Spawner;
+        else if (name == "Unit")      entityCategory = SGA::EntityCategory::Unit;
+        else if (name == "NoFighter") entityCategory = SGA::EntityCategory::NoFighter;
+        else if (name == "Fighter")   entityCategory = SGA::EntityCategory::Fighter;
+        else if (name == "Melee")     entityCategory = SGA::EntityCategory::Melee;
+        else if (name == "Ranged")    entityCategory = SGA::EntityCategory::Ranged;
+        else throw std::runtime_error("Cannot find entity category: " + name);
+
+        return entityCategory;
     }
 
 	void GameConfigParser::parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const
@@ -309,28 +471,45 @@ namespace SGA
             throw std::runtime_error("Cannot find a definition for the ForwardModel");
         }
 		
-        std::unique_ptr<EntityForwardModel> fm;
-		if(config.gameType == ForwardModelType::TBS)
+        std::unique_ptr<ForwardModel> fm;
+		if(config.gameType == GameType::TBS)
 		{
             fm = std::make_unique<TBSForwardModel>();
 		}
-        else if(config.gameType == ForwardModelType::RTS)
+        else if(config.gameType == GameType::RTS)
         {
             fm = std::make_unique<RTSForwardModel>();
         }
-
-		// Parse WinCondition
-        auto winConditionNode = fmNode["WinCondition"];
-        fm->winCondition = winConditionNode["Type"].as<WinConditionType>(fm->winCondition);
-		if(fm->winCondition == WinConditionType::UnitAlive)
-		{
-            auto targetUnitName = winConditionNode["Unit"].as<std::string>();
-            fm->targetUnitTypeID = config.getEntityID(targetUnitName);
-		}
-
-		// Parse Trigger
+       
         FunctionParser parser;
         auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+		
+		//Parse Win Conditions
+        auto winConditions = fmNode["WinConditions"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>());
+        
+        for (auto& winCondition : winConditions)
+        {
+            std::vector<std::shared_ptr<Condition>> conditionList;
+        	
+            auto conditions = winCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Condition>(conditions, conditionList, context);
+            fm->addWinConditions(conditionList);
+        }
+
+        //Parse Lose Conditions
+        auto loseConditions = fmNode["LoseConditions"].as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>());
+
+        for (auto& loseCondition : loseConditions)
+        {
+            std::vector<std::shared_ptr<Condition>> conditionList;
+
+            auto conditions = loseCondition.second.as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Condition>(conditions, conditionList, context);
+            fm->addLoseConditions(conditionList);
+        }
+		
+		// Parse Triggers
 		for(const auto& trigger : fmNode["Trigger"].as<std::vector<YAML::Node>>(std::vector<YAML::Node>()))
 		{
             auto map = trigger.as<std::map<std::string, YAML::Node>>();
@@ -348,7 +527,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
-                fm->onTickEffects.emplace_back(std::move(onTickEffect));
+                fm->addOnTickEffect(onTickEffect);
 			}
             else if(map.find("OnSpawn") != map.end())
             {
@@ -364,7 +543,7 @@ namespace SGA
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
                 // Add it to the fm
-                fm->onEntitySpawnEffects.emplace_back(std::move(onSpawnEffect));
+                fm->addOnEntitySpawnEffect(onSpawnEffect);
             }
             else
             {
@@ -399,11 +578,12 @@ namespace SGA
                 newTechnology.name = nameTechPair.first;
 				newTechnology.description= nameTechPair.second["Description"].as<std::string>();
                 newTechnology.cost = parseCost(nameTechPair.second["Cost"], config);
+                newTechnology.continuousActionTime = nameTechPair.second["Time"].as<int>(0);
 
                 technologyTreeType.technologies[newTechnology.id]= newTechnology;
             }
 
-            config.technologyTreeCollection.technologyTreeTypes[config.technologyTreeCollection.technologyTreeTypes.size()] = technologyTreeType;
+            config.technologyTreeCollection.technologyTreeTypes[static_cast<int>(config.technologyTreeCollection.technologyTreeTypes.size())] = technologyTreeType;
         }
 
 
@@ -415,8 +595,8 @@ namespace SGA
             {
 
             	//Search the technology tree in the config yaml
-                auto types = techtreeNode.as<std::map<std::string, YAML::Node>>();
-                auto techTreeTypeYaml = types[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
+                auto typeMap = techtreeNode.as<std::map<std::string, YAML::Node>>();
+                auto techTreeTypeYaml = typeMap[technologyTreeType.second.technologyTreeName].as<std::map<std::string, YAML::Node>>();
                 //Find the technology
                 auto technologyYaml= techTreeTypeYaml[technology.second.name].as<std::map<std::string, YAML::Node>>();
             	//Get the parents of the technology
@@ -430,13 +610,91 @@ namespace SGA
             	
             }
         }
-        
-		//Initialize researched list for each player
-        for (size_t i = 0; i < config.agentParams.size(); i++)
-        {
-            config.technologyTreeCollection.researchedTechnologies[i] = {};
-        }
 	}
+
+    void GameConfigParser::parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const
+    {
+        //Parse Action Categories
+        auto nodes = gameDescription["Actions"];
+        auto types = nodes.as<std::map<std::string, YAML::Node>>();
+
+        for (auto& type : types)
+        {
+        	// Parse action category
+            auto category = parseActionCategory(type.first);
+
+            // Assign actiontypes 
+            std::vector<int> actionTypes;        	
+            auto actions = type.second.as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : actions)
+            {
+                actionTypes.emplace_back(config.getActionID(actionName));
+            }
+
+            config.actionCategories[category] = actionTypes;
+        }		
+
+        //Parse Entity Categories
+        nodes = gameDescription["Entities"];
+        types = nodes.as<std::map<std::string, YAML::Node>>();
+
+        for (auto& type : types)
+        {
+            // Parse entity category
+            auto category = parseEntityCategory(type.first);
+            
+            // Assign entity types 
+            std::vector<int> entityTypes;
+            auto entities = type.second.as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : entities)
+            {
+                entityTypes.emplace_back(config.getEntityID(actionName));
+            }
+
+            config.entityCategories[category] = entityTypes;
+        }
+
+
+    }
+
+    void GameConfigParser::parseGameRunner(const YAML::Node& gameRunner, GameConfig& config) const
+    {
+        auto agentInitializationTime = gameRunner["AgentInitializationTime"];
+        config.shouldCheckInitTime= agentInitializationTime["Enabled"].as<bool>(false);
+        config.initBudgetTimetMs= agentInitializationTime["BudgetTimeMs"].as<long>(40);
+        config.initDisqualificationBudgetTimeMs = agentInitializationTime["DisqualificationTimeMs"].as<long>(60);
+
+        auto agentComputationTime = gameRunner["AgentComputationTime"];
+        config.shouldCheckComputationTime= agentComputationTime["Enabled"].as<bool>(false);
+        config.budgetTimeMs= agentComputationTime["BudgetTimeMs"].as<long>(40);
+        config.disqualificationBudgetTimeMs = agentComputationTime["DisqualificationTimeMs"].as<long>(60);
+        config.maxNumberWarnings = agentComputationTime["MaxNumberWarnings"].as<int>(3);
+    }
+
+    void GameConfigParser::parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const
+    {
+        config.renderConfig = std::make_unique<RenderConfig>();
+
+        // Hardcode shader Path
+        config.renderConfig->outlineShaderPath = "./GUI/Assets/OutLine.frag";
+
+        for (const auto& entityNode : configNode["Entities"])
+        {
+            auto entityName = entityNode.first.as<std::string>();
+            auto entityConfig = entityNode.second;
+            config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
+        }
+
+        //Add Fog of War tile
+        config.renderConfig->tileSpritePaths.emplace("FogOfWar", "./GUI/Assets/Tiles/notVisible.png");
+
+        for (const auto& tileNode : configNode["Tiles"])
+        {
+            auto tileName = tileNode.first.as<std::string>();
+            auto tileConfig = tileNode.second;
+            config.renderConfig->tileSpritePaths.emplace(tileName, parseFilePath(tileConfig["Sprite"], config));
+        }
+    }
 
     void GameConfigParser::parsePlayers(const YAML::Node& playerNode, GameConfig& config) const
 	{
@@ -444,6 +702,8 @@ namespace SGA
 		//Parse parameters
         auto parametersNode = playerNode["Parameters"];
         parseParameterList(parametersNode, config, config.playerParameterTypes);
+
+       config.playerSpawnableTypes = parseEntityGroup(playerNode["CanSpawn"], config);
 	}
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
@@ -458,13 +718,13 @@ namespace SGA
 
             // Construct the parameter
             Parameter param;
-            param.id = config.parameters.at(nameParamPair.first);
-            param.name = nameParamPair.first;
-            param.minValue = 0;
-            param.maxValue = nameParamPair.second;
-            param.defaultValue = param.maxValue;
-            param.index = parameterBucket.size();
-            parameterBucket.insert({ param.id, std::move(param) });
+            param.setID(config.parameters.at(nameParamPair.first));
+            param.setName(nameParamPair.first);
+            param.setMinValue(0);
+            param.setMaxValue(nameParamPair.second);
+            param.setDefaultValue(param.getMaxValue());
+            param.setIndex(static_cast<int>(parameterBucket.size()));
+            parameterBucket.insert({ param.getID(), std::move(param) });
         }
 	}
 
@@ -526,4 +786,149 @@ namespace SGA
 
         return idCostMap;
 	}
+
+    std::string GameConfigParser::parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const
+    {
+        try {
+            if (!pathNode.IsScalar())
+                throw std::runtime_error("Received a invalid file-path");
+
+            using namespace std::filesystem;
+
+            path filePath = pathNode.as<std::string>();
+            // Convert path to an absolute path relative to the path of the configuration file
+            auto tmp = current_path();
+            current_path(canonical(path(config.yamlPath).parent_path()));
+            filePath = canonical(filePath);
+            current_path(tmp);
+
+            return filePath.string();
+        }
+        catch (std::exception) 
+        {
+            throw std::runtime_error("Received a invalid file-path: " + pathNode.as<std::string>());
+        }
+    }
+	
+	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
+	{
+        //Read the multiple maps in this file
+        auto mapsLayout = mapsLayouts["Maps"].as<std::map<std::string, YAML::Node>>();
+
+        //Read maps
+        for (auto& map : mapsLayout)
+        {
+            parseLevelDefinition(map.second, map.first, levelDefinitions, config);
+        }
+	}
+
+    void GameConfigParser::parseLevelDefinition(const YAML::Node& mapLayout, std::string mapName,
+        std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
+    {
+        std::string mapString = mapLayout.as<std::string>();
+    	
+        // Remove whitespaces but keep newLines
+        mapString.erase(std::remove_if(mapString.begin(), mapString.end(),
+            [](char x) { return x != '\n' && std::isspace(x); }), mapString.end());    	
+        
+    	//Types
+        std::vector<std::shared_ptr<TileType>> tileTypes;
+        std::vector<EntityPlacement> entityPlacements;
+    	
+    	// Create some lookups for initializing the board and entities
+        std::unordered_map<char, const TileType*> tileLookup;
+        const auto* defaultTile = &config.tileTypes.begin()->second;
+        for (const auto& idTilePair : config.tileTypes)
+        {
+            tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+            if (idTilePair.second.isDefaultTile())
+                defaultTile = &idTilePair.second;
+        }
+
+        std::unordered_map<char, const EntityType*> entityLookup;
+        for (const auto& idEntityPair : config.entityTypes)
+        {
+            entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
+        }
+    	
+        // Configure new level definition and entity placements
+        auto x = 0;
+        auto y = 0;
+        auto width = -1;
+
+        for (size_t i = 0; i < mapString.size(); i++)
+        {
+            auto c = mapString[i];
+            if (c == '\n')
+            {
+                y++;
+                if (width == -1)
+                {
+                    width = x;
+                }
+                else if (x != width)
+                {
+                    throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+                }
+
+                x = 0;
+                continue;
+            }
+
+            auto entityIt = entityLookup.find(c);
+            auto tileIt = tileLookup.find(c);
+            if (entityIt != entityLookup.end())
+            {
+                // Check if the entity was assigned to an player, we only look for players with ID 0-9
+                auto ownerID = Player::getNeutralPlayerID();
+                if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
+                {
+                    ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
+                    if (ownerID>=config.getNumberOfPlayers())
+                    {
+                        throw std::runtime_error("Tried assigning the entity " + entityIt->second->getName() + " to an unknown player " + std::to_string(ownerID));
+                    }
+                    i++;
+                }
+
+                EntityPlacement newEntity;
+                newEntity.position = Vector2f(x, y);
+                newEntity.ownerID = ownerID;
+                newEntity.entityType = std::make_shared<EntityType>(*entityIt->second);
+                entityPlacements.emplace_back(newEntity);
+            	
+                // Since an entity occupied this position, we will place the default tile here
+                tileTypes.emplace_back(std::make_shared<TileType>(*defaultTile));
+            }
+            else if (tileIt != tileLookup.end())
+            {                
+                tileTypes.emplace_back(std::make_shared<TileType>(*tileIt->second));
+            }
+            else
+            {
+                throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
+            }
+
+            x++;
+        }
+
+        // Sometimes there is a newLine at the end of the string, and sometimes not
+        if (mapString[mapString.size() - 1] != '\n')
+        {
+            y++;
+            if (x != width)
+            {
+                throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+            }
+        }   	
+       
+    	
+        //Assign grid and entity placements
+        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(width, tileTypes.begin(), tileTypes.end()));
+        newLevel.name = mapName;
+        newLevel.boardString = mapString;
+
+    	//Add new level definition
+        levelDefinitions.emplace(levelDefinitions.size(), newLevel);
+    }
 }

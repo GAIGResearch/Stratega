@@ -18,6 +18,7 @@ namespace SGA
 		IDMap targetIDs;
 		IDMap parameterIDs;
 		IDMap entityTypeIDs;
+		IDMap tileTypeIDs;
 		IDMap technologyTypeIDs;
 
 		static ParseContext fromGameConfig(const GameConfig& config);
@@ -43,7 +44,7 @@ namespace SGA
 					throw std::runtime_error("Could not parse '" + code + "'");
 				}
 
-				auto instance = FunctionFactory<Function>::get().createFunction(abstractFn->functionName, abstractFn->parameters);
+				auto instance = FunctionFactory<Function>::get().createFunction(code, abstractFn->functionName, abstractFn->parameters);
 				if (instance == nullptr)
 				{
 					throw std::runtime_error("Tried calling unknown function " + abstractFn->functionName + ": '" + code + "'");
@@ -62,7 +63,9 @@ namespace SGA
 		std::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
+		std::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		std::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		std::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names

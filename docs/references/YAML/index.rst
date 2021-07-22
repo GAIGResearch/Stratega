@@ -5,4 +5,4 @@ YAML Reference
 ###############
 
 .. note::
-	Coming Soon
+	Coming Soon!

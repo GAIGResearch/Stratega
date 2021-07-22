@@ -10,7 +10,7 @@ namespace SGA
 		context.parameterIDs = config.parameters;
 		for (const auto& entityType : config.entityTypes)
 		{
-			context.entityTypeIDs.emplace(entityType.second.name, entityType.first);
+			context.entityTypeIDs.emplace(entityType.second.getName(), entityType.first);
 		}
 
 		for (const auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
@@ -21,7 +21,11 @@ namespace SGA
 			}
 			
 		}
-		
+
+		for (const auto& tileType : config.tileTypes)
+		{
+			context.tileTypeIDs.emplace(tileType.second.getName(), tileType.first);
+		}
 		return context;
 	}
 
@@ -54,9 +58,11 @@ namespace SGA
 			if (((param = parseConstant(ss))) ||
 				((param = parseEntityPlayerReference(ss, context))) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
+				((param = parseTimeReference(ss, context))) ||
 				((param = parseParameterReference(ss, context))) ||
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))) ||
+				((param = parseTileTypeReference(ss, context))) ||
 				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -79,12 +85,12 @@ namespace SGA
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
 		{
-			prefix = ss.get();
+			ss.get(prefix);
 		}
 
 		if (std::isdigit(ss.peek()))
 		{
-			int value;
+			double value;
 			ss >> value;
 			return FunctionParameter::createConstParameter(static_cast<double>(prefix == '-' ? -value : value));
 		}
@@ -139,6 +145,32 @@ namespace SGA
 		}
 
 		return FunctionParameter::createEntityPlayerReference(targetIt->second);
+	}
+
+	std::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 2);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetName = names.value()[0];
+		auto timeName = names.value()[1];
+		if (timeName != "Time")
+		{
+			ss.seekg(begin);
+			return {};
+		}
+		
+		auto targetIt = context.targetIDs.find(targetName);
+		if (targetIt == context.targetIDs.end())
+		{
+			throw std::runtime_error("Unknown action-target: " + targetName);
+		}
+
+		return FunctionParameter::createTimeReference(targetIt->second);
 	}
 
 	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const
@@ -207,6 +239,25 @@ namespace SGA
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
+	std::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetIt = context.tileTypeIDs.find(names.value()[0]);
+		if (targetIt == context.tileTypeIDs.end())
+		{
+			ss.seekg(begin); // Set back to start
+			return {};
+		}
+
+		return FunctionParameter::createTileTypeReference(targetIt->second);
+	}
+	
 	std::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
@@ -267,7 +318,7 @@ namespace SGA
 		std::string text;
 		while (std::isalpha(ss.peek()))
 		{
-			text.push_back(ss.get());
+			text.push_back(static_cast<char>(ss.get()));
 		}
 
 		if (text.empty())

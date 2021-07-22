@@ -1,363 +1,532 @@
 #pragma once
-#include <Stratega/Representation/EntityType.h>
+#include <random>
+#include <unordered_map>
+#include <Stratega/Representation/Grid2D.h>
+#include <Stratega/Representation/Tile.h>
 #include <Stratega/ForwardModel/ActionType.h>
 #include <Stratega/Representation/Entity.h>
 #include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Grid2D.h>
-#include <Stratega/Representation/TechnologyTree.h>
-#include <Stratega/Representation/Tile.h>
 #include <Stratega/Representation/TileType.h>
+#include <Stratega/Representation/GameInfo.h>
 
 namespace SGA
 {
-	struct GameState
+	enum class GameType
 	{
-		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
-			parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
-			entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
-			actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
-			tileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes)),
-			technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
-			isGameOver(false),
-			winnerPlayerID(-1),
-			currentTick(1),
-			tickLimit(-1),
-			fogOfWarTile(-1, 0, 0),
-			fogOfWarId(-1),
-			board(std::move(board)),
-			players(),
-			nextEntityID(0),
-			nextPlayerID(0)
-		{
-		}
+		TBS,
+		RTS
+	};
 
-		GameState()
-			: parameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>()),
-			  entityTypes(std::make_shared<std::unordered_map<int, EntityType>>()),
-			  actionTypes(std::make_shared<std::unordered_map<int, ActionType>>()),
-			  tileTypes(std::make_shared<std::unordered_map<int, TileType>>()),
-			  technologyTreeCollection(std::make_shared<TechnologyTreeCollection>()),
-			  isGameOver(false),
-			  winnerPlayerID(-1),
-			  currentTick(1),
-			  tickLimit(-1),
-			  fogOfWarTile(-1,0,0),
-			  fogOfWarId(-1),
-			  board(0,0, fogOfWarTile),
-			  nextEntityID(0),
-			  nextPlayerID(0)
-		{
-		}
+	/// <summary>
+	/// Contains the game data without any logic, offering access to the current board, a list of player and their units.
+	/// If the agent want access to the definition of entity types, actions or game config yaml  it should access to <see cref="SGA::GameInfo"/>
+	/// </summary>
+	struct GameState final
+	{
 
-		int continueActionNextID = 0;
-		//Rule of six
-		virtual ~GameState() = default;
-		GameState(const GameState& other) = default;
-		GameState(GameState&& other) noexcept = default;
-		GameState& operator=(const GameState& other) = default;
-		GameState& operator=(GameState&& other) noexcept = default;
+	public:
 
-		// Type information
-		std::shared_ptr<std::unordered_map<std::string, ParameterID>> parameterIDLookup;
-		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
-		std::shared_ptr<std::unordered_map<int, EntityType>> entityTypes;
-		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
-		std::shared_ptr<std::unordered_map<int, TileType>> tileTypes;
+		/***** CONSTRUCTORS *****/
+
+		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
+		GameState();
+
+
+
+		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
+
+		/// <summary>
+		/// Checks if a <see cref="SGA::Entity"/> can execute a given actionType
+		/// </summary>
+		/// <param name="entity">The entity that will be analyzed</param>
+		/// <returns>A boolean indicating if the player can execute the action type</returns>
+		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
 		
-		//Technology tree
-		std::shared_ptr <TechnologyTreeCollection> technologyTreeCollection;		
+		/// <summary>
+		/// Checks if a player can execute a given actionType
+		/// </summary>
+		/// <param name="player">The player that will be analyzed</param>
+		/// <returns>A boolean indicating if the entity can execute the action type</returns>
+		bool canExecuteAction(const Player& player, const ActionType& actionType) const;
 
-		std::unordered_map<std::string, std::unordered_set<EntityTypeID>> entityGroups;
+		/// <summary>
+		/// Returns a list with all the action types that a player can execute
+		/// </summary>
+		/// <param name="playerID">ID of the player we get the action types from.</param>
+		/// <returns>Vector with action types this player can execute in this game</returns>
+		std::vector<ActionType> getPlayerActionTypes(int playerID) const;
 
-		
-		// Game information
-		bool isGameOver;
-		int winnerPlayerID;
-		int currentTick;
-		int tickLimit;
-		
-		// Board information
-		Tile fogOfWarTile;
-		int fogOfWarId = -1;
-		Grid2D<Tile> board;
+		/// <summary>
+		/// Checks if given technology has been researched by a player.
+		/// </summary>
+		/// <param name="playerID">ID of the player to check</param>
+		/// <param name="technologyID">ID of the technology to check</param>
+		/// <returns>A boolean indicating if the player has researched the given technology</returns>
+		bool isResearched(int playerID, int technologyID) const;
 
-		// Player and unit information
-		std::vector<Entity> entities;
-		std::vector<Player> players;
-		int nextEntityID;
-		int nextPlayerID;
+		/// <summary>
+		/// Checks if given technology can been researched by a player.
+		/// </summary>
+		/// <param name="playerID">ID of the player to check</param>
+		/// <param name="technologyID">ID of the technology to check</param>
+		/// <returns>A boolean indicating if the player can research the given technology</returns>
+		bool canResearch(int playerID, int technologyID) const;
 
-		virtual bool canExecuteAction(Entity& entity, ActionType& actionType);
-		virtual bool canExecuteAction(Player& player, ActionType& actionType);
+		/// <summary>
+		/// Process the research of a given technology for a player. This method does not check
+		/// if the technology is research or if it can be researched.
+		/// </summary>
+		/// <param name="playerID">ID of the player who has to research a tech</param>
+		/// <param name="technologyID">ID of the technology to research</param>
+		void researchTechnology(int playerID, int technologyID);
 
+		/// <summary>
+		/// Initializes the research technologies to all players, to none.
+		/// </summary>
+		void initResearchTechs();
+
+
+
+		/***** BOARD FUNCTIONS *****/
+
+		/// <summary>
+		/// Checks if tile is occupied or the tile is walkable
+		/// </summary>
+		/// <param name="position">The position of the tile map</param>
+		/// <returns>A boolean indicating if the tile in the given position is walkable</returns>
+		bool isWalkable(const Vector2i& position);
+
+		/// <summary>
+		/// Checks if position is inside of the tile map
+		/// </summary>
+		/// <param name="pos">The position to be checked</param>
+		/// <returns>A boolean indicating if tile map contains the position</returns>
+		bool isInBounds(const Vector2i& pos) const;
+
+		/// <summary>
+		/// Checks if position is inside of the tile map
+		/// </summary>
+		/// <param name="pos">The position to be checked</param>
+		/// <returns>A boolean indicating if tile map contains the position</returns>
+		bool isInBounds(const Vector2f& pos) const;
+
+		/// <summary>
+		/// Returns the width of the board.
+		/// </summary>
+		/// <returns>The width of the board.</returns>
+		int getBoardWidth() const { return (int)board.getWidth(); }
+
+		/// <summary>
+		/// Returns the height of the board.
+		/// </summary>
+		/// <returns>The height of the board.</returns>
+		int getBoardHeight() const { return (int)board.getHeight(); }
+
+		/// <summary>
+		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="pos">Position of the tile to retrieve</param>
+		/// <returns>The tile at 'pos'</returns>
+		const Tile& getTileAt(const Vector2i& pos) const;
+
+		/// <summary>
+		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="x">X Position of the tile to retrieve</param>
+		/// <param name="y">Y Position of the tile to retrieve</param>
+		/// <returns>The tile at position (x,y)</returns>
+		const Tile& getTileAt(int x, int y) const;
+
+		/// <summary>
+		/// Initializes the board with the tiles passed by parameter. 
+		/// </summary>
+		/// <param name="tiles">Tiles to fill the board with.</param>
+		/// <param name="boardWidth">Width of the board to initialize.</param>
+		void initBoard(int boardWidth, std::vector<Tile>& tiles);
+
+
+		/***** GAME ENTITIES FUNCTIONS *****/
+
+		/// <summary>
+		/// Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. 
+		/// </summary>
+		/// <param name="pos">Position in the board to look for an entity.</param>
+		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
+		/// <returns>A pointer to the entity in this location.</returns>
+		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
 		const Entity* getEntityAt(const Vector2f& pos) const;
-		
-		Entity* getEntity(int entityID)
-		{
-			auto iter = std::find_if(std::begin(entities), std::end(entities),
-				[&](Entity const& p) { return p.id == entityID; });
-			return iter == entities.end() ? nullptr : &*iter;
-		}
 
-		const Entity& getEntityConst(int entityID) const 
-		{
-			return *std::find_if(std::begin(entities), std::end(entities),
-				[&](Entity const& p) { return p.id == entityID; });
-		}
+		/// <summary>
+		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getEntity(int entityID);
+		const Entity* getEntityConst(int entityID) const;
 
-		const EntityType& getEntityType(int entityTypeID) const
-		{
-			auto it = entityTypes->find(entityTypeID);
-			if (it != entityTypes->end())
-			{
-				return it->second;
-			}
-			else
-			{
-				std::string s;
-				s.append("Tried accessing unknown entity type with ID=");
-				s.append(std::to_string(entityTypeID));
-				throw std::runtime_error(s);
-			}
-		}
-		
-		int getParameterGlobalID(std::string parameterName)
-		{
-			int foundId = -1;
-			auto  iterator=parameterIDLookup->find(parameterName);
-			
-			if (iterator != parameterIDLookup->end())
-				foundId = iterator->second;
-			
-			return foundId;
-		}
 
-		const SGA::Parameter& getPlayerParameter(ParameterID id) const
-		{
-			auto it = playerParameterTypes->find(id);
-			if (it != playerParameterTypes->end())
-			{
-				return it->second;
-			}
-			else
-			{
-				std::string s;
-				s.append("Tried accessing unknown player parameter ID ");
-				s.append(std::to_string(id));
-				throw std::runtime_error(s);
-			}
-		}
-		
-		Entity* getEntity(Vector2f pos, float maxDistance)
-		{
-			for (auto& unit : entities)
-			{
-				if (unit.position.distance(pos) <= maxDistance)
-				{
-					return &unit;
-				}
-			}
-			return nullptr;
-		}
-		
-		const Parameter& getParameterType(int entityTypeID, int globalParameterID) const
-		{
-			const auto& entityType = getEntityType(entityTypeID);
-			return entityType.parameters.find(globalParameterID)->second;
-		}
-		
-		bool checkEntityHaveParameter(int entityTypeID, const std::string& parameterName) const
-		{
-			const auto& entityType = getEntityType(entityTypeID);
-			for (const auto& parameter : entityType.parameters)
-			{
-				if (parameter.second.name == parameterName)
-					return true;
-			}
-			
-			return false;
-		}
-		
-		int addPlayer(std::vector<int> actionIds)
-		{
-			auto& player = players.emplace_back(Player{nextPlayerID, 0, true});
-			// Add parameters
-			player.parameters.resize(playerParameterTypes->size());
-			for(const auto& idParamPair : *playerParameterTypes)
-			{
-				player.parameters[idParamPair.second.index] = idParamPair.second.defaultValue;
-			}
+		/// <summary>
+		/// Adds a new entity of a given type to the game, in a given position, belonging to a specific player. 
+		/// </summary>
+		/// <param name="type">Type of the player, as defined <here cref="SGA::EntityType"/> </param>
+		/// <param name="playerID">ID of the player this new entity will belong to.</param>
+		/// <param name="position">Position where the entity will be added.</param>
+		/// <returns>Returns the unique ID of the entity created.</returns>
+		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
 
-			// Add actions
-			player.attachedActions.reserve(actionIds.size());
-			for (auto actionTypeID : actionIds)
-			{
-				player.attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
-			}
-			
-			nextPlayerID++;
-			return player.id;
-		}
+		/// <summary>
+		/// Gets the list of all entities.
+		/// </summary>
+		/// <returns>A vector with all entities in the game.</returns>
+		std::vector<Entity>& getEntities() { return entities; };
+		const std::vector<Entity>& getEntities() const { return entities; };
 
-		int addEntity(const EntityType& type, int playerID, const Vector2f& position)
-		{
-			auto instance = type.instantiateEntity(nextEntityID);
-			instance.ownerID = playerID;
-			instance.position = position;
-			entities.emplace_back(std::move(instance));
+		/// <summary>
+		/// Gets the list of entities of the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
+		/// <returns>The list of entities of the given player. Returns an empty list if player ID doesn't exist or it has not entities.</returns>
+		std::vector<Entity> getPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null) const;
 
-			nextEntityID++;
-			return instance.id;
-		}
+		/// <summary>
+		/// Gets the list of entities that do not belong to the specified player.
+		/// </summary>
+		/// <param name="playerID">ID of the player whose entities are NOT to be retrieved.</param>
+		/// <param name="entityCategory">Entites retrieved will belong to this indicated category. If not suplied, this method returns all entities.</param>
+		/// <returns>The list of entities not own by the given player.</returns>
+		std::vector<Entity> getNonPlayerEntities(int playerID, EntityCategory entityCategory = EntityCategory::Null) const;
 
-		Entity* getEntity(Vector2f pos)
-		{
-			for (auto& entity : entities)
-			{
-				if (entity.position == pos)
-					return &entity;
-			}
 
-			return nullptr;
-		}
 
-		bool isWalkable(const Vector2i& position)
-		{
-			Tile& targetTile = board.get(position.x, position.y);
-			Entity* targetUnit = getEntity(position);
+		/***** PLAYERS FUNCTIONS *****/
 
-			return targetUnit == nullptr && targetTile.isWalkable;
-		}
-
-		
-		bool isInBounds(Vector2i pos)
-		{
-			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-		}
-				
-		ActionType& getActionType(int typeID)
-		{
-			return actionTypes->find(typeID)->second;
-		}
-
-		bool isInBounds(Vector2f pos) const
-		{
-			return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
-		}
-
-		// Dirty trick to reuse code between const and non-const getter
+		/// <summary>
+		/// Gets a player given its ID.
+		/// </summary>
+		/// <param name="playerID">ID of the player to retrieve</param>
+		/// <returns>Player seeked for, or nullptr if it doesn't exist.</returns>
+		const Player* getPlayer(int playerID) const;
 		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
 		
-		const Player* getPlayer(int playerID) const
-		{
-			for(const auto& p : players)
-			{
-				if (p.id == playerID)
-					return &p;
-			}
+		/// <summary>
+		/// Returns a list with the ID of players that can play in this game state.
+		/// </summary>
+		/// <returns>A list with all IDs of player that can play now.</returns>
+		std::vector<int> whoCanPlay() const;
+		
+		/// <summary>
+		/// Indicates if the player with the provided ID can play in this game state.
+		/// </summary>
+		/// <param name="playerID">ID to check</param>
+		/// <returns>true if the player with ID playerID can play now.</returns>
+		bool canPlay(int playerID) const;
 
-			return nullptr;
-		}
+		/// <summary>
+		/// Returns all players of this game.
+		/// </summary>
+		/// <returns>Players of the game.</returns>
+		const std::vector<Player>& getPlayers() const { return players; };
+		std::vector<Player>& getPlayers() { return players; };
 
-		std::vector<const Entity*> getPlayerEntities(int playerID) const
-		{
-			const auto* player = getPlayer(playerID);
-			if (player == nullptr)
-				return {};
+		/// <summary>
+		/// Gets the number of players in this game state.
+		/// </summary>
+		/// <returns>Number of players in this game</returns>
+		int getNumPlayers() const { return (int)players.size(); };
 
-			std::vector<const Entity*> ret;
-			for(const auto& entity : entities)
-			{
-				if (entity.ownerID == playerID)
-					ret.emplace_back(&entity);
-			}
+		/// <summary>
+		/// Adds a player to the game state.
+		/// </summary>
+		/// <param name="p">The player to add.</param>
+		/// <returns>Returns the ID of the player added to the game, equal to the number of players -1.</returns>
+		int addPlayer(Player& p);
 
-			return ret;
-		}
+		/// <summary>
+		/// Gets the value of a player parameter.
+		/// Be sure to check first is the parameter you are asking for exist using <here cref="SGA::GameState::hasPlayerParameter()"/>
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from</param>
+		/// <param name="paramName">Name of the parameter which value is requested</param>
+		/// <returns>Returns the value of the parameter indicated for the player whose ID is given.</returns>
+		double getPlayerParameter(int playerID, const std::string& paramName) const;
 
-		std::vector< Entity*> getPlayerEntities(int playerID)
-		{
-			const auto* player = getPlayer(playerID);
-			if (player == nullptr)
-				return {};
+		/// <summary>
+		/// Indicates if the player has a specific parameter
+		/// </summary>
+		/// <param name="paramName">Name of the parameter which want to be checked</param>
+		/// /// <returns>A bool indicating if player has that parameter</returns>
+		bool hasPlayerParameter(const std::string& paramName) const;
+		
+		/// <summary>
+		/// Returns a list will all the parameter names of the player of which ID is given
+		/// </summary>
+		/// <param name="playerID">ID of the player to get the parameter from. 
+		/// For the moment, all players have the same parameter names (hence playerID is not used).</param>
+		/// <returns>A vector with all the parameter names of the requested player.</returns>
+		std::vector<std::string> getPlayerParameterNames(int playerID) const;
 
-			std::vector<Entity*> ret;
-			for ( auto& entity : entities)
-			{
-				if (entity.ownerID == playerID)
-					ret.emplace_back(&entity);
-			}
+		/// <summary>
+		/// Gets a map with all pairs <parameter,value>
+		/// <summary>
+		/// <param name="playerID">ID of the player to get the parameter from. </param>
+		/// <returns>Returns a map with all the parameters of this player.</returns>
+		std::unordered_map<std::string, double> getPlayerParameters(int playerID) const;
 
-			return ret;
-		}
+		/// <summary>
+		/// Returns the score of the player whose ID is passed.
+		/// </summary>
+		/// <param name="playerID">ID of the player to pass.</param>
+		/// <returns>The current score of the given player.</returns>
+		int getPlayerScore(int playerID) const;
 
-		void applyFogOfWar(int playerID)
-		{
-			Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
-			for(const auto* entity : getPlayerEntities(playerID))
-			{
-				// Compute maximum sized rectangle around entity
-				auto leftX = std::max<int>(0, entity->position.x - entity->lineOfSightRange);
-				auto rightX = std::min<int>(board.getWidth() - 1, entity->position.x + entity->lineOfSightRange);
-				auto leftY = std::max<int>(0, entity->position.y - entity->lineOfSightRange);
-				auto rightY = std::min<int>(board.getHeight() - 1, entity->position.y + entity->lineOfSightRange);
 
-				// Helper method for shadowcasting
-				auto rayCallback = [&](const Vector2i& pos) -> bool
-				{
-					if (entity->position.distance(pos) > entity->lineOfSightRange)
-					{
-						return true;
-					}
-					
-					visibilityMap[pos] = true;
-					return board[pos].blocksSight;
-				};
-				
-				// Shadowcasting
-				for (int x = leftX; x <= rightX; x++)
-				{
-					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, leftY }, rayCallback);
-					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ x, rightY }, rayCallback);
-				}
-				 
-				 
-				for (int y = leftY; y <= rightY; y++)
-				{
-					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ leftX, y}, rayCallback);
-					visibilityMap.bresenhamRay(Vector2i(entity->position.x, entity->position.y), Vector2i{ rightX, y}, rayCallback);
-				}
-			}
-			
-			// Remove entities that are not visible
-			auto it = entities.begin();
-			while (it != entities.end())
-			{
-				if(!board.isInBounds((static_cast<int>(it->position.x), static_cast<int>(it->position.y)))||!visibilityMap.get(static_cast<int>(it->position.x), static_cast<int>(it->position.y)))
-				{
-					it = entities.erase(it);
-				}
-				else
-				{
-					++it;
-				}
-			}
-			
-			// Hide tiles that are not visible
-			for (int y = 0; y < board.getHeight(); y++)
-			{
-				for (int x = 0; x < board.getWidth(); x++)
-				{
-					if (!visibilityMap.get(x, y))
-					{
-						auto& tile = board.get(x, y);
-						tile = fogOfWarTile;
-						tile.position = Vector2i(x, y);
-					}
-				}
-			}
 
-			fogOfWarId = playerID;
-		}
+		/***** PRINT FUNCTIONS *****/
+
+		/// <summary>
+		/// Print all the entities of the current state
+		/// </summary>
+		void printStateInfo() const;
+		
+		/// <summary>
+		// /Print view of the map of the current state
+		/// </summary>
+		void printBoard() const;
+		
+		/// <summary>
+		/// Print view of the map of the current state applying fog
+		/// <param name="playerID">The ID of the player to print information of.</param>
+		/// </summary>
+		void printBoard(int playerID) const;
+
+		/// <summary>
+		/// Print information of a specific entity
+		/// <param name="playerID">ID of the entity to print information of.</param>
+		/// </summary>
+		void printEntityInfo(int entityID) const;
+		
+		/// <summary>
+		/// Print information of a specific action
+		/// </summary>
+		void printActionInfo(const Action& action) const;
+
+		/// <summary>
+		/// Increments the ID for the next continuous action.
+		/// </summary>
+		void incNextContinuousActionID() { continuousActionNextID++; }
+
+		/// <summary>
+		/// Returns the ID for the next continuous action.
+		/// </summary>
+		/// <returns>The ID of the next continuous action.</returns>
+		int getNextContinuousActionID() { return continuousActionNextID; }
+
+
+
+
+		/***** MISC UTILITIES *****/
+
+		/// <summary>
+		/// Removes entities and hide tiles that are not visible from the point of view of the given player.
+		/// </summary>
+		/// <param name="playerID">The playerID of the player from which the fow will be applied</param>
+		void applyFogOfWar(int playerID);
+
+		/// <summary>
+		/// Returns the ID of the tile that represents the fog of war.
+		/// </summary>
+		/// <returns>ID of the tile that represents the fog of war</returns>
+		int getFogOfWarTileId() const { return fogOfWarId; }
+
+		/// <summary>
+		/// Returns the ID of the player that moves in this state for Turn Based Games.
+		/// For non-TBS, this value is -1.
+		/// </summary>
+		int getCurrentTBSPlayer() const { return currentPlayer; }
+
+		/// <summary>
+		/// Sets the current TBS player. For non-TBS, this should receive -1.
+		/// </summary>
+		void setCurrentTBSPlayer(int playerID) { currentPlayer = playerID; }
+
+		/// <summary>
+		/// Returns true if the game is over.
+		/// </summary>
+		/// <returns>Whether the game is over (true) or not (false).</returns>
+		bool isGameOver() const { return gameOver; }
+
+		/// <summary>
+		/// Sets if the game is over
+		/// </summary>
+		/// <param name="over">Indicates if the game is over</param>
+		void setGameOver(bool over) { gameOver = over; }
+
+		/// <summary>
+		/// Returns the player ID of the winner. If game is not over, this returns -1.
+		/// </summary>
+		/// <returns>ID of the winner player.</returns>
+		int getWinnerID() const { return winnerPlayerID; }
+
+		/// <summary>
+		/// Sets the winner of the game.
+		/// </summary>
+		/// <param name="winnerID">Player ID of the winner</param>
+		void setWinnerID(int winnerID) { winnerPlayerID = winnerID; }
+
+		/// <summary>
+		/// Returns the current tick of the game.
+		/// </summary>
+		int getCurrentTick() const { return currentTick; }
+		
+		/// <summary>
+		/// Increments the current tick in the game by 1.
+		/// </summary>
+		void incTick() { currentTick++; }
+
+		/// <summary>
+		/// Returns the current game tick limit.
+		/// </summary>
+		int getTickLimit() { return tickLimit; }
+		
+		/// <summary>
+		/// Sets the time limit of the game, measured in ticks.
+		/// </summary>
+		/// <param name="tickL"></param>
+		void setTickLimit(int tickL) { tickLimit = tickL; }
+
+		/// <summary>
+		/// Returns a pointer to the struct with static information about the game.
+		/// </summary>
+		std::shared_ptr<GameInfo> getGameInfo() const { return gameInfo; }
+		
+		/// <summary>
+		/// Sets the pointer to the game information struct.
+		/// </summary>
+		void setGameInfo(std::shared_ptr<GameInfo> gameInfoPtr) { gameInfo = gameInfoPtr; }
+
+		/// <summary>
+		/// Returns the type of the game, of GameType
+		/// </summary>
+		const GameType& getGameType() const { return gameType; }
+
+		/// <summary>
+		/// Sets the type of game (enum type GameType)
+		/// </summary>
+		void setGameType(GameType gt) { gameType = gt; }
+
+		/// <summary>
+		/// Returns a pointer to the Navigation object used by the RTS engine for pathfinding. 
+		/// </summary>
+		std::shared_ptr<Navigation> getRTSNavigation() const { return navigation; }
+		
+		/// <summary>
+		/// Sets the pointer to the Navigation object used by the RTS engine for pathfinding. 
+		/// </summary>
+		void setRTSNavigation(std::shared_ptr<Navigation> nav) { navigation = nav; }
+
+		/// <summary>
+		/// Returns the game's random number generator.
+		/// </summary>
+		/// <returns></returns>
+		std::mt19937& getRndEngine() { return rngEngine; }
+
+
+	private:
+
+		/// <summary>
+		/// Indicates if the game is over.
+		/// </summary>
+		bool gameOver;
+
+		/// <summary>
+		/// The ID of the player who won the game if the game is over. Value is -1 if game not over yet. 
+		/// </summary>
+		int winnerPlayerID;
+
+		/// <summary>
+		/// Current turn (for turn based games) or frame (real-time) of the game.
+		/// </summary>
+		int currentTick;
+
+
+		/// <summary>
+		/// The id that will be assigned to the next entity that is added to the game.
+		/// </summary>
+		int nextEntityID = 0;
+
+		/// <summary>
+		/// Number of turns (TBS) or frames (RTS) when the game will finish.
+		/// </summary>
+		int tickLimit;
+
+		/// <summary>
+		/// Game Info (static information about this game)		
+		/// </summary>
+		std::shared_ptr<GameInfo> gameInfo;
+
+		/// <summary>
+		/// Type of game being played (TBS, RTS...), as defined <here cref="SGA::GameType"/>
+		/// </summary>
+		GameType gameType;
+
+		/// <summary>
+		/// Navigational Mesh (for RTS)	
+		/// </summary>
+		std::shared_ptr<Navigation> navigation;
+
+		/// <summary>
+		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
+		/// </summary>
+		Grid2D<Tile> board;
+
+		/// <summary>
+		/// Map that indicates if a technology is researched by a player. Key is the player ID and maps to a vector of technology IDs.
+		/// </summary>
+		std::unordered_map<int, std::vector<int>> researchedTechnologies;
+
+		/// <summary>
+		/// List of entities in this game	
+		/// </summary>
+		std::vector<Entity> entities;
+
+
+		/// <summary>
+		/// List of players in this game	
+		/// </summary>
+		std::vector<Player> players;
+
+
+		/// <summary>
+		/// Random number generator engine
+		/// </summary>
+		std::mt19937 rngEngine;
+
+		/// <summary>
+		/// Tile used for fog of war.
+		/// </summary>
+		Tile fogOfWarTile;
+
+		/// <summary>
+		/// ID of the fog of war tile.
+		/// </summary>
+		int fogOfWarId = -1;
+
+		/// <summary>
+		/// ID of the next continuous action to execute
+		/// </summary>
+		int continuousActionNextID = 0;
+
+		/// <summary>
+		/// ID of the current player if only one can play.
+		/// 	-1 if more than one can play. Use gameState.whoCanPlay() to retrieve this in vector form with N-1 player IDs.
+		/// </summary>
+		int currentPlayer;
+
+		/// <summary>
+		/// Used to know if fog of war has been applied to this state
+		/// </summary>
+		bool fogOfWarApplied;
+
 	};
 }

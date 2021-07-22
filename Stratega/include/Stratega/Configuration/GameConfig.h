@@ -1,26 +1,40 @@
 #pragma once
-#include <Stratega/Configuration/YamlHeaders.h>
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Representation/TBSGameState.h>
 #include <Stratega/Configuration/FunctionParser.h>
-#include <Stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
+#include <Stratega/Representation/GameDescription.h>
+#include <yaml-cpp/yaml.h>
+
 namespace SGA
 {
+    class LevelDefinition;
+	
     struct GameConfig
     {
+        // Rendering - ToDo Split renderConfig and move into dedicated parts (Tile, Entity, etc)
+        std::unique_ptr<RenderConfig> renderConfig;
+    	
     	// Game information
-        ForwardModelType gameType;
+        GameType gameType = GameType::TBS;
+
         int tickLimit = 100;
         int numPlayers = -1;
+
+        bool applyFogOfWar=true;
+    	
     	// Other stuff
         std::vector<std::pair<std::string, YAML::Node>> agentParams;
         std::unordered_map<int, TileType> tileTypes;
-        std::unique_ptr<EntityForwardModel> forwardModel;
+
+    	//ForwardModel
+        std::unique_ptr<ForwardModel> forwardModel;
+    	
     	// Players
         std::unordered_map<ParameterID, Parameter> playerParameterTypes;
+        std::unordered_set<EntityTypeID> playerSpawnableTypes;
         std::vector<int> playerActionIds;
     	// Entities
         std::unordered_map<std::string, ParameterID> parameters;
@@ -29,21 +43,46 @@ namespace SGA
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation
-        std::string boardString;
-        int defaultTileTypeID;
+        //std::string boardString;
+        int defaultTileTypeID=-1;
+        std::unordered_map<int, LevelDefinition> levelDefinitions;
+        int selectedLevel;
 
-    	//Technology tree
+    	// Technology tree
         TechnologyTreeCollection technologyTreeCollection;
-    	
+            	
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
-        std::unique_ptr<GameState> generateGameState() const;
-    	
-        int getNumberOfPlayers() const;
+        std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
+
+    	//ActionCategories
+        std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
+
+        //EntityCategories
+        std::unordered_map<EntityCategory, std::vector<int>> entityCategories;
+
+    	//Yaml path
+        std::string yamlPath;
+
+        //Game runner config
+        //Computation budget time
+        bool shouldCheckComputationTime = false;
+        long budgetTimeMs = 40;
+        long disqualificationBudgetTimeMs = 60;
+        int maxNumberWarnings = 3;
+
+        //Intialization budget time
+        bool shouldCheckInitTime = false;
+        long initBudgetTimetMs = 40;
+        long initDisqualificationBudgetTimeMs = 60;
+
+    	//Base utilities
+        size_t getNumberOfPlayers() const;
         int getEntityID(const std::string& name) const;
         int getTileID(const std::string& name) const;
         int getActionID(const std::string& name) const;
         int getTechnologyID(const std::string& name) const;
+
+        //Adds a new player to the game.
+        int addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const;
     };
-	
-    std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine);
 }

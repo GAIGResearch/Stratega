@@ -6,14 +6,17 @@ namespace SGA {
 
 	class TreeNode : public ITreeNode<TreeNode>
 	{
-		TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, TreeNode* parent, int childIndex);
+
+	protected:
+
+		TreeNode(ForwardModel& forwardModel, GameState gameState, TreeNode* parent, int childIndex, int ownerID);
+
 
 	public:
 		// Root Node Constructor
-		TreeNode(TBSForwardModel& forwardModel, TBSGameState gameState);
-		TreeNode* expand(TBSForwardModel& forwardModel, AgentParameters& agentParameters);
-		
-		//std::string toString() const override;
+		TreeNode(ForwardModel& forwardModel, GameState gameState, int ownerID);
+		TreeNode* expand(ForwardModel& forwardModel, AgentParameters& agentParameters);
+
 		void print() const override;
 	};	
 

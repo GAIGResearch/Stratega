@@ -2,14 +2,8 @@
 
 namespace SGA
 {
-	void DoNothingAgent::runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel)
+	ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
-		while (!gameCommunicator.isGameOver())
-		{
-			if (gameCommunicator.isMyTurn())
-			{
-				gameCommunicator.executeAction(Action::createEndAction(gameCommunicator.getPlayerID()));
-			}
-		}
+		return ActionAssignment::createEndActionAssignment(getPlayerID());
 	}
 }

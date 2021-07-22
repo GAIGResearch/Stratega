@@ -1,20 +1,27 @@
 #pragma once
-
 #include <string>
+#include <unordered_set>
 #include <variant>
 #include <Stratega/Representation/Vector2.h>
 
+#include "Stratega/Representation/TileType.h"
 
 
 namespace SGA
 {
 	struct GameState;
 	struct Entity;
-
-	class Player;
+	struct Player;
 	struct EntityType;
 	typedef int EntityTypeID;
-	
+	typedef int TileTypeID;
+
+	struct ActionType;
+
+	/// <summary>
+	/// Used by <see cref="SGA::Action"/> to reference any possible type of target available in Stratega.
+	/// It contains a union of different types of data.
+	/// </summary>
 	class ActionTarget
 	{	
 	public:
@@ -25,7 +32,8 @@ namespace SGA
 			PlayerReference,
 			EntityTypeReference,
 			TechnologyReference,
-			ContinuousActionReference
+			ContinuousActionReference,
+			TileTypeReference
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
@@ -34,15 +42,17 @@ namespace SGA
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
 		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 		static ActionTarget createEntityTypeActionTarget(EntityTypeID entityTypeID);
+		static ActionTarget createTileTypeActionTarget(TileTypeID entityTypeID);
 
 
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
-		Entity& getEntity(GameState& state) const;
+		Entity* getEntity(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
-
+		const TileType& getTileType(const GameState& state) const;
+		const std::unordered_set<EntityTypeID>& getSpawnableEntities(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;
@@ -50,6 +60,7 @@ namespace SGA
 		{
 			return data.technologyID;
 		}
+		int getPlayerID() const;
 		int getPlayerID(const GameState& state) const;
 		int getEntityID() const
 		{
@@ -63,6 +74,41 @@ namespace SGA
 		{
 			return targetType;
 		}
+		std::string getTypeString() const
+		{
+			switch (targetType)
+			{
+			case EntityReference:
+				return "EntityReference";
+				break;
+			case Position:
+				return "Position";
+				break;
+			case PlayerReference:
+				return "PlayerReference";
+				break;
+			case EntityTypeReference:
+				return "EntityTypeReference";
+				break;
+			case TechnologyReference:
+				return "TechnologyReference";
+				break;
+			case ContinuousActionReference:
+				return "ContinuousActionReference";
+				break;
+			case TileTypeReference:
+				return "TileTypeReference";
+				break;
+			default:
+				return "Not defined";
+			}
+		}
+		std::string getValueString(const GameState& state) const;
+		//Check if this action target is valid in the received gamestate
+		static bool isValidWithTargets(const GameState& state,const ActionType& actionType ,const std::vector<ActionTarget>& actionTargets);
+
+		//Check if action target is valid in the received gamestate
+		bool isValid(const GameState& state) const;		
 
 	private:
 		union Data
@@ -71,6 +117,7 @@ namespace SGA
 			int entityID;
 			int playerID;
 			EntityTypeID entityTypeID;
+			TileTypeID tileTypeID;
 			int technologyID;
 			int continuousActionID;
 		};

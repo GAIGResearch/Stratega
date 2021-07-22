@@ -1,6 +1,7 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Agent/ActionScripts/BaseActionScript.h>
 #include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 
@@ -16,16 +17,19 @@ namespace SGA
 		int remainingForwardModelCalls = forwardModelCalls;
 		std::unique_ptr<BaseActionScript> opponentModel = std::make_unique<RandomActionScript>();	// the portfolio the opponent is simulated with, if set to nullptr the opponent's turn will be skipped
 
-		DFSAgent() :
-			Agent{},
+		AgentParameters agentParams;
+
+		DFSAgent(const std::string& name) :
+			Agent{name},
 			_stateHeuristic()
 		{
 		}
-		
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
 
-		double evaluateRollout(TBSForwardModel& forwardModel, TBSGameState& gameState, int depth, int playerID);
-		void applyActionToGameState(const TBSForwardModel& forwardModel, TBSGameState& gameState, const Action& action);
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
+		void init(GameState initialState, const ForwardModel& forwardModel, Timer timer) override;
+
+		double evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, int playerID);
+		void applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, int playerID);
 
 	};
 }

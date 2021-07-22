@@ -14,6 +14,14 @@ target_link_libraries(Stratega PUBLIC yaml-cpp)
 target_link_libraries(Stratega PUBLIC Recast)
 target_link_libraries(Stratega PUBLIC Detour)
 target_link_libraries(Stratega PUBLIC DebugUtils)
+
+target_link_libraries(Stratega
+	PRIVATE
+		sfml-graphics
+		sfml-system
+		sfml-window
+		ImGUI)
+
 if(TARGET Threads::Threads)
 	target_link_libraries(Stratega PUBLIC Threads::Threads)
 endif()
@@ -28,8 +36,8 @@ get_target_property(YAML_CPP_INCLUDE_DIRECTORIES yaml-cpp INCLUDE_DIRECTORIES)
 install(DIRECTORY ${YAML_CPP_INCLUDE_DIRECTORIES} DESTINATION .)
 
 
-# ToDo disable yaml-cpp warnings so we can enable this
-#target_compile_options(Stratega PRIVATE
-#  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
-#  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Werror>
-#)
+target_compile_options(Stratega PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
+)
+string(REGEX REPLACE "/W3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")

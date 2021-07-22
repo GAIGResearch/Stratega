@@ -6,7 +6,7 @@ namespace SGA
 	class RandomAgent : public Agent
 	{
 	public:
-		void runTBS(TBSGameCommunicator& gameCommunicator, TBSForwardModel forwardModel) override;
-		void runRTS(RTSGameCommunicator& gameCommunicator, RTSForwardModel forwardModel) override;
+		using Agent::Agent;
+		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 	};
 }
