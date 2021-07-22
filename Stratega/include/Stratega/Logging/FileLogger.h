@@ -1,11 +1,10 @@
 #pragma once
 #include <fstream>
 #include <unordered_map>
-//#include <yaml-cpp/yaml.h>
-//#include <yaml-cpp/emitter.h>
-//#include <yaml-cpp/node/node.h>
+#include <yaml-cpp/yaml.h>
+#include <yaml-cpp/emitter.h>
+#include <yaml-cpp/node/node.h>
 
-#include <Stratega/Configuration/YamlHeaders.h>
 namespace SGA
 {
 	class FileLogger

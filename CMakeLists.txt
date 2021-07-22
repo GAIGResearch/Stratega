@@ -16,13 +16,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
 
 option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
+option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." OFF)
 
 # Include sub-projects.
 add_subdirectory("dependencies")
 add_subdirectory("Stratega")
-add_subdirectory("Arena")
 add_subdirectory("GUI")
-add_subdirectory("Tests")
+add_subdirectory("Arena")
+
+# Optional
+if(STRATEGA_BUILD_BINDINGS)
+    add_subdirectory("bindings")
+endif()
 
 if(STRATEGA_BUILD_DOCS)
     add_subdirectory("docs")

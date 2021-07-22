@@ -5,50 +5,70 @@
 
 namespace SGA
 {
-	class EntityForwardModel;
+	class ForwardModel;
 	
 	class Effect
 	{
 	public:
 		virtual ~Effect() = default;
+
+		virtual void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
 		
-		virtual void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
+		const std::string expr() const { return expression; };
+
+	protected:
+		Effect(const std::string exp) { expression = exp; }
+
+	private:
+		std::string expression;
+
+
 	};
 
 	class ModifyResource: public Effect
 	{
 		FunctionParameter resourceReference;
-		FunctionParameter amount;
+		FunctionParameter amountParameter;
 	public:
-		ModifyResource(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class ChangeResource : public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+	public:
+		ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class Attack : public Effect
 	{
-		/*FunctionParameter entityTarget;*/
 		FunctionParameter resourceReference;
-		FunctionParameter amount;
+		FunctionParameter amountParameter;
 	public:
-		Attack(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		Attack(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class AttackProbability : public Effect
+	{
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+		FunctionParameter probabilityParameter;
+	public:
+		AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class Move : public Effect
 	{
-	public:
-		Move(const std::vector<FunctionParameter>& parameters) {};
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
-	};
-
-	class SpawnUnit : public Effect
-	{
-		FunctionParameter entityTypeParam;
+		FunctionParameter entityParam;
 		FunctionParameter targetPositionParam;
-		
 	public:
-		SpawnUnit(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		Move(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
@@ -58,8 +78,32 @@ namespace SGA
 		FunctionParameter targetEntityTypeParam;
 
 	public:
-		SpawnEntityRandom(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
+	class SpawnEntity : public Effect
+	{
+		FunctionParameter spawnSource;
+		FunctionParameter entityTypeParam;
+		FunctionParameter targetPositionParam;
+
+	public:
+		SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
+	class SpawnEntityGrid : public Effect
+	{
+		FunctionParameter spawnSource;
+		FunctionParameter entityTypeParam;
+		FunctionParameter targetPositionParam;
+
+	public:
+		SpawnEntityGrid(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class SetToMaximum : public Effect
@@ -67,8 +111,8 @@ namespace SGA
 		FunctionParameter targetResource;
 		
 	public:
-		SetToMaximum(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class TransferEffect : public Effect
@@ -78,8 +122,8 @@ namespace SGA
 		FunctionParameter amountParam;
 
 	public:
-		TransferEffect(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class ChangeOwnerEffect : public Effect
@@ -88,8 +132,8 @@ namespace SGA
 		FunctionParameter playerParam;
 
 	public:
-		ChangeOwnerEffect(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class RemoveEntityEffect : public Effect
@@ -97,8 +141,8 @@ namespace SGA
 		FunctionParameter targetEntityParam;
 
 	public:
-		RemoveEntityEffect(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	class ResearchTechnology : public Effect
@@ -107,8 +151,8 @@ namespace SGA
 		FunctionParameter technologyTypeParam;
 
 	public:
-		ResearchTechnology(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		ResearchTechnology(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class PayCostEffect : public Effect
@@ -117,7 +161,7 @@ namespace SGA
 		FunctionParameter costParam;
 
 	public:
-		PayCostEffect(const std::vector<FunctionParameter>& parameters);
-		void execute(GameState& state, const EntityForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+		PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 }

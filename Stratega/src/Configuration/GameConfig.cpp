@@ -1,6 +1,8 @@
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Agent/AgentFactory.h>
-
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -17,149 +19,126 @@ namespace SGA
 				agents.emplace_back(AgentFactory::get().createAgent(agentNode.first, agentNode.second));
 			}
 		}
-		return agents;
+		return std::move(agents);
 	}
-	
-	std::unique_ptr<Game> generateAbstractGameFromConfig(const GameConfig& config, std::mt19937& rngEngine)
+
+	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const
 	{
-		// Generate game
-		std::unique_ptr<Game> game;
-		if (config.gameType == ForwardModelType::TBS)
+		int nextPlayerID = state->getNumPlayers();
+		Player player = { nextPlayerID, true };
+
+		// Add parameters
+		player.resizeParameters(gameInfo.getPlayerParameterTypes().size());
+		const auto parameterTypes = gameInfo.getPlayerParameterTypes();
+		for (const auto& idParamPair : parameterTypes)
 		{
-			auto gameState = std::unique_ptr<TBSGameState>(dynamic_cast<TBSGameState*>(config.generateGameState().release()));
-			auto fm = *dynamic_cast<TBSForwardModel*>(config.forwardModel.get());
-			game = std::make_unique<TBSGame>(std::move(gameState), std::move(fm), rngEngine);
-		}
-		else if (config.gameType == ForwardModelType::RTS)
-		{
-			auto gameState = std::unique_ptr<RTSGameState>(dynamic_cast<RTSGameState*>(config.generateGameState().release()));
-			auto fm = *dynamic_cast<RTSForwardModel*>(config.forwardModel.get());
-			game = std::make_unique<RTSGame>(std::move(gameState), fm, rngEngine);
-		}
-		else
-		{
-			throw std::runtime_error("Tried generating a game with unknown game-type ");
+			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
 		}
 
-		return game;
+		// Add actions
+		player.resAttachedActions(playerActionIds.size());
+		for (auto actionTypeID : playerActionIds)
+		{
+			player.addAttachedAction(actionTypeID, 0);
+		}
+
+		state->addPlayer(player);
+		return player.getID();
 	}
 
-	std::unique_ptr<GameState> GameConfig::generateGameState() const
+	std::unique_ptr<GameState> GameConfig::generateGameState(int levelID) const
 	{
 		// Initialize state
-		std::unique_ptr<GameState> state;
-		if(gameType == ForwardModelType::TBS)
-		{
-			state = std::make_unique<TBSGameState>();
-		}
-		else if(gameType == ForwardModelType::RTS)
-		{
-			state = std::make_unique<RTSGameState>();
-		}
+		std::unique_ptr<GameState> state = std::make_unique<GameState>();
+		state->setGameType(gameType);
+		state->setTickLimit(tickLimit);
+		state->setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
 
-		// Assign data
-		state->tickLimit = tickLimit;
-		state->entityTypes = std::make_shared<std::unordered_map<int, EntityType>>(entityTypes);
-		state->playerParameterTypes = std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes);
-		state->entityGroups = entityGroups;
-		state->actionTypes = std::make_shared<std::unordered_map<int, ActionType>>(actionTypes);
-		state->parameterIDLookup = std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters);
-		state->technologyTreeCollection = std::make_shared<TechnologyTreeCollection>(technologyTreeCollection);
+		//GameInfo
+		GameInfo gameInfo;		
+		gameInfo.setEntityTypes(std::make_shared<std::unordered_map<int, EntityType>>(entityTypes));
+		gameInfo.setTileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes));
+		gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
+		gameInfo.setEntityGroups(entityGroups);
+		gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
+		gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
+		gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
+		gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));
+		gameInfo.setYAMLPath(yamlPath);
+		gameInfo.setGameDescription(std::make_shared<GameDescription>(actionCategories, entityCategories));
+		state->setGameInfo(std::make_shared<GameInfo>(gameInfo));
 
+		
 		std::unordered_set<int> playerIDs;
 		for (auto i = 0; i < getNumberOfPlayers(); i++)
 		{
-			playerIDs.emplace(state->addPlayer(playerActionIds));
+			playerIDs.emplace(addPlayer(state, gameInfo));
 		}
 
 		// Create some lookups for initializing the board and entities
 		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &tileTypes.begin()->second;
+		const auto* defaultTile = &state->getGameInfo()->getTileTypes().begin()->second;
+		const auto& tileTypes = state->getGameInfo()->getTileTypes();
 		for(const auto& idTilePair : tileTypes)
 		{
-			tileLookup.emplace(idTilePair.second.symbol, &idTilePair.second);
-			if (idTilePair.second.isDefaultTile)
+			tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+			if (idTilePair.second.isDefaultTile())
 				defaultTile = &idTilePair.second;
 		}
 
 		std::unordered_map<char, const EntityType*> entityLookup;
-		for(const auto& idEntityPair : entityTypes)
+		for(const auto& idEntityPair : state->getGameInfo()->getEntityTypes())
 		{
-			entityLookup.emplace(idEntityPair.second.symbol, &idEntityPair.second);
+			entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
 		}
 
 		// Configure board and spawn entities
-		auto x = 0;
-		auto y = 0;
-		auto width = -1;
 		std::vector<Tile> tiles;
-		for(size_t i = 0; i < boardString.size(); i++)
+		
+		//Switch to selected level
+		int mapIDtoLoad = selectedLevel;
+		if (levelID != -1)
+			mapIDtoLoad = levelID;
+		auto selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
+		if(selectedLevelDefinition==levelDefinitions.end())
 		{
-			auto c = boardString[i];
-			if(c == '\n')
-			{
-				y++;
-				if(width == -1)
-				{
-					width = x;
-				}
-				else if (x != width)
-				{
-					throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
-				}
-				
-				x = 0;
-				continue;
-			}
-
-			auto entityIt = entityLookup.find(c);
-			auto tileIt = tileLookup.find(c);
-			if(entityIt != entityLookup.end())
-			{
-				// Check if the entity was assigned to an player, we only look for players with ID 0-9
-				auto ownerID = Player::NEUTRAL_PLAYER_ID;
-				if(i < boardString.size() - 1 && std::isdigit(boardString[i + 1]))
-				{
-					ownerID = static_cast<int>(boardString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
-					if(playerIDs.find(ownerID) == playerIDs.end())
-					{
-						throw std::runtime_error("Tried assigning the entity " + entityIt->second->name + " to an unknown player " + std::to_string(ownerID));
-					}
-					i++;
-				}
-
-				state->addEntity(*entityIt->second, ownerID, Vector2f(x, y));
-				// Since an entity occupied this position, we will place the default tile here
-				tiles.emplace_back(defaultTile->toTile(x, y));
-			}
-			else if(tileIt != tileLookup.end())
-			{
-				tiles.emplace_back(tileIt->second->toTile(x, y));
-			}
-			else
-			{
-				throw std::runtime_error("Encountered unknown symbol '" + std::string(1, c) + "'when parsing the board.");
-			}
-
-			x++;
+			throw std::runtime_error("Selected level definition not found");
 		}
 
-		// Sometimes there is a newLine at the end of the string, and sometimes not
-		if(boardString[boardString.size() - 1] != '\n')
+		auto& board = selectedLevelDefinition->second.board;
+
+		//Instance Tiles
+		for (size_t y = 0; y < board.getHeight(); y++)
 		{
-			y++;
-			if (x != width)
+			for (size_t x = 0; x < board.getWidth(); x++)
 			{
-				throw std::runtime_error("Line " + std::to_string(y) + " contains " + std::to_string(x) + " symbols. Expected " + std::to_string(width));
+				tiles.emplace_back(board.get(x,y)->toTile(x, y));
 			}
+		}
+
+		//Instance Entities
+		for (auto& entity : selectedLevelDefinition->second.entityPlacements)
+		{
+			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
 		}
 		
-		state->board = Grid2D<Tile>(width, tiles.begin(), tiles.end());
+		//Initialize board with size and set of tiles.
+		state->initBoard(board.getWidth(), tiles);
 
+		// Initialize Pathfinding
+		if(gameType == GameType::RTS)
+		{
+			auto* rtsFM = dynamic_cast<SGA::RTSForwardModel*>(forwardModel.get());
+			rtsFM->buildNavMesh(*state, NavigationConfig{});
+		}
+
+		//Initialize researched list for all players
+		state->initResearchTechs();
+		
 		return std::move(state);
 	}
-
-	int GameConfig::getNumberOfPlayers() const
+	
+	size_t GameConfig::getNumberOfPlayers() const
 	{
 		return numPlayers == -1 ? agentParams.size() : numPlayers;
 	}
@@ -168,7 +147,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : entityTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 
@@ -179,7 +158,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : actionTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 
@@ -204,7 +183,7 @@ namespace SGA
 	{
 		for (const auto& idTypePair : tileTypes)
 		{
-			if (idTypePair.second.name == name)
+			if (idTypePair.second.getName() == name)
 				return idTypePair.first;
 		}
 

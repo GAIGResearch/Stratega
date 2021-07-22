@@ -10,12 +10,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
+import os
+import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
 # -- Manually execute Doxygen, since ReadTheDocs doesn't execute our CMake file
-import subprocess, os
+import subprocess
 
 def configureDoxyfile(input_dir, output_dir):
     with open('Doxyfile.in', 'r') as file:
@@ -53,7 +53,16 @@ release = '01.01.2021'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["breathe"]
+extensions = [
+    'breathe',    
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
+    #'sphinx_code_tabs',
+    'sphinx_tabs.tabs'
+    ]
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -67,6 +76,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # -- Breathe Configuration ---------------------------------------------------
 breathe_default_project = "Stratega"
 
+# The suffix(es) of source filenames.
+# You can specify multiple suffix as a list of string:
+# source_suffix = ['.rst', '.md']
+source_suffix = '.rst'
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -79,3 +92,6 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'https://docs.python.org/': None}

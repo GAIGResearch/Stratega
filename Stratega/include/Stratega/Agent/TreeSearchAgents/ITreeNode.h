@@ -1,44 +1,83 @@
 #pragma once
-#include <Stratega/Representation/TBSGameState.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {
 	template<typename NodeType>
 	class ITreeNode
 	{
+
 	public:
-		TBSGameState gameState;
+
+		GameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		std::vector<Action> actionSpace;
 		int childIndex = 0;
 		double value = 0;
-		
-	public:
-		ITreeNode(TBSForwardModel& forwardModel, TBSGameState gameState) :
-			ITreeNode(forwardModel, std::move(gameState), nullptr, 0)
-		{
-		}
+		int ownerID; //ID of the player that owns the tree this node belongs to.
 
-	
-		ITreeNode(TBSForwardModel& forwardModel, TBSGameState gameState, NodeType* parent, const int childIndex) :
-			gameState(std::move(gameState)), parentNode(parent), childIndex(childIndex)
+		ITreeNode(const ForwardModel& forwardModel, const GameState& gameState, int ownerID) :
+			ITreeNode(forwardModel, std::move(gameState), nullptr, 0, ownerID) {}
+		
+		ITreeNode(const ForwardModel& forwardModel, const GameState& gameState, NodeType* parent, const int childIndex, int ownerID) :
+			gameState(std::move(gameState)), parentNode(parent), childIndex(childIndex), ownerID(ownerID)
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();
-			
-			actionSpace = forwardModel.generateActions(this->gameState);
+			computeActionSpace(forwardModel);
 		}
 		
+		virtual std::vector<Action> getActionSpace(const ForwardModel& /*forwardModel*/, int /*playerID*/) const { return actionSpace; }
 		virtual ~ITreeNode() = default;
-		//virtual std::string toString() const = 0;
+		ITreeNode& operator=(const ITreeNode&) = delete;
 		virtual void print() const = 0;
 
-	protected:
-		[[nodiscard]] bool isFullyExpanded() const {
+		void printTree() const
+		{
+			printTree("", this, true, "root");
+		};
+
+
+		[[nodiscard]] virtual bool isFullyExpanded() const
+		{
 			return children.size() >= actionSpace.size();
 		}
-		
+
+	protected:
+
+		/// <summary>
+		/// Action space in the state of this node. This is the action space corresponding to:
+		///  - The owner of this tree if ownerID can play in this state (then playerID=ownerID)
+		///  - If the owner can't play at this state, the player that can play if there's only one other to play.
+		/// </summary>
+		std::vector<Action> actionSpace;
+		int playerID;  //ID of the player whose action space has been calculated in this node (and it's to move in the game).
+
+
+		/// <summary>
+		/// If ownerID can play, actionSpace is generated for player ownerID only.
+		/// If ownerID can't play, actionSpace is genreated for the current player if only one can play.
+		/// </summary>
+		/// <param name="forwardModel"></param>
+		void computeActionSpace(const ForwardModel& forwardModel)
+		{
+			if (gameState.canPlay(ownerID))
+			{
+				actionSpace = forwardModel.generateActions(this->gameState, ownerID);
+				playerID = ownerID;
+			}
+			else
+			{
+				std::vector<int> pIDs = gameState.whoCanPlay();
+				if (pIDs.size() >= 1)
+				{
+					actionSpace = forwardModel.generateActions(this->gameState, pIDs[0]);
+					playerID = pIDs[0];
+				}
+			}
+		}
+
+
 		void printTree(const std::string& prefix, const ITreeNode<NodeType>* node, bool isLast, const std::string& actionName) const
 		{
 			if (node != nullptr)
@@ -77,12 +116,5 @@ namespace SGA
 			}
 		}
 
-	public:
-		void printTree() const
-		{
-			printTree("", this, true, "root");
-		};
-
-		ITreeNode& operator=(const ITreeNode&) = delete;
 	};
 }

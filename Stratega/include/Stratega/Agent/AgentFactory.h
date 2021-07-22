@@ -8,8 +8,8 @@
 namespace SGA
 {
 	class Agent;
-	typedef Agent* (*AgentGenerator)();
-	typedef Agent* (*AgentGeneratorParams)(YAML::Node);
+	typedef Agent* (*AgentGenerator)(std::string);
+	typedef Agent* (*AgentGeneratorParams)(std::string,YAML::Node);
 	
 	class AgentFactory
 	{
@@ -30,11 +30,11 @@ namespace SGA
 		bool registerAgentFn(const std::string& name, const AgentGeneratorParams& agentFn);
 		
 		template<typename T>
-		bool registerAgent(const std::string& name)
+		bool registerAgent(const std::string name)
 		{
 			return registerAgentFn(
 				name,
-				[]() { return static_cast<Agent*>(new T()); }
+				[](std::string name) { return static_cast<Agent*>(new T(name)); }
 			);
 		}
 
@@ -43,7 +43,7 @@ namespace SGA
 		{
 			bool normalRegister = registerAgentFn(
 				name,
-				[]() { return static_cast<Agent*>(new T(Params())); }
+				[](std::string name) { return static_cast<Agent*>(new T(name,Params())); }
 			);
 
 			// The agent is already registered without any parameters
@@ -54,7 +54,7 @@ namespace SGA
 
 			return registerAgentFn(
 				name,
-				[](const YAML::Node node) { return static_cast<Agent*>(new T(node.as<Params>())); }
+				[](std::string name,const YAML::Node node) { return static_cast<Agent*>(new T(name, node.as<Params>())); }
 			);
 		}
 		

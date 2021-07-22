@@ -1,21 +1,24 @@
 #include <Stratega/Representation/Player.h>
 namespace SGA
 {
-	/*const SGA::Parameter& Player::getParameter(ParameterID id) const
+	[[nodiscard]] bool Player::canExecuteAction(int actionTypeID) const
 	{
-		auto it = parameters.find(id);
-		if (it != parameters.end())
+		for (const auto& actionType : attachedActions)
 		{
-			return it->second;
+			if (actionType.actionTypeID == actionTypeID)
+				return true;
 		}
-		else
+		return false;
+	}
+
+	[[nodiscard]] const ActionInfo& Player::getActionInfo(int actionTypeID) const
+	{
+		for (const auto& actionInfo : attachedActions)
 		{
-			std::string s;
-			s.append("Tried accessing unknown parameter ID ");
-			s.append(std::to_string(id));
-			s.append("in entityType ");
-			s.append(name);
-			throw std::runtime_error(s);
+			if (actionInfo.actionTypeID == actionTypeID)
+				return actionInfo;
 		}
-	}*/
+
+		throw std::runtime_error("Tried accessing action with unknown actionType");
+	}
 }

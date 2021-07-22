@@ -26,7 +26,29 @@ Stratega Docs
    :caption: Getting Started
 
    gettingStarted/installation/index
-   gettingStarted/implementTBSAgent/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
+
+   tutorials/firstStepsPython/index
+
+   tutorials/implementAgent/index
+   tutorials/implementOSLA/index   
+
+   tutorials/exploringGameStates/index
+   tutorials/definingANewGame/index
+   tutorials/advancedAgents/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Structure
+
+   structure/overview/index
+   structure/representation/index
+   structure/gameLogic/index
+   structure/arena/index
+
 
 .. toctree::
    :maxdepth: 1
@@ -36,7 +58,14 @@ Stratega Docs
 
 .. toctree::
    :maxdepth: 1
+   :caption: Extra Information
+
+   extraInformation/faq/index
+
+.. toctree::
+   :maxdepth: 2
    :caption: References
 
    references/YAML/index
    references/CPP/index
+   references/PYTHON/index
