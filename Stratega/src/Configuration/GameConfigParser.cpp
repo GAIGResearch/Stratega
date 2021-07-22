@@ -234,7 +234,7 @@ namespace SGA
             {
                 //Parse definition
                 parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
-                config.selectedLevel = levelDefinitions.size() - 1;
+                config.selectedLevel = (int)levelDefinitions.size() - 1;
             }
 
             config.levelDefinitions = levelDefinitions;

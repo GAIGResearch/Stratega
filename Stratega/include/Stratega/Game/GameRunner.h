@@ -64,7 +64,7 @@ namespace SGA
 		template<typename Iterator>
 		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
 		{
-			assert(std::distance(begin, end) == currentState->getPlayers().size());
+			assert(std::distance(begin, end) == (int)currentState->getPlayers().size());
 			if (observer == nullptr)
 			{
 				observer = defaultObserver;

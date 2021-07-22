@@ -97,7 +97,7 @@ namespace SGA
 					}
 
 					//Remove continuous action
-					sourcePlayer.removeContinuousAction(i);
+					sourcePlayer.removeContinuousAction((int)i);
 					i--;
 				}
 			}
@@ -180,10 +180,10 @@ namespace SGA
 			// ToDo We should probably find a way to avoid this loop
 			for (size_t i = 0; i < executingPlayer.getAttachedActions().size(); i++)
 			{
-				auto& actionInfo = executingPlayer.getAttachedAction(i);
+				auto& actionInfo = executingPlayer.getAttachedAction((int)i);
 				if (actionInfo.actionTypeID == action.getActionTypeID())
 				{
-					executingPlayer.setActionLastTick(i, state.getCurrentTick());
+					executingPlayer.setActionLastTick((int)i, state.getCurrentTick());
 					break;
 				}
 			}
@@ -317,7 +317,7 @@ namespace SGA
 			{
 				auto& actionType = continuousActions[i].getActionType();
 				//Add one elapsed tick
-				players[j].advanceContinuousAction(i);
+				players[j].advanceContinuousAction((int)i);
 
 				//Execute OnTick Effects
 				if (actionType.getSourceType() == ActionSourceType::Player)
@@ -370,7 +370,7 @@ namespace SGA
 					}
 
 					//Delete the ContinuousAction
-					players[j].removeContinuousAction(i);
+					players[j].removeContinuousAction((int)i);
 					i--;
 					//Stop executing this action
 					continue;

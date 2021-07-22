@@ -38,7 +38,7 @@ std::vector<int> SGA::SamplingMethod::getEntities(const GameState& gameState, co
 	return targets;
 }
 
-bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
+bool SGA::SamplingMethod::validatePosition(const GameState& /*gameState*/, const Vector2f& /*sourcePosition*/, const Vector2f& /*targetPosition*/) const
 {
 	return true;
 }
@@ -115,7 +115,7 @@ std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const 
 	return entitiesIDs;
 }
 
-bool SGA::Neighbours::validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
+bool SGA::Neighbours::validatePosition(const GameState& /*gameState*/, const Vector2f& sourcePosition, const Vector2f& targetPosition) const
 {
 	switch (shapeType)
 	{
@@ -136,7 +136,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 {
 	std::vector<SGA::Vector2i> positions;
 	
-	Node root(position.x, position.y);
+	Node root((int)position.x, (int)position.y);
 	root.visited = true;
 	root.totalCost = 0;
 
@@ -228,8 +228,8 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 			if (!found)
 				neighbour = currentNeighbour;
 
-			auto it = std::find(visitedNodes.begin(), visitedNodes.end(), neighbour);
-			if (it == visitedNodes.end())
+			auto it2 = std::find(visitedNodes.begin(), visitedNodes.end(), neighbour);
+			if (it2 == visitedNodes.end())
 			{
 				neighbour.visited = true;
 				visitedNodes.emplace_back(neighbour);

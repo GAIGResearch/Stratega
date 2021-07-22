@@ -74,7 +74,7 @@ namespace SGA
 			{
 				if (healingAction.getTargets()[0].getEntityID() == healer.getID())
 				{
-					heal += healer.getParameter("HealAmount");
+					heal += (int)healer.getParameter("HealAmount");
 					break;
 				}
 			}
@@ -158,7 +158,7 @@ namespace SGA
 		else if (healAmount < attackAmount)
 		{
 			// We can kill the unit with an delay
-			int turnsToKill = std::min(4., std::ceil(targetHealth / (attackAmount - healAmount)));
+			int turnsToKill = (int)std::min(4., std::ceil(targetHealth / (attackAmount - healAmount)));
 			return unitScores.at(target.getEntityTypeID()) * (1. + 1. / (1. + turnsToKill));
 		}
 
@@ -228,8 +228,8 @@ namespace SGA
 				if (ally.getID() == opp.getID())
 					continue;
 
-				int dist = opp.getPosition().manhattanDistance(ally.getPosition());
-				int movesToSupport = dist / ally.getParameter("MovementPoints");
+				int dist = (int)(opp.getPosition().manhattanDistance(ally.getPosition()));
+				int movesToSupport =(int)(dist / ally.getParameter("MovementPoints"));
 				avgSupportScore += unitScores.at(ally.getEntityTypeID()) / (1. + movesToSupport);
 			}
 			avgSupportScore /= opponentUnits.size();
@@ -239,9 +239,9 @@ namespace SGA
 			double avgAttackScore = 0;
 			for (auto attacker : myUnits)
 			{
-				int dist = opp.getPosition().chebyshevDistance(attacker.getPosition());
+				int dist = (int)opp.getPosition().chebyshevDistance(attacker.getPosition());
 				double movementRange = attacker.getParameter("MovementPoints");
-				int movesToAttack = std::max(0, dist - static_cast<int>(movementRange)) / movementRange;
+				int movesToAttack = (int)(std::max(0, dist - static_cast<int>(movementRange)) / movementRange);
 				avgAttackScore += unitScores.at(attacker.getEntityTypeID()) / (1. + movesToAttack);
 			}
 			avgAttackScore /= myUnits.size() + 1;
@@ -261,11 +261,11 @@ namespace SGA
 		// We found no enemy, so we move to a random position in order to find one
 		if (bestAttackTarget == nullptr)
 		{
-			auto& rngEngine = getRNGEngine();
+			auto& rngEngine2 = getRNGEngine();
 			std::uniform_int_distribution<int> widthDist(0, currentState.getBoardWidth() - 1);
 			std::uniform_int_distribution<int> heightDist(0, currentState.getBoardHeight() - 1);
-			moveTarget.x = widthDist(rngEngine);
-			moveTarget.y = heightDist(rngEngine);
+			moveTarget.x = widthDist(rngEngine2);
+			moveTarget.y = heightDist(rngEngine2);
 		}
 		else
 		{
@@ -326,7 +326,7 @@ namespace SGA
 			// At last, try moving closer to the best attack target
 			auto moves = filterActionTypes(subActions, "Move");
 			double attackRange = unit.getParameter("AttackRange");
-			if (getMoveInRange(unit, moveTarget, attackRange, opponentUnits, moves, nextAction, currentState))
+			if (getMoveInRange(unit, moveTarget, (int)attackRange, opponentUnits, moves, nextAction, currentState))
 			{
 				break;
 			}
@@ -343,12 +343,12 @@ namespace SGA
 		return ActionAssignment::fromSingleAction(nextAction);
 	}
 
-	void CombatAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+	void CombatAgent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		//Init stuff goes here.
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
+	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
 		return playTurn(state, forwardModel);
