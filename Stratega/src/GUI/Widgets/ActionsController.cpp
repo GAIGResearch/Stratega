@@ -444,7 +444,7 @@ namespace SGA::Widgets
 		}
 	}
 	
-	void getPlayerPossibleActionTypes(GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes)
+	void getPlayerPossibleActionTypes(GameState& state, ActionsSettings& /*settings*/, int playerID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
@@ -455,7 +455,7 @@ namespace SGA::Widgets
 		}
 	}
 	
-	void getEntityPossibleActionTypes(GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes)
+	void getEntityPossibleActionTypes(GameState& state, ActionsSettings& settings, int /*playerID*/, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");		
@@ -472,14 +472,14 @@ namespace SGA::Widgets
 	}
 
 
-	void assignPosition(const GameState& state, ActionsSettings& settings, Vector2f position)
+	void assignPosition(const GameState& /*state*/, ActionsSettings& settings, Vector2f position)
 	{
 		auto positionTarget = SGA::ActionTarget::createPositionActionTarget(position);
 
 		settings.selectedTargets.emplace_back(positionTarget);
 	}
 
-	void assignEntity(const GameState& state, ActionsSettings& settings, int entity)
+	void assignEntity(const GameState& /*state*/, ActionsSettings& settings, int entity)
 	{
 		auto entityTarget = SGA::ActionTarget::createEntityActionTarget(entity);
 

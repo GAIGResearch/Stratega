@@ -52,7 +52,7 @@ namespace SGA
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
-								bestAction = i;
+								bestAction = (int)i;
 						}
 					}
 				}
@@ -150,7 +150,7 @@ namespace SGA
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
-							bestAction = i;
+							bestAction = (int)i;
 						}
 					}
 				}

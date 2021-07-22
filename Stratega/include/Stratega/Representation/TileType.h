@@ -60,13 +60,13 @@ namespace SGA
 
 
 		const std::string& getName() const { return name; }
-		void setName(const std::string& name) { this->name = name; }
+		void setName(const std::string& newName) { this->name = newName; }
 
 		char getSymbol() const { return symbol; }
 		void setSymbol(char c) { symbol = c; }
 
 		int getID() const { return id; }
-		void setID(int id) { this->id = id; }
+		void setID(int newID) { this->id = newID; }
 
 		bool isWalkable() const { return walkable; }
 		void setWalkable(bool w) { walkable = w; }
@@ -75,7 +75,7 @@ namespace SGA
 		void setBlockSight(bool b) { blocksSight = b; }
 
 		bool isDefaultTile() const { return defaultTile; }
-		void setDefaultTile(bool defaultTile) { this->defaultTile = defaultTile; }
+		void setDefaultTile(bool newDefaultTile) { this->defaultTile = newDefaultTile; }
 
 
 	};

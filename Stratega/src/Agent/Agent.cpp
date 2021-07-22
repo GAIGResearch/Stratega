@@ -17,9 +17,9 @@ namespace SGA
 		return playerID;
 	}
 
-	void Agent::setPlayerID(int playerID)
+	void Agent::setPlayerID(int newPlayerID)
 	{
-		this->playerID = playerID;
+		this->playerID = newPlayerID;
 	}
 	
 	void Agent::setSeed(std::mt19937::result_type seed)
@@ -85,14 +85,14 @@ namespace SGA
 		return fActions;
 	}
 
-	std::vector<Action> Agent::filterActionsByPlayerID(const std::vector<Action>& actions, int playerID) const
+	std::vector<Action> Agent::filterActionsByPlayerID(const std::vector<Action>& actions, int searchedPlayerID) const
 	{
 		std::vector<Action> fActions;
 		for (Action ac : actions)
 		{
 			if (ac.getTargets().size() > 0 && (ac.getTargets()[0].getType() == ActionTarget::Type::PlayerReference))
 			{
-				if (ac.getTargets()[0].getPlayerID() == playerID)
+				if (ac.getTargets()[0].getPlayerID() == searchedPlayerID)
 					fActions.emplace_back(ac);
 			}
 		}

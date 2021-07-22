@@ -114,10 +114,10 @@ namespace SGA
 
 		/* Getters and setters for default type variables. */
 		const std::string& getName() const { return name; }
-		void setName(const std::string& name) { this->name = name; }
+		void setName(const std::string& newName) { this->name = newName; }
 
 		int getID() const { return id; }
-		void setID(int id) { this->id = id; }
+		void setID(int newID) { this->id = newID; }
 
 		const ActionSourceType& getSourceType() const { return sourceType; }
 		void setSourceType(ActionSourceType ast) { sourceType = ast; }

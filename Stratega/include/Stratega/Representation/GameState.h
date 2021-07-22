@@ -114,13 +114,13 @@ namespace SGA
 		/// Returns the width of the board.
 		/// </summary>
 		/// <returns>The width of the board.</returns>
-		int getBoardWidth() const { return board.getWidth(); }
+		int getBoardWidth() const { return (int)board.getWidth(); }
 
 		/// <summary>
 		/// Returns the height of the board.
 		/// </summary>
 		/// <returns>The height of the board.</returns>
-		int getBoardHeight() const { return board.getHeight(); }
+		int getBoardHeight() const { return (int)board.getHeight(); }
 
 		/// <summary>
 		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
@@ -233,7 +233,7 @@ namespace SGA
 		/// Gets the number of players in this game state.
 		/// </summary>
 		/// <returns>Number of players in this game</returns>
-		int getNumPlayers() const { return players.size(); };
+		int getNumPlayers() const { return (int)players.size(); };
 
 		/// <summary>
 		/// Adds a player to the game state.

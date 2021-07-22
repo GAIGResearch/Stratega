@@ -77,7 +77,7 @@ namespace SGA
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
-							bestAction = i;
+							bestAction = (int)i;
 						}
 					}
 				}
@@ -178,7 +178,7 @@ namespace SGA
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
-							bestAction = i;
+							bestAction = (int)i;
 						}
 					}
 				}

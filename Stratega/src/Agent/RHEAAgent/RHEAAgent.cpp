@@ -5,7 +5,7 @@
 namespace SGA
 {
     //Initializes the agent. Sets player ID, heuristic and opponent model.
-    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    void RHEAAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
     {
         params_.PLAYER_ID = getPlayerID();
         if (params_.heuristic == nullptr)
@@ -56,7 +56,7 @@ namespace SGA
         for (size_t i = 0; i < params_.popSize; i++) {
             pop_.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
-        params_.currentIterations += params_.popSize;
+        params_.currentIterations += (int)params_.popSize;
     }
 
 
@@ -83,7 +83,7 @@ namespace SGA
 
 
         //In RHEA, we count iterations as individual evaluations.
-        params_.currentIterations += params_.popSize;
+        params_.currentIterations += (int)params_.popSize;
 
         return newPop;
     }

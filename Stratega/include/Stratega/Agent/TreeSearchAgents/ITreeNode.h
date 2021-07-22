@@ -27,7 +27,7 @@ namespace SGA
 			computeActionSpace(forwardModel);
 		}
 		
-		virtual std::vector<Action> getActionSpace(const ForwardModel& forwardModel, int playerID) const { return actionSpace; }
+		virtual std::vector<Action> getActionSpace(const ForwardModel& /*forwardModel*/, int /*playerID*/) const { return actionSpace; }
 		virtual ~ITreeNode() = default;
 		ITreeNode& operator=(const ITreeNode&) = delete;
 		virtual void print() const = 0;

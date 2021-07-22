@@ -101,16 +101,16 @@ namespace SGA
 
 
 		int getID() const { return id; }
-		void setID(int id) { this->id = id; }
+		void setID(int newID) { this->id = newID; }
 
 		const std::string& getName() const { return name; }
-		void setName(std::string name) { this->name = name; }
+		void setName(std::string newName) { this->name = newName; }
 
 		char getSymbol() const { return symbol; }
 		void setSymbol(char s) { symbol = s; }
 
 		int getRequiredTechID() const { return requiredTechnologyID; }
-		void setRequiredTechID(int id) { requiredTechnologyID = id; }
+		void setRequiredTechID(int newID) { requiredTechnologyID = newID; }
 
 		double getContinuousActionTime() const { return continuousActionTime; }
 		void setContinuousActionTime(double d) { continuousActionTime = d; }

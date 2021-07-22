@@ -3,7 +3,7 @@
 namespace SGA
 {
 
-    void MCTSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    void MCTSAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
     {
         parameters_.PLAYER_ID = getPlayerID();
         if (parameters_.heuristic == nullptr)

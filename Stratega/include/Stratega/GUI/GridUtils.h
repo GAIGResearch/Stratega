@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4505)
 #include <SFML/Graphics.hpp>
 
 //TILES

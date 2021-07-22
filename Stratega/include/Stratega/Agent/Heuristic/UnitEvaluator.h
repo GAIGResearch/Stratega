@@ -91,7 +91,7 @@ namespace SGA
 					}
 					if (parameter.second.getName() == "AttackRange" || parameter.second.getName() == "HealRange")
 					{
-						actionRangePerc = parameter.second.getDefaultValue() / static_cast<double>(maxActionRange);
+						actionRangePerc = (int)(parameter.second.getDefaultValue() / static_cast<double>(maxActionRange));
 						continue;
 					}
 					if (parameter.second.getName() == "Health")

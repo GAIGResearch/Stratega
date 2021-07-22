@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
+	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int /*playerID*/) const
 	{
 		if (actionSpace.size() > 1)
 		{
@@ -29,7 +29,7 @@ namespace SGA
 		return actionSpace[rand() % actionSpace.size()];
 	}
 
-	Action UseSpecialAbilityScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
+	Action UseSpecialAbilityScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int /*playerID*/, int unitID) const
 	{
 		std::vector<Action> suitableActions;
 		for (const auto& action : actionSpace)

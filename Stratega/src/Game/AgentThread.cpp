@@ -37,7 +37,8 @@ namespace SGA
 		forwardModel(nullptr),
 		gameConfig(nullptr),
 		computing(false),
-		resultCache()
+		resultCache(),
+		joined(true)
 	{
 	}
 
@@ -49,7 +50,7 @@ namespace SGA
 		}
 	}
 
-	void AgentThread::startComputing(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs)
+	void AgentThread::startComputing(Agent& newAgent, const GameState& newState, const ForwardModel& newForwardModel, const GameConfig& newGameConfig, long timeBudgetMs)
 	{
 		// ToDo actually reuse the thread instead of starting a new one everytime
 		assert(!computing);
@@ -58,10 +59,10 @@ namespace SGA
 		joined = false;
 
 		// Setup computation
-		this->agent = &agent;
-		this->state = &state;
-		this->forwardModel = &forwardModel;
-		this->gameConfig = &gameConfig;
+		this->agent = &newAgent;
+		this->state = &newState;
+		this->forwardModel = &newForwardModel;
+		this->gameConfig = &newGameConfig;
 		resultCache = AgentResults{};
 		
 

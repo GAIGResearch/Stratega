@@ -5,7 +5,7 @@
 namespace SGA
 {
 
-	double AbstractHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, int playerID)
+	double AbstractHeuristic::evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& gameState, int playerID)
 	{
 		double score = 0.0;
 
@@ -20,7 +20,7 @@ namespace SGA
 		for (auto entry : attributeWeights)
 		{
 			const std::string parameterName = entry.first;
-			const int parameterWeight = entry.second;
+			const int parameterWeight = (int)entry.second;
 
 			if (parameterWeight != 0) {
 

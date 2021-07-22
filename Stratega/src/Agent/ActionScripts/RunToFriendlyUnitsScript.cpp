@@ -41,7 +41,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = (int)maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -104,7 +104,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = (int)maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
