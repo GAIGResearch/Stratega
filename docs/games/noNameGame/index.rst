@@ -1,5 +1,5 @@
 ###############
-No Name Game
+Basic RTS/TBS
 ###############
 
 Yaml paths:

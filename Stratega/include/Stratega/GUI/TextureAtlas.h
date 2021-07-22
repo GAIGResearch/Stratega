@@ -59,7 +59,9 @@ namespace SGA
 				}
 				if (image.getSize() != spriteSize)
 				{
-					throw std::runtime_error("Textures added to the atlas need to have the same size");
+					throw std::runtime_error("Error loading image " + path + ". Textures added to the atlas need to have the same size: <" 
+						+ std::to_string(image.getSize().x) + "x" + std::to_string(image.getSize().y) + "> != <" 
+						+ std::to_string(spriteSize.x) + "x" + std::to_string(spriteSize.y) + ">");
 				}
 
 				// Insert the image into the atlas

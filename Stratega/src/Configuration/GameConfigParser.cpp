@@ -262,9 +262,15 @@ namespace SGA
             type.setName(nameTypePair.first);
             type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
             type.setID(static_cast<int>(config.entityTypes.size()));
-            type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
-
-            parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
+            
+            
+            if (nameTypePair.second["LineOfSightRange"] == nullptr)
+                type.setLoSRange(0);
+            else
+                type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
+            
+            if (nameTypePair.second["Parameters"] != nullptr)
+                parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
@@ -783,19 +789,25 @@ namespace SGA
 
     std::string GameConfigParser::parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const
     {
-        if (!pathNode.IsScalar())
-            throw std::runtime_error("Received a invalid file-path");
-    	
-        using namespace std::filesystem;
+        try {
+            if (!pathNode.IsScalar())
+                throw std::runtime_error("Received a invalid file-path");
 
-        path filePath = pathNode.as<std::string>();
-    	// Convert path to an absolute path relative to the path of the configuration file
-        auto tmp = current_path();
-        current_path(canonical(path(config.yamlPath).parent_path()));
-        filePath = canonical(filePath);
-        current_path(tmp);
+            using namespace std::filesystem;
 
-        return filePath.string();
+            path filePath = pathNode.as<std::string>();
+            // Convert path to an absolute path relative to the path of the configuration file
+            auto tmp = current_path();
+            current_path(canonical(path(config.yamlPath).parent_path()));
+            filePath = canonical(filePath);
+            current_path(tmp);
+
+            return filePath.string();
+        }
+        catch (std::exception) 
+        {
+            throw std::runtime_error("Received a invalid file-path: " + pathNode.as<std::string>());
+        }
     }
 	
 	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
