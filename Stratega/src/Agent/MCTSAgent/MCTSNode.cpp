@@ -192,7 +192,7 @@ namespace SGA
 		return rollerState.isGameOver();
 	}
 
-	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int playerID) const
+	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int /*playerID*/) const
 	{
 		//Roll the game state with our action.
 		params.currentFMCalls += SGA::roll(targetGameState, forwardModel, action, playerID, params);

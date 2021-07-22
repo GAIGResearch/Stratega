@@ -15,7 +15,7 @@ namespace SGA
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode((int)resolution.x, (int)resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
@@ -27,7 +27,7 @@ namespace SGA
 
 		// Initialize View
 		sf::View view = window.getView();
-		view.setCenter(window.getSize().x / 2., window.getSize().y / 2.);
+		view.setCenter((float)(window.getSize().x / 2.), (float)(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
@@ -57,9 +57,9 @@ namespace SGA
 	}
 
 
-	void TBSGameRenderer::update(const GameState& state)
+	void TBSGameRenderer::update(const GameState& newState)
 	{
-		this->state = state;
+		this->state = newState;
 		updateFow();
 		selectedAction.reset();
 
@@ -413,11 +413,11 @@ namespace SGA
 			for (auto entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
 			{
 				//Check if entity have sprite
-				auto entityType = entity.getEntityType();
+				auto searchedEntityType = entity.getEntityType();
 				//Add units
-				sf::Texture& texture = assetCache.getTexture(entityType.getName());
+				sf::Texture& searchedTexture = assetCache.getTexture(searchedEntityType.getName());
 
-				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
+				if (ImGui::ImageButton(searchedTexture, ImVec2(50, 50), -10))
 				{
 					/*selectedEntityID = entity->id;*/
 				}

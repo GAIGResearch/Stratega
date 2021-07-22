@@ -5,7 +5,7 @@
 namespace SGA
 {
     //Initializes the agent. Sets player ID, heuristic and opponent model.
-    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+    void RHEAAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer /*timer*/)
     {
         params_.PLAYER_ID = getPlayerID();
         if (params_.heuristic == nullptr)

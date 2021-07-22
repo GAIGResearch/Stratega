@@ -10,11 +10,12 @@
 
 namespace SGA
 {
-	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& resolution)
+	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& newResolution)
 		: state(),
 		fowState(),
 		assignment(),
-		window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		config(nullptr),
+		window(sf::VideoMode((int)newResolution.x, (int)newResolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		pointOfViewPlayerID(NO_PLAYER_ID),
 		fowSettings(),
 		zoomValue(5.f),
@@ -26,7 +27,7 @@ namespace SGA
 
 		// Initialize View
 		sf::View view = window.getView();
-		view.setCenter(window.getSize().x / 2., window.getSize().y / 2.);
+		view.setCenter((float)(window.getSize().x / 2.), (float)(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
@@ -56,16 +57,16 @@ namespace SGA
 		update(initialState);
 	}
 
-	void RTSGameRenderer::update(const GameState& state)
+	void RTSGameRenderer::update(const GameState& newState)
 	{
-		this->state = state;
-		this->fowState = state;
+		this->state = newState;
+		this->fowState = newState;
 		this->fowState.applyFogOfWar(fowSettings.selectedPlayerID);
 		assignment.clear();
 
 		GameState currentState;
 		if (config->applyFogOfWar)
-			currentState = state;
+			currentState = newState;
 		else
 			currentState = fowState;
 
@@ -140,7 +141,7 @@ namespace SGA
 		}
 	}
 	
-	void RTSGameRenderer::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::mouseScrolled(const sf::Event& event, sf::View& view, sf::RenderWindow& /*window*/)
 	{
 		// Determine the scroll direction and adjust the zoom level
 		if (event.mouseWheelScroll.delta <= -1)
@@ -154,7 +155,7 @@ namespace SGA
 
 		window.setView(view);
 	}
-	void RTSGameRenderer::mouseButtonReleased(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::mouseButtonReleased(const sf::Event& event, sf::View& /*view*/, sf::RenderWindow& /*window*/)
 	{
 		// Mouse button is released, no longer move
 		if (event.mouseButton.button == sf::Mouse::Middle) {
@@ -239,26 +240,26 @@ namespace SGA
 			}
 		}
 	}
-	void RTSGameRenderer::mouseButtonPressed(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::mouseButtonPressed(const sf::Event& event, sf::View& /*view*/, sf::RenderWindow& newWindow)
 	{
 		// Mouse button is pressed, get the position and set moving as active
 		if (event.mouseButton.button == sf::Mouse::Left && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 		{
-			oldMousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			oldMousePosition = newWindow.mapPixelToCoords(sf::Mouse::getPosition(newWindow));
 			dragging = true;
 		}
 		// Mouse button is pressed, get the position and set moving as active
 		if (event.mouseButton.button == sf::Mouse::Middle)
 		{
 			moving = true;
-			oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+			oldMousePosition = newWindow.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 		}
 	}
-	void RTSGameRenderer::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::mouseMoved(const sf::Event& event, sf::View& view, sf::RenderWindow& newWindow)
 	{
 
 		// Determine the new position in world coordinates
-		const sf::Vector2f newPos = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+		const sf::Vector2f newPos = newWindow.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 
 		if (!moving)
 			return;
@@ -268,13 +269,13 @@ namespace SGA
 
 		// Move our view accordingly and update the window
 		view.setCenter(view.getCenter() + deltaPos);
-		window.setView(view);
+		newWindow.setView(view);
 
 		// Save the new position as the old one
 		// We're recalculating this, since we've changed the view
-		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+		oldMousePosition = newWindow.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 	}
-	void RTSGameRenderer::keyPressed(const sf::Event& /*event*/, sf::View& view, sf::RenderWindow& window)
+	void RTSGameRenderer::keyPressed(const sf::Event& /*event*/, sf::View& view, sf::RenderWindow& newWindow)
 	{
 		// Camera movement
 		sf::Vector2f movementDir;
@@ -296,7 +297,7 @@ namespace SGA
 			movementDir.x = cameraSpeed;
 		}
 		view.setCenter(view.getCenter() + movementDir);
-		window.setView(view);
+		newWindow.setView(view);
 	}
 
 	void RTSGameRenderer::renderLayers()
@@ -354,13 +355,13 @@ namespace SGA
 					if (!tile->header)
 						continue;
 
-					for (int i = 0; i < tile->header->polyCount; ++i)
+					for (int b = 0; b < tile->header->polyCount; ++b)
 					{
-						const dtPoly* p = &tile->polys[i];
+						const dtPoly* p = &tile->polys[b];
 						if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
 							continue;
 
-						const dtPolyDetail* pd = &tile->detailMeshes[i];
+						const dtPolyDetail* pd = &tile->detailMeshes[b];
 
 						//Draw polygon
 						for (int j = 0; j < pd->triCount; ++j)
@@ -480,16 +481,16 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(0, window.getSize().y- window.getSize().y/4));
-		ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window.getSize().x), window.getSize().y/4));
+		ImGui::SetNextWindowPos(ImVec2(0, (float)window.getSize().y- (float)window.getSize().y/4));
+		ImGui::SetNextWindowSize(ImVec2(static_cast<float>((float)window.getSize().x), (float)window.getSize().y/4));
 
 		//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
 		ImGui::Columns(3, "mixed");
-		ImGui::SetColumnWidth(0, window.getSize().x/4);
-		ImGui::SetColumnWidth(1, (window.getSize().x/4)*2);
-		ImGui::SetColumnWidth(2, window.getSize().x/4);
+		ImGui::SetColumnWidth(0, (float)window.getSize().x/4);
+		ImGui::SetColumnWidth(1, (float)(window.getSize().x/4)*2);
+		ImGui::SetColumnWidth(2, (float)window.getSize().x/4);
 		ImGui::Separator();
 
 		//Ask widget to get	

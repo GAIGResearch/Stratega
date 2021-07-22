@@ -8,8 +8,8 @@ namespace SGA
 	private:
 		std::map<std::string, double> attributeWeights;
 		std::map<std::string, double> attributeUValues;
-		std::map<std::string, int> maxValue;
-		std::map<std::string, int> minValue;
+		std::map<std::string, double> maxValue;
+		std::map<std::string, double> minValue;
 
 	public:
 		AbstractHeuristic(std::map<std::string, double>& attributeWeights,

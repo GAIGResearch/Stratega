@@ -75,7 +75,7 @@ namespace SGA
 				tempEndTime = endTime;
 			}
 
-			return std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count();
+			return (long)std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count();
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace SGA
 		// Set the max time
 		/// <summary>
 		/// <param name="time">Max timer in milliseconds.</param>
-		void setMaxTimeMilliseconds(double newMaxTimeMs)
+		void setMaxTimeMilliseconds(long newMaxTimeMs)
 		{
 			maxTimeMs = newMaxTimeMs;
 		}

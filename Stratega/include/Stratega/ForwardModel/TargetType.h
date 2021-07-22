@@ -88,10 +88,10 @@ namespace SGA
 		/* Getters and setters for this target type */
 
 		const Type& getType() const { return type; }
-		void setType(const Type& type) { this->type = type; }
+		void setType(const Type& newType) { this->type = newType; }
 
 		std::shared_ptr<SamplingMethod> getSamplingMethod() const { return samplingMethod; }
-		void setSamplingMethod(std::shared_ptr<SamplingMethod> samplingMethod) { this->samplingMethod = samplingMethod; }
+		void setSamplingMethod(std::shared_ptr<SamplingMethod> newSamplingMethod) { this->samplingMethod = newSamplingMethod; }
 
 		const std::unordered_set<int>& getGroupEntityTypes() const { return groupEntityTypes; }
 		void setGroupEntityTypes(const std::unordered_set<int>& groupTypes) { groupEntityTypes = groupTypes; }

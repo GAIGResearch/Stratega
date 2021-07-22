@@ -27,8 +27,8 @@ namespace SGA
 		const std::string& getName() const { return name; }
 		ParameterID getID() const { return id; }
 
-		void setID(int id) { this->id = id; }
-		void setName(const std::string& name) { this->name = name; }
+		void setID(int newID) { this->id = newID; }
+		void setName(const std::string& newName) { this->name = newName; }
 		void setIndex(int idx) { index = idx; }
 		void setDefaultValue(double val) { defaultValue = val; }
 		void setMinValue(double val) { minValue = val; }
