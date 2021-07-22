@@ -7,18 +7,24 @@ cmake_minimum_required (VERSION 3.8)
 file(GLOB_RECURSE STRATEGA_SOURCE_FILES CONFIGURE_DEPENDS "*.cpp" "*.h")
 
 add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
+find_package(Threads)
 
 target_include_directories(Stratega PUBLIC include)
 target_link_libraries(Stratega PUBLIC yaml-cpp)
 target_link_libraries(Stratega PUBLIC Recast)
 target_link_libraries(Stratega PUBLIC Detour)
 target_link_libraries(Stratega PUBLIC DebugUtils)
+
 target_link_libraries(Stratega
 	PRIVATE
 		sfml-graphics
 		sfml-system
 		sfml-window
 		ImGUI)
+
+if(TARGET Threads::Threads)
+	target_link_libraries(Stratega PUBLIC Threads::Threads)
+endif()
 
 install (TARGETS Stratega yaml-cpp
          ARCHIVE DESTINATION lib
