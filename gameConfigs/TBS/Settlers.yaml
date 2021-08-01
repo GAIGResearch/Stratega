@@ -184,7 +184,7 @@ Entities:
             Range: 6
             
     Villager:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit_5.png
         LineOfSightRange: 3
         Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
@@ -199,7 +199,7 @@ Entities:
             GoldMining: 5
             
     Builder:
-        Sprite: ../../GUI/Assets/Entities/unit10.png
+        Sprite: ../../GUI/Assets/Entities/unit_7.png
         LineOfSightRange: 3
         CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
         Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
@@ -210,7 +210,7 @@ Entities:
             Range: 6
 
     Spy:
-        Sprite: ../../GUI/Assets/Entities/unit9.png
+        Sprite: ../../GUI/Assets/Entities/unit_6.png
         LineOfSightRange: 5
         Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
@@ -222,7 +222,7 @@ Entities:
             Range: 6
 
     Architect:
-        Sprite: ../../GUI/Assets/Entities/unit11.png
+        Sprite: ../../GUI/Assets/Entities/unit_8.png
         LineOfSightRange: 3
         RequiredTechnology: Architecture
         CanSpawn: [Wonder]
