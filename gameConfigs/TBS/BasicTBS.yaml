@@ -105,7 +105,7 @@ Entities:
             StorageCapacity: 50
 
     Worker:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit_5.png
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
@@ -120,7 +120,7 @@ Entities:
             Range: 3
             
     Warrior:
-        Sprite: ../../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
@@ -135,7 +135,7 @@ Entities:
             Health: 50
             
     Archer:
-        Sprite: ../../GUI/Assets/Entities/unit3.png
+        Sprite: ../../GUI/Assets/Entities/unit_3.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Archery
@@ -151,7 +151,7 @@ Entities:
             Health: 30
             
     Catapult:
-        Sprite: ../../GUI/Assets/Entities/unit4.png
+        Sprite: ../../GUI/Assets/Entities/unit_4.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Engineering

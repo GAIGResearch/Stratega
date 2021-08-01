@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - RandomAgent
-    - CombatAgent
+    - HumanAgent
 
 
 Tiles:
@@ -149,7 +149,7 @@ Entities:
             Health: 100
 
     Miner:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit_5.png
         Symbol: m
         LineOfSightRange: 4
         Actions: [Move, Mine, Deposit]
@@ -158,7 +158,7 @@ Entities:
             Health: 20
 
     Fighter:
-        Sprite: ../../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
         Symbol: f
         LineOfSightRange: 6
         Parameters:
