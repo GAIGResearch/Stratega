@@ -4,7 +4,7 @@
 int main()
 {
 	std::mt19937 rngEngine(0);
-	std::string configPath("../../../gameConfigs/TBS/KillTheKing.yaml");
+	std::string configPath("../../../gameConfigs/TBS/Sanctuary.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	SGA::Vector2f resolution;

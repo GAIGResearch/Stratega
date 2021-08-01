@@ -90,7 +90,7 @@ Entities:
             Health: 100
 
     Fighter:
-        Sprite: ../../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack]

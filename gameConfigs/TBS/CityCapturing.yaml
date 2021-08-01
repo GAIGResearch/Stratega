@@ -112,7 +112,7 @@ Entities:
         Actions: [Spawn]
 
     Conquerer:
-        Sprite: ../../GUI/Assets/Entities/unit7.png
+        Sprite: ../../GUI/Assets/Entities/unit_5.png
         Symbol: s
         LineOfSightRange: 4
         Actions: [Move, Capture]
@@ -122,7 +122,7 @@ Entities:
             Gold: 6
 
     Fighter:
-        Sprite: ../../GUI/Assets/Entities/unit2.png
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack]
