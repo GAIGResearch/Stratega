@@ -12,7 +12,9 @@
 #
 import os
 import sys
-# sys.path.insert(0, os.path.abspath('.'))
+
+#import stratega python bindings
+sys.path.insert(0, os.path.abspath('../out/bindings'))
 
 # -- Manually execute Doxygen, since ReadTheDocs doesn't execute our CMake file
 import subprocess

@@ -180,8 +180,65 @@ PYBIND11_MODULE(stratega, m)
 	py::options options;
 	options.enable_function_signatures();
 	options.enable_user_defined_docstrings();
-	
-    m.doc() = "Stratega python bindings"; // optional module docstring
+
+	m.doc() = R"pbdoc(
+        Stratega python bindings
+        -----------------------
+        .. currentmodule:: stratega
+        .. autosummary::
+           :toctree: _generate
+
+			load_config
+			create_runner
+			create_arena
+			generate_agents
+			set_default_logger
+			load_levels_from_yaml
+			ActionType
+			EntityType
+			Player
+			Entity
+			GameType
+			GameDescription
+			EntityCategory
+			ActionCategory
+			GameState
+			TileType
+			Tile
+			Parameter
+			ActionFlag
+			ActionInfo
+			Action
+			ActionSourceType
+			TargetTypeEnum
+			TargetType
+			SamplingMethod
+			Condition
+			Effect
+			ActionTargetEnum
+			ActionTarget
+			EntityPlacement
+			LevelDefinition
+			TechnologyTreeCollection
+			TechnologyTreeType
+			TechnologyTreeNode
+			BoardTiles
+			GameRunner
+			GameConfig
+			GameInfo
+			GameObserver
+			MinimizeDistanceHeuristic
+			ActionAssignment
+			OnTickEffect
+			OnEntitySpawnEffect
+			EntityForwardModel
+			TBSForwardModel
+			RTSForwardModel
+			Path
+			Agent
+			Arena
+			Timer
+    )pbdoc";
 
 	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
 	m.def("create_runner", &createRunner, "Create game runner", py::arg("gameConfig"));
