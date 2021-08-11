@@ -81,6 +81,8 @@ Actions:
                     Options:
                         Shape: Circle
                         Size: 4
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
 

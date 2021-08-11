@@ -62,6 +62,8 @@ Actions:
                         Shape: Circle
                         Size: 3
                 ValidTargets: [Conquerer, Fighter]
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
         Effects:
             - "Attack(Target.Health, 25)"
 

@@ -252,6 +252,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.Range)"
         Effects:
             - "AttackProbability(Target.Health, 1000, 50)"
@@ -269,6 +270,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.Range)"
         Effects:
             - "AttackProbability(Target.Health, 1000, 20)"

@@ -66,6 +66,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"

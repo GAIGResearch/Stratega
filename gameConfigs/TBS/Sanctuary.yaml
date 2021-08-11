@@ -124,7 +124,7 @@ Actions:
                         AllowDiagonals: true
                         Size: 1
                 Conditions:
-                    - "DifferentPlayer(Target)"
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
