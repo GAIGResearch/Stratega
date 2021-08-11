@@ -44,9 +44,22 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
+		std::string selectedPath = "../../GUI/Assets/Tiles/selected.png";
+		std::string fontPath = "../../GUI/Assets/arial.ttf";
 
-		assetCache.loadTexture("selected", "./GUI/Assets/Tiles/selected.png");
-		assetCache.loadFont("font", "./GUI/Assets/arial.ttf");
+		std::filesystem::path filePath = selectedPath;
+		// Convert path to an absolute path relative to the path of the configuration file
+		auto tmp = std::filesystem::current_path();
+		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		filePath = canonical(filePath);
+		current_path(tmp);		
+		assetCache.loadTexture("selected", filePath.string());
+
+		filePath = fontPath;
+		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		filePath = canonical(filePath);
+		current_path(tmp);
+		assetCache.loadFont("font",  filePath.string());
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);

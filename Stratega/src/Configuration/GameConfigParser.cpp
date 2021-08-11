@@ -676,7 +676,14 @@ namespace SGA
         config.renderConfig = std::make_unique<RenderConfig>();
 
         // Hardcode shader Path
-        config.renderConfig->outlineShaderPath = "./GUI/Assets/OutLine.frag";
+        std::filesystem::path filePath = "../../GUI/Assets/OutLine.frag";
+        // Convert path to an absolute path relative to the path of the configuration file
+        auto tmp = std::filesystem::current_path();
+        std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config.yamlPath).parent_path()));
+        filePath = canonical(filePath);
+        current_path(tmp);
+        
+        config.renderConfig->outlineShaderPath = filePath.string();
 
         for (const auto& entityNode : configNode["Entities"])
         {
@@ -684,9 +691,16 @@ namespace SGA
             auto entityConfig = entityNode.second;
             config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
         }
-
+        
         //Add Fog of War tile
-        config.renderConfig->tileSpritePaths.emplace("FogOfWar", "./GUI/Assets/Tiles/notVisible.png");
+        filePath = "../../GUI/Assets/Tiles/notVisible.png";
+        // Convert path to an absolute path relative to the path of the configuration file
+        tmp = std::filesystem::current_path();
+        std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config.yamlPath).parent_path()));
+        filePath = canonical(filePath);
+        current_path(tmp);
+
+        config.renderConfig->tileSpritePaths.emplace("FogOfWar", filePath.string());
 
         for (const auto& tileNode : configNode["Tiles"])
         {

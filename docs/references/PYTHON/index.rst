@@ -4,4 +4,4 @@
 Python Reference
 ###############
 
-.. automodule:: stratega
+.. automodule:: strategabindings

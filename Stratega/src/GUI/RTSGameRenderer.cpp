@@ -44,10 +44,35 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
+		
+		std::string fontPath = "../../GUI/Assets/arial.ttf";
+		std::string circleColliderPath = "../..//GUI/Assets/Tiles/circleCollider.png";
+		std::string boxColliderPath = "../../GUI/Assets/Tiles/boxCollider.png";
 
-		assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
-		assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");
-		assetCache.loadFont("font", "./GUI/Assets/arial.ttf");
+		std::filesystem::path filePath = fontPath;
+		// Convert path to an absolute path relative to the path of the configuration file
+		auto tmp = std::filesystem::current_path();
+		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		filePath = canonical(filePath);
+		current_path(tmp);
+		assetCache.loadFont("font", filePath.string());
+
+		filePath = circleColliderPath;
+		tmp = std::filesystem::current_path();
+		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		filePath = canonical(filePath);
+		current_path(tmp);
+		assetCache.loadTexture("circleCollider", filePath.string());
+
+		filePath = boxColliderPath;
+		tmp = std::filesystem::current_path();
+		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		filePath = canonical(filePath);
+		current_path(tmp);
+		assetCache.loadTexture("boxCollider", filePath.string());
+
+		/*assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
+		assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");*/
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);
