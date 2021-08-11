@@ -1,4 +1,4 @@
-#include <Stratega/Configuration/GameConfigParser.h>
+#include <Stratega//Configuration/GameConfigParser.h>
 #include <Stratega/Game/GameRunner.h>
 
 int main()

@@ -20,13 +20,13 @@ option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages.
 
 # Include sub-projects.
 add_subdirectory("dependencies")
-add_subdirectory("Stratega")
+add_subdirectory("core")
 add_subdirectory("GUI")
 add_subdirectory("Arena")
 
 # Optional
 if(STRATEGA_BUILD_BINDINGS)
-    add_subdirectory("strategabindings")
+    add_subdirectory("python")
 endif()
 
 if(STRATEGA_BUILD_DOCS)

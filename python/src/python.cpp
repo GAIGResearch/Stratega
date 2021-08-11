@@ -175,7 +175,7 @@ public:
 	 return Arena(*gameConfig);
  }
 
-PYBIND11_MODULE(strategabindings, m)
+PYBIND11_MODULE(stratega, m)
 {
 	py::options options;
 	options.enable_function_signatures();
