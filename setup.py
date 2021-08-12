@@ -24,8 +24,8 @@ class CMakeBuild(build_ext):
                                ", ".join(e.name for e in self.extensions))
 
         cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
-        if cmake_version < LooseVersion('3.5.0'):
-            raise RuntimeError("CMake >= 3.5.0 is required")
+        if cmake_version < LooseVersion('3.8'):
+            raise RuntimeError("CMake >= 3.8 is required")
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -63,16 +63,26 @@ class CMakeBuild(build_ext):
                                ] + build_args,
                               cwd=self.build_temp)
 
+from os import path
+
+python_directory = path.join(path.abspath(path.dirname(__file__)), "python")
+with open(path.join(python_directory, "README.md")) as f:
+    long_description = f.read()
 
 setup(
-    name='strategabindings',
-    version='0.4',
-    author='Jorge',
-    author_email='jorgehurtadogrueso@gmail.com',
-    description='test',
-    long_description="test",
-    ext_modules=[CMakeExtension('strategabindings')],
+    name='Stratega',
+    version='0.0.2',
+    author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
+    #author_email='jorgehurtadogrueso@gmail.com',
+    description='Stratega python bindings',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    ext_modules=[CMakeExtension('stratega')],
     cmdclass=dict(build_ext=CMakeBuild),
-    url="https://github.com/GAIGResearch/Stratega",
+    url="",
+    project_urls={
+        "Github": "https://github.com/GAIGResearch/Stratega",
+        "Community-Discord": "https://discord.com/invite/VVj8Y32DPK",
+    },
     zip_safe=False,
 )

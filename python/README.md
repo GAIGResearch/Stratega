@@ -1,32 +1,15 @@
-
 # stratega
 
-stratega is a python interface
+[![pypi releases](https://img.shields.io/pypi/v/stratega.svg)](https://pypi.org/project/stratega)
+
+Stratega is a python interface to the [Stratega Framework](https://github.com/GAIGResearch/Stratega).
+
+It has been designed to foster research on computational intelligence for strategy games. In contrast to other strategy game frameworks, Stratega allows to create a wide variety of turn-based and real-time strategy games using acommon API for agent development.
+
+It can be installed from [PyPI](https://pypi.org/project/stratega/) using pip:
 
 ```
-pip install sme
+pip install stratega
 ```
 
-Supported platforms and python versions:
-
-- linux
-
-  - CPython: 3.6, 3.7, 3.8, 3.9
-
-  - PyPy: 3.7
-
-- macOS 10.14+
-
-  - CPython: 3.6, 3.7, 3.8, 3.9
-
-  - PyPy: 3.7
-
-- windows 64-bit
-
-  - CPython: 3.6, 3.7, 3.8, 3.9
-
-- windows 32-bit
-
-  - CPython: 3.6, 3.7, 3.8, 3.9
-
-  - PyPy: 3.7
+Documentation: <https://stratega.readthedocs.io/>
