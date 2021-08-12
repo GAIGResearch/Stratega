@@ -71,7 +71,7 @@ with open(path.join(python_directory, "README.md")) as f:
 
 setup(
     name='Stratega',
-    version='0.0.2',
+    version='0.0.3',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
     #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
@@ -84,5 +84,23 @@ setup(
         "Github": "https://github.com/GAIGResearch/Stratega",
         "Community-Discord": "https://discord.com/invite/VVj8Y32DPK",
     },
+    classifiers=[
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Education",
+        "Natural Language :: English",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: C++",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+    ],
     zip_safe=False,
 )
