@@ -46,8 +46,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      - name: Download static libraries
-        run: sudo ./ci/getlibs.sh osx
       - name: Build wheels
         run: ./ci/macos-wheels.sh
       - uses: actions/upload-artifact@v2
