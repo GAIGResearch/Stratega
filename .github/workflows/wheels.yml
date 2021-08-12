@@ -1,103 +1,23 @@
 name: Python Wheel Builds
 
-on: push
-
-env:
-  CIBUILDWHEEL_VERSION: 2.1.1
-  CIBW_BUILD_VERBOSITY: 3
-
+on: [push, pull_request]
 jobs:
-  linux-wheel:
-    name: Linux Wheels
-    runs-on: ubuntu-18.04
-    defaults:
-      run:
-        shell: bash
-    env:
-      CIBW_MANYLINUX_X86_64_IMAGE: stratega/manylinux2010_x86_64:2021.08.09
-      CIBW_MANYLINUX_PYPY_X86_64_IMAGE: stratega/manylinux2010_x86_64:2021.08.09
-      CIBW_SKIP: '*-manylinux_i686'
-      CIBW_BEFORE_ALL: 'cd {project} && ls && bash ./ci/linux-wheels.sh'
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'true'
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==$CIBUILDWHEEL_VERSION
-    - name: Build wheels
-      run: python -m cibuildwheel --output-dir wheelhouse
-    - uses: actions/upload-artifact@v2
-      with:
-        path: ./wheelhouse/*.whl
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-10.15]
 
-  macos-wheel:
-    name: MacOS Wheels
-    runs-on: macos-10.15
-    defaults:
-      run:
-        shell: bash
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - name: Build wheels
-        run: ./ci/macos-wheels.sh
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./wheelhouse/*.whl
 
-  win64-wheel:
-    name: Windows 64-bit Wheels
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
-    env:
-      CIBW_BUILD: '*-win_amd64'
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ccache make
-      - name: Download static libraries
-        run: ./ci/getlibs.sh win64
       - name: Build wheels
-        run: ./ci/windows-wheels.sh
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./wheelhouse/*.whl
+        uses: pypa/cibuildwheel@v2.1.1
+        # to supply options, put them in 'env', like:
+        # env:
+        #   CIBW_SOME_OPTION: value
 
-  win32-wheel:
-    name: Windows 32-bit Wheels
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
-    env:
-      CIBW_BUILD: '*-win32'
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW32
-          update: true
-          install: mingw-w64-i686-gcc mingw-w64-i686-cmake mingw-w64-i686-ccache make
-      - name: Download static libraries
-        run: ./ci/getlibs.sh win32
-      - name: Build wheels
-        run: ./ci/windows-wheels.sh
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
@@ -121,7 +41,7 @@ jobs:
 
   pypi:
     name: Upload to PyPI
-    needs: [linux-wheel, macos-wheel, win64-wheel, win32-wheel, sdist]
+    needs: [build_wheels, sdist]
     runs-on: ubuntu-20.04
     # upload pypi wheels if commit is tagged with "pypi"
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/pypi.')
