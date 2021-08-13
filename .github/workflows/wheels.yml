@@ -98,7 +98,7 @@ jobs:
 
   pypi:
     name: Upload to PyPI
-    needs: [sdist, wheels]
+    needs: [build_sdist, wheels]
     runs-on: ubuntu-20.04
     # upload pypi wheels if commit is tagged with "pypi"
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/pypi.')
