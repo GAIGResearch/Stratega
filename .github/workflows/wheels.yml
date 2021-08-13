@@ -2,45 +2,23 @@ name: Python Wheel Builds
 
 on: [push, pull_request]
 jobs:
-  sdist:
-    name: Source distribution
+  build_sdist:
+    name: Build SDist
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/docs') != true
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
 
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
+    - name: Build SDist
+      run: pipx run build --sdist
 
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.9
+    - name: Check metadata
+      run: pipx run twine check dist/*
 
-      - name: Install requirements
-        run: |
-          pip install --user check-manifest twine
-      - name: Run check-manifest
-        run: |
-          python -m check_manifest
-      - name: Build sdist
-        run: |
-          python -m build --sdist --outdir wheelhouse
-      - name: Install from sdist
-        run: |
-          pip install --user wheelhouse/*.tar.gz
-      - name: Check sdist
-        run: |
-          python -m twine check wheelhouse/*
-      - name: Upload sdist
-        uses: actions/upload-artifact@v2
-        with:
-          name: wheels
-          path: wheelhouse/*.tar.gz
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist/*.tar.gz
 
   wheels:
     strategy:
@@ -84,7 +62,7 @@ jobs:
           echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON PIP_ONLY_BINARY='numpy'" >> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.9 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
-          CIBW_BEFORE_ALL_COMMON="cmake -S . -B build_dependencies $CMAKE_ARCH && cmake --build build_dependencies --target praat -j 2"
+          CIBW_BEFORE_ALL_COMMON="cmake -S . -B build_dependencies $CMAKE_ARCH && cmake --build build_dependencies --target Stratega -j 2"
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON --config Release" >> $GITHUB_ENV
       - name: Only build ReadTheDocs wheel
