@@ -78,7 +78,7 @@ jobs:
           echo "CIBW_BUILD=cp37-manylinux_x86_64" >> $GITHUB_ENV
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+        run: sudo apt-get update && sudo apt-get install libx11-dev  xorg-dev freeglut3-dev libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
       - name: Run cibuildwheel
         if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
         run: |

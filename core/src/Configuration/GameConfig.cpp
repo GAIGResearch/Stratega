@@ -70,7 +70,7 @@ namespace SGA
 
 		
 		std::unordered_set<int> playerIDs;
-		for (auto i = 0; i < getNumberOfPlayers(); i++)
+		for (size_t i = 0; i < getNumberOfPlayers(); i++)
 		{
 			playerIDs.emplace(addPlayer(state, gameInfo));
 		}
