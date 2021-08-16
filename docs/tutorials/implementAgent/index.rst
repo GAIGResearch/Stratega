@@ -306,6 +306,7 @@ line completes the code for this function:
 
 .. code-block:: python
     :linenos:
+    
     import stratega
 
     class RandomPythonAgent(stratega.Agent):
