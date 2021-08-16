@@ -292,7 +292,7 @@ available in the current game state. This can be retrieved from the forward mode
 In this code, 'actions' is a list of objects of type "Action" which contains all actions available in the current game state. Our next step is to choose a random element in this vector, 
 which can be done by i) importing the random module to generate pseudo-random numbers; ii) picking one index from the random generator; and 3) picking the action with the given index:
 
-.. code-block:: c++
+.. code-block:: python
 
     # Sample random action
     action_index=random.randint(0, actions.count()-1)
