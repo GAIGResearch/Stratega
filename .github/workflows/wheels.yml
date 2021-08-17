@@ -72,8 +72,8 @@ jobs:
           CMAKE_OSX_ARCHITECTURES=${{ matrix.cibw-arch == 'macosx_x86_64' && 'x86_64' || matrix.cibw-arch == 'macosx_arm64' && 'arm64' || matrix.cibw-arch == 'macosx_universal2' && '"arm64;x86_64"' || '' }}
           echo "CIBW_BUILD=*-${{ matrix.cibw-arch }}" >> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
-          echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON " >> $GITHUB_ENV
-          echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 " >> $GITHUB_ENV
+          echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON " PIP_ONLY_BINARY='numpy'>> $GITHUB_ENV
+          echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
           CIBW_BEFORE_ALL_COMMON="cmake -S . -B build_dependencies $CMAKE_ARCH && cmake --build build_dependencies --target Stratega -j 2"
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON --config Release" >> $GITHUB_ENV
@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: wheelhouse/stratega-*.whl
+          path: wheelhouse/*.whl
           if-no-files-found: error
 
       - name: Upload wheel for ReadTheDocs
