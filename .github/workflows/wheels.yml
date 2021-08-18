@@ -74,9 +74,9 @@ jobs:
           echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON  PIP_ONLY_BINARY='numpy' ">> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
-          CIBW_BEFORE_ALL_MACOS ="cmake -S . -B $GITHUB_WORKSPACE/build -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target Stratega -j 2"
-          CIBW_BEFORE_ALL_WINDOWS  ="cmake -S . -B $GITHUB_WORKSPACE/build -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target Stratega -j 2"
-          CIBW_BEFORE_BUILD_LINUX="cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target install -j 2"          
+          echo "CIBW_BEFORE_ALL_MACOS ="cmake -S . -B $GITHUB_WORKSPACE/build -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target Stratega -j 2"" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_WINDOWS  ="cmake -S . -B $GITHUB_WORKSPACE/build -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target Stratega -j 2"" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_BUILD_LINUX="cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build --config Release --target install -j 2"" >> $GITHUB_ENV   
       
       - name: Run cibuildwheel
         if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
