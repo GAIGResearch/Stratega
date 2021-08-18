@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
+#include <Stratega/Representation/LevelDefinition.h>
 #include <Stratega/Configuration/FunctionParser.h>
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
@@ -10,7 +11,6 @@
 
 namespace SGA
 {
-    class LevelDefinition;
 	
     struct GameConfig
     {

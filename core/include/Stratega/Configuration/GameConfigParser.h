@@ -1,6 +1,5 @@
 #pragma once
 #include <Stratega/Configuration/GameConfig.h>
-#include <Stratega/Representation/LevelDefinition.h>
 
 namespace SGA
 {

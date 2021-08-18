@@ -2,7 +2,6 @@
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const

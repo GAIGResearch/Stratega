@@ -1,22 +1,12 @@
-#include <Stratega/Representation/Grid2D.h>
+#include <Stratega/Representation/EntityPlacement.h>
 
 namespace SGA
 {
-	struct EntityPlacement
-	{
-		int ownerID;
-		std::shared_ptr<EntityType> entityType;
-		Vector2f position;
-	};
 	
 	class LevelDefinition
 	{		
 	public:
-		LevelDefinition(std::vector<EntityPlacement> entityPlacements, Grid2D<std::shared_ptr<TileType>> board):
-			entityPlacements(entityPlacements),board(board)
-		{
-			
-		}
+		LevelDefinition(std::vector<EntityPlacement> entityPlacements, Grid2D<std::shared_ptr<TileType>> board);
 
 		std::string name;
 		std::string boardString;
