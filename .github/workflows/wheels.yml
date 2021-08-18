@@ -75,7 +75,7 @@ jobs:
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON apt-get update && apt-get install -y libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV   
+          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON yum update && yum install -y libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV   
       
       - name: Run cibuildwheel
         if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
