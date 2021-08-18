@@ -1,4 +1,5 @@
 #include <Stratega/Representation/EntityPlacement.h>
+#include <memory>
 
 namespace SGA
 {

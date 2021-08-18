@@ -8,6 +8,7 @@
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
 #include <yaml-cpp/yaml.h>
+#include <memory>
 
 namespace SGA
 {

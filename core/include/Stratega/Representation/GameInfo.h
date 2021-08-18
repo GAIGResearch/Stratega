@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <Stratega/Representation/GameDescription.h>
-
+#include <memory>
 namespace SGA
 {
 	struct EntityType;

@@ -8,7 +8,7 @@
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/GameInfo.h>
-
+#include <memory>
 namespace SGA
 {
 	enum class GameType
