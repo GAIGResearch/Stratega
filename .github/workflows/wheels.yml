@@ -65,6 +65,10 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y build-essential libx11-dev libxt-dev libxext-dev libxrender-dev libxtst-dev libxinerama-dev xorg-dev libsdl2-dev libsdl2-image-dev libglm-dev freeglut3-dev libxi-dev libglew-dev libpthread-stubs0-dev libglew1.5-dev libfreetype6-dev libxrandr-dev libxcursor-dev libudev-dev libjpeg8-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libglu1-mesa-dev mesa-common-dev
       
+      - name: Install Linux C++20
+        if: runner.os == 'Linux'
+        run: sudo apt-get gcc-10 g++-10
+
       - name: Configure Linux CMake Test
         if: runner.os == 'Linux'
         shell: bash
