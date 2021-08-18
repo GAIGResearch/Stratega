@@ -1,4 +1,5 @@
 #include <Stratega/Representation/Grid2D.h>
+#include <memory>
 
 namespace SGA
 {
