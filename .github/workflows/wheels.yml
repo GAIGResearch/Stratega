@@ -61,26 +61,13 @@ jobs:
         run: |
           python -m pip install cibuildwheel twine
 
-      - name: Install Linux Dependencies
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
-
-      - name: Configure Linux CMake Test
-        if: runner.os == 'Linux'
-        shell: bash
-        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build2 -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON
-
-      - name: Build Linux Test
-        if: runner.os == 'Linux'
-        shell: bash
-        run: cmake --build $GITHUB_WORKSPACE/build2 --config Release --target install
-
       - name: Configure cibuildwheel
         shell: bash
         run: |
           CMAKE_ARCH="${{ matrix.cibw-arch == 'win32' && '-A Win32' || '' }}"
           CMAKE_OSX_ARCHITECTURES=${{ matrix.cibw-arch == 'macosx_x86_64' && 'x86_64' || matrix.cibw-arch == 'macosx_arm64' && 'arm64' || matrix.cibw-arch == 'macosx_universal2' && '"arm64;x86_64"' || '' }}
           echo "CIBW_BUILD=*-${{ matrix.cibw-arch }}" >> $GITHUB_ENV
+          CIBW_BEFORE_BUILD_LINUX="sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev"
           CIBW_ENVIRONMENT_COMMON=""
           echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON  PIP_ONLY_BINARY='numpy' CFLAGS='-fPIC' CXXFLAGS='-fPIC'">> $GITHUB_ENV
@@ -89,7 +76,7 @@ jobs:
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build2 -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build $GITHUB_WORKSPACE/build2  --config Release --target install " >> $GITHUB_ENV   
+          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV   
       
       - name: Run cibuildwheel
         if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
