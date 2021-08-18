@@ -64,6 +64,16 @@ jobs:
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y build-essential libx11-dev libxt-dev libxext-dev libxrender-dev libxtst-dev libxinerama-dev xorg-dev libsdl2-dev libsdl2-image-dev libglm-dev freeglut3-dev libxi-dev libglew-dev libpthread-stubs0-dev libglew1.5-dev libfreetype6-dev libxrandr-dev libxcursor-dev libudev-dev libjpeg8-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libglu1-mesa-dev mesa-common-dev
+      
+      - name: Configure Linux CMake Test
+        if: runner.os == 'Linux'
+        shell: bash
+        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build2 -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON
+
+      - name: Build Linux Test
+        if: runner.os == 'Linux'
+        shell: bash
+        run: cmake --build $GITHUB_WORKSPACE/build2 --config Release --target install
 
       - name: Configure cibuildwheel
         shell: bash
