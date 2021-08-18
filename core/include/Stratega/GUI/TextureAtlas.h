@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <filesystem>
 #include <SFML/Graphics.hpp>
-
+#include <cmath>
 namespace SGA
 {
 	class TextureAtlas
