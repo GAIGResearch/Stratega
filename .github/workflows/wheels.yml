@@ -63,7 +63,24 @@ jobs:
 
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y build-essential libx11-dev libxt-dev libxext-dev libxrender-dev libxtst-dev libxinerama-dev xorg-dev libsdl2-dev libsdl2-image-dev libglm-dev freeglut3-dev libxi-dev libglew-dev libpthread-stubs0-dev libglew1.5-dev libfreetype6-dev libxrandr-dev libxcursor-dev libudev-dev libjpeg8-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libglu1-mesa-dev mesa-common-dev
+        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+
+
+    - name: Install Android Components
+      if: matrix.platform.name == 'Android'
+      run: |
+        echo "y" | /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "cmake;3.10.2.4988404" --sdk_root=ANDROID_SDK_ROOT
+        sudo ln -sf /usr/local/lib/android/sdk/cmake/3.10.2.4988404/bin/cmake /usr/bin/cmake
+        wget -nv https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip -P $GITHUB_WORKSPACE
+        unzip -qq -d $GITHUB_WORKSPACE android-ndk-r18b-linux-x86_64.zip
+    - name: Configure CMake
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DSFML_BUILD_EXAMPLES=TRUE -DCMAKE_VERBOSE_MAKEFILE=ON -DSFML_BUILD_TEST_SUITE=TRUE ${{matrix.platform.flags}} ${{matrix.config.flags}}
+
+    - name: Build
+      shell: bash
+      run: cmake --build $GITHUB_WORKSPACE/build --config Release --target install
+
       
       - name: Install Linux C++20
         if: runner.os == 'Linux'
