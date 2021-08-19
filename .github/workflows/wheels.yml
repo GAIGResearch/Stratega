@@ -4,8 +4,8 @@ on: [push, pull_request]
 env:
     CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 cp37-macosx_x86_64 cp310-macosx_x86_64 cp38-macosx_x86_64 cp39-macosx_x86_64 cp39-win_amd64 cp39-win32 cp38-win_amd64 cp38-win32 cp37-win_amd64 cp39-manylinux_x86_64 cp39-manylinux_i686 cp38-manylinux_x86_64 cp38-manylinux_i686 cp37-win32 cp37-manylinux_x86_64 cp37-manylinux_i686 cp36-manylinux_i686
     
-    CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_31_x86_64:latest
-    CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux_2_31_x86_64:latest
+    CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
+    CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
 jobs:
   build_sdist:
     name: Build SDist
@@ -76,7 +76,7 @@ jobs:
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON apt install build-essential && apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV   
+          echo "CIBW_BEFORE_BUILD_LINUX=$CIBW_BEFORE_ALL_COMMON yum install mesa-libGL-devel xcb-util-image-devel libudev-devel libjpeg-devel openal-devel libvorbis-devel flac-devel && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV   
       
       - name: Run cibuildwheel
         if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
