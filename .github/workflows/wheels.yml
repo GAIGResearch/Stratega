@@ -2,8 +2,7 @@ name: Python Wheel Builds
 
 on: [push, pull_request]
 env:
-    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 cp39-manylinux_x86_64 cp39-manylinux_i686 cp38-manylinux_x86_64 cp38-manylinux_i686  cp37-manylinux_x86_64 cp37-manylinux_i686 cp36-manylinux_i686
-    
+    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 cp37-macosx_x86_64 cp310-macosx_x86_64 cp38-macosx_x86_64 cp39-macosx_x86_64 cp39-win_amd64 cp39-win32 cp38-win_amd64 cp38-win32 cp37-win_amd64 cp39-manylinux_x86_64 cp39-manylinux_i686 cp38-manylinux_x86_64 cp38-manylinux_i686 cp37-win32 cp37-manylinux_x86_64 cp37-manylinux_i686 cp36-manylinux_i686
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
     CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
 jobs:
@@ -16,14 +15,16 @@ jobs:
         submodules: true
 
     - name: Build SDist
-      run: pipx run build --sdist
+      run: pipx run build --sdist --outdir wheelhouse
 
     - name: Check metadata
-      run: pipx run twine check dist/*
+      run: pipx run twine check wheelhouse/*
 
-    - uses: actions/upload-artifact@v2
+    - name: Upload sdist
+      uses: actions/upload-artifact@v2
       with:
-        path: dist/*.tar.gz
+        name: wheels
+        path: wheelhouse/*.tar.gz
 
   wheels:
     strategy:
@@ -113,12 +114,14 @@ jobs:
     # upload pypi wheels if commit is tagged with "v"
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
     steps:
-      - uses: actions/download-artifact@v2
+      - name: Collect sdist and wheels
+        uses: actions/download-artifact@v2
         with:
-          name: artifact
-          path: dist
+          name: wheels
+          path: wheelhouse
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PIPSTRATEGASECRET }}
+          packages_dir: wheelhouse/
           verbose: true
