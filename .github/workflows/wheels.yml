@@ -2,7 +2,7 @@ name: Python Wheel Builds
 
 on: [push, pull_request]
 env:
-    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 cp37-macosx_x86_64 cp310-macosx_x86_64 cp38-macosx_x86_64 cp39-macosx_x86_64 cp39-win_amd64 cp39-win32 cp38-win_amd64 cp38-win32 cp37-win_amd64 cp39-manylinux_x86_64 cp39-manylinux_i686 cp38-manylinux_x86_64 cp38-manylinux_i686 cp37-win32 cp37-manylinux_x86_64 cp37-manylinux_i686 cp36-manylinux_i686
+    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 cp39-manylinux_x86_64 cp39-manylinux_i686 cp38-manylinux_x86_64 cp38-manylinux_i686  cp37-manylinux_x86_64 cp37-manylinux_i686 cp36-manylinux_i686
     
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
     CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64:latest
