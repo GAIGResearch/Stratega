@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-pybind11_add_module(stratega 
-                    NO_EXTRAS
+pybind11_add_module(stratega                     
                     ./src/python.cpp)
 target_link_libraries(stratega PUBLIC Stratega)
 
