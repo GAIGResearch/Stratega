@@ -110,8 +110,8 @@ jobs:
     name: Upload to PyPI
     needs: [build_sdist, wheels]
     runs-on: ubuntu-20.04
-    # upload pypi wheels if commit is tagged with "pypi"
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/pypi.')
+    # upload pypi wheels if commit is tagged with "v"
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
     steps:
       - uses: actions/download-artifact@v2
         with:
