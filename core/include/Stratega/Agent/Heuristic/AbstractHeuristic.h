@@ -1,6 +1,8 @@
 #pragma once
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 
+#include <Stratega/Utils/contains.h>
+
 namespace SGA
 {
 	class AbstractHeuristic : public StateHeuristic
@@ -37,7 +39,7 @@ namespace SGA
 		{
  			for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
 				for (const auto& parameter : entityType.second.getParameters()) {
-					if (!attributeWeights.contains(parameter.second.getName()))
+					if (!attributeWeights.count(parameter.second.getName())>0 )
 					{
 						if (parameter.second.getName() == "Health")
 						{

@@ -1,6 +1,8 @@
 #include <Stratega/Agent/ActionScripts/AttackClosestOpponentScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
 
+#include <Stratega/Utils/contains.h>
+
 namespace SGA
 {
 	
@@ -45,8 +47,12 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					
-					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
+
+					const bool contains = opponentUnits.find(action.getTargets()[1].getEntityID()) != opponentUnits.end();
+
+					if (contains)
+					//if (contains(opponentUnits, action.getTargets()[1].getEntityID()))
+					//if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
 						const double dist = positions[action.getTargets()[0].getEntityID()].manhattanDistance(positions[action.getTargets()[1].getEntityID()]);
 						if (dist < actionDistance)
@@ -144,7 +150,11 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
+					const bool contains = opponentUnits.find(action.getTargets()[1].getEntityID()) != opponentUnits.end();
+
+					if (contains)
+					//if (contains(opponentUnits, action.getTargets()[1].getEntityID()))
+					//if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
 						const double dist = action.getTargets()[0].getPosition(gameState).manhattanDistance(positions[action.getTargets()[1].getEntityID()]);
 						if (dist < actionDistance)

@@ -53,6 +53,28 @@ namespace SGA
 
 		union Data
 		{
+			Data(double data)
+			{
+				constValue = data;
+			}
+			Data(ParameterReference data)
+			{
+				parameterData = data;
+			}
+			Data(ContinuousActionReference data)
+			{
+				continuousActionData = data;
+			}
+			Data (Type type, int data)
+			{
+				switch (type)
+				{
+				case Type::ArgumentReference: argumentIndex=data;
+				case Type::EntityTypeReference: entityTypeID = data;
+				case Type::TileTypeReference: tileTypeID = data;
+				case Type::TechnologyTypeReference: technologyTypeID = data;
+				}
+			}
 			double constValue;
 			ParameterReference parameterData;
 			int argumentIndex;

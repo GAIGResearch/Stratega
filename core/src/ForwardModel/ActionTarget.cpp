@@ -7,37 +7,37 @@ namespace SGA
 {
 	ActionTarget ActionTarget::createPositionActionTarget(Vector2f position)
 	{
-		return ActionTarget(Position, { .position = position });
+		return ActionTarget(Position, Data{position });
 	}
 
 	ActionTarget ActionTarget::createEntityActionTarget(int entityID)
 	{
-		return ActionTarget(EntityReference, { .entityID = entityID });
+		return ActionTarget(EntityReference, Data{ EntityReference, entityID });
 	}
 
 	ActionTarget ActionTarget::createEntityTypeActionTarget(EntityTypeID entityTypeID)
 	{
-		return ActionTarget(EntityTypeReference, { .entityTypeID = entityTypeID });
+		return ActionTarget(EntityTypeReference, Data{ EntityTypeReference, entityTypeID });
 	}
 
 	ActionTarget ActionTarget::createTileTypeActionTarget(EntityTypeID tileTypeID)
 	{
-		return ActionTarget(TileTypeReference, { .tileTypeID = tileTypeID });
+		return ActionTarget(TileTypeReference, Data{ TileTypeReference, tileTypeID });
 	}
 	
 	ActionTarget ActionTarget::createPlayerActionTarget(int playerID)
 	{
-		return ActionTarget(Type::PlayerReference, { .playerID = playerID });
+		return ActionTarget(Type::PlayerReference, Data{ PlayerReference, playerID });
 	}
 
 	ActionTarget ActionTarget::createTechnologyEntityActionTarget(int technologyID)
 	{
-		return ActionTarget(TechnologyReference, { .technologyID = technologyID });
+		return ActionTarget(TechnologyReference, Data{ TechnologyReference, technologyID });
 	}
 
 	ActionTarget ActionTarget::createContinuousActionActionTarget(int continuousActionID)
 	{
-		return ActionTarget(Type::ContinuousActionReference, { .continuousActionID = continuousActionID });
+		return ActionTarget(Type::ContinuousActionReference, Data{ ContinuousActionReference, continuousActionID });
 	}
 
 	int ActionTarget::getPlayerID() const

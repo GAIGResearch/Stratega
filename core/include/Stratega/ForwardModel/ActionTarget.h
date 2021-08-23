@@ -120,6 +120,36 @@ namespace SGA
 			TileTypeID tileTypeID;
 			int technologyID;
 			int continuousActionID;
+
+			Data(Vector2f data)
+			{
+				position = data;
+			}
+
+			Data(ActionTarget::Type targetType, int data)
+			{
+				switch (targetType)
+				{
+				case EntityReference:
+					entityID = data;
+					break;
+				case PlayerReference:
+					playerID = data;
+					break;
+				case EntityTypeReference:
+					entityTypeID = data;
+					break;
+				case TechnologyReference:
+					technologyID = data;
+					break;
+				case ContinuousActionReference:
+					continuousActionID = data;
+					break;
+				case TileTypeReference:
+					tileTypeID = data;
+					break;
+				}
+			}
 		};
 
 		Type targetType;

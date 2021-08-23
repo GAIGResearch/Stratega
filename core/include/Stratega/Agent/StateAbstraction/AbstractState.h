@@ -51,8 +51,14 @@ namespace SGA
 		{
 			if (stateDescription.size() == dt.stateDescription.size())
 			{
-				for (const auto& entry : stateDescription) {
-					if (dt.stateDescription.contains(entry.first)) {	// check if the same keys are contained
+				for (auto entry : stateDescription) {
+					std::string test = entry.first;
+
+					const auto got = dt.stateDescription.find(entry.first);
+
+					if (got == dt.stateDescription.end())
+					{
+					//if (dt.stateDescription.contains(entry.first)) {	// check if the same keys are contained
 						if (entry.second.size() != dt.stateDescription.at(entry.first).size()) {	// check if the length per key match
 							return false;
 						}
