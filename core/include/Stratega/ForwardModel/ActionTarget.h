@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <unordered_set>
-#include <variant>
 #include <Stratega/Representation/Vector2.h>
 
 #include "Stratega/Representation/TileType.h"
