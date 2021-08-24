@@ -1,5 +1,6 @@
 #pragma once
-#include <optional>
+//#include <optional>
+#include <Stratega/Utils/optional.hpp>
 #include <vector>
 #include <unordered_map>
 #include <Stratega/Representation/Vector2.h>

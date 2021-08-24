@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <optional>
-
+//#include <optional>
+#include <Stratega/Utils/optional.hpp>
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/FunctionFactory.h>
 
@@ -54,23 +54,23 @@ namespace SGA
 		}
 		
 		// Parses: functionName(param1, param2)
-		std::optional<AbstractFunctionCall> parseAbstractFunction(const std::string& code, const ParseContext& context) const;
+		nonstd::optional<AbstractFunctionCall> parseAbstractFunction(const std::string& code, const ParseContext& context) const;
 
 	private:
 
-		std::optional<FunctionParameter> parseConstant(std::istringstream& ss) const;
-		std::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		std::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss) const;
+		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names
 		/// </summary>
-		std::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length) const;
-		std::optional<std::string> parseText(std::istringstream& ss) const;
+		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length) const;
+		nonstd::optional<std::string> parseText(std::istringstream& ss) const;
 	};
 }
