@@ -140,23 +140,24 @@ namespace SGA
     {
         std::vector<RHEAGenome> tournament;
         // sample subset, sort by fitness, select best individual
-        // parent 1
-        std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.tournamentSize, std::mt19937{ std::random_device{}() });
+        //// parent 1
+        //std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
+        //    params_.tournamentSize, std::mt19937{ std::random_device{}() });
 
-        sort(tournament.begin(), tournament.end(), sortByFitness);
-        RHEAGenome& parent1 = tournament[0];
+        //sort(tournament.begin(), tournament.end(), sortByFitness);
+        //RHEAGenome& parent1 = tournament[0];
 
 
-        // parent 2
-        tournament.clear();
-        std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.tournamentSize, std::mt19937{ std::random_device{}() });
+        //// parent 2
+        //tournament.clear();
+        //std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
+        //    params_.tournamentSize, std::mt19937{ std::random_device{}() });
 
-        std::sort(tournament.begin(), tournament.end(), sortByFitness);
-        RHEAGenome& parent2 = tournament[0];
+        //std::sort(tournament.begin(), tournament.end(), sortByFitness);
+        //RHEAGenome& parent2 = tournament[0];
 
-        return std::vector<RHEAGenome>{parent1, parent2};
+        //return std::vector<RHEAGenome>{parent1, parent2};
+        return tournament;
     }
 
 }
