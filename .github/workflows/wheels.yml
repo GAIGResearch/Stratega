@@ -33,13 +33,13 @@ jobs:
         include:
           - runs-on: ubuntu-latest
             cibw-arch: manylinux_x86_64
-          #- runs-on: macos-latest
-          #  cibw-arch: macosx_x86_64
-          #- runs-on: windows-latest
-          #  cibw-arch: win_amd64
-          #- runs-on: windows-latest
-          #  cibw-arch: win32
-          #  python-arch: x86
+          - runs-on: macos-latest
+            cibw-arch: macosx_x86_64
+          - runs-on: windows-latest
+            cibw-arch: win_amd64
+          - runs-on: windows-latest
+            cibw-arch: win32
+            python-arch: x86
 
     name: Wheels • ${{ matrix.cibw-arch }}
     runs-on: ${{ matrix.runs-on }}
