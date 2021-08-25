@@ -62,12 +62,12 @@ namespace SGA
 		// Register agents available in the Stratega framework
 		factory.registerAgent<DoNothingAgent>("DoNothingAgent");
 		factory.registerAgent<RandomAgent>("RandomAgent");
-		factory.registerAgent<BFSAgent>("BFSAgent");
+		//factory.registerAgent<BFSAgent>("BFSAgent");
 		factory.registerAgent<RHEAAgent, RHEAParameters>("RHEAAgent");
 		factory.registerAgent<OSLAAgent>("OSLAAgent");
-		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
+		/*factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
-		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
+		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");*/
 		factory.registerAgent<CombatAgent>("CombatAgent");
 		
 		return factory;
