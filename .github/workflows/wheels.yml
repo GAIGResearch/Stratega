@@ -77,15 +77,13 @@ jobs:
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
           echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_ALL_LINUX=$CIBW_BEFORE_BUILD_COMMON apt -y install gcc && apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev  && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_LINUX=$CIBW_BEFORE_BUILD_COMMON apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev  && cmake -S . -B build_dependencies -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2 " >> $GITHUB_ENV
       
       - name: Run cibuildwheel
-        if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
         run: |
           cibuildwheel
 
       - name: Check built wheels
-        if: startsWith(github.ref, 'refs/heads/docs') != true || matrix.cibw-arch == 'manylinux_x86_64'
         run: |
           twine check wheelhouse/*
 
@@ -96,17 +94,7 @@ jobs:
           name: wheels
           path: wheelhouse/*.whl
           if-no-files-found: error
-
-      - name: Upload wheel for ReadTheDocs
-        if: runner.os == 'Linux' && matrix.cibw-arch == 'manylinux_x86_64' && startsWith(github.ref, 'refs/heads/') && !startsWith(github.ref, 'refs/heads/actions')
-        uses: actions/upload-artifact@v2
-        with:
-          name: rtd-wheel
-          path: wheelhouse/stratega-*-cp37-cp37m-*manylinux2010_x86_64*.whl
-          if-no-files-found: error
-
- 
-
+          
   pypi:
     name: Upload to PyPI
     needs: [build_sdist, wheels]
