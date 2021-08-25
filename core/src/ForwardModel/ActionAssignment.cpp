@@ -7,12 +7,12 @@ namespace SGA
 		if (newAction.isEntityAction())
 		{
 			auto id = newAction.getSourceID();
-			entityActions.insert_or_assign(id, std::move(newAction));
+			entityActions.emplace(id, std::move(newAction));
 		}
 		else if (newAction.isPlayerAction())
 		{
 			auto id = newAction.getSourceID();
-			playerActions.insert_or_assign(id, std::move(newAction));
+			playerActions.emplace(id, std::move(newAction));
 		}
 		else
 		{
@@ -24,11 +24,11 @@ namespace SGA
 	{
 		for (const auto& idActionPair : action.entityActions)
 		{
-			entityActions.insert_or_assign(idActionPair.first, idActionPair.second);
+			entityActions.emplace(idActionPair.first, idActionPair.second);
 		}
 		for (const auto& idActionPair : action.playerActions)
 		{
-			playerActions.insert_or_assign(idActionPair.first, idActionPair.second);
+			playerActions.emplace(idActionPair.first, idActionPair.second);
 		}
 	}
 
