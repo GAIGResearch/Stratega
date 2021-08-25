@@ -29,7 +29,7 @@ namespace SGA
 		return context;
 	}
 
-	std::optional<AbstractFunctionCall> FunctionParser::parseAbstractFunction(const std::string& code, const ParseContext& context) const
+	nonstd::optional<AbstractFunctionCall> FunctionParser::parseAbstractFunction(const std::string& code, const ParseContext& context) const
 	{
 		// Remove whitespace
 		auto copy = code;
@@ -54,7 +54,7 @@ namespace SGA
 		// Parse function parameters
 		while (ss.peek() != ')' && !ss.eof())
 		{
-			std::optional<FunctionParameter> param;
+			nonstd::optional<FunctionParameter> param;
 			if (((param = parseConstant(ss))) ||
 				((param = parseEntityPlayerReference(ss, context))) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
@@ -80,7 +80,7 @@ namespace SGA
 		return call;
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseConstant(std::istringstream& ss) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseConstant(std::istringstream& ss) const
 	{
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
@@ -98,7 +98,7 @@ namespace SGA
 		return {};
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
@@ -121,7 +121,7 @@ namespace SGA
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
@@ -147,7 +147,7 @@ namespace SGA
 		return FunctionParameter::createEntityPlayerReference(targetIt->second);
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
@@ -173,7 +173,7 @@ namespace SGA
 		return FunctionParameter::createTimeReference(targetIt->second);
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 3);
@@ -201,7 +201,7 @@ namespace SGA
 		return FunctionParameter::createEntityPlayerParameterReference({ parameterIt->second, targetIt->second });
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -220,7 +220,7 @@ namespace SGA
 		return FunctionParameter::createArgumentReference(targetIt->second);
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -239,7 +239,7 @@ namespace SGA
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
-	std::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -258,7 +258,7 @@ namespace SGA
 		return FunctionParameter::createTileTypeReference(targetIt->second);
 	}
 	
-	std::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -278,7 +278,7 @@ namespace SGA
 	}
 	
 
-	std::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
+	nonstd::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
 	{
 		auto begin = ss.tellg();
 		
@@ -311,7 +311,7 @@ namespace SGA
 		return names;
 	}
 
-	std::optional<std::string> FunctionParser::parseText(std::istringstream& ss) const
+	nonstd::optional<std::string> FunctionParser::parseText(std::istringstream& ss) const
 	{
 		auto begin = ss.tellg();
 		

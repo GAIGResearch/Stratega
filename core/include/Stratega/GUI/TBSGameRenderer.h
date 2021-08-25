@@ -55,7 +55,7 @@ namespace SGA
 		const GameConfig* config;
 		GameState state;
 		GameState fowState;
-		std::optional<Action> selectedAction;
+		nonstd::optional<Action> selectedAction;
 		bool endGameRequested = false;
 		
 		sf::RenderWindow window;

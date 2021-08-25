@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	// Run games
-	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
+	SGA::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
 	Arena arena(*gameConfig);
 	if(mapsPath.empty())
 	{

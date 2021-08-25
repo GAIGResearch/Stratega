@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
-
+#include <Stratega/Utils/filesystem.hpp>
 namespace SGA
 {
 	class RTSGameRenderer : public GameRenderer

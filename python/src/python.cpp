@@ -167,7 +167,7 @@ public:
 
  void setDefaultLogger(std::string logPath)
  {
-	 SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
+	 SGA::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
  }
 
  Arena createArena(const SGA::GameConfig* gameConfig)

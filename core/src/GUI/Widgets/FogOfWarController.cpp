@@ -1,8 +1,8 @@
 #include <Stratega/GUI/Widgets/FogOfWarController.h>
 #include <Stratega/GUI/TileMap.h>
 #include <imgui.h>
-
-namespace SGA::Widgets
+using namespace SGA;
+namespace Widgets
 {
 	bool fowController(const GameState& state, FogOfWarSettings& fowSettings)
 	{

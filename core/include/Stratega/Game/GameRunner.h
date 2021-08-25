@@ -19,10 +19,11 @@ namespace SGA
 	/// An abstract class that provides a simplified interface to play games with a given <see cref="SGA::GameConfig"/>.
 	/// Use "createGameRunner" to create an instance of this class.
 	/// </summary>
+	static GameObserver* defaultObserver = new GameObserver();
 	class GameRunner
 	{
 	private:
-		static inline GameObserver* defaultObserver = new GameObserver();
+		
 		
 	public:
 		/// <summary>
@@ -113,12 +114,12 @@ namespace SGA
 			try
 			{
 				// Check if a player is controlled by an human
-				int humanIndex = GameRenderer::NO_PLAYER_ID;
+				int humanIndex = NO_PLAYER_ID;
 				for (int i = 0; i < agents.size(); i++)
 				{
 					if (agents[i] == nullptr)
 					{
-						if (humanIndex != GameRenderer::NO_PLAYER_ID)
+						if (humanIndex != NO_PLAYER_ID)
 						{
 							throw std::runtime_error("Only one player can be controlled by a human. Index " + std::to_string(humanIndex) + " is already empty.");
 						}

@@ -4,14 +4,14 @@
 
 #include <mutex>
 
-namespace SGA::Log
+namespace SGA
 {
-	inline std::unique_ptr<FileLogger> defaultLogger;
-	inline std::vector<LoggingScope*> loggingScopes;
-	inline std::mutex loggingMutex;
+	static std::unique_ptr<SGA::FileLogger> defaultLogger;
+	static std::vector<SGA::LoggingScope*> loggingScopes;
+	static std::mutex loggingMutex;
 
-	FileLogger& getDefaultLogger();
-	void setDefaultLogger(std::unique_ptr<FileLogger> logger);
+	SGA::FileLogger& getDefaultLogger();
+	void setDefaultLogger(std::unique_ptr<SGA::FileLogger> logger);
 	std::string getLoggingScopeKey(const std::string& lastKey);
 	
 	template<typename T>

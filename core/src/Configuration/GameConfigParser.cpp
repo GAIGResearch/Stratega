@@ -1,11 +1,11 @@
-#include <filesystem>
+//#include <filesystem>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Agent/AgentFactory.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
-
+#include <Stratega/Utils/filesystem.hpp>
 namespace SGA
 {
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath)
@@ -676,10 +676,10 @@ namespace SGA
         config.renderConfig = std::make_unique<RenderConfig>();
 
         // Hardcode shader Path
-        std::filesystem::path filePath = "../../GUI/Assets/OutLine.frag";
+        ghc::filesystem::path filePath = "../../GUI/Assets/OutLine.frag";
         // Convert path to an absolute path relative to the path of the configuration file
-        auto tmp = std::filesystem::current_path();
-        std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config.yamlPath).parent_path()));
+        auto tmp = ghc::filesystem::current_path();
+        ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
         filePath = canonical(filePath);
         current_path(tmp);
         
@@ -695,8 +695,8 @@ namespace SGA
         //Add Fog of War tile
         filePath = "../../GUI/Assets/Tiles/notVisible.png";
         // Convert path to an absolute path relative to the path of the configuration file
-        tmp = std::filesystem::current_path();
-        std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config.yamlPath).parent_path()));
+        tmp = ghc::filesystem::current_path();
+        ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
         filePath = canonical(filePath);
         current_path(tmp);
 
@@ -807,7 +807,7 @@ namespace SGA
             if (!pathNode.IsScalar())
                 throw std::runtime_error("Received a invalid file-path");
 
-            using namespace std::filesystem;
+            using namespace ghc::filesystem;
 
             path filePath = pathNode.as<std::string>();
             // Convert path to an absolute path relative to the path of the configuration file

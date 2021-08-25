@@ -8,25 +8,26 @@ namespace SGA
 	struct GameConfig;
 	struct RenderConfig;
 	struct GameState;
-	
+
+	// The 12 colors used in Warcraft 3
+	static const std::vector<sf::Color> PLAYER_COLORS = {
+		sf::Color::Red,
+		sf::Color::Blue,
+		sf::Color{0, 128, 128}, // Teal
+		sf::Color{128,0,128}, // Purple
+		sf::Color::Yellow,
+		sf::Color{255,165,0}, // Orange
+		sf::Color::Green,
+		sf::Color{255,192,203}, // Pink
+		sf::Color{128,128,128}, // Grey
+		sf::Color{173,216,230}, // Light Blue
+		sf::Color{0,100,0}, // Dark Green
+		sf::Color{139,69,19} // Brown
+	};
+
 	class EntityRenderer : public sf::Drawable, public sf::Transformable
 	{
-	public:
-		// The 12 colors used in Warcraft 3
-		inline static const std::vector<sf::Color> PLAYER_COLORS = {
-			sf::Color::Red,
-			sf::Color::Blue,
-			sf::Color{0, 128, 128}, // Teal
-			sf::Color{128,0,128}, // Purple
-			sf::Color::Yellow,
-			sf::Color{255,165,0}, // Orange
-			sf::Color::Green,
-			sf::Color{255,192,203}, // Pink
-			sf::Color{128,128,128}, // Grey
-			sf::Color{173,216,230}, // Light Blue
-			sf::Color{0,100,0}, // Dark Green
-			sf::Color{139,69,19} // Brown
-		};
+	public:	
 
 		EntityRenderer();
 		

@@ -9,6 +9,8 @@ namespace SGA
 	struct GameConfig;
 	struct GameState;
 
+	static int NO_PLAYER_ID = -2;
+
 	/// <summary>
 	/// An abstract renderer that renders game states and provides interactive action selection.
 	/// Use "createRenderer" to create an instance of this class.
@@ -16,7 +18,7 @@ namespace SGA
 	class GameRenderer
 	{
 	public:
-		static inline int NO_PLAYER_ID = -2;
+		
 		
 		virtual ~GameRenderer() = default;
 

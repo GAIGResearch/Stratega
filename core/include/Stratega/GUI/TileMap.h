@@ -16,11 +16,12 @@ namespace SGA
 		Fog,
 		Tiles
 	};
-	
+
+	static const sf::Color FOG_COLOR = { 144, 161, 168 };
+
 	class TileMap : public sf::Drawable, public sf::Transformable
 	{
-    public:
-		inline static const sf::Color FOG_COLOR = { 144, 161, 168 };
+    public:	
 		
 		void init(const GameState& state, const GameConfig& gameConfig, const RenderConfig& renderConfig);
 		void update(const GameState& state, const GameState& fowState, bool renderFow, FogRenderType fogType);

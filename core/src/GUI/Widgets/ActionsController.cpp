@@ -5,10 +5,10 @@
 #include <Stratega/ForwardModel/Action.h>
 
 #include <imgui.h>
-
-namespace SGA::Widgets
+using namespace  SGA;
+namespace Widgets
 {
-	bool ActionsSettings::hasActionsTargetAvailable(const ActionType& actionType) const
+	bool ActionsSettings::hasActionsTargetAvailable(const SGA::ActionType& actionType) const
 	{
 		return selectedTargets.size() < actionType.getTargets().size();
 	}

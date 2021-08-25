@@ -8,11 +8,16 @@ namespace SGA
 	{
 		std::string str = name + ": " + description + " (id: " + std::to_string(id) + ")";
 		str = str + "\n\t Costs: ";
-		for (const auto& [id, c] : cost)
+		for (auto pair : cost)
+		{
+			std::string name = gameInfo.getPlayerParameter(pair.first).getName();
+			str = str + name + ": " + std::to_string(pair.second) + "; ";
+		}
+		/*for (const auto& [id, c] : cost)
 		{
 			std::string name = gameInfo.getPlayerParameter(id).getName();
 			str = str + name + ": " + std::to_string(c) + "; ";
-		}
+		}*/
 		str = str + "\n\t Tech requirements (IDs): ";
 		if (parentIDs.size() == 0)
 			str = str + "None.";

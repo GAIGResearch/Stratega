@@ -6,8 +6,9 @@
 #include <SFML/Window.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <iomanip>
 #include <sstream>
-
+#include <Stratega/Utils/filesystem.hpp>
 namespace SGA
 {
 	TBSGameRenderer::TBSGameRenderer(SGA::Vector2f& resolution)
@@ -47,16 +48,16 @@ namespace SGA
 		std::string selectedPath = "../../GUI/Assets/Tiles/selected.png";
 		std::string fontPath = "../../GUI/Assets/arial.ttf";
 
-		std::filesystem::path filePath = selectedPath;
+		ghc::filesystem::path filePath = selectedPath;
 		// Convert path to an absolute path relative to the path of the configuration file
-		auto tmp = std::filesystem::current_path();
-		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		auto tmp = ghc::filesystem::current_path();
+		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
 		filePath = canonical(filePath);
 		current_path(tmp);		
 		assetCache.loadTexture("selected", filePath.string());
 
 		filePath = fontPath;
-		std::filesystem::current_path(std::filesystem::canonical(std::filesystem::path(config->yamlPath).parent_path()));
+		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
 		filePath = canonical(filePath);
 		current_path(tmp);
 		assetCache.loadFont("font",  filePath.string());

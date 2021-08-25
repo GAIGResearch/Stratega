@@ -13,15 +13,15 @@ namespace SGA
 }
 
 
-namespace SGA::Widgets
+namespace Widgets
 {
 	struct ActionsSettings
 	{
-		std::vector<Action> actionsHumanPlayer;
+		std::vector<SGA::Action> actionsHumanPlayer;
 
 		std::unordered_set<int> selectedEntities;
 		//List of targets
-		std::vector<ActionTarget> selectedTargets;
+		std::vector<SGA::ActionTarget> selectedTargets;
 
 		//Selected action type
 		int actionTypeSelected = -1;		
@@ -46,7 +46,7 @@ namespace SGA::Widgets
 			waitingForEntity = false;
 		}
 
-		bool hasActionsTargetAvailable(const ActionType& actionType) const;
+		bool hasActionsTargetAvailable(const SGA::ActionType& actionType) const;
 
 		bool hasActionTypeSelected() const
 		{
@@ -71,32 +71,32 @@ namespace SGA::Widgets
 	/// <param name="state">The current GameState</param>
 	/// <param name="settings">The settings that will use to draw the possible actions</param>
 	/// <returns> The action result to execute</returns>
-	std::vector<Action> getWidgetResult(GameState& state, ActionsSettings& settings, int playerID);
+	std::vector<SGA::Action> getWidgetResult(SGA::GameState& state, ActionsSettings& settings, int playerID);
 
 	//Get TargetTypes
-	void getActionTarget(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute);
+	void getActionTarget(SGA::GameState& state, ActionsSettings& settings, int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 
-	void getEntityType(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType);
-	void getTechnologyType(GameState& state, ActionsSettings& settings, int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute);
+	void getEntityType(SGA::GameState& state, ActionsSettings& settings, int playerID, const SGA::ActionType& actionType);
+	void getTechnologyType(SGA::GameState& state, ActionsSettings& settings, int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 	void getPositionReference(ActionsSettings& settings);
 	void getEntityReference(ActionsSettings& settings);
 	
 	//Verify action targets
-	void verifyActionTargets(GameState& state, ActionsSettings& settings, int playerID, std::vector<Action>& actionsToExecute);
-	void verifyPlayerActionTargets(GameState& state, ActionsSettings& settings, int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction);
-	void verifyEntityActionTargets(GameState& state, ActionsSettings& settings, int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction);
+	void verifyActionTargets(SGA::GameState& state, ActionsSettings& settings, int playerID, std::vector<SGA::Action>& actionsToExecute);
+	void verifyPlayerActionTargets(SGA::GameState& state, ActionsSettings& settings, int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
+	void verifyEntityActionTargets(SGA::GameState& state, ActionsSettings& settings, int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
 	
 	//Get action type
-	void getActionType(GameState& state, ActionsSettings& settings, int playerID);
-	void getPlayerPossibleActionTypes(GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes);
-	void getEntityPossibleActionTypes(GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes);
+	void getActionType(SGA::GameState& state, ActionsSettings& settings, int playerID);
+	void getPlayerPossibleActionTypes(SGA::GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes);
+	void getEntityPossibleActionTypes(SGA::GameState& state, ActionsSettings& settings, int playerID, std::unordered_set<int>& actionTypes);
 	
 	// Assign to the list of selected targets a position target
-	void assignPosition(const GameState& state, ActionsSettings& settings, Vector2f position);
+	void assignPosition(const SGA::GameState& state, ActionsSettings& settings, SGA::Vector2f position);
 	//Assign to the list of selected targets a entity
-	void assignEntity(const GameState& state, ActionsSettings& settings, int entity);
+	void assignEntity(const SGA::GameState& state, ActionsSettings& settings, int entity);
 
 
 	//Checks if the seletec entities still exist
-	bool checkSelectedEntitiesAvailable(GameState& state, ActionsSettings& settings);
+	bool checkSelectedEntitiesAvailable(SGA::GameState& state, ActionsSettings& settings);
 }
