@@ -29,13 +29,15 @@ namespace SGA
 		
 		virtual std::vector<Action> getActionSpace(const ForwardModel& /*forwardModel*/, int /*playerID*/) const { return actionSpace; }
 		virtual ~ITreeNode() = default;
+		ITreeNode(const ITreeNode&) = delete;
 		ITreeNode& operator=(const ITreeNode&) = delete;
 		virtual void print() const = 0;
+		
 
 		void printTree() const
 		{
 			printTree("", this, true, "root");
-		};
+		}
 
 
 		[[nodiscard]] virtual bool isFullyExpanded() const
