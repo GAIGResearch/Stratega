@@ -23,7 +23,7 @@
 #include <Stratega/Arena/Arena.h>
 #include <fstream>
 #include <sstream>
-#include <filesystem>
+//#include <filesystem>
 #include <Stratega/Logging/Log.h>
 
 #include <Stratega/Utils/Timer.h>

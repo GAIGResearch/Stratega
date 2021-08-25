@@ -3,7 +3,7 @@
 #include <Stratega/Arena/Arena.h>
 #include <Stratega/Arena/InputParser.h>
 
-#include <filesystem>
+//#include <filesystem>
 
 
 int main(int argc, char** argv)
