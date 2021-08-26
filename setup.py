@@ -3,7 +3,7 @@ import re
 import sys
 import platform
 import subprocess
-
+import shlex
 
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
