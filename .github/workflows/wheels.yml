@@ -75,9 +75,9 @@ jobs:
           echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
           CIBW_BEFORE_ALL_COMMON=""
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON -DSTRATEGA_BUILD_DOCS=OFF -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON -DSTRATEGA_BUILD_DOCS=OFF -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
-          echo "CIBW_BEFORE_ALL_LINUX=$CIBW_BEFORE_BUILD_COMMON apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev  && cmake -DSTRATEGA_BUILD_BINDINGS=ON -DSTRATEGA_BUILD_DOCS=OFF -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake DSTRATEGA_BUILD_BINDINGS=ON -DSTRATEGA_BUILD_DOCS=OFF --build build_dependencies --target stratega -j 2" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON  -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_LINUX=$CIBW_BEFORE_BUILD_COMMON apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev  && cmake -DSTRATEGA_BUILD_BINDINGS=ON -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake -DSTRATEGA_BUILD_BINDINGS=ON --build build_dependencies --target stratega -j 2" >> $GITHUB_ENV
       
       - name: Run cibuildwheel
         run: |
