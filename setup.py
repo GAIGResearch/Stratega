@@ -131,6 +131,7 @@ setup(
     long_description_content_type="text/markdown",
     ext_modules=[CMakeExtension('stratega')],
     cmdclass=dict(build_ext=CMakeBuild),
+    cmake_args=shlex.split(os.environ.get('STRATEGA_EXTRA_CMAKE_ARGS', '')),
     url="",
     project_urls={
         "Github": "https://github.com/GAIGResearch/Stratega",

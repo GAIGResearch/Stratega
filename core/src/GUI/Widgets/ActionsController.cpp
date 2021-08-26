@@ -100,7 +100,7 @@ namespace Widgets
 							ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 							if (ImGui::Button("Abort", ImVec2(50, 50)))
 							{
-								actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
+								actionsToExecute.emplace_back(Action::createAbortEntityAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
 							}
 							ImGui::PopStyleColor(3);
 
@@ -165,7 +165,7 @@ namespace Widgets
 						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 						if (ImGui::Button("Abort", ImVec2(50, 50)))
 						{
-							actionsToExecute.emplace_back(Action::createAbortAction(playerID, action.getContinuousActionID()));
+							actionsToExecute.emplace_back(Action::createAbortPlayerAction(playerID, action.getContinuousActionID()));
 						}
 						ImGui::PopStyleColor(3);
 

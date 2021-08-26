@@ -162,7 +162,7 @@ namespace SGA
 		/// <param name="entityID">Entity that owns this action to abort a continuous action.</param>
 		/// <param name="continuousActionID">ID of the continuous action to abort</param>
 		/// <returns></returns>
-		static Action createAbortAction(int playerID, int entityID, int continuousActionID)
+		static Action createAbortEntityAction(int playerID, int entityID, int continuousActionID)
 		{
 			Action a(nullptr);			
 			a.ownerID = playerID;			
@@ -179,7 +179,7 @@ namespace SGA
 		/// <param name="playerID">Player ID for which this action is created.</param>
 		/// <param name="continuousActionID">ID of the continuous action to abort</param>
 		/// <returns></returns>
-		static Action createAbortAction(int playerID, int continuousActionID)
+		static Action createAbortPlayerAction(int playerID, int continuousActionID)
 		{
 			Action a(nullptr);
 			a.ownerID = playerID;

@@ -616,8 +616,8 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_entity_types", &SGA::GameDescription::getEntityTypes, py::arg("category"), py::arg("gameInfo"), "Returns all the entitytypes IDs of the selected action category.")
 		.def("is_from_category", &SGA::GameDescription::isFromCategory, py::arg("category"), py::arg("entityTypeId"), "Checks if a given entity type ID belongs to a given category")
 
-		.def_static("to_string", py::overload_cast<SGA::ActionCategory>(&SGA::GameDescription::toString))
-		.def_static("to_string", py::overload_cast<SGA::EntityCategory>(&SGA::GameDescription::toString))
+		//.def_static("to_string", py::overload_cast<SGA::ActionCategory>(&SGA::GameDescription::toString))
+		//.def_static("to_string", py::overload_cast<SGA::EntityCategory>(&SGA::GameDescription::toString))
 	;
 
 	// ---- EntityCategory ----
@@ -886,8 +886,8 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_action_source_type", &SGA::Action::getActionSourceType, "Checks if this action is to be executed over an entity.")
 
 		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), "Generates an Action used by the game to end the tick/turn.")
-		.def_static("create_abort_action", py::overload_cast<int,int,int>(&SGA::Action::createAbortAction), "Generates an Action which the owner is a entity, used by the game to abort a continuous action.")
-		.def_static("create_abort_action", py::overload_cast<int,int>(&SGA::Action::createAbortAction), "Generates an Action which the owner is a player, used by the game to abort a continuous action.")
+		.def_static("create_abort_entity_action", &SGA::Action::createAbortEntityAction, "Generates an Action which the owner is a entity, used by the game to abort a continuous action.")
+		.def_static("create_abort_player_action", &SGA::Action::createAbortPlayerAction, "Generates an Action which the owner is a player, used by the game to abort a continuous action.")
 		
 		.def_property("max_value", &SGA::Action::getOwnerID, &SGA::Action::setOwnerID)
 		.def("get_owner_id", &SGA::Action::getOwnerID)
