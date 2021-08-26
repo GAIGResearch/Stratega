@@ -40,5 +40,5 @@ else ()
 		add_subdirectory("docs")
 	endif()
 
-	export(TARGETS Stratega stratega FILE dependency_exports.cmake)
+	export(TARGETS Stratega Recast Detour DebugUtils DetourTileCache ImGUI stratega FILE dependency_exports.cmake)
 endif ()
