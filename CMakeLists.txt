@@ -22,23 +22,16 @@ option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be ins
 option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." ON)
 
 # Include sub-projects.
-if (PREBUILT_DEPENDENCIES)
-	file(TO_CMAKE_PATH ${PREBUILT_DEPENDENCIES} PREBUILT_DEPENDENCIES_DIR)
-	include(${PREBUILT_DEPENDENCIES_DIR}/dependency_exports.cmake)
-else ()
-	add_subdirectory("dependencies")
-	add_subdirectory("core")
-	add_subdirectory("GUI")
-	add_subdirectory("Arena")
+add_subdirectory("dependencies")
+add_subdirectory("core")
+add_subdirectory("GUI")
+add_subdirectory("Arena")
 
-	# Optional
-	if(STRATEGA_BUILD_BINDINGS)
-		add_subdirectory("python")
-	endif()
+# Optional
+if(STRATEGA_BUILD_BINDINGS)
+	add_subdirectory("python")
+endif()
 
-	if(STRATEGA_BUILD_DOCS)
-		add_subdirectory("docs")
-	endif()
-
-	export(TARGETS Stratega Recast Detour DebugUtils DetourTileCache ImGUI stratega FILE dependency_exports.cmake)
-endif ()
+if(STRATEGA_BUILD_DOCS)
+	add_subdirectory("docs")
+endif()
