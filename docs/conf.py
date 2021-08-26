@@ -14,10 +14,30 @@ import os
 import sys
 
 #import stratega python bindings
-sys.path.insert(0, os.path.abspath('../out/bindings'))
+#sys.path.append(os.path.abspath('../out/bindings'))
+#sys.path.append(os.path.abspath('../out'))
 
+#print("imported paths", sys.path)
+#
+#pypath = '../out/build'
+#for dir_name in os.listdir(pypath):
+#    dir_path = os.path.join(pypath, dir_name)
+#    if os.path.isdir(dir_path):
+#        sys.path.insert(0, dir_path)
+#
+#print("imported paths", sys.path)
 # -- Manually execute Doxygen, since ReadTheDocs doesn't execute our CMake file
 import subprocess
+
+def install_and_import(package):
+    import importlib
+    try:
+        importlib.import_module(package)
+    except ImportError:
+        import pip
+        pip.main(['install', package])
+    finally:
+        globals()[package] = importlib.import_module(package)
 
 def configureDoxyfile(input_dir, output_dir):
     with open('Doxyfile.in', 'r') as file:
@@ -38,6 +58,8 @@ if read_the_docs_build:
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
     breathe_projects['Stratega'] = output_dir + '/xml'
+else:
+    install_and_import('stratega')
 
 
 # -- Project information -----------------------------------------------------
