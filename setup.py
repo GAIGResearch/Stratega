@@ -128,6 +128,7 @@ setup(
     #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
     long_description=long_description,
+    cmake_args=shlex.split(os.environ.get('STRATEGA_EXTRA_CMAKE_ARGS', '')),
     long_description_content_type="text/markdown",
     ext_modules=[CMakeExtension('stratega')],
     cmdclass=dict(build_ext=CMakeBuild),
