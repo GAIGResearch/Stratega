@@ -8,6 +8,8 @@ add_subdirectory("imgui")
 add_subdirectory("recastNavigation")
 #add_subdirectory("optional_lite")
 
-add_subdirectory("pybind11")
+if(STRATEGA_BUILD_BINDINGS)
+	add_subdirectory("pybind11")
+endif()
 
 message(STATUS "Fetching third party libraries - done")
