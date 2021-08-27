@@ -19,7 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
 #set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC" )
 
 option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
-option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." OFF)
+option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages.")
 
 # Include sub-projects.
 add_subdirectory("dependencies")
