@@ -110,6 +110,14 @@ jobs:
         run: |
           echo "CC=clang-${{ matrix.clang }}" >> $GITHUB_ENV
           echo "CXX=clang++-${{ matrix.clang }}" >> $GITHUB_ENV
+
+      - name: Add Linux flags
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "CFLAGS='-fPIC'" >> $GITHUB_ENV
+          echo "CXXFLAGS='-fPIC'" >> $GITHUB_ENV
+
       - name: Setup pytest annotations
         run: |
           python -m pip install pytest-github-actions-annotate-failures
