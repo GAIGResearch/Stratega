@@ -29,7 +29,7 @@ namespace SGA
 		
 		virtual std::vector<Action> getActionSpace(const ForwardModel& /*forwardModel*/, int /*playerID*/) const { return actionSpace; }
 		virtual ~ITreeNode() = default;
-		ITreeNode(const ITreeNode&)
+		ITreeNode(const ITreeNode& other)
 		{
 			this->gameState = other.gameState;
 			this->parentNode = other.parentNode;
