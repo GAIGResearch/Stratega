@@ -143,6 +143,7 @@ setup(
         "Intended Audience :: Education",
         "Natural Language :: English",
         "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",
         "Programming Language :: C++",
         "Programming Language :: Python :: 3 :: Only",

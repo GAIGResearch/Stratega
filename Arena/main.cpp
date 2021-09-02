@@ -3,9 +3,6 @@
 #include <Stratega/Arena/Arena.h>
 #include <Stratega/Arena/InputParser.h>
 
-//#include <filesystem>
-
-
 int main(int argc, char** argv)
 {
 	InputParser parser(argc, argv);
@@ -42,8 +39,7 @@ int main(int argc, char** argv)
 		//Run combinations per map
 		const int mapNumber = gameConfig->levelDefinitions.size();
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
-	}
-	
+	}	
 	
 	return 0;
 }
