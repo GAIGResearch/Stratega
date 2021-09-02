@@ -1,6 +1,16 @@
 ﻿# Stratega
 Stratega, a general strategy games framework, has been designed to foster research on computational intelligence for strategy games. In contrast to other strategy game frameworks, Stratega allows to create a wide variety of turn-based and real-time strategy games using acommon API for agent development. Flexibility is achieved by utilising YAML-files to configure tiles, units, actions, and levels. Therefore, the user can design and run a variety of games to test developed agents without specifically adjusting it to the game being generated. The framework has been built with a focus of statistical forward planning (SFP) agents. For this purpose, agents can access and modify game-states and use the forward model to simulate the outcome oftheir actions. While SFP agents have shown great flexibility in general game-playing, their performance is limited in case of complex state and action-spaces.
 
+[![Documentation Status](https://readthedocs.org/projects/stratega/badge/?version=latest)](https://stratega.readthedocs.io/en/latest/?badge=latest)
+[![pypi releases](https://img.shields.io/pypi/v/stratega.svg)](https://pypi.org/project/stratega)
+[![Builds](https://github.com/GAIGResearch/Stratega/actions/workflows/ci.yml/badge.svg?branch=feat_pypi)](https://github.com/GAIGResearch/Stratega/actions/workflows/ci.yml)
+[![Python Wheel Builds](https://github.com/GAIGResearch/Stratega/actions/workflows/wheels.yml/badge.svg?branch=master)](https://github.com/GAIGResearch/Stratega/actions/workflows/wheels.yml)
+
+# Community
+Join the Discord community for help and to talk about what you are doing with Stratega!
+
+[![Discord Chat](https://img.shields.io/discord/783231009738719233.svg)](https://discord.gg/Y2uZZ3TSuT)
+
 Stratega comes with a variety of pre-implemented game-modes:
   - BasicTBS / BasicRTS
   - City Capturing
