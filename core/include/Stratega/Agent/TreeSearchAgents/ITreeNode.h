@@ -29,8 +29,8 @@ namespace SGA
 		
 		virtual std::vector<Action> getActionSpace(const ForwardModel& /*forwardModel*/, int /*playerID*/) const { return actionSpace; }
 		virtual ~ITreeNode() = default;
-		ITreeNode(const ITreeNode& other)
-		{
+		ITreeNode(const ITreeNode& other) = delete;
+		/*{
 			this->gameState = other.gameState;
 			this->parentNode = other.parentNode;
 			this->childIndex = other.childIndex;
@@ -40,8 +40,8 @@ namespace SGA
 
 			for (const auto& e : other.children)
 				this->children.push_back(std::make_unique<NodeType>(*e));
-		}
-		ITreeNode(ITreeNode&&) = delete;
+		}*/
+		ITreeNode(ITreeNode&&) = default;
 		
 		//ITreeNode& operator=(const ITreeNode& other) = delete;
 		/*ITreeNode& operator=(const ITreeNode& other)
