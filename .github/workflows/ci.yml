@@ -94,9 +94,10 @@ jobs:
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.10
 
-    - name: Install Linux Dependencies
-      if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+      
       - name: Install requirements
         run: |
           pip install --user --upgrade pip setuptools wheel
