@@ -147,6 +147,8 @@ namespace SGA
 				case TileTypeReference:
 					tileTypeID = data;
 					break;
+				default:
+					break;
 				}
 			}
 		};

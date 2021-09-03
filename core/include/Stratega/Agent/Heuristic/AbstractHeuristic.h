@@ -39,7 +39,7 @@ namespace SGA
 		{
  			for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
 				for (const auto& parameter : entityType.second.getParameters()) {
-					if (!attributeWeights.count(parameter.second.getName())>0 )
+					if (attributeWeights.count(parameter.second.getName())==0 )
 					{
 						if (parameter.second.getName() == "Health")
 						{
