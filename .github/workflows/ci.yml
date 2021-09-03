@@ -136,3 +136,12 @@ jobs:
       - name: Compile
         run: |
           cmake --build build -j 2
+      - name: Test
+        run: |
+          GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results_xml
+          path: build/test-results/**/*.xml

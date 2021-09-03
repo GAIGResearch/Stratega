@@ -18,3 +18,6 @@ out/
 build/
 experiments/
 docs/references/PYTHON/_generate/
+# Tests
+tests/vendor/*
+!tests/vendor/CMakeLists.txt*
