@@ -19,5 +19,5 @@ build/
 experiments/
 docs/references/PYTHON/_generate/
 # Tests
-tests/vendor/*
-!tests/vendor/CMakeLists.txt*
+tests/gtest/*
+!tests/gtest/CMakeLists.txt*
