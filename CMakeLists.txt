@@ -12,23 +12,26 @@ endif()
 
 
 set(COMPILER_FLAGS "")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 14)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
+#set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC" )
 
 option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
-option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." OFF)
+option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." ON)
 
 # Include sub-projects.
 add_subdirectory("dependencies")
-add_subdirectory("Stratega")
+add_subdirectory("core")
 add_subdirectory("GUI")
 add_subdirectory("Arena")
 
 # Optional
 if(STRATEGA_BUILD_BINDINGS)
-    add_subdirectory("bindings")
+	add_subdirectory("python")
 endif()
 
 if(STRATEGA_BUILD_DOCS)
-    add_subdirectory("docs")
+	add_subdirectory("docs")
 endif()

@@ -1,11 +1,7 @@
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/Logging/Log.h>
-
 #include <Stratega/Arena/Arena.h>
 #include <Stratega/Arena/InputParser.h>
-
-#include <filesystem>
-
 
 int main(int argc, char** argv)
 {
@@ -29,7 +25,7 @@ int main(int argc, char** argv)
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	// Run games
-	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
+	SGA::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
 	Arena arena(*gameConfig);
 	if(mapsPath.empty())
 	{
@@ -43,8 +39,7 @@ int main(int argc, char** argv)
 		//Run combinations per map
 		const int mapNumber = gameConfig->levelDefinitions.size();
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
-	}
-	
+	}	
 	
 	return 0;
 }

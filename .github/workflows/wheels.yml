@@ -1,0 +1,140 @@
+name: Python Wheel Builds
+
+on: [push, pull_request]
+env:
+    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64
+    CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
+    CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
+jobs:
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build SDist
+      run: pipx run build --sdist --outdir wheelhouse
+
+    - name: Check metadata
+      run: pipx run twine check wheelhouse/*
+
+    - name: Upload sdist
+      uses: actions/upload-artifact@v2
+      with:
+        name: wheels
+        path: wheelhouse/*.tar.gz
+
+  wheels:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            cibw-arch: manylinux_x86_64
+          - runs-on: macos-latest
+            cibw-arch: macosx_x86_64
+          - runs-on: windows-latest
+            cibw-arch: win_amd64
+          - runs-on: windows-latest
+            cibw-arch: win32
+            python-arch: x86
+
+    name: Wheels • ${{ matrix.cibw-arch }}
+    runs-on: ${{ matrix.runs-on }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: ${{ matrix.python-arch }}
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.9
+
+      - name: Install requirements
+        run: |
+          python -m pip install cibuildwheel twine
+
+      - name: Configure cibuildwheel
+        shell: bash
+        run: |
+          CMAKE_ARCH="${{ matrix.cibw-arch == 'win32' && '-A Win32' || '' }}"
+          CMAKE_OSX_ARCHITECTURES=${{ matrix.cibw-arch == 'macosx_x86_64' && 'x86_64' || matrix.cibw-arch == 'macosx_arm64' && 'arm64' || matrix.cibw-arch == 'macosx_universal2' && '"arm64;x86_64"' || '' }}
+          echo "CIBW_BUILD=*-${{ matrix.cibw-arch }}" >> $GITHUB_ENV
+          CIBW_ENVIRONMENT_COMMON="CMAKE_BUILD_PARALLEL_LEVEL=2"
+          echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
+          echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON  PIP_ONLY_BINARY='numpy' CFLAGS='-fPIC' CXXFLAGS='-fPIC'">> $GITHUB_ENV
+          echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
+          CIBW_BEFORE_ALL_COMMON=""
+          echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_MACOS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON cmake -DSTRATEGA_BUILD_BINDINGS=ON -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies  --config Release --target stratega -j 2" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_LINUX=$CIBW_BEFORE_BUILD_COMMON apt-get update && apt-get -y install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libfreetype6-dev  && cmake -DSTRATEGA_BUILD_BINDINGS=ON -S . -B build_dependencies  -DCMAKE_VERBOSE_MAKEFILE=ON $CMAKE_ARCH  && cmake --build build_dependencies --target stratega -j 2" >> $GITHUB_ENV
+      
+      - name: Run cibuildwheel
+        run: |
+          cibuildwheel
+
+      - name: Check built wheels
+        run: |
+          twine check wheelhouse/*
+
+      - name: Upload built wheels
+        if: startsWith(github.ref, 'refs/heads/docs') != true
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: wheelhouse/*.whl
+          if-no-files-found: error
+          
+  pypi:
+    name: Upload to PyPI
+    needs: [build_sdist, wheels]
+    runs-on: ubuntu-20.04
+    # upload pypi wheels if commit is tagged with "v"
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+      - name: Collect sdist and wheels
+        uses: actions/download-artifact@v2
+        with:
+          name: wheels
+          path: wheelhouse
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PIPSTRATEGASECRET }}
+          packages_dir: wheelhouse/
+          verbose: true
+
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build_sdist, wheels]
+
+    steps:
+      - name: Collect sdist and wheels
+        uses: actions/download-artifact@v2
+        with:
+          name: wheels
+          path: wheelhouse
+
+      - name: Get release name
+        id: get_version
+        run: |
+          echo "::set-output name=version::${GITHUB_REF##refs/tags/v}"
+      - name: Upload sdist and wheels to release
+        uses: ncipollo/release-action@v1.8.8
+        with:
+          name: ${{ steps.get_version.outputs.version }}
+          draft: true
+          artifacts: wheelhouse/*
+          token: ${{ secrets.GITHUB_TOKEN }}
