@@ -22,4 +22,4 @@ target_include_directories (
 )
 
 # Link against our built libraries
-target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME} yaml-cpp gmock_main)
+target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME} yaml-cpp GTest::gtest GTest::gmock)

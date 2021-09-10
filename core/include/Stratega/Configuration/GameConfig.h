@@ -55,6 +55,97 @@ namespace SGA
         std::vector<std::unique_ptr<Agent>> generateAgents() const;
         std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
 
+        void initializeGamestate(GameState& state) const
+        {
+            state.setGameType(gameType);
+            state.setTickLimit(tickLimit);
+            state.setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
+        }
+
+        void generateGameInfo(GameState& state)const
+        {
+            //GameInfo
+            GameInfo gameInfo;
+            gameInfo.setEntityTypes(std::make_shared<std::unordered_map<int, EntityType>>(entityTypes));
+            gameInfo.setTileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes));
+            gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
+            gameInfo.setEntityGroups(entityGroups);
+            gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
+            gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
+            gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
+            gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));
+            gameInfo.setYAMLPath(yamlPath);
+            gameInfo.setGameDescription(std::make_shared<GameDescription>(actionCategories, entityCategories));
+            state.setGameInfo(std::make_shared<GameInfo>(gameInfo));
+        }
+
+        void addPlayers(GameState& state) const
+        {
+            std::unordered_set<int> playerIDs;
+            for (size_t i = 0; i < getNumberOfPlayers(); i++)
+            {
+                playerIDs.emplace(addPlayer(state, *state.getGameInfo()));
+            }
+        }
+
+        void createTileLookup(GameState& state) const
+        {
+            std::unordered_map<char, const TileType*> tileLookup;
+            const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
+            const auto& tileTypes = state.getGameInfo()->getTileTypes();
+            for (const auto& idTilePair : tileTypes)
+            {
+                tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
+                if (idTilePair.second.isDefaultTile())
+                    defaultTile = &idTilePair.second;
+            }
+        }
+
+        void createEntitiesLookup(GameState& state) const
+        {
+            std::unordered_map<char, const EntityType*> entityLookup;
+            for (const auto& idEntityPair : state.getGameInfo()->getEntityTypes())
+            {
+                entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
+            }
+        }
+
+        std::vector<Tile> instanceTiles(GameState& state, const Grid2D<std::shared_ptr<TileType>>& board) const
+        {           
+            // Configure board and spawn entities
+            std::vector<Tile> tiles;
+            //Instance Tiles
+            for (size_t y = 0; y < board.getHeight(); y++)
+            {
+                for (size_t x = 0; x < board.getWidth(); x++)
+                {
+                    tiles.emplace_back(board.get(x, y)->toTile(x, y));
+                }
+            } 
+            return tiles;
+        }
+
+        void instanceEntities(GameState& state, const std::vector<EntityPlacement> &entityPlacements) const
+        {           
+            //Instance Entities
+            for (auto& entity : entityPlacements)
+            {
+                state.addEntity(*entity.entityType, entity.ownerID, entity.position);
+            }            
+        }
+
+        void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
+        {
+            //Initialize board with size and set of tiles.
+            state.initBoard(board.getWidth(), tiles);
+        }
+
+        void initResearchTechs(GameState& state) const
+        {
+            //Initialize researched list for all players
+            state.initResearchTechs();
+        }
+
     	//ActionCategories
         std::unordered_map<ActionCategory, std::vector<int>> actionCategories;
 
@@ -84,6 +175,6 @@ namespace SGA
         int getTechnologyID(const std::string& name) const;
 
         //Adds a new player to the game.
-        int addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const;
+        int addPlayer(GameState& state, GameInfo& gameInfo) const;
     };
 }

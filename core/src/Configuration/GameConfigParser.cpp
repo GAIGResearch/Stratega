@@ -80,32 +80,8 @@ namespace SGA
         if (configNode["GameRunner"].IsDefined())
             parseGameRunner(configNode["GameRunner"], *config);
 
-		//Assign actions to entities
-        // Parse additional configurations for entities that couldn't be handled previously
-        auto types = configNode["Entities"].as<std::map<std::string, YAML::Node>>();
-        for (auto& type : config->entityTypes)
-        {
-            // Assign actions to entities
-            auto actions = types[type.second.getName()]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
-            for (const auto& actionName : actions)
-            {
-                type.second.getActionIDs().emplace_back(config->getActionID(actionName));
-            }
-
-            // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
-            type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], *config));
-            auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
-            type.second.setRequiredTechID( name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config->technologyTreeCollection.getTechnologyTypeID(name));
-        	// Hardcoded cost information
-            type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], *config));
-        }
-		
-		//Assign player actions
-        auto actions = configNode["Player"]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
-        for (const auto& actionName : actions)
-        {
-            config->playerActionIds.emplace_back(config->getActionID(actionName));
-        }
+        assignPlayerActions(configNode["Player"], *config);
+        assignEntitiesActions(configNode["Entities"], *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);

@@ -1,0 +1,84 @@
+Agents:
+    - HumanAgent
+    - OSLAAgent
+
+Tiles:
+    Plain:
+        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../GUI/Assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../GUI/Assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  a1 .  .  .  .  .  M
+        M  .  a1 k1 h1 .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  M
+        M  .  .  .  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  W
+        M  .  .  .  .  .  a0 .  .  M
+        M  .  .  .  .  a0 k0 h0 .  M
+        M  M  M  .  .  .  w0 w0 .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M
+
+Entities:
+    Warrior:
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 6
+        Actions: [Attack, Move]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
+
+    Archer:
+        Sprite: ../../GUI/Assets/Entities/unit_3.png
+        Symbol: a
+        LineOfSightRange: 10
+        Parameters:
+            Health: 100
+            AttackRange: 5
+            AttackDamage: 10
+            MovementPoints: 2
+        Actions: [Attack, Move]
+
+    Healer:
+        Sprite: ../../GUI/Assets/Entities/unit_6.png
+        Symbol: h
+        LineOfSightRange: 4
+        Parameters:
+            Health: 40
+            HealRange: 2
+            HealAmount: 10
+            MovementPoints: 5
+        Actions: [Heal, Move]
+
+    King:
+        Sprite: ../../GUI/Assets/Entities/unit_1.png
+        Symbol: k
+        LineOfSightRange: 6
+        Parameters:
+            Health: 400
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 1
+        Actions: [Attack, Move]
