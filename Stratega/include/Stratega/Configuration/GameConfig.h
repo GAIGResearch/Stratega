@@ -6,11 +6,12 @@
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
+#include <Stratega/Representation/LevelDefinition.h>
 #include <yaml-cpp/yaml.h>
 
 namespace SGA
 {
-    class LevelDefinition;
+//    class LevelDefinition;
 	
     struct GameConfig
     {

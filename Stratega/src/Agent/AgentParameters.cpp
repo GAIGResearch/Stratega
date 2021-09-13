@@ -45,7 +45,7 @@ namespace SGA {
 			if (isPortfolio)	return std::make_unique<PortfolioRTSForwardModel>(dynamic_cast<const RTSForwardModel&>(forwardModel), portfolio);
 			else				return std::make_unique<RTSForwardModel>(dynamic_cast<const RTSForwardModel&>(forwardModel));
 
-		else throw std::exception("Unrecognized forward model type in Agent Parameters.");
+		else throw std::runtime_error("Unrecognized forward model type in Agent Parameters.");
 	}
 
 	void AgentParameters::decode(const YAML::Node& node)

@@ -1,5 +1,6 @@
 #pragma once
 #include <Stratega/ForwardModel/ActionAssignment.h>
+#include <memory>
 
 namespace SGA
 {
