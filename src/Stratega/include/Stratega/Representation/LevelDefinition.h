@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Stratega/Representation/Grid2D.h>
 
 namespace SGA
