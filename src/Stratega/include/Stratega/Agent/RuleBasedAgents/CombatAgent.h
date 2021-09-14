@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Agent/Heuristic/UnitEvaluator.h> 
+#include <Stratega/Agent/Heuristic/UnitEvaluator.h>
 #include <vector>
 #include <map>
 

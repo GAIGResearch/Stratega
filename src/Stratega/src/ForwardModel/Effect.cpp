@@ -1,10 +1,10 @@
-#include <Stratega/ForwardModel/Effect.h>
-#include <Stratega/ForwardModel/ForwardModel.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <stratega/ForwardModel/Effect.h>
+#include <stratega/ForwardModel/ForwardModel.h>
+#include <stratega/ForwardModel/TBSForwardModel.h>
+#include <stratega/ForwardModel/RTSForwardModel.h>
 #include <random>
 
-#include "Stratega/ForwardModel/FunctionParameter.h"
+#include "stratega/ForwardModel/FunctionParameter.h"
 
 namespace SGA
 {

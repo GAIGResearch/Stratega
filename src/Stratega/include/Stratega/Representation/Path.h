@@ -1,4 +1,5 @@
 #pragma once
+
 #include "DetourNavMesh.h"
 #include "Navigation.h"
 

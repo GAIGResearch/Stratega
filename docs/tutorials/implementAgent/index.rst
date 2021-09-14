@@ -35,7 +35,7 @@ First, we need to include the headers. Because we need to extend the class Agent
 .. code-block:: c++
 
     #pragma once
-    #include <Stratega/Agent/Agent.h>
+    #include <stratega/Agent/Agent.h>
 
 The agent needs to be in the same namespace as Stratega, which is SGA. Hence, the class needs to be enclosed in a namespace declaration with that name:
 
@@ -53,7 +53,7 @@ We'll call our agent's class ``DoNothing`` and we plan to override the method *c
 .. code-block:: c++
 
     #pragma once
-    #include <Stratega/Agent/Agent.h>
+    #include <stratega/Agent/Agent.h>
 
     namespace SGA
     {
@@ -77,7 +77,7 @@ The code would look like this now:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/DoNothing/DoNothing.h>
+    #include <stratega/Agent/DoNothing/DoNothing.h>
     namespace SGA
     {
         ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)

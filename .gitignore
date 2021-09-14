@@ -12,8 +12,7 @@ _deps
 .vs/
 .idea/
 .DS_Store
-cmake-build-debug/
-cmake-build-release/
+cmake-build-*/
 out/
 build/
 experiments/

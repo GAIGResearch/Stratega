@@ -1,4 +1,4 @@
-import stratega
+import Stratega
 import os
 import sys
 import random
@@ -7,17 +7,17 @@ import time
 from contextlib import contextmanager
 import fnmatch
 #------------------------------ Agents ----------------------------------------
-class DoNothingPythonAgent(stratega.Agent):
+class DoNothingPythonAgent(Stratega.Agent):
     def init(self, state, forward_model, timer):
         print("init")
 
     def compute_action(self, state, forward_model, timer):
 
         print("run DoNothingAgent")
-        return stratega.ActionAssignment.create_end_action_assignment(self.get_player_id())
+        return Stratega.ActionAssignment.create_end_action_assignment(self.get_player_id())
 
     
-class RandomPythonAgent(stratega.Agent):
+class RandomPythonAgent(Stratega.Agent):
     def init(self, state, forward_model, timer):
         print("init")
 
@@ -27,14 +27,14 @@ class RandomPythonAgent(stratega.Agent):
         actions=forward_model.generate_actions(state, self.get_player_id())
         action=actions.__getitem__(random.randint(0, actions.count()-1))
 
-        action_assignment=stratega.ActionAssignment.from_single_action(action)
+        action_assignment=Stratega.ActionAssignment.from_single_action(action)
 
         return action_assignment
 
 def evaluate_state(state, player_id):
     score=0.0
-    opponent_entites=state.get_non_player_entities(player_id, stratega.EntityCategory.Null)
-    player_entites=state.get_player_entities(player_id, stratega.EntityCategory.Null)
+    opponent_entites=state.get_non_player_entities(player_id, Stratega.EntityCategory.Null)
+    player_entites=state.get_player_entities(player_id, Stratega.EntityCategory.Null)
 
     if state.is_game_over() and state.get_winner_id() == player_id:
        score=1000
@@ -56,9 +56,9 @@ def evaluate_state(state, player_id):
     return -score
 
 
-class OSLAPythonAgent(stratega.Agent):
+class OSLAPythonAgent(Stratega.Agent):
     def __init__(self):
-        stratega.Agent.__init__(self, "OSLAPythonAgent")
+        Stratega.Agent.__init__(self, "OSLAPythonAgent")
 
     def init(self, state, forward_model, timer):
         print("init")
@@ -80,12 +80,12 @@ class OSLAPythonAgent(stratega.Agent):
                 best_heuristic_value = value
                 best_action_index = index
         action=actions.__getitem__(best_action_index)
-        action_assignment=stratega.ActionAssignment.from_single_action(action)
+        action_assignment=Stratega.ActionAssignment.from_single_action(action)
         return action_assignment
 
 
 def run_arena():
-    config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+    config = Stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
 
     number_of_games=1
     player_count=2
@@ -93,15 +93,15 @@ def run_arena():
     maps_path=""
     seed=0
 
-    stratega.set_default_logger(log_path)
-    arena=stratega.create_arena(config)
+    Stratega.set_default_logger(log_path)
+    arena=Stratega.create_arena(config)
 
     if not maps_path:
         #arena.run_games(player_count,seed, number_of_games,1)
         #run with python agents
         arena.run_games(player_count, seed, number_of_games,1,[RandomPythonAgent(), OSLAPythonAgent()])
     else:
-        config.level_definitions= stratega.load_levels_from_yaml(maps_path, config)
+        config.level_definitions= Stratega.load_levels_from_yaml(maps_path, config)
         map_number=len(config.level_definitions)
         #arena.run_games(player_count, seed, number_of_games,map_number)
         #run with python agents
@@ -109,15 +109,15 @@ def run_arena():
 
 def play_gui():
     # ----------------- CLEAN -------------------------
-    config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
-    runner = stratega.create_runner(config)
+    config = Stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+    runner = Stratega.create_runner(config)
 
     # Config agents
-    config_agents = stratega.generate_agents(config)
+    config_agents = Stratega.generate_agents(config)
 
     # --- Play/Run -----
     #runner.play(config_agents, stratega.Vector2f(1920,1080), 0)
-    runner.play([DoNothingPythonAgent(), OSLAPythonAgent()], stratega.Vector2f(1920,1080), 0)
+    runner.play([DoNothingPythonAgent(), OSLAPythonAgent()], Stratega.Vector2f(1920, 1080), 0)
 
 
 def run_clean():

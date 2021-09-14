@@ -6,12 +6,12 @@
 #include <pybind11/chrono.h>
 #include <pybind11/iostream.h>
 
-#include <Stratega/Logging/FileLogger.h>
-#include <Stratega/Representation/Vector2.h>
-#include <Stratega/Representation/Entity.h>
-#include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Tile.h>
-#include <Stratega/Representation/Grid2D.h>
+#include <stratega/Logging/FileLogger.h>
+#include <stratega/Representation/Vector2.h>
+#include <stratega/Representation/Entity.h>
+#include <stratega/Representation/Player.h>
+#include <stratega/Representation/Tile.h>
+#include <stratega/Representation/Grid2D.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Configuration/GameConfigParser.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>

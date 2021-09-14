@@ -1,6 +1,3 @@
-set(STRATEGA_DIR "${CMAKE_SOURCE_DIR}/stratega/")
-set(STRATEGA_INCLUDE_DIR "${STRATEGA_DIR}/include")
-set(STRATEGA_SRC_DIR "${STRATEGA_DIR}/src")
 
 set(STRATEGA_SOURCE_FILES
         Agent/ActionScripts/AttackClosestOpponentScript.cpp
@@ -81,30 +78,25 @@ list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${STRATEGA_SRC_DIR}/")
 add_library(stratega STATIC ${STRATEGA_SOURCE_FILES})
 
 target_include_directories(stratega PUBLIC ${STRATEGA_INCLUDE_DIR})
+
 target_link_libraries(stratega
         PUBLIC
+        project_options  # use the project options defined (e.g. CXX_STANDARD)
+        project_warnings  # use the compiler warnings settings as specified in CompilerWarnings.cmake
+        PUBLIC
         CONAN_PKG::yaml-cpp
-        #        CONAN_PKG::recastnavigation  # alternatively simply link against the entire pkg
-        CONAN_LIB::recastnavigation_Recast
-        CONAN_LIB::recastnavigation_Detour
-        CONAN_LIB::recastnavigation_DebugUtils
-        )
-
-#add_library(CONAN_PKG::smfl ALIAS sfml)
-
-target_link_libraries(stratega
-        INTERFACE
-        project_options
-        project_warnings
+        CONAN_PKG::recastnavigation
+        "$<$<TARGET_EXISTS:Threads::Threads>:Threads::Threads>"  #use threads if the target exists
         PRIVATE
-        "$<$<PLATFORM_ID:Linux>:sfml>"  # for linux we use target `sfml` directly
-        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"  # other platforms use Conan's `sfml`
-        CONAN_PKG::imgui)
-
-if (TARGET Threads::Threads)
-    target_link_libraries(stratega PUBLIC Threads::Threads)
-endif ()
-
+        CONAN_PKG::imgui
+        # other platforms use Conan's `sfml`
+        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
+        # for linux we have to use the targets of `sfml`'s components individually
+        "$<$<PLATFORM_ID:Linux>:sfml-system>"
+        "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
+        "$<$<PLATFORM_ID:Linux>:sfml-window>"
+        )
+#target_compile_features(stratega PUBLIC ${project_cxx_standard})
 install(TARGETS
         stratega
         #       yaml-cpp
@@ -112,18 +104,6 @@ install(TARGETS
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
 
-get_target_property(stratega_cxx stratega CXX_STANDARD)
-get_target_property(proj_options_cxx project_options CXX_STANDARD)
-message("Stratega standard is: ${stratega_cxx}")
-message("PROJ standard is: ${proj_options_cxx}")
-
 install(DIRECTORY include DESTINATION .)
 get_target_property(YAML_CPP_INCLUDE_DIRECTORIES CONAN_PKG::yaml-cpp INCLUDE_DIRECTORIES)
 install(DIRECTORY ${YAML_CPP_INCLUDE_DIRECTORIES} DESTINATION .)
-
-
-target_compile_options(stratega PRIVATE
-        $<$<CXX_COMPILER_ID:MSVC>:/W4>
-        #        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
-        )
-string(REGEX REPLACE "/W3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
