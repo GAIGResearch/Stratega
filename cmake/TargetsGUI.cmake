@@ -12,7 +12,7 @@ target_link_libraries(gui PUBLIC stratega)
 
 #Copy Assets folder
 file(COPY ${GUI_DIR}/Assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
+message("$<$<PLATFORM_ID:Linux>:sfml-system>")
 target_link_libraries(gui
         PRIVATE
         # other platforms use Conan's `sfml`

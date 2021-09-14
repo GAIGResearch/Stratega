@@ -12,21 +12,21 @@
 #include <stratega/Representation/Player.h>
 #include <stratega/Representation/Tile.h>
 #include <stratega/Representation/Grid2D.h>
-#include <Stratega/Representation/GameState.h>
-#include <Stratega/Configuration/GameConfigParser.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Game/GameRunner.h>
-#include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Game/AgentThread.h>
-#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
-#include <Stratega/Arena/Arena.h>
+#include <stratega/Representation/GameState.h>
+#include <stratega/Configuration/GameConfigParser.h>
+#include <stratega/ForwardModel/TBSForwardModel.h>
+#include <stratega/ForwardModel/RTSForwardModel.h>
+#include <stratega/Game/GameRunner.h>
+#include <stratega/Agent/AgentFactory.h>
+#include <stratega/Game/AgentThread.h>
+#include <stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <stratega/Arena/Arena.h>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <Stratega/Logging/Log.h>
+#include <stratega/Logging/Log.h>
 
-#include <Stratega/Utils/Timer.h>
+#include <stratega/Utils/Timer.h>
 
 namespace py = pybind11;
 

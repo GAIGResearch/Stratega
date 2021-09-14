@@ -92,7 +92,7 @@ As simple as shown in the next snippet:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/DoNothing/DoNothing.h>
+    #include <stratega/Agent/DoNothing/DoNothing.h>
 
     namespace SGA
     {
@@ -205,7 +205,7 @@ line completes the code for this function:
     :linenos:
 
     #include <random>
-    #include <Stratega/Agent/RandomAgent.h>
+    #include <stratega/Agent/RandomAgent.h>
 
     namespace SGA
     {
