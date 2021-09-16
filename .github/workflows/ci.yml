@@ -12,7 +12,6 @@ jobs:
         config:
           - {
             name: "Windows Latest MSVC",
-            artifact: "Windows-MSVC.tar.xz",
             os: windows-latest,
             build_type: "Release",
             cc: cl,
@@ -21,7 +20,6 @@ jobs:
           }
           - {
             name: "Windows Latest MinGW",
-            artifact: "Windows-MinGW.tar.xz",
             os: windows-latest,
             build_type: "Release",
             cc: gcc,
@@ -29,7 +27,6 @@ jobs:
           }
           - {
             name: "Ubuntu 20.04 GCC-10",
-            artifact: "Ubuntu2004-GCC10.tar.xz",
             os: ubuntu-20.04,
             build_type: "Release",
             cc: gcc-10,
@@ -37,7 +34,6 @@ jobs:
           }
           - {
             name: "Ubuntu 20.04 GCC-11",
-            artifact: "Ubuntu2004-GCC11.tar.xz",
             os: ubuntu-20.04,
             build_type: "Release",
             cc: gcc-11,
@@ -45,7 +41,6 @@ jobs:
           }
           - {
             name: "Ubuntu 18.04 GCC-10",
-            artifact: "Ubuntu1804-GCC10.tar.xz",
             os: ubuntu-18.04,
             build_type: "Release",
             cc: gcc-10,
@@ -53,7 +48,6 @@ jobs:
           }
           - {
             name: "Ubuntu 18.04 GCC-11",
-            artifact: "Ubuntu1804-GCC11.tar.xz",
             os: ubuntu-18.04,
             build_type: "Release",
             cc: gcc-11,
@@ -61,7 +55,6 @@ jobs:
           }
           - {
             name: "macOS Latest Clang",
-            artifact: "macOS.tar.xz",
             os: macos-latest,
             build_type: "Release",
             cc: clang,
@@ -125,6 +118,9 @@ jobs:
         # Use a bash shell so we can use the same syntax for environment variable
         # access regardless of the host operating system
         shell: bash
+        env:
+          CC: ${{ matrix.config.cc }}
+          CXX: ${{ matrix.config.cxx }}
         working-directory: ${{runner.workspace}}/build
         run: |
           cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DWARNINGS_AS_ERRORS=TRUE
