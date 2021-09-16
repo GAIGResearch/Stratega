@@ -1,7 +1,7 @@
 file(GLOB_RECURSE
         ALL_CXX_SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/**.[ch]pp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/**.h
+        ${PROJ_SOURCES_DIR}/**.[ch]pp
+        ${PROJ_SOURCES_DIR}/**.h
         )
 # Adding clang-format target if executable is found
 find_program(CLANG_FORMAT "clang-format")
@@ -24,7 +24,7 @@ if(CLANG_TIDY)
             ${ALL_CXX_SOURCE_FILES}
             -config=''
             --
-            -std=${project_CPP_STANDARD}
+            -std=${PROJ_CXX_STANDARD}
             ${ALL_CXX_SOURCE_FILES}
     )
 endif()
