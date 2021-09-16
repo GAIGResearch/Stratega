@@ -104,7 +104,8 @@ jobs:
             libglew1.5-dev \
             libjpeg8-dev \
             libsndfile1-dev \
-            libopenal-devlibasound2-dev \
+            libopenal-dev \
+            libasound2-dev \
             libudev-dev
 
       - name: Setup cmake
