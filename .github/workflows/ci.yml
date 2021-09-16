@@ -33,11 +33,26 @@ jobs:
             cxx: g++-10
           }
           - {
-            name: "Ubuntu 20.04 GCC-11",
-            os: ubuntu-20.04,
+                name: "Ubuntu 20.04 GCC-9",
+                  os: ubuntu-20.04,
+                  build_type: "Release",
+                  cc: gcc-9,
+                  cxx: g++-9
+          }
+          # GCC-11 not yet (easily) available on GitHub Action, uncomment once this has changed.
+#          - {
+#            name: "Ubuntu 20.04 GCC-11",
+#            os: ubuntu-20.04,
+#            build_type: "Release",
+#            cc: gcc-11,
+#            cxx: g++-11
+#          }
+          - {
+            name: "Ubuntu 18.04 GCC-9",
+            os: ubuntu-18.04,
             build_type: "Release",
-            cc: gcc-11,
-            cxx: g++-11
+            cc: gcc-9,
+            cxx: g++-9
           }
           - {
             name: "Ubuntu 18.04 GCC-10",
@@ -46,13 +61,14 @@ jobs:
             cc: gcc-10,
             cxx: g++-10
           }
-          - {
-            name: "Ubuntu 18.04 GCC-11",
-            os: ubuntu-18.04,
-            build_type: "Release",
-            cc: gcc-11,
-            cxx: g++-11
-          }
+          # GCC-11 not yet (easily) available on GitHub Action, uncomment once this has changed.
+#          - {
+#            name: "Ubuntu 18.04 GCC-11",
+#            os: ubuntu-18.04,
+#            build_type: "Release",
+#            cc: gcc-11,
+#            cxx: g++-11
+#          }
           - {
             name: "macOS Latest Clang",
             os: macos-latest,
