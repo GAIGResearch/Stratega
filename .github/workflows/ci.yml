@@ -1,0 +1,67 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+            name: "Windows Latest MSVC", artifact: "Windows-MSVC.tar.xz",
+            os: windows-latest,
+            build_type: "Release", cc: "cl", cxx: "cl",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+          }
+          - {
+            name: "Windows Latest MinGW", artifact: "Windows-MinGW.tar.xz",
+            os: windows-latest,
+            build_type: "Release", cc: "gcc", cxx: "g++"
+          }
+          - {
+            name: "Ubuntu Latest GCC-10", artifact: "Linux.tar.xz",
+            os: ubuntu-latest,
+            build_type: "Release", cc: "gcc-10", cxx: "g++-10"
+          }
+          - {
+            name: "Ubuntu Latest GCC-11", artifact: "Linux.tar.xz",
+            os: ubuntu-latest,
+            build_type: "Release", cc: "gcc-11", cxx: "g++-11"
+          }
+          - {
+            name: "macOS Latest Clang", artifact: "macOS.tar.xz",
+            os: macos-latest,
+            build_type: "Release", cc: "clang", cxx: "clang++"
+          }
+
+    steps:
+      - name: Create Build Environment
+        # no in-source building, so create a separate build directory
+        # use this as working directory for all subsequent commands
+        run: |
+          cmake -E make_directory ${{runner.workspace}}/build -DWarnings_as_errors=true
+
+      - name: make stratega
+        working-directory: ${{runner.workspace}}/build
+        run: make stratega
+
+      - name: make gui
+        working-directory: ${{runner.workspace}}/build
+        run: make gui
+
+      - name: make arena
+        working-directory: ${{runner.workspace}}/build
+        run: make arena
+
+      - name: make tests
+        working-directory: ${{runner.workspace}}/build
+        run: make tests
+
+      - name: run tests
+        working-directory: ${{runner.workspace}}/build
+        run: test/tests
+
+
