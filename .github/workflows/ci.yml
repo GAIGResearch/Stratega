@@ -99,7 +99,7 @@ jobs:
           cmake -E make_directory ${{runner.workspace}}/build -DWARNINGS_AS_ERRORS=TRUE
       - name: print
         working-directory: ${{runner.workspace}}/build
-        run: cat Makefile
+        run: ls && cat Makefile
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
         run: make stratega
