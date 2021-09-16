@@ -77,11 +77,6 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v1.9
-        with:
-          cmake-version: '3.20'
-
       - name: Install conan
         shell: bash
         run: |
@@ -93,18 +88,27 @@ jobs:
         shell: bash
         run: source ~/.profile
 
-      - name: ls
-        shell: bash
-        run: ls
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: '3.20'
+
+      - name: Use cmake
+        run: cmake --version
 
       - name: Create Build Environment
-        # no in-source building, so create a separate build directory
-        # use this as working directory for all subsequent commands
-        run: |
-          cmake -E make_directory ${{runner.workspace}}/build
-      - name: print
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        # Use a bash shell so we can use the same syntax for environment variable
+        # access regardless of the host operating system
+        shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: ls
+        run: |
+          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+          
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
         run: make stratega
