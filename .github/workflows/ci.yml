@@ -15,8 +15,8 @@ jobs:
             artifact: "Windows-MSVC.tar.xz",
             os: windows-latest,
             build_type: "Release",
-            cc: "cl",
-            cxx: "cl",
+            cc: cl,
+            cxx: cl,
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
           - {
@@ -24,48 +24,48 @@ jobs:
             artifact: "Windows-MinGW.tar.xz",
             os: windows-latest,
             build_type: "Release",
-            cc: "gcc",
-            cxx: "g++"
+            cc: gcc,
+            cxx: g++
           }
           - {
             name: "Ubuntu 20.04 GCC-10",
             artifact: "Ubuntu2004-GCC10.tar.xz",
             os: ubuntu-20.04,
             build_type: "Release",
-            cc: "gcc-10",
-            cxx: "g++-10"
+            cc: gcc-10,
+            cxx: g++-10
           }
           - {
             name: "Ubuntu 20.04 GCC-11",
             artifact: "Ubuntu2004-GCC11.tar.xz",
             os: ubuntu-20.04,
             build_type: "Release",
-            cc: "gcc-11",
-            cxx: "g++-11"
+            cc: gcc-11,
+            cxx: g++-11
           }
           - {
             name: "Ubuntu 18.04 GCC-10",
             artifact: "Ubuntu1804-GCC10.tar.xz",
             os: ubuntu-18.04,
             build_type: "Release",
-            cc: "gcc-10",
-            cxx: "g++-10"
+            cc: gcc-10,
+            cxx: g++-10
           }
           - {
             name: "Ubuntu 18.04 GCC-11",
             artifact: "Ubuntu1804-GCC11.tar.xz",
             os: ubuntu-18.04,
             build_type: "Release",
-            cc: "gcc-11",
-            cxx: "g++-11"
+            cc: gcc-11,
+            cxx: g++-11
           }
           - {
             name: "macOS Latest Clang",
             artifact: "macOS.tar.xz",
             os: macos-latest,
             build_type: "Release",
-            cc: "clang",
-            cxx: "clang++"
+            cc: clang,
+            cxx: clang++
           }
 
     steps:
@@ -107,8 +107,8 @@ jobs:
         shell: bash
         working-directory: ${{runner.workspace}}/build
         run: |
-          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-          
+          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
         run: make stratega
