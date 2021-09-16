@@ -1,3 +1,5 @@
+include(FetchContent)
+
 set(IMGUI-SFML_VERSION 2.3)
 FetchContent_Declare (
 		imgui-sfml
