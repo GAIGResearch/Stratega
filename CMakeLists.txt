@@ -3,7 +3,6 @@
 project(Stratega LANGUAGES CXX)
 
 # project set'tings
-set(ARENA_SRC_DIR "${CMAKE_SOURCE_DIR}/src/arena")
 set(CMAKE_CONFIG_FOLDER "cmake")
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -17,22 +16,25 @@ else ()
     set(CONANFILE conanfile.txt)
 endif ()
 set(DEPENDENCY_DIR "deps")
-set(GUI_DIR "${CMAKE_SOURCE_DIR}/src/gui")
-set(GUI_SRC_DIR "${GUI_DIR}/src")
-set(project_cxx_standard cxx_std_20)
-set(project_CPP_STANDARD C++20)
-set(STRATEGA_BINDINGS_DIR "${CMAKE_SOURCE_DIR}/src/bindings")
-set(STRATEGA_DIR "${CMAKE_SOURCE_DIR}/src/stratega")
-set(STRATEGA_INCLUDE_DIR "${STRATEGA_DIR}/include")
-set(STRATEGA_SRC_DIR "${STRATEGA_DIR}/src")
-set(STRATEGA_TEST_FOLDER "${CMAKE_SOURCE_DIR}/test")
+set(PROJ_CXX_STANDARD cxx_std_20)
+set(PROJ_SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
+set(PROJ_TEST_FOLDER "${CMAKE_SOURCE_DIR}/test")
+set(SUBPROJ_PYBINDING_DIR "${PROJ_SOURCES_DIR}/pybinding")
+set(SUBPROJ_PYBINDING_SRC_DIR "${SUBPROJ_PYBINDING_DIR}/src")
+set(SUBPROJ_STRATEGA_DIR "${PROJ_SOURCES_DIR}/stratega")
+set(SUBPROJ_STRATEGA_INCLUDE_DIR "${SUBPROJ_STRATEGA_DIR}/include")
+set(SUBPROJ_STRATEGA_SRC_DIR "${SUBPROJ_STRATEGA_DIR}/src")
+set(SUBPROJ_ARENA_DIR "${PROJ_SOURCES_DIR}/arena")
+set(SUBPROJ_ARENA_SRC_DIR "${SUBPROJ_ARENA_DIR}/src")
+set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
+set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
 
 # options
 
 option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
+option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" OFF)
 option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
 option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" OFF)
-option(ENABLE_FUZZING "Enable Fuzzing Builds" OFF)
 option(ENABLE_IPO "Enable Interprocedural Optimization, aka Link Time Optimization (LTO)" OFF)
 option(ENABLE_PCH "Enable Precompiled Headers" ON)
 option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
@@ -40,10 +42,9 @@ option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
+option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
-option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." OFF)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 # print out a short summary of the compiler information
 
@@ -63,7 +64,7 @@ add_library(project_options INTERFACE)
 # Link this 'library' to use the warnings specified in CompilerWarnings.cmake
 add_library(project_warnings INTERFACE)
 
-target_compile_features(project_options INTERFACE ${project_cxx_standard})
+target_compile_features(project_options INTERFACE ${PROJ_CXX_STANDARD})
 if (ENABLE_PCH)
     target_precompile_headers(project_options
             INTERFACE
@@ -101,42 +102,48 @@ enable_doxygen()
 # allow for static analysis
 include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
-if (STRATEGA_BUILD_DOCS)
-    add_subdirectory("docs")
+# configure conan and fetch all dependencies
+if (CMAKE_SYSTEM_NAME MATCHES Linux)
+    # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
+    # We will have to fetch it manually in this case and add it to our project.
+    include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
 endif ()
-
+include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
 
+# find the downloaded/installed packages
+
 find_package(Threads)
 find_package(imgui REQUIRED)
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
     add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
 else ()
     find_package(SFML COMPONENTS system window graphics REQUIRED)
 endif ()
-include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
 
-# define the interface targets and optional tests
-include(${CMAKE_CONFIG_FOLDER}/TargetsStratega.cmake)
+# define the targets of the project
+
 include(${CMAKE_CONFIG_FOLDER}/TargetsIMGUI.cmake)
-if (STRATEGA_BUILD_BINDINGS)
+include(${CMAKE_CONFIG_FOLDER}/TargetsGUI.cmake)
+include(${CMAKE_CONFIG_FOLDER}/TargetsArena.cmake)
+include(${CMAKE_CONFIG_FOLDER}/TargetsStratega.cmake)
+if (ENABLE_STRATEGA_BINDINGS)
+    message("\nBindings enabled, configuring.\n")
     include(${CMAKE_CONFIG_FOLDER}/TargetsBindings.cmake)
-    message("Bindings enabled, configuring.")
 endif ()
-if (STRATEGA_BUILD_DOCS)
+if (ENABLE_BUILD_DOCS)
+    message("\nDocs enabled, configuring.\n")
     add_subdirectory("docs")
-    message("Docs enabled, configuring.")
 endif ()
 if (ENABLE_TESTING)
     enable_testing()
-    message("Tests enabled, configuring.")
+    message("\nTests enabled, configuring.\n")
     include(${CMAKE_CONFIG_FOLDER}/TargetsTest.cmake)
 endif ()
 

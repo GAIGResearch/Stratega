@@ -73,22 +73,23 @@ set(STRATEGA_SOURCE_FILES
         Representation/Tile.cpp
         )
 
-list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${STRATEGA_SRC_DIR}/")
+list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
 add_library(stratega STATIC ${STRATEGA_SOURCE_FILES})
 
-target_include_directories(stratega PUBLIC ${STRATEGA_INCLUDE_DIR})
+target_include_directories(stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
 target_link_libraries(stratega
         PUBLIC
-        project_options  # use the project options defined (e.g. CXX_STANDARD)
-        project_warnings  # use the compiler warnings settings as specified in CompilerWarnings.cmake
-        PUBLIC
+        project_options
+        project_warnings
+        # TODO: Is this public private separation of modules accurate?
         CONAN_PKG::yaml-cpp
         CONAN_PKG::recastnavigation
         "$<$<TARGET_EXISTS:Threads::Threads>:Threads::Threads>"  #use threads if the target exists
         PRIVATE
         CONAN_PKG::imgui
+        imgui
         # other platforms use Conan's `sfml`
         "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
         # for linux we have to use the targets of `sfml`'s components individually
@@ -96,14 +97,11 @@ target_link_libraries(stratega
         "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
         "$<$<PLATFORM_ID:Linux>:sfml-window>"
         )
-#target_compile_features(stratega PUBLIC ${project_cxx_standard})
+
 install(TARGETS
         stratega
-        #       yaml-cpp
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)
 
 install(DIRECTORY include DESTINATION .)
-get_target_property(YAML_CPP_INCLUDE_DIRECTORIES CONAN_PKG::yaml-cpp INCLUDE_DIRECTORIES)
-install(DIRECTORY ${YAML_CPP_INCLUDE_DIRECTORIES} DESTINATION .)

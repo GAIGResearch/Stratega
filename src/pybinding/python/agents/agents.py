@@ -1,4 +1,4 @@
-import Stratega
+import stratega
 import os
 import sys
 import random

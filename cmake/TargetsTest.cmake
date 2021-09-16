@@ -6,7 +6,7 @@ set(TEST_SOURCES
         main_test.cpp
         )
 
-list(TRANSFORM TEST_SOURCES PREPEND "${STRATEGA_TEST_FOLDER}/")
+list(TRANSFORM TEST_SOURCES PREPEND "${PROJ_TEST_FOLDER}/")
 
 add_executable(tests ${TEST_SOURCES})
 
