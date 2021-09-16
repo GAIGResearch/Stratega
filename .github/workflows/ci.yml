@@ -77,6 +77,11 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: '3.20'
+
       - name: Install conan
         shell: bash
         run: |
