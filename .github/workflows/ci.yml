@@ -94,7 +94,9 @@ jobs:
         # use this as working directory for all subsequent commands
         run: |
           cmake -E make_directory ${{runner.workspace}}/build -DWarnings_as_errors=true
-
+      - name: print
+        working-directory: ${{runner.workspace}}/build
+        run: cat Makefile
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
         run: make stratega
