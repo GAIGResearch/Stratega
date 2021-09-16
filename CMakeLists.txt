@@ -49,6 +49,7 @@ option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 message("C++ Compiler: ${CMAKE_CXX_COMPILER}")
 message("C++ Compiler Info: ${CMAKE_CXX_COMPILER_ID}, version ${CMAKE_CXX_COMPILER_VERSION}")
+message("Build type: ${CMAKE_BUILD_TYPE}")
 message("CURRENT CMAKE BINARY DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 if (CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
