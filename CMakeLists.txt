@@ -43,7 +43,7 @@ option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer"
 option(ENABLE_TESTING "Enable Test Builds" ON)
 option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
 option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." OFF)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 # print out a short summary of the compiler information
 
@@ -108,35 +108,34 @@ include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
-#
+
 find_package(Threads)
-find_package(yaml-cpp REQUIRED)
-find_package(recastnavigation REQUIRED)
 find_package(imgui REQUIRED)
-find_package(ImGui-SFML REQUIRED)
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    add_subdirectory(${DEPENDENCY_DIR}/sfml)
+    include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
+    add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
 else ()
     find_package(SFML COMPONENTS system window graphics REQUIRED)
 endif ()
-
-# Optional
-if (STRATEGA_BUILD_BINDINGS)
-    include(${CMAKE_CONFIG_FOLDER}/TargetsBindings.cmake)
-endif ()
-
-if (STRATEGA_BUILD_DOCS)
-    add_subdirectory("docs")
-endif ()
+include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
+find_package(yaml-cpp REQUIRED)
+find_package(recastnavigation REQUIRED)
 
 
 # define the interface targets and optional tests
 include(${CMAKE_CONFIG_FOLDER}/TargetsStratega.cmake)
+include(${CMAKE_CONFIG_FOLDER}/TargetsIMGUI.cmake)
+if (STRATEGA_BUILD_BINDINGS)
+    include(${CMAKE_CONFIG_FOLDER}/TargetsBindings.cmake)
+    message("Bindings enabled, configuring.")
+endif ()
+if (STRATEGA_BUILD_DOCS)
+    add_subdirectory("docs")
+    message("Docs enabled, configuring.")
+endif ()
 if (ENABLE_TESTING)
     enable_testing()
-    message(
-            "Tests enabled, configuring."
-    )
+    message("Tests enabled, configuring.")
     include(${CMAKE_CONFIG_FOLDER}/TargetsTest.cmake)
 endif ()
 
