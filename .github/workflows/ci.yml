@@ -38,6 +38,21 @@ jobs:
           }
 
     steps:
+      - uses: actions/checkout@v2
+      - with:
+          submodules: 'true'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install conan
+        shell: bash
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install conan
+          source ~/.profile
+          
       - name: Create Build Environment
         # no in-source building, so create a separate build directory
         # use this as working directory for all subsequent commands
