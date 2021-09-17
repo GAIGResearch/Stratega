@@ -23,7 +23,7 @@ namespace SGA
     TEST(GameRunnerTest, init)
 	{
         //Generate config
-        std::string configPath("../../../tests/resources/test.yaml");
+        std::string configPath("tests/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
         auto mockForwardModelPtr = std::unique_ptr<MockForwardModel>(new MockForwardModel());    
@@ -113,7 +113,7 @@ namespace SGA
     TEST(GameRunnerTest, reset)
 	{
         //Generate config
-        std::string configPath("../../../tests/resources/test.yaml");
+        std::string configPath("tests/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
         auto mockForwardModelPtr = std::unique_ptr<MockForwardModel>(new MockForwardModel());    
@@ -139,7 +139,7 @@ namespace SGA
     TEST(GameRunnerTest, playAgentsTest)
 	{
 
-        std::string configPath("../../../tests/resources/test.yaml");
+        std::string configPath("tests/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);      
 
         auto mockGameRunnerPtr = std::unique_ptr<MockGameRunner>(new MockGameRunner(*gameConfig));
@@ -160,7 +160,7 @@ namespace SGA
         EXPECT_CALL(*mockGameRunnerPtr, initializeAgents(_))
             .Times(1);
 
-        EXPECT_CALL(*mockGameRunnerPtr, ensureRendererInitialized(SGA::Vector2f(1200, 800)))
+        EXPECT_CALL(*mockGameRunnerPtr, ensureRendererInitialized(_))
             .Times(1);
 
         EXPECT_CALL(*mockGameRunnerPtr, playInternal(_,0))

@@ -24,7 +24,7 @@ namespace SGA
     TEST(ArenaTest, init)
     {
         //Generate config
-        std::string configPath("../../../tests/resources/test.yaml");
+        std::string configPath("tests/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);
         auto mockGameConfigPtr = std::shared_ptr<MockGameConfig>(new MockGameConfig());
         auto mockForwardModelPtr = std::unique_ptr<MockForwardModel>(new MockForwardModel());

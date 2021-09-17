@@ -24,6 +24,7 @@ namespace SGA {
 
         MOCK_METHOD(void, initializeRenderer, (int humanIndex), (override));
 
+        using GameRunner::play;
         /*void initializeAgents(std::vector<Agent*>& agents);
         void ensureRendererInitialized(Vector2f& resolution);*/
 

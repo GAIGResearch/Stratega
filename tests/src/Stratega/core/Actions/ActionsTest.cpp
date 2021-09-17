@@ -19,11 +19,11 @@ namespace SGA
 {    
     TEST(GameStateTest, actionGenerationTest)
     {
-        auto boardNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Board");
-        auto tilesNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Tiles");
-        auto agentsNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Agents");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Entities");
-        auto actionssNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Actions");
+        auto boardNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Board");
+        auto tilesNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Tiles");
+        auto agentsNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Agents");
+        auto entitiesNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Entities");
+        auto actionssNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Actions");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
@@ -60,11 +60,11 @@ namespace SGA
 
     TEST(GameStateTest, actionExecutionTest)
     {
-        auto boardNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Board");
-        auto tilesNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Tiles");
-        auto agentsNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Agents");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Entities");
-        auto actionssNode = loadAndGetNode("../../../tests/resources/minimalConfigTest.yaml", "Actions");
+        auto boardNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Board");
+        auto tilesNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Tiles");
+        auto agentsNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Agents");
+        auto entitiesNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Entities");
+        auto actionssNode = loadAndGetNode("tests/resources/minimalConfigTest.yaml", "Actions");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
