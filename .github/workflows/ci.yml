@@ -141,13 +141,13 @@ jobs:
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
           #GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 --test-dir build -C Debug -V ctest
-          cmake --build build --target test --verbose
+          ctest --build build --target test --verbose
       - name: Test Windows   
         shell: bash
         if: runner.os == 'Windows'
         run: |
           #ctest --test-dir build --GTEST_OUTPUT=xml:test-results --GTEST_COLOR=1 -V -C Debug
-          cmake --build build --target test --verbose
+          ctest --build build --target test --verbose
       - name: Upload test results
         uses: actions/upload-artifact@v2
         if: failure()
