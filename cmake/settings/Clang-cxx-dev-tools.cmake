@@ -14,17 +14,3 @@ if(CLANG_FORMAT)
             ${ALL_CXX_SOURCE_FILES}
     )
 endif()
-
-# Adding clang-tidy target if executable is found
-find_program(CLANG_TIDY "clang-tidy")
-if(CLANG_TIDY)
-    add_custom_target(
-            clang-tidy
-            COMMAND ${CLANG_TIDY}
-            ${ALL_CXX_SOURCE_FILES}
-            -config=''
-            --
-            -std=${PROJ_CXX_STANDARD}
-            ${ALL_CXX_SOURCE_FILES}
-    )
-endif()
