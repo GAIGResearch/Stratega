@@ -41,73 +41,6 @@ namespace SGA
         EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockGameConfigPtr.get()));
         EXPECT_TRUE(Mock::VerifyAndClearExpectations(static_cast<MockForwardModel*>(mockGameConfigPtr->forwardModel.get())));
 
-        //auto state = gameRunner->getGameState();
-
-       // auto mockGameRunnerPtr = std::shared_ptr<MockGameRunner>(new MockGameRunner(*gameConfig));
-        //auto mockGameRunnerPtr = std::shared_ptr<TBSGameRunner>(new TBSGameRunner(*gameConfig));
-
-        /*EXPECT_CALL(*mockGameRunnerPtr, reset())
-            .Times(1);
-
-        EXPECT_CALL(*mockGameRunnerPtr, ensureRendererInitialized(Vector2f(1920, 1080)))
-            .Times(1);
-
-        auto gameRunner = SGA::createGameRunner(*gameConfig);
-
-        auto agents = gameConfig->generateAgents();*/
-        //gameRunner->play(agents.begin(), agents.end(), Vector2f(1920,1080));
-        
-        //EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockGameRunnerPtr.get()));
-
-       /* auto mockGridPtr = std::shared_ptr<MockGrid>(new MockGrid());
-        auto mockGDYFactoryPtr = std::shared_ptr<MockGDYFactory>(new MockGDYFactory());
-        auto mockLevelGenerator = std::shared_ptr<MockLevelGenerator>(new MockLevelGenerator());
-        auto gameProcessPtr = std::shared_ptr<TurnBasedGameProcess>(new TurnBasedGameProcess(ObserverType::VECTOR, mockGDYFactoryPtr, mockGridPtr));
-        auto mockLevelGeneratorPtr = std::shared_ptr<MockLevelGenerator>(new MockLevelGenerator());
-
-        auto mockObserverPtr = std::shared_ptr<MockObserver>(new MockObserver(mockGridPtr));
-        auto mockPlayerObserverPtr = std::shared_ptr<MockObserver>(new MockObserver(mockGridPtr));
-
-        EXPECT_CALL(*mockGridPtr, resetGlobalVariables)
-            .Times(1);
-
-        EXPECT_CALL(*mockGDYFactoryPtr, getLevelGenerator(Eq(0)))
-            .WillOnce(Return(mockLevelGeneratorPtr));
-
-        EXPECT_CALL(*mockGDYFactoryPtr, createObserver(Eq(mockGridPtr), Eq(ObserverType::VECTOR)))
-            .WillOnce(Return(mockObserverPtr));
-
-        EXPECT_CALL(*mockGDYFactoryPtr, getGlobalVariableDefinitions())
-            .WillOnce(Return(std::unordered_map<std::string, GlobalVariableDefinition>{}));
-
-        auto mockPlayerAvatarPtr = std::shared_ptr<MockObject>(new MockObject());
-
-        EXPECT_CALL(*mockLevelGeneratorPtr, reset(Eq(mockGridPtr)))
-            .Times(1);
-
-        EXPECT_CALL(*mockGridPtr, getPlayerAvatarObjects)
-            .WillOnce(Return(std::unordered_map<uint32_t, std::shared_ptr<Object>>{ {1, mockPlayerAvatarPtr}}));
-
-        EXPECT_CALL(*mockGDYFactoryPtr, getPlayerObserverDefinition())
-            .WillOnce(Return(PlayerObserverDefinition{ 4, 8, 0, 0, false, false }));
-
-        EXPECT_CALL(*mockGDYFactoryPtr, getPlayerCount())
-            .WillRepeatedly(Return(1));
-
-        auto mockPlayerPtr = mockPlayer("Bob", 1, gameProcessPtr, mockPlayerAvatarPtr, mockPlayerObserverPtr);
-
-        EXPECT_CALL(*mockGDYFactoryPtr, createTerminationHandler)
-            .WillOnce(Return(nullptr));
-
-        gameProcessPtr->addPlayer(mockPlayerPtr);
-
-        gameProcessPtr->init();
-
-        ASSERT_EQ(gameProcessPtr->getNumPlayers(), 1);
-        EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockGDYFactoryPtr.get()));
-        EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockLevelGeneratorPtr.get()));
-        EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockPlayerPtr.get()));
-        EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockPlayerAvatarPtr.get()));*/
     }
 
     TEST(GameRunnerTest, reset)
@@ -136,42 +69,41 @@ namespace SGA
         //auto state = gameRunner->getGameState();
     }
 
-    TEST(GameRunnerTest, playAgentsTest)
-	{
+ //   TEST(GameRunnerTest, playAgentsTest)
+	//{
 
-        std::string configPath("tests/resources/test.yaml");
-        auto gameConfig = SGA::loadConfigFromYAML(configPath);      
+ //       std::string configPath("tests/resources/test.yaml");
+ //       auto gameConfig = SGA::loadConfigFromYAML(configPath);      
 
-        auto mockGameRunnerPtr = std::unique_ptr<MockGameRunner>(new MockGameRunner(*gameConfig));
-        //Generate Agents
-        auto yamlString = R"(
-        Agents:
-          - RandomAgent
-          - HumanAgent
-        )";
+ //       auto mockGameRunnerPtr = std::unique_ptr<MockGameRunner>(new MockGameRunner(*gameConfig));
+ //       //Generate Agents
+ //       auto yamlString = R"(
+ //       Agents:
+ //         - RandomAgent
+ //         - HumanAgent
+ //       )";
 
-        auto agentsNode = loadFromStringAndGetNode(yamlString, "Agents");
+ //       auto agentsNode = loadFromStringAndGetNode(yamlString, "Agents");
 
-        auto agents = gameConfig->generateAgents();
+ //       auto agents = gameConfig->generateAgents();
 
-        EXPECT_CALL(*mockGameRunnerPtr, initializeRenderer(Eq(0)))
-            .Times(1);
+ //       EXPECT_CALL(*mockGameRunnerPtr, initializeRenderer(Eq(0)))
+ //           .Times(1);
 
-        EXPECT_CALL(*mockGameRunnerPtr, initializeAgents(_))
-            .Times(1);
+ //       EXPECT_CALL(*mockGameRunnerPtr, initializeAgents(_))
+ //           .Times(1);
 
-        EXPECT_CALL(*mockGameRunnerPtr, ensureRendererInitialized(_))
-            .Times(1);
+ //       EXPECT_CALL(*mockGameRunnerPtr, ensureRendererInitialized(_))
+ //           .Times(1);
 
-        EXPECT_CALL(*mockGameRunnerPtr, playInternal(_,0))
-            .Times(1);
+ //       EXPECT_CALL(*mockGameRunnerPtr, playInternal(_,0))
+ //           .Times(1);
 
-        mockGameRunnerPtr->play(agents.begin(), agents.end(), SGA::Vector2f(1200, 800));
+ //       mockGameRunnerPtr->play(agents.begin(), agents.end(), SGA::Vector2f(1200, 800));
 
-
-        EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockGameRunnerPtr.get()));
-        //auto state = gameRunner->getGameState();
-    }
+ //       EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockGameRunnerPtr.get()));
+ //       //auto state = gameRunner->getGameState();
+ //   }
 
  //   TEST(GameRunnerTest, playAgentsCallsTest)
 	//{
