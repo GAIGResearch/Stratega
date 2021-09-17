@@ -137,9 +137,10 @@ jobs:
         run: |
           cmake --build build -j 2
       - name: Test Mac and Linux
+        shell: bash
         if: runner.os == 'Linux' || runner.os == 'macOS'
         run: |
-          GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 test-dir build -C Debug ctest -V
+          GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 --test-dir build -C Debug -V ctest 
       - name: Test Windows      
         if: runner.os == 'Windows'
         run: |
