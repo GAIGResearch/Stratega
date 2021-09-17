@@ -22,7 +22,7 @@ namespace SGA
     
     TEST(ConfigurationTest, loadAgents)
 	{
-        auto agentsNode = loadAndGetNode("../../../tests/resources/agents.yaml", "Agents");
+        auto agentsNode = loadAndGetNode("tests/resources/agents.yaml", "Agents");
 
        //auto mockGameConfigPtr = std::shared_ptr<MockGameConfig>(new MockGameConfig());
 
@@ -41,10 +41,10 @@ namespace SGA
 
     TEST(ConfigurationTest, loadPlayerDefinition)
     {
-        auto playerNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Player");
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
-        auto actionsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Actions");
+        auto playerNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Player");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
+        auto actionsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Actions");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -79,8 +79,8 @@ namespace SGA
 
     TEST(ConfigurationTest, loadEntityGroups)
     {
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -95,8 +95,8 @@ namespace SGA
     
     TEST(ConfigurationTest, loadEntitiesDefinition)
     {
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -118,7 +118,7 @@ namespace SGA
         ASSERT_EQ(entityType0->getSymbol(), 'a');
         
 
-        auto actionsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Actions");
+        auto actionsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Actions");
         parserPtr->parseActions(actionsNode, *gameConfigPtr);
         parserPtr->assignEntitiesActions(entitiesNode, *gameConfigPtr);
         ASSERT_EQ(entityType0->getActionIDs().size(), 2);
@@ -127,10 +127,10 @@ namespace SGA
 
     TEST(ConfigurationTest, loadActions)
     {
-        auto playerNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Player");
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
-        auto actionsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Actions");
+        auto playerNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Player");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
+        auto actionsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Actions");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -166,12 +166,12 @@ namespace SGA
 
     TEST(ConfigurationTest, loadForwardModelDefinition)
     {
-        auto fmNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "ForwardModel");
+        auto fmNode = loadAndGetNode("tests/resources/configurationTest.yaml", "ForwardModel");
 
-        auto playerNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Player");
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
-        auto actionsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Actions");
+        auto playerNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Player");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
+        auto actionsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Actions");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -197,12 +197,12 @@ namespace SGA
 
     TEST(ConfigurationTest, loadGameDescriptionDefinition)
     {
-        auto fmNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "ForwardModel");
-        auto gdNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "GameDescription");
+        auto fmNode = loadAndGetNode("tests/resources/configurationTest.yaml", "ForwardModel");
+        auto gdNode = loadAndGetNode("tests/resources/configurationTest.yaml", "GameDescription");
 
-        auto entityGroupsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "EntityGroups");
-        auto entitiesNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Entities");
-        auto actionsNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "Actions");
+        auto entityGroupsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "EntityGroups");
+        auto entitiesNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Entities");
+        auto actionsNode = loadAndGetNode("tests/resources/configurationTest.yaml", "Actions");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -223,7 +223,7 @@ namespace SGA
 
     TEST(ConfigurationTest, loadGameRunnerDefinition)
     {
-        auto grNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "GameRunner");
+        auto grNode = loadAndGetNode("tests/resources/configurationTest.yaml", "GameRunner");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
@@ -243,7 +243,7 @@ namespace SGA
 
     TEST(ConfigurationTest, loadGameRunnerDefinitionByDefault)
     {
-        auto grNode = loadAndGetNode("../../../tests/resources/configurationTest.yaml", "GameRunner");
+        auto grNode = loadAndGetNode("tests/resources/configurationTest.yaml", "GameRunner");
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
         auto parserPtr = std::shared_ptr<GameConfigParser>(new GameConfigParser());
