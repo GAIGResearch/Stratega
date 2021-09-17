@@ -147,7 +147,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           #ctest --test-dir build --GTEST_OUTPUT=xml:test-results --GTEST_COLOR=1 -V -C Debug
-          ctest --test-dir build --verbose 
+          ctest --test-dir build --verbose -C Debug
       - name: Upload test results
         uses: actions/upload-artifact@v2
         if: failure()
