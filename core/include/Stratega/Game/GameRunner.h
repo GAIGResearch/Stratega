@@ -37,24 +37,24 @@ namespace SGA
 		/// <summary>
 		/// Resets the game to an initial state.
 		/// </summary>
-		void reset();
+		virtual void reset();
 
 		/// <summary>
 		/// Resets the game to an initial state with a specific map.
 		/// </summary>
-		void reset(int levelID);
+		virtual void reset(int levelID);
 		
 		/// <summary>
 		/// Advances the game by one timestep.
 		/// When the game has ended, you are responsible for calling <see cref="SGA::GameRunner::reset()"> to reset the environments state.
 		/// </summary>
 		/// <param name="actions">The action used to advance the game. Depending on the game type, the action is validated differently.</param>
-		void step(const ActionAssignment& actions);
+		virtual void step(const ActionAssignment& actions);
 		
 		/// <summary>
 		/// Renders a visual representation of the game. May create a new window when called for the first time.
 		/// </summary>
-		void render(Vector2f& resolution);
+		virtual void render(Vector2f& resolution);
 		
 		/// <summary>
 		/// Advances the game until it has ended.
@@ -133,7 +133,7 @@ namespace SGA
 
 				initializeAgents(agents);
 				ensureRendererInitialized(resolution);
-				renderer->setPlayerPointOfView(humanIndex);
+				initializeRenderer(humanIndex);
 				playInternal(agents, humanIndex);
 			}
 			catch (const std::exception& ex)
@@ -148,13 +148,18 @@ namespace SGA
 		[[nodiscard]] const GameState& getGameState() const;
 
 	protected:
-		void initializeAgents(std::vector<Agent*>& agents);
-		void ensureRendererInitialized(Vector2f& resolution);
+		virtual void initializeAgents(std::vector<Agent*>& agents);
+		virtual void ensureRendererInitialized(Vector2f& resolution);
 
 		virtual void runInternal(std::vector<Agent*>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<Agent*>& agents, int humanIndex) = 0;
 		
 		virtual void checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID);
+
+		virtual void initializeRenderer(int humanIndex)
+		{
+			renderer->setPlayerPointOfView(humanIndex);
+		}
 
 		std::unique_ptr<ForwardModel> forwardModel;
 		std::unique_ptr<GameRenderer> renderer;

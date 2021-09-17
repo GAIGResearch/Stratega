@@ -42,24 +42,24 @@ namespace SGA
 		/// Returns this player's ID.
 		/// </summary>
 		/// <returns>This player's ID</returns>
-		int getPlayerID();
+		virtual int getPlayerID();
 
 		/// <summary>
 		/// Sets the ID of this plater
 		/// </summary>
 		/// <param name="playerID">Player ID to set.</param>
-		void setPlayerID(int playerID);
+		virtual void setPlayerID(int playerID);
 
 		/// <summary>
 		/// Sets the seed for the random number generator of this agent.
 		/// </summary>
 		/// <param name="seed">Seed for the generator</param>
-		void setSeed(std::mt19937::result_type seed = 0);
+		virtual void setSeed(std::mt19937::result_type seed = 0);
 
 		/// <summary>
 		/// Returns the name of this agent.
 		/// </summary>
-		const std::string& getName() const { return agentName; }
+		virtual const std::string& getName() const { return agentName; }
 
 
 	private:

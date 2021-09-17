@@ -7,15 +7,19 @@
 class Arena : public SGA::GameObserver
 {
 public:
+	Arena(const SGA::GameConfig& config, std::unique_ptr<SGA::GameRunner> runner)
+		: config(&config), runner(std::move(runner)), gameBattleCount(0)
+	{
+	}
 	Arena(const SGA::GameConfig& config);
 
-	void runGames(int playerCount, int seed, int gamesNumber, int mapNumber=1);
-	void runGames(int playerCount, int seed, int gamesNumber, int mapNumber, std::vector<std::shared_ptr<SGA::Agent>> agents);
-	void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
-	void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> agents);
+	virtual void runGames(int playerCount, int seed, int gamesNumber, int mapNumber=1);
+	virtual void runGames(int playerCount, int seed, int gamesNumber, int mapNumber, std::vector<std::shared_ptr<SGA::Agent>> agents);
+	virtual void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
+	virtual void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> agents);
 
-	void onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel) override;
-	void onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel) override;
+	virtual void onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel) override;
+	virtual void onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel) override;
 	
 private:
 	const SGA::GameConfig* config;

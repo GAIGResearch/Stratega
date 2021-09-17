@@ -10,16 +10,31 @@ namespace SGA {
     public:
         MockGameRunner(GameConfig& config) : GameRunner(config) {}
 
-        MOCK_METHOD(void, reset, (), ());
-        MOCK_METHOD(void, reset, (int levelID), ());
+        MOCK_METHOD(void, reset, (), (override));
+        MOCK_METHOD(void, reset, (int levelID), (override));
 
-        MOCK_METHOD(void, step, (ActionAssignment& actions),());
-        MOCK_METHOD(void, render, (Vector2f& resolution), ());
+        MOCK_METHOD(void, step, (const ActionAssignment& actions),(override));
+        MOCK_METHOD(void, render, (Vector2f& resolution), (override));
 
-        MOCK_METHOD(void, runInternal, (std::vector<Agent*>& agents, GameObserver& observer), ());
-        MOCK_METHOD(void, playInternal, (std::vector<Agent*>& agents, int humanIndex), ());
+        MOCK_METHOD(void, runInternal, (std::vector<Agent*>& agents, GameObserver& observer), (override));
+        MOCK_METHOD(void, playInternal, (std::vector<Agent*>& agents, int humanIndex), (override));
 
-        MOCK_METHOD(void, ensureRendererInitialized, (SGA::Vector2f& resolution), ());
+        MOCK_METHOD(void, initializeAgents, (std::vector<Agent*>& agents), (override));
+        MOCK_METHOD(void, ensureRendererInitialized, (Vector2f& resolution), (override));
 
+        MOCK_METHOD(void, initializeRenderer, (int humanIndex), (override));
+
+        /*void initializeAgents(std::vector<Agent*>& agents);
+        void ensureRendererInitialized(Vector2f& resolution);*/
+
+       //
+       // //std::vector<std::unique_ptr<Agent>>::iterator
+       // MOCK_METHOD(void, runMock, (std::vector<std::unique_ptr<Agent>>::iterator begin, std::vector<std::unique_ptr<Agent>>::iterator end, GameObserver* observer));
+       //// MOCK_METHOD(void, ensureRendererInitialized, (SGA::Vector2f& resolution), ());
+       // 
+       // void run(std::vector<std::unique_ptr<Agent>>::iterator begin, std::vector<std::unique_ptr<Agent>>::iterator end, GameObserver* observer = nullptr)
+       // {
+       //     runMock(begin, end, observer);
+       // }
 	};
 }  

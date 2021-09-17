@@ -52,17 +52,17 @@ namespace SGA
     	// Technology tree
         TechnologyTreeCollection technologyTreeCollection;
             	
-        std::vector<std::unique_ptr<Agent>> generateAgents() const;
-        std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
+        virtual std::vector<std::unique_ptr<Agent>> generateAgents() const;
+        virtual std::unique_ptr<GameState> generateGameState(int levelID=-1) const;
 
-        void initializeGamestate(GameState& state) const
+        virtual void initializeGamestate(GameState& state) const
         {
             state.setGameType(gameType);
             state.setTickLimit(tickLimit);
             state.setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
         }
 
-        void generateGameInfo(GameState& state)const
+        virtual void generateGameInfo(GameState& state)const
         {
             //GameInfo
             GameInfo gameInfo;
@@ -79,7 +79,7 @@ namespace SGA
             state.setGameInfo(std::make_shared<GameInfo>(gameInfo));
         }
 
-        void addPlayers(GameState& state) const
+        virtual void addPlayers(GameState& state) const
         {
             std::unordered_set<int> playerIDs;
             for (size_t i = 0; i < getNumberOfPlayers(); i++)
@@ -88,7 +88,7 @@ namespace SGA
             }
         }
 
-        void createTileLookup(GameState& state) const
+        virtual void createTileLookup(GameState& state) const
         {
             std::unordered_map<char, const TileType*> tileLookup;
             const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
@@ -101,7 +101,7 @@ namespace SGA
             }
         }
 
-        void createEntitiesLookup(GameState& state) const
+        virtual  void createEntitiesLookup(GameState& state) const
         {
             std::unordered_map<char, const EntityType*> entityLookup;
             for (const auto& idEntityPair : state.getGameInfo()->getEntityTypes())
@@ -125,7 +125,7 @@ namespace SGA
             return tiles;
         }
 
-        void instanceEntities(GameState& state, const std::vector<EntityPlacement> &entityPlacements) const
+        virtual void instanceEntities(GameState& state, const std::vector<EntityPlacement> &entityPlacements) const
         {           
             //Instance Entities
             for (auto& entity : entityPlacements)
@@ -134,13 +134,13 @@ namespace SGA
             }            
         }
 
-        void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
+        virtual void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
         {
             //Initialize board with size and set of tiles.
             state.initBoard(board.getWidth(), tiles);
         }
 
-        void initResearchTechs(GameState& state) const
+        virtual void initResearchTechs(GameState& state) const
         {
             //Initialize researched list for all players
             state.initResearchTechs();
@@ -175,6 +175,6 @@ namespace SGA
         int getTechnologyID(const std::string& name) const;
 
         //Adds a new player to the game.
-        int addPlayer(GameState& state, GameInfo& gameInfo) const;
+        virtual int addPlayer(GameState& state, GameInfo& gameInfo) const;
     };
 }
