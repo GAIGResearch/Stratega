@@ -138,16 +138,12 @@ jobs:
           cmake --build build -j 2
       - name: Test Mac and Linux
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        shell: bash
         run: |
-          CMAKE_BUILD_TYPE="${{ matrix.release && 'Release' || 'Debug' }}"
-          GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 test-dir build -C CMAKE_BUILD_TYPE ctest -V
+          GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 test-dir build -C Debug ctest -V
       - name: Test Windows      
         if: runner.os == 'Windows'
-        shell: bash
         run: |
-          CMAKE_BUILD_TYPE="${{ matrix.release && 'Release' || 'Debug' }}"
-          ctest --test-dir build --GTEST_OUTPUT=xml:test-results --GTEST_COLOR=1 -V -C CMAKE_BUILD_TYPE
+          ctest --test-dir build --GTEST_OUTPUT=xml:test-results --GTEST_COLOR=1 -V -C Debug
       - name: Upload test results
         uses: actions/upload-artifact@v2
         if: failure()
