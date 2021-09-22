@@ -59,14 +59,14 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                    Type: Dijkstra
+                    #Type: Dijkstra
+                    #Options:
+                    #    SearchSize: 3
+                    #    AllowDiagonals: true
+                    Type: Neighbours
                     Options:
-                        SearchSize: 3
-                        AllowDiagonals: true
-                #    Type: Neighbours
-                #    Options:
-                #        Shape: Circle
-                #        Size: 1
+                        Shape: Circle
+                        Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
