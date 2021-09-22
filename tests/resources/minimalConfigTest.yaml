@@ -62,7 +62,7 @@ Actions:
                     Type: Dijkstra
                     Options:
                         SearchSize: 3
-                        AllowDiagonals: false
+                        AllowDiagonals: true
                 #    Type: Neighbours
                 #    Options:
                 #        Shape: Circle

@@ -45,7 +45,7 @@ namespace SGA
         
         auto possibleActions=fmPtr->generateActions(*gameState, 0);
 
-        ASSERT_EQ(possibleActions.size(), 12);
+        ASSERT_EQ(possibleActions.size(), 15);
 
         auto action0 = possibleActions[0];
 
@@ -86,7 +86,7 @@ namespace SGA
         
         auto possibleActions=fmPtr->generateActions(*gameState, 0);
 
-        ASSERT_EQ(possibleActions.size(), 12);
+        ASSERT_EQ(possibleActions.size(), 15);
 
         auto action0 = possibleActions[0];
 
