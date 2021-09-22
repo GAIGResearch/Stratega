@@ -1,0 +1,35 @@
+Tiles:
+    Plain:
+        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../GUI/Assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../GUI/Assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  W
+        M  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M

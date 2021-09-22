@@ -26,6 +26,37 @@ namespace SGA
 		void parseGameDescription(const YAML::Node& gameDescription, GameConfig& config) const;
 		void parseGameRunner(const YAML::Node& gameRunner, GameConfig& config) const;
         void parseRenderConfig(const YAML::Node& configNode, GameConfig& config) const;
+        void assignPlayerActions(const YAML::Node& configNode, GameConfig& config) const
+        {
+            //Assign player actions
+            auto actions = configNode["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+            for (const auto& actionName : actions)
+            {
+                config.playerActionIds.emplace_back(config.getActionID(actionName));
+            }
+        }
+        void assignEntitiesActions(const YAML::Node& configNode, GameConfig& config) const
+        {
+            //Assign actions to entities
+            // Parse additional configurations for entities that couldn't be handled previously
+            auto types = configNode.as<std::map<std::string, YAML::Node>>();
+            for (auto& type : config.entityTypes)
+            {
+                // Assign actions to entities
+                auto actions = types[type.second.getName()]["Actions"].as<std::vector<std::string>>(std::vector<std::string>());
+                for (const auto& actionName : actions)
+                {
+                    type.second.getActionIDs().emplace_back(config.getActionID(actionName));
+                }
+
+                // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
+                type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], config));
+                auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
+                type.second.setRequiredTechID(name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name));
+                // Hardcoded cost information
+                type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], config));
+            }
+        }
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
@@ -165,6 +196,7 @@ namespace YAML
             if (value == "Neighbours")
             {
                 auto temp = std::make_shared<SGA::Neighbours>();
+                temp->name = value;
                 if (node["Options"].IsDefined())
                 {
                     temp->shapeType = node["Options"]["Shape"].as<SGA::Neighbours::ShapeType>();
@@ -176,6 +208,7 @@ namespace YAML
             else if (value == "Dijkstra")
             {
                 auto temp = std::make_shared<SGA::Dijkstra>();
+                temp->name = value;
                 if (node["Options"].IsDefined())
                 {
                     temp->searchSize = node["Options"]["SearchSize"].as<int>(1);

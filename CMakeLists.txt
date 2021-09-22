@@ -35,3 +35,10 @@ endif()
 if(STRATEGA_BUILD_DOCS)
 	add_subdirectory("docs")
 endif()
+
+include(CTest)
+enable_testing()
+
+if(BUILD_TESTING)
+    add_subdirectory("tests")
+endif()

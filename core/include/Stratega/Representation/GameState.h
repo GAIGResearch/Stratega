@@ -21,7 +21,7 @@ namespace SGA
 	/// Contains the game data without any logic, offering access to the current board, a list of player and their units.
 	/// If the agent want access to the definition of entity types, actions or game config yaml  it should access to <see cref="SGA::GameInfo"/>
 	/// </summary>
-	struct GameState final
+	struct GameState
 	{
 
 	public:

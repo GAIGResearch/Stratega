@@ -38,8 +38,25 @@ namespace SGA
 		reference operator[] (const Vector2i& pos) { return grid[pos.y * width + pos.x]; }
 		const_reference operator[] (const Vector2i& pos) const { return grid[pos.y * width + pos.x]; }
 
-		reference get(int x, int y) { return grid[y * width + x]; }
-		const_reference get(int x, int y) const { return grid[y * width + x]; }
+		reference get(int x, int y)
+		{ 
+			auto pos = y * width + x;
+			if (pos > grid.size() || pos < 0)
+			{
+				throw std::runtime_error("Out of bounds of the grid.");
+			}
+
+			return grid[y * width + x]; 
+		}
+		const_reference get(int x, int y) const 
+		{
+			auto pos = y * width + x;
+			if (pos > grid.size()|| pos < 0)
+			{
+				throw std::runtime_error("Out of bounds of the grid.");
+			}
+			return grid[y * width + x]; 
+		}
 
 		[[nodiscard]] size_t getWidth() const { return width; }
 		[[nodiscard]] size_t getHeight() const { return height; }
