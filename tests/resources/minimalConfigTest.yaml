@@ -65,7 +65,7 @@ Actions:
                     #    AllowDiagonals: true
                     Type: Neighbours
                     Options:
-                        Shape: Circle
+                        Shape: Square
                         Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
