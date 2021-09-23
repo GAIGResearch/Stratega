@@ -652,7 +652,7 @@ namespace SGA
         config.renderConfig = std::make_unique<RenderConfig>();
 
         // Hardcode shader Path
-        ghc::filesystem::path filePath = "../../GUI/Assets/OutLine.frag";
+        ghc::filesystem::path filePath = "../Assets/OutLine.frag";
         // Convert path to an absolute path relative to the path of the configuration file
         auto tmp = ghc::filesystem::current_path();
         ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
@@ -669,7 +669,7 @@ namespace SGA
         }
         
         //Add Fog of War tile
-        filePath = "../../GUI/Assets/Tiles/notVisible.png";
+        filePath = "../Assets/Tiles/notVisible.png";
         // Convert path to an absolute path relative to the path of the configuration file
         tmp = ghc::filesystem::current_path();
         ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));

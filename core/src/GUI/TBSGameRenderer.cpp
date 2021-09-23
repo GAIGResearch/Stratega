@@ -45,8 +45,8 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-		std::string selectedPath = "../../GUI/Assets/Tiles/selected.png";
-		std::string fontPath = "../../GUI/Assets/arial.ttf";
+		std::string selectedPath = "../Assets/Tiles/selected.png";
+		std::string fontPath = "../Assets/arial.ttf";
 
 		ghc::filesystem::path filePath = selectedPath;
 		// Convert path to an absolute path relative to the path of the configuration file
