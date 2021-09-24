@@ -123,7 +123,7 @@ with open(path.join(python_directory, "README.md")) as f:
 
 setup(
     name='Stratega',
-    version='0.0.12',
+    version='0.0.17 ',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
     #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
@@ -136,6 +136,15 @@ setup(
     project_urls={
         "Github": "https://github.com/GAIGResearch/Stratega",
         "Community-Discord": "https://discord.com/invite/VVj8Y32DPK",
+    },
+    packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        'resources': ['assets/*frag'],
+        'resources': ['assets/*.ttf'],
+        'resources': ['assets/Tiles/*.png'],
+        'resources': ['assets/Entities/*.png'],
+        'resources': ['gameConfiguration/*.yaml'],
     },
     classifiers=[
         "Topic :: Scientific/Engineering :: Artificial Intelligence",

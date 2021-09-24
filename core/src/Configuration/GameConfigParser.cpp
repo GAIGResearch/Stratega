@@ -50,6 +50,8 @@ namespace SGA
 
 	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath) const
 	{
+        std::cout << "current path parse yaml:" << ghc::filesystem::current_path() << std::endl;
+        std::cout << "yaml filePath:" << filePath << std::endl;
 		auto configNode = YAML::LoadFile(filePath);
         auto config = std::make_unique<GameConfig>();
         config->yamlPath = filePath;
@@ -652,13 +654,19 @@ namespace SGA
         config.renderConfig = std::make_unique<RenderConfig>();
 
         // Hardcode shader Path
-        ghc::filesystem::path filePath = "../Assets/OutLine.frag";
+        ghc::filesystem::path filePath = "resources/assets/OutLine.frag";
         // Convert path to an absolute path relative to the path of the configuration file
-        auto tmp = ghc::filesystem::current_path();
+       /* auto tmp = ghc::filesystem::current_path();
+        std::cout << "original path:" << filePath <<std::endl;
+        std::cout << "current path:" << tmp<<std::endl;
+
         ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
         filePath = canonical(filePath);
-        current_path(tmp);
-        
+
+        std::cout << "file path:" << filePath << std::endl;
+        current_path(tmp);*/
+
+        //std::cout << "current path2:" << ghc::filesystem::current_path() << std::endl;
         config.renderConfig->outlineShaderPath = filePath.string();
 
         for (const auto& entityNode : configNode["Entities"])
@@ -669,12 +677,12 @@ namespace SGA
         }
         
         //Add Fog of War tile
-        filePath = "../Assets/Tiles/notVisible.png";
+        filePath = "resources/assets/Tiles/notVisible.png";
         // Convert path to an absolute path relative to the path of the configuration file
-        tmp = ghc::filesystem::current_path();
+       /* tmp = ghc::filesystem::current_path();
         ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
         filePath = canonical(filePath);
-        current_path(tmp);
+        current_path(tmp);*/
 
         config.renderConfig->tileSpritePaths.emplace("FogOfWar", filePath.string());
 

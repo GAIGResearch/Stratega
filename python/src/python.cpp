@@ -240,7 +240,8 @@ PYBIND11_MODULE(stratega, m)
 			Timer
     )pbdoc";
 
-	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
+	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"),py::call_guard<py::scoped_ostream_redirect,
+		py::scoped_estream_redirect>());
 	m.def("create_runner", &createRunner, "Create game runner", py::arg("gameConfig"));
 	m.def("create_arena", &createArena, "Create game aren", py::arg("gameConfig"));
 	m.def("generate_agents", &generateAgents, "Generate agents", py::arg("gameConfig"));

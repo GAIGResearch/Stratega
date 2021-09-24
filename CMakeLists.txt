@@ -27,6 +27,8 @@ add_subdirectory("core")
 add_subdirectory("GUI")
 add_subdirectory("Arena")
 
+#Copy Assets folder
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Optional
 if(STRATEGA_BUILD_BINDINGS)
 	add_subdirectory("python")
