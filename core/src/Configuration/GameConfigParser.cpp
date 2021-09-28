@@ -787,7 +787,7 @@ namespace SGA
 
     std::string GameConfigParser::parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const
     {
-        try {
+        //try {
             if (!pathNode.IsScalar())
                 throw std::runtime_error("Received a invalid file-path");
 
@@ -799,13 +799,10 @@ namespace SGA
             current_path(canonical(path(config.yamlPath).parent_path()));
             filePath = canonical(filePath);
             current_path(tmp);
-
+            std::cout << "Path Node: " << filePath << std::endl;
             return filePath.string();
-        }
-        catch (std::exception) 
-        {
-            throw std::runtime_error("Received a invalid file-path: " + pathNode.as<std::string>());
-        }
+        //}
+       
     }
 	
 	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const

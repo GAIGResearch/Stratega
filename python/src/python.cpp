@@ -25,9 +25,11 @@
 #include <sstream>
 //#include <filesystem>
 #include <Stratega/Logging/Log.h>
-
+#include <limits>
 #include <Stratega/Utils/Timer.h>
-
+#include <Stratega/Utils/filesystem.hpp>
+#undef max
+//#include <Stratega/Utils/>
 namespace py = pybind11;
 
 // STL
@@ -145,9 +147,60 @@ public:
 	}
 };
 
+std::string getModulePath()
+{
+	//py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+	py::object stratega = py::module::import("stratega");
+	return stratega.attr("__file__").cast<std::string>();
+}
+
+bool isLocalResourcesPath(std::string& modulePath, std::string& configPath)
+{
+	//Check if config exist	
+	ghc::filesystem::path newPossiblePath(modulePath);
+	newPossiblePath=newPossiblePath.parent_path() / configPath;
+	//newPossiblePath.make_preferred();
+	std::cout << "Checking if file exist in module: " << newPossiblePath << std::endl;
+	if (ghc::filesystem::exists(newPossiblePath))
+	{
+		std::cout << "Found!"<< std::endl;
+		return true;
+	}		
+	else
+	{
+		std::cout << "Not found!" << std::endl;
+		return false;
+	}		
+}
+
  std::unique_ptr<SGA::GameConfig> loadConfig(std::string& path)
  {
-	 return SGA::loadConfigFromYAML(path);
+	 ghc::filesystem::path pathCheck(path);
+	 if(pathCheck.is_absolute())
+	 {
+		 std::cout << "Absolute config: " << path << std::endl;
+		 return SGA::loadConfigFromYAML(path);
+	 }
+	 else
+	 {
+		 auto modulePath = getModulePath();
+		 std::cout << "Module installed path: " << modulePath << std::endl;
+
+		 if (isLocalResourcesPath(modulePath,path))
+		 {
+			 std::cout << "Is a local stratega package path: " << path << std::endl;
+			 ghc::filesystem::path newPossiblePath(modulePath);
+			 newPossiblePath = newPossiblePath.parent_path() / path;
+
+			 return SGA::loadConfigFromYAML(newPossiblePath.string());
+		 }
+		 else
+		 {
+			 std::cout << "Is a local path: " << path << std::endl;
+			 return SGA::loadConfigFromYAML(path);
+		 }
+	 }
+	 
  }
 
  std::unique_ptr<SGA::GameRunner> createRunner(const SGA::GameConfig* gameConfig)
@@ -1099,8 +1152,8 @@ PYBIND11_MODULE(stratega, m)
 					std::cout,                               // std::ostream&
 					py::module_::import("sys").attr("stdout") // Python output
 				);
-
 				std::mt19937 rngEngine(seed);
+				
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
 				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
