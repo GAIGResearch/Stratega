@@ -798,6 +798,40 @@ namespace SGA
                     config.renderConfig->fontPath = filePath.string();
                 }
             }
+            
+            //Load EntityCircleCollider only on RTS
+            if (config.gameType == SGA::GameType::RTS)
+            {
+                const auto entityColliderNode = gameRendererNode["EntityCollider"];
+                if (entityColliderNode.IsDefined())
+                {
+                    config.renderConfig->entityCircleColliderPath = parseFilePath(entityColliderNode, config);
+                }
+                else
+                {
+                    if (config.resourcesPath != "")
+                    {
+                        ghc::filesystem::path path(config.resourcesPath);
+                        path = path / "assets/Tiles/circleCollider.png";
+                        std::cout << "entity circle collider path:" << path.string() << std::endl;
+                        config.renderConfig->entityCircleColliderPath = path.string();
+                    }
+                    else
+                    {
+                        using namespace ghc::filesystem;
+
+                        path filePath = "../../assets/Tiles/circleCollider.png";
+                        // Convert path to an absolute path relative to the path of the configuration file
+                        auto tmp = current_path();
+                        current_path(canonical(path(config.yamlPath).parent_path()));
+                        filePath = canonical(filePath);
+                        current_path(tmp);
+                        std::cout << "entity circle collider path:" << filePath.string() << std::endl;
+                        config.renderConfig->entityCircleColliderPath = filePath.string();
+                    }
+                }
+            }
+            
         }
         else
         {

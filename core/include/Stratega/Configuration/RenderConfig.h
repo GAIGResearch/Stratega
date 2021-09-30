@@ -11,6 +11,7 @@ namespace SGA
 	{
         std::string outlineShaderPath;
         std::string fontPath;
+        std::string entityCircleColliderPath;
 
         std::string selectedPath;
 

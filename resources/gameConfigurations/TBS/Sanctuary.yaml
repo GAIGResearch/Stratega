@@ -28,7 +28,7 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: .../../assets/Tiles/plain.png
+        Sprite: ../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
