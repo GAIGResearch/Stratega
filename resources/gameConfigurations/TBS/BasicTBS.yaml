@@ -4,8 +4,8 @@ GameConfig:
     RoundLimit: 100
 
 Agents:
-    - MyAgent
-    - CombatAgent
+    - HumanAgent
+    - OSLAAgent
 
 GameRenderer:
     Resolution:
@@ -249,7 +249,7 @@ Actions:
             - "PayCost(Source, Target)"
         OnComplete:
             - "Research(Source, Target)"
-            - "ModifyResource(Source.Player.Score, 10)"
+            - "ModifyResource(Source.Score, 10)"
 
     
     Mine:
@@ -319,7 +319,7 @@ Actions:
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
-            - "ModifyResource(Source.Player.Score, 5)"
+            - "ModifyResource(Source.Score, 5)"
 
 TechnologyTrees:
     SingleTree:
