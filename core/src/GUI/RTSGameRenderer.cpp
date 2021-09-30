@@ -11,7 +11,7 @@
 
 namespace SGA
 {
-	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& newResolution)
+	RTSGameRenderer::RTSGameRenderer(SGA::Vector2i& newResolution)
 		: state(),
 		fowState(),
 		assignment(),

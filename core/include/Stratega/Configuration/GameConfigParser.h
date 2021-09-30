@@ -4,13 +4,13 @@
 namespace SGA
 {
 	
-    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath);
+    std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath="");
     std::unordered_map<int, LevelDefinition> loadLevelsFromYAML(const std::string& fileMapsPath, const GameConfig& config);
 	
 	class GameConfigParser
 	{
 	public:
-		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath) const;
+		std::unique_ptr<GameConfig> parseFromFile(const std::string& filePath, const std::string& resourcesPath) const;
         std::unordered_map<int, LevelDefinition> parseLevelsFromFile(const std::string& fileMapsPath, const GameConfig& config) const;
 
 		void parseAgents(const YAML::Node& agentsNode, GameConfig& config) const;

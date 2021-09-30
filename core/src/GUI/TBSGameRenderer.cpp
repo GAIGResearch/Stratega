@@ -11,7 +11,7 @@
 #include <Stratega/Utils/filesystem.hpp>
 namespace SGA
 {
-	TBSGameRenderer::TBSGameRenderer(SGA::Vector2f& resolution)
+	TBSGameRenderer::TBSGameRenderer(SGA::Vector2i& resolution)
 		: config(nullptr),
 		  state(),
 		  fowState(),
@@ -45,25 +45,9 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
-		std::string selectedPath = "resources/assets/Tiles/selected.png";
-		std::string fontPath = "resources/assets/arial.ttf";
+		assetCache.loadTexture("selected", gameConfig.renderConfig->selectedPath);
 
-		//ghc::filesystem::path filePath = selectedPath;
-		//// Convert path to an absolute path relative to the path of the configuration file
-		//auto tmp = ghc::filesystem::current_path();
-		//ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
-		//filePath = canonical(filePath);
-		//current_path(tmp);
-
-		//assetCache.loadTexture("selected", filePath.string());
-		assetCache.loadTexture("selected", selectedPath);
-
-		/*filePath = fontPath;
-		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
-		filePath = canonical(filePath);
-		current_path(tmp);
-		assetCache.loadFont("font",  filePath.string());*/
-		assetCache.loadFont("font", fontPath);
+		assetCache.loadFont("font", gameConfig.renderConfig->fontPath);
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);

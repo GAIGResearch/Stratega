@@ -14,13 +14,13 @@ namespace SGA {
         MOCK_METHOD(void, reset, (int levelID), (override));
 
         MOCK_METHOD(void, step, (const ActionAssignment& actions),(override));
-        MOCK_METHOD(void, render, (Vector2f& resolution), (override));
+        MOCK_METHOD(void, render, (Vector2i& resolution), (override));
 
         MOCK_METHOD(void, runInternal, (std::vector<Agent*>& agents, GameObserver& observer), (override));
         MOCK_METHOD(void, playInternal, (std::vector<Agent*>& agents, int humanIndex), (override));
 
         MOCK_METHOD(void, initializeAgents, (std::vector<Agent*>& agents), (override));
-        MOCK_METHOD(void, ensureRendererInitialized, (Vector2f& resolution), (override));
+        MOCK_METHOD(void, ensureRendererInitialized, (Vector2i& resolution), (override));
 
         MOCK_METHOD(void, initializeRenderer, (int humanIndex), (override));
 

@@ -3,6 +3,18 @@ GameConfig:
     RoundLimit: 100
     FogOfWar: true
 
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected:
+            Sprite: ../../assets/Tiles/selected.png
+        FogOfWar:
+            Sprite: ../../assets/Tiles/notVisible.png
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
 
 Agents:
     - HumanAgent
@@ -31,6 +43,7 @@ Tiles:
         Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
+
         
 Board:
     GenerationType: Manual

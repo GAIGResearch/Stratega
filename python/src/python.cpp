@@ -175,29 +175,41 @@ bool isLocalResourcesPath(std::string& modulePath, std::string& configPath)
 
  std::unique_ptr<SGA::GameConfig> loadConfig(std::string& path)
  {
+	 auto modulePath = getModulePath();
+	 std::cout << "Module installed path: " << modulePath << std::endl;
+	 ghc::filesystem::path modulePythonPath(modulePath);
+	 
+	 modulePythonPath.make_preferred();
 	 ghc::filesystem::path pathCheck(path);
 	 if(pathCheck.is_absolute())
 	 {
 		 std::cout << "Absolute config: " << path << std::endl;
-		 return SGA::loadConfigFromYAML(path);
+		 auto resourcePath = (modulePythonPath.parent_path() / "resources").string();
+		 std::cout << "Running a albsolute config , package path: " << resourcePath  << std::endl;
+		 
+		 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());
+		 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
+		 return std::move(config);
 	 }
 	 else
-	 {
-		 auto modulePath = getModulePath();
-		 std::cout << "Module installed path: " << modulePath << std::endl;
-
+	 { 
 		 if (isLocalResourcesPath(modulePath,path))
 		 {
-			 std::cout << "Is a local stratega package path: " << path << std::endl;
-			 ghc::filesystem::path newPossiblePath(modulePath);
-			 newPossiblePath = newPossiblePath.parent_path() / path;
+			 auto newPossiblePath = modulePythonPath.parent_path() / path;
+			 std::cout << "Running a local config , package path: " << (modulePythonPath.parent_path() / "resources").string() << std::endl;
 
-			 return SGA::loadConfigFromYAML(newPossiblePath.string());
+			 auto config = SGA::loadConfigFromYAML(newPossiblePath.string(), (modulePythonPath.parent_path() / "resources").string());
+			 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
+			 return std::move(config);
 		 }
 		 else
 		 {
 			 std::cout << "Is a local path: " << path << std::endl;
-			 return SGA::loadConfigFromYAML(path);
+			 std::cout << "Running relative path but not local config , package path: " << (modulePythonPath.parent_path() / "resources").string() << std::endl;
+			 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());		 
+			 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
+
+			 return std::move(config);
 		 }
 	 }
 	 
@@ -1146,7 +1158,7 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("play",
-			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2f& resolution,int seed = 0)
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2i& resolution,int seed = 0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
@@ -1173,7 +1185,7 @@ PYBIND11_MODULE(stratega, m)
 			}
 		)
 		.def("play",
-			[](SGA::GameRunner& a, py::list agents, SGA::Vector2f& resolution,int seed=0)
+			[](SGA::GameRunner& a, py::list agents, SGA::Vector2i& resolution,int seed=0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
@@ -1322,6 +1334,7 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("entity_categories", &SGA::GameConfig::entityCategories)
 
 		.def_readwrite("yaml_path", &SGA::GameConfig::yamlPath)
+		.def_readwrite("resources_path", &SGA::GameConfig::resourcesPath)
 
 		.def("generate_agents", &SGA::GameConfig::generateAgents)
 		.def("generate_gamestate", &SGA::GameConfig::generateGameState, py::arg("levelID") = -1)

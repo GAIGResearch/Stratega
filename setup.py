@@ -141,7 +141,7 @@ def stratega_package_data(config='Debug'):
 
 setup(
     name='Stratega',
-    version='0.0.17 ',
+    version='0.0.18',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
     #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',

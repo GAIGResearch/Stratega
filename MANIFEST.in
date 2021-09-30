@@ -1,0 +1,8 @@
+#Include assets
+include resources/assets/*frag
+include resources/assets/*.ttf
+include resources/assets/Tiles/*.png
+include resources/assets/Entities/*.png
+
+#Include game configurations
+include resources/gameConfigurations/*.yaml

@@ -54,7 +54,7 @@ namespace SGA
 		/// <summary>
 		/// Renders a visual representation of the game. May create a new window when called for the first time.
 		/// </summary>
-		virtual void render(Vector2f& resolution);
+		virtual void render(Vector2i& resolution);
 		
 		/// <summary>
 		/// Advances the game until it has ended.
@@ -106,7 +106,7 @@ namespace SGA
 		/// <param name="end">The end of the range containing the agents to obtain actions from.</param>
 		/// <param name="resolution">The resolution of the window that should be used to display the game.</param>
 		template<typename Iterator>
-		void play(Iterator begin, Iterator end, Vector2f& resolution)
+		void play(Iterator begin, Iterator end, Vector2i& resolution)
 		{
 			assert(std::distance(begin, end) == currentState->getPlayers().size());
 
@@ -149,7 +149,7 @@ namespace SGA
 
 	protected:
 		virtual void initializeAgents(std::vector<Agent*>& agents);
-		virtual void ensureRendererInitialized(Vector2f& resolution);
+		virtual void ensureRendererInitialized(Vector2i& resolution);
 
 		virtual void runInternal(std::vector<Agent*>& agents, GameObserver& observer) = 0;
 		virtual void playInternal(std::vector<Agent*>& agents, int humanIndex) = 0;

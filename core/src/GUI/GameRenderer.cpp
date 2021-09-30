@@ -6,7 +6,7 @@
 
 namespace SGA
 {
-	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2f& resolution)
+	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2i& resolution)
 	{
 		if (type == GameType::TBS)
 		{
