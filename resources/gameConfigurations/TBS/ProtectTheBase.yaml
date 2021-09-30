@@ -7,24 +7,36 @@ Agents:
     - RandomAgent
     - HumanAgent
 
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected:
+            Sprite: ../../assets/Tiles/selected.png
+        FogOfWar:
+            Sprite: ../../assets/Tiles/notVisible.png
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
 
 Tiles:
     Plain:
-        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Sprite: ../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../GUI/Assets/Tiles/water.png
+        Sprite: ../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Sprite: ../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../../GUI/Assets/Tiles/forest.png
+        Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
@@ -142,7 +154,7 @@ Actions:
 
 Entities:
     Base:
-        Sprite: ../../GUI/Assets/Entities/castle.png
+        Sprite: ../../assets/Entities/castle.png
         Symbol: b
         LineOfSightRange: 5
         Actions: [SpawnMiner, SpawnFighter]
@@ -151,7 +163,7 @@ Entities:
             Health: 100
 
     Miner:
-        Sprite: ../../GUI/Assets/Entities/unit_5.png
+        Sprite: ../../assets/Entities/unit_5.png
         Symbol: m
         LineOfSightRange: 4
         Actions: [Move, Mine, Deposit]
@@ -160,7 +172,7 @@ Entities:
             Health: 20
 
     Fighter:
-        Sprite: ../../GUI/Assets/Entities/unit_2.png
+        Sprite: ../../assets/Entities/unit_2.png
         Symbol: f
         LineOfSightRange: 6
         Parameters:
@@ -169,7 +181,7 @@ Entities:
         Actions: [Move, Attack]
 
     GoldVein:
-        Sprite: ../../GUI/Assets/Entities/gold_chest.png
+        Sprite: ../../assets/Entities/gold_chest.png
         Symbol: g
         LineOfSightRange: 6
         Actions: []
