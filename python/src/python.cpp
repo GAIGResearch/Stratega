@@ -25,9 +25,11 @@
 #include <sstream>
 //#include <filesystem>
 #include <Stratega/Logging/Log.h>
-
+#include <limits>
 #include <Stratega/Utils/Timer.h>
-
+#include <Stratega/Utils/filesystem.hpp>
+#undef max
+//#include <Stratega/Utils/>
 namespace py = pybind11;
 
 // STL
@@ -145,9 +147,52 @@ public:
 	}
 };
 
+std::string getModulePath()
+{
+	py::object stratega = py::module::import("stratega");
+	return stratega.attr("__file__").cast<std::string>();
+}
+
+bool isLocalResourcesPath(std::string& modulePath, std::string& configPath)
+{
+	//Check if config exist	
+	ghc::filesystem::path newPossiblePath(modulePath);
+	newPossiblePath=newPossiblePath.parent_path() / configPath;
+	
+	if (ghc::filesystem::exists(newPossiblePath))
+		return true;		
+	else	
+		return false;	
+}
+
  std::unique_ptr<SGA::GameConfig> loadConfig(std::string& path)
  {
-	 return SGA::loadConfigFromYAML(path);
+	 auto modulePath = getModulePath();
+	 ghc::filesystem::path modulePythonPath(modulePath);	
+
+	 modulePythonPath.make_preferred();
+	 ghc::filesystem::path pathCheck(path);
+
+	 if(pathCheck.is_absolute())
+	 {
+		 auto resourcePath = (modulePythonPath.parent_path() / "resources").string();		 
+		 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());
+		 return std::move(config);
+	 }
+	 else
+	 { 
+		 if (isLocalResourcesPath(modulePath,path))
+		 {
+			 auto newPossiblePath = modulePythonPath.parent_path() / path;
+			 auto config = SGA::loadConfigFromYAML(newPossiblePath.string(), (modulePythonPath.parent_path() / "resources").string());
+			 return std::move(config);
+		 }
+		 else
+		 {
+			 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());			 
+			 return std::move(config);
+		 }
+	 }	 
  }
 
  std::unique_ptr<SGA::GameRunner> createRunner(const SGA::GameConfig* gameConfig)
@@ -240,7 +285,8 @@ PYBIND11_MODULE(stratega, m)
 			Timer
     )pbdoc";
 
-	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"));
+	m.def("load_config", &loadConfig, "Loads game config", py::arg("path"),py::call_guard<py::scoped_ostream_redirect,
+		py::scoped_estream_redirect>());
 	m.def("create_runner", &createRunner, "Create game runner", py::arg("gameConfig"));
 	m.def("create_arena", &createArena, "Create game aren", py::arg("gameConfig"));
 	m.def("generate_agents", &generateAgents, "Generate agents", py::arg("gameConfig"));
@@ -1092,14 +1138,14 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameRunner ----
 	py::class_<SGA::GameRunner>(m, "GameRunner")
 		.def("play",
-			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2f& resolution,int seed = 0)
+			[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2i& resolution,int seed = 0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
 					py::module_::import("sys").attr("stdout") // Python output
 				);
-
 				std::mt19937 rngEngine(seed);
+				
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
 				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
@@ -1119,7 +1165,7 @@ PYBIND11_MODULE(stratega, m)
 			}
 		)
 		.def("play",
-			[](SGA::GameRunner& a, py::list agents, SGA::Vector2f& resolution,int seed=0)
+			[](SGA::GameRunner& a, py::list agents, SGA::Vector2i& resolution,int seed=0)
 			{
 				py::scoped_ostream_redirect stream(
 					std::cout,                               // std::ostream&
@@ -1268,6 +1314,7 @@ PYBIND11_MODULE(stratega, m)
 		.def_readwrite("entity_categories", &SGA::GameConfig::entityCategories)
 
 		.def_readwrite("yaml_path", &SGA::GameConfig::yamlPath)
+		.def_readwrite("resources_path", &SGA::GameConfig::resourcesPath)
 
 		.def("generate_agents", &SGA::GameConfig::generateAgents)
 		.def("generate_gamestate", &SGA::GameConfig::generateGameState, py::arg("levelID") = -1)

@@ -5,6 +5,7 @@ import platform
 import subprocess
 import shlex
 
+import shutil
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
@@ -121,9 +122,26 @@ python_directory = path.join(path.abspath(path.dirname(__file__)), "python")
 with open(path.join(python_directory, "README.md")) as f:
     long_description = f.read()
 
+
+def stratega_package_data(config='Debug'):
+    this_path = os.path.dirname(os.path.realpath(__file__))
+    print("this path"+this_path)
+    resources_path = os.path.realpath(this_path + '/resources')
+
+    # Resource files
+    griddly_resource_dir = os.path.realpath(this_path + '/resources')
+
+    if os.path.exists(griddly_resource_dir):
+        shutil.rmtree(griddly_resource_dir)
+    shutil.copytree(resources_path, griddly_resource_dir)
+    copied_resources = [str(f) for f in Path(griddly_resource_dir).rglob('*.*')]
+    copied_files = copied_resources
+
+    return copied_files
+
 setup(
     name='Stratega',
-    version='0.0.12',
+    version='0.0.18',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
     #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
@@ -136,6 +154,17 @@ setup(
     project_urls={
         "Github": "https://github.com/GAIGResearch/Stratega",
         "Community-Discord": "https://discord.com/invite/VVj8Y32DPK",
+    },
+    include_package_data=True,
+    packages=['resources'],    
+    package_dir={'resources': 'resources'},
+    #package_data={'Stratega': stratega_package_data('Release')},
+    package_data={
+        'resources': ['assets/*frag'],
+        'resources': ['assets/*.ttf'],
+        'resources': ['assets/Tiles/*.png'],
+        'resources': ['assets/Entities/*.png'],
+        'resources': ['gameConfigurations/*.yaml'],
     },
     classifiers=[
         "Topic :: Scientific/Engineering :: Artificial Intelligence",

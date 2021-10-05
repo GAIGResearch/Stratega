@@ -11,7 +11,7 @@
 
 namespace SGA
 {
-	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& newResolution)
+	RTSGameRenderer::RTSGameRenderer(SGA::Vector2i& newResolution)
 		: state(),
 		fowState(),
 		assignment(),
@@ -45,35 +45,25 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
+
+		assetCache.loadTexture("circleCollider", gameConfig.renderConfig->entityCircleColliderPath);
+
+		assetCache.loadFont("font", gameConfig.renderConfig->fontPath);
 		
-		std::string fontPath = "../../GUI/Assets/arial.ttf";
-		std::string circleColliderPath = "../..//GUI/Assets/Tiles/circleCollider.png";
-		std::string boxColliderPath = "../../GUI/Assets/Tiles/boxCollider.png";
+		
+		//std::string circleColliderPath = "../..//GUI/Assets/Tiles/circleCollider.png";
 
-		ghc::filesystem::path filePath = fontPath;
-		// Convert path to an absolute path relative to the path of the configuration file
-		auto tmp = ghc::filesystem::current_path();
-		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
-		filePath = canonical(filePath);
-		current_path(tmp);
-		assetCache.loadFont("font", filePath.string());
+		//
+		//filePath = circleColliderPath;
+		//tmp = ghc::filesystem::current_path();
+		//ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
+		//filePath = canonical(filePath);
+		//current_path(tmp);
+		//assetCache.loadTexture("circleCollider", filePath.string());
 
-		filePath = circleColliderPath;
-		tmp = ghc::filesystem::current_path();
-		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
-		filePath = canonical(filePath);
-		current_path(tmp);
-		assetCache.loadTexture("circleCollider", filePath.string());
 
-		filePath = boxColliderPath;
-		tmp = ghc::filesystem::current_path();
-		ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
-		filePath = canonical(filePath);
-		current_path(tmp);
-		assetCache.loadTexture("boxCollider", filePath.string());
-
-		/*assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
-		assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");*/
+		///*assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
+		//assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");*/
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);

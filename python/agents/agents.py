@@ -109,7 +109,7 @@ def run_arena():
 
 def play_gui():
     # ----------------- CLEAN -------------------------
-    config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+    config = stratega.load_config("../../gameConfigs/TBS/KillTheKing.yaml")
     runner = stratega.create_runner(config)
 
     # Config agents

@@ -48,7 +48,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::render(SGA::Vector2f& resolution)
+	void GameRunner::render(SGA::Vector2i& resolution)
 	{
 		ensureRendererInitialized(resolution);
 		renderer->render();
@@ -110,7 +110,7 @@ namespace SGA
 		return *currentState;
 	}
 
-	void GameRunner::ensureRendererInitialized(SGA::Vector2f& resolution)
+	void GameRunner::ensureRendererInitialized(SGA::Vector2i& resolution)
 	{
 		if (renderer == nullptr)
 		{

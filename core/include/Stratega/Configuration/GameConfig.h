@@ -154,6 +154,10 @@ namespace SGA
 
     	//Yaml path
         std::string yamlPath;
+        
+    	//Origin resources path
+        std::string resourcesPath;
+
 
         //Game runner config
         //Computation budget time
