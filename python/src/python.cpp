@@ -149,7 +149,6 @@ public:
 
 std::string getModulePath()
 {
-	//py::scoped_interpreter guard{}; // start the interpreter and keep it alive
 	py::object stratega = py::module::import("stratega");
 	return stratega.attr("__file__").cast<std::string>();
 }
@@ -159,36 +158,25 @@ bool isLocalResourcesPath(std::string& modulePath, std::string& configPath)
 	//Check if config exist	
 	ghc::filesystem::path newPossiblePath(modulePath);
 	newPossiblePath=newPossiblePath.parent_path() / configPath;
-	//newPossiblePath.make_preferred();
-	std::cout << "Checking if file exist in module: " << newPossiblePath << std::endl;
+	
 	if (ghc::filesystem::exists(newPossiblePath))
-	{
-		std::cout << "Found!"<< std::endl;
-		return true;
-	}		
-	else
-	{
-		std::cout << "Not found!" << std::endl;
-		return false;
-	}		
+		return true;		
+	else	
+		return false;	
 }
 
  std::unique_ptr<SGA::GameConfig> loadConfig(std::string& path)
  {
 	 auto modulePath = getModulePath();
-	 std::cout << "Module installed path: " << modulePath << std::endl;
-	 ghc::filesystem::path modulePythonPath(modulePath);
-	 
+	 ghc::filesystem::path modulePythonPath(modulePath);	
+
 	 modulePythonPath.make_preferred();
 	 ghc::filesystem::path pathCheck(path);
+
 	 if(pathCheck.is_absolute())
 	 {
-		 std::cout << "Absolute config: " << path << std::endl;
-		 auto resourcePath = (modulePythonPath.parent_path() / "resources").string();
-		 std::cout << "Running a albsolute config , package path: " << resourcePath  << std::endl;
-		 
+		 auto resourcePath = (modulePythonPath.parent_path() / "resources").string();		 
 		 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());
-		 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
 		 return std::move(config);
 	 }
 	 else
@@ -196,23 +184,15 @@ bool isLocalResourcesPath(std::string& modulePath, std::string& configPath)
 		 if (isLocalResourcesPath(modulePath,path))
 		 {
 			 auto newPossiblePath = modulePythonPath.parent_path() / path;
-			 std::cout << "Running a local config , package path: " << (modulePythonPath.parent_path() / "resources").string() << std::endl;
-
 			 auto config = SGA::loadConfigFromYAML(newPossiblePath.string(), (modulePythonPath.parent_path() / "resources").string());
-			 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
 			 return std::move(config);
 		 }
 		 else
 		 {
-			 std::cout << "Is a local path: " << path << std::endl;
-			 std::cout << "Running relative path but not local config , package path: " << (modulePythonPath.parent_path() / "resources").string() << std::endl;
-			 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());		 
-			 std::cout << "saved , package path: " << config->resourcesPath << std::endl;
-
+			 auto config = SGA::loadConfigFromYAML(path, (modulePythonPath.parent_path() / "resources").string());			 
 			 return std::move(config);
 		 }
-	 }
-	 
+	 }	 
  }
 
  std::unique_ptr<SGA::GameRunner> createRunner(const SGA::GameConfig* gameConfig)

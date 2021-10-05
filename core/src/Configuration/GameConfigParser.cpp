@@ -50,8 +50,6 @@ namespace SGA
 
 	std::unique_ptr<GameConfig> GameConfigParser::parseFromFile(const std::string& filePath, const std::string& resourcesPath) const
 	{
-        std::cout << "current path parse yaml:" << ghc::filesystem::current_path() << std::endl;
-        std::cout << "yaml filePath:" << filePath << std::endl;
 		auto configNode = YAML::LoadFile(filePath);
         auto config = std::make_unique<GameConfig>();
         config->resourcesPath = resourcesPath;
@@ -654,37 +652,12 @@ namespace SGA
     {
         config.renderConfig = std::make_unique<RenderConfig>();
 
-        // Hardcode shader Path
-        //ghc::filesystem::path filePath = "resources/assets/OutLine.frag";
-        ////// Convert path to an absolute path relative to the path of the configuration file
-        ////auto tmp = ghc::filesystem::current_path();
-        ////ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
-        ////filePath = canonical(filePath);
-
-        ////std::cout << "file path:" << filePath << std::endl;
-        ////current_path(tmp);
-
-        ////std::cout << "current path2:" << ghc::filesystem::current_path() << std::endl;
-        //config.renderConfig->outlineShaderPath = filePath.string();
-
         for (const auto& entityNode : configNode["Entities"])
         {
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;
             config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
-        }
-        
-        //Add Fog of War tile
-        //filePath = "resources/assets/Tiles/notVisible.png";
-        //// Convert path to an absolute path relative to the path of the configuration file
-        //auto tmp = ghc::filesystem::current_path();
-        //ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config.yamlPath).parent_path()));
-        //filePath = canonical(filePath);
-        //current_path(tmp);
-
-        //config.renderConfig->tileSpritePaths.emplace("FogOfWar", filePath.string());
-
-        
+        }       
 
         //Read GameRenderer configuration
         const auto gameRendererNode = configNode["GameRenderer"];
@@ -744,14 +717,10 @@ namespace SGA
             }
             else
             {
-                std::cout << config.resourcesPath << std::endl;
-                std::cout << "resource path outline" << config.resourcesPath << std::endl;
-
                 if (config.resourcesPath != "")
                 {
                     ghc::filesystem::path path(config.resourcesPath);
                     path = path / "assets/OutLine.frag";
-                    std::cout << "shader path:" << path.string()<< std::endl;
                     config.renderConfig->outlineShaderPath = path.string();
                 }
                 else
@@ -764,7 +733,6 @@ namespace SGA
                     current_path(canonical(path(config.yamlPath).parent_path()));
                     filePath = canonical(filePath);
                     current_path(tmp);
-                    std::cout << "OutLine path:" << filePath.string() << std::endl;
                     config.renderConfig->outlineShaderPath = filePath.string();
                 }
             }
@@ -781,7 +749,6 @@ namespace SGA
                 {
                     ghc::filesystem::path path(config.resourcesPath);
                     path = path / "assets/arial.ttf";
-                    std::cout << "arial path:" << path.string() << std::endl;
                     config.renderConfig->fontPath = path.string();
                 }
                 else
@@ -794,7 +761,6 @@ namespace SGA
                     current_path(canonical(path(config.yamlPath).parent_path()));
                     filePath = canonical(filePath);
                     current_path(tmp);
-                    std::cout << "arial path:" << filePath.string() << std::endl;
                     config.renderConfig->fontPath = filePath.string();
                 }
             }
@@ -813,7 +779,6 @@ namespace SGA
                     {
                         ghc::filesystem::path path(config.resourcesPath);
                         path = path / "assets/Tiles/circleCollider.png";
-                        std::cout << "entity circle collider path:" << path.string() << std::endl;
                         config.renderConfig->entityCircleColliderPath = path.string();
                     }
                     else
@@ -826,7 +791,6 @@ namespace SGA
                         current_path(canonical(path(config.yamlPath).parent_path()));
                         filePath = canonical(filePath);
                         current_path(tmp);
-                        std::cout << "entity circle collider path:" << filePath.string() << std::endl;
                         config.renderConfig->entityCircleColliderPath = filePath.string();
                     }
                 }
@@ -939,22 +903,18 @@ namespace SGA
 
     std::string GameConfigParser::parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const
     {
-        //try {
-            if (!pathNode.IsScalar())
-                throw std::runtime_error("Received a invalid file-path");
+        if (!pathNode.IsScalar())
+            throw std::runtime_error("Received a invalid file-path");
 
-            using namespace ghc::filesystem;
+        using namespace ghc::filesystem;
 
-            path filePath = pathNode.as<std::string>();
-            // Convert path to an absolute path relative to the path of the configuration file
-            auto tmp = current_path();
-            current_path(canonical(path(config.yamlPath).parent_path()));
-            filePath = canonical(filePath);
-            current_path(tmp);
-            std::cout << "Path Node: " << filePath << std::endl;
-            return filePath.string();
-        //}
-       
+        path filePath = pathNode.as<std::string>();
+        // Convert path to an absolute path relative to the path of the configuration file
+        auto tmp = current_path();
+        current_path(canonical(path(config.yamlPath).parent_path()));
+        filePath = canonical(filePath);
+        current_path(tmp);
+        return filePath.string();       
     }
 	
 	void GameConfigParser::parseMaps(const YAML::Node& mapsLayouts, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const
