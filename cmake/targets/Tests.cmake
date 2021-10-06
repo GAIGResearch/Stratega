@@ -3,7 +3,7 @@ find_package(GTest REQUIRED)
 
 
 set(TEST_SOURCES
-        main_test.cpp
+        main.cpp
         )
 
 list(TRANSFORM TEST_SOURCES PREPEND "${PROJ_TEST_FOLDER}/")
