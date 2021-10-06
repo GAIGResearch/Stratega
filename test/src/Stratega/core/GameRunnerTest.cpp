@@ -23,7 +23,7 @@ namespace SGA
     TEST(GameRunnerTest, init)
 	{
         //Generate config
-        std::string configPath("tests/resources/test.yaml");
+        std::string configPath("test/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
         auto mockForwardModelPtr = std::unique_ptr<MockForwardModel>(new MockForwardModel());    
@@ -46,7 +46,7 @@ namespace SGA
     TEST(GameRunnerTest, reset)
 	{
         //Generate config
-        std::string configPath("tests/resources/test.yaml");
+        std::string configPath("test/resources/test.yaml");
         auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
         auto mockForwardModelPtr = std::unique_ptr<MockForwardModel>(new MockForwardModel());    

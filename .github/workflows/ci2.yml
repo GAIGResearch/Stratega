@@ -159,6 +159,6 @@ jobs:
 
       - name: run tests
         working-directory: ${{runner.workspace}}/build
-        run: test
+        run: ctest --verbose
 
 

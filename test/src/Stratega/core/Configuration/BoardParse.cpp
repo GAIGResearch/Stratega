@@ -19,8 +19,8 @@ namespace SGA
     
     TEST(BoardParseTest, testLoadBoard)
 	{
-        auto boardNode = loadAndGetNode("tests/resources/boards/boardDefinition.yaml", "Board");
-        auto tilesNode = loadAndGetNode("tests/resources/boards/boardDefinition.yaml", "Tiles");
+        auto boardNode = loadAndGetNode("test/resources/boards/boardDefinition.yaml", "Board");
+        auto tilesNode = loadAndGetNode("test/resources/boards/boardDefinition.yaml", "Tiles");
 
         
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
@@ -43,8 +43,8 @@ namespace SGA
 
     TEST(BoardParseTest, testLoadBoardWithoutSpaces)
     {
-        auto boardNode = loadAndGetNode("tests/resources/boards/boardDefinitionNoSpace.yaml", "Board");
-        auto tilesNode = loadAndGetNode("tests/resources/boards/boardDefinitionNoSpace.yaml", "Tiles");
+        auto boardNode = loadAndGetNode("test/resources/boards/boardDefinitionNoSpace.yaml", "Board");
+        auto tilesNode = loadAndGetNode("test/resources/boards/boardDefinitionNoSpace.yaml", "Tiles");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
@@ -68,9 +68,9 @@ namespace SGA
 
     TEST(BoardParseTest, testLoadBoardWithUndefinedEntities)
     {
-        auto boardNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Board");
-        auto tilesNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Tiles");
-        auto agentsNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Agents");
+        auto boardNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Board");
+        auto tilesNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Tiles");
+        auto agentsNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Agents");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
@@ -84,10 +84,10 @@ namespace SGA
 
     TEST(BoardParseTest, testLoadBoardWithDefinedEntities)
     {
-        auto boardNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Board");
-        auto tilesNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Tiles");
-        auto agentsNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Agents");
-        auto entitiesNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntities.yaml", "Entities");
+        auto boardNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Board");
+        auto tilesNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Tiles");
+        auto agentsNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Agents");
+        auto entitiesNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntities.yaml", "Entities");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
@@ -117,10 +117,10 @@ namespace SGA
 
     TEST(BoardParseTest, testLoadBoardWithDefinedEntitiesNoSpace)
     {
-        auto boardNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Board");
-        auto tilesNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Tiles");
-        auto agentsNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Agents");
-        auto entitiesNode = loadAndGetNode("tests/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Entities");
+        auto boardNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Board");
+        auto tilesNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Tiles");
+        auto agentsNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Agents");
+        auto entitiesNode = loadAndGetNode("test/resources/boards/boardDefinitionPlayerEntitiesNoSpace.yaml", "Entities");
 
 
         auto gameConfigPtr = std::shared_ptr<GameConfig>(new GameConfig());
