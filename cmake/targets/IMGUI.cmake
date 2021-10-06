@@ -16,6 +16,6 @@ target_link_libraries(imgui
         "$<$<PLATFORM_ID:Linux>:sfml-system>"
         "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
         "$<$<PLATFORM_ID:Linux>:sfml-window>"
-        CONAN_PKG::opengl
-        #OpenGL
+        #CONAN_PKG::opengl
+        OpenGL
         )
