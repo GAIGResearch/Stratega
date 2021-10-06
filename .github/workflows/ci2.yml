@@ -141,13 +141,17 @@ jobs:
         run: |
           cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DWARNINGS_AS_ERRORS=FALSE
 
+      - name: make stratega2
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build . -j 2
+
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
-        run: cmake stratega
+        run: make stratega
 
       - name: make gui
         working-directory: ${{runner.workspace}}/build
-        run: cmake gui
+        run: make gui
 
       - name: make arena
         working-directory: ${{runner.workspace}}/build
@@ -155,7 +159,7 @@ jobs:
 
       - name: make tests
         working-directory: ${{runner.workspace}}/build
-        run: cmake tests
+        run: make tests
 
       - name: run tests
         working-directory: ${{runner.workspace}}/build
