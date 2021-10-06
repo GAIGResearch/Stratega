@@ -143,19 +143,19 @@ jobs:
 
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
-        run: make stratega
+        run: cmake stratega
 
       - name: make gui
         working-directory: ${{runner.workspace}}/build
-        run: make gui
+        run: cmake gui
 
       - name: make arena
         working-directory: ${{runner.workspace}}/build
-        run: make arena
+        run: cmake arena
 
       - name: make tests
         working-directory: ${{runner.workspace}}/build
-        run: make tests
+        run: cmake tests
 
       - name: run tests
         working-directory: ${{runner.workspace}}/build
