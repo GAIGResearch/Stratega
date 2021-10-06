@@ -81,7 +81,7 @@ target_include_directories(stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
 target_link_libraries(stratega
         PUBLIC
-        CONAN_PKG::opengl
+        #CONAN_PKG::opengl
         project_options
         project_warnings
         # TODO: Is this public private separation of modules accurate?
