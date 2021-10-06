@@ -6,6 +6,7 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <Stratega/Utils/filesystem.hpp>
+
 namespace SGA
 {
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath)

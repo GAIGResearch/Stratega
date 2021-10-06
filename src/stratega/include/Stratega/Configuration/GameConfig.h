@@ -2,17 +2,17 @@
 #include <map>
 #include <string>
 #include <Stratega/Agent/Agent.h>
-#include <Stratega/Representation/LevelDefinition.h>
+#include <Stratega/Representation/EntityPlacement.h>
 #include <Stratega/Configuration/FunctionParser.h>
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
+#include <Stratega/Representation/LevelDefinition.h>
 #include <yaml-cpp/yaml.h>
 #include <memory>
 
 namespace SGA
-{
-	
+{	
     struct GameConfig
     {
         // Rendering - ToDo Split renderConfig and move into dedicated parts (Tile, Entity, etc)

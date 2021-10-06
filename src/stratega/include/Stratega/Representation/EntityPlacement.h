@@ -1,11 +1,10 @@
+#pragma once
 #include <Stratega/Representation/Grid2D.h>
+#include <Stratega/Representation/EntityType.h>
 #include <memory>
 
 namespace SGA
 {
-
-	struct TileType;
-	struct EntityType;
 
 	struct EntityPlacement
 	{

@@ -3,7 +3,6 @@
 #include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
-	
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath="");
     std::unordered_map<int, LevelDefinition> loadLevelsFromYAML(const std::string& fileMapsPath, const GameConfig& config);
 	
