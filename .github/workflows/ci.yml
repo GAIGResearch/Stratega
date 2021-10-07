@@ -91,6 +91,12 @@ jobs:
           python-version: ${{ matrix.python }}
           architecture: ${{ matrix.arch }}
 
+      - name: Install conan
+        shell: bash
+        run: |
+          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install conan
+
       - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.10
 
