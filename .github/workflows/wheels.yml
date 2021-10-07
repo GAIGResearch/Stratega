@@ -37,9 +37,9 @@ jobs:
             cibw-arch: macosx_x86_64
           - runs-on: windows-latest
             cibw-arch: win_amd64
-          - runs-on: windows-latest
-            cibw-arch: win32
-            python-arch: x86
+          #- runs-on: windows-latest
+          #  cibw-arch: win32
+          #  python-arch: x86
 
     name: Wheels • ${{ matrix.cibw-arch }}
     runs-on: ${{ matrix.runs-on }}
