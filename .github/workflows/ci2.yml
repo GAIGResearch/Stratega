@@ -152,24 +152,24 @@ jobs:
 
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
-        run: cmake --build .
+        run: cmake --build . --config Release
 
-      - name: make stratega
-        working-directory: ${{runner.workspace}}/build
-        run: make stratega
-      
-      - name: make gui
-        working-directory: ${{runner.workspace}}/build
-        run: make gui
-      
-      - name: make arena
-        working-directory: ${{runner.workspace}}/build
-        run: cmake arena
-      
-      - name: make tests
-        working-directory: ${{runner.workspace}}/build
-        run: make tests
-
-      - name: run tests
-        working-directory: ${{runner.workspace}}/build
-        run: ctest --verbose
+      #- name: make stratega
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: make stratega
+      #
+      #- name: make gui
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: make gui
+      #
+      #- name: make arena
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: make arena
+      #
+      #- name: make tests
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: make tests
+      #
+      #- name: run tests
+      #  working-directory: ${{runner.workspace}}/build
+      #  run: ctest --verbose
