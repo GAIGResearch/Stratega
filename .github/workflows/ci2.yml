@@ -152,7 +152,7 @@ jobs:
 
       - name: make stratega
         working-directory: ${{runner.workspace}}/build
-        run: cmake --build . -DCMAKE_BUILD_TYPE=Release
+        run: cmake --build .
 
       #- name: make stratega
       #  working-directory: ${{runner.workspace}}/build
