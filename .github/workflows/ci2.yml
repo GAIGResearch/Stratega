@@ -154,21 +154,21 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         run: cmake --build .
 
-      #- name: make stratega
-      #  working-directory: ${{runner.workspace}}/build
-      #  run: make stratega
-      #
-      #- name: make gui
-      #  working-directory: ${{runner.workspace}}/build
-      #  run: make gui
-      #
-      #- name: make arena
-      #  working-directory: ${{runner.workspace}}/build
-      #  run: cmake arena
-      #
-      #- name: make tests
-      #  working-directory: ${{runner.workspace}}/build
-      #  run: make tests
+      - name: make stratega
+        working-directory: ${{runner.workspace}}/build
+        run: make stratega
+      
+      - name: make gui
+        working-directory: ${{runner.workspace}}/build
+        run: make gui
+      
+      - name: make arena
+        working-directory: ${{runner.workspace}}/build
+        run: cmake arena
+      
+      - name: make tests
+        working-directory: ${{runner.workspace}}/build
+        run: make tests
 
       - name: run tests
         working-directory: ${{runner.workspace}}/build
