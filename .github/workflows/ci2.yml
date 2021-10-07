@@ -14,6 +14,7 @@ jobs:
             name: "Windows Latest MSVC",
             os: windows-latest,
             build_type: "Release",
+            python: 3.9,
             cc: cl,
             cxx: cl,
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
@@ -22,6 +23,7 @@ jobs:
             name: "Windows Latest MinGW",
             os: windows-latest,
             build_type: "Release",
+            python: 3.9,
             cc: gcc,
             cxx: g++
           }
@@ -29,15 +31,17 @@ jobs:
             name: "Ubuntu 20.04 GCC-10",
             os: ubuntu-20.04,
             build_type: "Release",
+            python: 3.9,
             cc: gcc-10,
             cxx: g++-10
           }
           - {
-                name: "Ubuntu 20.04 GCC-9",
-                  os: ubuntu-20.04,
-                  build_type: "Release",
-                  cc: gcc-9,
-                  cxx: g++-9
+            name: "Ubuntu 20.04 GCC-9",
+              os: ubuntu-20.04,
+              build_type: "Release",
+              python: 3.9,
+              cc: gcc-9,
+              cxx: g++-9
           }
           # GCC-11 not yet (easily) available on GitHub Action, uncomment once this has changed.
 #          - {
@@ -51,6 +55,7 @@ jobs:
             name: "Ubuntu 18.04 GCC-9",
             os: ubuntu-18.04,
             build_type: "Release",
+            python: 3.9,
             cc: gcc-9,
             cxx: g++-9
           }
@@ -58,6 +63,7 @@ jobs:
             name: "Ubuntu 18.04 GCC-10",
             os: ubuntu-18.04,
             build_type: "Release",
+            python: 3.9,
             cc: gcc-10,
             cxx: g++-10
           }
@@ -73,6 +79,7 @@ jobs:
             name: "macOS Latest Clang",
             os: macos-latest,
             build_type: "Release",
+            python: 3.9,
             cc: clang,
             cxx: clang++
           }

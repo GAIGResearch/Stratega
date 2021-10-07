@@ -15,5 +15,5 @@ pybind11_add_module(pystratega ${BINDING_SOURCE_FILES})
 target_link_libraries(pystratega PUBLIC stratega)
 set_target_properties(pystratega PROPERTIES
          LIBRARY_OUTPUT_DIRECTORY ${SUBPROJ_PYBINDING_DIR}
-         OUTPUT_NAME stratega
+         #OUTPUT_NAME stratega
         )
