@@ -99,6 +99,13 @@ jobs:
           python3 -m pip install --upgrade pip setuptools
           python3 -m pip install conan
 
+      - name: Add Linux flags
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "CFLAGS='-fPIC'" >> $GITHUB_ENV
+          echo "CXXFLAGS='-fPIC'" >> $GITHUB_ENV
+
       - name: Source profile
         if: runner.os == 'Linux'
         shell: bash
