@@ -118,7 +118,7 @@ class CMakeBuild(build_ext):
 
 from os import path
 
-python_directory = path.join(path.abspath(path.dirname(__file__)), "python")
+python_directory = path.join(path.abspath(path.dirname(__file__)), "src/python")
 with open(path.join(python_directory, "README.md")) as f:
     long_description = f.read()
 
