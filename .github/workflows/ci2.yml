@@ -116,6 +116,15 @@ jobs:
             libopenal-dev \
             libasound2-dev \
             libudev-dev
+            #
+            #libxrandr-dev
+            #libxcursor-dev
+            #libudev-dev
+            #libopenal-dev
+            #libflac-dev
+            #libvorbis-dev
+            #libgl1-mesa-dev
+            #libegl1-mesa-dev
 
       - name: Setup cmake
         uses: jwlawson/actions-setup-cmake@v1.9
@@ -164,5 +173,3 @@ jobs:
       - name: run tests
         working-directory: ${{runner.workspace}}/build
         run: ctest --verbose
-
-
