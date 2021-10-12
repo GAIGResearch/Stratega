@@ -9,16 +9,17 @@ macro(run_conan)
     endif ()
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
-
+    
     conan_add_remote(NAME bincrafters URL
             https://api.bintray.com/conan/bincrafters/public-conan)
+
     conan_cmake_run(
             CONANFILE ${DEPENDENCY_DIR}/${CONANFILE}
             CONAN_COMMAND ${CONAN_PATH}
             ${CONAN_EXTRA_REQUIRES}
             OPTIONS
             ${CONAN_EXTRA_OPTIONS}
-            BASIC_SETUP
+            BASIC_SETUP NO_OUTPUT_DIRS
             CMAKE_TARGETS # individual targets to link to
             BUILD missing
     )
