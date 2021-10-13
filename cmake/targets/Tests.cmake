@@ -1,4 +1,3 @@
-
 find_package(GTest REQUIRED)
 
 
@@ -16,6 +15,5 @@ set_target_properties(tests PROPERTIES
         )
 
 target_link_libraries(tests PRIVATE
-        stratega
+        Stratega
         CONAN_PKG::gtest)
-

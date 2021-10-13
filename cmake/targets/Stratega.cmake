@@ -1,4 +1,3 @@
-
 set(STRATEGA_SOURCE_FILES
         Agent/ActionScripts/AttackClosestOpponentScript.cpp
         Agent/ActionScripts/AttackWeakestOpponentScript.cpp
@@ -75,11 +74,11 @@ set(STRATEGA_SOURCE_FILES
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
-add_library(stratega STATIC ${STRATEGA_SOURCE_FILES})
+add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
 
-target_include_directories(stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
+target_include_directories(Stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
-target_link_libraries(stratega
+target_link_libraries(Stratega
         PUBLIC
         #CONAN_PKG::opengl
         project_options
@@ -100,7 +99,7 @@ target_link_libraries(stratega
         )
 
 install(TARGETS
-        stratega
+        Stratega
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)

@@ -113,7 +113,7 @@ class CMakeBuild(build_ext):
             ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp
         )
         subprocess.check_call(
-            ["cmake", "--build", "."] + build_args, cwd=self.build_temp
+            ["cmake", "--build", "."] + build_args , cwd=self.build_temp
         )
 
 
@@ -122,23 +122,6 @@ from os import path
 python_directory = path.join(path.abspath(path.dirname(__file__)), "src/python")
 with open(path.join(python_directory, "README.md")) as f:
     long_description = f.read()
-
-
-def stratega_package_data(config='Debug'):
-    this_path = os.path.dirname(os.path.realpath(__file__))
-    print("this path"+this_path)
-    resources_path = os.path.realpath(this_path + '/resources')
-
-    # Resource files
-    griddly_resource_dir = os.path.realpath(this_path + '/resources')
-
-    if os.path.exists(griddly_resource_dir):
-        shutil.rmtree(griddly_resource_dir)
-    shutil.copytree(resources_path, griddly_resource_dir)
-    copied_resources = [str(f) for f in Path(griddly_resource_dir).rglob('*.*')]
-    copied_files = copied_resources
-
-    return copied_files
 
 setup(
     name='Stratega',
