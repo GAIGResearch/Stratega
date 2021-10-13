@@ -26,11 +26,6 @@ jobs:
             arch: x64
             gcc: 10
             name-extra: ' (GCC 10)'
-          #- runs-on: ubuntu-latest
-          #  python: 3.9
-          #  arch: x64
-          #  clang: 12
-          #  name-extra: ' (Clang 12)'
 
           - runs-on: ubuntu-latest
             python: 3.6
@@ -61,19 +56,6 @@ jobs:
           - runs-on: windows-latest
             python: 3.9
             arch: x64
-          #- runs-on: windows-latest
-          #  python: 3.6
-          #  arch: x86
-          #  name-extra: ' (32-bit)'
-          #- runs-on: windows-latest
-          #  python: 3.9
-          #  arch: x86
-          #  name-extra: ' (32-bit)'
-          #- runs-on: windows-latest
-          #  python: 3.6
-          #  arch: x64
-          #  release: true
-          #  name-extra: ' (Release)'
 
     name: Python ${{ matrix.python }}${{ matrix.name-extra }} • ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}

@@ -1,51 +1,4 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-#cmake_minimum_required (VERSION 3.8)
-#
-#project ("Stratega")
-#
-#if (WIN32)
-#    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-#    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-#endif()
-#
-#
-#set(COMPILER_FLAGS "")
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_STANDARD 14)
-#
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILER_FLAGS}")
-##set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC" )
-#
-#option(STRATEGA_BUILD_DOCS "Enable to build the docs. Requires doxygen to be installed on the system" OFF)
-#option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." ON)
-#
-## Include sub-projects.
-#add_subdirectory("dependencies")
-#add_subdirectory("core")
-#add_subdirectory("GUI")
-#add_subdirectory("Arena")
-#
-##Copy Assets folder
-#file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-## Optional
-#if(STRATEGA_BUILD_BINDINGS)
-#	add_subdirectory("python")
-#endif()
-#
-#if(STRATEGA_BUILD_DOCS)
-#	add_subdirectory("docs")
-#endif()
-#
-#include(CTest)
-#enable_testing()
-#
-#if(BUILD_TESTING)
-#    add_subdirectory("tests")
-#endif()
-
-cmake_minimum_required(VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.8)
 
 project(Stratega LANGUAGES CXX)
 
@@ -74,30 +27,10 @@ set(SUBPROJ_ARENA_DIR "${PROJ_SOURCES_DIR}/arena")
 set(SUBPROJ_ARENA_SRC_DIR "${SUBPROJ_ARENA_DIR}/src")
 set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
 set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
-message("wasa before 1: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-# outputs
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
-#
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
-message("wasa before 2: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 # options
 
 option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
-option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" OFF)
+option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" ON)
 option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
 option(ENABLE_COVERAGE "Enable coverage reporting for gcc/clang" OFF)
@@ -177,13 +110,11 @@ if (CMAKE_SYSTEM_NAME MATCHES Linux)
     # We will have to fetch it manually in this case and add it to our project.
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
 endif ()
-message("wasa before 3: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
-message("wasa after: ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 # find the downloaded/installed packages
 
 find_package(Threads)
