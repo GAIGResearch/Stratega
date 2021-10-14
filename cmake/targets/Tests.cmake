@@ -2,10 +2,10 @@
 find_package(GTest REQUIRED)
 
 set(TEST_SOURCES
-        main_test.cpp
+        main.cpp
         )
 
-list(TRANSFORM TEST_SOURCES PREPEND "${PROJ_TEST_FOLDER}/")
+list(TRANSFORM TEST_SOURCES PREPEND "${PROJ_TEST_FOLDER}/src/")
 
 add_executable(${project_lib_name}_tests ${TEST_SOURCES})
 
