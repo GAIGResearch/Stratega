@@ -75,11 +75,11 @@ set(STRATEGA_SOURCE_FILES
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
-add_library(stratega STATIC ${STRATEGA_SOURCE_FILES})
+add_library(${project_lib_name} STATIC ${STRATEGA_SOURCE_FILES})
 
-target_include_directories(stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
+target_include_directories(${project_lib_name} PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
-target_link_libraries(stratega
+target_link_libraries(${project_lib_name}
         PUBLIC
         project_options
         project_warnings
@@ -99,7 +99,7 @@ target_link_libraries(stratega
         )
 
 install(TARGETS
-        stratega
+        ${project_lib_name}
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)

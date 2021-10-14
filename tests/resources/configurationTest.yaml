@@ -6,29 +6,36 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    #- OSLAAgent
-    - MCTSAgent:
-        FmCalls: 100
-        Budget: TIME
-        RolloutLength: 10
+    - OSLAAgent
 
+Player:
+    Actions: [AttackPlayer]
+    CanSpawn: Units
+    Parameters:
+        Food: 100
+        Gold: 0
+        Iron: 50
+        Wood: 100
+        Bricks: 50
+        Research: 20
+        AttackDamage: 20
 
 Tiles:
     Plain:
-        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Sprite: ../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../GUI/Assets/Tiles/water.png
+        Sprite: ../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Sprite: ../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../GUI/Assets/Tiles/forest.png
+        Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -54,6 +61,21 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
+    AttackPlayer:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -112,7 +134,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../../GUI/Assets/Entities/unit_2.png
+        Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -123,7 +145,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../GUI/Assets/Entities/unit_3.png
+        Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -134,7 +156,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../GUI/Assets/Entities/unit_6.png
+        Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
@@ -145,7 +167,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../../GUI/Assets/Entities/unit_1.png
+        Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
@@ -159,11 +181,18 @@ ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
         - "HasNoEntity(Source, King)"
+    WinConditions: #If true: Player -> win
+        HasKing:
+        - "HasEntity(Source, King)"
 
     Trigger:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+
+EntityGroups:
+    Units: [Warrior, King]
+    Units2: [Warrior]
 
 #Action categories
 GameDescription:
@@ -171,7 +200,7 @@ GameDescription:
     Actions:
         Move: [Move]
         Heal: [Heal]
-        Attack: [Attack]
+        Attack: [Attack, AttackPlayer]
     Entities:
         Unit: [King, Warrior, Archer, Healer]
         Fighter: [Warrior, Archer]
@@ -185,7 +214,7 @@ GameRunner:
         BudgetTimeMs: 50
         DisqualificationTimeMs: 70
     AgentComputationTime:
-        Enabled: false
+        Enabled: true
         BudgetTimeMs: 1000
         DisqualificationTimeMs: 70
         MaxNumberWarnings: 5

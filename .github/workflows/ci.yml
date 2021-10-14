@@ -1,6 +1,7 @@
+
 name: CI
 
-on: [ push ]
+on: [ push, pull_request ]
 
 jobs:
   build:
@@ -86,6 +87,16 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Setup pytest annotations
+        run: |
+          python -m pip install pytest-github-actions-annotate-failures
+
+      - name: Setup GCC annotations
+        uses: ammaraskar/gcc-problem-matcher@master
+
+      - name: Setup MSVC annotations
+        uses: ammaraskar/msvc-problem-matcher@master
+
       - name: Install conan
         shell: bash
         run: |
@@ -125,11 +136,6 @@ jobs:
       - name: Use cmake
         run: cmake --version
 
-      - name: Create Build Environment
-        # Some projects don't allow in-source building, so create a separate build directory
-        # We'll use this as our working directory for all subsequent commands
-        run: cmake -E make_directory ${{runner.workspace}}/build
-
       - name: Configure CMake
         # Use a bash shell so we can use the same syntax for environment variable
         # access regardless of the host operating system
@@ -137,28 +143,48 @@ jobs:
         env:
           CC: ${{ matrix.config.cc }}
           CXX: ${{ matrix.config.cxx }}
-        working-directory: ${{runner.workspace}}/build
-        run: |
-          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DWARNINGS_AS_ERRORS=FALSE
+        run: >
+          cmake
+          -S .
+          -B ./build
+          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          -DWARNINGS_AS_ERRORS=FALSE
 
       - name: make stratega
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ./build
         run: make stratega
 
       - name: make gui
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ./build
         run: make gui
 
       - name: make arena
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ./build
         run: make arena
 
       - name: make tests
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ./build
         run: make tests
 
       - name: run tests
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ./build
         run: test/tests
 
+      - name: Run Tests
+        shell: bash
+        run: |
+          GTEST_OUTPUT=xml:gtest-report-${{ matrix.config.name }}.xml GTEST_COLOR=1 ctest --test-dir ./build --verbose
 
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: test_results_xml
+          path: build/test-results/**/*.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        if: success()
+        with:
+          name: test_results_xml
+          path: ./build/**/gtest-report-${{ matrix.config.name }}.xml

@@ -2,6 +2,8 @@
 
 project(Stratega LANGUAGES CXX)
 
+string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWERCASE)
+
 # project set'tings
 set(CMAKE_CONFIG_FOLDER "cmake")
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -16,10 +18,11 @@ else ()
     set(CONANFILE conanfile.txt)
 endif ()
 set(DEPENDENCY_DIR "deps")
+set(project_lib_name ${PROJECT_NAME_LOWERCASE})
 set(PROJ_CXX_STD_FEATURE cxx_std_20)
 set(PROJ_CXX_STANDARD C++20)
-set(PROJ_SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
-set(PROJ_TEST_FOLDER "${CMAKE_SOURCE_DIR}/test")
+set(PROJ_SOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(PROJ_TEST_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/test")
 set(SUBPROJ_PYBINDING_DIR "${PROJ_SOURCES_DIR}/pybinding")
 set(SUBPROJ_PYBINDING_SRC_DIR "${SUBPROJ_PYBINDING_DIR}/src")
 set(SUBPROJ_STRATEGA_DIR "${PROJ_SOURCES_DIR}/stratega")
@@ -29,6 +32,7 @@ set(SUBPROJ_ARENA_DIR "${PROJ_SOURCES_DIR}/arena")
 set(SUBPROJ_ARENA_SRC_DIR "${SUBPROJ_ARENA_DIR}/src")
 set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
 set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
+set(SUBPROJ_TEST_SRC_DIR "${PROJ_TEST_FOLDER}/src")
 
 # options
 
@@ -151,4 +155,3 @@ if (ENABLE_TESTING)
     message("\nTests enabled, configuring.\n")
     include(${CMAKE_CONFIG_FOLDER}/targets/Tests.cmake)
 endif ()
-
