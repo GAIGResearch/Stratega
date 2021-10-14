@@ -41,7 +41,7 @@ jobs:
             cibw-arch: win32
             python-arch: x86
 
-    name: Wheels • ${{ matrix.cibw-arch }}
+    name: Wheels ï¿½ ${{ matrix.cibw-arch }}
     runs-on: ${{ matrix.runs-on }}
 
     steps:

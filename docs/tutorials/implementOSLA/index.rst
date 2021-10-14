@@ -41,7 +41,7 @@ snippet, which also runs through all actions in the returned list:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/MyAgent/MyAgent.h>
+    #include <stratega/Agent/MyAgent/MyAgent.h>
     namespace SGA
     {
         ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)

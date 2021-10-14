@@ -35,7 +35,7 @@ First, we need to include the headers. Because we need to extend the class Agent
 .. code-block:: c++
 
     #pragma once
-    #include <Stratega/Agent/Agent.h>
+    #include <stratega/Agent/Agent.h>
 
 The agent needs to be in the same namespace as Stratega, which is SGA. Hence, the class needs to be enclosed in a namespace declaration with that name:
 
@@ -53,7 +53,7 @@ We'll call our agent's class ``DoNothing`` and we plan to override the method *c
 .. code-block:: c++
 
     #pragma once
-    #include <Stratega/Agent/Agent.h>
+    #include <stratega/Agent/Agent.h>
 
     namespace SGA
     {
@@ -77,7 +77,7 @@ The code would look like this now:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/DoNothing/DoNothing.h>
+    #include <stratega/Agent/DoNothing/DoNothing.h>
     namespace SGA
     {
         ActionAssignment DoNothingAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
@@ -92,7 +92,7 @@ As simple as shown in the next snippet:
 
 .. code-block:: c++
 
-    #include <Stratega/Agent/DoNothing/DoNothing.h>
+    #include <stratega/Agent/DoNothing/DoNothing.h>
 
     namespace SGA
     {
@@ -205,7 +205,7 @@ line completes the code for this function:
     :linenos:
 
     #include <random>
-    #include <Stratega/Agent/RandomAgent.h>
+    #include <stratega/Agent/RandomAgent.h>
 
     namespace SGA
     {
@@ -292,7 +292,7 @@ available in the current game state. This can be retrieved from the forward mode
 In this code, 'actions' is a list of objects of type "Action" which contains all actions available in the current game state. Our next step is to choose a random element in this vector, 
 which can be done by i) importing the random module to generate pseudo-random numbers; ii) picking one index from the random generator; and 3) picking the action with the given index:
 
-.. code-block:: c++
+.. code-block:: python
 
     # Sample random action
     action_index=random.randint(0, actions.count()-1)
@@ -306,6 +306,7 @@ line completes the code for this function:
 
 .. code-block:: python
     :linenos:
+    
     import stratega
 
     class RandomPythonAgent(stratega.Agent):

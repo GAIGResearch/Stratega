@@ -31,11 +31,19 @@ add_custom_command(OUTPUT ${DOXYGEN_INDEX_FILE}
 # Nice named target so we can run the job easily
 add_custom_target(Doxygen ALL DEPENDS ${DOXYGEN_INDEX_FILE})
 
+<<<<<<< HEAD
+if(STRATEGA_BUILD_BINDINGS)
+    message(STATUS "Needs building first")
+    #target_link_libraries(Doxygen PUBLIC stratega)
+    add_dependencies(Doxygen stratega)
+endif()
+=======
 #if(STRATEGA_BUILD_BINDINGS)
 #    message(STATUS "Needs building first")
 #    #target_link_libraries(Doxygen PUBLIC stratega)
 #    add_dependencies(Doxygen stratega)
 #endif()
+>>>>>>> dev
 
 set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
 set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
@@ -65,7 +73,14 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
 # Nice named target so we can run the job easily
 add_custom_target(Sphinx ALL DEPENDS ${SPHINX_INDEX_FILE})
 
+<<<<<<< HEAD
+if(STRATEGA_BUILD_BINDINGS)
+    message(STATUS "Needs building first")
+    add_dependencies(Sphinx stratega)
+endif()
+=======
 #if(STRATEGA_BUILD_BINDINGS)
 #    message(STATUS "Needs building first")
 #    add_dependencies(Sphinx stratega)
 #endif()
+>>>>>>> dev

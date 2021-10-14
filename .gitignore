@@ -12,12 +12,8 @@ _deps
 .vs/
 .idea/
 .DS_Store
-cmake-build-debug/
-cmake-build-release/
+cmake-build-*/
 out/
 build/
 experiments/
 docs/references/PYTHON/_generate/
-# Tests
-tests/gtest/*
-!tests/gtest/CMakeLists.txt*
