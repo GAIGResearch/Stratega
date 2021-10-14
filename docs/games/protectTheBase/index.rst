@@ -25,7 +25,7 @@ YAML
 ++++++++++++++++++++
 .. code-block:: yaml
 
-    GameConfig:
+   GameConfig:
         Type: TBS
         ActionTimer: 10s
         RoundLimit: 100
@@ -34,27 +34,37 @@ YAML
         - RandomAgent
         - HumanAgent
 
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
         Forest:
-            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Sprite: ../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
-     
+        
     Actions:
         # Spawn Actions
         SpawnMiner:
@@ -65,8 +75,11 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Square
-                    Size: 1
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -81,8 +94,11 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Square
-                    Size: 1
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -97,8 +113,13 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Attackable
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 4
                     Conditions:
-                        - "InRange(Source, Target, 10)"
+                        - "DifferentPlayer(Source, Target)"
             Effects:
                 - "Attack(Target.Health, Source.AttackDamage)"
 
@@ -109,8 +130,15 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Circle
-                    Size: 3
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 3
+                            AllowDiagonals: false
+                    #    Type: Neighbours
+                    #    Options:
+                    #        Shape: Circle
+                    #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -124,8 +152,12 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: GoldVein
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 1
                     Conditions:
-                        - "InRange(Source, Target, 1)"
                         - "ResourceGreaterEqual(Target.Gold, 40)"
             Effects:
                 - "Transfer(Target.Gold, Source.Gold, 40)"
@@ -137,41 +169,44 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Base
-                    Conditions:
-                        - "InRange(Source, Target, 1)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 1
             Effects:
                 - "Transfer(Source.Gold, Target.Gold, Source.Gold)"
 
     Entities:
         Base:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: b
             LineOfSightRange: 5
             Actions: [SpawnMiner, SpawnFighter]
             Parameters:
                 Gold: 500
-                Health: 500
+                Health: 100
 
         Miner:
-            Sprite: ../../GUI/Assets/Entities/unit7.png
+            Sprite: ../../assets/Entities/unit_5.png
             Symbol: m
             LineOfSightRange: 4
             Actions: [Move, Mine, Deposit]
             Parameters:
                 Gold: 0
-                Health: 50
+                Health: 20
 
         Fighter:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit_2.png
             Symbol: f
             LineOfSightRange: 6
             Parameters:
                 AttackDamage: 10
-                Health: 80
+                Health: 40
             Actions: [Move, Attack]
 
         GoldVein:
-            Sprite: ../../GUI/Assets/Entities/gold_chest.png
+            Sprite: ../../assets/Entities/gold_chest.png
             Symbol: g
             LineOfSightRange: 6
             Actions: []
@@ -201,7 +236,7 @@ YAML
             M  M  M  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-                   
+                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
             HasNoCity:
@@ -215,3 +250,11 @@ YAML
             Gather: [Mine, Deposit]
             Spawn: [SpawnFighter, SpawnMiner]
             Attack: [Attack]
+        Entities:
+            Base: [Base]
+            Building: [Base]
+            Spawner: [Base]
+            Unit: [Miner, Fighter]
+            Fighter: [Fighter]
+            NoFighter: [Miner]
+            Melee: [Fighter]

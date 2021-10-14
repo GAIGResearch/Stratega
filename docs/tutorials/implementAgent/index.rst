@@ -6,7 +6,7 @@ Implementing Simple AI Agents
 
 This page shows a few examples about how to create C++ AI agents for Stratega. In all cases, a new AI agent must do the following, independently if the agent is created to play RTS or TBS games:
 
-#. Extend the class **Agent** from `./include/Stratega/Agent/Agent.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Agent/Agent.h>`_
+#. Extend the class **Agent** from `./include/Stratega/Agent/Agent.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/Agent.h>`_
 #. Override the method *computeAction*.   
 
 The **computeAction** method is called every tick/turn of the game and it should return an ActionAssignment object with the list of actions the agent wants to execute.
@@ -109,7 +109,7 @@ And this is all. This code is compatible with the RTS and TBS types of games in 
 Testing your agent
 ==================
 
-In order to test your agent, you need to add it to Stratega's agent factory. Open `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/src/Agent/AgentFactory.cpp>`_ and:
+In order to test your agent, you need to add it to Stratega's agent factory. Open `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Agent/AgentFactory.cpp>`_ and:
 #. add an include statement to the header file of your agent.
 #. add a line with your agent name to the *getDefaultFactory* method.
 
@@ -122,7 +122,7 @@ For instance, for the DoNothing agent implemnted at './Stratega/include/Agent/Do
 
 You should now be able to compile the framework with no errors, and to use the agent in any game of Stratega.
 
-Finally, in order to *actually* use your agent in a game, you need to modify the list of agents in the configuration file of a game. For instance, let's open 'Stratega/gameConfigs/TBS/KillTheKing.yaml'.
+Finally, in order to *actually* use your agent in a game, you need to modify the list of agents in the configuration file of a game. For instance, let's open 'Stratega/resources/gameConfigurations/TBS/KillTheKing.yaml'.
 At the top of the file, you'll see the section for the agents like the following:
 
 
@@ -142,12 +142,12 @@ it should now look like this:
         - CombatAgent
 
 You can now run your agent. Stratega has two different running modes: GUI and Arena. While the former allows you to run one game with visuals, the latter permits running multiple games with
-graphics disabled. Each mode has its corresponding `main.cpp` file: 'GUI/main.cpp' and 'Arena/main.cpp'. You can execute these programmes indicating the path to the YAML file in the 
+graphics disabled. Each mode has its corresponding `main.cpp` file: 'src/gui/src/main.cpp' and 'src/arena/src/main.cpp'. You can execute these programmes indicating the path to the YAML file in the 
 "-configPath" argument. Alternatively, you can also change the default YAML to be loaded in code, for instance for Arena:
 
 .. code-block:: c++
 
-    auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
 
 
 
