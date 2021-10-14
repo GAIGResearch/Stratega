@@ -142,6 +142,9 @@ Using Python
 .. role:: python(code)
    :language: python
 
+.. note::
+    Inside src/python/agents is a python script with a set of pre-implemented agents an the minimal code to run gui/arena using the included gameconfigurations of the python module
+
 In order to implement this agent, first we setup the agent as indicated at the start of the :ref:`Implementing Simple AI Agents <implement_agent>` tutorial (this is: generate
 a class that inherits from "Agent", override the *computeAction* function.
 

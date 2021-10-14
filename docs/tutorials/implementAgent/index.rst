@@ -236,6 +236,9 @@ Using Python
 .. role:: python(code)
    :language: python
 
+.. note::
+    Inside src/python/agents is a python script with a set of pre-implemented agents an the minimal code to run gui/arena using the included gameconfigurations of the python module.
+
 Do Nothing Agent
 ============
 

@@ -1,3 +1,5 @@
+import collections.abc
+
 import stratega
 import os
 import sys
@@ -16,14 +18,14 @@ class DoNothingPythonAgent(stratega.Agent):
         print("run DoNothingAgent")
         return stratega.ActionAssignment.create_end_action_assignment(self.get_player_id())
 
-    
+
 class RandomPythonAgent(stratega.Agent):
     def init(self, state, forward_model, timer):
         print("init")
 
     def compute_action(self, state, forward_model, timer):
 
-        print("run RandomAgent")        
+        print("run RandomAgent")
         actions=forward_model.generate_actions(state, self.get_player_id())
         action=actions.__getitem__(random.randint(0, actions.count()-1))
 
@@ -85,7 +87,7 @@ class OSLAPythonAgent(stratega.Agent):
 
 
 def run_arena():
-    config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+    config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
 
     number_of_games=1
     player_count=2
@@ -108,24 +110,23 @@ def run_arena():
         arena.run_games(player_count, seed, number_of_games,map_number, ["CombatAgent", OSLAPythonAgent()])
 
 def play_gui():
-    # ----------------- CLEAN -------------------------
-    config = stratega.load_config("../../gameConfigs/TBS/KillTheKing.yaml")
+    # local python module resources
+    config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
+
     runner = stratega.create_runner(config)
 
     # Config agents
     config_agents = stratega.generate_agents(config)
 
     # --- Play/Run -----
-    #runner.play(config_agents, stratega.Vector2f(1920,1080), 0)
-    runner.play([DoNothingPythonAgent(), OSLAPythonAgent()], stratega.Vector2f(1920,1080), 0)
+    runner.play(config_agents, stratega.Vector2i(1200,800), 0)
+    #runner.play(["HumanPlayer", OSLAPythonAgent()], stratega.Vector2i(1920,1080), 0)
 
 
 def run_clean():
     #run_arena()
     play_gui()
 
-
 #------------------------------- Main -----------------------------------------
 if __name__ == "__main__":
-
     run_clean()
