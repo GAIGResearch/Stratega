@@ -13,10 +13,8 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        Selected:
-            Sprite: ../../assets/Tiles/selected.png
-        FogOfWar:
-            Sprite: ../../assets/Tiles/notVisible.png
+        Selected: ../../assets/Tiles/selected.png
+        FogOfWar: ../../assets/Tiles/notVisible.png
     #Optional:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag

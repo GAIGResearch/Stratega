@@ -684,7 +684,7 @@ namespace SGA
                 const auto fogOfWarNode = defaultAssetsNode["FogOfWar"];
                 if (fogOfWarNode.IsDefined())
                 {
-                    std::string fogPath = parseFilePath(fogOfWarNode["Sprite"],config);
+                    std::string fogPath = parseFilePath(fogOfWarNode,config);
                    config.renderConfig->tileSpritePaths.emplace("FogOfWar", fogPath);
                 }
                 else
@@ -697,7 +697,7 @@ namespace SGA
                 if (selectedNode.IsDefined())
                 {
                     
-                    std::string selectedPath = parseFilePath(selectedNode["Sprite"], config);
+                    std::string selectedPath = parseFilePath(selectedNode, config);
                     config.renderConfig->selectedPath = selectedPath;
                 }
                 else
