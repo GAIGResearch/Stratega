@@ -10,11 +10,10 @@ macro(run_conan)
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-    conan_add_remote(NAME bincrafters URL
-            https://api.bintray.com/conan/bincrafters/public-conan)
+    find_program(CONAN_CMD conan REQUIRED PATHS ${CONAN_PATH})
     conan_cmake_run(
             CONANFILE ${DEPENDENCY_DIR}/${CONANFILE}
-            CONAN_COMMAND ${CONAN_PATH}
+            CONAN_COMMAND ${CONAN_CMD}
             ${CONAN_EXTRA_REQUIRES}
             OPTIONS
             ${CONAN_EXTRA_OPTIONS}

@@ -124,7 +124,7 @@ namespace SGA
 		{
 			ImGui::SFML::ProcessEvent(event);
 
-			if (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
+			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
 				return;
 
 			switch (event.type)

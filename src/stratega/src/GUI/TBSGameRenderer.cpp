@@ -75,7 +75,7 @@ namespace SGA
 		while (window.pollEvent(event))
 		{
 			ImGui::SFML::ProcessEvent(event);
-			if (ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
+			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
 				continue;
 
 			switch (event.type)
