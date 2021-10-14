@@ -1,6 +1,6 @@
 name: Python Wheel Builds
 
-on: [push, pull_request]
+on: [pull_request]
 env:
     CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
@@ -38,7 +38,7 @@ jobs:
           - runs-on: windows-latest
             cibw-arch: win_amd64
 
-    name: Wheels • ${{ matrix.cibw-arch }}
+    name: Wheels ï¿½ ${{ matrix.cibw-arch }}
     runs-on: ${{ matrix.runs-on }}
 
     steps:
