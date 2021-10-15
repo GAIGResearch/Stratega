@@ -1,7 +1,7 @@
-#include <stratega/ForwardModel/TargetType.h>
-#include <stratega/ForwardModel/ActionTarget.h>
-#include <stratega/Representation/GameState.h>
-#include <stratega/Representation/EntityType.h>
+#include <Stratega/ForwardModel/TargetType.h>
+#include <Stratega/ForwardModel/ActionTarget.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/Representation/EntityType.h>
 namespace SGA
 {
 	bool TargetType::isValid(const GameState& state, const ActionTarget& actionTarget, const ActionTarget& sourceActionTarget) const

@@ -1,17 +1,12 @@
-<<<<<<< HEAD:src/gui/src/main.cpp
-#include <stratega/Configuration/GameConfigParser.h>
-#include <stratega/Game/GameRunner.h>
-
-=======
 #include <Stratega//Configuration/GameConfigParser.h>
 #include <Stratega/Game/GameRunner.h>
 #include <Stratega/Utils/filesystem.hpp>
 #undef max
->>>>>>> dev:GUI/main.cpp
+
 int main()
 {
 	std::mt19937 rngEngine(0);
-	std::string configPath("../../../resources/gameConfigurations/TBS/KillTheKing.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();

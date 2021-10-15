@@ -1,12 +1,12 @@
 #include <cassert>
 
-#include <stratega/GUI/GameRenderer.h>
-#include <stratega/GUI/RTSGameRenderer.h>
-#include <stratega/GUI/TBSGameRenderer.h>
+#include <Stratega/GUI/GameRenderer.h>
+#include <Stratega/GUI/RTSGameRenderer.h>
+#include <Stratega/GUI/TBSGameRenderer.h>
 
 namespace SGA
 {
-	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2f& resolution)
+	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2i& resolution)
 	{
 		if (type == GameType::TBS)
 		{

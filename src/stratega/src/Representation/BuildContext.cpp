@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cstdarg>
 
-#include <stratega/Representation/BuildContext.h>
+#include <Stratega/Representation/BuildContext.h>
 
 namespace SGA
 {

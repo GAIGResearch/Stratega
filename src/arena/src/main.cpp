@@ -1,11 +1,7 @@
-#include <stratega/Configuration/GameConfigParser.h>
-#include <stratega/Logging/Log.h>
-
-#include <stratega/Arena/Arena.h>
-#include <stratega/Arena/InputParser.h>
-
-#include <filesystem>
-
+#include <Stratega/Configuration/GameConfigParser.h>
+#include <Stratega/Logging/Log.h>
+#include <Stratega/Arena/Arena.h>
+#include <Stratega/Arena/InputParser.h>
 
 int main(int argc, char** argv)
 {
@@ -15,7 +11,7 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
-	auto configPath = parser.getCmdOption<std::string>("-configPath", "../../../gameConfigs/TBS/KillTheKing.yaml");
+        auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	//Optional
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "");
 
@@ -29,7 +25,7 @@ int main(int argc, char** argv)
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	// Run games
-	SGA::Log::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
+	SGA::setDefaultLogger(std::make_unique<SGA::FileLogger>(logPath));
 	Arena arena(*gameConfig);
 	if(mapsPath.empty())
 	{
@@ -43,8 +39,7 @@ int main(int argc, char** argv)
 		//Run combinations per map
 		const int mapNumber = gameConfig->levelDefinitions.size();
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
-	}
-	
+	}	
 	
 	return 0;
 }

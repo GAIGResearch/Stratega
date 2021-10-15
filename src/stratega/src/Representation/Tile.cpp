@@ -1,5 +1,5 @@
-#include <stratega/Representation/Tile.h>
-#include <stratega/Representation/TileType.h>
+#include <Stratega/Representation/Tile.h>
+#include <Stratega/Representation/TileType.h>
 namespace SGA
 {
 	int Tile::getTileTypeID() const

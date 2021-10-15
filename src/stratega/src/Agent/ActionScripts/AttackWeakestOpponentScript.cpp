@@ -1,7 +1,7 @@
-#include <stratega/Agent/ActionScripts/AttackWeakestOpponentScript.h>
-#include <stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Agent/ActionScripts/AttackWeakestOpponentScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <set>
-
+#include <Stratega/Utils/contains.h>
 namespace SGA
 {
 
@@ -70,8 +70,11 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
+					const bool contains = opponentUnits.find(action.getTargets()[1].getEntityID()) != opponentUnits.end();
 
-					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
+					if (contains)
+					//if (contains(opponentUnits, action.getTargets()[1].getEntityID()))
+					//if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
 						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)
@@ -172,7 +175,8 @@ namespace SGA
 				{
 					auto& action = subActions.at(i);
 
-					if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
+					if (opponentUnits.count(action.getTargets()[1].getEntityID()))
+					//if (opponentUnits.contains(action.getTargets()[1].getEntityID()))
 					{
 						const double health = healthPerUnit[action.getTargets()[1].getEntityID()];
 						if (health < minimalTargetHealthPoints)

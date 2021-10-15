@@ -1,5 +1,5 @@
-#include <stratega/Agent/ActionScripts/RunAwayFromOpponentScript.h>
-#include <stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Agent/ActionScripts/RunAwayFromOpponentScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {

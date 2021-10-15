@@ -1,5 +1,5 @@
 #pragma once
-#include <stratega/Agent/StateAbstraction/StateFactory.h>
+#include <Stratega/Agent/StateAbstraction/StateFactory.h>
 
 namespace SGA
 {

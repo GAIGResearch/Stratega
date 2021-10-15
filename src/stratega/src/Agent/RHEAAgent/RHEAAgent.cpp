@@ -1,5 +1,5 @@
-#include <stratega/Agent/RHEAAgent/RHEAAgent.h>
-#include <stratega/Agent/Heuristic/AbstractHeuristic.h>
+#include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 #include <algorithm>
 
 namespace SGA
@@ -139,24 +139,27 @@ namespace SGA
     std::vector<RHEAGenome> RHEAAgent::tournamentSelection()
     {
         std::vector<RHEAGenome> tournament;
-        // sample subset, sort by fitness, select best individual
-        // parent 1
-        std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.tournamentSize, std::mt19937{ std::random_device{}() });
+       // // sample subset, sort by fitness, select best individual
+       // // parent 1
+       ///* std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
+       //     params_.tournamentSize, std::mt19937{ std::random_device{}() });*/
+       // /*auto parent1 = pop_;
+       // std::shuffle(parent1.begin(), parent1.end(), std::mt19937{ std::random_device{}() });*/
 
-        sort(tournament.begin(), tournament.end(), sortByFitness);
-        RHEAGenome& parent1 = tournament[0];
+       // sort(tournament.begin(), tournament.end(), sortByFitness);
+       // RHEAGenome& parent1 = tournament[0];
 
 
-        // parent 2
-        tournament.clear();
-        std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-            params_.tournamentSize, std::mt19937{ std::random_device{}() });
+       // // parent 2
+       ///* tournament.clear();
+       // std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
+       //     params_.tournamentSize, std::mt19937{ std::random_device{}() });
 
-        std::sort(tournament.begin(), tournament.end(), sortByFitness);
-        RHEAGenome& parent2 = tournament[0];
+       // std::sort(tournament.begin(), tournament.end(), sortByFitness);
+       // RHEAGenome& parent2 = tournament[0];
 
-        return std::vector<RHEAGenome>{parent1, parent2};
+       // return std::vector<RHEAGenome>{parent1, parent2};*/
+        return tournament;
     }
 
 }

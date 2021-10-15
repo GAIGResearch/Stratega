@@ -1,9 +1,9 @@
-#include <stratega/Agent/AgentFactory.h>
-#include <stratega/Logging/Log.h>
-#include <stratega/Agent/Agent.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Logging/Log.h>
+#include <Stratega/Agent/Agent.h>
 
-#include <stratega/Arena/Arena.h>
-#include <stratega/Arena/utils.h>
+#include <Stratega/Arena/Arena.h>
+#include <Stratega/Arena/utils.h>
 
 Arena::Arena(const SGA::GameConfig& config)
 	: config(&config), runner(createGameRunner(config)), gameBattleCount(0)
@@ -97,12 +97,12 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 	// Initialize logging	
 	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-	SGA::Log::logSingleValue("Map", std::to_string(currentMapID));
-	SGA::Log::logSingleValue("Battle", std::to_string(gameBattleCount++));
-	SGA::Log::logSingleValue("Seed", std::to_string(currentSeed));
+	SGA::logSingleValue("Map", std::to_string(currentMapID));
+	SGA::logSingleValue("Battle", std::to_string(gameBattleCount++));
+	SGA::logSingleValue("Seed", std::to_string(currentSeed));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
+		SGA::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
 	
 	// Run the game
@@ -113,13 +113,13 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	catch (const std::exception& ex)
 	{
 		std::cout << "Game crashed error, logging error in the logfile" << std::endl;
-		SGA::Log::logValue("Error", std::string(ex.what()));
+		SGA::logValue("Error", std::string(ex.what()));
 	}
 	std::cout << std::endl;
 
 	// Kinda dirty hack to flush after every game
 	// This could result in weird yaml files, if logging is done outside of the game loggingScope
-	SGA::Log::getDefaultLogger().flush();
+	SGA::getDefaultLogger().flush();
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> newAgents)
@@ -149,12 +149,12 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 	// Initialize logging	
 	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-	SGA::Log::logSingleValue("Map", std::to_string(currentMapID));
-	SGA::Log::logSingleValue("Battle", std::to_string(gameBattleCount++));
-	SGA::Log::logSingleValue("Seed", std::to_string(currentSeed));
+	SGA::logSingleValue("Map", std::to_string(currentMapID));
+	SGA::logSingleValue("Battle", std::to_string(gameBattleCount++));
+	SGA::logSingleValue("Seed", std::to_string(currentSeed));
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::Log::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
+		SGA::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
 	}
 
 	// Run the game
@@ -165,24 +165,24 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	catch (const std::exception& ex)
 	{
 		std::cout << "Game crashed error, logging error in the logfile" << std::endl;
-		SGA::Log::logValue("Error", std::string(ex.what()));
+		SGA::logValue("Error", std::string(ex.what()));
 	}
 	std::cout << std::endl;
 
 	// Kinda dirty hack to flush after every game
 	// This could result in weird yaml files, if logging is done outside of the game loggingScope
-	SGA::Log::getDefaultLogger().flush();
+	SGA::getDefaultLogger().flush();
 }
 
 void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel)
 {
 	if(state.getGameType() == SGA::GameType::TBS)
 	{
-		SGA::Log::logValue("ActivePlayer", state.getCurrentTBSPlayer());
+		SGA::logValue("ActivePlayer", state.getCurrentTBSPlayer());
 
 		// ToDo getActions should accept const gameStates
 		auto actions = forwardModel.generateActions(state, state.getCurrentTBSPlayer());
-		SGA::Log::logValue("ActionCount", actions.size());
+		SGA::logValue("ActionCount", actions.size());
 	}
 	else if(state.getGameType() == SGA::GameType::RTS)
 	{
@@ -191,7 +191,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 			int playerID = state.getPlayers()[i].getID();
 			SGA::LoggingScope playerScope("Player" + std::to_string(playerID));
 			auto actions = forwardModel.generateActions(state, playerID);
-			SGA::Log::logValue("ActionCount", actions.size());
+			SGA::logValue("ActionCount", actions.size());
 		}
 	}
 }
@@ -200,12 +200,12 @@ void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardM
 {
 	if (finalState.getGameType() == SGA::GameType::TBS)
 	{
-		SGA::Log::logSingleValue("WinnerID", finalState.getWinnerID());
-		SGA::Log::logSingleValue("Turns", finalState.getCurrentTick() + 1);
+		SGA::logSingleValue("WinnerID", finalState.getWinnerID());
+		SGA::logSingleValue("Turns", finalState.getCurrentTick() + 1);
 	}
 	else if (finalState.getGameType() == SGA::GameType::RTS)
 	{
-		SGA::Log::logSingleValue("WinnerID", finalState.getWinnerID());
+		SGA::logSingleValue("WinnerID", finalState.getWinnerID());
 	}
 }
 

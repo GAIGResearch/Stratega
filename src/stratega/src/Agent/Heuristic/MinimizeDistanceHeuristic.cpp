@@ -1,6 +1,6 @@
 #include <map>
 #include <set>
-#include <stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 
 namespace SGA
 {

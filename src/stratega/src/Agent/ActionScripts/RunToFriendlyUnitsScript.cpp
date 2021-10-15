@@ -1,5 +1,5 @@
-#include <stratega/Agent/ActionScripts/RunToFriendlyUnitsScript.h>
-#include <stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Agent/ActionScripts/RunToFriendlyUnitsScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {

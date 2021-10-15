@@ -1,5 +1,5 @@
-#include <stratega/Agent/TreeSearchAgents/TreeNode.h>
-#include <stratega/Agent/Agent.h>
+#include <Stratega/Agent/TreeSearchAgents/TreeNode.h>
+#include <Stratega/Agent/Agent.h>
 #include <iostream>
 #include <vector>
 

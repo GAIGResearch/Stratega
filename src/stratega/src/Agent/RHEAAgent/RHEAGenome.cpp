@@ -1,5 +1,5 @@
-#include <stratega/Agent/RHEAAgent/RHEAGenome.h>
-#include <stratega/Agent/Agent.h>
+#include <Stratega/Agent/RHEAAgent/RHEAGenome.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA {
 

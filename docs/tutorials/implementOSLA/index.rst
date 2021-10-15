@@ -41,7 +41,7 @@ snippet, which also runs through all actions in the returned list:
 
 .. code-block:: c++
 
-    #include <stratega/Agent/MyAgent/MyAgent.h>
+    #include <Stratega/Agent/MyAgent/MyAgent.h>
     namespace SGA
     {
         ActionAssignment MyAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
@@ -141,6 +141,9 @@ Using Python
 
 .. role:: python(code)
    :language: python
+
+.. note::
+    Inside src/python/agents is a python script with a set of pre-implemented agents an the minimal code to run gui/arena using the included gameconfigurations of the python module
 
 In order to implement this agent, first we setup the agent as indicated at the start of the :ref:`Implementing Simple AI Agents <implement_agent>` tutorial (this is: generate
 a class that inherits from "Agent", override the *computeAction* function.

@@ -1,4 +1,4 @@
-#include <stratega/Agent/RuleBasedAgents/CombatAgent.h>
+#include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 
 namespace SGA
 {

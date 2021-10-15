@@ -1,8 +1,8 @@
-#include <stratega/Configuration/GameConfig.h>
-#include <stratega/Agent/AgentFactory.h>
-#include <stratega/Representation/GameState.h>
-#include <stratega/ForwardModel/RTSForwardModel.h>
-#include <stratega/Representation/LevelDefinition.h>
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/Representation/LevelDefinition.h>
 namespace SGA
 {
 	std::vector<std::unique_ptr<Agent>> GameConfig::generateAgents() const
@@ -22,9 +22,9 @@ namespace SGA
 		return std::move(agents);
 	}
 
-	int GameConfig::addPlayer(std::unique_ptr<GameState>& state, GameInfo& gameInfo) const
+	int GameConfig::addPlayer(GameState& state, GameInfo& gameInfo) const
 	{
-		int nextPlayerID = state->getNumPlayers();
+		int nextPlayerID = state.getNumPlayers();
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
@@ -42,7 +42,7 @@ namespace SGA
 			player.addAttachedAction(actionTypeID, 0);
 		}
 
-		state->addPlayer(player);
+		state.addPlayer(player);
 		return player.getID();
 	}
 
@@ -50,50 +50,16 @@ namespace SGA
 	{
 		// Initialize state
 		std::unique_ptr<GameState> state = std::make_unique<GameState>();
-		state->setGameType(gameType);
-		state->setTickLimit(tickLimit);
-		state->setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
 
-		//GameInfo
-		GameInfo gameInfo;		
-		gameInfo.setEntityTypes(std::make_shared<std::unordered_map<int, EntityType>>(entityTypes));
-		gameInfo.setTileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes));
-		gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
-		gameInfo.setEntityGroups(entityGroups);
-		gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
-		gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
-		gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
-		gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));
-		gameInfo.setYAMLPath(yamlPath);
-		gameInfo.setGameDescription(std::make_shared<GameDescription>(actionCategories, entityCategories));
-		state->setGameInfo(std::make_shared<GameInfo>(gameInfo));
+		initializeGamestate(*state);
 
+		generateGameInfo(*state);
 		
-		std::unordered_set<int> playerIDs;
-		for (auto i = 0; i < getNumberOfPlayers(); i++)
-		{
-			playerIDs.emplace(addPlayer(state, gameInfo));
-		}
+		addPlayers(*state);
 
 		// Create some lookups for initializing the board and entities
-		std::unordered_map<char, const TileType*> tileLookup;
-		const auto* defaultTile = &state->getGameInfo()->getTileTypes().begin()->second;
-		const auto& tileTypes = state->getGameInfo()->getTileTypes();
-		for(const auto& idTilePair : tileTypes)
-		{
-			tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
-			if (idTilePair.second.isDefaultTile())
-				defaultTile = &idTilePair.second;
-		}
-
-		std::unordered_map<char, const EntityType*> entityLookup;
-		for(const auto& idEntityPair : state->getGameInfo()->getEntityTypes())
-		{
-			entityLookup.emplace(idEntityPair.second.getSymbol(), &idEntityPair.second);
-		}
-
-		// Configure board and spawn entities
-		std::vector<Tile> tiles;
+		createTileLookup(*state);
+		createEntitiesLookup(*state);		
 		
 		//Switch to selected level
 		int mapIDtoLoad = selectedLevel;
@@ -107,23 +73,10 @@ namespace SGA
 
 		auto& board = selectedLevelDefinition->second.board;
 
-		//Instance Tiles
-		for (size_t y = 0; y < board.getHeight(); y++)
-		{
-			for (size_t x = 0; x < board.getWidth(); x++)
-			{
-				tiles.emplace_back(board.get(x,y)->toTile(x, y));
-			}
-		}
+		std::vector<Tile> tiles=instanceTiles(*state, board);
+		instanceEntities(*state, selectedLevelDefinition->second.entityPlacements);
 
-		//Instance Entities
-		for (auto& entity : selectedLevelDefinition->second.entityPlacements)
-		{
-			state->addEntity(*entity.entityType, entity.ownerID, entity.position);
-		}
-		
-		//Initialize board with size and set of tiles.
-		state->initBoard(board.getWidth(), tiles);
+		initBoard(*state, tiles, board);
 
 		// Initialize Pathfinding
 		if(gameType == GameType::RTS)
@@ -132,8 +85,7 @@ namespace SGA
 			rtsFM->buildNavMesh(*state, NavigationConfig{});
 		}
 
-		//Initialize researched list for all players
-		state->initResearchTechs();
+		initResearchTechs(*state);
 		
 		return std::move(state);
 	}

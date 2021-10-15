@@ -1,6 +1,6 @@
 #include <cassert>
-#include <stratega/Game/AgentThread.h>
-#include <stratega/Utils/Timer.h>
+#include <Stratega/Game/AgentThread.h>
+#include <Stratega/Utils/Timer.h>
 
 namespace SGA
 {

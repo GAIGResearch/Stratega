@@ -1,4 +1,4 @@
-#include <stratega/ForwardModel/RTSForwardModel.h>
+#include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <cstring>
 
 namespace SGA

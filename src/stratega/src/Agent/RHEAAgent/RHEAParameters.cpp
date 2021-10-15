@@ -1,4 +1,4 @@
-#include <stratega/Agent/RHEAAgent/RHEAParameters.h>
+#include <Stratega/Agent/RHEAAgent/RHEAParameters.h>
 
 #include <iostream>
 

@@ -1,8 +1,8 @@
-#include <stratega/GUI/TileMap.h>
-#include <stratega/GUI/GridUtils.h>
-#include <stratega/Configuration/RenderConfig.h>
-#include <stratega/Configuration/GameConfig.h>
-#include <stratega/Representation/GameState.h>
+#include <Stratega/GUI/TileMap.h>
+#include <Stratega/GUI/GridUtils.h>
+#include <Stratega/Configuration/RenderConfig.h>
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/Representation/GameState.h>
 
 #include "SFML/System/Vector2.hpp"
 

@@ -1,6 +1,6 @@
 #include <random>
-#include <stratega/Agent/ScriptedAgent.h>
-#include <stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Agent/ScriptedAgent.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {

@@ -1,13 +1,13 @@
-#include <stratega/Agent/AgentFactory.h>
-#include <stratega/Agent/RandomAgent.h>
-#include <stratega/Agent/DoNothingAgent.h>
-#include <stratega/Agent/OSLAAgent.h>
-#include <stratega/Agent/TreeSearchAgents/BFSAgent.h>
-#include <stratega/Agent/RHEAAgent/RHEAAgent.h>
-#include <stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
-#include <stratega/Agent/TreeSearchAgents/DFSAgent.h>
-#include <stratega/Agent/MCTSAgent/MCTSAgent.h>
-#include <stratega/Agent/RuleBasedAgents/CombatAgent.h>
+#include <Stratega/Agent/AgentFactory.h>
+#include <Stratega/Agent/RandomAgent.h>
+#include <Stratega/Agent/DoNothingAgent.h>
+#include <Stratega/Agent/OSLAAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/RHEAAgent/RHEAAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
+#include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
+#include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
+#include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 
 namespace SGA
 {

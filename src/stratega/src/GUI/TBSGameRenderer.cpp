@@ -1,16 +1,17 @@
-#include <stratega/GUI/TBSGameRenderer.h>
-#include <stratega/GUI/GridUtils.h>
-#include <stratega/Configuration/RenderConfig.h>
-#include <stratega/Configuration/GameConfig.h>
+#include <Stratega/GUI/TBSGameRenderer.h>
+#include <Stratega/GUI/GridUtils.h>
+#include <Stratega/Configuration/RenderConfig.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 #include <SFML/Window.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <iomanip>
 #include <sstream>
-
+#include <Stratega/Utils/filesystem.hpp>
 namespace SGA
 {
-	TBSGameRenderer::TBSGameRenderer(SGA::Vector2f& resolution)
+	TBSGameRenderer::TBSGameRenderer(SGA::Vector2i& resolution)
 		: config(nullptr),
 		  state(),
 		  fowState(),
@@ -44,9 +45,9 @@ namespace SGA
 		{
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
+		assetCache.loadTexture("selected", gameConfig.renderConfig->selectedPath);
 
-		assetCache.loadTexture("selected", "./GUI/Assets/Tiles/selected.png");
-		assetCache.loadFont("font", "./GUI/Assets/arial.ttf");
+		assetCache.loadFont("font", gameConfig.renderConfig->fontPath);
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);
@@ -75,7 +76,7 @@ namespace SGA
 		while (window.pollEvent(event))
 		{
 			ImGui::SFML::ProcessEvent(event);
-			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
+                   if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
 				continue;
 
 			switch (event.type)
@@ -383,7 +384,11 @@ namespace SGA
 			//Add units
 			sf::Texture& texture = assetCache.getTexture(entityType.getName());
 
-			ImGui::Image(texture, ImVec2(100, 100), sf::Color::White, sf::Color::Transparent);
+			ImGui::Image(
+                           texture,
+                           sf::Vector2f(100, 100),
+                           sf::Color::White,
+                           sf::Color::Transparent);
 
 
 			ImGui::NextColumn();
@@ -417,7 +422,7 @@ namespace SGA
 				//Add units
 				sf::Texture& searchedTexture = assetCache.getTexture(searchedEntityType.getName());
 
-				if (ImGui::ImageButton(searchedTexture, ImVec2(50, 50), -10))
+				if (ImGui::ImageButton(searchedTexture,sf::Vector2f(50, 50),-10))
 				{
 					/*selectedEntityID = entity->id;*/
 				}

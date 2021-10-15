@@ -1,4 +1,4 @@
-#include <stratega/Agent/PortfolioForwardModel.h>
+#include <Stratega/Agent/PortfolioForwardModel.h>
 
 namespace SGA
 {

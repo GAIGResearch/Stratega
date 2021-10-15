@@ -1,4 +1,4 @@
-#include <stratega/Agent/MCTSAgent/MCTSAgent.h>
+#include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 
 namespace SGA
 {

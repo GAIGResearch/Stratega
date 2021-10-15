@@ -1,5 +1,5 @@
-#include <stratega/Representation/GameState.h>
-#include <stratega/ForwardModel/Condition.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/Condition.h>
 
 namespace SGA
 {

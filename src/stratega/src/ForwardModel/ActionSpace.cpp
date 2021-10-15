@@ -1,4 +1,4 @@
-#include <stratega/ForwardModel/ActionSpace.h>
+#include <Stratega/ForwardModel/ActionSpace.h>
 
 namespace SGA
 {
@@ -28,7 +28,7 @@ namespace SGA
 							generateContinuousAction = false;
 
 							//Give the posibility to abort it
-							bucket.emplace_back(Action::createAbortAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
+							bucket.emplace_back(Action::createAbortEntityAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
 						}
 					}
 				}
@@ -74,7 +74,7 @@ namespace SGA
 						generateContinuousAction = false;
 
 						//Give the posibility to abort it
-						bucket.emplace_back(Action::createAbortAction(player.getID(), action.getContinuousActionID()));
+						bucket.emplace_back(Action::createAbortPlayerAction(player.getID(), action.getContinuousActionID()));
 					}
 				}
 			}

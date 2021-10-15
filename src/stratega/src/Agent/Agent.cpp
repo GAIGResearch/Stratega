@@ -1,4 +1,4 @@
-#include <stratega/Agent/Agent.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {

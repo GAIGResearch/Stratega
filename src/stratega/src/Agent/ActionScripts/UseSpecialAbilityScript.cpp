@@ -1,5 +1,5 @@
-#include <stratega/Agent/ActionScripts/UseSpecialAbilityScript.h>
-#include <stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Agent/ActionScripts/UseSpecialAbilityScript.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 
 namespace SGA
 {

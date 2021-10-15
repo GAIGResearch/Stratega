@@ -1,11 +1,11 @@
 #include <cassert>
-#include <stratega/Game/GameRunner.h>
-#include <stratega/Game/TBSGameRunner.h>
-#include <stratega/Game/RTSGameRunner.h>
-#include <stratega/Representation/GameState.h>
-#include <stratega/ForwardModel/ForwardModel.h>
-#include <stratega/Configuration/GameConfig.h>
-#include <stratega/GUI/GameRenderer.h>
+#include <Stratega/Game/GameRunner.h>
+#include <Stratega/Game/TBSGameRunner.h>
+#include <Stratega/Game/RTSGameRunner.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Configuration/GameConfig.h>
+#include <Stratega/GUI/GameRenderer.h>
 
 namespace SGA
 {
@@ -48,7 +48,7 @@ namespace SGA
 		}
 	}
 
-	void GameRunner::render(SGA::Vector2f& resolution)
+	void GameRunner::render(SGA::Vector2i& resolution)
 	{
 		ensureRendererInitialized(resolution);
 		renderer->render();
@@ -110,7 +110,7 @@ namespace SGA
 		return *currentState;
 	}
 
-	void GameRunner::ensureRendererInitialized(SGA::Vector2f& resolution)
+	void GameRunner::ensureRendererInitialized(SGA::Vector2i& resolution)
 	{
 		if (renderer == nullptr)
 		{

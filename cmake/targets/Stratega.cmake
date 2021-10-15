@@ -1,4 +1,3 @@
-
 set(STRATEGA_SOURCE_FILES
         Agent/ActionScripts/AttackClosestOpponentScript.cpp
         Agent/ActionScripts/AttackWeakestOpponentScript.cpp
@@ -75,19 +74,20 @@ set(STRATEGA_SOURCE_FILES
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
-add_library(${project_lib_name} STATIC ${STRATEGA_SOURCE_FILES})
+add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
 
-target_include_directories(${project_lib_name} PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
+target_include_directories(Stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
-target_link_libraries(${project_lib_name}
+target_link_libraries(Stratega
         PUBLIC
+        #CONAN_PKG::opengl
         project_options
         project_warnings
         # TODO: Is this public private separation of modules accurate?
         CONAN_PKG::yaml-cpp
         CONAN_PKG::recastnavigation
         "$<$<TARGET_EXISTS:Threads::Threads>:Threads::Threads>"  #use threads if the target exists
-        PRIVATE
+        PRIVATE        
         CONAN_PKG::imgui
         imgui
         # other platforms use Conan's `sfml`
@@ -99,7 +99,7 @@ target_link_libraries(${project_lib_name}
         )
 
 install(TARGETS
-        ${project_lib_name}
+        Stratega
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib
         RUNTIME DESTINATION bin)

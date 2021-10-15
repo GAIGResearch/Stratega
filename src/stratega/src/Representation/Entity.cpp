@@ -1,6 +1,6 @@
-#include <stratega/Representation/Entity.h>
-#include <stratega/Representation/Player.h>
-#include <stratega/Representation/GameInfo.h>
+#include <Stratega/Representation/Entity.h>
+#include <Stratega/Representation/Player.h>
+#include <Stratega/Representation/GameInfo.h>
 
 namespace SGA
 {

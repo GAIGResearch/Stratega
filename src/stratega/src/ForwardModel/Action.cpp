@@ -1,6 +1,6 @@
 #include <cassert>
-#include <stratega/ForwardModel/Action.h>
-#include <stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/Action.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace SGA
 {

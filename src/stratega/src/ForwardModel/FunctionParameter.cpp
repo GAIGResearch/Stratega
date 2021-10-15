@@ -1,51 +1,51 @@
-#include <stratega/ForwardModel/FunctionParameter.h>
-#include <stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/FunctionParameter.h>
+#include <Stratega/Representation/GameState.h>
 
 namespace SGA
 {
 	FunctionParameter FunctionParameter::createConstParameter(double constValue)
 	{
-		return FunctionParameter(Type::Constant, { .constValue = constValue });
+		return FunctionParameter(Type::Constant, { constValue });
 	}
 	
 	FunctionParameter FunctionParameter::createArgumentReference(int argumentIndex)
 	{
-		return FunctionParameter(Type::ArgumentReference, {.argumentIndex = argumentIndex});
+		return FunctionParameter(Type::ArgumentReference, { Type::ArgumentReference, argumentIndex});
 	}
 	
 	FunctionParameter FunctionParameter::createParameterReference(ParameterReference ref)
 	{
-		return FunctionParameter(Type::ParameterReference, { .parameterData = ref});
+		return FunctionParameter(Type::ParameterReference, {ref});
 	}
 
 	FunctionParameter FunctionParameter::createEntityPlayerReference(int argumentIndex)
 	{
-		return FunctionParameter(Type::EntityPlayerReference, { .argumentIndex = argumentIndex });
+		return FunctionParameter(Type::EntityPlayerReference, { Type::EntityPlayerReference, argumentIndex });
 	}
 
 	FunctionParameter FunctionParameter::createTimeReference(int argumentIndex)
 	{
-		return FunctionParameter(Type::TimeReference, { .argumentIndex = argumentIndex });
+		return FunctionParameter(Type::TimeReference, { Type::TimeReference, argumentIndex });
 	}
 
 	FunctionParameter FunctionParameter::createEntityPlayerParameterReference(ParameterReference ref)
 	{
-		return FunctionParameter(Type::EntityPlayerParameterReference, { .parameterData = ref });
+		return FunctionParameter(Type::EntityPlayerParameterReference, { ref });
 	}
 	
 	FunctionParameter FunctionParameter::createEntityTypeReference(int entityTypeID)
 	{
-		return FunctionParameter(Type::EntityTypeReference, { .entityTypeID = entityTypeID});
+		return FunctionParameter(Type::EntityTypeReference, { Type::EntityTypeReference, entityTypeID});
 	}
 
 	FunctionParameter FunctionParameter::createTileTypeReference(int tileTypeID)
 	{
-		return FunctionParameter(Type::TileTypeReference, { .tileTypeID = tileTypeID });
+		return FunctionParameter(Type::TileTypeReference, { Type::TileTypeReference, tileTypeID });
 	}
 
 	FunctionParameter FunctionParameter::createTechnologyTypeReference(int technologyTypeID)
 	{
-		return FunctionParameter(Type::TechnologyTypeReference, { .technologyTypeID = technologyTypeID });
+		return FunctionParameter(Type::TechnologyTypeReference, { Type::TechnologyTypeReference, technologyTypeID });
 	}
 
 	FunctionParameter::Type FunctionParameter::getType() const

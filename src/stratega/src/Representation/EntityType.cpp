@@ -1,5 +1,5 @@
-#include <stratega/Representation/EntityType.h>
-#include <stratega/ForwardModel/Action.h>
+#include <Stratega/Representation/EntityType.h>
+#include <Stratega/ForwardModel/Action.h>
 const SGA::Parameter& SGA::EntityType::getParameter(ParameterID parameterID) const
 {
 	auto it = parameters.find(parameterID);

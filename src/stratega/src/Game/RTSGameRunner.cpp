@@ -1,5 +1,5 @@
-#include <stratega/Game/RTSGameRunner.h>
-#include <stratega/Game/AgentThread.h>
+#include <Stratega/Game/RTSGameRunner.h>
+#include <Stratega/Game/AgentThread.h>
 
 namespace SGA
 {

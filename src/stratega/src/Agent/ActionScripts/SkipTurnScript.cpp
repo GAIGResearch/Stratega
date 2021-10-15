@@ -1,4 +1,4 @@
-#include <stratega/Agent/ActionScripts/SkipTurnScript.h>
+#include <Stratega/Agent/ActionScripts/SkipTurnScript.h>
 
 namespace SGA
 {

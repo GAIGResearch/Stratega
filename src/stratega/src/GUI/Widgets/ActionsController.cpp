@@ -1,14 +1,14 @@
-#include <stratega/GUI/Widgets/ActionsController.h>
-#include <stratega/ForwardModel/TargetType.h>
-#include <stratega/ForwardModel/ActionType.h>
-#include <stratega/Representation/GameState.h>
-#include <stratega/ForwardModel/Action.h>
+#include <Stratega/GUI/Widgets/ActionsController.h>
+#include <Stratega/ForwardModel/TargetType.h>
+#include <Stratega/ForwardModel/ActionType.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/ForwardModel/Action.h>
 
 #include <imgui.h>
-
-namespace SGA::Widgets
+using namespace  SGA;
+namespace Widgets
 {
-	bool ActionsSettings::hasActionsTargetAvailable(const ActionType& actionType) const
+	bool ActionsSettings::hasActionsTargetAvailable(const SGA::ActionType& actionType) const
 	{
 		return selectedTargets.size() < actionType.getTargets().size();
 	}
@@ -100,7 +100,7 @@ namespace SGA::Widgets
 							ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 							if (ImGui::Button("Abort", ImVec2(50, 50)))
 							{
-								actionsToExecute.emplace_back(Action::createAbortAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
+								actionsToExecute.emplace_back(Action::createAbortEntityAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
 							}
 							ImGui::PopStyleColor(3);
 
@@ -165,7 +165,7 @@ namespace SGA::Widgets
 						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
 						if (ImGui::Button("Abort", ImVec2(50, 50)))
 						{
-							actionsToExecute.emplace_back(Action::createAbortAction(playerID, action.getContinuousActionID()));
+							actionsToExecute.emplace_back(Action::createAbortPlayerAction(playerID, action.getContinuousActionID()));
 						}
 						ImGui::PopStyleColor(3);
 

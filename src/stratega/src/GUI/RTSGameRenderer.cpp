@@ -1,16 +1,17 @@
-#include <stratega/GUI/RTSGameRenderer.h>
-#include <stratega/GUI/GridUtils.h>
-#include <stratega/Configuration/RenderConfig.h>
-#include <stratega/Configuration/GameConfig.h>
+#include <Stratega/GUI/RTSGameRenderer.h>
+#include <Stratega/GUI/GridUtils.h>
+#include <Stratega/Configuration/RenderConfig.h>
+#include <Stratega/Configuration/GameConfig.h>
 
 #include <SFML/Window.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include <iomanip>
 #include <sstream>
 
 namespace SGA
 {
-	RTSGameRenderer::RTSGameRenderer(SGA::Vector2f& newResolution)
+	RTSGameRenderer::RTSGameRenderer(SGA::Vector2i& newResolution)
 		: state(),
 		fowState(),
 		assignment(),
@@ -45,9 +46,24 @@ namespace SGA
 			assetCache.loadTexture(namePathPair.first, namePathPair.second);
 		}
 
-		assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
-		assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");
-		assetCache.loadFont("font", "./GUI/Assets/arial.ttf");
+		assetCache.loadTexture("circleCollider", gameConfig.renderConfig->entityCircleColliderPath);
+
+		assetCache.loadFont("font", gameConfig.renderConfig->fontPath);
+		
+		
+		//std::string circleColliderPath = "../..//GUI/Assets/Tiles/circleCollider.png";
+
+		//
+		//filePath = circleColliderPath;
+		//tmp = ghc::filesystem::current_path();
+		//ghc::filesystem::current_path(ghc::filesystem::canonical(ghc::filesystem::path(config->yamlPath).parent_path()));
+		//filePath = canonical(filePath);
+		//current_path(tmp);
+		//assetCache.loadTexture("circleCollider", filePath.string());
+
+
+		///*assetCache.loadTexture("circleCollider", "./GUI/Assets/Tiles/circleCollider.png");
+		//assetCache.loadTexture("boxCollider", "./GUI/Assets/Tiles/boxCollider.png");*/
 
 		tileMap.init(initialState, gameConfig, *gameConfig.renderConfig);
 		entityRenderer.init(initialState, gameConfig, *gameConfig.renderConfig);
@@ -124,7 +140,7 @@ namespace SGA
 		{
 			ImGui::SFML::ProcessEvent(event);
 
-			if (ImGui::IsWindowHovered() || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
+			if(ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered())
 				return;
 
 			switch (event.type)
@@ -527,7 +543,7 @@ namespace SGA
 				//Add units
 				sf::Texture& texture = assetCache.getTexture(entityType.getName());
 
-				if (ImGui::ImageButton(texture, ImVec2(50, 50), -10))
+				if(ImGui::ImageButton(texture, sf::Vector2f(50, 50), -10))
 				{
 				}
 

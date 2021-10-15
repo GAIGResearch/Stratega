@@ -1,7 +1,7 @@
 #pragma once
-#include <stratega/Game/TBSGameRunner.h>
-#include <stratega/Game/AgentThread.h>
-#include <stratega/GUI/TBSGameRenderer.h>
+#include <Stratega/Game/TBSGameRunner.h>
+#include <Stratega/Game/AgentThread.h>
+#include <Stratega/GUI/TBSGameRenderer.h>
 
 namespace SGA
 {

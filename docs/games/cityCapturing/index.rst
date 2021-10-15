@@ -34,29 +34,40 @@ YAML
         - RandomAgent
         - HumanAgent
 
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
+
     Player:
         Parameters:
             Gold: 5
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Sprite: ../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
-     
+        
     Actions:
         Spawn:
             Type: EntityAction
@@ -79,9 +90,18 @@ YAML
             Targets:
                 Target:
                     Type: Entity
+                    SamplingMethod:
+                    #   Type: Dijkstra
+                    #   Options:
+                    #       SearchSize: 3
+                    #       AllowDiagonals: false
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
                     ValidTargets: [Conquerer, Fighter]
                     Conditions:
-                        - "InRange(Source, Target, 1)"
+                        - "DifferentPlayer(Source, Target)"
             Effects:
                 - "Attack(Target.Health, 25)"
 
@@ -91,9 +111,16 @@ YAML
             Targets:
                 Target:
                     Type: Entity
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 1
+                            AllowDiagonals: false
+                    #    Type: Neighbours
+                    #    Options:
+                    #        Shape: Circle
+                    #        Size: 1
                     ValidTargets: City
-                    Conditions:
-                        - "InRange(Source, Target, 1)"
             Effects:
                 - "ChangeOwner(Target, Source.Player)"
                 - "Remove(Source)"
@@ -105,24 +132,27 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Circle
-                    Size: 3
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 3
+                            AllowDiagonals: false
                     Conditions:
-                        - "IsWalkable(Target)"
+                    - "IsWalkable(Target)"
             Effects:
                 - "Move(Source, Target)"
 
 
     Entities:
         City:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             CanSpawn: Units
             Actions: [Spawn]
 
         Conquerer:
-            Sprite: ../../GUI/Assets/Entities/unit7.png
+            Sprite: ../../assets/Entities/unit_5.png
             Symbol: s
             LineOfSightRange: 4
             Actions: [Move, Capture]
@@ -132,7 +162,7 @@ YAML
                 Gold: 6
 
         Fighter:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit_2.png
             Symbol: f
             LineOfSightRange: 6
             Actions: [Move, Attack]
@@ -146,14 +176,51 @@ YAML
 
     Board:
         GenerationType: Manual
+        #Path or definition of multiple maps
+        #Maps: ../../../gameConfigs/TBS/maps.yaml
+        #Maps:
+        #    Map1: |-
+        #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  W  W  c  W  W  .  .  c  .  .  M
+        #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        #
+        #    Map2: |-
+        #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        #        M  .  .  c  .  .  W  W  .  W  W  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
+        #        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        #        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        #Layout: Map1
         Layout: |-
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
             M  .  .  .  .  .  .  .  c1 .  .  .  .  .  .  .  M
-            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-            M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-            M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+            M  .  .  .  .  .  .  .  .  .  .  W  .  .  .  .  M
+            M  .  .  .  .  .  .  W  .  W  .  W  .  .  .  .  M
             M  .  .  c  .  .  W  W  c  W  W  .  .  c  .  .  M
             M  .  .  .  .  .  .  W  .  W  .  .  .  .  .  .  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
@@ -162,7 +229,7 @@ YAML
             M  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-                   
+                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
             HasNoCity:
@@ -183,3 +250,8 @@ YAML
             Move: [Move]
             Spawn: [Spawn]
             Attack: [Attack, Capture]
+        Entities:
+            Base: [City]
+            Unit: [Fighter, Conquerer]
+            Fighter: [Fighter]
+            NoFighter: [Conquerer]

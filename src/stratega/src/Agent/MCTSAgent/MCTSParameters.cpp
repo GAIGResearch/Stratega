@@ -1,4 +1,4 @@
-#include <stratega/Agent/MCTSAgent/MCTSParameters.h>
+#include <Stratega/Agent/MCTSAgent/MCTSParameters.h>
 
 #include <iostream>
 

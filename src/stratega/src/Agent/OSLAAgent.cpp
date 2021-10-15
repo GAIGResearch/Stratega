@@ -1,5 +1,5 @@
-#include <stratega/Agent/OSLAAgent.h>
-#include <stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Agent/OSLAAgent.h>
+#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 
 
 namespace SGA

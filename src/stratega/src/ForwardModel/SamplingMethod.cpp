@@ -1,8 +1,8 @@
 #include <queue>
-#include <stratega/ForwardModel/SamplingMethod.h>
-#include <stratega/Representation/Tile.h>
-#include <stratega/Representation/GameState.h>
-#include <stratega/Representation/Vector2.h>
+#include <Stratega/ForwardModel/SamplingMethod.h>
+#include <Stratega/Representation/Tile.h>
+#include <Stratega/Representation/GameState.h>
+#include <Stratega/Representation/Vector2.h>
 #include <cmath>
 std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& gameState) const
 {
@@ -176,9 +176,10 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
 				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
-					|| std::floor(totalCost + 1) > searchSize
-					)
-					return false;
+					|| std::floor(totalCost + 1) > searchSize)
+					return false;		
+				else
+					return true;
 			};
 
 			//Get Neighbours

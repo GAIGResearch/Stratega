@@ -1,5 +1,5 @@
-#include <stratega/Representation/GameInfo.h>
-#include <stratega/Agent/Agent.h>
+#include <Stratega/Representation/GameInfo.h>
+#include <Stratega/Agent/Agent.h>
 
 namespace SGA
 {
@@ -87,10 +87,14 @@ namespace SGA
 	std::unordered_map<int, int> GameInfo::getTechnologyCounts() const
 	{
 		std::unordered_map<int, int> counts;
-		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		for (auto techTree : technologyTreeCollection->technologyTreeTypes)
+		{
+			counts.emplace(techTree.first, techTree.second.technologies.size());
+		}
+		/*for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
 		{
 			counts.emplace(id, techTree.technologies.size());
-		}
+		}*/
 		return counts;
 	}
 
@@ -113,10 +117,15 @@ namespace SGA
 		if (it != technologyTreeCollection->technologyTreeTypes.end())
 		{
 			std::unordered_map<int, TechnologyTreeNode> ttNodes = it->second.technologies;
-			for (const auto& [id, treeNode] : ttNodes)
+
+			for (auto node : ttNodes)
+			{
+				techs.emplace_back(node.second);
+			}
+			/*for (const auto& [id, treeNode] : ttNodes)
 			{
 				techs.emplace_back(treeNode);
-			}
+			}*/
 		}
 
 		return techs;
@@ -125,10 +134,14 @@ namespace SGA
 	std::vector<int> GameInfo::getTechTreesIDs() const
 	{
 		std::vector<int> ids;
-		for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
+		for (auto pair : technologyTreeCollection->technologyTreeTypes)
+		{
+			ids.emplace_back(pair.first);
+		}
+		/*for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
 		{
 			ids.emplace_back(id);
-		}
+		}*/
 		return ids;
 	}
 		

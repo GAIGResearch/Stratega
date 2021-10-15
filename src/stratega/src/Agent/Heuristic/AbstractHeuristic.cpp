@@ -1,6 +1,6 @@
 #include <map>
 #include <set>
-#include <stratega/Agent/Heuristic/AbstractHeuristic.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 namespace SGA
 {

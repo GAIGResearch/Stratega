@@ -1,4 +1,4 @@
-#include <stratega/Representation/Player.h>
+#include <Stratega/Representation/Player.h>
 namespace SGA
 {
 	[[nodiscard]] bool Player::canExecuteAction(int actionTypeID) const

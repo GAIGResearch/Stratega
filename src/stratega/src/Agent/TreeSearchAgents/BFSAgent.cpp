@@ -1,5 +1,5 @@
-#include <stratega/Agent/TreeSearchAgents/BFSAgent.h>
-#include <stratega/Agent/Heuristic/AbstractHeuristic.h>
+#include <Stratega/Agent/TreeSearchAgents/BFSAgent.h>
+#include <Stratega/Agent/Heuristic/AbstractHeuristic.h>
 
 namespace SGA
 {
