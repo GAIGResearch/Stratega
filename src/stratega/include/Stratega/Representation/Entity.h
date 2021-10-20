@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/Path.h>
+#include <Stratega/Representation/Buff.h>
 #include <Stratega/ForwardModel/Action.h>
 
 namespace SGA
@@ -56,6 +57,11 @@ namespace SGA
 		/// Array of actions currently being executed by this entity
 		/// </summary>
 		std::vector<Action> continuousAction;
+
+		/// <summary>
+		/// Array of buffs currently applied to this entity
+		/// </summary>
+		std::vector<Buff> buffs;
 
 		/// <summary>
 		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.

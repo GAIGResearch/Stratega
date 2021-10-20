@@ -8,6 +8,7 @@
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
 #include <Stratega/Representation/LevelDefinition.h>
+#include <Stratega/Representation/BuffType.h>
 #include <yaml-cpp/yaml.h>
 #include <memory>
 
@@ -41,6 +42,8 @@ namespace SGA
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<std::string, std::unordered_set<int>> entityGroups;
         std::unordered_map<int, EntityType> entityTypes;
+        //Buffs
+        std::unordered_map<int, BuffType> buffsTypes;
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation

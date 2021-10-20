@@ -28,7 +28,7 @@ Buffs: # Buff lists
         AdditiveModifier: 
             #Target parameter list
             Health: 20
-        SubtractModifier: 
+        SubstractModifier: 
             MovementPoints: 0
         MultiplicationModifier: 
             AttackRange: 2
@@ -37,8 +37,8 @@ Buffs: # Buff lists
 
     Buff2:
         AdditiveModifier: 
-            Health: 20
-        SubtractModifier: 
+            Health: 30
+        SubstractModifier: 
             MovementPoints: 0
         MultiplicationModifier: 
             AttackRange: 2
@@ -192,14 +192,14 @@ Entities:
             AttackDamage: 100
             MovementPoints: 1
         Actions: [Attack, Move]
-        #Each tick add a buff to the warriors and archers around the king
-        OnTick:
-            Buff1:
-                ValidTargets: [Warrior, Archer]
-                Conditions:
-                    - "InRange(Source, Target, Source.AttackRange)"
-                Effects:
-                    - "ApplyBuff(Source, Buff1, 1)"
+        ##Each tick add a buff to the warriors and archers around the king
+        #OnTick:
+        #    Buff1:
+        #        ValidTargets: [Warrior, Archer]
+        #        Conditions:
+        #            - "InRange(Source, Target, Source.AttackRange)"
+        #        Effects:
+        #            - "ApplyBuff(Source, Buff1, 1)"
 
 
 ForwardModel:
@@ -212,11 +212,11 @@ ForwardModel:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 
-        #Each tick add a buff to the King
-        - OnTick:
-            ValidTargets: King
-            Effects:
-                - "ApplyBuff(Source, Buff1, 1)"
+        ##Each tick add a buff to the King
+        #- OnTick:
+        #    ValidTargets: King
+        #    Effects:
+        #        - "ApplyBuff(Source, Buff1, 1)"
 
 #Action categories
 GameDescription:

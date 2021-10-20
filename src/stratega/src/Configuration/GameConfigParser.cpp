@@ -82,6 +82,9 @@ namespace SGA
         if (configNode["GameRunner"].IsDefined())
             parseGameRunner(configNode["GameRunner"], *config);
 
+        if(configNode["Buffs"].IsDefined())
+           parseBuffs(configNode["Buffs"], *config);
+
         assignPlayerActions(configNode["Player"], *config);
         assignEntitiesActions(configNode["Entities"], *config);
 
@@ -1039,4 +1042,54 @@ namespace SGA
     	//Add new level definition
         levelDefinitions.emplace(levelDefinitions.size(), newLevel);
     }
-}
+
+    void  GameConfigParser::parseModifiers(const YAML::Node& modifierNode, GameConfig& config, std::unordered_map< BuffTypeID, double >& modifiers) const
+    {
+       for(const auto& nameParamPair : modifierNode.as< std::map< std::string, double > >(
+              std::map< std::string, double >())) {
+          // Check if parameter is found
+          if(config.parameters.find(nameParamPair.first) == config.parameters.end()) {
+             throw std::runtime_error("Cannot find parameter for Buffs");
+          }
+
+          modifiers.insert(
+             {config.parameters.find(nameParamPair.first)->second, nameParamPair.second});
+       }
+    }
+
+    void GameConfigParser::parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const
+    {
+       if(! buffsNode.IsDefined()) {
+          throw std::runtime_error("Cannot find definition for Buffs");
+       }
+
+       auto types = buffsNode.as< std::map< std::string, YAML::Node > >();
+       for(const auto& nameTypePair : types) {
+          BuffType type;
+          type.setName(nameTypePair.first);
+
+          type.setID(static_cast< int >(config.buffsTypes.size()));
+
+          //Parse modifiers
+          // AdditiveModifier
+          std::unordered_map< BuffTypeID, double > additiveModifiers;
+          parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
+          type.setAdditiveModifiers(additiveModifiers);
+          // SubstractModifiers
+          std::unordered_map< BuffTypeID, double > substractModifiers;
+          parseModifiers(nameTypePair.second["SubstractModifier"], config, substractModifiers);
+          type.setSubstractModifiers(substractModifiers);
+          // MultiplicationModifiers
+          std::unordered_map< BuffTypeID, double > multiplicationModifiers;
+          parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);
+          type.setMultiplicationModifiers(multiplicationModifiers);
+          // DivideModifier
+          std::unordered_map< BuffTypeID, double > divideModifier;
+          parseModifiers(nameTypePair.second["DivideModifier"], config, divideModifier);
+          type.setDivideModifiers(divideModifier);
+
+          //Add buff type
+           config.buffsTypes.emplace(type.getID(), std::move(type));
+       }
+    }
+    }
