@@ -22,34 +22,6 @@ GameRenderer:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
 
-Buffs: # Buff lists
-    Buff1: #Buff name
-        #Modifiers list
-        AdditiveModifier: 
-            #Target parameter list
-            Health: 20
-        SubtractModifier: 
-            MovementPoints: 0
-        MultiplicationModifier: 
-            AttackRange: 2
-        DivideModifier: 
-            AttackDamage: 0.5
-
-    Buff2:
-        AdditiveModifier: 
-            Health: 20
-        SubtractModifier: 
-            MovementPoints: 0
-        MultiplicationModifier: 
-            AttackRange: 2
-        DivideModifier: 
-            AttackDamage: 0.5
-
-        #Targets: Warrior
-        #Conditions:
-        #    - InRange(Source, Target, 1)
-        #Effects:
-        #    - 
 Tiles:
     Plain:
         Sprite: ../../assets/Tiles/plain.png
@@ -192,15 +164,6 @@ Entities:
             AttackDamage: 100
             MovementPoints: 1
         Actions: [Attack, Move]
-        #Each tick add a buff to the warriors and archers around the king
-        OnTick:
-            Buff1:
-                ValidTargets: [Warrior, Archer]
-                Conditions:
-                    - "InRange(Source, Target, Source.AttackRange)"
-                Effects:
-                    - "ApplyBuff(Source, Buff1, 1)"
-
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -211,12 +174,6 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
-
-        #Each tick add a buff to the King
-        - OnTick:
-            ValidTargets: King
-            Effects:
-                - "ApplyBuff(Source, Buff1, 1)"
 
 #Action categories
 GameDescription:
