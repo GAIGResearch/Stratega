@@ -383,10 +383,31 @@ namespace SGA
 	void ForwardModel::endTick(GameState& state) const
 	{
 		state.incTick();
-
+		//Remove expired Buffs
+		//Check if condition is complete
+		auto& entities = state.getEntities();
+		for(auto et = entities.begin(); et != entities.end(); et++)
+		{
+			auto& buffs=et->getBuffs();
+            auto it = buffs.begin();
+            while(it != buffs.end())
+			//for (auto buff = buffs.begin(); buff != buffs.end(); buff++)
+			{
+				it->incrementElapseTicks();
+				if(it->getElapsedTicks()>=it->getDurationTicks())
+				{
+					
+                    et->removeBuffs();
+					it = buffs.erase(it);
+                    et->addBuffs();
+				} else it++;
+			}			
+		}
 		executeOnTriggerEffects(state);
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);
+
+		
 	}
 	
 

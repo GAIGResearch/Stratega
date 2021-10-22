@@ -18,10 +18,33 @@ namespace SGA
 	
 	void ModifyResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
-		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
 		auto amount = amountParameter.getConstant(state, targets);
 
 		targetResource += amount;
+	}
+
+	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		buffReference(parameters.at(1)),
+        entityParam(parameters.at(0)),
+		buffTicks(parameters.at(2)),
+		Effect(exp)
+	{
+
+	}
+	
+	void ApplyBuff::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffReference.getBuffType(state, targets);
+		auto ticks = buffTicks.getConstant(state, targets);
+
+		auto& entity = entityParam.getEntity(state, targets);
+        auto newBuff = Buff::createBuff(buffType, entity.getID(), state.getNextBuffID(), ticks);        
+        state.incNextbuffID();
+        if(entity.getBuffs().size()>0)
+			entity.removeBuffs();
+		entity.addBuff(std::move(newBuff));        
+		entity.addBuffs();
 	}
 
 	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -34,7 +57,7 @@ namespace SGA
 
 	void ChangeResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
-		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
 		double amount = amountParameter.getConstant(state, targets);
 
 		targetResource = amount;
@@ -51,11 +74,14 @@ namespace SGA
 	void Attack::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
-		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
+		
 		auto amount = amountParameter.getConstant(state, targets);
-
-		targetResource -= amount;
-		if (targetResource <= 0)
+		
+		//Remove to the parameter with buffs appliead the amount
+        targetResource -= amount;
+		
+		if(targetResource <= 0)
 			entity.flagRemove();
 	}
 
@@ -71,7 +97,7 @@ namespace SGA
 	void AttackProbability::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
-		auto& targetResource = resourceReference.getParameterValue(state, targets);
+		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
 		auto amount = amountParameter.getConstant(state, targets);
 		auto probability = probabilityParameter.getConstant(state, targets);
 		
@@ -81,7 +107,8 @@ namespace SGA
 		if(distribution(state.getRndEngine()) > probability)
 		{
 			targetResource -= amount;
-			if (targetResource <= 0)
+			auto targetvalueResource = resourceReference.getParameterValue(state, targets);
+			if (targetvalueResource <= 0)
 				entity.flagRemove();
 		}
 	}
@@ -126,7 +153,7 @@ namespace SGA
 	void SetToMaximum::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& param = targetResource.getParameter(state, targets);
-		auto& paramValue = targetResource.getParameterValue(state, targets);
+		auto& paramValue = targetResource.getRawParameterValue(state, targets);
 
 		paramValue = param.getMaxValue();
 	}
@@ -140,8 +167,8 @@ namespace SGA
 	void TransferEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& sourceType = sourceParam.getParameter(state, targets);
-		auto& sourceValue = sourceParam.getParameterValue(state, targets);
-		auto& targetValue = targetParam.getParameterValue(state, targets);
+		auto& sourceValue = sourceParam.getRawParameterValue(state, targets);
+		auto& targetValue = targetParam.getRawParameterValue(state, targets);
 		auto amount = amountParam.getConstant(state, targets);
 
 		// Compute how much the source can transfer, if the source does not have enough just take everything

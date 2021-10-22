@@ -67,7 +67,10 @@ namespace SGA
         parseEntityGroups(configNode["EntityGroups"], *config);
         parseAgents(configNode["Agents"], *config);
         parseTileTypes(configNode["Tiles"], *config);
-        
+
+        if(configNode["Buffs"].IsDefined())
+           parseBuffs(configNode["Buffs"], *config);
+
         parsePlayers(configNode["Player"], *config);
 
 		if(configNode["TechnologyTrees"].IsDefined())
@@ -81,9 +84,6 @@ namespace SGA
 
         if (configNode["GameRunner"].IsDefined())
             parseGameRunner(configNode["GameRunner"], *config);
-
-        if(configNode["Buffs"].IsDefined())
-           parseBuffs(configNode["Buffs"], *config);
 
         assignPlayerActions(configNode["Player"], *config);
         assignEntitiesActions(configNode["Entities"], *config);
@@ -1043,7 +1043,7 @@ namespace SGA
         levelDefinitions.emplace(levelDefinitions.size(), newLevel);
     }
 
-    void  GameConfigParser::parseModifiers(const YAML::Node& modifierNode, GameConfig& config, std::unordered_map< BuffTypeID, double >& modifiers) const
+    void  GameConfigParser::parseModifiers(const YAML::Node& modifierNode, GameConfig& config, std::unordered_map< ParameterID, double >& modifiers) const
     {
        for(const auto& nameParamPair : modifierNode.as< std::map< std::string, double > >(
               std::map< std::string, double >())) {
@@ -1072,19 +1072,19 @@ namespace SGA
 
           //Parse modifiers
           // AdditiveModifier
-          std::unordered_map< BuffTypeID, double > additiveModifiers;
+          std::unordered_map< ParameterID, double > additiveModifiers;
           parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
           type.setAdditiveModifiers(additiveModifiers);
           // SubstractModifiers
-          std::unordered_map< BuffTypeID, double > substractModifiers;
+          std::unordered_map< ParameterID, double > substractModifiers;
           parseModifiers(nameTypePair.second["SubstractModifier"], config, substractModifiers);
           type.setSubstractModifiers(substractModifiers);
           // MultiplicationModifiers
-          std::unordered_map< BuffTypeID, double > multiplicationModifiers;
+          std::unordered_map< ParameterID, double > multiplicationModifiers;
           parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);
           type.setMultiplicationModifiers(multiplicationModifiers);
           // DivideModifier
-          std::unordered_map< BuffTypeID, double > divideModifier;
+          std::unordered_map< ParameterID, double > divideModifier;
           parseModifiers(nameTypePair.second["DivideModifier"], config, divideModifier);
           type.setDivideModifiers(divideModifier);
 

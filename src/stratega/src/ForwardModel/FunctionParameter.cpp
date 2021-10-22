@@ -47,6 +47,10 @@ namespace SGA
 	{
 		return FunctionParameter(Type::TechnologyTypeReference, { Type::TechnologyTypeReference, technologyTypeID });
 	}
+	FunctionParameter FunctionParameter::createBuffTypeReference(int buffTypeID)
+	{
+		return FunctionParameter(Type::BuffTypeReference, { Type::BuffTypeReference, buffTypeID });
+	}
 
 	FunctionParameter::Type FunctionParameter::getType() const
 	{
@@ -131,10 +135,38 @@ namespace SGA
 	
 	double FunctionParameter::getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
-		return getParameterValue(const_cast<GameState&>(state), actionTargets);
+           return getRawParameterValue(const_cast<GameState& >(state), actionTargets);
+		/*if(parameterType == Type::ParameterReference)
+		{
+			const auto& param = getParameter(const_cast<GameState&>(state), actionTargets);
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
+			{
+				const auto& entity = getEntity(state, actionTargets);
+				return entity.getParameterAt(param.getIndex());
+			}
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
+			{
+				auto& player = getPlayer(state, actionTargets);
+				return player.getParameter(param.getIndex());
+			}
+		}
+		if(parameterType == Type::EntityPlayerParameterReference)
+		{
+			const auto& param = getParameter(const_cast<GameState&>(state), actionTargets);
+			auto& entity = getEntity(state, actionTargets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			return player->getParameter(param.getIndex());
+		}
+
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");*/
 	}
 
-	double& FunctionParameter::getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	double FunctionParameter::getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		return getRawParameterValue(const_cast< GameState&>(state), actionTargets);
+	}
+
+	double& FunctionParameter::getRawParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if(parameterType == Type::ParameterReference)
 		{
@@ -142,7 +174,7 @@ namespace SGA
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
 				auto& entity = getEntity(state, actionTargets);
-				return entity.getParameterAt(param.getIndex());
+				return entity.getRawParameterAt(param.getIndex());
 			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
@@ -259,6 +291,20 @@ namespace SGA
 			const auto& actionTarget = actionTargets[data.argumentIndex];
 			return actionTarget.getEntityType(state);
 		}
+
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+	}
+	const BuffType& FunctionParameter::getBuffType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		if(parameterType == Type::BuffTypeReference)
+		{
+			return state.getGameInfo()->getBuffType(data.buffTypeID);
+		}
+		/*if(parameterType == Type::ArgumentReference)
+		{
+			const auto& actionTarget = actionTargets[data.argumentIndex];
+			return actionTarget.getEntityType(state);
+		}*/
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}

@@ -5,6 +5,7 @@
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/TileType.h>
+#include <Stratega/Representation/BuffType.h>
 
 namespace SGA
 {
@@ -23,7 +24,8 @@ namespace SGA
 			EntityTypeReference, // References EntityTypes defined in the Game. Like Warrior, GoldMine, etc.
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
 			TimeReference, // References the Time for specific Entities or Technologies,
-			TileTypeReference // References TileTypes defined in the Game. Like Plain, Forest...
+			TileTypeReference, // References TileTypes defined in the Game. Like Plain, Forest...
+			BuffTypeReference // References BuffTypes defined in the Game. Like Plain, Forest...
 		};
 
 	private:
@@ -75,6 +77,7 @@ namespace SGA
 				case Type::TechnologyTypeReference: technologyTypeID = data; break;
 				case Type::TimeReference:   argumentIndex = data; break;
 				case Type::EntityPlayerReference:   argumentIndex = data; break;
+				case Type::BuffTypeReference:   buffTypeID = data; break;
 				default:
 					throw std::runtime_error("Unknown Type");
 				}
@@ -85,6 +88,7 @@ namespace SGA
 			int entityTypeID;
 			int tileTypeID;
 			int technologyTypeID;
+			int buffTypeID;
 			ContinuousActionReference continuousActionData;
 		};
 		
@@ -104,6 +108,7 @@ namespace SGA
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
+		static FunctionParameter createBuffTypeReference(int buffTypeID);
 
 		Type getType() const;
 		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;
@@ -111,7 +116,8 @@ namespace SGA
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		double& getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double getParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		double& getRawParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Vector2f getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -120,6 +126,7 @@ namespace SGA
 		const std::unordered_set<EntityTypeID>& getSpawnableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const BuffType& getBuffType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const std::unordered_map<ParameterID, double>& getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

@@ -321,6 +321,17 @@ namespace SGA
 		/// </summary>
 		/// <returns>The ID of the next continuous action.</returns>
 		int getNextContinuousActionID() { return continuousActionNextID; }
+		
+		/// <summary>
+		/// Increments the ID for the buffs.
+		/// </summary>
+		void incNextbuffID() { buffNextID++; }
+
+		/// <summary>
+		/// Returns the ID for the next continuous action.
+		/// </summary>
+		/// <returns>The ID of the next continuous action.</returns>
+		int getNextBuffID() { return continuousActionNextID; }
 
 
 
@@ -516,6 +527,10 @@ namespace SGA
 		/// ID of the next continuous action to execute
 		/// </summary>
 		int continuousActionNextID = 0;
+		/// <summary>
+		/// ID of the next buff to generate
+		/// </summary>
+		int buffNextID = 0;
 
 		/// <summary>
 		/// ID of the current player if only one can play.

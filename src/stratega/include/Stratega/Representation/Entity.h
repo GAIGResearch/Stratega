@@ -201,16 +201,48 @@ namespace SGA
 		std::unordered_map<std::string, double> getEntityParameters() const;
 
 		/// <summary>
-		/// Gets the value of a specific parameter, by name 
+		/// Gets the value of a specific parameter with buffs applied, by name 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameter(const std::string& paramName) const;
+	    double getParameter(const std::string& paramName) const;
 		
 		/// <summary>
-		/// Gets a specific parameters, by index 
+		/// Gets the value of a specific parameter with buffs applied, by index 
+		/// <summary>
+		///// <returns>The parameter value.</returns>
+		//double getParameterAt(int paramIdx) const
+		//{
+		//	//double value=parameters[paramIdx];
+
+		//	////Add buffs additive
+		//	//for(auto& buff : buffs)
+		//	//{
+		//	//	const auto& buffType= buff.getType();
+		//	//	value = buffType.getParameterWithAdditiveBuffsApplied(value, paramIdx);
+		//	//}
+
+		//	////Add buffs multiplication
+		//	//for(auto& buff : buffs)
+		//	//{
+		//	//	auto& buffType= buff.getType();
+		//	//	value = buffType.getParameterWithMultiplicationBuffsApplied(value, paramIdx);
+		//	//}
+
+		//	//return value;
+		//
+		//}
+
+		/// <summary>
+		/// Gets the value of a specific parameter raw, by name 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+		double getRawParameter(const std::string& paramName) const;
+		
+		/// <summary>
+		/// Gets a specific parameters raw, by index 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
+		double& getRawParameterAt(int paramIdx) { return parameters[paramIdx]; }
 
 		/// <summary>
 		/// Gets the list of continuous actions attached to this entity. Modifiable.
@@ -224,6 +256,17 @@ namespace SGA
 		/// <returns>The list of continuous actions attached to this entity.</returns>
 		const std::vector<Action>& getContinuousActions() const { return continuousAction; }
 
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. Modifiable.
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		std::vector<Buff>& getBuffs() { return buffs; }
+
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. 
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		const std::vector<Buff>& getBuffs() const { return buffs; }
 
 		/// <summary>
 		/// Returns the movement speed of this entity.
@@ -291,6 +334,63 @@ namespace SGA
 		/// Sets the path this entity is following (RTS games only) 
 		/// </summary>
 		void setPath(Path p) { path = p; }
+
+		void addBuff(Buff b) { buffs.emplace_back(b); }
+
+		void removeBuffs()
+		{
+			//Recompute each parameter
+            for(size_t i = 0; i < (size_t)parameters.size(); i++)
+			{
+				double value=parameters[i];
+
+				//Remove buffs multiplication
+				for(auto& buff : buffs)
+				{
+					auto& buffType= buff.getType();
+					value = buffType.getParameterWithOutMultiplicationBuffsApplied(value, i);
+				}
+				
+				// Add buffs additive
+                for(auto& buff : buffs) {
+                   const auto& buffType = buff.getType();
+                   value = buffType.getParameterWithOutAdditiveBuffsApplied(value, i);
+                }
+
+				//TODO: Check value is not over max or min values
+				
+				//Write new value with buffs applied
+				parameters[i]=value;
+			}
+		}
+
+		void addBuffs()
+		{
+			//Recompute each parameter
+            for(size_t i = 0; i < (size_t)parameters.size(); i++)
+			{
+				double value=parameters[i];
+
+				//Add buffs additive
+				for(auto& buff : buffs)
+				{
+					const auto& buffType= buff.getType();
+					value = buffType.getParameterWithAdditiveBuffsApplied(value, i);
+				}
+
+				//Add buffs multiplication
+				for(auto& buff : buffs)
+				{
+					auto& buffType= buff.getType();
+					value = buffType.getParameterWithMultiplicationBuffsApplied(value, i);
+				}
+				
+				//TODO: Check value is not over max or min values
+				
+				//Write new value with buffs applied
+				parameters[i]=value;
+			}
+		}
 
 	};
 }

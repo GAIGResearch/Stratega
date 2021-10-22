@@ -44,7 +44,7 @@ namespace SGA
 					{
 						if (parameter.second.getName() == entry.first)
 						{
-							parameterValues.push_back(entity.getParameterAt(parameter.second.getIndex()));
+							parameterValues.push_back(entity.getRawParameterAt(parameter.second.getIndex()));
 							break;
 						}
 					}

@@ -26,6 +26,10 @@ namespace SGA
 		{
 			context.tileTypeIDs.emplace(tileType.second.getName(), tileType.first);
 		}
+		for (const auto& buffType : config.buffsTypes)
+		{
+			context.buffTypeIDs.emplace(buffType.second.getName(), buffType.first);
+		}
 		return context;
 	}
 
@@ -63,6 +67,7 @@ namespace SGA
 				((param = parseTargetReference(ss, context))) ||
 				((param = parseEntityTypeReference(ss, context))) ||
 				((param = parseTileTypeReference(ss, context))) ||
+				((param = parseBuffTypeReference(ss, context))) ||
 				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -256,6 +261,25 @@ namespace SGA
 		}
 
 		return FunctionParameter::createTileTypeReference(targetIt->second);
+	}
+
+	nonstd::optional<FunctionParameter> FunctionParser::parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1);
+		if (!names)
+		{
+			return {};
+		}
+
+		auto targetIt = context.buffTypeIDs.find(names.value()[0]);
+		if (targetIt == context.buffTypeIDs.end())
+		{
+			ss.seekg(begin); // Set back to start
+			return {};
+		}
+
+		return FunctionParameter::createBuffTypeReference(targetIt->second);
 	}
 	
 	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const

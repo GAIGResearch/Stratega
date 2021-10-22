@@ -47,6 +47,7 @@ namespace SGA
 		factory.registerFunction<ResearchTechnology>("Research");
 		factory.registerFunction<SpawnEntityRandom>("SpawnRandom");
 		factory.registerFunction<PayCostEffect>("PayCost");
+		factory.registerFunction<ApplyBuff>("ApplyBuff");
 		
 		return factory;
 	}

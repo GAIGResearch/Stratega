@@ -23,33 +23,46 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Buffs: # Buff lists
-    Buff1: #Buff name
+    BuffOne: #Buff name
         #Modifiers list
         AdditiveModifier: 
             #Target parameter list
             Health: 20
-        SubstractModifier: 
-            MovementPoints: 0
+            MovementPoints: 50
+        #SubstractModifier: 
+        #    MovementPoints: 0
         MultiplicationModifier: 
             AttackRange: 2
-        DivideModifier: 
-            AttackDamage: 0.5
+        #DivideModifier: 
+        #    AttackDamage: 0.5
 
-    Buff2:
+    BuffTwo:
         AdditiveModifier: 
             Health: 30
-        SubstractModifier: 
-            MovementPoints: 0
+        #SubstractModifier: 
+        #    MovementPoints: 0
         MultiplicationModifier: 
-            AttackRange: 2
-        DivideModifier: 
-            AttackDamage: 0.5
+            Health: 2
+        #DivideModifier: 
+        #    AttackDamage: 0.5
 
-        #Targets: Warrior
-        #Conditions:
-        #    - InRange(Source, Target, 1)
-        #Effects:
-        #    - 
+    ##Test
+    #Venom:
+    #    ApplyEachTick: true #execute modifiers every tick
+    #    Modifiers:
+    #        AdditiveModifier: 
+    #            Health: -5
+        
+
+
+#Definition of parameters used by entities and players
+Parameters:
+    Health:
+        Min: 0
+        Max: 100
+        Default: 0
+
+
 Tiles:
     Plain:
         Sprite: ../../assets/Tiles/plain.png
@@ -104,10 +117,26 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    - "DifferentPlayer(Source, Target)"
+                    #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
+
+    BoostHealth:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "ApplyBuff(Target, BuffOne, 2)"
 
     Move:
         Type: EntityAction
@@ -191,15 +220,15 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, BoostHealth]
         ##Each tick add a buff to the warriors and archers around the king
         #OnTick:
-        #    Buff1:
+        #    BuffOne:
         #        ValidTargets: [Warrior, Archer]
         #        Conditions:
         #            - "InRange(Source, Target, Source.AttackRange)"
         #        Effects:
-        #            - "ApplyBuff(Source, Buff1, 1)"
+        #            - "ApplyBuff(Source, BuffOne, 1)"
 
 
 ForwardModel:
@@ -212,11 +241,11 @@ ForwardModel:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 
-        ##Each tick add a buff to the King
-        #- OnTick:
-        #    ValidTargets: King
-        #    Effects:
-        #        - "ApplyBuff(Source, Buff1, 1)"
+        #Each tick add a buff to the King
+        - OnTick:
+            ValidTargets: King
+            Effects:
+                - "ApplyBuff(Source, BuffOne, 1)"
 
 #Action categories
 GameDescription:

@@ -399,7 +399,7 @@ namespace SGA
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << selectedEntity->getParameterAt(parameterIndex++);
+				stream << std::fixed << std::setprecision(2) << selectedEntity->getRawParameterAt(parameterIndex++);
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;

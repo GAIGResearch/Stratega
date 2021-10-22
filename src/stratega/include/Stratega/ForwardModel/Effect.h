@@ -34,6 +34,16 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class ApplyBuff: public Effect
+	{
+		FunctionParameter buffReference;
+		FunctionParameter buffTicks;
+        FunctionParameter entityParam;
+	public:
+		ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class ChangeResource : public Effect
 	{
 		FunctionParameter resourceReference;

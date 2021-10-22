@@ -13,6 +13,16 @@ namespace SGA
 		else throw std::runtime_error("No entity type associated to ID " + std::to_string(entityTypeID));
 	}
 
+	const BuffType& GameInfo::getBuffType(int buffTypeID) const
+	{
+		auto it = buffTypes->find(buffTypeID);
+           if(it != buffTypes->end())
+		{
+			return it->second;
+		}
+		else throw std::runtime_error("No buff type associated to ID " + std::to_string(buffTypeID));
+	}
+
 	const ActionType& GameInfo::getActionTypeConst(int actionTypeID)
 	{
 		auto it = actionTypes->find(actionTypeID);

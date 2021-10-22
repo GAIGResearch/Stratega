@@ -74,6 +74,7 @@ namespace SGA
             gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
             gameInfo.setEntityGroups(entityGroups);
             gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
+            gameInfo.setBuffTypes(std::make_shared<std::unordered_map<int, BuffType>>(buffsTypes));
             gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
             gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
             gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));

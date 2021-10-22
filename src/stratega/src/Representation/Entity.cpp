@@ -36,6 +36,15 @@ namespace SGA
 	}
 
 	double Entity::getParameter(const std::string& paramName) const
+    {
+       for(const auto& param : type->getParameters()) {
+          if(param.second.getName() == paramName) {
+             return parameters[param.second.getIndex()];
+          }
+       }
+    }
+
+	double Entity::getRawParameter(const std::string& paramName) const
 	{
 		for (const auto& param : type->getParameters())
 		{
