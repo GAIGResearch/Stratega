@@ -45,7 +45,7 @@ option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
 option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 # print out a short summary of the compiler information
 

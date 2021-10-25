@@ -1,6 +1,6 @@
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <cstring>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const

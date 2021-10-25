@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Agent/StateAbstraction/StateFactory.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	AbstractState StateFactory::createAbstractState(GameState& tbsState)

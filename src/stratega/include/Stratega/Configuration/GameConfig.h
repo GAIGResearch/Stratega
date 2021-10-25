@@ -180,5 +180,7 @@ namespace SGA
 
         //Adds a new player to the game.
         virtual int addPlayer(GameState& state, GameInfo& gameInfo) const;
+
+        virtual ~GameConfig()=default;
     };
 }

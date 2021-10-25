@@ -2,9 +2,11 @@
 #
 # https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md
 
+
+
 function(set_project_warnings project_name)
   set(MSVC_WARNINGS
-          /W4 # Baseline reasonable warnings
+          /W1 # Baseline reasonable warnings
           /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
           /w14254 # 'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
           /w14263 # 'function': member function does not override any base class virtual member function

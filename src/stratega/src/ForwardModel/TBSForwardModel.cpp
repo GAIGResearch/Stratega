@@ -1,12 +1,18 @@
 #include <cassert>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
 		assert(actions.getAssignmentCount() == 1);
-		for(const auto& action : actions.getEntityActions())
+		if(actions.getEntityActions().size()>0)
+			advanceGameState(state, actions.getEntityActions().at(0));
+		else
+			advanceGameState(state, actions.getPlayerActions().at(0));
+
+		//warning C4702: unreachable code
+		/*for(const auto& action : actions.getEntityActions())
 		{
 			advanceGameState(state, action.second);
 			return;
@@ -15,7 +21,7 @@ namespace SGA
 		{
 			advanceGameState(state, action.second);
 			return;
-		}
+		}*/
 	}
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const

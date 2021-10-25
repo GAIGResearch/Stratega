@@ -1,5 +1,5 @@
 #include <Stratega/ForwardModel/ActionSpace.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const

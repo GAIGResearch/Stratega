@@ -4,6 +4,7 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Representation/Vector2.h>
 #include <cmath>
+#pragma warning(disable: 5045)
 std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& gameState) const
 {
 	std::vector<SGA::Vector2i> targets;

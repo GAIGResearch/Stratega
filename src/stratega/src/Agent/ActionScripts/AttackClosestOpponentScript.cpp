@@ -1,8 +1,7 @@
 #include <Stratega/Agent/ActionScripts/AttackClosestOpponentScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
-
 #include <Stratega/Utils/contains.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	

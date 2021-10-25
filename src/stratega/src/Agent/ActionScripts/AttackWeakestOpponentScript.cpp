@@ -2,6 +2,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <set>
 #include <Stratega/Utils/contains.h>
+#pragma warning(disable: 5045)
 namespace SGA
 {
 

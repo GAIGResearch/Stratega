@@ -1,7 +1,7 @@
 #include <cassert>
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/Utils/Timer.h>
-
+#pragma warning(disable: 5039)
 namespace SGA
 {
 	AgentResults runAgent(Agent& agent, const GameState& state, const ForwardModel& forwardModel, const GameConfig& gameConfig, long timeBudgetMs)

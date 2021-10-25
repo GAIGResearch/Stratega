@@ -282,9 +282,9 @@ namespace nonstd {
 # pragma warning( disable: 4345 )   // initialization behavior changed
 #endif
 
-#if optional_BETWEEN(optional_COMPILER_MSVC_VERSION, 70, 150 )
-# pragma warning( disable: 4814 )   // in C++14 'constexpr' will not imply 'const'
-#endif
+//#if optional_BETWEEN(optional_COMPILER_MSVC_VERSION, 70, 150 )
+//# pragma warning( disable: 4814 )   // in C++14 'constexpr' will not imply 'const'
+//#endif
 
 // Presence of language and library features:
 

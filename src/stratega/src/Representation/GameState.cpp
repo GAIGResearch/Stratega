@@ -1,6 +1,6 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Condition.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	GameState::GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :

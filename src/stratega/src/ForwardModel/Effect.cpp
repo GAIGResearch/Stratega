@@ -5,7 +5,7 @@
 #include <random>
 
 #include "Stratega/ForwardModel/FunctionParameter.h"
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :

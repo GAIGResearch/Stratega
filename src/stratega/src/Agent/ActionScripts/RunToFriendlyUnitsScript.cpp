@@ -1,5 +1,6 @@
 #include <Stratega/Agent/ActionScripts/RunToFriendlyUnitsScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
+#pragma warning(disable: 5045)
 
 namespace SGA
 {

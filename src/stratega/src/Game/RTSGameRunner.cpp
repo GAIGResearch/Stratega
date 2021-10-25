@@ -159,6 +159,8 @@ namespace SGA
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time (" << computationTime.count()
 				<< ">" << disqualificationBudgetTimeMs << ")" << std::endl;
 			return false;
-		}		
+		}
+
+		return true;
 	}
 }

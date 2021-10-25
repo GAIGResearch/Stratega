@@ -1,3 +1,4 @@
+#pragma warning(disable: 5045)
 #pragma once
 #include <vector>
 #include <unordered_map>

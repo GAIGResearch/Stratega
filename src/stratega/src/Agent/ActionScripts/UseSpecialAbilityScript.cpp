@@ -1,6 +1,6 @@
 #include <Stratega/Agent/ActionScripts/UseSpecialAbilityScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int /*playerID*/) const

@@ -8,6 +8,9 @@ namespace SGA
 	struct Vector2i
 	{
 	public:
+		int x;
+		int y;
+
 		Vector2i();
 		Vector2i(int x, int y);
 		Vector2i(int value);
@@ -19,9 +22,6 @@ namespace SGA
 		double distance(const Vector2i& other) const { int dx = other.x - x; int dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
 		int manhattanDistance(const Vector2i& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
 		int chebyshevDistance(const Vector2i& other) const { int dx = other.x - x; int dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
-
-		int x;
-		int y;
 	};
 	
 	inline Vector2i::Vector2i()
@@ -129,7 +129,7 @@ namespace std
 		{
 			using std::hash;
 			// Not the best hashcode, but we do not expect large values
-			return v.x << 15 | v.y;
+			return (size_t)(v.x << 15 | v.y);
 		}
 	};
 

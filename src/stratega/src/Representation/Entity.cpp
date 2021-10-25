@@ -44,6 +44,8 @@ namespace SGA
 				return parameters[param.second.getIndex()];
 			}
 		}
+
+		return -1;
 	}
 
 

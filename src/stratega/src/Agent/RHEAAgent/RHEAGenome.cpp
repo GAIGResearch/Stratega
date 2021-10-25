@@ -37,7 +37,7 @@ namespace SGA {
         params.currentFMCalls += SGA::roll(gameState, forwardModel, action, params.PLAYER_ID, params);
 
         //Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
-        while (!gameState.canPlay(params.PLAYER_ID) && !params.isBudgetOver() > 0 && !gameState.isGameOver())
+        while (!gameState.canPlay(params.PLAYER_ID) && !params.isBudgetOver() && !gameState.isGameOver())
         {
             //Roll actions for the opponent(s).
             params.currentFMCalls += SGA::rollOppOnly(gameState, forwardModel, params);
