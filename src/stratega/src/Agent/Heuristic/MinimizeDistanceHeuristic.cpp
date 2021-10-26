@@ -45,12 +45,12 @@ namespace SGA
 					auto b = positions[opponentUnit];
 					sumOfDistances += abs(a.x - b.x) + abs(a.y - b.y);
 				}
-				sumOfAverageDistances = sumOfDistances / opponentEntites.size();
+				sumOfAverageDistances = sumOfDistances / (double)opponentEntites.size();
 			}
 		}
 
 		if (playerEntities.size() > 0) {
-			score += sumOfAverageDistances / playerEntities.size();
+			score += sumOfAverageDistances / (double)playerEntities.size();
 		}
 
 		return score;

@@ -232,7 +232,7 @@ namespace SGA
 				int movesToSupport =(int)(dist / ally.getParameter("MovementPoints"));
 				avgSupportScore += unitScores.at(ally.getEntityTypeID()) / (1. + movesToSupport);
 			}
-			avgSupportScore /= opponentUnits.size();
+			avgSupportScore /= (double)opponentUnits.size();
 
 
 			// How much attack power do we have? Computed by estimating how long it takes to attack and how strong our units are.
@@ -244,7 +244,7 @@ namespace SGA
 				int movesToAttack = (int)(std::max(0, dist - static_cast<int>(movementRange)) / movementRange);
 				avgAttackScore += unitScores.at(attacker.getEntityTypeID()) / (1. + movesToAttack);
 			}
-			avgAttackScore /= myUnits.size() + 1;
+			avgAttackScore /= (double)myUnits.size() + 1;
 
 			// Is this a better target than a previously found target?
 			double score = avgAttackScore - avgSupportScore;

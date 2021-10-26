@@ -35,13 +35,13 @@ namespace SGA
 			
 			// Compute optimal number of sprites in the x-axis and y-axis to form a perfect square
 			auto ratio = spriteSize.y / static_cast<double>(spriteSize.x);
-			auto xCountF = std::sqrt(spritePaths.size() / ratio);
+			auto xCountF = std::sqrt((double)spritePaths.size() / ratio);
 			auto yCountF = xCountF * ratio;
 
 			// Since we don't want to split up a texture, turn the square into a slightly inaccurate rectangle
 			spriteCounts.x = static_cast<unsigned int>(std::ceil(xCountF));
 			spriteCounts.y = static_cast<unsigned int>(std::ceil(yCountF));
-			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
+			assert(spriteCounts.x * spriteCounts.y >= (int)spritePaths.size());
 
 			// Create atlas
 			auto width = spriteSize.x * spriteCounts.x + (spriteSize.x - 1) * pixelGap;

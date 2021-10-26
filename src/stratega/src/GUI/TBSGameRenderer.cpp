@@ -454,7 +454,7 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(window.getSize().x / 2.f, window.getSize().y / 1.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2(((float)window.getSize().x / 2.f), ((float)window.getSize().y / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);

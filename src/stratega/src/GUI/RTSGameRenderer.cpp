@@ -351,7 +351,7 @@ namespace SGA
 			{
 				auto& selectionTexture = assetCache.getTexture("circleCollider");
 				sf::Sprite selectionSprite(selectionTexture);
-				selectionSprite.setOrigin(selectionTexture.getSize().x / 2.f, selectionTexture.getSize().y / 2.f);
+				selectionSprite.setOrigin((float)selectionTexture.getSize().x / 2.f, (float)selectionTexture.getSize().y / 2.f);
 				selectionSprite.setPosition(toISO(unit.x(), unit.y()) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
 				selectionSprite.setColor(sf::Color::Blue);
 				window.draw(selectionSprite);

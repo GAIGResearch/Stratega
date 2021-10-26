@@ -45,15 +45,15 @@ namespace SGA
 		for(auto entity = entities.begin(); entity != entities.end(); entity++)
 		{
 			//const auto& entity = state.getEntities()[i];
-			auto* quadPtr = &vertices[i * 4];
+			auto* quadPtr = &vertices[int(i * (int)4)];
 			
 			// define the 4 corners
 			auto spriteSize = atlas.getSpriteSize();
-			auto start = toISO(entity->x(), entity->y()) - sf::Vector2f{ spriteSize.x / 4.f, spriteSize.y / 1.4f };
+			auto start = toISO(entity->x(), entity->y()) - sf::Vector2f{((float)spriteSize.x / 4.f),((float)spriteSize.y / 1.4f )};
 			quadPtr[0].position = sf::Vector2f(start.x, start.y);
-			quadPtr[1].position = sf::Vector2f(start.x + spriteSize.x, start.y);
-			quadPtr[2].position = sf::Vector2f(start.x + spriteSize.x, start.y + spriteSize.y);
-			quadPtr[3].position = sf::Vector2f(start.x, start.y + spriteSize.y);
+			quadPtr[1].position = sf::Vector2f(start.x + (float)spriteSize.x, start.y);
+			quadPtr[2].position = sf::Vector2f(start.x + (float)spriteSize.x, start.y + (float)spriteSize.y);
+			quadPtr[3].position = sf::Vector2f(start.x, start.y + (float)spriteSize.y);
 
 			// define the 4 texture coordinates
 			auto rect = atlas.getSpriteRect(entitySpritePaths.at(entity->getEntityTypeID()));

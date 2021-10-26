@@ -21,7 +21,7 @@ namespace SGA
 
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);
-		m_vertices.resize(state.getBoardWidth() * state.getBoardHeight() * 4);
+		m_vertices.resize((int)(state.getBoardWidth() * (int)(state.getBoardHeight() * 4)));
 	}
 
 	void TileMap::update(const GameState& state, const GameState& fowState, bool renderFow, FogRenderType fogType)
@@ -36,7 +36,7 @@ namespace SGA
 				const auto& fogTile = fowState.getTileAt({x, y});
 
 				// get a pointer to the current tile's quad
-				sf::Vertex* quad = &m_vertices[(x + y * state.getBoardWidth()) * 4];
+				sf::Vertex* quad = &m_vertices[(x + (int)((y * (int)(state.getBoardWidth()) * 4)))];
 				if(!renderFow)
 				{
 					updateTileQuad(quad, tile, sf::Color::White);
@@ -64,9 +64,9 @@ namespace SGA
 		auto start = toISO(tile.x(), tile.y()) - sf::Vector2f{TILE_ORIGIN_X, TILE_ORIGIN_Y};
 		auto tileSize = tileset.getSpriteSize();
 		quadPtr[0].position = sf::Vector2f(start.x, start.y);
-		quadPtr[1].position = sf::Vector2f(start.x + tileSize.x, start.y);
-		quadPtr[2].position = sf::Vector2f(start.x + tileSize.x, start.y + tileSize.y);
-		quadPtr[3].position = sf::Vector2f(start.x, start.y + tileSize.y);
+		quadPtr[1].position = sf::Vector2f(start.x + (float)tileSize.x, start.y);
+		quadPtr[2].position = sf::Vector2f(start.x + (float)tileSize.x, start.y + (float)tileSize.y);
+		quadPtr[3].position = sf::Vector2f(start.x, start.y + (float)tileSize.y);
 		
 		// define the 4 texture coordinates
 		auto rect = tileset.getSpriteRect(tileSpritePaths.at(tile.getTileTypeID()));

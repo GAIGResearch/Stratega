@@ -13,7 +13,8 @@ namespace SGA
 		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
 		board(std::move(board)),
-		players()
+		players(),
+		fogOfWarApplied(false)
 	{
 	}
 
@@ -26,7 +27,8 @@ namespace SGA
 		tickLimit(-1),
 		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
-		board(0, 0, fogOfWarTile)
+		board(0, 0, fogOfWarTile),
+		fogOfWarApplied(false)
 	{
 	}
 
@@ -156,7 +158,7 @@ namespace SGA
 	int GameState::getPlayerScore(int playerID) const
 	{
 		if (hasPlayerParameter("Score"))
-			return getPlayerParameter(playerID, "Score");
+			return (int)getPlayerParameter(playerID, "Score");
 		return 0; 
 	}
 
@@ -418,7 +420,7 @@ namespace SGA
 
 	bool GameState::isInBounds(const Vector2f& pos) const
 	{
-		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+		return pos.x >= 0 && pos.x < (double)board.getWidth() && pos.y >= 0 && pos.y < (double)board.getHeight();
 	}
 
 	void GameState::initBoard(int boardWidth, std::vector<Tile>& tiles)
@@ -478,12 +480,12 @@ namespace SGA
 			auto& pos = entity.getPosition();
 			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).getSymbol();
 			const char ownerID = std::to_string(entity.getOwnerID())[0];
-			const int entityMapIndex = (pos.y * board.getWidth() + pos.x) * 3 + pos.y;
+			const int entityMapIndex = (int)((pos.y * (double)board.getWidth() + pos.x) * 3 + pos.y);
 
 			map[entityMapIndex] = symbol;
 
 			if (!entity.isNeutral())
-				map[entityMapIndex + 1] = ownerID;
+				map[(int)((int)entityMapIndex + 1)] = ownerID;
 		}
 		//Print map
 		std::cout << map;
