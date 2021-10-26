@@ -42,6 +42,8 @@
 // #endif
 //
 //---------------------------------------------------------------------------------------
+
+#pragma warning(disable: 4191)
 #ifndef GHC_FILESYSTEM_H
 #define GHC_FILESYSTEM_H
 

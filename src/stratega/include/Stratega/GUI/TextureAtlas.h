@@ -16,7 +16,7 @@ namespace SGA
 		int pixelGap;
 
 		std::unordered_map<std::string, sf::Rect<float>> rectLookup;
-		
+
 	public:
 		TextureAtlas(int pixelGap = 0)
 			: initialized(false), spriteSize(), spriteCounts(), atlas(), pixelGap(pixelGap)
@@ -32,7 +32,7 @@ namespace SGA
 				throw std::runtime_error("Could not open file " + spritePaths.at(0));
 			}
 			spriteSize = image.getSize();
-			
+
 			// Compute optimal number of sprites in the x-axis and y-axis to form a perfect square
 			auto ratio = spriteSize.y / static_cast<double>(spriteSize.x);
 			auto xCountF = std::sqrt((double)spritePaths.size() / ratio);
@@ -41,7 +41,7 @@ namespace SGA
 			// Since we don't want to split up a texture, turn the square into a slightly inaccurate rectangle
 			spriteCounts.x = static_cast<unsigned int>(std::ceil(xCountF));
 			spriteCounts.y = static_cast<unsigned int>(std::ceil(yCountF));
-			assert(spriteCounts.x * spriteCounts.y >= (int)spritePaths.size());
+			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
 
 			// Create atlas
 			auto width = spriteSize.x * spriteCounts.x + (spriteSize.x - 1) * pixelGap;
@@ -59,8 +59,8 @@ namespace SGA
 				}
 				if (image.getSize() != spriteSize)
 				{
-					throw std::runtime_error("Error loading image " + path + ". Textures added to the atlas need to have the same size: <" 
-						+ std::to_string(image.getSize().x) + "x" + std::to_string(image.getSize().y) + "> != <" 
+					throw std::runtime_error("Error loading image " + path + ". Textures added to the atlas need to have the same size: <"
+						+ std::to_string(image.getSize().x) + "x" + std::to_string(image.getSize().y) + "> != <"
 						+ std::to_string(spriteSize.x) + "x" + std::to_string(spriteSize.y) + ">");
 				}
 

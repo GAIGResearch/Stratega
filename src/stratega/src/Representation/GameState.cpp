@@ -49,7 +49,7 @@ namespace SGA
 
 	int GameState::addPlayer(Player& p)
 	{
-		int playerID = players.size();
+		int playerID = (int)players.size();
 		players.emplace_back(p);
 		return playerID;
 	}

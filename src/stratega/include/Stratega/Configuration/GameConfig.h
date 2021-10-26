@@ -119,7 +119,7 @@ namespace SGA
             {
                 for (size_t x = 0; x < board.getWidth(); x++)
                 {
-                    tiles.emplace_back(board.get(x, y)->toTile(x, y));
+                    tiles.emplace_back(board.get((int)x, (int)y)->toTile((int)x, (int)y));
                 }
             } 
             return tiles;
@@ -137,7 +137,7 @@ namespace SGA
         virtual void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
         {
             //Initialize board with size and set of tiles.
-            state.initBoard(board.getWidth(), tiles);
+            state.initBoard((int)board.getWidth(), tiles);
         }
 
         virtual void initResearchTechs(GameState& state) const

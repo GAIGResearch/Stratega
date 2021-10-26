@@ -7,9 +7,9 @@ namespace SGA
 	{
 		assert(actions.getAssignmentCount() == 1);
 		if(actions.getEntityActions().size()>0)
-			advanceGameState(state, actions.getEntityActions().at(0));
+			advanceGameState(state, actions.getEntityActions().begin()->second);
 		else
-			advanceGameState(state, actions.getPlayerActions().at(0));
+			advanceGameState(state, actions.getPlayerActions().begin()->second);
 
 		//warning C4702: unreachable code
 		/*for(const auto& action : actions.getEntityActions())
