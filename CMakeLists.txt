@@ -16,6 +16,7 @@ set(PROJ_CXX_STD_FEATURE cxx_std_14)
 set(PROJ_CXX_STANDARD C++14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 14)
+set(CONAN_SYSTEM_INCLUDES ON)
 set(PROJ_SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
 set(PROJ_TEST_FOLDER "${CMAKE_SOURCE_DIR}/test")
 set(SUBPROJ_PYBINDING_DIR "${PROJ_SOURCES_DIR}/python")
@@ -115,6 +116,8 @@ include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
+
+
 # find the downloaded/installed packages
 
 find_package(Threads)

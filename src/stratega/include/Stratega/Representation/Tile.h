@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Representation/Vector2.h>
-
+#pragma warning( disable : 4820)
 namespace SGA
 {
 	struct TileType;
@@ -9,6 +9,11 @@ namespace SGA
 	{
 
 	private:
+
+		/// <summary>
+		/// Type of tile
+		/// </summary>
+		const TileType* tileType;
 
 		/// <summary>
 		/// Indicates if this tile blocks the line of sight for entities in the game. 
@@ -21,11 +26,6 @@ namespace SGA
 		bool walkable;
 
 		/// <summary>
-		/// Type of tile
-		/// </summary>
-		const TileType* tileType;
-
-		/// <summary>
 		/// Position <x,y> of this tile in the board.
 		/// </summary>
 		Vector2i position;
@@ -34,8 +34,8 @@ namespace SGA
 
 		inline Tile(const TileType* tileType,int x, int y):
 			tileType(tileType),
-			walkable(true),
 			blockSight(false),
+			walkable(true),
 			position(x, y)
 		{
 		}
