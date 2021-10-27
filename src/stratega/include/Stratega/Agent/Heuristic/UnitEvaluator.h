@@ -26,7 +26,7 @@ namespace SGA
 	private:
 		static constexpr unsigned int str2int(const char* str, int h = 0)
 		{
-			return !str[h] ? 5381 : static_cast<unsigned int>((str2int(str, h + 1) * 33) ^ static_cast<int>(str[static_cast<size_t>(h)]));
+			return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ static_cast<unsigned int>(str[static_cast<size_t>(h)]);
 		}
 
 		static UnitTypeStrengthLookup computeLinearSumEvaluation(const GameState& gameState)
