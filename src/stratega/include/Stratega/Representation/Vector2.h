@@ -12,7 +12,7 @@ namespace SGA
 		int y;
 
 		Vector2i();
-		Vector2i(int x, int y);
+		Vector2i(int newX, int newY);
 		Vector2i(int value);
 
 		Vector2i operator- (const Vector2i& v) const { return Vector2i(x - v.x, y - v.y); }
@@ -30,10 +30,10 @@ namespace SGA
 		y = 0;
 	}
 	
-	inline Vector2i::Vector2i(int x, int y)
+	inline Vector2i::Vector2i(int newX, int newY)
 	{
-		this->x = x;
-		this->y = y;
+		this->x = newX;
+		this->y = newY;
 	}
 
 	inline Vector2i::Vector2i(int value)
@@ -54,7 +54,7 @@ namespace SGA
 	{
 	public:
 		Vector2f();
-		Vector2f(double x, double y);
+		Vector2f(double newX, double newY);
 		explicit Vector2f(double value);
 		explicit Vector2f(Vector2i v);
 
@@ -92,10 +92,10 @@ namespace SGA
 		y = 0;
 	}
 
-	inline Vector2f::Vector2f(double x, double y)
+	inline Vector2f::Vector2f(double newX, double newY)
 	{
-		this->x = x;
-		this->y = y;
+		this->x = newX;
+		this->y = newY;
 	}
 
 	inline Vector2f::Vector2f(double value)
@@ -129,7 +129,7 @@ namespace std
 		{
 			using std::hash;
 			// Not the best hashcode, but we do not expect large values
-			return (size_t)(v.x << 15 | v.y);
+			return static_cast<size_t>(v.x << 15 | v.y);
 		}
 	};
 

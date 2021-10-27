@@ -18,20 +18,20 @@ namespace SGA
 	public:
 
 		template<typename InputIterator>
-		Grid2D(size_t width, InputIterator begin, InputIterator end)
-			: width(width), height(0), grid(begin, end)
+		Grid2D(size_t newWidth, InputIterator begin, InputIterator end)
+			: width(newWidth), height(0), grid(begin, end)
 		{
-			if(grid.size() % width != 0)
+			if(grid.size() % newWidth != 0)
 			{
 				throw std::runtime_error("Received a amount of values that is not a multiple of width.");
 			}
 
-			height = grid.size() / width;
+			height = grid.size() / newWidth;
 		}
 
 		
-		Grid2D(size_t width, size_t height, Type defaultValue = Type())
-			: width(width), height(height), grid(width * height, defaultValue)
+		Grid2D(size_t newWidth, size_t newHeight, Type defaultValue = Type())
+			: width(newWidth), height(newHeight), grid(newWidth * newHeight, defaultValue)
 		{
 		}
 

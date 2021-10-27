@@ -32,8 +32,8 @@ namespace SGA
 
 	public:
 
-		inline Tile(const TileType* tileType,int x, int y):
-			tileType(tileType),
+		inline Tile(const TileType* newTileType,int x, int y):
+			tileType(newTileType),
 			blockSight(false),
 			walkable(true),
 			position(x, y)

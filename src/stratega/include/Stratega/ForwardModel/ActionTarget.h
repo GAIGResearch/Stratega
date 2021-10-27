@@ -161,7 +161,7 @@ namespace SGA
 		Data data;
 
 		// Private since this class should only be constructed using the static methods
-		ActionTarget(const Type& type, const Data& data) : targetType(type), data(data) {};
+		ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {};
 	};
 
 }
