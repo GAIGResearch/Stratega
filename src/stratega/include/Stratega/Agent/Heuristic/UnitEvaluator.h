@@ -91,12 +91,12 @@ namespace SGA
 					}
 					if (parameter.second.getName() == "AttackRange" || parameter.second.getName() == "HealRange")
 					{
-						actionRangePerc = (int)(parameter.second.getDefaultValue() / static_cast<double>(maxActionRange));
+						actionRangePerc = static_cast<int>(parameter.second.getDefaultValue() / maxActionRange);
 						continue;
 					}
 					if (parameter.second.getName() == "Health")
 					{
-						score += parameter.second.getMaxValue() / static_cast<double>(maxHealth);
+						score += parameter.second.getMaxValue() / maxHealth;
 						continue;
 					}
 					if (parameter.second.getName() == "MovementPoints")
@@ -106,7 +106,7 @@ namespace SGA
 					}
 					if (parameter.second.getName() == "HealAmount")
 					{
-						healAmount += parameter.second.getDefaultValue() / static_cast<double>(maxHeal);
+						healAmount += parameter.second.getDefaultValue() / maxHeal;
 						continue;
 					}
 					else
@@ -117,20 +117,20 @@ namespace SGA
 
 				for (auto actionID : entry.second.getActionIDs())
 				{
-					const auto& action = (gameState.getGameInfo()->getActionTypes()).at(actionID);
+					const auto& action = (gameState.getGameInfo()->getActionTypes()).at(static_cast<size_t>(actionID));
 					if (action.getName() == "Attack")
 					{
-						score += (attackDamage / static_cast<double>(maxDamage)) * actionRangePerc;
+						score += (attackDamage / maxDamage) * actionRangePerc;
 						continue;
 					}
 					if (action.getName() == "Move")
 					{
-						score += movementRange / static_cast<double>(maxMovementRange);
+						score += movementRange / maxMovementRange;
 						continue;
 					}
 					if (action.getName() == "Heal")
 					{
-						score += (healAmount / static_cast<double>(maxHeal)) * actionRangePerc;
+						score += (healAmount / maxHeal) * static_cast<double>(actionRangePerc);
 						continue;
 					}
 					else

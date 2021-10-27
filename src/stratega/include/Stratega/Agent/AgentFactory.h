@@ -30,19 +30,19 @@ namespace SGA
 		bool registerAgentFn(const std::string& name, const AgentGeneratorParams& agentFn);
 		
 		template<typename T>
-		bool registerAgent(const std::string name)
+		bool registerAgent(const std::string newName)
 		{
 			return registerAgentFn(
-				name,
+				newName,
 				[](std::string name) { return static_cast<Agent*>(new T(name)); }
 			);
 		}
 
 		template<typename T, typename Params>
-		bool registerAgent(const std::string& name)
+		bool registerAgent(const std::string& newName)
 		{
 			bool normalRegister = registerAgentFn(
-				name,
+				newName,
 				[](std::string name) { return static_cast<Agent*>(new T(name,Params())); }
 			);
 

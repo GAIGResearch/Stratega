@@ -83,7 +83,7 @@ namespace SGA
 		/// <summary>
 		double elapsedSeconds() const
 		{
-			return static_cast<double>(elapsedMilliseconds()/1000.0);
+			return static_cast<double>(elapsedMilliseconds()/ static_cast<long>(1000.0));
 		}
 		
 		/// <summary>
