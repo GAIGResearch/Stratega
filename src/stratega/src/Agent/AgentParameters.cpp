@@ -9,7 +9,7 @@ namespace SGA {
 		opponentModel = std::make_shared<SkipTurnScript>();
 		budgetType = Budget::UNDEFINED;
 		portfolio = std::vector<std::shared_ptr<BaseActionScript>>();
-	};
+	}
 
 	void AgentParameters::resetCounters(const Timer& timerToReset)
 	{
@@ -28,6 +28,8 @@ namespace SGA {
 			return currentIterations >= maxIterations;
 		case Budget::FMCALLS:
 			return currentFMCalls >= maxFMCalls;
+		case Budget::UNDEFINED:
+			return false;
 		}
 		return false;
 
