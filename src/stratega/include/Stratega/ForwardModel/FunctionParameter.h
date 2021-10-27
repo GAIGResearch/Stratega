@@ -32,9 +32,9 @@ namespace SGA
 			ParameterID parameterID;
 			int argumentIndex;
 
-			ParameterReference(ParameterID parameterID, int argumentIndex):
-				parameterID(parameterID),
-				argumentIndex(argumentIndex)
+			ParameterReference(ParameterID newParameterID, int newArgumentIndex):
+				parameterID(newParameterID),
+				argumentIndex(newArgumentIndex)
 			{
 			}
 		};
@@ -44,9 +44,9 @@ namespace SGA
 			int sourceEntity;
 			int actionID;
 
-			ContinuousActionReference(int sourceEntity, int actionID) :
-				sourceEntity(sourceEntity),
-				actionID(actionID)
+			ContinuousActionReference(int newSourceEntity, int newActionID) :
+				sourceEntity(newSourceEntity),
+				actionID(newActionID)
 			{
 			}
 		};
@@ -92,7 +92,7 @@ namespace SGA
 		Data data;
 
 		// Private since this class should only be constructed using the static methods
-		FunctionParameter(const Type& type, const Data& data) : parameterType(type), data(data) {};
+		FunctionParameter(const Type& newType, const Data& newData) : parameterType(newType), data(newData) {};
 
 	public:
 		static FunctionParameter createConstParameter(double constValue);

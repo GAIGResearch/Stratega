@@ -39,8 +39,8 @@ namespace SGA
 
 	public: 
 
-		Player(int id, bool canPlay) :
-			id(id), canIPlay(canPlay) {}
+		Player(int newID, bool newCanPlay) :
+			id(newID), canIPlay(newCanPlay) {}
 		 
 		/// <summary>
 		/// Indicates if a given action type can be executed by this player.
@@ -86,19 +86,19 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getParameter(int paramIdx) { return parameters[paramIdx]; }
+		double& getParameter(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getParameter(int paramIdx) const { return parameters[paramIdx]; }
+		const double& getParameter(int paramIdx) const { return parameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Sets the parameter of this player to a certain value
 		/// </summary>
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setParameter(int paramIdx, double val) { parameters[paramIdx] = val; }
+		void setParameter(int paramIdx, double val) { parameters[static_cast<size_t>(paramIdx)] = val; }
 
 		/// <summary>
 		/// Sets a size for the vector of parameters of this player.
@@ -151,7 +151,7 @@ namespace SGA
 		/// <summary>
 		/// Reserves space for attached actions.
 		/// </summary>
-		void resAttachedActions(int cap) { attachedActions.reserve(cap); }
+		void resAttachedActions(int cap) { attachedActions.reserve(static_cast<size_t>(cap)); }
 
 	};
 }

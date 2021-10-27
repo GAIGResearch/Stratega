@@ -71,12 +71,12 @@ namespace SGA
 
 	public:
 
-		Action(const ActionType* actionType):
-			actionTypeFlags(ActionFlag::None),
-			actionType(actionType),
+		Action(const ActionType* newActionType):
+			actionType(newActionType),
 			ownerID(0),
 			continuousActionID(-1),
-			elapsedTicks(0)
+			elapsedTicks(0),
+			actionTypeFlags(ActionFlag::None)
 		{
 		}
 
