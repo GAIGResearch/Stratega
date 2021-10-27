@@ -3,13 +3,13 @@
 
 namespace SGA
 {
-	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState, int ownerID) :
-		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), ownerID)
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState newGameState, int newOwnerID) :
+		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(newGameState), newOwnerID)
 	{
 	}
 
-	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, const int childIndex, int ownerID) :
-		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(gameState), parent, childIndex, ownerID)
+	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState newGameState, MCTSNode* newParent, const int newChildIndex, int newOwnerID) :
+		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(newGameState), newParent, newChildIndex, newOwnerID)
 	{
 		computeActionSpace(forwardModel);
 		initializeNode();
@@ -77,12 +77,12 @@ namespace SGA
 		// roll the state
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
-		auto action = actionSpace.at(static_cast<int>(children.size()));
+		auto action = actionSpace.at(static_cast<size_t>(children.size()));
 		applyActionToGameState(forwardModel, gsCopy, action, params, playerID);
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
-		return children[childIndex].get();
+		return children[static_cast<size_t>(childIndex)].get();
 	}
 
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
