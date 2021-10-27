@@ -11,8 +11,8 @@ namespace SGA
 	public:
 		std::vector<std::shared_ptr<BaseActionScript>>& portfolio;
 		
-		PortfolioTBSForwardModel(TBSForwardModel forwardModel, std::vector<std::shared_ptr<BaseActionScript>>& portfolio)
-			: TBSForwardModel(std::move(forwardModel)), portfolio(portfolio) {}
+		PortfolioTBSForwardModel(TBSForwardModel newForwardModel, std::vector<std::shared_ptr<BaseActionScript>>& newPortfolio)
+			: TBSForwardModel(std::move(newForwardModel)), portfolio(newPortfolio) {}
 		void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const override;
 	};
 
@@ -22,8 +22,8 @@ namespace SGA
 	public:
 		std::vector<std::shared_ptr<BaseActionScript>>& portfolio;
 
-		PortfolioRTSForwardModel(RTSForwardModel forwardModel, std::vector<std::shared_ptr<BaseActionScript>>& portfolio)
-			: RTSForwardModel(std::move(forwardModel)), portfolio(portfolio) {}
+		PortfolioRTSForwardModel(RTSForwardModel newForwardModel, std::vector<std::shared_ptr<BaseActionScript>>& newPortfolio)
+			: RTSForwardModel(std::move(newForwardModel)), portfolio(newPortfolio) {}
 		void generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const override;
 	};
 

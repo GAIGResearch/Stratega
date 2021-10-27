@@ -3,7 +3,7 @@
 namespace SGA
 {
 	Agent::Agent(const std::string& name)
-		: agentName(name), playerID(-1), rngEngine(std::random_device{}())
+		: playerID(-1), rngEngine(std::random_device{}()), agentName(name)
 	{
 	}
 
