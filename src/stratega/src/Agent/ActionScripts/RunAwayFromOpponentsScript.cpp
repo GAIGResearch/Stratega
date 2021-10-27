@@ -5,7 +5,7 @@ namespace SGA
 {
 	Action RunAwayFromOpponentScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const
 	{
-		if (actionSpace.size() > 1)
+		if (static_cast<int>(actionSpace.size()) > 1)
 		{
 			// create a map of action types to filter relevant actions
 			std::map<int, std::string> actionTypeIDToActionTypeString;
@@ -44,7 +44,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = (int)minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits);
+					const int dist = static_cast<int>(minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits));
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -53,7 +53,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
 		// else return endTurn Action
@@ -110,7 +110,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = (int) minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits);
+					const int dist = static_cast<int>(minimalDistanceToOpponents(action.getTargets()[1].getPosition(gameState), positions, opponentUnits));
 					if (dist > actionDistance)
 					{
 						actionDistance = dist;
@@ -119,7 +119,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
 		
