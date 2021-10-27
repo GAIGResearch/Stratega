@@ -77,7 +77,7 @@ namespace SGA
 		// roll the state
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
-		auto action = actionSpace.at(static_cast<size_t>(children.size()));
+		auto action = actionSpace.at(children.size());
 		applyActionToGameState(forwardModel, gsCopy, action, params, playerID);
 
 		// generate child node and add it to the tree
@@ -148,7 +148,7 @@ namespace SGA
 			which = static_cast<int>(distrib(randomGenerator));
 		}
 
-		return children[which].get();
+		return children[static_cast<size_t>(which)].get();
 	}
 
 	//Executes the rollout phase of MCTS
