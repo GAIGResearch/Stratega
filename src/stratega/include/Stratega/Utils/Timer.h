@@ -75,7 +75,7 @@ namespace SGA
 				tempEndTime = endTime;
 			}
 
-			return static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count());
+			return std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count();
 		}
 
 		/// <summary>

@@ -34,7 +34,7 @@ namespace SGA
 		{
 			return registerAgentFn(
 				newName,
-				[](std::string name) { return static_cast<Agent*>(new T(name)); }
+				[](std::string registeredName) { return static_cast<Agent*>(new T(registeredName)); }
 			);
 		}
 
@@ -43,7 +43,7 @@ namespace SGA
 		{
 			bool normalRegister = registerAgentFn(
 				newName,
-				[](std::string name) { return static_cast<Agent*>(new T(name,Params())); }
+				[](std::string agentName) { return static_cast<Agent*>(new T(agentName,Params())); }
 			);
 
 			// The agent is already registered without any parameters
@@ -53,8 +53,8 @@ namespace SGA
 			}
 
 			return registerAgentFn(
-				name,
-				[](std::string name,const YAML::Node node) { return static_cast<Agent*>(new T(name, node.as<Params>())); }
+				newName,
+				[](std::string registeredName,const YAML::Node node) { return static_cast<Agent*>(new T(registeredName, node.as<Params>())); }
 			);
 		}
 		
