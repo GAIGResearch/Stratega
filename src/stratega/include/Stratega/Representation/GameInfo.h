@@ -162,14 +162,14 @@ namespace SGA
 		/// </summary>
 		/// <param name="technologyID">ID of the technology to search for.</param>
 		/// <returns>The tree node searched for, an exception if it doesn't exist.</returns>
-		[[nodiscard]] const TechnologyTreeNode& getTechnology(int technologyID) const;
+		const TechnologyTreeNode& getTechnology(int technologyID) const;
 
 		/// <summary>
 		/// Returns the ID of a technology that matches the requested name, in any of the trees of the tree collection.
 		/// </summary>
 		/// <param name="technologyName">Name of the technology to search for.</param>
 		/// <returns>ID of the technology searched for, or a runtime error if it doesn't exist.</returns>
-		[[nodiscard]] int getTechnologyTypeID(const std::string& technologyName) const;
+		int getTechnologyTypeID(const std::string& technologyName) const;
 
 		/// <summary>
 		/// Returns a list with all technologies of a given tree, specified by its ID

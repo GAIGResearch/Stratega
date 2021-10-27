@@ -58,11 +58,11 @@ namespace SGA
 			return grid[y * width + x]; 
 		}
 
-		[[nodiscard]] size_t getWidth() const { return width; }
-		[[nodiscard]] size_t getHeight() const { return height; }
+		size_t getWidth() const { return width; }
+		size_t getHeight() const { return height; }
 		
-		[[nodiscard]] bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
-		[[nodiscard]] bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
+		bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
+		bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
 
 		/// <summary>
 		/// Visits all positions from start to end using Bresenhams's line algorithm.

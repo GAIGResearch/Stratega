@@ -49,7 +49,7 @@ namespace SGA
 
 	int GameState::addPlayer(Player& p)
 	{
-		int playerID = (int)players.size();
+		int playerID = static_cast<int>(players.size());
 		players.emplace_back(p);
 		return playerID;
 	}
@@ -158,7 +158,7 @@ namespace SGA
 	int GameState::getPlayerScore(int playerID) const
 	{
 		if (hasPlayerParameter("Score"))
-			return (int)getPlayerParameter(playerID, "Score");
+			return static_cast<int>(getPlayerParameter(playerID, "Score"));
 		return 0; 
 	}
 
@@ -480,12 +480,12 @@ namespace SGA
 			auto& pos = entity.getPosition();
 			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).getSymbol();
 			const char ownerID = std::to_string(entity.getOwnerID())[0];
-			const int entityMapIndex = (int)((pos.y * (double)board.getWidth() + pos.x) * 3 + pos.y);
+			const int entityMapIndex = static_cast<int>((pos.y * static_cast<double>(board.getWidth()) + pos.x) * 3 + pos.y);
 
 			map[entityMapIndex] = symbol;
 
 			if (!entity.isNeutral())
-				map[(int)((int)entityMapIndex + 1)] = ownerID;
+				map[static_cast<int>(static_cast<int>(entityMapIndex) + 1)] = ownerID;
 		}
 		//Print map
 		std::cout << map;

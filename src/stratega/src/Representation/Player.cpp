@@ -1,7 +1,7 @@
 #include <Stratega/Representation/Player.h>
 namespace SGA
 {
-	[[nodiscard]] bool Player::canExecuteAction(int actionTypeID) const
+	bool Player::canExecuteAction(int actionTypeID) const
 	{
 		for (const auto& actionType : attachedActions)
 		{
@@ -11,7 +11,7 @@ namespace SGA
 		return false;
 	}
 
-	[[nodiscard]] const ActionInfo& Player::getActionInfo(int actionTypeID) const
+	const ActionInfo& Player::getActionInfo(int actionTypeID) const
 	{
 		for (const auto& actionInfo : attachedActions)
 		{

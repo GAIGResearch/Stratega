@@ -45,7 +45,7 @@ namespace SGA
 		for(auto entity = entities.begin(); entity != entities.end(); entity++)
 		{
 			//const auto& entity = state.getEntities()[i];
-			auto* quadPtr = &vertices[int(i * (int)4)];
+			auto* quadPtr = &vertices[int(i * static_cast<int>(4))];
 			
 			// define the 4 corners
 			auto spriteSize = atlas.getSpriteSize();

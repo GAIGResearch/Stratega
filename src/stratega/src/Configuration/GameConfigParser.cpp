@@ -212,7 +212,7 @@ namespace SGA
             {
                 //Parse definition
                 parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
-                config.selectedLevel = (int)levelDefinitions.size() - 1;
+                config.selectedLevel = static_cast<int>(levelDefinitions.size()) - 1;
             }
 
             config.levelDefinitions = levelDefinitions;
@@ -303,7 +303,7 @@ namespace SGA
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;
-                context.targetIDs.emplace(target.first, (int)context.targetIDs.size());
+                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
                 newTarget = parseTargetType(target.second, config);
             	
                 std::vector<std::shared_ptr<Condition>> targetConditionsList;            	
@@ -828,7 +828,7 @@ namespace SGA
             // Assign IDs to parameters that do not exist yet
             if (config.parameters.find(nameParamPair.first) == config.parameters.end())
             {
-                config.parameters.insert({ nameParamPair.first, (int)config.parameters.size() });
+                config.parameters.insert({ nameParamPair.first, static_cast<int>(config.parameters.size()) });
             }
 
             // Construct the parameter
@@ -1037,6 +1037,6 @@ namespace SGA
         newLevel.boardString = mapString;
 
     	//Add new level definition
-        levelDefinitions.emplace((int)levelDefinitions.size(), newLevel);
+        levelDefinitions.emplace(static_cast<int>(levelDefinitions.size()), newLevel);
     }
 }

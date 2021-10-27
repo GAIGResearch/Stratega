@@ -39,7 +39,7 @@ namespace SGA
 		}
 
 
-		[[nodiscard]] virtual bool isFullyExpanded() const
+		virtual bool isFullyExpanded() const
 		{
 			return children.size() >= actionSpace.size();
 		}

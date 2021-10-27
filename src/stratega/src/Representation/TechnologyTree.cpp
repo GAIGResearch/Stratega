@@ -30,7 +30,7 @@ namespace SGA
 	}
 
 
-	[[nodiscard]] const TechnologyTreeNode& TechnologyTreeType::getTechnologyNode(int technologyID)const
+	const TechnologyTreeNode& TechnologyTreeType::getTechnologyNode(int technologyID)const
 	{
 		//Search technology in tree
 		const auto& it = technologies.find(technologyID);
@@ -41,14 +41,14 @@ namespace SGA
 		throw std::runtime_error("Tried accessing technology with unknown id " + std::to_string(technologyID));
 	}
 
-	[[nodiscard]] bool TechnologyTreeType::existsTechnologyTreeNode(int technologyID)const
+	bool TechnologyTreeType::existsTechnologyTreeNode(int technologyID)const
 	{
 		//Search technology in tree
 		const auto& it = technologies.find(technologyID);
 		return it != technologies.end();
 	}
 
-	[[nodiscard]] int TechnologyTreeType::getTechnologyNodeID(const std::string& technologyName)const
+	int TechnologyTreeType::getTechnologyNodeID(const std::string& technologyName)const
 	{
 		//Search through technologies
 		for (const auto& technology : technologies)
@@ -60,7 +60,7 @@ namespace SGA
 		throw std::runtime_error("Tried accessing technology with unknown name " + technologyName);
 	}
 
-	[[nodiscard]] bool TechnologyTreeType::existsTechnologyNode(const std::string& technologyName)const
+	bool TechnologyTreeType::existsTechnologyNode(const std::string& technologyName)const
 	{
 		//Search through technologies
 		for (const auto& technology : technologies)
@@ -72,7 +72,7 @@ namespace SGA
 		return false;
 	}
 
-	[[nodiscard]] const TechnologyTreeNode& TechnologyTreeCollection::getTechnology(int technologyID) const
+	const TechnologyTreeNode& TechnologyTreeCollection::getTechnology(int technologyID) const
 	{
 		//Search through technologytreetypes
 		for (const auto& technologyTreeType : technologyTreeTypes)
@@ -84,7 +84,7 @@ namespace SGA
 		throw std::runtime_error("Tried accessing technology tree with unknown id " + std::to_string(technologyID));
 	}
 
-	[[nodiscard]] int TechnologyTreeCollection::getTechnologyTypeID(const std::string& technologyName) const
+	int TechnologyTreeCollection::getTechnologyTypeID(const std::string& technologyName) const
 	{
 		for (const auto& technologyTreeType : technologyTreeTypes)
 		{

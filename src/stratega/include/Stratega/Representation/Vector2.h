@@ -67,7 +67,7 @@ namespace SGA
 		bool operator==(const Vector2f& other) const;
 		bool operator!=(const Vector2f& other) const;
 
-		[[nodiscard]] Vector2f normalized() const
+		Vector2f normalized() const
 		{
 			const auto magnitudeValue = magnitude();
 			
@@ -75,12 +75,12 @@ namespace SGA
 			if (magnitudeValue <= 0) return *this;
 			return (*this) / magnitudeValue;
 		}
-		[[nodiscard]] double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
-		[[nodiscard]] double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
-		[[nodiscard]] double chebyshevDistance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
+		double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
+		double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
+		double chebyshevDistance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
 
 
-		[[nodiscard]] double magnitude() const { return std::sqrt(x * x + y * y); }
+		double magnitude() const { return std::sqrt(x * x + y * y); }
 		
 		double x;
 		double y;

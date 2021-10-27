@@ -250,8 +250,8 @@ namespace SGA
 		const auto& ownerID = spawnSource.getPlayerID(state, targets);
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
-		targetPosition.x = (int)targetPosition.x;
-		targetPosition.y = (int)targetPosition.y;
+		targetPosition.x =static_cast<int>(targetPosition.x);
+		targetPosition.y =static_cast<int>(targetPosition.y);
 		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 

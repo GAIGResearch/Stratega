@@ -45,12 +45,12 @@ namespace SGA
 		/// <summary>
 		/// Indicates if a given action type can be executed by this player.
 		/// </summary>
-		[[nodiscard]] bool canExecuteAction(int actionTypeID) const;
+		bool canExecuteAction(int actionTypeID) const;
 
 		/// <summary>
 		/// Returns the ActionInfo of an action type this player can execute.
 		/// </summary>
-		[[nodiscard]] const ActionInfo& getActionInfo(int actionTypeID) const;
+		const ActionInfo& getActionInfo(int actionTypeID) const;
 
 		/// <summary>
 		/// Returns the player ID defined for a neutral player.

@@ -46,7 +46,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& /*gameState*/, const
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.getTileAt({ (int)targetPosition.x, (int)targetPosition.y }).getTileTypeID() != -1;
+	return gameState.getTileAt({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -137,7 +137,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 {
 	std::vector<SGA::Vector2i> positions;
 	
-	Node root((int)position.x, (int)position.y);
+	Node root(static_cast<int>(position.x), static_cast<int>(position.y));
 	root.visited = true;
 	root.totalCost = 0;
 
@@ -177,7 +177,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
 				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
-					|| std::floor(totalCost + 1) > (float)searchSize)
+					|| std::floor(totalCost + 1) > static_cast<float>(searchSize))
 					return false;		
 				else
 					return true;

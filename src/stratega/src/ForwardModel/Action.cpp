@@ -85,7 +85,7 @@ namespace SGA
 		return targets.at(0).getType() == ActionTarget::PlayerReference;
 	}
 
-	[[nodiscard]] int Action::getSourceID() const
+	int Action::getSourceID() const
 	{
 		return isEntityAction() ? targets.at(0).getEntityID() : targets.at(0).getPlayerID();
 	}

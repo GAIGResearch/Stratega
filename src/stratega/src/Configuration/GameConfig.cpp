@@ -28,7 +28,7 @@ namespace SGA
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
-		player.resizeParameters((int)gameInfo.getPlayerParameterTypes().size());
+		player.resizeParameters(static_cast<int>(gameInfo.getPlayerParameterTypes().size()));
 		const auto parameterTypes = gameInfo.getPlayerParameterTypes();
 		for (const auto& idParamPair : parameterTypes)
 		{
@@ -36,7 +36,7 @@ namespace SGA
 		}
 
 		// Add actions
-		player.resAttachedActions((int)playerActionIds.size());
+		player.resAttachedActions(static_cast<int>(playerActionIds.size()));
 		for (auto actionTypeID : playerActionIds)
 		{
 			player.addAttachedAction(actionTypeID, 0);

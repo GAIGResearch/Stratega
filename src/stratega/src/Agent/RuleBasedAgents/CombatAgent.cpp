@@ -74,7 +74,7 @@ namespace SGA
 			{
 				if (healingAction.getTargets()[0].getEntityID() == healer.getID())
 				{
-					heal += (int)healer.getParameter("HealAmount");
+					heal += static_cast<int>(healer.getParameter("HealAmount"));
 					break;
 				}
 			}
@@ -158,7 +158,7 @@ namespace SGA
 		else if (healAmount < attackAmount)
 		{
 			// We can kill the unit with an delay
-			int turnsToKill = (int)std::min(4., std::ceil(targetHealth / (attackAmount - healAmount)));
+			int turnsToKill = static_cast<int>(std::min(4., std::ceil(targetHealth / (attackAmount - healAmount))));
 			return unitScores.at(target.getEntityTypeID()) * (1. + 1. / (1. + turnsToKill));
 		}
 
@@ -228,8 +228,8 @@ namespace SGA
 				if (ally.getID() == opp.getID())
 					continue;
 
-				int dist = (int)(opp.getPosition().manhattanDistance(ally.getPosition()));
-				int movesToSupport =(int)(dist / ally.getParameter("MovementPoints"));
+				int dist = static_cast<int>((opp.getPosition().manhattanDistance(ally.getPosition())));
+				int movesToSupport = static_cast<int>(dist / ally.getParameter("MovementPoints"));
 				avgSupportScore += unitScores.at(ally.getEntityTypeID()) / (1. + movesToSupport);
 			}
 			avgSupportScore /= (double)opponentUnits.size();
@@ -239,9 +239,9 @@ namespace SGA
 			double avgAttackScore = 0;
 			for (auto attacker : myUnits)
 			{
-				int dist = (int)opp.getPosition().chebyshevDistance(attacker.getPosition());
+				int dist = static_cast<int>(opp.getPosition().chebyshevDistance(attacker.getPosition()));
 				double movementRange = attacker.getParameter("MovementPoints");
-				int movesToAttack = (int)(std::max(0, dist - static_cast<int>(movementRange)) / movementRange);
+				int movesToAttack = static_cast<int>(std::max(0, dist - static_cast<int>(movementRange)) / movementRange);
 				avgAttackScore += unitScores.at(attacker.getEntityTypeID()) / (1. + movesToAttack);
 			}
 			avgAttackScore /= (double)myUnits.size() + 1;
@@ -326,7 +326,7 @@ namespace SGA
 			// At last, try moving closer to the best attack target
 			auto moves = filterActionTypes(subActions, "Move");
 			double attackRange = unit.getParameter("AttackRange");
-			if (getMoveInRange(unit, moveTarget, (int)attackRange, opponentUnits, moves, nextAction, currentState))
+			if (getMoveInRange(unit, moveTarget, static_cast<int>(attackRange), opponentUnits, moves, nextAction, currentState))
 			{
 				break;
 			}

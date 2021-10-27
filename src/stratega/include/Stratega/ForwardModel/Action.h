@@ -102,19 +102,19 @@ namespace SGA
 		/// Checks if this action is to be executed over an entity.
 		/// </summary>
 		/// <returns>True if this action has an entity as target</returns>
-		[[nodiscard]] bool isEntityAction() const;
+		bool isEntityAction() const;
 
 		/// <summary>
 		/// Checks if this action is to be executed over a player.
 		/// </summary>
 		/// <returns>True if this action has a player as target</returns>
-		[[nodiscard]] bool isPlayerAction() const;
+		bool isPlayerAction() const;
 
 		/// <summary>
 		/// Gets the player or entity ID of the target of this action
 		/// </summary>
 		/// <returns>The player or entity ID of the target of this action</returns>
-		[[nodiscard]] int getSourceID() const;
+		int getSourceID() const;
 
 		/// <summary>
 		/// Returns the action type ID of this action

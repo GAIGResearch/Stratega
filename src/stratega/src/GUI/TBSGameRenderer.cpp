@@ -16,7 +16,7 @@ namespace SGA
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode((int)resolution.x, (int)resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode(static_cast<int>(resolution.x), static_cast<int>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
@@ -28,7 +28,7 @@ namespace SGA
 
 		// Initialize View
 		sf::View view = window.getView();
-		view.setCenter((float)(window.getSize().x / 2.), (float)(window.getSize().y / 2.));
+		view.setCenter(static_cast<float>(window.getSize().x / 2.), static_cast<float>(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
@@ -248,7 +248,7 @@ namespace SGA
 			//If selected unit we check if there is action in tile
 			if (actionsSettings.waitingForPosition)
 			{
-				assignPosition(state, actionsSettings, { (float)pos.x,(float)pos.y });
+				assignPosition(state, actionsSettings, { static_cast<float>(pos.x),static_cast<float>(pos.y) });
 			}
 			else
 			{
@@ -454,7 +454,7 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(((float)window.getSize().x / 2.f), ((float)window.getSize().y / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
@@ -558,7 +558,7 @@ namespace SGA
 					switch (targetType.getType())
 					{
 					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
+						actionInfo += " x:" + std::to_string(static_cast<int>(targetType.getPosition(state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(state).y));
 						break;
 					case ActionTarget::EntityReference:
 						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().getName();

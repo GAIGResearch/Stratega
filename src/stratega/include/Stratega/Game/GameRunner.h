@@ -65,7 +65,7 @@ namespace SGA
 		template<typename Iterator>
 		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
 		{
-			assert(std::distance(begin, end) == (int)currentState->getPlayers().size());
+			assert(std::distance(begin, end) == static_cast<int>(currentState->getPlayers().size()));
 			if (observer == nullptr)
 			{
 				observer = defaultObserver;
@@ -145,7 +145,7 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to the current state of the game.
 		/// </summary>
-		[[nodiscard]] const GameState& getGameState() const;
+		const GameState& getGameState() const;
 
 	protected:
 		virtual void initializeAgents(std::vector<Agent*>& agents);
