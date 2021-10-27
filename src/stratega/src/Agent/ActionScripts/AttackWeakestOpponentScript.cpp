@@ -212,6 +212,6 @@ namespace SGA
 					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
-		return actionSpace[static_cast<size_t>(actionSpace.size()-1)];
+		return actionSpace[static_cast<size_t>(static_cast<int>(actionSpace.size())-1)];
 	}
 }

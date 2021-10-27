@@ -114,7 +114,7 @@ namespace SGA
 		/// Returns the width of the board.
 		/// </summary>
 		/// <returns>The width of the board.</returns>
-		int getBoardWidth() const { return (int)board.getWidth(); }
+		int getBoardWidth() const { return static_cast<int>(board.getWidth()); }
 
 		/// <summary>
 		/// Returns the height of the board.
