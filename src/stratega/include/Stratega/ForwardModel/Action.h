@@ -138,7 +138,7 @@ namespace SGA
 		/// Returns the action source type
 		/// </summary>
 		/// <returns>Action source type</returns>
-		const ActionSourceType getActionSourceType() const;
+		ActionSourceType getActionSourceType() const;
 
 		 
 		/// <summary>

@@ -113,7 +113,7 @@ namespace SGA
 	}
 
 
-	const ActionSourceType Action::getActionSourceType() const
+	ActionSourceType Action::getActionSourceType() const
 	{
 		if(actionTypeFlags == ActionFlag::EndTickAction)
 			return SGA::ActionSourceType::Player;
