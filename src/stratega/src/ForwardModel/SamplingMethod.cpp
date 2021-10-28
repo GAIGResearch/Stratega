@@ -275,7 +275,7 @@ bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f&
 
 	for(auto& position : positions)
 	{
-		if (targetPosition.distance(Vector2f(static_cast<double>(position.x), static_cast<double>(position.y))) <= 0.5f)
+		if (targetPosition.distance(Vector2f(static_cast<float>(position.x), static_cast<float>(position.y))) <= static_cast<double>(0.5f))
 			return true;
 	}
 
