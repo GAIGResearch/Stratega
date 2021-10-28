@@ -8,10 +8,10 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :		
+		Effect(exp),
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1)),
-		Effect(exp)
+		amountParameter(parameters.at(1))
 	{
 
 	}
@@ -25,9 +25,9 @@ namespace SGA
 	}
 
 	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1)),
-		Effect(exp)
+		amountParameter(parameters.at(1))
 	{
 
 	}
@@ -41,9 +41,9 @@ namespace SGA
 	}
 	
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
 		resourceReference(parameters.at(0)),
-		amountParameter(parameters.at(1)),
-		Effect(exp)
+		amountParameter(parameters.at(1))
 	{
 
 	}
@@ -60,10 +60,10 @@ namespace SGA
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1)),
-		probabilityParameter(parameters.at(2)),
-		Effect(exp)
+		probabilityParameter(parameters.at(2))
 	{
 
 	}
@@ -87,8 +87,9 @@ namespace SGA
 	}
 
 	Move::Move(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: entityParam(parameters[0]), targetPositionParam(parameters[1]),
-		Effect(exp)
+		: 
+		Effect(exp), 
+		entityParam(parameters[0]), targetPositionParam(parameters[1])
 	{
 	}
 	
@@ -118,8 +119,8 @@ namespace SGA
 	}
 
 	SetToMaximum::SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetResource(parameters[0]),
-		Effect(exp)
+		: Effect(exp), 
+		targetResource(parameters[0])
 	{
 	}
 
@@ -132,8 +133,8 @@ namespace SGA
 	}
 
 	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2]),
-		Effect(exp)
+		: Effect(exp), 
+		sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])
 	{
 	}
 
@@ -168,8 +169,7 @@ namespace SGA
 	}
 
 	RemoveEntityEffect::RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0]),
-		Effect(exp)
+		: Effect(exp), targetEntityParam(parameters[0])
 	{
 	}
 
@@ -180,9 +180,8 @@ namespace SGA
 	}
 
 	ResearchTechnology::ResearchTechnology(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: playerParam(parameters[0]),
-		  technologyTypeParam(parameters[1]),
-		Effect(exp)
+		: Effect(exp), playerParam(parameters[0]),
+		  technologyTypeParam(parameters[1])
 	{
 	}
 
@@ -193,8 +192,9 @@ namespace SGA
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1]),
-		Effect(exp)
+		: Effect(exp), 
+		sourceEntityParam(parameters[0]), 
+		targetEntityTypeParam(parameters[1])
 	{
 	}
 
@@ -226,8 +226,10 @@ namespace SGA
 
 
 	SpawnEntity::SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
-		Effect(exp)
+		: Effect(exp), 
+		spawnSource(parameters[0]), 
+		entityTypeParam(parameters[1]), 
+		targetPositionParam(parameters[2])
 	{
 	}
 
@@ -240,8 +242,10 @@ namespace SGA
 	}
 
 	SpawnEntityGrid::SpawnEntityGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: spawnSource(parameters[0]), entityTypeParam(parameters[1]), targetPositionParam(parameters[2]),
-		Effect(exp)
+		: Effect(exp), 
+		spawnSource(parameters[0]), 
+		entityTypeParam(parameters[1]), 
+		targetPositionParam(parameters[2])
 	{
 	}
 
@@ -257,8 +261,9 @@ namespace SGA
 
 	
 	PayCostEffect::PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), costParam(parameters[1]),
-		Effect(exp)
+		: Effect(exp), 
+		sourceParam(parameters[0]), 
+		costParam(parameters[1])
 	{
 	}
 
