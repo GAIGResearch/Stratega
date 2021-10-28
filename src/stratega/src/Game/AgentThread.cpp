@@ -37,8 +37,8 @@ namespace SGA
 		forwardModel(nullptr),
 		gameConfig(nullptr),
 		computing(false),
-		resultCache(),
-		joined(true)
+		joined(true),
+		resultCache()
 	{
 	}
 

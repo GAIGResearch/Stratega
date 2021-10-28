@@ -60,7 +60,7 @@ namespace SGA
 		for (auto i = 1; i <= state.getNumPlayers(); i++)
 		{
 			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.getNumPlayers();
-			auto& targetPlayer = state.getPlayers()[nextPlayerID];
+			auto& targetPlayer = state.getPlayers()[static_cast<size_t>(nextPlayerID)];
 
 			// All players did play, we consider this as a tick
 			if (nextPlayerID == 0)
