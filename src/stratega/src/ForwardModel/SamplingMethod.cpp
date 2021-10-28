@@ -169,10 +169,10 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 		//Get neighbours
 		std::vector<Node> neighbours;
 		{
-			auto startCheckPositionX = std::max<int>(0, static_cast<int>(currentNode.posX) - 1);
-			auto endCheckPositionX = std::min<int>(gameState.getBoardWidth() - 1, static_cast<int>(currentNode.posX) + 1);
-			auto startCheckPositionY = std::max<int>(0, static_cast<int>(currentNode.posY) - 1);
-			auto endCheckPositionY = std::min<int>(gameState.getBoardHeight() - 1, static_cast<int>(currentNode.posY) + 1);
+			auto startCheckPositionX = std::max<int>(0, currentNode.posX - 1);
+			auto endCheckPositionX = std::min<int>(gameState.getBoardWidth() - 1, currentNode.posX + 1);
+			auto startCheckPositionY = std::max<int>(0, currentNode.posY - 1);
+			auto endCheckPositionY = std::min<int>(gameState.getBoardHeight() - 1, currentNode.posY + 1);
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
@@ -275,7 +275,7 @@ bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f&
 
 	for(auto& position : positions)
 	{
-		if (targetPosition.distance(Vector2f(static_cast<float>(position.x), static_cast<float>(position.y))) <= 0.5f)
+		if (targetPosition.distance(Vector2f(static_cast<double>(position.x), static_cast<double>(position.y))) <= 0.5f)
 			return true;
 	}
 
