@@ -30,11 +30,11 @@ namespace SGA
 		struct ParameterReference
 		{
 			ParameterID parameterID;
-			int argumentIndex;
+			size_t argumentIndex;
 
 			ParameterReference(ParameterID newParameterID, int newArgumentIndex):
 				parameterID(newParameterID),
-				argumentIndex(newArgumentIndex)
+				argumentIndex(static_cast<size_t>(newArgumentIndex))
 			{
 			}
 		};
