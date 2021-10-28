@@ -31,7 +31,7 @@ namespace SGA
 
 			// retrieve best action
 			const int bestActionIndex = getBestActionIdx(*processedForwardModel);
-			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
+			auto action = rootNode->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestActionIndex));
 			// remember latest action in case the search should be continued
 			previousActionIndex = parameters_.continuePreviousSearch && (action.getActionFlag() == ActionFlag::EndTickAction) ? bestActionIndex : -1;
 
@@ -39,7 +39,7 @@ namespace SGA
 		}
 	}
 
-	void BFSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+	void BFSAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		parameters_.PLAYER_ID = getPlayerID();
 		if (parameters_.heuristic == nullptr)
@@ -61,7 +61,7 @@ namespace SGA
 		{
 			// in case of a deterministic game we know that the previously simulated action
 			// should result in the same game-state as we predicted
-			rootNode = std::move(rootNode->children.at(previousActionIndex));
+			rootNode = std::move(rootNode->children.at(static_cast<size_t>(previousActionIndex)));
 			rootNode->parentNode = nullptr;	// release parent
 			fillOpenNodeListWithLeaves();
 		}
@@ -133,7 +133,9 @@ namespace SGA
 
 		while (!candidateNodes.empty())
 		{
-			std::list<TreeNode*> tmpNodes = std::list<TreeNode*>(candidateNodes);
+			//error: useless cast to type ‘class std::__cxx11::list<SGA::TreeNode*>’ [-Werror=useless-cast]
+			//std::list<TreeNode*> tmpNodes = std::list<TreeNode*>(candidateNodes);
+			std::list<TreeNode*> tmpNodes = candidateNodes;
 			candidateNodes.clear();
 			for (TreeNode* node : tmpNodes)
 			{
