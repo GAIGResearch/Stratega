@@ -991,8 +991,8 @@ namespace SGA
                 auto ownerID = Player::getNeutralPlayerID();
                 if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
                 {
-                    ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
-                    if (ownerID>=config.getNumberOfPlayers())
+                    ownerID = (mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
+                    if (ownerID>= static_cast<int>(config.getNumberOfPlayers()))
                     {
                         throw std::runtime_error("Tried assigning the entity " + entityIt->second->getName() + " to an unknown player " + std::to_string(ownerID));
                     }
@@ -1032,7 +1032,7 @@ namespace SGA
        
     	
         //Assign grid and entity placements
-        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(width, tileTypes.begin(), tileTypes.end()));
+        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(static_cast<size_t>(width), tileTypes.begin(), tileTypes.end()));
         newLevel.name = mapName;
         newLevel.boardString = mapString;
 
