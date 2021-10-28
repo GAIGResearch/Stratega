@@ -256,6 +256,9 @@ namespace SGA
 			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::None: return {};
+				break;
+			case TargetType::ContinuousAction: return {};
+				break;
 			}
 
 			targets.emplace_back(newTargets);
