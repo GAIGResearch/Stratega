@@ -420,7 +420,7 @@ namespace SGA
 
 	bool GameState::isInBounds(const Vector2f& pos) const
 	{
-		return pos.x >= 0 && pos.x < (double)board.getWidth() && pos.y >= 0 && pos.y < (double)board.getHeight();
+		return pos.x >= 0 && pos.x < static_cast<double>(board.getWidth()) && pos.y >= 0 && pos.y < static_cast<double>(board.getHeight());
 	}
 
 	void GameState::initBoard(int boardWidth, std::vector<Tile>& tiles)

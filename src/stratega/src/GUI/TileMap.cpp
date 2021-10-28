@@ -64,9 +64,9 @@ namespace SGA
 		auto start = toISO(tile.x(), tile.y()) - sf::Vector2f{ TILE_ORIGIN_X, TILE_ORIGIN_Y };
 		auto tileSize = tileset.getSpriteSize();
 		quadPtr[0].position = sf::Vector2f(start.x, start.y);
-		quadPtr[1].position = sf::Vector2f(start.x + (float)tileSize.x, start.y);
-		quadPtr[2].position = sf::Vector2f(start.x + (float)tileSize.x, start.y + (float)tileSize.y);
-		quadPtr[3].position = sf::Vector2f(start.x, start.y + (float)tileSize.y);
+		quadPtr[1].position = sf::Vector2f(start.x + static_cast<float>(tileSize.x), start.y);
+		quadPtr[2].position = sf::Vector2f(start.x + static_cast<float>(tileSize.x), start.y + static_cast<float>(tileSize.y));
+		quadPtr[3].position = sf::Vector2f(start.x, start.y + static_cast<float>(tileSize.y));
 
 		// define the 4 texture coordinates
 		auto rect = tileset.getSpriteRect(tileSpritePaths.at(tile.getTileTypeID()));
