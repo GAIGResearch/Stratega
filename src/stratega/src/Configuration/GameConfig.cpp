@@ -87,12 +87,12 @@ namespace SGA
 
 		initResearchTechs(*state);
 		
-		return std::move(state);
+		return state;
 	}
 	
 	size_t GameConfig::getNumberOfPlayers() const
 	{
-		return numPlayers == -1 ? agentParams.size() : numPlayers;
+		return numPlayers == -1 ? agentParams.size() : static_cast<size_t>(numPlayers);
 	}
 
 	int GameConfig::getEntityID(const std::string& name) const

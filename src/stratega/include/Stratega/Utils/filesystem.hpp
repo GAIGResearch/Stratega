@@ -61,8 +61,8 @@
 
 #define DISABLE_WARNING_UNREFERENCED_FORMAL_PARAMETER    DISABLE_WARNING(-Wunused-parameter)
 #define DISABLE_WARNING_UNREFERENCED_FUNCTION            DISABLE_WARNING(-Wunused-function)
-#define DISABLE_WARNING_USELESS_CAST            DISABLE_WARNING(-Werror=useless-cast)
-#define DISABLE_WARNING_SIGN_CONVERSION         DISABLE_WARNING(-Werror=sign-conversion)
+#define DISABLE_WARNING_USELESS_CAST            DISABLE_WARNING(-Wuseless-cast)
+#define DISABLE_WARNING_SIGN_CONVERSION         DISABLE_WARNING(-Wsign-conversion)
 // other warnings you want to deactivate... 
 
 #else
