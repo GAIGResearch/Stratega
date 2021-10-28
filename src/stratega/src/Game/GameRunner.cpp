@@ -9,16 +9,16 @@
 
 namespace SGA
 {
-	GameRunner::GameRunner(const GameConfig& config)
+	GameRunner::GameRunner(const GameConfig& newConfig)
 		: currentState(),
-		  config(&config),
-		shouldCheckComputationTime(config.shouldCheckComputationTime),
-		budgetTimeMs(config.budgetTimeMs),
-		disqualificationBudgetTimeMs(config.disqualificationBudgetTimeMs),
-		maxNumberWarnings(config.maxNumberWarnings),
-		shouldCheckInitTime(config.shouldCheckInitTime),
-		initBudgetTimetMs(config.initBudgetTimetMs),
-		initDisqualificationBudgetTimeMs(config.initDisqualificationBudgetTimeMs)
+		  config(&newConfig),
+		shouldCheckComputationTime(newConfig.shouldCheckComputationTime),
+		budgetTimeMs(newConfig.budgetTimeMs),
+		disqualificationBudgetTimeMs(newConfig.disqualificationBudgetTimeMs),
+		maxNumberWarnings(newConfig.maxNumberWarnings),
+		shouldCheckInitTime(newConfig.shouldCheckInitTime),
+		initBudgetTimetMs(newConfig.initBudgetTimetMs),
+		initDisqualificationBudgetTimeMs(newConfig.initDisqualificationBudgetTimeMs)
 	{
 		reset();
 	}
@@ -58,7 +58,7 @@ namespace SGA
 	{
 		if (initializationTime.count() > initBudgetTimetMs && initializationTime.count() < initDisqualificationBudgetTimeMs)
 		{
-			playerWarnings[playerID]++;
+			playerWarnings[static_cast<size_t>(playerID)]++;
 			std::cout << "WARNING: Player " << std::to_string(playerID) << " has exceeded the initialization time" << std::endl;
 		}
 		else if (initializationTime.count() >= initDisqualificationBudgetTimeMs)

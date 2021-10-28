@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-	RTSGameRunner::RTSGameRunner(const GameConfig& config)
-		: GameRunner(config)
+	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)
+		: GameRunner(newConfig)
 	{
 	}
 	
@@ -137,7 +137,7 @@ namespace SGA
 
 	bool  RTSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID)
 	{
-		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
+		if (playerWarnings[static_cast<size_t>(currentPlayerID)] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
 			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
@@ -147,7 +147,7 @@ namespace SGA
 		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
 		{
 			//add one warning
-			playerWarnings[currentPlayerID]++;
+			playerWarnings[static_cast<size_t>(currentPlayerID)]++;
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " has exceeded the computation time (" << computationTime.count()
 				<< ">" << budgetTimeMs << ")" << std::endl;
 			return true;
