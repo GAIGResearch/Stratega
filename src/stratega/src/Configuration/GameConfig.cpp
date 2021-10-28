@@ -19,7 +19,7 @@ namespace SGA
 				agents.emplace_back(AgentFactory::get().createAgent(agentNode.first, agentNode.second));
 			}
 		}
-		return std::move(agents);
+		return agents;
 	}
 
 	int GameConfig::addPlayer(GameState& state, GameInfo& gameInfo) const
