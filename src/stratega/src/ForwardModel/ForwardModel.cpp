@@ -122,7 +122,7 @@ namespace SGA
 					}
 
 					//Remove continuous action
-					continuousActions.erase(continuousActions.begin() + i);
+					continuousActions.erase(continuousActions.begin() + static_cast<int>(i));
 					i--;
 				}
 			}
