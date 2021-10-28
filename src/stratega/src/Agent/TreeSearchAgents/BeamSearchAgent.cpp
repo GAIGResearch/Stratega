@@ -40,7 +40,7 @@ namespace SGA
 			
 			sort(newBestSimulations.begin(), newBestSimulations.end(), sortByValue);
 			if (newBestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
-				newBestSimulations.erase(newBestSimulations.begin() + static_cast<long unsigned int>(parameters_.PLAYER_BEAM_WIDTH), newBestSimulations.end());
+				newBestSimulations.erase(newBestSimulations.begin() + static_cast<int>(parameters_.PLAYER_BEAM_WIDTH), newBestSimulations.end());
 			bestSimulations = newBestSimulations;
 		}
 
@@ -82,7 +82,7 @@ namespace SGA
 		// delete all other children.
 		// !!!Note: the index of the child is no longer associated with the index of an action in the node's action space!!!
 		if (bestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
-			bestSimulations.erase(bestSimulations.begin() + static_cast<long unsigned int>(parameters_.PLAYER_BEAM_WIDTH), bestSimulations.end());
+			bestSimulations.erase(bestSimulations.begin() + static_cast<int>(parameters_.PLAYER_BEAM_WIDTH), bestSimulations.end());
 			
 		return bestSimulations;
 	}
