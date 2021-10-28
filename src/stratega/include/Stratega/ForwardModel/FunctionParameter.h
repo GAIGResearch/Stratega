@@ -73,8 +73,8 @@ namespace SGA
 				case Type::EntityTypeReference: entityTypeID = data; break;
 				case Type::TileTypeReference: tileTypeID = data; break;
 				case Type::TechnologyTypeReference: technologyTypeID = data; break;
-				case Type::TimeReference:   argumentIndex = data; break;
-				case Type::EntityPlayerReference:   argumentIndex = data; break;
+				case Type::TimeReference:   argumentIndex = static_cast<size_t>(data); break;
+				case Type::EntityPlayerReference:   argumentIndex = static_cast<size_t>(data); break;
 				default:
 					throw std::runtime_error("Unknown Type");
 				}
