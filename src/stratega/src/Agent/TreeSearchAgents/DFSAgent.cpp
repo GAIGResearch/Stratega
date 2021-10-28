@@ -70,10 +70,10 @@ namespace SGA
 		}
 	}
 
-	void DFSAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, int playerID)
+	void DFSAgent::applyActionToGameState(const ForwardModel& forwardModel, GameState& gameState, const Action& action, int newPlayerID)
 	{
 		//Roll the game state with our action.
-		remainingForwardModelCalls -= SGA::roll(gameState, forwardModel, action, playerID, agentParams);
+		remainingForwardModelCalls -= SGA::roll(gameState, forwardModel, action, newPlayerID, agentParams);
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
 
