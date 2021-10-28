@@ -196,7 +196,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 	}
 }
 
-void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
+void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& /*forwardModel*/)
 {
 	if (finalState.getGameType() == SGA::GameType::TBS)
 	{
