@@ -43,23 +43,23 @@ namespace SGA
 						if (threads[i].isComputing())
 							continue;
 
-						auto results = threads[i].join();
+						auto newResults = threads[i].join();
 						//Check if agent throw exception and rethrow it
-						if (results.error)
+						if (newResults.error)
 						{
-							std::rethrow_exception(results.error);
+							std::rethrow_exception(newResults.error);
 						}
 						//Check computation time
 						if (shouldCheckComputationTime)
 						{ 
-							if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
+							if (checkComputationTime(newResults.computationTime, agents[i]->getPlayerID()))
 							{
-								nextActions.merge(results.actions);
+								nextActions.merge(newResults.actions);
 							}
 						}
 						else
 						{
-							nextActions.merge(results.actions);
+							nextActions.merge(newResults.actions);
 						}
 					}
 					else

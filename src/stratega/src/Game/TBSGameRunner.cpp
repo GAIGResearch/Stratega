@@ -1,4 +1,3 @@
-#pragma once
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/GUI/TBSGameRenderer.h>
@@ -116,8 +115,8 @@ namespace SGA
 	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
 	{
 		int currentPlayerID = currentState->getCurrentTBSPlayer();
-		int budgetTimeWarningLimit = int(budgetTimeMs * 1.05);
-		int disqualificationBudgetTimeMsLimit = int(disqualificationBudgetTimeMs * 1.05);
+		int budgetTimeWarningLimit = static_cast<int>(static_cast<float>(budgetTimeMs) * 1.05f);
+		int disqualificationBudgetTimeMsLimit = static_cast<int>(static_cast<float>(disqualificationBudgetTimeMs) * 1.05f);
 
 
 		if (playerWarnings[static_cast<size_t>(currentState->getCurrentTBSPlayer())] >= maxNumberWarnings)
@@ -127,7 +126,7 @@ namespace SGA
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings (" << maxNumberWarnings << ")" << std::endl;
 			return false;
 		}
-		else if (computationTime.count() > budgetTimeWarningLimit && computationTime.count() < disqualificationBudgetTimeMs)
+		else if (computationTime.count() > static_cast<long long>(budgetTimeWarningLimit) && computationTime.count() < static_cast<long long>(disqualificationBudgetTimeMs))
 		{
 			//add one warning 
 			playerWarnings[static_cast<size_t>(currentPlayerID)]++;
@@ -135,7 +134,7 @@ namespace SGA
 				<< ">" << budgetTimeWarningLimit << ")" << std::endl;
 			return true;
 		}
-		else if (computationTime.count() >= disqualificationBudgetTimeMsLimit)
+		else if (computationTime.count() >= static_cast<long long>(disqualificationBudgetTimeMsLimit))
 		{
 			//Disqualify player for exceeding the computation time
 			currentState->getPlayer(currentPlayerID)->setCanPlay(false);

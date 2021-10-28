@@ -18,8 +18,8 @@ namespace SGA
 		std::unordered_map<std::string, sf::Rect<float>> rectLookup;
 
 	public:
-		TextureAtlas(int pixelGap = 0)
-			: initialized(false), spriteSize(), spriteCounts(), atlas(), pixelGap(pixelGap)
+		TextureAtlas(int newPixelGap = 0)
+			: initialized(false), spriteSize(), spriteCounts(), atlas(), pixelGap(newPixelGap)
 		{
 		}
 
@@ -44,8 +44,8 @@ namespace SGA
 			assert(spriteCounts.x * spriteCounts.y >= spritePaths.size());
 
 			// Create atlas
-			auto width = spriteSize.x * spriteCounts.x + (spriteSize.x - 1) * pixelGap;
-			auto height = spriteSize.y * spriteCounts.y + (spriteSize.y - 1) * pixelGap;
+			auto width = spriteSize.x * spriteCounts.x + (spriteSize.x - 1) * static_cast<unsigned int>(pixelGap);
+			auto height = spriteSize.y * spriteCounts.y + (spriteSize.y - 1) *static_cast<unsigned int>( pixelGap);
 			atlas.create(width, height);
 
 			// Fill with sprites
@@ -65,8 +65,8 @@ namespace SGA
 				}
 
 				// Insert the image into the atlas
-				auto startX = currentPosition.x * (spriteSize.x + pixelGap);
-				auto startY = currentPosition.y * (spriteSize.y + pixelGap);
+				auto startX = currentPosition.x * (spriteSize.x + static_cast<unsigned int>(pixelGap));
+				auto startY = currentPosition.y * (spriteSize.y + static_cast<unsigned int>(pixelGap));
 				atlas.update(image, startX, startY);
 				rectLookup.emplace(path, sf::Rect<float>(static_cast<float>(startX), static_cast<float>(startY), static_cast<float>(spriteSize.x), static_cast<float>(spriteSize.y)));
 
