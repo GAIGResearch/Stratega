@@ -23,7 +23,6 @@ namespace SGA
 				{
 					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
 					// Render
-					auto startTime = std::chrono::high_resolution_clock::now();
 					while (agentThread.isComputing())
 					{
 						tbsRenderer->render();
