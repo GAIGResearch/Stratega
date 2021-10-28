@@ -7,8 +7,8 @@
 class Arena : public SGA::GameObserver
 {
 public:
-	Arena(const SGA::GameConfig& config, std::unique_ptr<SGA::GameRunner> runner)
-		: config(&config), runner(std::move(runner)), gameBattleCount(0)
+	Arena(const SGA::GameConfig& newConfig, std::unique_ptr<SGA::GameRunner> newRunner)
+		: config(&newConfig), runner(std::move(newRunner)), gameBattleCount(0)
 	{
 	}
 	Arena(const SGA::GameConfig& config);

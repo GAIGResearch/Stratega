@@ -91,13 +91,18 @@ namespace SGA
         virtual void createTileLookup(GameState& state) const
         {
             std::unordered_map<char, const TileType*> tileLookup;
-            const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
-            const auto& tileTypes = state.getGameInfo()->getTileTypes();
-            for (const auto& idTilePair : tileTypes)
+            // error: variable ‘defaultTile’ set but not used [-Werror=unused-but-set-variable]
+            //const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
+            const auto& newTileTypes = state.getGameInfo()->getTileTypes();
+            for (const auto& idTilePair : newTileTypes)
             {
                 tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
-                if (idTilePair.second.isDefaultTile())
+                /*if (idTilePair.second.isDefaultTile())
+                {
                     defaultTile = &idTilePair.second;
+                    defaultTileTypeID = defaultTile->getID();
+                }*/
+                    
             }
         }
 
@@ -110,7 +115,7 @@ namespace SGA
             }
         }
 
-        std::vector<Tile> instanceTiles(GameState& state, const Grid2D<std::shared_ptr<TileType>>& board) const
+        std::vector<Tile> instanceTiles(GameState& /*state*/, const Grid2D<std::shared_ptr<TileType>>& board) const
         {           
             // Configure board and spawn entities
             std::vector<Tile> tiles;

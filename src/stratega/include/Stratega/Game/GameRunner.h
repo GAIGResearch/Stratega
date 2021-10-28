@@ -75,7 +75,7 @@ namespace SGA
 			try
 			{
 				// Check that no player is controlled by a human
-				for (int i = 0; i < agents.size(); i++)
+				for (size_t i = 0; i < agents.size(); i++)
 				{
 					if (agents[i] == nullptr)
 					{
@@ -83,7 +83,7 @@ namespace SGA
 					}
 					else
 					{
-						agents[i]->setPlayerID(i);
+						agents[i]->setPlayerID(static_cast<int>(i));
 					}
 				}
 
