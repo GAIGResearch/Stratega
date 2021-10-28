@@ -344,12 +344,12 @@ namespace SGA
 			const auto& target = getActionTarget(actionTargets);
 			if (target.getType() == ActionTarget::PlayerReference)
 			{
-				auto& player = target.getPlayer(const_cast<GameState&>(state));
+				auto& player = target.getPlayer(state);
 				return player.getParameters();
 			}
 			else if (target.getType() == ActionTarget::EntityReference)
 			{
-				auto& sourceEntity = *target.getEntity(const_cast<GameState&>(state));
+				auto& sourceEntity = *target.getEntity(state);
 				return sourceEntity.getParamValues();
 			}
 		}

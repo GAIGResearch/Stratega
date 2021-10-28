@@ -69,7 +69,7 @@ namespace SGA
 			{
 				switch (type)
 				{
-				case Type::ArgumentReference: argumentIndex = data; break;
+				case Type::ArgumentReference: argumentIndex = static_cast<size_t>(data); break;
 				case Type::EntityTypeReference: entityTypeID = data; break;
 				case Type::TileTypeReference: tileTypeID = data; break;
 				case Type::TechnologyTypeReference: technologyTypeID = data; break;
@@ -81,7 +81,7 @@ namespace SGA
 			}
 			double constValue;
 			ParameterReference parameterData;
-			int argumentIndex;
+			size_t argumentIndex;
 			int entityTypeID;
 			int tileTypeID;
 			int technologyTypeID;

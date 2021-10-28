@@ -116,10 +116,10 @@ namespace SGA
 		// Collision
 		for (auto& unit : state.getEntities())
 		{
-			int startCheckPositionX = static_cast<int>(std::floor(unit.x() - unit.getCollisionRadius() - RECT_SIZE));
-			int endCheckPositionX = static_cast<int>(std::ceil(unit.x() + unit.getCollisionRadius() + RECT_SIZE));
-			int startCheckPositionY = static_cast<int>(std::floor(unit.y() - unit.getCollisionRadius() - RECT_SIZE));
-			int endCheckPositionY = static_cast<int>(std::ceil(unit.y() + unit.getCollisionRadius() + RECT_SIZE));
+			int startCheckPositionX = static_cast<int>(std::floor(unit.x() - unit.getCollisionRadius() - static_cast<double>(RECT_SIZE)));
+			int endCheckPositionX = static_cast<int>(std::ceil(unit.x() + unit.getCollisionRadius() + static_cast<double>(RECT_SIZE)));
+			int startCheckPositionY = static_cast<int>(std::floor(unit.y() - unit.getCollisionRadius() - static_cast<double>(RECT_SIZE)));
+			int endCheckPositionY = static_cast<int>(std::ceil(unit.y() + unit.getCollisionRadius() + static_cast<double>(RECT_SIZE)));
 
 			const auto& entityType = unit.getEntityType();
 			
@@ -140,8 +140,8 @@ namespace SGA
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
 					auto fx = static_cast<double>(x);
 					auto fy = static_cast<double>(y);
-					auto nearestX = std::max(fx, std::min(unit.x(), fx + RECT_SIZE));
-					auto nearestY = std::max(fy, std::min(unit.y(), fy + RECT_SIZE));
+					auto nearestX = std::max(fx, std::min(unit.x(), fx + static_cast<double>(RECT_SIZE)));
+					auto nearestY = std::max(fy, std::min(unit.y(), fy + static_cast<double>(RECT_SIZE)));
 					auto dist = unit.getPosition() - Vector2f(nearestX, nearestY);
 
 					auto penetrationDepth = unit.getCollisionRadius() - dist.magnitude();
