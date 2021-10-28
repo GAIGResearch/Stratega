@@ -19,7 +19,7 @@ namespace SGA
 		if (getActionTypeID()==-1)
 			return true;
 
-		auto& actionType = getActionType();
+		auto& newActionType = getActionType();
 		
 		//Check if source and targets are valid
 		if(isEntityAction())
@@ -30,11 +30,11 @@ namespace SGA
 			if(entity!=nullptr)
 			{
 				// Check if this action can be executed		
-				if (state.getCurrentTick() - entity->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.getCooldown())
+				if (state.getCurrentTick() - entity->getActionInfo(getActionTypeID()).lastExecutedTick < newActionType.getCooldown())
 					return false;
 				
 				//Check preconditions
-				for (auto& precondition : actionType.getPreconditions())
+				for (auto& precondition : newActionType.getPreconditions())
 				{
 					if (!precondition->isFullfiled(state, targets))
 						return false;
@@ -48,7 +48,7 @@ namespace SGA
 				}
 				
 				//Check target conditions
-				for (auto& actionTarget : actionType.getTargets())
+				for (auto& actionTarget : newActionType.getTargets())
 				{
 					for (auto& condition : actionTarget.second)
 					{
@@ -67,7 +67,7 @@ namespace SGA
 		{
 			// Check if this action can be executed		
 			auto* player = state.getPlayer(targets.at(0).getPlayerID());
-			if (state.getCurrentTick() - player->getActionInfo(getActionTypeID()).lastExecutedTick < actionType.getCooldown())
+			if (state.getCurrentTick() - player->getActionInfo(getActionTypeID()).lastExecutedTick < newActionType.getCooldown())
 				return true;
 
 			//Not found

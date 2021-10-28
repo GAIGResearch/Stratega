@@ -19,11 +19,11 @@ namespace SGA
 			GameState& gameState)
 			: attributeWeights(std::move(newAttributeWeights)), attributeUValues(std::move(newAtributeUValues))
 		{
-			for (const auto entry : newAttributeWeights) {
+			for (const auto& entry : newAttributeWeights) {
 				const std::string parameterName = entry.first;
 				maxValue[parameterName] = 0;
 				for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
-					for (const auto parameter : entityType.second.getParameters()) {
+					for (const auto& parameter : entityType.second.getParameters()) {
 						if (parameter.second.getName() == parameterName && parameter.second.getMaxValue() > maxValue[parameterName]) {
 							maxValue[parameterName] = parameter.second.getMaxValue();
 						}

@@ -50,8 +50,8 @@ namespace SGA
 		}
 		const_reference get(int x, int y) const 
 		{
-			auto pos = static_cast<unsigned long long>(static_cast<size_t>(y) * width + static_cast<size_t>(x));
-			if (pos > static_cast<unsigned long long>(grid.size())|| pos < 0)
+			int pos = static_cast<int>(static_cast<size_t>(y) * width + static_cast<size_t>(x));
+			if (pos > static_cast<int>(grid.size())|| pos < 0)
 			{
 				throw std::runtime_error("Out of bounds of the grid.");
 			}

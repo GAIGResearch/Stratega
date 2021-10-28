@@ -117,7 +117,7 @@ namespace SGA
 
 				for (auto actionID : entry.second.getActionIDs())
 				{
-					const auto& action = (gameState.getGameInfo()->getActionTypes()).at(static_cast<size_t>(actionID));
+					const auto& action = (gameState.getGameInfo()->getActionTypes()).at((actionID));
 					if (action.getName() == "Attack")
 					{
 						score += (attackDamage / maxDamage) * actionRangePerc;
