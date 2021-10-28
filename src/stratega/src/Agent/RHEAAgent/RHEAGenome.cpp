@@ -14,7 +14,7 @@ namespace SGA {
         size_t length = 0;
         while (!gameState.isGameOver() && actionSpace.size() > 0 && length < params.individualLength) {
             // Until the end of the sequence: choose and apply a random action to the state with the forward model.
-            auto action = actionSpace.at(rand() % actionSpace.size());
+            auto action = actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size())));
             applyActionToGameState(forwardModel, gameState, action, params);
             //new state will have new available actions.
             actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -26,8 +26,8 @@ namespace SGA {
         value = params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
     }
 
-    RHEAGenome::RHEAGenome(std::vector<Action>& actions, double value) :
-        actions(std::move(actions)), value(value) {}
+    RHEAGenome::RHEAGenome(std::vector<Action>& newActions, double newValue) :
+        actions(std::move(newActions)), value(newValue) {}
 
 
 
@@ -60,12 +60,12 @@ namespace SGA {
             // replace with random portfolio in case of mutate or no portfolio available
             if (mutate || (actIdx < actions.size()))
             {
-                auto action = actionSpace.at(rand() % actionSpace.size());
+                auto action = actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size())));
                 applyActionToGameState(forwardModel, gameState, action, params);
                 actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
-                if (actIdx < actions.size())
+                if (actIdx < static_cast<unsigned long long>(actions.size()))
                 {
-                    actions[actIdx] = action;
+                    actions[static_cast<size_t>(actIdx)] = action;
                 }
                 else
                 {
@@ -75,11 +75,11 @@ namespace SGA {
             else
             {
                 // use previous action or sample a new random one in case the individual is too short
-                if (actIdx >= actions.size())
+                if (actIdx >= static_cast<unsigned long long>(actions.size()))
                 {
-                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                    actions.emplace_back(actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))));
                 }
-                applyActionToGameState(forwardModel, gameState, actions[actIdx], params);
+                applyActionToGameState(forwardModel, gameState, actions[static_cast<size_t>(actIdx)], params);
                 actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
             }
 
@@ -111,7 +111,7 @@ namespace SGA {
             // mutation = randomly select a new action for gameStateCopy
             if (mutate)
             {
-                auto action = actionSpace.at(rand() % actionSpace.size());
+                auto action = actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size())));
                 applyActionToGameState(forwardModel, gameState, action, params);
                 actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
                 actions.emplace_back(action);
@@ -144,7 +144,7 @@ namespace SGA {
                 if (!validAction)
                 {
                     // use a random action by default
-                    actions.emplace_back(actionSpace.at(rand() % actionSpace.size()));
+                    actions.emplace_back(actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))));
                 }
 
                 //Apply the chosen action to the game state and generate the new set of possible actions for the next step.
@@ -179,7 +179,7 @@ namespace SGA {
 
             if (i == actions.size() - 1 || !actions[i].validate(gameState))
             {
-                actions[i] = actionSpace.at(rand() % actionSpace.size());
+                actions[i] = actionSpace.at(static_cast<size_t>(rand() % static_cast<int>(actionSpace.size())));
             }
 
             applyActionToGameState(forwardModel, gameState, actions[i], params);
