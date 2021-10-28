@@ -97,12 +97,15 @@ namespace SGA
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
-		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		
+		if (fm.getGameType() == GameType::TBS)
 		{
 			entity.setPosition( { std::floor(targetPosition.x), std::floor(targetPosition.y) } );
 		}
-		else if(const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm))
+		else if(fm.getGameType() == GameType::RTS )
 		{
+			const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm);
+
 			//Get end position of current path
 			Vector2f oldTargetPos;
 			oldTargetPos.x = entity.getPath().m_straightPath[(entity.getPath().m_nstraightPath - 1) * 3];
@@ -155,14 +158,15 @@ namespace SGA
 	}
 
 	ChangeOwnerEffect::ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetEntityParam(parameters[0]), playerParam(parameters[1]),
-		Effect(exp)
+		: Effect(exp),
+		targetEntityParam(parameters[0]), 
+		playerParam(parameters[1])
+		
 	{
 	}
 	
 	void ChangeOwnerEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
-		auto sourceEntity = targets[0].getEntity(state);
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
 		auto& newOwner = playerParam.getPlayer(state, targets);
 		targetEntity.setOwnerID(newOwner.getID());
@@ -200,7 +204,7 @@ namespace SGA
 
 	void SpawnEntityRandom::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		if (const auto* tbsFM = dynamic_cast<const TBSForwardModel*>(&fm))
+		if (fm.getGameType()==GameType::TBS)
 		{
 			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
@@ -277,7 +281,7 @@ namespace SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			parameters[param.getIndex()] -= idCostPair.second;
+			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
 		}
 	}
 }

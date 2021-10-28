@@ -105,10 +105,11 @@ namespace  SGA
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceEntity(parameters.at(0)),
+		:Condition(exp),
+		sourceEntity(parameters.at(0)),
 		targetEntity(parameters.at(1)),
-		distance(parameters.at(2)),
-		Condition(exp)
+		distance(parameters.at(2))
+		
 	{
 	}
 
@@ -288,7 +289,7 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters[param.getIndex()] < idCostPair.second)
+			if (parameters[static_cast<size_t>(param.getIndex())] < idCostPair.second)
 				return false;
 		}
 
