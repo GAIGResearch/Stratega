@@ -3,7 +3,7 @@
 
 namespace SGA
 {
-	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
+	ActionAssignment DFSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
 		remainingForwardModelCalls = forwardModelCalls;
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -37,17 +37,17 @@ namespace SGA
 	}
 
 
-	void DFSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+	void DFSAgent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		agentParams.PLAYER_ID = getPlayerID();
 	}
 
-	double DFSAgent::evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, const int playerID)
+	double DFSAgent::evaluateRollout(const ForwardModel& forwardModel, GameState& gameState, int depth, const int newPayerID)
 	{
 		double bestValue = -std::numeric_limits<double>::max();
 		if (depth == maxDepth || gameState.isGameOver() || remainingForwardModelCalls <= 0)
 		{
-			return _stateHeuristic.evaluateGameState(forwardModel, gameState, playerID);
+			return _stateHeuristic.evaluateGameState(forwardModel, gameState, newPayerID);
 		}
 		else
 		{
@@ -55,9 +55,9 @@ namespace SGA
 			for (const auto& action : actionSpace)
 			{
 				auto gsCopy(gameState);
-				applyActionToGameState(forwardModel, gsCopy, action, playerID);
+				applyActionToGameState(forwardModel, gsCopy, action, newPayerID);
 
-				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, playerID);
+				double value = evaluateRollout(forwardModel, gsCopy, depth + 1, newPayerID);
 				if (value > bestValue)
 				{
 					bestValue = value;

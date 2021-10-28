@@ -6,13 +6,13 @@
 namespace SGA
 {
 
-	TreeNode::TreeNode(ForwardModel& forwardModel, GameState gameState, int ownerID) :
-		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), ownerID)
+	TreeNode::TreeNode(ForwardModel& forwardModel, GameState newGameState, int newOwnerID) :
+		ITreeNode<SGA::TreeNode>(forwardModel, std::move(newGameState), newOwnerID)
 	{
 	}
 
-	TreeNode::TreeNode(ForwardModel& forwardModel, GameState gameState, TreeNode* parent, const int childIndex, int ownerID) :
-		ITreeNode<SGA::TreeNode>(forwardModel, std::move(gameState), parent, childIndex, ownerID)
+	TreeNode::TreeNode(ForwardModel& forwardModel, GameState newGameState, TreeNode* parent, const int newChildIndex, int newOwnerID) :
+		ITreeNode<SGA::TreeNode>(forwardModel, std::move(newGameState), parent, newChildIndex, newOwnerID)
 	{
 	}
 
@@ -30,7 +30,7 @@ namespace SGA
 
 		// roll the state using a the next action that hasn't been expanded yet
 		auto gsCopy(gameState);
-		auto action = actionSpace.at(static_cast<int>(children.size()));
+		auto action = actionSpace.at(children.size());
 		agentParameters.currentFMCalls += SGA::roll(gsCopy, forwardModel, action, playerID, agentParameters);
 				
 		children.emplace_back(std::unique_ptr<TreeNode>(new TreeNode(forwardModel, std::move(gsCopy), this, static_cast<int>(children.size()), this->ownerID)));
