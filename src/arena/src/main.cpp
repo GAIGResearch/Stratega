@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 		//Load level definitions and exchange them in the game config
 		gameConfig->levelDefinitions = SGA::loadLevelsFromYAML(mapsPath, *gameConfig);
 		//Run combinations per map
-		const int mapNumber = gameConfig->levelDefinitions.size();
+		const int mapNumber = static_cast<int>(gameConfig->levelDefinitions.size());
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
 	}	
 	
