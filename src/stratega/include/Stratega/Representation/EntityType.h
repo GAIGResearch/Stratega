@@ -75,6 +75,11 @@ namespace SGA
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
 		/// </summary>
 		const Parameter& getParameter(ParameterID id) const;
+		
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
+		const Parameter& getParameterByIndex(int index) const;
 
 		/// <summary>
 		/// Checks if this entity type is allowed to execute an action type

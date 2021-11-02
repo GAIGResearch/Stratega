@@ -68,10 +68,11 @@ namespace SGA
         parseAgents(configNode["Agents"], *config);
         parseTileTypes(configNode["Tiles"], *config);
 
+        parsePlayers(configNode["Player"], *config);
+
         if(configNode["Buffs"].IsDefined())
            parseBuffs(configNode["Buffs"], *config);
-
-        parsePlayers(configNode["Player"], *config);
+        
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], *config);

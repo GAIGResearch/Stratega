@@ -82,7 +82,7 @@ target_link_libraries(Stratega
         PUBLIC
         #CONAN_PKG::opengl
         project_options
-        project_warnings
+        #project_warnings
         # TODO: Is this public private separation of modules accurate?
         CONAN_PKG::yaml-cpp
         CONAN_PKG::recastnavigation

@@ -38,13 +38,71 @@ namespace SGA
 		auto& buffType = buffReference.getBuffType(state, targets);
 		auto ticks = buffTicks.getConstant(state, targets);
 
+		//const auto& param = state.getGameInfo()->getPlayerParameter();
+
+		if(entityParam.getType()==FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			auto newBuff = Buff::createBuff(
+			   buffType, player->getID(), state.getNextBuffID(), ticks);
+			state.incNextbuffID();
+			if(player->getBuffs().size() > 0)
+			   player->removeBuffs(state);
+			player->addBuff(std::move(newBuff));
+			player->addBuffs(state);
+		}
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto newBuff = Buff::createBuff(
+			   buffType, entity.getID(), state.getNextBuffID(), ticks);
+			state.incNextbuffID();
+			if(entity.getBuffs().size() > 0)
+			   entity.removeBuffs(state);
+			entity.addBuff(std::move(newBuff));
+			entity.addBuffs(state);
+		}
+	}
+
+	RemoveBuff::RemoveBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		buffReference(parameters.at(1)),
+        entityParam(parameters.at(0)),
+		Effect(exp)
+	{
+
+	}
+	
+	void RemoveBuff::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffReference.getBuffType(state, targets);
+
+
 		auto& entity = entityParam.getEntity(state, targets);
-        auto newBuff = Buff::createBuff(buffType, entity.getID(), state.getNextBuffID(), ticks);        
-        state.incNextbuffID();
-        if(entity.getBuffs().size()>0)
-			entity.removeBuffs();
-		entity.addBuff(std::move(newBuff));        
-		entity.addBuffs();
+		if (entity.getBuffs().size() > 0)
+		{
+			entity.removeBuffs(state);
+		}
+		entity.removeBuffs(buffType);
+		entity.addBuffs(state);
+	}
+
+	RemoveAllBuffs::RemoveAllBuffs(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+        entityParam(parameters.at(0)),
+		Effect(exp)
+	{
+
+	}
+	
+	void RemoveAllBuffs::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		
+		if (entity.getBuffs().size() > 0)
+		{
+			entity.removeBuffs(state);
+		}
+		entity.emptyBuffs();
 	}
 
 	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :

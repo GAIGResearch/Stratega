@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    - DoNothingAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
@@ -22,6 +22,7 @@ GameRenderer:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
 
+
 Buffs: # Buff lists
     BuffOne: #Buff name
         #Modifiers list
@@ -33,9 +34,6 @@ Buffs: # Buff lists
         #    MovementPoints: 0
         MultiplicationModifier: 
             AttackRange: 2
-        #DivideModifier: 
-        #    AttackDamage: 0.5
-
     BuffTwo:
         AdditiveModifier: 
             Health: 30
@@ -44,23 +42,24 @@ Buffs: # Buff lists
         MultiplicationModifier: 
             Health: 2
         #DivideModifier: 
-        #    AttackDamage: 0.5
-
-    ##Test
-    #Venom:
-    #    ApplyEachTick: true #execute modifiers every tick
-    #    Modifiers:
-    #        AdditiveModifier: 
-    #            Health: -5
-        
+        #    AttackDamage: 2
+    BuffThree:
+        AdditiveModifier: 
+            Gold: 30
+        MultiplicationModifier: 
+            Gold: 2
 
 
 #Definition of parameters used by entities and players
-Parameters:
-    Health:
-        Min: 0
-        Max: 100
-        Default: 0
+#Parameters:
+#    Health: [0,100,50] #Min, max, default
+
+Player:
+    Parameters:
+        GoldTwo: 1
+        GoldThree: 1
+        Gold: 5
+        GoldOne: 1
 
 
 Tiles:
@@ -136,7 +135,9 @@ Actions:
                 Conditions:
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "ApplyBuff(Target, BuffOne, 2)"
+            - "ApplyBuff(Target, BuffTwo, 2)"
+            - "ApplyBuff(Target.Player, BuffThree, 2)"
+            #- "ModifyResource(Source.Player.GoldOne, 2)"
 
     Move:
         Type: EntityAction
@@ -183,9 +184,9 @@ Entities:
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
-        Parameters:
-            Health: 200
+        Parameters:           
             AttackRange: 2
+            Health: 200
             AttackDamage: 100
             MovementPoints: 2
 
@@ -193,10 +194,10 @@ Entities:
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
-        Parameters:
-            Health: 100
+        Parameters:            
             AttackRange: 5
             AttackDamage: 10
+            Health: 100
             MovementPoints: 2
         Actions: [Attack, Move]
 
@@ -204,9 +205,9 @@ Entities:
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
-        Parameters:
-            Health: 40
+        Parameters:           
             HealRange: 2
+            Health: 40
             HealAmount: 10
             MovementPoints: 5
         Actions: [Heal, Move]
@@ -230,7 +231,6 @@ Entities:
         #        Effects:
         #            - "ApplyBuff(Source, BuffOne, 1)"
 
-
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
@@ -240,13 +240,12 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
-
-        #Each tick add a buff to the King
-        - OnTick:
-            ValidTargets: King
-            Effects:
-                - "ApplyBuff(Source, BuffOne, 1)"
-
+#        #Each tick add a buff to the King
+#        - OnTick:
+#            ValidTargets: King
+#            Effects:
+#                - "ApplyBuff(Source, BuffOne, 1)"
+#
 #Action categories
 GameDescription:
     Type: CombatGame

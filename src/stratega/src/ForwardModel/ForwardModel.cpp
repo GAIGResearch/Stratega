@@ -384,7 +384,6 @@ namespace SGA
 	{
 		state.incTick();
 		//Remove expired Buffs
-		//Check if condition is complete
 		auto& entities = state.getEntities();
 		for(auto et = entities.begin(); et != entities.end(); et++)
 		{
@@ -397,16 +396,34 @@ namespace SGA
 				if(it->getElapsedTicks()>=it->getDurationTicks())
 				{
 					
-                    et->removeBuffs();
+                    et->removeBuffs(state);
 					it = buffs.erase(it);
-                    et->addBuffs();
+                    et->addBuffs(state);
 				} else it++;
 			}			
 		}
+		
+		auto& players = state.getPlayers();
+		for(auto player = players.begin(); player != players.end(); player++)
+		{
+			auto& buffs= player->getBuffs();
+            auto it = buffs.begin();
+            while(it != buffs.end())
+			{
+				it->incrementElapseTicks();
+				if(it->getElapsedTicks()>=it->getDurationTicks())
+				{
+					
+					player->removeBuffs(state);
+					it = buffs.erase(it);
+					player->addBuffs(state);
+				} else it++;
+			}			
+		}
+
 		executeOnTriggerEffects(state);
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);
-
 		
 	}
 	

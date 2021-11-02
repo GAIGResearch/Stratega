@@ -65,6 +65,17 @@ namespace SGA
 		}
 		else throw std::runtime_error("No player parameter associated to ID " + std::to_string(id));
 	}
+	
+	const SGA::Parameter& GameInfo::getPlayerParameterByIndex(int index) const
+	{
+		for (const auto& parameter : *playerParameterTypes)
+		{
+			if(parameter.second.getIndex()==index)
+				return parameter.second;
+		}
+
+		throw std::runtime_error("No player parameter associated to index " + std::to_string(index));
+	}
 
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const
 	{

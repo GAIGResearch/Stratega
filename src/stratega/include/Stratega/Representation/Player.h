@@ -3,9 +3,11 @@
 #include <Stratega/ForwardModel/Action.h>
 #include <unordered_map>
 #include <vector>
-
+#include <Stratega/Representation/Buff.h>
 namespace SGA
 {
+	struct GameState;
+
 	struct Player
 	{
 
@@ -37,6 +39,12 @@ namespace SGA
 		/// </summary>
 		std::vector<ActionInfo> attachedActions;
 
+		/// <summary>
+		/// Array of buffs currently applied to this entity
+		/// </summary>
+		std::vector<Buff> buffs;
+
+
 	public: 
 
 		Player(int id, bool canPlay) :
@@ -45,12 +53,12 @@ namespace SGA
 		/// <summary>
 		/// Indicates if a given action type can be executed by this player.
 		/// </summary>
-		[[nodiscard]] bool canExecuteAction(int actionTypeID) const;
+		bool canExecuteAction(int actionTypeID) const;
 
 		/// <summary>
 		/// Returns the ActionInfo of an action type this player can execute.
 		/// </summary>
-		[[nodiscard]] const ActionInfo& getActionInfo(int actionTypeID) const;
+		const ActionInfo& getActionInfo(int actionTypeID) const;
 
 		/// <summary>
 		/// Returns the player ID defined for a neutral player.
@@ -127,6 +135,23 @@ namespace SGA
 		const std::vector<Action>& getContinuousActions() const { return continuousActions; }
 
 
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. Modifiable.
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		std::vector<Buff>& getBuffs() { return buffs; }
+
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. 
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		const std::vector<Buff>& getBuffs() const { return buffs; }
+
+		void addBuff(Buff b) { buffs.emplace_back(b); }
+
+		void removeBuffs(GameState& state);
+
+		void addBuffs(GameState& state);		
 
 		/// <summary>
 		/// Returns the list of attached actions to this player.

@@ -135,4 +135,62 @@ namespace SGA
 		std::cout << "]" << std::endl;
 	}
 
+
+	void Entity::removeBuffs(GameState& state)
+	{
+		//Recompute each parameter
+		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		{
+			const auto& param = type->getParameterByIndex(i);
+			double value = parameters[i];
+
+			//Remove buffs multiplication
+			for (auto& buff : buffs)
+			{
+				auto& buffType = buff.getType();
+				value = buffType.getParameterWithOutMultiplicationBuffsApplied(value, param.getID());
+			}
+
+			// Add buffs additive
+			for (auto& buff : buffs) {
+				const auto& buffType = buff.getType();
+				value = buffType.getParameterWithOutAdditiveBuffsApplied(value, param.getID());
+			}
+
+			//TODO: Check value is not over max or min values
+
+			//Write new value with buffs applied
+			parameters[i] = value;
+		}
+
+	}
+
+	void Entity::addBuffs(GameState& state)
+	{
+		//Recompute each parameter
+		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		{
+			const auto& param = type->getParameterByIndex(i);
+			double value = parameters[i];
+
+			//Add buffs additive
+			for (auto& buff : buffs)
+			{
+				const auto& buffType = buff.getType();
+				value = buffType.getParameterWithAdditiveBuffsApplied(value, param.getID());
+			}
+
+			//Add buffs multiplication
+			for (auto& buff : buffs)
+			{
+				auto& buffType = buff.getType();
+				value = buffType.getParameterWithMultiplicationBuffsApplied(value, param.getID());
+			}
+
+			//TODO: Check value is not over max or min values
+
+			//Write new value with buffs applied
+			parameters[i] = value;
+		}
+	}
 }

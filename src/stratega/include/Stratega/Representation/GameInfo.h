@@ -133,7 +133,14 @@ namespace SGA
 		/// </summary>
 		/// <param name="ParameterID">The ID of the parameter</param>
 		/// <returns> The parameter.</returns>
-		const SGA::Parameter& getPlayerParameter(ParameterID id) const;		
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const;
+		
+		/// <summary>
+		/// Returns the parameter of the player by index.
+		/// </summary>
+		/// <param name="ParameterID">The index of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getPlayerParameterByIndex(int index) const;
 
 
 		/*** ACTION TYPES ***/

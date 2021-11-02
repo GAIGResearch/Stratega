@@ -10,6 +10,17 @@ const SGA::Parameter& SGA::EntityType::getParameter(ParameterID parameterID) con
 	else throw std::runtime_error("No parameter associated to ID " + std::to_string(id) + " in entity type " + name);
 }
 
+const SGA::Parameter& SGA::EntityType::getParameterByIndex(int index) const
+{
+	for (const auto& parameter : parameters)
+	{
+		if (parameter.second.getIndex() == index)
+			return parameter.second;
+	}
+
+	throw std::runtime_error("No parameter associated to index " + std::to_string(id) + " in entity type " + name);
+}
+
 bool SGA::EntityType::canExecuteAction(int actionTypeID) const
 {
 	for (const auto& actionID : actionIds)

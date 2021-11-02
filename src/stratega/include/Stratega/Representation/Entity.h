@@ -337,60 +337,26 @@ namespace SGA
 
 		void addBuff(Buff b) { buffs.emplace_back(b); }
 
-		void removeBuffs()
+		void removeBuffs(GameState& state);
+
+		void addBuffs(GameState& state);
+
+		void removeBuffs(const BuffType& type)
 		{
-			//Recompute each parameter
-            for(size_t i = 0; i < (size_t)parameters.size(); i++)
+			auto it = buffs.begin();
+			while (it != buffs.end())
 			{
-				double value=parameters[i];
-
-				//Remove buffs multiplication
-				for(auto& buff : buffs)
-				{
-					auto& buffType= buff.getType();
-					value = buffType.getParameterWithOutMultiplicationBuffsApplied(value, i);
+				if (it->getType().getID()==type.getID())
+				{					
+					it = buffs.erase(it);
 				}
-				
-				// Add buffs additive
-                for(auto& buff : buffs) {
-                   const auto& buffType = buff.getType();
-                   value = buffType.getParameterWithOutAdditiveBuffsApplied(value, i);
-                }
-
-				//TODO: Check value is not over max or min values
-				
-				//Write new value with buffs applied
-				parameters[i]=value;
+				else it++;
 			}
 		}
 
-		void addBuffs()
+		void emptyBuffs() 
 		{
-			//Recompute each parameter
-            for(size_t i = 0; i < (size_t)parameters.size(); i++)
-			{
-				double value=parameters[i];
-
-				//Add buffs additive
-				for(auto& buff : buffs)
-				{
-					const auto& buffType= buff.getType();
-					value = buffType.getParameterWithAdditiveBuffsApplied(value, i);
-				}
-
-				//Add buffs multiplication
-				for(auto& buff : buffs)
-				{
-					auto& buffType= buff.getType();
-					value = buffType.getParameterWithMultiplicationBuffsApplied(value, i);
-				}
-				
-				//TODO: Check value is not over max or min values
-				
-				//Write new value with buffs applied
-				parameters[i]=value;
-			}
+			buffs.clear();
 		}
-
 	};
 }
