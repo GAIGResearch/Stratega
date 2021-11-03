@@ -173,8 +173,31 @@ namespace SGA
 		/// </summary>
 		const std::vector<OnEntitySpawnEffect>& getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
 
-	protected:
+		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue)
+		{
+			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameterByName(parameterName).getIndex(), newValue);
+		}
+		
+		void modifyEntityParameterByID(Entity& entity, int parameterID, double newValue)
+		{
+			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameter(parameterID).getIndex(), newValue);
+		}
+		
+		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue);
+		
+		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo)
+		{
+			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterName).getIndex(), newValue);
+		}
+		
+		void modifyPlayerParameterByID(Player& player, int parameterID, double newValue, GameInfo& gameInfo)
+		{
+			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterID).getIndex(), newValue);
+		}
+		
+		void modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue);
 
+	protected:
 
 		/// <summary>
 		/// Effects applied on every tick of the game.

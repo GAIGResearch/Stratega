@@ -49,18 +49,12 @@ Buffs: # Buff lists
         MultiplicationModifier: 
             Gold: 2
 
-
-#Definition of parameters used by entities and players
-#Parameters:
-#    Health: [0,100,50] #Min, max, default
-
 Player:
     Parameters:
-        GoldTwo: 1
-        GoldThree: 1
-        Gold: 5
-        GoldOne: 1
-
+        GoldTwo: [1,1,10]
+        GoldThree: [1,1,10]
+        Gold: [1,5,10]
+        GoldOne: [1,1,10]
 
 Tiles:
     Plain:
@@ -185,20 +179,20 @@ Entities:
         LineOfSightRange: 6
         Actions: [Attack, Move]
         Parameters:           
-            AttackRange: 2
-            Health: 200
-            AttackDamage: 100
-            MovementPoints: 2
+            AttackRange: [0,10,10]
+            Health: [0,200,200]
+            AttackDamage: [0,100,100]
+            MovementPoints: [0,2,2]
 
     Archer:
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:            
-            AttackRange: 5
-            AttackDamage: 10
-            Health: 100
-            MovementPoints: 2
+            AttackRange: [0,5,5]
+            AttackDamage: [0,10,10]
+            Health: [0,100,100]
+            MovementPoints: [0,2,2]
         Actions: [Attack, Move]
 
     Healer:
@@ -206,10 +200,10 @@ Entities:
         Symbol: h
         LineOfSightRange: 4
         Parameters:           
-            HealRange: 2
-            Health: 40
-            HealAmount: 10
-            MovementPoints: 5
+            HealRange: [0,2,2]
+            Health: [0,40,40]
+            HealAmount: [0,10,10]
+            MovementPoints: [0,5,5]
         Actions: [Heal, Move]
 
     King:
@@ -217,10 +211,10 @@ Entities:
         Symbol: k
         LineOfSightRange: 6
         Parameters:
-            Health: 400
-            AttackRange: 2
-            AttackDamage: 100
-            MovementPoints: 1
+            Health: [0,400,400]
+            AttackRange: [0,2,2]
+            AttackDamage: [0,100,100]
+            MovementPoints: [0,1,1]
         Actions: [Attack, Move, BoostHealth]
         ##Each tick add a buff to the warriors and archers around the king
         #OnTick:

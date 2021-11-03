@@ -1,4 +1,5 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
+#include <algorithm>
 
 namespace SGA
 {
@@ -476,5 +477,25 @@ namespace SGA
 	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose) 
 	{ 
 		onEntitySpawnEffects.emplace_back(ose); 
+	}
+
+	void ForwardModel::modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue)
+	{
+		//Get parameter
+		auto& parameterValue = entity.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		std::max(entity.getMinParameterAt(parameterIndex), std::min(parameterValue, entity.getMaxParameterAt(parameterIndex)));
+	}
+
+	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue)
+	{
+		//Get parameter
+		auto& parameterValue = player.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		std::max(player.getMinParameterAt(parameterIndex), std::min(parameterValue, player.getMaxParameterAt(parameterIndex)));
 	}
 }

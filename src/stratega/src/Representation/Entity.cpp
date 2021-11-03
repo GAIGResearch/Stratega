@@ -29,9 +29,13 @@ namespace SGA
 		// Set parameter values
 		lineOfSightRange = type->getLoSRange();
 		parameters.reserve(type->getParameters().size());
+		maxParameters.reserve(type->getParameters().size());
+		minParameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
 			parameters.emplace_back(idParamPair.second.getDefaultValue());
+			maxParameters.emplace_back(idParamPair.second.getMaxValue());
+			minParameters.emplace_back(idParamPair.second.getMinValue());
 		}
 	}
 
@@ -44,7 +48,7 @@ namespace SGA
        }
     }
 
-	double Entity::getRawParameter(const std::string& paramName) const
+	double& Entity::getRawParameter(const std::string& paramName)
 	{
 		for (const auto& param : type->getParameters())
 		{

@@ -179,7 +179,7 @@ namespace SGA
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				auto& player = getPlayer(state, actionTargets);
-				return player.getParameter(param.getIndex());
+				return player.getRawParameterAt(param.getIndex());
 			}
 		}
 		if(parameterType == Type::EntityPlayerParameterReference)
@@ -187,7 +187,7 @@ namespace SGA
 			const auto& param = getParameter(state, actionTargets);
 			auto& entity = getEntity(state, actionTargets);
 			auto* player = state.getPlayer(entity.getOwnerID());
-			return player->getParameter(param.getIndex());
+			return player->getRawParameterAt(param.getIndex());
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");

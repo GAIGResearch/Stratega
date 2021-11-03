@@ -827,7 +827,7 @@ namespace SGA
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
 	{
-        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, double>>(std::map<std::string, double>()))
+        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>()))
         {
             // Assign IDs to parameters that do not exist yet
             if (config.parameters.find(nameParamPair.first) == config.parameters.end())
@@ -835,15 +835,22 @@ namespace SGA
                 config.parameters.insert({ nameParamPair.first, config.parameters.size() });
             }
 
-            // Construct the parameter
-            Parameter param;
-            param.setID(config.parameters.at(nameParamPair.first));
-            param.setName(nameParamPair.first);
-            param.setMinValue(0);
-            param.setMaxValue(nameParamPair.second);
-            param.setDefaultValue(param.getMaxValue());
-            param.setIndex(static_cast<int>(parameterBucket.size()));
-            parameterBucket.insert({ param.getID(), std::move(param) });
+            auto parameter = nameParamPair.second.as<std::vector<double>>();
+            if (parameter.size() == 3)
+            {
+                // Construct the parameter
+                Parameter param;
+                param.setID(config.parameters.at(nameParamPair.first));
+                param.setName(nameParamPair.first);
+                param.setMinValue(parameter[0]);
+                param.setMaxValue(parameter[1]);
+                param.setDefaultValue(parameter[2]);
+                param.setIndex(static_cast<int>(parameterBucket.size()));
+                parameterBucket.insert({ param.getID(), std::move(param) });
+            }
+            else
+                throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
+            
         }
 	}
 

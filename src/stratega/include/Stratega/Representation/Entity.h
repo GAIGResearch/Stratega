@@ -67,6 +67,16 @@ namespace SGA
 		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.
 		/// </summary>
 		std::vector<double> parameters;
+
+		/// <summary>
+		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> maxParameters;
+
+		/// <summary>
+		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> minParameters;
 		
 		/// <summary>
 		/// Entity type
@@ -205,44 +215,36 @@ namespace SGA
 		/// <summary>
 		/// <returns>The parameter value.</returns>
 	    double getParameter(const std::string& paramName) const;
-		
-		/// <summary>
-		/// Gets the value of a specific parameter with buffs applied, by index 
-		/// <summary>
-		///// <returns>The parameter value.</returns>
-		//double getParameterAt(int paramIdx) const
-		//{
-		//	//double value=parameters[paramIdx];
-
-		//	////Add buffs additive
-		//	//for(auto& buff : buffs)
-		//	//{
-		//	//	const auto& buffType= buff.getType();
-		//	//	value = buffType.getParameterWithAdditiveBuffsApplied(value, paramIdx);
-		//	//}
-
-		//	////Add buffs multiplication
-		//	//for(auto& buff : buffs)
-		//	//{
-		//	//	auto& buffType= buff.getType();
-		//	//	value = buffType.getParameterWithMultiplicationBuffsApplied(value, paramIdx);
-		//	//}
-
-		//	//return value;
-		//
-		//}
 
 		/// <summary>
-		/// Gets the value of a specific parameter raw, by name 
+		/// Gets the reference value of a specific parameter raw, by name 
 		/// <summary>
-		/// <returns>The parameter value.</returns>
-		double getRawParameter(const std::string& paramName) const;
+		/// <returns>The parameter reference value.</returns>
+		double& getRawParameter(const std::string& paramName);
 		
 		/// <summary>
 		/// Gets a specific parameters raw, by index 
 		/// <summary>
-		/// <returns>The parameter value.</returns>
+		/// <returns>The parameter reference value.</returns>
 		double& getRawParameterAt(int paramIdx) { return parameters[paramIdx]; }
+
+		/// <summary>
+		/// Gets a specific parameters value, by index 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
+		double getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+		
+		/// <summary>
+		/// Gets a specific max parameters value, by index 
+		/// <summary>
+		/// <returns>The max parameter value.</returns>
+		double getMaxParameterAt(int paramIdx) { return maxParameters[paramIdx]; }
+		
+		/// <summary>
+		/// Gets a specific min parameters value, by index 
+		/// <summary>
+		/// <returns>The min parameter value.</returns>
+		double getMinParameterAt(int paramIdx) { return minParameters[paramIdx]; }
 
 		/// <summary>
 		/// Gets the list of continuous actions attached to this entity. Modifiable.

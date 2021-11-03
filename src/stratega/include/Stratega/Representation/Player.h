@@ -35,6 +35,16 @@ namespace SGA
 		std::vector<double> parameters;
 
 		/// <summary>
+		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> maxParameters;
+
+		/// <summary>
+		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> minParameters;
+
+		/// <summary>
 		/// Actions that this player can execute in this game.
 		/// </summary>
 		std::vector<ActionInfo> attachedActions;
@@ -94,24 +104,59 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getParameter(int paramIdx) { return parameters[paramIdx]; }
+		double& getRawParameterAt(int paramIdx) { return parameters[paramIdx]; }
 
-		/// <summary>
+		/// <summary>yer to a certain value
+		/// </summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getParameter(int paramIdx) const { return parameters[paramIdx]; }
+		const double& getRawParameterAt(int paramIdx) const { return parameters[paramIdx]; }
 
 		/// <summary>
-		/// Sets the parameter of this player to a certain value
-		/// </summary>
+		/// Gets a specific parameters value, by index 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
+		double getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+
+		/// <summary>
+		/// Gets a specific max parameters value, by index 
+		/// <summary>
+		/// <returns>The max parameter value.</returns>
+		double getMaxParameterAt(int paramIdx) { return maxParameters[paramIdx]; }
+
+		/// <summary>
+		/// Gets a specific min parameters value, by index 
+		/// <summary>
+		/// <returns>The min parameter value.</returns>
+		double getMinParameterAt(int paramIdx) { return minParameters[paramIdx]; }
+
+		/// <summary>
+		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
 		void setParameter(int paramIdx, double val) { parameters[paramIdx] = val; }
 
 		/// <summary>
+		/// Sets the parameter of this play
+		/// <param name="paramIdx">Parameter index of this param.</param>
+		/// <param name="val">Value to be set for the parameter.</param>
+		void setMaxParameter(int paramIdx, double val) { maxParameters[paramIdx] = val; }
+
+		/// <summary>
+		/// Sets the parameter of this play
+		/// <param name="paramIdx">Parameter index of this param.</param>
+		/// <param name="val">Value to be set for the parameter.</param>
+		void setMinParameter(int paramIdx, double val) { minParameters[paramIdx] = val; }
+
+		/// <summary>
 		/// Sets a size for the vector of parameters of this player.
 		/// </summary>
-		void resizeParameters(int cap) { parameters.resize(cap); }
+		void resizeParameters(int cap)
+		{
+			parameters.resize(cap);
+			maxParameters.resize(cap);
+			minParameters.resize(cap);
+		}
 
 		/// <summary>
 		/// Removes a continuous action from the vector of continuous actions of this player.

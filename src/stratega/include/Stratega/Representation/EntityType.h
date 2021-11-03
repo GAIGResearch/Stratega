@@ -80,6 +80,11 @@ namespace SGA
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
 		/// </summary>
 		const Parameter& getParameterByIndex(int index) const;
+		
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
+		const Parameter& getParameterByName(std::string& name) const;
 
 		/// <summary>
 		/// Checks if this entity type is allowed to execute an action type

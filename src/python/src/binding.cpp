@@ -578,7 +578,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_parameter",
 			[](SGA::Player& player, int paramIdx)
 			{
-				return player.getParameter(paramIdx);
+				return player.getRawParameterAt(paramIdx);
 			}
 			, "Returns a const value of a parameter of this player."
 				)
