@@ -13,7 +13,7 @@ namespace SGA
 	}
 
 	
-	void EntityRenderer::init(const GameState& initialState, const GameConfig& gameConfig, const RenderConfig& renderConfig)
+	void EntityRenderer::init(const GameState& /*initialState*/, const GameConfig& gameConfig, const RenderConfig& renderConfig)
 	{
 		// Initialise atlas
 		std::vector<std::string> filePaths;
@@ -45,7 +45,7 @@ namespace SGA
 		for(auto entity = entities.begin(); entity != entities.end(); entity++)
 		{
 			//const auto& entity = state.getEntities()[i];
-			auto* quadPtr = &vertices[int(i * static_cast<int>(4))];
+			auto* quadPtr = &vertices[static_cast<size_t>(i * 4)];
 			
 			// define the 4 corners
 			auto spriteSize = atlas.getSpriteSize();
@@ -62,10 +62,10 @@ namespace SGA
 			quadPtr[2].texCoords = sf::Vector2f(rect.left + rect.width, rect.top + rect.height);
 			quadPtr[3].texCoords = sf::Vector2f(rect.left, rect.top + rect.height);
 
-			quadPtr[0].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity->getOwnerID()];
-			quadPtr[1].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity->getOwnerID()];
-			quadPtr[2].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity->getOwnerID()];
-			quadPtr[3].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[entity->getOwnerID()];
+			quadPtr[0].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[static_cast<size_t>(entity->getOwnerID())];
+			quadPtr[1].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[static_cast<size_t>(entity->getOwnerID())];
+			quadPtr[2].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[static_cast<size_t>(entity->getOwnerID())];
+			quadPtr[3].color = entity->isNeutral() ? sf::Color::Transparent : PLAYER_COLORS[static_cast<size_t>(entity->getOwnerID())];
 			i++;
 		}
 	}

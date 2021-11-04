@@ -108,8 +108,8 @@ namespace SGA
 
 			//Get end position of current path
 			Vector2f oldTargetPos;
-			oldTargetPos.x = entity.getPath().m_straightPath[(entity.getPath().m_nstraightPath - 1) * 3];
-			oldTargetPos.y = entity.getPath().m_straightPath[((entity.getPath().m_nstraightPath - 1) * 3) + 2];
+			oldTargetPos.x = static_cast<double>(entity.getPath().m_straightPath[(entity.getPath().m_nstraightPath - 1) * 3]);
+			oldTargetPos.y = static_cast<double>(entity.getPath().m_straightPath[((entity.getPath().m_nstraightPath - 1) * 3) + 2]);
 
 			// Compute a new path if the entity doesn't have one or the new target is different from the old one
 			if (entity.getPath().isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
