@@ -135,9 +135,9 @@ find_package(recastnavigation REQUIRED)
 
 # define the targets of the project
 
-#include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
-#include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
-#include(${CMAKE_CONFIG_FOLDER}/targets/Arena.cmake)
+include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
+include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
+include(${CMAKE_CONFIG_FOLDER}/targets/Arena.cmake)
 include(${CMAKE_CONFIG_FOLDER}/targets/Stratega.cmake)
 #if (ENABLE_STRATEGA_BINDINGS)
 #    message("\nPyBindings enabled, configuring.\n")
