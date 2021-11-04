@@ -9,6 +9,16 @@
 #include <iomanip>
 #include <sstream>
 #include <Stratega/Utils/filesystem.hpp>
+
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(__clang__)    
+DISABLE_WARNING_FORMAT
+#elif defined(__GNUC__)
+DISABLE_WARNING_FORMAT
+#endif
+
 namespace SGA
 {
 	TBSGameRenderer::TBSGameRenderer(SGA::Vector2i& resolution)
@@ -16,7 +26,7 @@ namespace SGA
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode(static_cast<int>(resolution.x), static_cast<int>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
@@ -193,7 +203,7 @@ namespace SGA
 				}
 
 				//Avoid source entity
-				for (int i = 1; i < possibleAction.getTargets().size(); ++i)
+				for (size_t i = 1; i < possibleAction.getTargets().size(); ++i)
 				{
 					if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
 					{
@@ -260,7 +270,7 @@ namespace SGA
 			}
 			
 
-			auto* selectedEntity = const_cast<GameState&>(state).getEntity(Vector2f(pos.x, pos.y));
+			auto* selectedEntity = const_cast<GameState&>(state).getEntity(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
 			if (selectedEntity && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 			{
 				//Assign selected unit
@@ -529,7 +539,7 @@ namespace SGA
 					else
 					{
 						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.getTargets()[0].getPlayer(const_cast<GameState&>(state));
+						auto& sourcePlayer = action.getTargets()[0].getPlayer(state);
 						for (auto& continueAction : sourcePlayer.getContinuousActions())
 						{
 							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
@@ -573,6 +583,8 @@ namespace SGA
 						actionInfo += " Entity: " + targetType.getEntityType(state).getName();
 						break;
 					case ActionTarget::ContinuousActionReference:
+						break;
+					case ActionTarget::TileTypeReference:
 						break;
 					}
 				}
