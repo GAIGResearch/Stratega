@@ -270,7 +270,7 @@ namespace SGA
 			}
 			
 
-			auto* selectedEntity = const_cast<GameState&>(state).getEntity(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
+			auto* selectedEntity = state.getEntity(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
 			if (selectedEntity && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 			{
 				//Assign selected unit
@@ -476,7 +476,7 @@ namespace SGA
 		//Ask widget to get
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
-			auto actionsToExecute = getWidgetResult(const_cast<GameState&>(fowState), actionsSettings, pointOfViewPlayerID);
+			auto actionsToExecute = getWidgetResult(fowState, actionsSettings, pointOfViewPlayerID);
 			if (!actionsToExecute.empty())
 			{
 				selectedAction = actionsToExecute.front();

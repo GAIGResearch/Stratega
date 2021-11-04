@@ -21,7 +21,7 @@ namespace SGA
 
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);
-		m_vertices.resize(state.getBoardWidth() * state.getBoardHeight() * 4);
+		m_vertices.resize(static_cast<size_t>(state.getBoardWidth() * state.getBoardHeight() * 4));
 	}
 
 	void TileMap::update(const GameState& state, const GameState& fowState, bool renderFow, FogRenderType fogType)
@@ -36,7 +36,7 @@ namespace SGA
 				const auto& fogTile = fowState.getTileAt({ x, y });
 
 				// get a pointer to the current tile's quad
-				sf::Vertex* quad = &m_vertices[(x + y * state.getBoardWidth()) * 4];
+				sf::Vertex* quad = &m_vertices[static_cast<size_t>((x + y * state.getBoardWidth()) * 4)];
 				if (!renderFow)
 				{
 					updateTileQuad(quad, tile, sf::Color::White);
