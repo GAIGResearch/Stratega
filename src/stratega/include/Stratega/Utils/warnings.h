@@ -20,7 +20,8 @@
 	#define DISABLE_WARNING_UNREFERENCED_FUNCTION            DISABLE_WARNING(-Wunused-function)
 	#define DISABLE_WARNING_UNREFERENCED					 DISABLE_WARNING(-Wunused)
 	#define DISABLE_WARNING_SIGN_CONVERSION					 DISABLE_WARNING(-Wsign-conversion)
-	#define DISABLE_WARNING_FORMAT				 DISABLE_WARNING(-Wformat-security)
+	#define DISABLE_WARNING_FORMAT							 DISABLE_WARNING(-Wformat-security)
+	#define DISABLE_WARNING_OLD_CAST						 DISABLE_WARNING(-Wold-style-cast)
 	// other warnings you want to deactivate... 
 
 
@@ -35,7 +36,8 @@
 	#define DISABLE_WARNING_UNREFERENCED					 DISABLE_WARNING(-Wunused)
 	#define DISABLE_WARNING_USELESS_CAST					 DISABLE_WARNING(-Wuseless-cast)
 	#define DISABLE_WARNING_SIGN_CONVERSION					 DISABLE_WARNING(-Wsign-conversion)
-#define DISABLE_WARNING_FORMAT				 DISABLE_WARNING(-Wformat-security)
+	#define DISABLE_WARNING_FORMAT							 DISABLE_WARNING(-Wformat-security)
+	#define DISABLE_WARNING_OLD_CAST						 DISABLE_WARNING(-Wold-style-cast)
 	// other warnings you want to deactivate... 
 
 #else
