@@ -3,7 +3,7 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	GameState::GameState(Grid2D<Tile>&& newBoard, const std::unordered_map<int, TileType>& tileTypes) :
+	GameState::GameState(Grid2D<Tile>&& newBoard, const std::unordered_map<int, TileType>& /*tileTypes*/) :
 		gameOver(false),				
 		winnerPlayerID(-1),
 		currentTick(1),
@@ -400,7 +400,7 @@ namespace SGA
 
 	void GameState::initResearchTechs()
 	{
-		for(size_t i = 0; i < players.size(); ++i)
+		for(int i = 0; i < static_cast<size_t>(players.size()); ++i)
 			researchedTechnologies[i] = {};
 	}
 

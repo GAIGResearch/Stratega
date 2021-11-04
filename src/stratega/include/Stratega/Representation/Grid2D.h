@@ -41,7 +41,7 @@ namespace SGA
 		reference get(int x, int y)
 		{ 
 			auto pos = y * static_cast<int>(width) + x;
-			if (pos > grid.size() || pos < 0)
+			if (pos > static_cast<int>(grid.size()) || pos < 0)
 			{
 				throw std::runtime_error("Out of bounds of the grid.");
 			}
