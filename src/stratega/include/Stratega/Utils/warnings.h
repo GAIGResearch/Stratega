@@ -18,6 +18,7 @@
 
 	#define DISABLE_WARNING_UNREFERENCED_FORMAL_PARAMETER    DISABLE_WARNING(-Wunused-parameter)
 	#define DISABLE_WARNING_UNREFERENCED_FUNCTION            DISABLE_WARNING(-Wunused-function)
+	#define DISABLE_WARNING_UNREFERENCED					 DISABLE_WARNING(-Wunused)
 	#define DISABLE_WARNING_SIGN_CONVERSION					 DISABLE_WARNING(-Wsign-conversion)
 	// other warnings you want to deactivate... 
 

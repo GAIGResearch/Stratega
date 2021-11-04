@@ -1,6 +1,14 @@
 #pragma once
 #include <Stratega/ForwardModel/ActionAssignment.h>
 #include <memory>
+#include <Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(__clang__)    
+	DISABLE_WARNING_UNREFERENCED
+#elif defined(__GNUC__)
+	DISABLE_WARNING_UNREFERENCED
+#endif
 
 namespace SGA
 {
