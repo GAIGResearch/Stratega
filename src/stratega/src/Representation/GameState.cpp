@@ -3,32 +3,34 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	GameState::GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes) :
-		currentPlayer(0),
-		gameType(GameType::TBS),
-		gameOver(false),
+	GameState::GameState(Grid2D<Tile>&& newBoard, const std::unordered_map<int, TileType>& tileTypes) :
+		gameOver(false),				
 		winnerPlayerID(-1),
 		currentTick(1),
-		tickLimit(-1),
+		tickLimit(-1),				
+		gameType(GameType::TBS),
+		board(std::move(newBoard)),
+		players(),
 		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
-		board(std::move(board)),
-		players(),
+		currentPlayer(0),
 		fogOfWarApplied(false)
+		
 	{
 	}
 
 	GameState::GameState() :
-		currentPlayer(0),
-		gameType(GameType::TBS),
-		gameOver(false),
+		gameOver(false),				
 		winnerPlayerID(-1),
 		currentTick(1),
-		tickLimit(-1),
+		tickLimit(-1),		
+		gameType(GameType::TBS),
+		board(0, 0, fogOfWarTile),
 		fogOfWarTile(nullptr, 0, 0),
 		fogOfWarId(-1),
-		board(0, 0, fogOfWarTile),
+		currentPlayer(0),
 		fogOfWarApplied(false)
+		
 	{
 	}
 
@@ -194,7 +196,7 @@ namespace SGA
 	}
 
 	//NOTE: For the moment, all players have the same parameters (hence playerID is not used).
-	std::vector<std::string> GameState::getPlayerParameterNames(int playerID) const
+	std::vector<std::string> GameState::getPlayerParameterNames(int /*playerID*/) const
 	{
 		std::vector<std::string> paramNames;
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
@@ -277,9 +279,9 @@ namespace SGA
 		}
 
 		// Hide tiles that are not visible
-		for (int y = 0; y < board.getHeight(); y++)
+		for (int y = 0; y < static_cast<int>(board.getHeight()); y++)
 		{
-			for (int x = 0; x < board.getWidth(); x++)
+			for (int x = 0; x < static_cast<int>(board.getWidth()); x++)
 			{
 				if (!visibilityMap.get(x, y))
 				{
@@ -398,7 +400,7 @@ namespace SGA
 
 	void GameState::initResearchTechs()
 	{
-		for(int i = 0; i < players.size(); ++i)
+		for(size_t i = 0; i < players.size(); ++i)
 			researchedTechnologies[i] = {};
 	}
 
@@ -415,7 +417,7 @@ namespace SGA
 
 	bool GameState::isInBounds(const Vector2i& pos) const
 	{
-		return pos.x >= 0 && pos.x < board.getWidth() && pos.y >= 0 && pos.y < board.getHeight();
+		return pos.x >= 0 && pos.x < static_cast<int>(board.getWidth()) && pos.y >= 0 && pos.y < static_cast<int>(board.getHeight());
 	}
 
 	bool GameState::isInBounds(const Vector2f& pos) const
@@ -463,12 +465,12 @@ namespace SGA
 		std::string map;
 		std::cout << "---------[Board]---------" << std::endl;
 		//Add tiles
-		for (int y = 0; y < board.getHeight(); ++y)
+		for (size_t y = 0; y < board.getHeight(); ++y)
 		{
-			for (int x = 0; x < board.getWidth(); ++x)
+			for (size_t x = 0; x < board.getWidth(); ++x)
 			{
 				//Get tile type
-				map += gameInfo->getTileType(board.get(x, y).getTileTypeID()).getSymbol();
+				map += gameInfo->getTileType(board.get(static_cast<int>(x), static_cast<int>(y)).getTileTypeID()).getSymbol();
 				map += "  ";
 			}
 			map += "\n";
@@ -493,7 +495,7 @@ namespace SGA
 
 	void GameState::printBoard(int playerID) const
 	{
-		if(playerID < players.size())
+		if(static_cast<size_t>(playerID) < players.size())
 		{
 			GameState stateWithFOG = *this;
 			
