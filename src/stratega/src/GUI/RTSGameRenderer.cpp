@@ -24,7 +24,7 @@ namespace SGA
 		fowState(),
 		config(nullptr),
 		assignment(),		
-		window(sf::VideoMode(newResolution.x, newResolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		window(sf::VideoMode(static_cast<unsigned>(newResolution.x), static_cast<unsigned>(newResolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		pointOfViewPlayerID(NO_PLAYER_ID),
 		fowSettings(),
 		zoomValue(5.f),
@@ -378,7 +378,7 @@ namespace SGA
 					if (!tile->header)
 						continue;
 
-					for (size_t b = 0; b < tile->header->polyCount; ++b)
+					for (size_t b = 0; b < static_cast<size_t>(tile->header->polyCount); ++b)
 					{
 						const dtPoly* p = &tile->polys[b];
 						if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
@@ -389,7 +389,7 @@ namespace SGA
 						//Draw polygon
 						for (size_t j = 0; j < pd->triCount; ++j)
 						{
-							const unsigned char* t = &tile->detailTris[static_cast<size_t>((pd->triBase + static_cast<int>(j)) * 4)];
+							const unsigned char* t = &tile->detailTris[static_cast<size_t>((pd->triBase + static_cast<unsigned int>(j)) * 4)];
 
 							sf::ConvexShape polygon;
 

@@ -26,7 +26,7 @@ namespace SGA
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode(resolution.x, resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
