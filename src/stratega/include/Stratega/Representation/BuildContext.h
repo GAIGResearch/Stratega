@@ -2,6 +2,19 @@
 #include "Recast.h"
 #include <cstdint>
 
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(_MSC_VER)
+DISABLE_WARNING_UNSAFE_CONVERSION
+#elif defined(__clang__)    
+DISABLE_WARNING_OLD_CAST
+DISABLE_WARNING_SIGN_CONVERSION
+#elif defined(__GNUC__)
+DISABLE_WARNING_OLD_CAST
+DISABLE_WARNING_SIGN_CONVERSION
+#endif
+
 namespace SGA
 {
 	typedef int64_t TimeVal;
