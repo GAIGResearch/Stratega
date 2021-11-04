@@ -92,15 +92,15 @@
 //#pragma GCC diagnostic ignored "-Werror=useless-cast"
 //#pragma GCC diagnostic ignored "-Werror=sign-conversion"
 //#pragma GCC diagnostic ignored "-Werror=pessimizing-move"
-
-
-DISABLE_WARNING_PUSH
-#if defined(_MSC_VER)
-    DISABLE_WARNING_UNSAFE_CONVERSION
-#elif defined(__GNUC__) || defined(__clang__)
-    DISABLE_WARNING_USELESS_CAST
-    DISABLE_WARNING_SIGN_CONVERSION
-#endif
+//
+//
+//DISABLE_WARNING_PUSH
+//#if defined(_MSC_VER)
+//    DISABLE_WARNING_UNSAFE_CONVERSION
+//#elif defined(__GNUC__) || defined(__clang__)
+//    DISABLE_WARNING_USELESS_CAST
+//    DISABLE_WARNING_SIGN_CONVERSION
+//#endif
 
 #ifndef GHC_FILESYSTEM_H
 #define GHC_FILESYSTEM_H
