@@ -93,22 +93,23 @@ typedef int ParameterID;
 
             double getParameterWithOutMultiplicationBuffsApplied(double baseValue, ParameterID id) const
             {
-               auto itA = multiplicationModifiers.find(id);
-               if(itA != multiplicationModifiers.end())
-               {
-                  baseValue /= itA->second;
-               }
-               return baseValue;
+                auto itA = multiplicationModifiers.find(id);
+                if(itA != multiplicationModifiers.end())
+                {
+                   baseValue /= itA->second;
+                }
+                return baseValue;
             }
 
-            double getParameterWithMultiplicationBuffsApplied(double baseValue, ParameterID id) const
+            double getMultiplicationSum(double baseValue, ParameterID id) const
             {
-               auto itA = multiplicationModifiers.find(id);
-               if(itA != multiplicationModifiers.end())
-               {
-                  baseValue *= itA->second;
-               }
-               return baseValue;
+                double newBaseValue = baseValue;
+                auto itA = multiplicationModifiers.find(id);
+                if(itA != multiplicationModifiers.end())
+                {
+                   baseValue *= itA->second;
+                }
+                return newBaseValue - baseValue;
             }
     };
 }  // namespace SGA

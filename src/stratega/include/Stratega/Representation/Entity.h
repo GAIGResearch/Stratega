@@ -341,7 +341,7 @@ namespace SGA
 
 		void removeBuffs(GameState& state);
 
-		void addBuffs(GameState& state);
+		void applyBuffs(GameState& state);
 
 		void removeBuffs(const BuffType& type)
 		{

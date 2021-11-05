@@ -391,15 +391,13 @@ namespace SGA
 			auto& buffs=et->getBuffs();
             auto it = buffs.begin();
             while(it != buffs.end())
-			//for (auto buff = buffs.begin(); buff != buffs.end(); buff++)
 			{
 				it->incrementElapseTicks();
 				if(it->getElapsedTicks()>=it->getDurationTicks())
-				{
-					
+				{					
                     et->removeBuffs(state);
 					it = buffs.erase(it);
-                    et->addBuffs(state);
+                    et->applyBuffs(state);
 				} else it++;
 			}			
 		}
@@ -413,19 +411,17 @@ namespace SGA
 			{
 				it->incrementElapseTicks();
 				if(it->getElapsedTicks()>=it->getDurationTicks())
-				{
-					
+				{					
 					player->removeBuffs(state);
 					it = buffs.erase(it);
-					player->addBuffs(state);
+					player->applyBuffs(state);
 				} else it++;
 			}			
 		}
 
 		executeOnTriggerEffects(state);
 		checkEntitiesContinuousActionIsComplete(state);
-		checkPlayerContinuousActionIsComplete(state);
-		
+		checkPlayerContinuousActionIsComplete(state);		
 	}
 	
 

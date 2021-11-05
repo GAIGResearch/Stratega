@@ -169,32 +169,36 @@ namespace SGA
 
 	}
 
-	void Entity::addBuffs(GameState& state)
+	void Entity::applyBuffs(GameState& state)
 	{
 		//Recompute each parameter
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
 		{
 			const auto& param = type->getParameterByIndex(i);
-			double value = parameters[i];
+			double previousMaxParameter = maxParameters[i];
+			double maxParameter = maxParameters[i];
 
+			//Add to each parameterMax the additive and multiplication:	
 			//Add buffs additive
 			for (auto& buff : buffs)
 			{
 				const auto& buffType = buff.getType();
-				value = buffType.getParameterWithAdditiveBuffsApplied(value, param.getID());
+				maxParameter = buffType.getParameterWithAdditiveBuffsApplied(maxParameter, param.getID());
 			}
 
+			double multiplicationSum = 0;
 			//Add buffs multiplication
 			for (auto& buff : buffs)
 			{
 				auto& buffType = buff.getType();
-				value = buffType.getParameterWithMultiplicationBuffsApplied(value, param.getID());
+				multiplicationSum += buffType.getMultiplicationSum(maxParameter, param.getID());
 			}
+			maxParameter += multiplicationSum;
 
-			//TODO: Check value is not over max or min values
-
-			//Write new value with buffs applied
-			parameters[i] = value;
+			//Write new value with the different of the max parameters
+			parameters[i] += maxParameter- previousMaxParameter;
+			//Update the max value
+			maxParameters[i] = maxParameter;
 		}
 	}
 }

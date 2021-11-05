@@ -196,7 +196,7 @@ namespace SGA
 
 		void removeBuffs(GameState& state);
 
-		void addBuffs(GameState& state);		
+		void applyBuffs(GameState& state);		
 
 		/// <summary>
 		/// Returns the list of attached actions to this player.

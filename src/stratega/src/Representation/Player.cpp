@@ -52,7 +52,7 @@ namespace SGA
 		}
 	}
 
-	void Player::addBuffs(GameState& state)
+	void Player::applyBuffs(GameState& state)
 	{
 		//Recompute each parameter
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
@@ -72,7 +72,7 @@ namespace SGA
 			for (auto& buff : buffs)
 			{
 				auto& buffType = buff.getType();
-				value = buffType.getParameterWithMultiplicationBuffsApplied(value, param.getID());
+				value = buffType.getMultiplicationSum(value, param.getID());
 			}
 
 			//TODO: Check value is not over max or min values

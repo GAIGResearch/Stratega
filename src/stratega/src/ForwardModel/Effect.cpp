@@ -38,8 +38,6 @@ namespace SGA
 		auto& buffType = buffReference.getBuffType(state, targets);
 		auto ticks = buffTicks.getConstant(state, targets);
 
-		//const auto& param = state.getGameInfo()->getPlayerParameter();
-
 		if(entityParam.getType()==FunctionParameter::Type::EntityPlayerReference)
 		{
 			auto& entity = entityParam.getEntity(state, targets);
@@ -50,7 +48,7 @@ namespace SGA
 			if(player->getBuffs().size() > 0)
 			   player->removeBuffs(state);
 			player->addBuff(std::move(newBuff));
-			player->addBuffs(state);
+			player->applyBuffs(state);
 		}
 		else
 		{
@@ -61,7 +59,7 @@ namespace SGA
 			if(entity.getBuffs().size() > 0)
 			   entity.removeBuffs(state);
 			entity.addBuff(std::move(newBuff));
-			entity.addBuffs(state);
+			entity.applyBuffs(state);
 		}
 	}
 
@@ -84,7 +82,7 @@ namespace SGA
 			entity.removeBuffs(state);
 		}
 		entity.removeBuffs(buffType);
-		entity.addBuffs(state);
+		entity.applyBuffs(state);
 	}
 
 	RemoveAllBuffs::RemoveAllBuffs(const std::string exp, const std::vector<FunctionParameter>& parameters) :
