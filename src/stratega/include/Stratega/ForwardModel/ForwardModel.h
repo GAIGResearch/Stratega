@@ -284,6 +284,17 @@ namespace SGA
 		/// <param name="state">State where these continuous actions are checked.</param>
 		void checkPlayerContinuousActionIsComplete(GameState& state) const;
 
+		/// <summary>
+		/// Verifies and removes the expired buffs
+		/// </summary>
+		/// <param name="state">State where these buffs are checked.</param>
+		void removeExpiredBuffs(GameState& state) const;
+
+		/// <summary>
+		/// Executes actions of each entitty type
+		/// </summary>
+		/// <param name="state">State where these actions are executed.</param>
+		void executeOnTickEntityActions(GameState& state) const;
 
 		/// <summary>
 		/// It generates a default action space unique pointer.

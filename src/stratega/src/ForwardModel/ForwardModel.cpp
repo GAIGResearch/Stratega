@@ -378,47 +378,51 @@ namespace SGA
 
 		}
 	}
-		
-	void ForwardModel::endTick(GameState& state) const
+	
+	void ForwardModel::removeExpiredBuffs(GameState& state) const
 	{
-		state.incTick();
 		//Remove expired Buffs
 		auto& entities = state.getEntities();
-		for(auto et = entities.begin(); et != entities.end(); et++)
+		for (auto et = entities.begin(); et != entities.end(); et++)
 		{
-			auto& buffs=et->getBuffs();
-            auto it = buffs.begin();
-            while(it != buffs.end())
+			auto& buffs = et->getBuffs();
+			auto it = buffs.begin();
+			while (it != buffs.end())
 			{
 				it->incrementElapseTicks();
-				if(it->getElapsedTicks()>=it->getDurationTicks())
-				{					
+				if (it->getElapsedTicks() >= it->getDurationTicks())
+				{
 					it = buffs.erase(it);
-					et->recomputeStats(state);					
-				} else it++;
-			}			
+					et->recomputeStats(state);
+				}
+				else it++;
+			}
 		}
-		
+
 		auto& players = state.getPlayers();
-		for(auto player = players.begin(); player != players.end(); player++)
+		for (auto player = players.begin(); player != players.end(); player++)
 		{
-			auto& buffs= player->getBuffs();
-            auto it = buffs.begin();
-            while(it != buffs.end())
+			auto& buffs = player->getBuffs();
+			auto it = buffs.begin();
+			while (it != buffs.end())
 			{
 				it->incrementElapseTicks();
-				if(it->getElapsedTicks()>=it->getDurationTicks())
-				{					
+				if (it->getElapsedTicks() >= it->getDurationTicks())
+				{
 					it = buffs.erase(it);
 					player->recomputeStats(state);
-				} else it++;
-			}			
+				}
+				else it++;
+			}
 		}
+	}
 
-		executeOnTriggerEffects(state);
-
+	void ForwardModel::executeOnTickEntityActions(GameState& state) const
+	{
 		//ExecuteOnTickEntityActions
 		std::vector<Action> bucket;
+		auto& entities = state.getEntities();
+
 		//Generate entities actions
 		for (const auto& sourceEntity : entities)
 		{
@@ -448,12 +452,18 @@ namespace SGA
 		{
 			executeAction(state, action);
 		}
+	}
 
+	void ForwardModel::endTick(GameState& state) const
+	{
+		state.incTick();
+		removeExpiredBuffs(state);
+		executeOnTriggerEffects(state);
+		executeOnTickEntityActions(state);
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);		
 	}
 	
-
 	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
