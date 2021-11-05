@@ -400,7 +400,7 @@ namespace SGA
 
 	void GameState::initResearchTechs()
 	{
-		for(int i = 0; i < static_cast<size_t>(players.size()); ++i)
+		for(int i = 0; i < static_cast<int>(players.size()); ++i)
 			researchedTechnologies[i] = {};
 	}
 
