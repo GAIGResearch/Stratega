@@ -26,7 +26,6 @@ Buffs: # Buff lists
     BuffOne:
         AdditiveModifier: 
             Health: 20
-            MovementPoints: 50
         MultiplicationModifier: 
             AttackRange: 2
     BuffTwo:
@@ -34,18 +33,7 @@ Buffs: # Buff lists
             Health: 30
         MultiplicationModifier: 
             Health: 2
-    BuffThree:
-        AdditiveModifier: 
-            Gold: 30
-        MultiplicationModifier: 
-            Gold: 2
 
-Player:
-    Parameters:
-        GoldTwo: [1,1,10]
-        GoldThree: [1,1,10]
-        Gold: [1,5,10]
-        GoldOne: [1,1,10]
 
 Tiles:
     Plain:
@@ -102,9 +90,9 @@ Actions:
                         Shape: Circle
                         Size: 1
                 Conditions:
-                    #- "HasNotBuff(Source, BuffTwo)"
+                    - "HasNoBuff(Source, BuffTwo)"
         Effects:
-            - "ApplyBuff(Target, BuffTwo, 1)"
+            - "ApplyBuff(Target, BuffTwo, 2)"
 
     Attack:
         Type: EntityAction
@@ -138,9 +126,7 @@ Actions:
                 Conditions:
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "ApplyBuff(Target, BuffTwo, 2)"
-            - "ApplyBuff(Target.Player, BuffThree, 2)"
-            #- "ModifyResource(Source.Player.GoldOne, 2)"
+            - "ApplyBuff(Target, BuffTwo, 5)"
 
     Move:
         Type: EntityAction
@@ -225,7 +211,7 @@ Entities:
             AttackDamage: [0,100,100]
             MovementPoints: [0,1,1]
         Actions: [Attack, Move, BoostHealth]
-        ##Each tick add a buff to the entities around the king
+        ##Each tick add a buff to the warrior entities around the king
         OnTickActions: [AddBuffAround]
             
 
@@ -238,11 +224,11 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
-#        #Each tick add a buff to the King
-#        - OnTick:
-#            ValidTargets: King
-#            Effects:
-#                - "ApplyBuff(Source, BuffOne, 1)"
+        #Each tick add a buff to the King
+        - OnTick:
+            ValidTargets: King
+            Effects:
+                - "ApplyBuff(Source, BuffOne, 1)"
 
 #Action categories
 GameDescription:

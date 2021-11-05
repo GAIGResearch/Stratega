@@ -378,5 +378,19 @@ namespace SGA
 		{
 			buffs.clear();
 		}
+
+		/// <summary>
+		/// Check if player has a buff type applied
+		/// <summary>
+		bool hasBuff(int typeID) const
+		{
+			for (auto& buff : buffs)
+			{
+				if (buff.getType().getID() == typeID)
+					return true;
+			}
+
+			return false;
+		}
 	};
 }

@@ -230,6 +230,20 @@ namespace SGA
 		}
 
 		/// <summary>
+		/// Check if player has a buff type applied
+		/// <summary>
+		bool hasBuff(int typeID) const
+		{
+			for (auto& buff : buffs)
+			{
+				if (buff.getType().getID() == typeID)
+					return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Returns the list of attached actions to this player.
 		/// </summary>
 		const std::vector<ActionInfo>& getAttachedActions() const { return attachedActions; }

@@ -198,6 +198,55 @@ namespace  SGA
 		return !hasEntity;
 	}
 	
+
+	HasNoBuff::HasNoBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		entityParam(parameters[0]),
+		buffTypeParam(parameters[1]),
+		Condition(exp)
+	{
+	}
+
+	bool HasNoBuff::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffTypeParam.getBuffType(state, targets);
+
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			return !player->hasBuff(buffType.getID());
+		}
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			return !entity.hasBuff(buffType.getID());
+		}
+	}
+
+	HasBuff::HasBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		entityParam(parameters[0]),
+		buffTypeParam(parameters[1]),
+		Condition(exp)
+	{
+	}
+
+	bool HasBuff::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffTypeParam.getBuffType(state, targets);
+
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			return player->hasBuff(buffType.getID());
+		}
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			return entity.hasBuff(buffType.getID());
+		}
+	}
+	
 	HasEntity::HasEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		playerParam(parameters[0]),
 		entityTypeParam(parameters[1]),
