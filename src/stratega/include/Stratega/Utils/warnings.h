@@ -24,6 +24,7 @@
 	#define DISABLE_WARNING_OLD_CAST						 DISABLE_WARNING(-Wold-style-cast)
 	#define DISABLE_WARNING_USELESS_CAST					 DISABLE_WARNING(-Wuseless-cast)
 	#define DISABLE_WARNING_FORMAT_NONLITERAL				 DISABLE_WARNING(-Wformat-nonliteral)
+	#define DISABLE_WARNING_NULL_DEREFERENCE				 DISABLE_WARNING(-Wnull-dereference)
 	// other warnings you want to deactivate... 
 
 
@@ -42,6 +43,7 @@
 	#define DISABLE_WARNING_OLD_CAST						 DISABLE_WARNING(-Wold-style-cast)
 	#define DISABLE_WARNING_USELESS_CAST					 DISABLE_WARNING(-Wuseless-cast)
 	#define DISABLE_WARNING_FORMAT_NONLITERAL				 DISABLE_WARNING(-Wformat-nonliteral)
+	#define DISABLE_WARNING_NULL_DEREFERENCE				 DISABLE_WARNING(-Wnull-dereference)
 	// other warnings you want to deactivate... 
 
 #else

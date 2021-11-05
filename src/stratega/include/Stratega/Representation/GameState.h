@@ -476,6 +476,11 @@ namespace SGA
 		std::shared_ptr<Navigation> navigation;
 
 		/// <summary>
+		/// Tile used for fog of war.
+		/// </summary>
+		Tile fogOfWarTile;
+
+		/// <summary>
 		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
 		/// </summary>
 		Grid2D<Tile> board;
@@ -501,11 +506,6 @@ namespace SGA
 		/// Random number generator engine
 		/// </summary>
 		std::mt19937 rngEngine;
-
-		/// <summary>
-		/// Tile used for fog of war.
-		/// </summary>
-		Tile fogOfWarTile;
 
 		/// <summary>
 		/// ID of the fog of war tile.

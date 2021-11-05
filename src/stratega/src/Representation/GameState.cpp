@@ -1,6 +1,15 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Condition.h>
 #pragma warning(disable: 5045)
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(__clang__)    
+	DISABLE_WARNING_NULL_DEREFERENCE
+#elif defined(__GNUC__)
+	DISABLE_WARNING_NULL_DEREFERENCE
+#endif
+
 namespace SGA
 {
 	GameState::GameState(Grid2D<Tile>&& newBoard, const std::unordered_map<int, TileType>& /*tileTypes*/) :
@@ -9,9 +18,9 @@ namespace SGA
 		currentTick(1),
 		tickLimit(-1),				
 		gameType(GameType::TBS),
-		board(std::move(newBoard)),
-		players(),
 		fogOfWarTile(nullptr, 0, 0),
+		board(std::move(newBoard)),
+		players(),		
 		fogOfWarId(-1),
 		currentPlayer(0),
 		fogOfWarApplied(false)
@@ -25,12 +34,11 @@ namespace SGA
 		currentTick(1),
 		tickLimit(-1),		
 		gameType(GameType::TBS),
-		board(0, 0, fogOfWarTile),
 		fogOfWarTile(nullptr, 0, 0),
+		board(0, 0, fogOfWarTile),		
 		fogOfWarId(-1),
 		currentPlayer(0),
-		fogOfWarApplied(false)
-		
+		fogOfWarApplied(false)		
 	{
 	}
 
