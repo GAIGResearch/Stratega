@@ -108,14 +108,14 @@ namespace SGA
 		template<typename Iterator>
 		void play(Iterator begin, Iterator end, Vector2i& resolution)
 		{
-			assert(std::distance(begin, end) == currentState->getPlayers().size());
+			assert(std::distance(begin, end) == static_cast<int>(currentState->getPlayers().size()));
 
 			auto agents = IteratorToPtrVector<Iterator, Agent>::convert(begin, end);
 			try
 			{
 				// Check if a player is controlled by an human
 				int humanIndex = NO_PLAYER_ID;
-				for (int i = 0; i < agents.size(); i++)
+				for (int i = 0; i < static_cast<int>(agents.size()); i++)
 				{
 					if (agents[i] == nullptr)
 					{
