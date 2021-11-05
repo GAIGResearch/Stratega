@@ -23,10 +23,8 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Buffs: # Buff lists
-    BuffOne: #Buff name
-        #Modifiers list
+    BuffOne:
         AdditiveModifier: 
-            #Target parameter list
             Health: 20
             MovementPoints: 50
         MultiplicationModifier: 

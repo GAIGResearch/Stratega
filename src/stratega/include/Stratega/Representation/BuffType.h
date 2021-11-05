@@ -20,9 +20,7 @@ typedef int ParameterID;
             std::string name;
            
             std::unordered_map< ParameterID, double > additiveModifiers;
-            std::unordered_map< ParameterID, double > substractModifiers;
             std::unordered_map< ParameterID, double > multiplicationModifiers;
-            std::unordered_map< ParameterID, double > divideModifiers;
 
         public:
             /* Getters and setters for BuffType*/
@@ -42,15 +40,6 @@ typedef int ParameterID;
                additiveModifiers = m;
             }
 
-            const std::unordered_map< ParameterID, double >& getSubstractModifiers() const
-            {
-               return substractModifiers;
-            }
-            void setSubstractModifiers(const std::unordered_map< ParameterID, double >& m)
-            {
-               substractModifiers = m;
-            }
-
             const std::unordered_map< ParameterID, double >& getMultiplicationModifiers() const
             {
                return multiplicationModifiers;
@@ -58,15 +47,6 @@ typedef int ParameterID;
             void setMultiplicationModifiers(const std::unordered_map< ParameterID, double >& m)
             {
                multiplicationModifiers = m;
-            }
-
-            const std::unordered_map< ParameterID, double >& getDivideModifiers() const
-            {
-               return divideModifiers;
-            }
-            void setDivideModifiers(const std::unordered_map< ParameterID, double >& m)
-            {
-               divideModifiers = m;
             }
 
             double getParameterWithAdditiveBuffsApplied(double baseValue, ParameterID id) const 

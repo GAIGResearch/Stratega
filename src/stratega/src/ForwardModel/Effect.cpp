@@ -43,8 +43,7 @@ namespace SGA
 			auto& entity = entityParam.getEntity(state, targets);
 			auto* player = state.getPlayer(entity.getOwnerID());
 			auto newBuff = Buff::createBuff(
-			   buffType, player->getID(), state.getNextBuffID(), ticks);
-			state.incNextbuffID();
+			   buffType, player->getID(), ticks);
 			player->addBuff(std::move(newBuff));
 			player->recomputeStats(state);
 		}
@@ -52,8 +51,7 @@ namespace SGA
 		{
 			auto& entity = entityParam.getEntity(state, targets);
 			auto newBuff = Buff::createBuff(
-			   buffType, entity.getID(), state.getNextBuffID(), ticks);
-			state.incNextbuffID();
+			   buffType, entity.getID(), ticks);
 			entity.addBuff(std::move(newBuff));
 			entity.recomputeStats(state);
 		}

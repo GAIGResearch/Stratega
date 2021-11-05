@@ -1082,19 +1082,10 @@ namespace SGA
           // AdditiveModifier
           std::unordered_map< ParameterID, double > additiveModifiers;
           parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
-          type.setAdditiveModifiers(additiveModifiers);
-          // SubstractModifiers
-          std::unordered_map< ParameterID, double > substractModifiers;
-          parseModifiers(nameTypePair.second["SubstractModifier"], config, substractModifiers);
-          type.setSubstractModifiers(substractModifiers);
           // MultiplicationModifiers
           std::unordered_map< ParameterID, double > multiplicationModifiers;
           parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);
           type.setMultiplicationModifiers(multiplicationModifiers);
-          // DivideModifier
-          std::unordered_map< ParameterID, double > divideModifier;
-          parseModifiers(nameTypePair.second["DivideModifier"], config, divideModifier);
-          type.setDivideModifiers(divideModifier);
 
           //Add buff type
            config.buffsTypes.emplace(type.getID(), std::move(type));

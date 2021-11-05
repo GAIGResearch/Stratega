@@ -7,11 +7,6 @@ namespace SGA {
     struct Buff {
         private:
         /// <summary>
-        // ID of this buff in the game.
-        /// <summary>
-        int id;
-
-        /// <summary>
         // ID of the entity who have this buff.
         /// <summary>
         int ownerID;
@@ -28,11 +23,10 @@ namespace SGA {
         /// </summary>
         /// <param name="playerID">ID of the player for which the End action is created</param>
         /// <returns>Action that ends the current turn for the plater ID supplied</returns>
-        static Buff createBuff(const BuffType& type, int entityID, int buffID, int durationTicks)
+        static Buff createBuff(const BuffType& type, int entityID, int durationTicks)
         {
            Buff b;
            b.ownerID = entityID;
-           b.id = buffID;
            b.type = &type;
            b.durationTicks = durationTicks;
            b.elapsedTicks = 0;
