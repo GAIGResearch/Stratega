@@ -45,10 +45,8 @@ namespace SGA
 			auto newBuff = Buff::createBuff(
 			   buffType, player->getID(), state.getNextBuffID(), ticks);
 			state.incNextbuffID();
-			if(player->getBuffs().size() > 0)
-			   player->removeBuffs(state);
 			player->addBuff(std::move(newBuff));
-			player->applyBuffs(state);
+			player->recomputeStats(state);
 		}
 		else
 		{
@@ -56,10 +54,8 @@ namespace SGA
 			auto newBuff = Buff::createBuff(
 			   buffType, entity.getID(), state.getNextBuffID(), ticks);
 			state.incNextbuffID();
-			if(entity.getBuffs().size() > 0)
-			   entity.removeBuffs(state);
 			entity.addBuff(std::move(newBuff));
-			entity.applyBuffs(state);
+			entity.recomputeStats(state);
 		}
 	}
 
@@ -75,14 +71,19 @@ namespace SGA
 	{
 		auto& buffType = buffReference.getBuffType(state, targets);
 
-
-		auto& entity = entityParam.getEntity(state, targets);
-		if (entity.getBuffs().size() > 0)
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
 		{
-			entity.removeBuffs(state);
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			player->removeBuffsOfType(buffType);
+			player->recomputeStats(state);
 		}
-		entity.removeBuffs(buffType);
-		entity.applyBuffs(state);
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			entity.removeBuffsOfType(buffType);
+			entity.recomputeStats(state);
+		}
 	}
 
 	RemoveAllBuffs::RemoveAllBuffs(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -96,11 +97,19 @@ namespace SGA
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		
-		if (entity.getBuffs().size() > 0)
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
 		{
-			entity.removeBuffs(state);
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			player->removeAllBuffs();
+			player->recomputeStats(state);
 		}
-		entity.emptyBuffs();
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			entity.removeAllBuffs();
+			entity.recomputeStats(state);
+		}
 	}
 
 	ChangeResource::ChangeResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :

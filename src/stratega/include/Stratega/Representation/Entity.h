@@ -53,6 +53,11 @@ namespace SGA
 		/// </summary>
 		std::vector<ActionInfo> attachedActions;
 
+		///// <summary>
+		///// Actions that this entity can execute in this game.
+		///// </summary>
+		//std::vector<ActionInfo> attachedActions;
+
 		/// <summary>
 		/// Array of actions currently being executed by this entity
 		/// </summary>
@@ -337,26 +342,39 @@ namespace SGA
 		/// </summary>
 		void setPath(Path p) { path = p; }
 
-		void addBuff(Buff b) { buffs.emplace_back(b); }
+		/// <summary>
+		/// Add buff to the player
+		/// <summary>
+		void addBuff(Buff b)
+		{
+			buffs.emplace_back(b);
+		}
 
-		void removeBuffs(GameState& state);
+		/// <summary>
+		/// Recompute all the parameteres with the applied buffs
+		/// <summary>
+		void recomputeStats(GameState& state);
 
-		void applyBuffs(GameState& state);
-
-		void removeBuffs(const BuffType& type)
+		/// <summary>
+		/// Remove all the buffs of the same type
+		/// <summary>
+		void removeBuffsOfType(const BuffType& type)
 		{
 			auto it = buffs.begin();
 			while (it != buffs.end())
 			{
-				if (it->getType().getID()==type.getID())
-				{					
+				if (it->getType().getID() == type.getID())
+				{
 					it = buffs.erase(it);
 				}
 				else it++;
 			}
 		}
 
-		void emptyBuffs() 
+		/// <summary>
+		/// Recompute all the buffs
+		/// <summary>
+		void removeAllBuffs()
 		{
 			buffs.clear();
 		}

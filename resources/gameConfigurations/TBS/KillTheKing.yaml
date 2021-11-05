@@ -22,7 +22,6 @@ GameRenderer:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
 
-
 Buffs: # Buff lists
     BuffOne: #Buff name
         #Modifiers list
@@ -30,19 +29,13 @@ Buffs: # Buff lists
             #Target parameter list
             Health: 20
             MovementPoints: 50
-        #SubstractModifier: 
-        #    MovementPoints: 0
         MultiplicationModifier: 
             AttackRange: 2
     BuffTwo:
         AdditiveModifier: 
             Health: 30
-        #SubstractModifier: 
-        #    MovementPoints: 0
         MultiplicationModifier: 
             Health: 2
-        #DivideModifier: 
-        #    AttackDamage: 2
     BuffThree:
         AdditiveModifier: 
             Gold: 30
@@ -98,6 +91,23 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
+    AddBuffAround:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    #- "HasNotBuff(Source, BuffTwo)"
+        Effects:
+            - "ApplyBuff(Target, BuffTwo, 1)"
+
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -108,7 +118,8 @@ Actions:
                 SamplingMethod:
                     Type: Neighbours
                     Options:
-                        Shape: AllPositions
+                        Shape: Circle
+                        Size: 1
                 Conditions:
                     #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
@@ -216,14 +227,9 @@ Entities:
             AttackDamage: [0,100,100]
             MovementPoints: [0,1,1]
         Actions: [Attack, Move, BoostHealth]
-        ##Each tick add a buff to the warriors and archers around the king
-        #OnTick:
-        #    BuffOne:
-        #        ValidTargets: [Warrior, Archer]
-        #        Conditions:
-        #            - "InRange(Source, Target, Source.AttackRange)"
-        #        Effects:
-        #            - "ApplyBuff(Source, BuffOne, 1)"
+        ##Each tick add a buff to the entities around the king
+        OnTickActions: [AddBuffAround]
+            
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -239,7 +245,7 @@ ForwardModel:
 #            ValidTargets: King
 #            Effects:
 #                - "ApplyBuff(Source, BuffOne, 1)"
-#
+
 #Action categories
 GameDescription:
     Type: CombatGame

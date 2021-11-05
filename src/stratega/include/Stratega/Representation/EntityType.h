@@ -60,6 +60,11 @@ namespace SGA
 		std::vector<int> actionIds;
 
 		/// <summary>
+		/// List of OnTickAction IDs this entity can execute.
+		/// </summary>
+		std::vector<int> onTickActionIds;
+
+		/// <summary>
 		/// List of entity types this entity can spwan in the game.
 		/// </summary>
 		std::unordered_set<EntityTypeID> spawnableEntityTypes;
@@ -134,6 +139,9 @@ namespace SGA
 
 		const std::vector<int>& getActionIDs() const { return actionIds; }
 		std::vector<int>& getActionIDs() { return actionIds; }
+
+		const std::vector<int>& getOnTickActionIDs() const { return onTickActionIds; }
+		std::vector<int>& getOnTickActionIDs() { return onTickActionIds; }
 
 		const std::unordered_set<EntityTypeID>& getSpawnableEntityTypes() const { return spawnableEntityTypes; }
 		void setSpawnableEntityTypes(const std::unordered_set<EntityTypeID>& set) { spawnableEntityTypes = set; }

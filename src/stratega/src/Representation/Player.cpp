@@ -23,62 +23,54 @@ namespace SGA
 		throw std::runtime_error("Tried accessing action with unknown actionType");
 	}
 
-	void Player::removeBuffs(GameState& state)
+	void Player::recomputeStats(GameState& state)
 	{
-		//Recompute each parameter
+		//Remove buffs applied but keep value clamped to min and max
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
 		{
 			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(i);
+			double maxParameter = param.getMaxValue();
+			double minParameter = param.getMinValue();
 
-			double value = parameters[i];
+			//Update the max value
+			maxParameters[i] = maxParameter;
 
-			//Remove buffs multiplication
-			for (auto& buff : buffs)
-			{
-				auto& buffType = buff.getType();
-				value = buffType.getParameterWithOutMultiplicationBuffsApplied(value, param.getID());
-			}
+			//Keep parameter inside max and min
+			if (parameters[i] > maxParameter)
+				parameters[i] = maxParameter;
+			else if (parameters[i] < minParameter)
+				parameters[i] = minParameter;
 
-			// Add buffs additive
-			for (auto& buff : buffs) {
-				const auto& buffType = buff.getType();
-				value = buffType.getParameterWithOutAdditiveBuffsApplied(value, param.getID());
-			}
-
-			//TODO: Check value is not over max or min values
-
-			//Write new value with buffs applied
-			parameters[i] = value;
 		}
-	}
 
-	void Player::applyBuffs(GameState& state)
-	{
 		//Recompute each parameter
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
 		{
-
 			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(i);
-			double value = parameters[i];
+			double previousMaxParameter = param.getMaxValue();
+			double maxParameter = previousMaxParameter;
 
+			//Add to each parameterMax the additive and multiplication:	
 			//Add buffs additive
 			for (auto& buff : buffs)
 			{
 				const auto& buffType = buff.getType();
-				value = buffType.getParameterWithAdditiveBuffsApplied(value, param.getID());
+				maxParameter = buffType.getParameterWithAdditiveBuffsApplied(maxParameter, param.getID());
 			}
 
+			double multiplicationSum = 0;
 			//Add buffs multiplication
 			for (auto& buff : buffs)
 			{
 				auto& buffType = buff.getType();
-				value = buffType.getMultiplicationSum(value, param.getID());
+				multiplicationSum += buffType.getMultiplicationSum(previousMaxParameter, param.getID());
 			}
+			maxParameter += multiplicationSum;
 
-			//TODO: Check value is not over max or min values
-
-			//Write new value with buffs applied
-			parameters[i] = value;
+			//Write new value with the different of the max parameters
+			parameters[i] += maxParameter - previousMaxParameter;
+			//Update the max value
+			maxParameters[i] = maxParameter;
 		}
 	}
 }

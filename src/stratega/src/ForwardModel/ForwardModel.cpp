@@ -20,8 +20,6 @@ namespace SGA
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
 
-
-	
 	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{
 		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
@@ -395,9 +393,8 @@ namespace SGA
 				it->incrementElapseTicks();
 				if(it->getElapsedTicks()>=it->getDurationTicks())
 				{					
-                    et->removeBuffs(state);
 					it = buffs.erase(it);
-                    et->applyBuffs(state);
+					et->recomputeStats(state);					
 				} else it++;
 			}			
 		}
@@ -412,14 +409,46 @@ namespace SGA
 				it->incrementElapseTicks();
 				if(it->getElapsedTicks()>=it->getDurationTicks())
 				{					
-					player->removeBuffs(state);
 					it = buffs.erase(it);
-					player->applyBuffs(state);
+					player->recomputeStats(state);
 				} else it++;
 			}			
 		}
 
 		executeOnTriggerEffects(state);
+
+		//ExecuteOnTickEntityActions
+		std::vector<Action> bucket;
+		//Generate entities actions
+		for (const auto& sourceEntity : entities)
+		{
+			for (const auto& actionTypeID : sourceEntity.getEntityType().getOnTickActionIDs())
+			{
+				const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+				if (!state.canExecuteAction(sourceEntity, actionType))
+					continue;
+
+				// Generate all actions
+				if (actionType.getTargets().size() == 0/*TargetType::None*/)
+				{
+					// Self-actions do not have a target, only a source
+					bucket.emplace_back(actionSpace->generateSelfAction(sourceEntity, actionType));
+				}
+				else
+				{
+					auto targets = actionSpace->generateTargets(state, sourceEntity, actionType);
+					actionSpace->generateActions(state, sourceEntity, actionType, targets, bucket);
+				}
+			}
+		}
+
+		//Execute actions
+		for (auto& action : bucket)
+		{
+			executeAction(state, action);
+		}
+
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);		
 	}

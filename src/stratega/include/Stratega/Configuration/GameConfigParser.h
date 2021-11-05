@@ -48,6 +48,13 @@ namespace SGA
                     type.second.getActionIDs().emplace_back(config.getActionID(actionName));
                 }
 
+                // Assign On Tick Actions to entities
+                auto onTickActions = types[type.second.getName()]["OnTickActions"].as<std::vector<std::string>>(std::vector<std::string>());
+                for (const auto& actionName : onTickActions)
+                {
+                    type.second.getOnTickActionIDs().emplace_back(config.getActionID(actionName));
+                }
+
                 // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
                 type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], config));
                 auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");

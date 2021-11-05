@@ -192,11 +192,42 @@ namespace SGA
 		/// <returns>The list of buffs attached to this entity.</returns>
 		const std::vector<Buff>& getBuffs() const { return buffs; }
 
-		void addBuff(Buff b) { buffs.emplace_back(b); }
+		/// <summary>
+		/// Add buff to the player
+		/// <summary>
+		void addBuff(Buff b)
+		{
+			buffs.emplace_back(b);
+		}
 
-		void removeBuffs(GameState& state);
+		/// <summary>
+		/// Recompute all the parameteres with the applied buffs
+		/// <summary>
+		void recomputeStats(GameState& state);
 
-		void applyBuffs(GameState& state);		
+		/// <summary>
+		/// Remove all the buffs of the same type
+		/// <summary>
+		void removeBuffsOfType(const BuffType& type)
+		{
+			auto it = buffs.begin();
+			while (it != buffs.end())
+			{
+				if (it->getType().getID() == type.getID())
+				{
+					it = buffs.erase(it);
+				}
+				else it++;
+			}
+		}
+
+		/// <summary>
+		/// Recompute all the buffs
+		/// <summary>
+		void removeAllBuffs()
+		{
+			buffs.clear();
+		}
 
 		/// <summary>
 		/// Returns the list of attached actions to this player.
