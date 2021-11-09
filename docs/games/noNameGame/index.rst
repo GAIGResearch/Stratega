@@ -32,8 +32,19 @@ YAML
         RoundLimit: 100
 
     Agents:
-        - RandomAgent
         - HumanAgent
+        - OSLAAgent
+
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
 
     Player:
         Actions: [Build, Research]
@@ -41,30 +52,31 @@ YAML
         Parameters:
             Gold: 0
             Prod: 5
+            Score: 0
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
         Forest:
-            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Sprite: ../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
 
     Entities:
         City:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             Actions: [Spawn]
@@ -72,12 +84,12 @@ YAML
             Cost:
                 Prod: 10
             Parameters:
-                Health: 800
+                Health: 200
                 StorageCapacity: 50
                 Range: 6
 
         Barracks:
-            Sprite: ../../GUI/Assets/Entities/barracks.png
+            Sprite: ../../assets/Entities/barracks.png
             LineOfSightRange: 3
             RequiredTechnology: Discipline
             Actions: [Spawn]
@@ -85,11 +97,11 @@ YAML
             Cost:
                 Prod: 20
             Parameters:
-                Health: 500
+                Health: 100
                 Range: 6
 
         MilitaryAcademy:
-            Sprite: ../../GUI/Assets/Entities/military.png
+            Sprite: ../../assets/Entities/military.png
             LineOfSightRange: 3
             RequiredTechnology: Mathematics
             Actions: [Spawn]
@@ -97,30 +109,30 @@ YAML
             Cost:
                 Prod: 40
             Parameters:
-                Health: 500
+                Health: 100
 
         Foundry:
-            Sprite: ../../GUI/Assets/Entities/foundry.png
+            Sprite: ../../assets/Entities/foundry.png
             LineOfSightRange: 2
             RequiredTechnology: Metallurgy
             Actions: []
             Cost:
                 Prod: 50
             Parameters:
-                Health: 300
-            
+                Health: 50
+                
         Workshop:
-            Sprite: ../../GUI/Assets/Entities/storage.png
+            Sprite: ../../assets/Entities/storage.png
             LineOfSightRange: 2
             RequiredTechnology: Apprenticeship
             Actions: []
             Cost:
                 Prod: 50
             Parameters:
-                Health: 300
+                Health: 50
 
         Storage:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             LineOfSightRange: 1
             RequiredTechnology: Pottery
             Actions: []
@@ -128,11 +140,11 @@ YAML
                 Prod: 40
             Parameters:
                 Cost: 40
-                Health: 200
+                Health: 50
                 StorageCapacity: 50
 
         Worker:
-            Sprite: ../../GUI/Assets/Entities/unit7.png
+            Sprite: ../../assets/Entities/unit_5.png
             LineOfSightRange: 3
             Actions: [Move, Mine]
             Cost:
@@ -145,9 +157,9 @@ YAML
                 WeaponStrength: 5
                 Health: 50
                 Range: 3
-            
+                
         Warrior:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit_2.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Bronze Working
@@ -159,10 +171,10 @@ YAML
                 Range: 3
                 WeaponStrength: 25
                 Morale: 10
-                Health: 150
-            
+                Health: 50
+                
         Archer:
-            Sprite: ../../GUI/Assets/Entities/unit3.png
+            Sprite: ../../assets/Entities/unit_3.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Archery
@@ -175,10 +187,10 @@ YAML
                 WeaponStrength: 15
                 ReloadTime: 2
                 Morale: 10
-                Health: 100
-            
+                Health: 30
+                
         Catapult:
-            Sprite: ../../GUI/Assets/Entities/unit4.png
+            Sprite: ../../assets/Entities/unit_4.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Engineering
@@ -194,7 +206,7 @@ YAML
                 Health: 60
 
         GoldVein:
-            Sprite: ../../GUI/Assets/Entities/gold_chest.png
+            Sprite: ../../assets/Entities/gold_chest.png
             Symbol: g
             LineOfSightRange: 6
             Actions: []
@@ -215,7 +227,12 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Attackable
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
+                        - "DifferentPlayer(Source, Target)"
                         - "InRange(Source, Target, Source.Range)"
             Effects:
                 - "Attack(Target.Health, Source.WeaponStrength)"
@@ -227,8 +244,15 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Circle
-                    Size: 1 # Target.Speed
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 2
+                            AllowDiagonals: false
+                    #    Type: Neighbours
+                    #    Options:
+                    #        Shape: Circle
+                    #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -241,7 +265,7 @@ YAML
             Targets:
                 Target:
                     Type: Technology
-                    ValidTargets: All  # I'd say this isn't necessary (if not present, default == All)
+                    ValidTargets: All  
                     Conditions:
                         - "CanResearch(Source, Target)"
                         - "CanAfford(Source, Target)"
@@ -251,8 +275,9 @@ YAML
                 - "PayCost(Source, Target)"
             OnComplete:
                 - "Research(Source, Target)"
+                - "ModifyResource(Source.Score, 10)"
 
-    
+        
         Mine:
             Type: EntityAction
             Cooldown: 1
@@ -260,8 +285,12 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: GoldVein
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 2
                     Conditions:
-                        - "InRange(Source, Target, 2)"
                         - "ResourceGreaterEqual(Target.Gold, 40)"
             Effects:
                 - "Transfer(Target.Gold, Source.Player.Gold, 40)"
@@ -279,14 +308,18 @@ YAML
                         - "CanAfford(Source.Player, EntityTypeTarget)"
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 2
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 2
                     Conditions:
                         - "IsWalkable(TargetPosition)"
 
             Effects:
                 - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
                 - "PayCost(Source.Player, EntityTypeTarget)"
+                - "ModifyResource(Source.Player.Score, 2)"
 
         #Build
         Build:
@@ -302,14 +335,17 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Circle
-                    Size: 1
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
                         - "IsWalkable(TargetPosition)"
 
             Effects:
                 - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
                 - "PayCost(Source, EntityTypeTarget)"
+                - "ModifyResource(Source.Score, 5)"
 
     TechnologyTrees:
         SingleTree:
@@ -366,7 +402,7 @@ YAML
                 Cost:
                     Gold: 30
                 Time: 5
-            
+                
 
     Board:
         GenerationType: Manual
@@ -388,7 +424,7 @@ YAML
             M  M  M  g  .  .  .  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-                   
+                    
     ForwardModel:
         LoseConditions: #If true: Player -> cant play
             HasNoCity:
@@ -416,7 +452,7 @@ YAML
                     - "ModifyResource(Source.Player.Gold, -2)"
                     - "ModifyResource(Source.Player.Prod, 4)"
 
-    #Action categories
+    #Game Description
     GameDescription:
         Type: CombatGame
         Actions:
@@ -425,3 +461,12 @@ YAML
             Gather: [Mine]
             Spawn: [Spawn, Build]
             Attack: [Attack]
+        Entities:
+            Base: [City]
+            Building: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+            Spawner: [City, Barracks, MilitaryAcademy]
+            Unit: [Worker, Warrior, Archer, Catapult]
+            Fighter: [Warrior, Archer, Catapult]
+            NoFighter: [Worker]
+            Melee: [Warrior]
+            Ranged: [Archer, Catapult]

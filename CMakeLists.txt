@@ -157,4 +157,3 @@ if (ENABLE_TESTING)
     message("\nTests enabled, configuring.\n")
     include(${CMAKE_CONFIG_FOLDER}/targets/Tests.cmake)
 endif ()
-

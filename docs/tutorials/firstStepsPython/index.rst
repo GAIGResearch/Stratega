@@ -50,7 +50,7 @@ First, we need to import the python binary module produced from C++:
 
     import stratega
 
-Next, it's time to read the Yaml configuration and store it in a varible. The following method *load_config* receives the file path of the yaml and generates a `GameConfig.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Configuration/GameConfig.h>`_ object.
+Next, it's time to read the Yaml configuration and store it in a varible. The following method *load_config* receives the file path of the yaml and generates a `GameConfig.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Configuration/GameConfig.h>`_ object.
 
 .. code-block:: python
 
@@ -214,7 +214,7 @@ Lets check the following example that creates a list of two agents, the first on
 
     agent_list=["DoNothingAgent", RandomPythonAgent()]
 
-You can find all the in-built agents in `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/src/Agent/AgentFactory.cpp>`_.
+You can find all the in-built agents in `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Agent/AgentFactory.cpp>`_.
 
 GUI mode
 ++++++++

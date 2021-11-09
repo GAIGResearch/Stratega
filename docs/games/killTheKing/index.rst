@@ -27,32 +27,48 @@ YAML
 
     GameConfig:
         Type: TBS
-        ActionTimer: 10s
         RoundLimit: 100
+        FogOfWar: true
 
     Agents:
-        - RandomAgent
         - HumanAgent
+        - OSLAAgent
+        #- MCTSAgent:
+        #    FmCalls: 100
+        #    Budget: TIME
+        #    RolloutLength: 10
+
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Sprite: ../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
-        
+
+            
     Board:
         GenerationType: Manual
         Layout: |-
@@ -82,7 +98,12 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: All
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
+                        - "DifferentPlayer(Source, Target)"
                         - "InRange(Source, Target, Source.AttackRange)"
             Effects:
                 - "Attack(Target.Health, Source.AttackDamage)"
@@ -94,8 +115,15 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Square
-                    Size: 1
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 3
+                            AllowDiagonals: false
+                    #    Type: Neighbours
+                    #    Options:
+                    #        Shape: Circle
+                    #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -109,6 +137,10 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: All
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
                         - "InRange(Source, Target, Source.HealRange)"
             Effects:
@@ -117,7 +149,7 @@ YAML
 
     Entities:
         Warrior:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit_2.png
             Symbol: w
             LineOfSightRange: 6
             Actions: [Attack, Move]
@@ -128,7 +160,7 @@ YAML
                 MovementPoints: 2
 
         Archer:
-            Sprite: ../../GUI/Assets/Entities/unit4.png
+            Sprite: ../../assets/Entities/unit_3.png
             Symbol: a
             LineOfSightRange: 10
             Parameters:
@@ -139,7 +171,7 @@ YAML
             Actions: [Attack, Move]
 
         Healer:
-            Sprite: ../../GUI/Assets/Entities/unit3.png
+            Sprite: ../../assets/Entities/unit_6.png
             Symbol: h
             LineOfSightRange: 4
             Parameters:
@@ -150,7 +182,7 @@ YAML
             Actions: [Heal, Move]
 
         King:
-            Sprite: ../../GUI/Assets/Entities/unit1.png
+            Sprite: ../../assets/Entities/unit_1.png
             Symbol: k
             LineOfSightRange: 6
             Parameters:
@@ -169,6 +201,7 @@ YAML
             - OnTick:
                 Effects:
                     - "SetToMaximum(Source.MovementPoints)"
+
     #Action categories
     GameDescription:
         Type: CombatGame
@@ -176,3 +209,20 @@ YAML
             Move: [Move]
             Heal: [Heal]
             Attack: [Attack]
+        Entities:
+            Unit: [King, Warrior, Archer, Healer]
+            Fighter: [Warrior, Archer]
+            NoFighter: [Healer]
+            Melee: [Warrior]
+            Ranged: [Archer]
+
+    GameRunner:
+        AgentInitializationTime:
+            Enabled: false
+            BudgetTimeMs: 50
+            DisqualificationTimeMs: 70
+        AgentComputationTime:
+            Enabled: false
+            BudgetTimeMs: 1000
+            DisqualificationTimeMs: 70
+            MaxNumberWarnings: 5
