@@ -15,6 +15,7 @@ endif()
 pybind11_add_module(stratega ${BINDING_SOURCE_FILES})
 
 target_link_libraries(stratega PUBLIC Stratega)
+
 set_target_properties(stratega PROPERTIES
          #LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/python
          RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/python
