@@ -14,21 +14,21 @@ namespace SGA
 		return type->getID();
 	}
 
-	void Entity::init(const EntityType* type, int entityID)
+	void Entity::init(const EntityType* newType, int entityID)
 	{
-		this->type = type;
+		this->type = newType;
 		this->id = entityID;
 		
 		// Add actions
-		attachedActions.reserve(type->getActionIDs().size());
-		for (auto actionTypeID : type->getActionIDs())
+		attachedActions.reserve(newType->getActionIDs().size());
+		for (auto actionTypeID : newType->getActionIDs())
 		{
 			attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->getLoSRange();
-		parameters.reserve(type->getParameters().size());
+		lineOfSightRange = newType->getLoSRange();
+		parameters.reserve(newType->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
 			parameters.emplace_back(idParamPair.second.getDefaultValue());
@@ -44,6 +44,8 @@ namespace SGA
 				return parameters[param.second.getIndex()];
 			}
 		}
+
+		return -1;
 	}
 
 

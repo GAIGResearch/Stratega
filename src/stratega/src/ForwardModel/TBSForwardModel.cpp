@@ -1,12 +1,18 @@
 #include <cassert>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
 		assert(actions.getAssignmentCount() == 1);
-		for(const auto& action : actions.getEntityActions())
+		if(actions.getEntityActions().size()>0)
+			advanceGameState(state, actions.getEntityActions().begin()->second);
+		else
+			advanceGameState(state, actions.getPlayerActions().begin()->second);
+
+		//warning C4702: unreachable code
+		/*for(const auto& action : actions.getEntityActions())
 		{
 			advanceGameState(state, action.second);
 			return;
@@ -15,7 +21,7 @@ namespace SGA
 		{
 			advanceGameState(state, action.second);
 			return;
-		}
+		}*/
 	}
 	
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
@@ -54,7 +60,7 @@ namespace SGA
 		for (auto i = 1; i <= state.getNumPlayers(); i++)
 		{
 			int nextPlayerID = (state.getCurrentTBSPlayer() + i) % state.getNumPlayers();
-			auto& targetPlayer = state.getPlayers()[nextPlayerID];
+			auto& targetPlayer = state.getPlayers()[static_cast<size_t>(nextPlayerID)];
 
 			// All players did play, we consider this as a tick
 			if (nextPlayerID == 0)

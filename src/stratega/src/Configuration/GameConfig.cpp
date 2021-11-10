@@ -19,7 +19,7 @@ namespace SGA
 				agents.emplace_back(AgentFactory::get().createAgent(agentNode.first, agentNode.second));
 			}
 		}
-		return std::move(agents);
+		return agents;
 	}
 
 	int GameConfig::addPlayer(GameState& state, GameInfo& gameInfo) const
@@ -28,7 +28,7 @@ namespace SGA
 		Player player = { nextPlayerID, true };
 
 		// Add parameters
-		player.resizeParameters(gameInfo.getPlayerParameterTypes().size());
+		player.resizeParameters(static_cast<int>(gameInfo.getPlayerParameterTypes().size()));
 		const auto parameterTypes = gameInfo.getPlayerParameterTypes();
 		for (const auto& idParamPair : parameterTypes)
 		{
@@ -36,7 +36,7 @@ namespace SGA
 		}
 
 		// Add actions
-		player.resAttachedActions(playerActionIds.size());
+		player.resAttachedActions(static_cast<int>(playerActionIds.size()));
 		for (auto actionTypeID : playerActionIds)
 		{
 			player.addAttachedAction(actionTypeID, 0);
@@ -87,12 +87,12 @@ namespace SGA
 
 		initResearchTechs(*state);
 		
-		return std::move(state);
+		return state;
 	}
 	
 	size_t GameConfig::getNumberOfPlayers() const
 	{
-		return numPlayers == -1 ? agentParams.size() : numPlayers;
+		return numPlayers == -1 ? agentParams.size() : static_cast<size_t>(numPlayers);
 	}
 
 	int GameConfig::getEntityID(const std::string& name) const

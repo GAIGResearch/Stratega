@@ -4,7 +4,7 @@
 
 namespace SGA
 {
-	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
+	ActionAssignment BeamSearchAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
 		const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
 		TreeNode rootNode = TreeNode(*processedForwardModel, state, getPlayerID());
@@ -40,7 +40,7 @@ namespace SGA
 			
 			sort(newBestSimulations.begin(), newBestSimulations.end(), sortByValue);
 			if (newBestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
-				newBestSimulations.erase(newBestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, newBestSimulations.end());
+				newBestSimulations.erase(newBestSimulations.begin() + static_cast<int>(parameters_.PLAYER_BEAM_WIDTH), newBestSimulations.end());
 			bestSimulations = newBestSimulations;
 		}
 
@@ -51,7 +51,7 @@ namespace SGA
 			TreeNode* parent = bestChild->parentNode;
 			if (parent->parentNode == nullptr)
 			{
-				return parent->getActionSpace(forwardModel, getPlayerID()).at(bestChild->childIndex);
+				return parent->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestChild->childIndex));
 			}
 			bestChild = parent;
 		}
@@ -82,13 +82,13 @@ namespace SGA
 		// delete all other children.
 		// !!!Note: the index of the child is no longer associated with the index of an action in the node's action space!!!
 		if (bestSimulations.size() > parameters_.PLAYER_BEAM_WIDTH)
-			bestSimulations.erase(bestSimulations.begin() + parameters_.PLAYER_BEAM_WIDTH, bestSimulations.end());
+			bestSimulations.erase(bestSimulations.begin() + static_cast<int>(parameters_.PLAYER_BEAM_WIDTH), bestSimulations.end());
 			
 		return bestSimulations;
 	}
 
 
-	void BeamSearchAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timer)
+	void BeamSearchAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		parameters_.PLAYER_ID = getPlayerID();
 		if (parameters_.heuristic == nullptr)

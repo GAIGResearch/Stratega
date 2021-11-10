@@ -212,7 +212,7 @@ namespace SGA
             {
                 //Parse definition
                 parseLevelDefinition(boardNode["Layout"], boardString, levelDefinitions, config);
-                config.selectedLevel = (int)levelDefinitions.size() - 1;
+                config.selectedLevel = static_cast<int>(levelDefinitions.size()) - 1;
             }
 
             config.levelDefinitions = levelDefinitions;
@@ -303,7 +303,7 @@ namespace SGA
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;
-                context.targetIDs.emplace(target.first, context.targetIDs.size());
+                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
                 newTarget = parseTargetType(target.second, config);
             	
                 std::vector<std::shared_ptr<Condition>> targetConditionsList;            	
@@ -828,7 +828,7 @@ namespace SGA
             // Assign IDs to parameters that do not exist yet
             if (config.parameters.find(nameParamPair.first) == config.parameters.end())
             {
-                config.parameters.insert({ nameParamPair.first, config.parameters.size() });
+                config.parameters.insert({ nameParamPair.first, static_cast<int>(config.parameters.size()) });
             }
 
             // Construct the parameter
@@ -991,8 +991,8 @@ namespace SGA
                 auto ownerID = Player::getNeutralPlayerID();
                 if (i < mapString.size() - 1 && std::isdigit(mapString[i + 1]))
                 {
-                    ownerID = static_cast<int>(mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
-                    if (ownerID>=config.getNumberOfPlayers())
+                    ownerID = (mapString[i + 1] - '0'); // Convert char '0','1',... to the corresponding integer
+                    if (ownerID>= static_cast<int>(config.getNumberOfPlayers()))
                     {
                         throw std::runtime_error("Tried assigning the entity " + entityIt->second->getName() + " to an unknown player " + std::to_string(ownerID));
                     }
@@ -1032,11 +1032,11 @@ namespace SGA
        
     	
         //Assign grid and entity placements
-        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(width, tileTypes.begin(), tileTypes.end()));
+        LevelDefinition newLevel(entityPlacements,Grid2D<std::shared_ptr<TileType>>(static_cast<size_t>(width), tileTypes.begin(), tileTypes.end()));
         newLevel.name = mapName;
         newLevel.boardString = mapString;
 
     	//Add new level definition
-        levelDefinitions.emplace(levelDefinitions.size(), newLevel);
+        levelDefinitions.emplace(static_cast<int>(levelDefinitions.size()), newLevel);
     }
 }

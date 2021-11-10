@@ -114,13 +114,13 @@ namespace SGA
 		/// Returns the width of the board.
 		/// </summary>
 		/// <returns>The width of the board.</returns>
-		int getBoardWidth() const { return (int)board.getWidth(); }
+		int getBoardWidth() const { return static_cast<int>(board.getWidth()); }
 
 		/// <summary>
 		/// Returns the height of the board.
 		/// </summary>
 		/// <returns>The height of the board.</returns>
-		int getBoardHeight() const { return (int)board.getHeight(); }
+		int getBoardHeight() const { return static_cast<int>(board.getHeight()); }
 
 		/// <summary>
 		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
@@ -233,7 +233,7 @@ namespace SGA
 		/// Gets the number of players in this game state.
 		/// </summary>
 		/// <returns>Number of players in this game</returns>
-		int getNumPlayers() const { return (int)players.size(); };
+		int getNumPlayers() const { return static_cast<int>(players.size()); };
 
 		/// <summary>
 		/// Adds a player to the game state.
@@ -476,6 +476,11 @@ namespace SGA
 		std::shared_ptr<Navigation> navigation;
 
 		/// <summary>
+		/// Tile used for fog of war.
+		/// </summary>
+		Tile fogOfWarTile;
+
+		/// <summary>
 		/// Board: a 2 dimensional grid of tiles. This does not contain information about entities on those tiles.		
 		/// </summary>
 		Grid2D<Tile> board;
@@ -501,11 +506,6 @@ namespace SGA
 		/// Random number generator engine
 		/// </summary>
 		std::mt19937 rngEngine;
-
-		/// <summary>
-		/// Tile used for fog of war.
-		/// </summary>
-		Tile fogOfWarTile;
 
 		/// <summary>
 		/// ID of the fog of war tile.

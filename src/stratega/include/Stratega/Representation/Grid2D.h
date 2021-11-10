@@ -18,51 +18,51 @@ namespace SGA
 	public:
 
 		template<typename InputIterator>
-		Grid2D(size_t width, InputIterator begin, InputIterator end)
-			: width(width), height(0), grid(begin, end)
+		Grid2D(size_t newWidth, InputIterator begin, InputIterator end)
+			: width(newWidth), height(0), grid(begin, end)
 		{
-			if(grid.size() % width != 0)
+			if(grid.size() % newWidth != 0)
 			{
 				throw std::runtime_error("Received a amount of values that is not a multiple of width.");
 			}
 
-			height = grid.size() / width;
+			height = grid.size() / newWidth;
 		}
 
 		
-		Grid2D(size_t width, size_t height, Type defaultValue = Type())
-			: width(width), height(height), grid(width * height, defaultValue)
+		Grid2D(size_t newWidth, size_t newHeight, Type defaultValue = Type())
+			: width(newWidth), height(newHeight), grid(newWidth * newHeight, defaultValue)
 		{
 		}
 
-		reference operator[] (const Vector2i& pos) { return grid[pos.y * width + pos.x]; }
-		const_reference operator[] (const Vector2i& pos) const { return grid[pos.y * width + pos.x]; }
+		reference operator[] (const Vector2i& pos) { return grid[static_cast<size_t>(pos.y * static_cast<int>(width) + pos.x)]; }
+		const_reference operator[] (const Vector2i& pos) const { return grid[static_cast<size_t>(pos.y * static_cast<int>(width) + pos.x)]; }
 
 		reference get(int x, int y)
 		{ 
-			auto pos = y * width + x;
-			if (pos > grid.size() || pos < 0)
+			auto pos = y * static_cast<int>(width) + x;
+			if (pos > static_cast<int>(grid.size()) || pos < 0)
 			{
 				throw std::runtime_error("Out of bounds of the grid.");
 			}
 
-			return grid[y * width + x]; 
+			return grid[static_cast<size_t>(y * static_cast<int>(width) + x)];
 		}
 		const_reference get(int x, int y) const 
 		{
-			auto pos = y * width + x;
-			if (pos > grid.size()|| pos < 0)
+			int pos = static_cast<int>(static_cast<size_t>(y) * width + static_cast<size_t>(x));
+			if (pos > static_cast<int>(grid.size())|| pos < 0)
 			{
 				throw std::runtime_error("Out of bounds of the grid.");
 			}
-			return grid[y * width + x]; 
+			return grid[static_cast<size_t>(y * static_cast<int>(width) + x)];
 		}
 
-		[[nodiscard]] size_t getWidth() const { return width; }
-		[[nodiscard]] size_t getHeight() const { return height; }
+		size_t getWidth() const { return width; }
+		size_t getHeight() const { return height; }
 		
-		[[nodiscard]] bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height; };
-		[[nodiscard]] bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
+		bool isInBounds(const Vector2i& pos) const { return pos.x >= 0 && pos.x < static_cast<int>(width) && pos.y >= 0 && pos.y < static_cast<int>(height); };
+		bool isInBounds(int x, int y) const { return isInBounds({ x, y }); };
 
 		/// <summary>
 		/// Visits all positions from start to end using Bresenhams's line algorithm.

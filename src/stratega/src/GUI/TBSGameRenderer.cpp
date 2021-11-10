@@ -9,6 +9,16 @@
 #include <iomanip>
 #include <sstream>
 #include <Stratega/Utils/filesystem.hpp>
+
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(__clang__)    
+DISABLE_WARNING_FORMAT
+#elif defined(__GNUC__)
+DISABLE_WARNING_FORMAT
+#endif
+
 namespace SGA
 {
 	TBSGameRenderer::TBSGameRenderer(SGA::Vector2i& resolution)
@@ -16,7 +26,7 @@ namespace SGA
 		  state(),
 		  fowState(),
 		  selectedAction(),
-		  window(sf::VideoMode((int)resolution.x, (int)resolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		  window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		  pointOfViewPlayerID(NO_PLAYER_ID),
 		  fowSettings(),
 		  zoomValue(5.f),
@@ -28,7 +38,7 @@ namespace SGA
 
 		// Initialize View
 		sf::View view = window.getView();
-		view.setCenter((float)(window.getSize().x / 2.), (float)(window.getSize().y / 2.));
+		view.setCenter(static_cast<float>(window.getSize().x / 2.), static_cast<float>(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
@@ -193,7 +203,7 @@ namespace SGA
 				}
 
 				//Avoid source entity
-				for (int i = 1; i < possibleAction.getTargets().size(); ++i)
+				for (size_t i = 1; i < possibleAction.getTargets().size(); ++i)
 				{
 					if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
 					{
@@ -248,7 +258,7 @@ namespace SGA
 			//If selected unit we check if there is action in tile
 			if (actionsSettings.waitingForPosition)
 			{
-				assignPosition(state, actionsSettings, { (float)pos.x,(float)pos.y });
+				assignPosition(state, actionsSettings, { static_cast<float>(pos.x),static_cast<float>(pos.y) });
 			}
 			else
 			{
@@ -260,7 +270,7 @@ namespace SGA
 			}
 			
 
-			auto* selectedEntity = const_cast<GameState&>(state).getEntity(Vector2f(pos.x, pos.y));
+			auto* selectedEntity = state.getEntity(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
 			if (selectedEntity && ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar))
 			{
 				//Assign selected unit
@@ -454,7 +464,7 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(window.getSize().x / 2.f, window.getSize().y / 1.1f), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 		ImGui::SetNextWindowSize(ImVec2(0, 0));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
@@ -466,7 +476,7 @@ namespace SGA
 		//Ask widget to get
 		if (pointOfViewPlayerID != NO_PLAYER_ID)
 		{
-			auto actionsToExecute = getWidgetResult(const_cast<GameState&>(fowState), actionsSettings, pointOfViewPlayerID);
+			auto actionsToExecute = getWidgetResult(fowState, actionsSettings, pointOfViewPlayerID);
 			if (!actionsToExecute.empty())
 			{
 				selectedAction = actionsToExecute.front();
@@ -529,7 +539,7 @@ namespace SGA
 					else
 					{
 						//We need to find the continues action name that will abort
-						auto& sourcePlayer = action.getTargets()[0].getPlayer(const_cast<GameState&>(state));
+						auto& sourcePlayer = action.getTargets()[0].getPlayer(state);
 						for (auto& continueAction : sourcePlayer.getContinuousActions())
 						{
 							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
@@ -558,7 +568,7 @@ namespace SGA
 					switch (targetType.getType())
 					{
 					case ActionTarget::Position:
-						actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
+						actionInfo += " x:" + std::to_string(static_cast<int>(targetType.getPosition(state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(state).y));
 						break;
 					case ActionTarget::EntityReference:
 						actionInfo += state.getEntityConst(targetType.getEntityID())->getEntityType().getName();
@@ -573,6 +583,8 @@ namespace SGA
 						actionInfo += " Entity: " + targetType.getEntityType(state).getName();
 						break;
 					case ActionTarget::ContinuousActionReference:
+						break;
+					case ActionTarget::TileTypeReference:
 						break;
 					}
 				}

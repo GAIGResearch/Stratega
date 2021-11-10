@@ -2,6 +2,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <set>
 #include <Stratega/Utils/contains.h>
+#pragma warning(disable: 5045)
 namespace SGA
 {
 
@@ -11,7 +12,7 @@ namespace SGA
 		{
 			if (param.second.getName() == "Health")
 			{
-				return entity.getParamValues()[param.second.getIndex()];
+				return entity.getParamValues()[static_cast<size_t>(param.second.getIndex())];
 			}
 		}
 		return 0;
@@ -80,12 +81,12 @@ namespace SGA
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
-							bestAction = (int)i;
+							bestAction = static_cast<int>(i);
 						}
 					}
 				}
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 			
 			//else, try to move closer to the weakest opponent
@@ -106,7 +107,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
 		
@@ -182,12 +183,12 @@ namespace SGA
 						if (health < minimalTargetHealthPoints)
 						{
 							minimalTargetHealthPoints = health;
-							bestAction = (int)i;
+							bestAction = static_cast<int>(i);
 						}
 					}
 				}
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 
 			//else, try to move closer to the weakest opponent
@@ -208,9 +209,9 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
-		return actionSpace[actionSpace.size()-1];
+		return actionSpace[static_cast<size_t>(static_cast<int>(actionSpace.size())-1)];
 	}
 }

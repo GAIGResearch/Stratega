@@ -26,7 +26,8 @@ namespace SGA
 		std::unique_ptr<MCTSNode> rootNode = nullptr;
 		int previousActionIndex = -1;
 		MCTSParameters parameters_;
-		bool continuePreviousSearch = true;
-		int playerTurn = -1;
+		//error: private field 'continuePreviousSearch' is not used [-Werror,-Wunused-private-field]
+		//bool continuePreviousSearch = true;
+		//int playerTurn = -1;
 	};
 }

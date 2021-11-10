@@ -1,5 +1,6 @@
 #pragma once
 #include <Stratega/Representation/Vector2.h>
+#pragma warning( disable : 4820)
 namespace SGA
 {
 	struct TileType;
@@ -15,14 +16,14 @@ namespace SGA
 		const TileType* tileType;
 
 		/// <summary>
-		/// Indicates if this tile is walkable for units to occupy it.
-		/// </summary>
-		bool walkable;
-
-		/// <summary>
 		/// Indicates if this tile blocks the line of sight for entities in the game. 
 		/// </summary>
 		bool blockSight;
+
+		/// <summary>
+		/// Indicates if this tile is walkable for units to occupy it.
+		/// </summary>
+		bool walkable;
 
 		/// <summary>
 		/// Position <x,y> of this tile in the board.
@@ -31,10 +32,10 @@ namespace SGA
 
 	public:
 
-		Tile(const TileType* tileType,int x, int y):
-			tileType(tileType),
-			walkable(true),
+		inline Tile(const TileType* newTileType,int x, int y):
+			tileType(newTileType),
 			blockSight(false),
+			walkable(true),
 			position(x, y)
 		{
 		}
@@ -53,15 +54,15 @@ namespace SGA
 		
 		/*Getters and setters for Tile*/
 
-		bool isWalkable() const { return walkable; }
-		void setWalkable(bool w) { walkable = w; }
+		inline bool isWalkable() const { return walkable; }
+		inline void setWalkable(bool w) { walkable = w; }
 
-		bool blocksSight() const { return blockSight; }
-		void setBlockSight(bool b) { blockSight = b; }
+		inline bool blocksSight() const { return blockSight; }
+		inline void setBlockSight(bool b) { blockSight = b; }
 
-		void setPosition(int x, int y) { position = Vector2i(x,y); }
-		int x() const { return position.x; }
-		int y() const { return position.y; }
+		inline void setPosition(int x, int y) { position = Vector2i(x,y); }
+		inline int x() const { return position.x; }
+		inline int y() const { return position.y; }
 	};
 
 }

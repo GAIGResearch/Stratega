@@ -63,7 +63,7 @@ namespace SGA
 		static std::vector<BaseType*> convert(Iterator begin, Iterator end)
 		{
 			std::vector<BaseType*> vec;
-			vec.reserve(std::distance(begin, end));
+			vec.reserve(static_cast<size_t>(std::distance(begin, end)));
 			for (auto it = begin; it != end; ++it)
 			{
 				vec.emplace_back(*it ? it->get() : nullptr);

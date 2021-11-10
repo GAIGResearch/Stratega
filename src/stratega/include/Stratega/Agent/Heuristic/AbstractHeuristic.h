@@ -14,16 +14,16 @@ namespace SGA
 		std::map<std::string, double> minValue;
 
 	public:
-		AbstractHeuristic(std::map<std::string, double>& attributeWeights,
-			std::map<std::string, double>& attributeUValues,
+		AbstractHeuristic(std::map<std::string, double>& newAttributeWeights,
+			std::map<std::string, double>& newAtributeUValues,
 			GameState& gameState)
-			: attributeWeights(std::move(attributeWeights)), attributeUValues(std::move(attributeUValues))
+			: attributeWeights(std::move(newAttributeWeights)), attributeUValues(std::move(newAtributeUValues))
 		{
-			for (const auto entry : attributeWeights) {
+			for (const auto& entry : newAttributeWeights) {
 				const std::string parameterName = entry.first;
 				maxValue[parameterName] = 0;
 				for (const auto& entityType : gameState.getGameInfo()->getEntityTypes()) {
-					for (const auto parameter : entityType.second.getParameters()) {
+					for (const auto& parameter : entityType.second.getParameters()) {
 						if (parameter.second.getName() == parameterName && parameter.second.getMaxValue() > maxValue[parameterName]) {
 							maxValue[parameterName] = parameter.second.getMaxValue();
 						}

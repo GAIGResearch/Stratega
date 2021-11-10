@@ -68,28 +68,28 @@ namespace SGA
 		/// </summary>
 		/// <param name="technologyID">ID of the technology we are looking for</param>
 		/// <returns>Technology node to retrieve from this tree.</returns>
-		[[nodiscard]] const TechnologyTreeNode& getTechnologyNode(int technologyID)const;
+		const TechnologyTreeNode& getTechnologyNode(int technologyID)const;
 		
 		/// <summary>
 		/// Checks if a given technology ID exists in this tree.
 		/// </summary>
 		/// <param name="technologyID">Tech ID to check</param>
 		/// <returns>True if there's a technology in this tree with the ID received.</returns>
-		[[nodiscard]] bool existsTechnologyTreeNode(int technologyID)const;
+		bool existsTechnologyTreeNode(int technologyID)const;
 
 		/// <summary>
 		/// Returns the ID of a technology that matches the requested name.
 		/// </summary>
 		/// <param name="technologyName">Name to match of a technology in the tree.</param>
 		/// <returns>The ID of the technology with the same name as the one passed.</returns>
-		[[nodiscard]] int getTechnologyNodeID(const std::string& technologyName)const;
+		int getTechnologyNodeID(const std::string& technologyName)const;
 
 		/// <summary>
 		/// Checks if a technology with a given name exists in this tree.
 		/// </summary>
 		/// <param name="technologyName">Name of the technology to check</param>
 		/// <returns>True if it exists.</returns>
-		[[nodiscard]] bool existsTechnologyNode(const std::string& technologyName)const;
+		bool existsTechnologyNode(const std::string& technologyName)const;
 		
 	};
 
@@ -108,14 +108,14 @@ namespace SGA
 		/// </summary>
 		/// <param name="technologyID">ID of the technology to search for.</param>
 		/// <returns>The tree node searched for, an exception if it doesn't exist.</returns>
-		[[nodiscard]] const TechnologyTreeNode& getTechnology(int technologyID) const;
+		const TechnologyTreeNode& getTechnology(int technologyID) const;
 
 		/// <summary>
 		/// Returns the ID of a technology that matches the requested name, in any of the trees of this collection.
 		/// </summary>
 		/// <param name="technologyName">Name of the technology to search for.</param>
 		/// <returns>ID of the technology searched for, or a runtime error if it doesn't exist.</returns>
-		[[nodiscard]] int getTechnologyTypeID(const std::string& technologyName) const;
+		int getTechnologyTypeID(const std::string& technologyName) const;
 	};
 
 }

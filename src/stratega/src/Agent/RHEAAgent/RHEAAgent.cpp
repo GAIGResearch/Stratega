@@ -56,7 +56,7 @@ namespace SGA
         for (size_t i = 0; i < params_.popSize; i++) {
             pop_.emplace_back(RHEAGenome(forwardModel, gameState, params_));
         }
-        params_.currentIterations += (int)params_.popSize;
+        params_.currentIterations += static_cast<int>(params_.popSize);
     }
 
 
@@ -83,7 +83,7 @@ namespace SGA
 
 
         //In RHEA, we count iterations as individual evaluations.
-        params_.currentIterations += (int)params_.popSize;
+        params_.currentIterations += static_cast<int>(params_.popSize);
 
         return newPop;
     }

@@ -34,6 +34,7 @@ namespace SGA {
 		case Budget::TIME: return "Time";
 		case Budget::ITERATIONS: return "Iterations";
 		case Budget::FMCALLS: return "Forward Model calls";
+		case Budget::UNDEFINED: return "Undefined";
 		}
 		return "Undefined";
 	}

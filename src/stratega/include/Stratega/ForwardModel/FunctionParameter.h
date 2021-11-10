@@ -30,11 +30,11 @@ namespace SGA
 		struct ParameterReference
 		{
 			ParameterID parameterID;
-			int argumentIndex;
+			size_t argumentIndex;
 
-			ParameterReference(ParameterID parameterID, int argumentIndex):
-				parameterID(parameterID),
-				argumentIndex(argumentIndex)
+			ParameterReference(ParameterID newParameterID, int newArgumentIndex):
+				parameterID(newParameterID),
+				argumentIndex(static_cast<size_t>(newArgumentIndex))
 			{
 			}
 		};
@@ -44,9 +44,9 @@ namespace SGA
 			int sourceEntity;
 			int actionID;
 
-			ContinuousActionReference(int sourceEntity, int actionID) :
-				sourceEntity(sourceEntity),
-				actionID(actionID)
+			ContinuousActionReference(int newSourceEntity, int newActionID) :
+				sourceEntity(newSourceEntity),
+				actionID(newActionID)
 			{
 			}
 		};
@@ -69,19 +69,19 @@ namespace SGA
 			{
 				switch (type)
 				{
-				case Type::ArgumentReference: argumentIndex = data; break;
+				case Type::ArgumentReference: argumentIndex = static_cast<size_t>(data); break;
 				case Type::EntityTypeReference: entityTypeID = data; break;
 				case Type::TileTypeReference: tileTypeID = data; break;
 				case Type::TechnologyTypeReference: technologyTypeID = data; break;
-				case Type::TimeReference:   argumentIndex = data; break;
-				case Type::EntityPlayerReference:   argumentIndex = data; break;
+				case Type::TimeReference:   argumentIndex = static_cast<size_t>(data); break;
+				case Type::EntityPlayerReference:   argumentIndex = static_cast<size_t>(data); break;
 				default:
 					throw std::runtime_error("Unknown Type");
 				}
 			}
 			double constValue;
 			ParameterReference parameterData;
-			int argumentIndex;
+			size_t argumentIndex;
 			int entityTypeID;
 			int tileTypeID;
 			int technologyTypeID;
@@ -92,7 +92,7 @@ namespace SGA
 		Data data;
 
 		// Private since this class should only be constructed using the static methods
-		FunctionParameter(const Type& type, const Data& data) : parameterType(type), data(data) {};
+		FunctionParameter(const Type& newType, const Data& newData) : parameterType(newType), data(newData) {};
 
 	public:
 		static FunctionParameter createConstParameter(double constValue);

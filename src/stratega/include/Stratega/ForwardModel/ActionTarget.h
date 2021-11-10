@@ -120,12 +120,13 @@ namespace SGA
 			int technologyID;
 			int continuousActionID;
 
-			Data(Vector2f data)
+			Data(Vector2f data):
+				position(data)
 			{
-				position = data;
 			}
 
-			Data(ActionTarget::Type targetType, int data)
+			Data(ActionTarget::Type targetType, int data):
+				position(SGA::Vector2f(-1,-1))
 			{
 				switch (targetType)
 				{
@@ -147,6 +148,9 @@ namespace SGA
 				case TileTypeReference:
 					tileTypeID = data;
 					break;
+				case Position:
+					position = SGA::Vector2f(-1, -1);
+					break;
 				default:
 					break;
 				}
@@ -157,7 +161,7 @@ namespace SGA
 		Data data;
 
 		// Private since this class should only be constructed using the static methods
-		ActionTarget(const Type& type, const Data& data) : targetType(type), data(data) {};
+		ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {};
 	};
 
 }

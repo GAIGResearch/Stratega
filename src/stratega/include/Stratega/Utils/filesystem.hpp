@@ -42,6 +42,20 @@
 // #endif
 //
 //---------------------------------------------------------------------------------------
+
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(_MSC_VER)
+    DISABLE_WARNING_UNSAFE_CONVERSION
+#elif defined(__clang__)    
+    DISABLE_WARNING_SIGN_CONVERSION
+#elif defined(__GNUC__)
+    DISABLE_WARNING_USELESS_CAST
+    DISABLE_WARNING_UNREFERENCED_FUNCTION
+    DISABLE_WARNING_SIGN_CONVERSION
+#endif
+
 #ifndef GHC_FILESYSTEM_H
 #define GHC_FILESYSTEM_H
 
@@ -5942,3 +5956,7 @@ GHC_INLINE recursive_directory_iterator end(const recursive_directory_iterator&)
 #undef GHC_EXPAND_IMPL
 
 #endif  // GHC_FILESYSTEM_H
+
+DISABLE_WARNING_POP
+
+

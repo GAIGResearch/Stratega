@@ -31,7 +31,7 @@ namespace SGA {
 		void mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator);
 
 		//Getter and setter for the fitness of this individual.
-		[[nodiscard]] double getValue() const { return value; };
+		double getValue() const { return value; };
 		void setValue(double newValue) { this->value = newValue; };
 
 		//Shifts this individual to the left, eliminating the first action and padding from the right with a new valid random action.

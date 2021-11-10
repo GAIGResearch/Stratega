@@ -65,7 +65,7 @@ namespace SGA
 		template<typename Iterator>
 		void run(Iterator begin, Iterator end, GameObserver* observer = nullptr)
 		{
-			assert(std::distance(begin, end) == (int)currentState->getPlayers().size());
+			assert(std::distance(begin, end) == static_cast<int>(currentState->getPlayers().size()));
 			if (observer == nullptr)
 			{
 				observer = defaultObserver;
@@ -75,7 +75,7 @@ namespace SGA
 			try
 			{
 				// Check that no player is controlled by a human
-				for (int i = 0; i < agents.size(); i++)
+				for (size_t i = 0; i < agents.size(); i++)
 				{
 					if (agents[i] == nullptr)
 					{
@@ -83,7 +83,7 @@ namespace SGA
 					}
 					else
 					{
-						agents[i]->setPlayerID(i);
+						agents[i]->setPlayerID(static_cast<int>(i));
 					}
 				}
 
@@ -108,14 +108,14 @@ namespace SGA
 		template<typename Iterator>
 		void play(Iterator begin, Iterator end, Vector2i& resolution)
 		{
-			assert(std::distance(begin, end) == currentState->getPlayers().size());
+			assert(std::distance(begin, end) == static_cast<int>(currentState->getPlayers().size()));
 
 			auto agents = IteratorToPtrVector<Iterator, Agent>::convert(begin, end);
 			try
 			{
 				// Check if a player is controlled by an human
 				int humanIndex = NO_PLAYER_ID;
-				for (int i = 0; i < agents.size(); i++)
+				for (int i = 0; i < static_cast<int>(agents.size()); i++)
 				{
 					if (agents[i] == nullptr)
 					{
@@ -145,7 +145,7 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to the current state of the game.
 		/// </summary>
-		[[nodiscard]] const GameState& getGameState() const;
+		const GameState& getGameState() const;
 
 	protected:
 		virtual void initializeAgents(std::vector<Agent*>& agents);

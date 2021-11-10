@@ -1,5 +1,5 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	ForwardModel::ForwardModel()
@@ -97,7 +97,7 @@ namespace SGA
 					}
 
 					//Remove continuous action
-					sourcePlayer.removeContinuousAction((int)i);
+					sourcePlayer.removeContinuousAction(static_cast<int>(i));
 					i--;
 				}
 			}
@@ -122,7 +122,7 @@ namespace SGA
 					}
 
 					//Remove continuous action
-					continuousActions.erase(continuousActions.begin() + i);
+					continuousActions.erase(continuousActions.begin() + static_cast<int>(i));
 					i--;
 				}
 			}
@@ -180,10 +180,10 @@ namespace SGA
 			// ToDo We should probably find a way to avoid this loop
 			for (size_t i = 0; i < executingPlayer.getAttachedActions().size(); i++)
 			{
-				auto& actionInfo = executingPlayer.getAttachedAction((int)i);
+				auto& actionInfo = executingPlayer.getAttachedAction(static_cast<int>(i));
 				if (actionInfo.actionTypeID == action.getActionTypeID())
 				{
-					executingPlayer.setActionLastTick((int)i, state.getCurrentTick());
+					executingPlayer.setActionLastTick(static_cast<int>(i), state.getCurrentTick());
 					break;
 				}
 			}
@@ -317,7 +317,7 @@ namespace SGA
 			{
 				auto& actionType = continuousActions[i].getActionType();
 				//Add one elapsed tick
-				players[j].advanceContinuousAction((int)i);
+				players[j].advanceContinuousAction(static_cast<int>(i));
 
 				//Execute OnTick Effects
 				if (actionType.getSourceType() == ActionSourceType::Player)
@@ -370,7 +370,7 @@ namespace SGA
 					}
 
 					//Delete the ContinuousAction
-					players[j].removeContinuousAction((int)i);
+					players[j].removeContinuousAction(static_cast<int>(i));
 					i--;
 					//Stop executing this action
 					continue;

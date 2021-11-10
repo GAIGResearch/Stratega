@@ -16,6 +16,8 @@ set(PROJ_CXX_STD_FEATURE cxx_std_14)
 set(PROJ_CXX_STANDARD C++14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 14)
+set(CONAN_SYSTEM_INCLUDES ON)
+set(CMAKE_NO_SYSTEM_FROM_IMPORTED OFF)
 set(PROJ_SOURCES_DIR "${CMAKE_SOURCE_DIR}/src")
 set(PROJ_TEST_FOLDER "${CMAKE_SOURCE_DIR}/test")
 set(SUBPROJ_PYBINDING_DIR "${PROJ_SOURCES_DIR}/python")
@@ -27,8 +29,8 @@ set(SUBPROJ_ARENA_DIR "${PROJ_SOURCES_DIR}/arena")
 set(SUBPROJ_ARENA_SRC_DIR "${SUBPROJ_ARENA_DIR}/src")
 set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
 set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
-# options
 
+# options
 option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
 option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" OFF)
 option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
@@ -45,10 +47,17 @@ option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
 option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
+
+#If CMAKE_NO_SYSTEM_FROM_IMPORTED is OFF, pybind11 should be treated as SYSTEM and it should not throw warnings
+#but it does for some reason that we dont know.
+#The temporal solution for this problem is to disable the warnings when we want to build the pyhton bindings
+if(ENABLE_STRATEGA_BINDINGS)
+message("\nDeactivated warnings as errors.\n")
+    set(WARNINGS_AS_ERRORS OFF)   
+endif()
 
 # print out a short summary of the compiler information
-
 message("C++ Compiler: ${CMAKE_CXX_COMPILER}")
 message("C++ Compiler Info: ${CMAKE_CXX_COMPILER_ID}, version ${CMAKE_CXX_COMPILER_VERSION}")
 message("Build type: ${CMAKE_BUILD_TYPE}")
@@ -115,6 +124,8 @@ include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
 include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
+
+
 # find the downloaded/installed packages
 
 find_package(Threads)
@@ -130,7 +141,6 @@ find_package(recastnavigation REQUIRED)
 
 
 # define the targets of the project
-
 include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
 include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
 include(${CMAKE_CONFIG_FOLDER}/targets/Arena.cmake)
@@ -138,7 +148,6 @@ include(${CMAKE_CONFIG_FOLDER}/targets/Stratega.cmake)
 if (ENABLE_STRATEGA_BINDINGS)
     message("\nPyBindings enabled, configuring.\n")
     add_subdirectory("src/python")
-    #include(${CMAKE_CONFIG_FOLDER}/targets/PyBinding.cmake)
 endif ()
 if (ENABLE_BUILD_DOCS)
     message("\nDocs enabled, configuring.\n")
@@ -149,4 +158,3 @@ if (ENABLE_TESTING)
     message("\nTests enabled, configuring.\n")
     include(${CMAKE_CONFIG_FOLDER}/targets/Tests.cmake)
 endif ()
-

@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <vector>
 #include <Stratega/ForwardModel/SamplingMethod.h>
+#include <stdexcept>
 namespace SGA
 {
 	class ActionTarget;
@@ -79,6 +80,8 @@ namespace SGA
 			case ContinuousAction:
 				return "ContinuousAction";
 				break;
+			default:
+				throw std::runtime_error("Not defined");
 			}
 		}
 

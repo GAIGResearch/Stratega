@@ -1,5 +1,5 @@
 #include <Stratega/ForwardModel/ActionSpace.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const
@@ -256,6 +256,9 @@ namespace SGA
 			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::None: return {};
+				break;
+			case TargetType::ContinuousAction: return {};
+				break;
 			}
 
 			targets.emplace_back(newTargets);

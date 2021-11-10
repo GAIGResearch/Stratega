@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-	RTSGameRunner::RTSGameRunner(const GameConfig& config)
-		: GameRunner(config)
+	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)
+		: GameRunner(newConfig)
 	{
 	}
 	
@@ -43,23 +43,23 @@ namespace SGA
 						if (threads[i].isComputing())
 							continue;
 
-						auto results = threads[i].join();
+						auto newResults = threads[i].join();
 						//Check if agent throw exception and rethrow it
-						if (results.error)
+						if (newResults.error)
 						{
-							std::rethrow_exception(results.error);
+							std::rethrow_exception(newResults.error);
 						}
 						//Check computation time
 						if (shouldCheckComputationTime)
 						{ 
-							if (checkComputationTime(results.computationTime, agents[i]->getPlayerID()))
+							if (checkComputationTime(newResults.computationTime, agents[i]->getPlayerID()))
 							{
-								nextActions.merge(results.actions);
+								nextActions.merge(newResults.actions);
 							}
 						}
 						else
 						{
-							nextActions.merge(results.actions);
+							nextActions.merge(newResults.actions);
 						}
 					}
 					else
@@ -137,7 +137,7 @@ namespace SGA
 
 	bool  RTSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime, int currentPlayerID)
 	{
-		if (playerWarnings[currentPlayerID] >= maxNumberWarnings)
+		if (playerWarnings[static_cast<size_t>(currentPlayerID)] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
 			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
@@ -147,7 +147,7 @@ namespace SGA
 		else if (computationTime.count() > budgetTimeMs && computationTime.count() < disqualificationBudgetTimeMs)
 		{
 			//add one warning
-			playerWarnings[currentPlayerID]++;
+			playerWarnings[static_cast<size_t>(currentPlayerID)]++;
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " has exceeded the computation time (" << computationTime.count()
 				<< ">" << budgetTimeMs << ")" << std::endl;
 			return true;
@@ -159,6 +159,8 @@ namespace SGA
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time (" << computationTime.count()
 				<< ">" << disqualificationBudgetTimeMs << ")" << std::endl;
 			return false;
-		}		
+		}
+
+		return true;
 	}
 }

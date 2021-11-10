@@ -91,13 +91,18 @@ namespace SGA
         virtual void createTileLookup(GameState& state) const
         {
             std::unordered_map<char, const TileType*> tileLookup;
-            const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
-            const auto& tileTypes = state.getGameInfo()->getTileTypes();
-            for (const auto& idTilePair : tileTypes)
+            // error: variable ‘defaultTile’ set but not used [-Werror=unused-but-set-variable]
+            //const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
+            const auto& newTileTypes = state.getGameInfo()->getTileTypes();
+            for (const auto& idTilePair : newTileTypes)
             {
                 tileLookup.emplace(idTilePair.second.getSymbol(), &idTilePair.second);
-                if (idTilePair.second.isDefaultTile())
+                /*if (idTilePair.second.isDefaultTile())
+                {
                     defaultTile = &idTilePair.second;
+                    defaultTileTypeID = defaultTile->getID();
+                }*/
+                    
             }
         }
 
@@ -110,7 +115,7 @@ namespace SGA
             }
         }
 
-        std::vector<Tile> instanceTiles(GameState& state, const Grid2D<std::shared_ptr<TileType>>& board) const
+        std::vector<Tile> instanceTiles(GameState& /*state*/, const Grid2D<std::shared_ptr<TileType>>& board) const
         {           
             // Configure board and spawn entities
             std::vector<Tile> tiles;
@@ -119,7 +124,7 @@ namespace SGA
             {
                 for (size_t x = 0; x < board.getWidth(); x++)
                 {
-                    tiles.emplace_back(board.get(x, y)->toTile(x, y));
+                    tiles.emplace_back(board.get(static_cast<int>(x), static_cast<int>(y))->toTile(static_cast<int>(x), static_cast<int>(y)));
                 }
             } 
             return tiles;
@@ -137,7 +142,7 @@ namespace SGA
         virtual void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
         {
             //Initialize board with size and set of tiles.
-            state.initBoard(board.getWidth(), tiles);
+            state.initBoard(static_cast<int>(board.getWidth()), tiles);
         }
 
         virtual void initResearchTechs(GameState& state) const
@@ -180,5 +185,7 @@ namespace SGA
 
         //Adds a new player to the game.
         virtual int addPlayer(GameState& state, GameInfo& gameInfo) const;
+
+        virtual ~GameConfig()=default;
     };
 }

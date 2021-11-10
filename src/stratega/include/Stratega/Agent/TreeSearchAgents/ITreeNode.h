@@ -17,11 +17,11 @@ namespace SGA
 		double value = 0;
 		int ownerID; //ID of the player that owns the tree this node belongs to.
 
-		ITreeNode(const ForwardModel& forwardModel, const GameState& gameState, int ownerID) :
-			ITreeNode(forwardModel, std::move(gameState), nullptr, 0, ownerID) {}
+		ITreeNode(const ForwardModel& forwardModel, const GameState& newGameState, int newOwnerID) :
+			ITreeNode(forwardModel, std::move(newGameState), nullptr, 0, newOwnerID) {}
 		
-		ITreeNode(const ForwardModel& forwardModel, const GameState& gameState, NodeType* parent, const int childIndex, int ownerID) :
-			gameState(std::move(gameState)), parentNode(parent), childIndex(childIndex), ownerID(ownerID)
+		ITreeNode(const ForwardModel& forwardModel, const GameState& newGameState, NodeType* parent, const int newChildIndex, int newOwnerID) :
+			gameState(std::move(newGameState)), parentNode(parent), childIndex(newChildIndex), ownerID(newOwnerID)
 		{
 			children = std::vector<std::unique_ptr<NodeType>>();
 			computeActionSpace(forwardModel);
@@ -39,7 +39,7 @@ namespace SGA
 		}
 
 
-		[[nodiscard]] virtual bool isFullyExpanded() const
+		virtual bool isFullyExpanded() const
 		{
 			return children.size() >= actionSpace.size();
 		}

@@ -71,12 +71,12 @@ namespace SGA
 
 	public:
 
-		Action(const ActionType* actionType):
-			actionTypeFlags(ActionFlag::None),
-			actionType(actionType),
+		Action(const ActionType* newActionType):
+			actionType(newActionType),
 			ownerID(0),
 			continuousActionID(-1),
-			elapsedTicks(0)
+			elapsedTicks(0),
+			actionTypeFlags(ActionFlag::None)
 		{
 		}
 
@@ -102,19 +102,19 @@ namespace SGA
 		/// Checks if this action is to be executed over an entity.
 		/// </summary>
 		/// <returns>True if this action has an entity as target</returns>
-		[[nodiscard]] bool isEntityAction() const;
+		bool isEntityAction() const;
 
 		/// <summary>
 		/// Checks if this action is to be executed over a player.
 		/// </summary>
 		/// <returns>True if this action has a player as target</returns>
-		[[nodiscard]] bool isPlayerAction() const;
+		bool isPlayerAction() const;
 
 		/// <summary>
 		/// Gets the player or entity ID of the target of this action
 		/// </summary>
 		/// <returns>The player or entity ID of the target of this action</returns>
-		[[nodiscard]] int getSourceID() const;
+		int getSourceID() const;
 
 		/// <summary>
 		/// Returns the action type ID of this action
@@ -138,7 +138,7 @@ namespace SGA
 		/// Returns the action source type
 		/// </summary>
 		/// <returns>Action source type</returns>
-		const ActionSourceType getActionSourceType() const;
+		ActionSourceType getActionSourceType() const;
 
 		 
 		/// <summary>
