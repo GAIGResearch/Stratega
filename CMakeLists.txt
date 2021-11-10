@@ -45,12 +45,12 @@ option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
-option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
+option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." OFF)
 option(ENABLE_TESTING "Enable Test Builds" ON)
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
 
 #If CMAKE_NO_SYSTEM_FROM_IMPORTED is OFF, pybind11 should be treated as SYSTEM and it should not throw warnings
-#but it does for some reason but we dont know why.
+#but it does for some reason that we dont know.
 #The temporal solution for this problem is to disable the warnings when we want to build the pyhton bindings
 if(ENABLE_STRATEGA_BINDINGS)
     set(WARNINGS_AS_ERRORS OFF)   
