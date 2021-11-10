@@ -120,7 +120,7 @@ jobs:
         run: |
           CMAKE_ARCH="${{ (runner.os == 'Windows' && matrix.arch == 'x86') && '-A Win32' || '' }}"
           CMAKE_BUILD_TYPE="${{ matrix.release && 'Release' || 'Debug' }}"
-          cmake -S . -B build $CMAKE_ARCH -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DPython_EXECUTABLE="$(which python)"
+          cmake -S . -B build $CMAKE_ARCH -DENABLE_STRATEGA_BINDINGS=OFF -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DPython_EXECUTABLE="$(which python)"
       - name: Compile
         run: |
           cmake --build build -j 2
