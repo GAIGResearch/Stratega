@@ -353,7 +353,7 @@ namespace SGA
 		/// <summary>
 		/// Recompute all the parameteres with the applied buffs
 		/// <summary>
-		void recomputeStats(GameState& state);
+		void recomputeStats();
 
 		/// <summary>
 		/// Remove all the buffs of the same type

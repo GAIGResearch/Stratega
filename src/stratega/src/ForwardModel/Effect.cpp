@@ -68,7 +68,7 @@ namespace SGA
 			auto newBuff = Buff::createBuff(
 			   buffType, entity.getID(), static_cast<int>(ticks));
 			entity.addBuff(std::move(newBuff));
-			entity.recomputeStats(state);
+			entity.recomputeStats();
 		}
 	}
 
@@ -95,7 +95,7 @@ namespace SGA
 		{
 			auto& entity = entityParam.getEntity(state, targets);
 			entity.removeBuffsOfType(buffType);
-			entity.recomputeStats(state);
+			entity.recomputeStats();
 		}
 	}
 
@@ -119,7 +119,7 @@ namespace SGA
 		{
 			auto& entity = entityParam.getEntity(state, targets);
 			entity.removeAllBuffs();
-			entity.recomputeStats(state);
+			entity.recomputeStats();
 		}
 	}
 

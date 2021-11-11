@@ -142,7 +142,7 @@ namespace SGA
 		std::cout << "]" << std::endl;
 	}
 
-	void Entity::recomputeStats(GameState& state)
+	void Entity::recomputeStats()
 	{
 		//Remove buffs applied but keep value clamped to min and max
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)

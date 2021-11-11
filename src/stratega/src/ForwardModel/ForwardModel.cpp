@@ -392,7 +392,7 @@ namespace SGA
 				if (it->getElapsedTicks() >= it->getDurationTicks())
 				{
 					it = buffs.erase(it);
-					et->recomputeStats(state);
+					et->recomputeStats();
 				}
 				else it++;
 			}
