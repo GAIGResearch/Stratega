@@ -39,11 +39,19 @@ namespace Widgets
 				getEntityReference(settings);
 				break;
 			}
+			case TargetType::None:
+			{
+				break;
+			}
+			case TargetType::ContinuousAction:
+			{
+				break;
+			}
 		}
 
-		ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+		ImGui::PushStyleColor(ImGuiCol_Button, static_cast<ImVec4>(ImColor::HSV(0, 0.6f, 0.6f)));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, static_cast<ImVec4>(ImColor::HSV(0., 0.7f, 0.7f)));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, static_cast<ImVec4>(ImColor::HSV(0, 0.8f, 0.8f)));
 
 		//Reset button
 		if (ImGui::Button("Reset", ImVec2(50, 50)))
@@ -95,9 +103,9 @@ namespace Widgets
 					{
 						if (action.getActionTypeID() == settings.actionTypeSelected)
 						{
-							ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-							ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-							ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+							ImGui::PushStyleColor(ImGuiCol_Button, static_cast<ImVec4>(ImColor::HSV(0, 0.6f, 0.6f)));
+							ImGui::PushStyleColor(ImGuiCol_ButtonHovered, static_cast<ImVec4>(ImColor::HSV(0., 0.7f, 0.7f)));
+							ImGui::PushStyleColor(ImGuiCol_ButtonActive, static_cast<ImVec4>(ImColor::HSV(0, 0.8f, 0.8f)));
 							if (ImGui::Button("Abort", ImVec2(50, 50)))
 							{
 								actionsToExecute.emplace_back(Action::createAbortEntityAction(playerID, state.getEntity(entityID)->getID(), action.getContinuousActionID()));
@@ -160,9 +168,9 @@ namespace Widgets
 				{
 					if (action.getActionTypeID() == settings.actionTypeSelected)
 					{
-						ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0., 0.7f, 0.7f));
-						ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+						ImGui::PushStyleColor(ImGuiCol_Button, static_cast<ImVec4>(ImColor::HSV(0, 0.6f, 0.6f)));
+						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, static_cast<ImVec4>(ImColor::HSV(0., 0.7f, 0.7f)));
+						ImGui::PushStyleColor(ImGuiCol_ButtonActive, static_cast<ImVec4>(ImColor::HSV(0, 0.8f, 0.8f)));
 						if (ImGui::Button("Abort", ImVec2(50, 50)))
 						{
 							actionsToExecute.emplace_back(Action::createAbortPlayerAction(playerID, action.getContinuousActionID()));

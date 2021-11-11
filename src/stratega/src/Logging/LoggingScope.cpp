@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-	LoggingScope::LoggingScope(std::string&& scopeName)
-		: scopeName(std::move(scopeName))
+	LoggingScope::LoggingScope(std::string&& newScopeNam)
+		: scopeName(std::move(newScopeNam))
 	{
 		SGA::loggingScopes.emplace_back(this);
 	}

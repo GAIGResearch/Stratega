@@ -1,12 +1,11 @@
-#pragma once
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/GUI/TBSGameRenderer.h>
 
 namespace SGA
 {
-	TBSGameRunner::TBSGameRunner(const GameConfig& config)
-		: GameRunner(config)
+	TBSGameRunner::TBSGameRunner(const GameConfig& newConfig)
+		: GameRunner(newConfig)
 	{
 	}
 
@@ -17,14 +16,13 @@ namespace SGA
 		while(!currentState->isGameOver())
 		{
 			ActionAssignment nextAction;
-			auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
+			auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
 			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
 				try
 				{
 					agentThread.startComputing(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
 					// Render
-					auto startTime = std::chrono::high_resolution_clock::now();
 					while (agentThread.isComputing())
 					{
 						tbsRenderer->render();
@@ -89,7 +87,7 @@ namespace SGA
 			ActionAssignment actionAssignment;
 			try
 			{
-				auto& currentAgent = agents[currentState->getCurrentTBSPlayer()];
+				auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
 				results = runAgent(*currentAgent, *currentState, *forwardModel, *config ,budgetTimeMs);
 
 				//Check if agent throw exception and rethrow it
@@ -116,32 +114,34 @@ namespace SGA
 	bool TBSGameRunner::checkComputationTime(std::chrono::milliseconds computationTime)
 	{
 		int currentPlayerID = currentState->getCurrentTBSPlayer();
-		int budgetTimeWarningLimit = int(budgetTimeMs * 1.05);
-		int disqualificationBudgetTimeMsLimit = int(disqualificationBudgetTimeMs * 1.05);
+		int budgetTimeWarningLimit = static_cast<int>(static_cast<float>(budgetTimeMs) * 1.05f);
+		int disqualificationBudgetTimeMsLimit = static_cast<int>(static_cast<float>(disqualificationBudgetTimeMs) * 1.05f);
 
 
-		if (playerWarnings[currentState->getCurrentTBSPlayer()] >= maxNumberWarnings)
+		if (playerWarnings[static_cast<size_t>(currentState->getCurrentTBSPlayer())] >= maxNumberWarnings)
 		{
 			//Disqualify player for exceeding the warning number
 			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding warnings (" << maxNumberWarnings << ")" << std::endl;
 			return false;
 		}
-		else if (computationTime.count() > budgetTimeWarningLimit && computationTime.count() < disqualificationBudgetTimeMs)
+		else if (computationTime.count() > static_cast<long long>(budgetTimeWarningLimit) && computationTime.count() < static_cast<long long>(disqualificationBudgetTimeMs))
 		{
 			//add one warning 
-			playerWarnings[currentPlayerID]++;
+			playerWarnings[static_cast<size_t>(currentPlayerID)]++;
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " has exceeded the computation time (" << computationTime.count()
 				<< ">" << budgetTimeWarningLimit << ")" << std::endl;
 			return true;
 		}
-		else if (computationTime.count() >= disqualificationBudgetTimeMsLimit)
+		else if (computationTime.count() >= static_cast<long long>(disqualificationBudgetTimeMsLimit))
 		{
 			//Disqualify player for exceeding the computation time
 			currentState->getPlayer(currentPlayerID)->setCanPlay(false);
 			std::cout << "WARNING: Player " << std::to_string(currentPlayerID) << " disqualified for exceeding the computation time (" << computationTime.count()
 				<< ">" << disqualificationBudgetTimeMsLimit << ")" << std::endl;
 			return false;
-		}		
+		}
+
+		return true;
 	}
 }

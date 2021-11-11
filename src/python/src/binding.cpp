@@ -684,7 +684,8 @@ PYBIND11_MODULE(stratega, m)
 	// ---- GameType ----
 	py::enum_<SGA::GameType>(m, "GameType")
 		.value("TBS", SGA::GameType::TBS)
-		.value("RTS", SGA::GameType::RTS);
+		.value("RTS", SGA::GameType::RTS)
+		.export_values();
 
 	//---- GameDescription ----
 	py::class_<SGA::GameDescription,std::shared_ptr<SGA::GameDescription>>(m, "GameDescription")

@@ -57,8 +57,8 @@ namespace SGA
 
 	public: 
 
-		Player(int id, bool canPlay) :
-			id(id), canIPlay(canPlay) {}
+		Player(int newID, bool newCanPlay) :
+			id(newID), canIPlay(newCanPlay) {}
 		 
 		/// <summary>
 		/// Indicates if a given action type can be executed by this player.
@@ -104,13 +104,13 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getRawParameterAt(int paramIdx) { return parameters[paramIdx]; }
+		double& getRawParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>yer to a certain value
 		/// </summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getRawParameterAt(int paramIdx) const { return parameters[paramIdx]; }
+		const double& getRawParameterAt(int paramIdx) const { return parameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Gets a specific parameters value, by index 
@@ -134,7 +134,7 @@ namespace SGA
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setParameter(int paramIdx, double val) { parameters[paramIdx] = val; }
+		void setParameter(int paramIdx, double val) { parameters[static_cast<size_t>(paramIdx)] = val; }
 
 		/// <summary>
 		/// Sets the parameter of this play
@@ -153,11 +153,10 @@ namespace SGA
 		/// </summary>
 		void resizeParameters(int cap)
 		{
-			parameters.resize(cap);
-			maxParameters.resize(cap);
-			minParameters.resize(cap);
+			parameters.resize(static_cast<size_t>(cap));
+			maxParameters.resize(static_cast<size_t>(cap));
+			minParameters.resize(static_cast<size_t>(cap));
 		}
-
 		/// <summary>
 		/// Removes a continuous action from the vector of continuous actions of this player.
 		/// </summary>
@@ -172,7 +171,7 @@ namespace SGA
 		/// <summary>
 		/// Advances the tick counter of the continuous action with index 'idx'
 		/// </summary>
-		void advanceContinuousAction(int idx) { continuousActions[idx].incTicks(); }
+		void advanceContinuousAction(int idx) { continuousActions[static_cast<size_t>(idx)].incTicks(); }
 
 		/// <summary>
 		/// Returns the list of continuous actions this player is executing.
@@ -251,7 +250,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the action info of the attached action with index 'idx'.
 		/// </summary>
-		const ActionInfo& getAttachedAction(int idx) const { return attachedActions[idx]; }
+		const ActionInfo& getAttachedAction(int idx) const { return attachedActions[static_cast<size_t>(idx)]; }
 
 		/// <summary>
 		/// Adds a new attached action to this player.
@@ -261,12 +260,12 @@ namespace SGA
 		/// <summary>
 		/// Sets the last tick on an attached action, indexed by 'idx'
 		/// </summary>
-		void setActionLastTick(int idx, int lastTick) { attachedActions[idx].lastExecutedTick = lastTick; }
+		void setActionLastTick(int idx, int lastTick) { attachedActions[static_cast<size_t>(idx)].lastExecutedTick = lastTick; }
 
 		/// <summary>
 		/// Reserves space for attached actions.
 		/// </summary>
-		void resAttachedActions(int cap) { attachedActions.reserve(cap); }
+		void resAttachedActions(int cap) { attachedActions.reserve(static_cast<size_t>(cap)); }
 
 	};
 }

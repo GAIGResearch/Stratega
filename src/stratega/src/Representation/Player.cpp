@@ -1,5 +1,6 @@
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/Gamestate.h>
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	bool Player::canExecuteAction(int actionTypeID) const
@@ -26,9 +27,9 @@ namespace SGA
 	void Player::recomputeStats(GameState& state)
 	{
 		//Remove buffs applied but keep value clamped to min and max
-		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		for (size_t i = 0; i < parameters.size(); i++)
 		{
-			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(i);
+			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(static_cast<int>(i));
 			double maxParameter = param.getMaxValue();
 			double minParameter = param.getMinValue();
 
@@ -44,9 +45,9 @@ namespace SGA
 		}
 
 		//Recompute each parameter
-		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		for (size_t i = 0; i < parameters.size(); i++)
 		{
-			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(i);
+			const auto& param = state.getGameInfo()->getPlayerParameterByIndex(static_cast<int>(i));
 			double previousMaxParameter = param.getMaxValue();
 			double maxParameter = previousMaxParameter;
 

@@ -112,11 +112,11 @@ namespace SGA
 		/// <summary>
 
 		Entity() :
-			type(0),
 			id(0),
 			ownerID(0),
 			position(),
 			lineOfSightRange(5),
+			type(0),
 			path(),
 			movementSpeed(2),
 			collisionRadius(0.5)
@@ -237,7 +237,7 @@ namespace SGA
 		/// Gets a specific parameters value, by index 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+		double& getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
 		
 		/// <summary>
 		/// Gets a specific max parameters value, by index 

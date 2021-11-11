@@ -110,6 +110,7 @@ namespace SGA
 				if (actionTarget.first == searchingTarget)
 					return actionTarget.second;
 			}
+			return actionTargets.begin()->second;
 		}
 
 		/* Getters and setters for default type variables. */

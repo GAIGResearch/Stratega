@@ -1,6 +1,6 @@
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <cstring>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	void RTSForwardModel::advanceGameState(GameState& state, const Action& action) const
@@ -116,10 +116,10 @@ namespace SGA
 		// Collision
 		for (auto& unit : state.getEntities())
 		{
-			int startCheckPositionX = static_cast<int>(std::floor(unit.x() - unit.getCollisionRadius() - RECT_SIZE));
-			int endCheckPositionX = static_cast<int>(std::ceil(unit.x() + unit.getCollisionRadius() + RECT_SIZE));
-			int startCheckPositionY = static_cast<int>(std::floor(unit.y() - unit.getCollisionRadius() - RECT_SIZE));
-			int endCheckPositionY = static_cast<int>(std::ceil(unit.y() + unit.getCollisionRadius() + RECT_SIZE));
+			int startCheckPositionX = static_cast<int>(std::floor(unit.x() - unit.getCollisionRadius() - static_cast<double>(RECT_SIZE)));
+			int endCheckPositionX = static_cast<int>(std::ceil(unit.x() + unit.getCollisionRadius() + static_cast<double>(RECT_SIZE)));
+			int startCheckPositionY = static_cast<int>(std::floor(unit.y() - unit.getCollisionRadius() - static_cast<double>(RECT_SIZE)));
+			int endCheckPositionY = static_cast<int>(std::ceil(unit.y() + unit.getCollisionRadius() + static_cast<double>(RECT_SIZE)));
 
 			const auto& entityType = unit.getEntityType();
 			
@@ -140,8 +140,8 @@ namespace SGA
 					// https://stackoverflow.com/questions/45370692/circle-rectangle-collision-response
 					auto fx = static_cast<double>(x);
 					auto fy = static_cast<double>(y);
-					auto nearestX = std::max(fx, std::min(unit.x(), fx + RECT_SIZE));
-					auto nearestY = std::max(fy, std::min(unit.y(), fy + RECT_SIZE));
+					auto nearestX = std::max(fx, std::min(unit.x(), fx + static_cast<double>(RECT_SIZE)));
+					auto nearestY = std::max(fy, std::min(unit.y(), fy + static_cast<double>(RECT_SIZE)));
 					auto dist = unit.getPosition() - Vector2f(nearestX, nearestY);
 
 					auto penetrationDepth = unit.getCollisionRadius() - dist.magnitude();
@@ -191,14 +191,14 @@ namespace SGA
 		nav->m_cfg.cs = nav->config.m_cellSize;
 		nav->m_cfg.ch = nav->config.m_cellHeight;
 		nav->m_cfg.walkableSlopeAngle = nav->config.m_agentMaxSlope;
-		nav->m_cfg.walkableHeight = (int)ceilf(nav->config.m_agentHeight / nav->m_cfg.ch);
-		nav->m_cfg.walkableClimb = (int)floorf(nav->config.m_agentMaxClimb / nav->m_cfg.ch);
-		nav->m_cfg.walkableRadius = (int)ceilf(nav->config.m_agentRadius / nav->m_cfg.cs);
-		nav->m_cfg.maxEdgeLen = (int)(nav->config.m_edgeMaxLen / nav->config.m_cellSize);
+		nav->m_cfg.walkableHeight = static_cast<int>(ceilf(nav->config.m_agentHeight / nav->m_cfg.ch));
+		nav->m_cfg.walkableClimb = static_cast<int>(floorf(nav->config.m_agentMaxClimb / nav->m_cfg.ch));
+		nav->m_cfg.walkableRadius = static_cast<int>(ceilf(nav->config.m_agentRadius / nav->m_cfg.cs));
+		nav->m_cfg.maxEdgeLen = static_cast<int>(nav->config.m_edgeMaxLen / nav->config.m_cellSize);
 		nav->m_cfg.maxSimplificationError = nav->config.m_edgeMaxError;
-		nav->m_cfg.minRegionArea = (int)rcSqr(nav->config.m_regionMinSize);		// Note: area = size*size
-		nav->m_cfg.mergeRegionArea = (int)rcSqr(nav->config.m_regionMergeSize);	// Note: area = size*size
-		nav->m_cfg.maxVertsPerPoly = (int)nav->config.m_vertsPerPoly;
+		nav->m_cfg.minRegionArea = static_cast<int>(rcSqr(nav->config.m_regionMinSize));		// Note: area = size*size
+		nav->m_cfg.mergeRegionArea = static_cast<int>(rcSqr(nav->config.m_regionMergeSize));	// Note: area = size*size
+		nav->m_cfg.maxVertsPerPoly = static_cast<int>(nav->config.m_vertsPerPoly);
 		nav->m_cfg.detailSampleDist = nav->config.m_detailSampleDist < 0.9f ? 0 : nav->config.m_cellSize * nav->config.m_detailSampleDist;
 		nav->m_cfg.detailSampleMaxError = nav->config.m_cellHeight * nav->config.m_detailSampleMaxError;
 

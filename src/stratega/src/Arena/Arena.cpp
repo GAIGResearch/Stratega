@@ -5,8 +5,8 @@
 #include <Stratega/Arena/Arena.h>
 #include <Stratega/Arena/utils.h>
 
-Arena::Arena(const SGA::GameConfig& config)
-	: config(&config), runner(createGameRunner(config)), gameBattleCount(0)
+Arena::Arena(const SGA::GameConfig& newConfig)
+	: config(&newConfig), runner(createGameRunner(newConfig)), gameBattleCount(0)
 {
 }
 
@@ -28,10 +28,10 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 				currentMapID++;
 			}
 			currentSeed = seed + i;
-			std::mt19937 rngEngine(currentSeed);
+			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			std::cout << "Using Seed: " << currentSeed << std::endl;
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
-			generateCombinations(config->agentParams.size(), playerCount, callback);
+			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
 		}
 	}
 	catch (const std::exception& ex)
@@ -58,10 +58,10 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber, 
 				currentMapID++;
 			}
 			currentSeed = seed + i;
-			std::mt19937 rngEngine(currentSeed);
+			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			std::cout << "Using Seed: " << currentSeed << std::endl;
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine,agents); };
-			generateCombinations(config->agentParams.size(), playerCount, callback);
+			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
 		}
 	}
 	catch (const std::exception& ex)
@@ -83,7 +83,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		agents[i] = std::move(allAgents[agentAssignment[i]]);
+		agents[i] = std::move(allAgents[static_cast<size_t>(agentAssignment[i])]);
 
 		//Check if agent is Human
 		if (!agents[i])
@@ -102,7 +102,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	SGA::logSingleValue("Seed", std::to_string(currentSeed));
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
+		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
 	}
 	
 	// Run the game
@@ -135,7 +135,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		agents[i] = std::move(allAgents[agentAssignment[i]]);
+		agents[i] = std::move(allAgents[static_cast<size_t>(agentAssignment[i])]);
 
 		//Check if agent is Human
 		if (!agents[i])
@@ -154,7 +154,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	SGA::logSingleValue("Seed", std::to_string(currentSeed));
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::logValue("PlayerAssignment", config->agentParams[agentAssignment[i]].first);
+		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
 	}
 
 	// Run the game
@@ -186,7 +186,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 	}
 	else if(state.getGameType() == SGA::GameType::RTS)
 	{
-		for (size_t i = 0; i < state.getNumPlayers(); i++)
+		for (size_t i = 0; i < static_cast<size_t>(state.getNumPlayers()); i++)
 		{
 			int playerID = state.getPlayers()[i].getID();
 			SGA::LoggingScope playerScope("Player" + std::to_string(playerID));
@@ -196,7 +196,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 	}
 }
 
-void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
+void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& /*forwardModel*/)
 {
 	if (finalState.getGameType() == SGA::GameType::TBS)
 	{

@@ -47,7 +47,7 @@ namespace SGA {
 
 		virtual Action getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const = 0;
 		virtual Action getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const = 0;
-		[[nodiscard]] virtual std::string toString() const = 0;
+		virtual std::string toString() const = 0;
 
 		friend std::ostream& operator<<(std::ostream& os, const BaseActionScript& dt)
 		{

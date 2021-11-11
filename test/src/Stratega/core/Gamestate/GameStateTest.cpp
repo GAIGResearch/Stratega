@@ -160,7 +160,7 @@ namespace SGA
         //Add entities
         for (size_t i = 0; i < 4; i++)
         {
-            fmPtr->spawnEntity(*gameState, *entityTypePtr, 0, {0,(double)i});
+            fmPtr->spawnEntity(*gameState, *entityTypePtr, 0, {0,static_cast<double>(i)});
         }
         
         //Check we dont override entities IDs
@@ -174,7 +174,7 @@ namespace SGA
         for (size_t i = 0; i < 4; i++)
         {
             ASSERT_TRUE(gameState->getEntity(i+1) != nullptr);
-            ASSERT_TRUE(gameState->getEntityAt({ 0,(double)i }) != nullptr);
+            ASSERT_TRUE(gameState->getEntityAt({ 0,static_cast<double>(i) }) != nullptr);
         }
     }
 

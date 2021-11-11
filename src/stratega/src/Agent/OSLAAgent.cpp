@@ -11,7 +11,7 @@ namespace SGA
 		double bestHeuristicValue = -std::numeric_limits<double>::max();
 
 		int bestActionIndex = 0;
-		for (int i = 0; i < actionSpace.size(); i++)
+		for (size_t i = 0; i < actionSpace.size(); i++)
 		{
 			GameState gsCopy(state);
 			forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
@@ -19,10 +19,10 @@ namespace SGA
 			if (value > bestHeuristicValue)
 			{
 				bestHeuristicValue = value;
-				bestActionIndex = i;
+				bestActionIndex = static_cast<int>(i);
 			}
 		}
 
-		return ActionAssignment::fromSingleAction(actionSpace.at(bestActionIndex));
+		return ActionAssignment::fromSingleAction(actionSpace.at(static_cast<size_t>(bestActionIndex)));
 	}
 }

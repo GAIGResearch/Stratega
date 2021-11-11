@@ -25,6 +25,11 @@ namespace SGA
 		//Validate 
 		virtual bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const;
 		virtual bool validatePosition(const GameState& gameState,const Vector2f& targetPosition) const;
+
+		virtual ~SamplingMethod()
+		{
+
+		}
 	};
 
 	struct Neighbours: public SamplingMethod
@@ -39,12 +44,16 @@ namespace SGA
 		// Specific variables for targetType=Position
 		ShapeType shapeType;
 		int shapeSize;
-		
-		std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
-		std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
+
+		virtual std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
+		virtual std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
 		
 		//Validate 
-		bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
+		virtual bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
+	private:
+		using SamplingMethod::getEntities;
+		using SamplingMethod::getPositions;
+		using SamplingMethod::validatePosition;
 	};
 
 	struct Dijkstra : public SamplingMethod
@@ -85,11 +94,16 @@ namespace SGA
 				return posX != rhs.posX || posY != rhs.posY;
 			}
 		};
-		
-		std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
-		std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
+
+
+		virtual std::vector<Vector2i> getPositions(const GameState& gameState, const Vector2f& position) const override;
+		virtual std::vector<int> getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs) const override;
 		
 		//Validate 
-		bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
+		virtual bool validatePosition(const GameState& gameState, const Vector2f& sourcePosition, const Vector2f& targetPosition) const override;
+	private:
+		using SamplingMethod::getEntities;
+		using SamplingMethod::getPositions;
+		using SamplingMethod::validatePosition;
 	};
 }

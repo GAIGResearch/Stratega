@@ -121,7 +121,7 @@ namespace SGA
 		std::unordered_map<int, int> counts;
 		for (auto techTree : technologyTreeCollection->technologyTreeTypes)
 		{
-			counts.emplace(techTree.first, techTree.second.technologies.size());
+			counts.emplace(techTree.first, static_cast<int>(techTree.second.technologies.size()));
 		}
 		/*for (const auto& [id, techTree] : technologyTreeCollection->technologyTreeTypes)
 		{

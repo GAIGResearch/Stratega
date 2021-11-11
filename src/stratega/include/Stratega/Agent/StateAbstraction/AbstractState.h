@@ -71,7 +71,7 @@ namespace SGA
 
 				for (const auto& entry : stateDescription) {
 					auto compareTo = dt.stateDescription.at(entry.first);
-					for (int i = 0; i < entry.second.size(); i++) {
+					for (size_t i = 0; i < entry.second.size(); i++) {
 						if (entry.second[i] != compareTo[i])
 							return false;
 					}

@@ -1,8 +1,7 @@
 #include <Stratega/Agent/ActionScripts/AttackClosestOpponentScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
-
 #include <Stratega/Utils/contains.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	
@@ -58,12 +57,12 @@ namespace SGA
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
-								bestAction = (int)i;
+								bestAction = static_cast<int>(i);
 						}
 					}
 				}
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 			
 			
@@ -84,7 +83,7 @@ namespace SGA
 				}
 				
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 
 			
@@ -92,13 +91,13 @@ namespace SGA
 			subActions = filterAllButThisActionType(actionSpace, "Attack", actionTypeIDToActionTypeString);
 			if (subActions.size() > 0)
 			{
-				return subActions[rand() % subActions.size()];
+				return subActions[static_cast<size_t>(rand() % static_cast<int>(subActions.size()))];
 			}
 
 		}
 		
 		// if nothing has been returned so far, return a random action
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 	}
 
 	Action AttackClosestOpponentScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const
@@ -160,12 +159,12 @@ namespace SGA
 						if (dist < actionDistance)
 						{
 							actionDistance = dist;
-							bestAction = (int)i;
+							bestAction = static_cast<int>(i);
 						}
 					}
 				}
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 
 
@@ -186,7 +185,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 
 
@@ -194,11 +193,11 @@ namespace SGA
 			subActions = filterAllButThisActionType(suitableActions, "Attack", actionTypeIDToActionTypeString);
 			if (!subActions.empty())
 			{
-				return subActions[rand() % subActions.size()];
+				return subActions[static_cast<size_t>(rand() % static_cast<int>(subActions.size()))];
 			}
 		}
 
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 	}
 
 	double AttackClosestOpponentScript::minimalDistanceToOpponents(const Vector2f position,  std::map<int, Vector2f>& unitPositions, const std::set<int>& opponentUnits)

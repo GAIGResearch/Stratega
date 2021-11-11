@@ -20,7 +20,7 @@ namespace SGA
 		for (auto entry : attributeWeights)
 		{
 			const std::string parameterName = entry.first;
-			const int parameterWeight = (int)entry.second;
+			const int parameterWeight = static_cast<int>(entry.second);
 
 			if (parameterWeight != 0) {
 

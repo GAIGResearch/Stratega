@@ -8,8 +8,11 @@ namespace SGA
 	struct Vector2i
 	{
 	public:
+		int x;
+		int y;
+
 		Vector2i();
-		Vector2i(int x, int y);
+		Vector2i(int newX, int newY);
 		Vector2i(int value);
 
 		Vector2i operator- (const Vector2i& v) const { return Vector2i(x - v.x, y - v.y); }
@@ -19,9 +22,6 @@ namespace SGA
 		double distance(const Vector2i& other) const { int dx = other.x - x; int dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
 		int manhattanDistance(const Vector2i& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
 		int chebyshevDistance(const Vector2i& other) const { int dx = other.x - x; int dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
-
-		int x;
-		int y;
 	};
 	
 	inline Vector2i::Vector2i()
@@ -30,10 +30,10 @@ namespace SGA
 		y = 0;
 	}
 	
-	inline Vector2i::Vector2i(int x, int y)
+	inline Vector2i::Vector2i(int newX, int newY)
 	{
-		this->x = x;
-		this->y = y;
+		this->x = newX;
+		this->y = newY;
 	}
 
 	inline Vector2i::Vector2i(int value)
@@ -54,7 +54,7 @@ namespace SGA
 	{
 	public:
 		Vector2f();
-		Vector2f(double x, double y);
+		Vector2f(double newX, double newY);
 		explicit Vector2f(double value);
 		explicit Vector2f(Vector2i v);
 
@@ -67,7 +67,7 @@ namespace SGA
 		bool operator==(const Vector2f& other) const;
 		bool operator!=(const Vector2f& other) const;
 
-		[[nodiscard]] Vector2f normalized() const
+		Vector2f normalized() const
 		{
 			const auto magnitudeValue = magnitude();
 			
@@ -75,12 +75,12 @@ namespace SGA
 			if (magnitudeValue <= 0) return *this;
 			return (*this) / magnitudeValue;
 		}
-		[[nodiscard]] double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
-		[[nodiscard]] double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
-		[[nodiscard]] double chebyshevDistance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
+		double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
+		double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }
+		double chebyshevDistance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::max(std::abs(dx), std::abs(dy)); }
 
 
-		[[nodiscard]] double magnitude() const { return std::sqrt(x * x + y * y); }
+		double magnitude() const { return std::sqrt(x * x + y * y); }
 		
 		double x;
 		double y;
@@ -92,10 +92,10 @@ namespace SGA
 		y = 0;
 	}
 
-	inline Vector2f::Vector2f(double x, double y)
+	inline Vector2f::Vector2f(double newX, double newY)
 	{
-		this->x = x;
-		this->y = y;
+		this->x = newX;
+		this->y = newY;
 	}
 
 	inline Vector2f::Vector2f(double value)
@@ -129,7 +129,7 @@ namespace std
 		{
 			using std::hash;
 			// Not the best hashcode, but we do not expect large values
-			return v.x << 15 | v.y;
+			return static_cast<size_t>(v.x << 15 | v.y);
 		}
 	};
 

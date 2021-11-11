@@ -40,22 +40,22 @@ namespace SGA
 		/// </summary>
 		/// <param name="entityID">The ID of the entity.</param>
 		/// <returns>The assigned action or nullptr if no action was assigned.</returns>
-		[[nodiscard]] Action* getEntityAction(int entityID);
+		Action* getEntityAction(int entityID);
 
 		/// <summary>
 		/// Returns the assignment for an player.
 		/// </summary>
 		/// <param name="playerID">The ID of the player.</param>
 		/// <returns>The assigned action or nullptr if no action was assigned.</returns>
-		[[nodiscard]] Action* getPlayerAction(int playerID);
+		Action* getPlayerAction(int playerID);
 
 		/// <summary>
 		/// Returns the amount of actions that are assigned to entities and players.
 		/// </summary>
-		[[nodiscard]] size_t getAssignmentCount() const;
+		size_t getAssignmentCount() const;
 		
-		[[nodiscard]] const std::unordered_map<int, Action>& getEntityActions() const;
-		[[nodiscard]] const std::unordered_map<int, Action>& getPlayerActions() const;
+		const std::unordered_map<int, Action>& getEntityActions() const;
+		const std::unordered_map<int, Action>& getPlayerActions() const;
 
 		/// <summary>
 		/// Constructs a ActionAssignment from a single action, useful for TBS-Games.

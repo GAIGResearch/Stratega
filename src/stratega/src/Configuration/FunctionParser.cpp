@@ -97,7 +97,7 @@ namespace SGA
 		{
 			double value;
 			ss >> value;
-			return FunctionParameter::createConstParameter(static_cast<double>(prefix == '-' ? -value : value));
+			return FunctionParameter::createConstParameter(prefix == '-' ? -value : value);
 		}
 
 		return {};

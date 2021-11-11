@@ -4,10 +4,11 @@
 
 namespace  SGA
 {
-	ResourceLowerEqual::ResourceLowerEqual(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
+	ResourceLowerEqual::ResourceLowerEqual(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		resourceReference(parameters.at(0)),
-		lowerBoundParameter(parameters.at(1)), 
-		Condition(exp)
+		lowerBoundParameter(parameters.at(1))
+		
 	{
 	}
 
@@ -20,9 +21,10 @@ namespace  SGA
 	}
 
 	ResourceGreaterEqual::ResourceGreaterEqual(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		resourceReference(parameters.at(0)),
-		lowerBoundParameter(parameters.at(1)),
-		Condition(exp)
+		lowerBoundParameter(parameters.at(1))
+		
 	{
 	}
 
@@ -36,8 +38,8 @@ namespace  SGA
 
 
 	HasElapsedTime::HasElapsedTime(const std::string exp, const std::vector<FunctionParameter>& parameters) :
-		lowerBoundParameter(parameters.at(0)),
-		Condition(exp)
+		Condition(exp),
+		lowerBoundParameter(parameters.at(0))
 	{
 	}
 
@@ -103,10 +105,11 @@ namespace  SGA
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceEntity(parameters.at(0)),
+		:Condition(exp),
+		sourceEntity(parameters.at(0)),
 		targetEntity(parameters.at(1)),
-		distance(parameters.at(2)),
-		Condition(exp)
+		distance(parameters.at(2))
+		
 	{
 	}
 
@@ -120,8 +123,8 @@ namespace  SGA
 	}
 
 	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetPosition(parameters[0]),
-		Condition(exp)
+		: Condition(exp), 
+		targetPosition(parameters[0])
 	{
 	}
 	
@@ -133,9 +136,10 @@ namespace  SGA
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetPosition(parameters[0]),
-		targetTile(parameters[1]),
-		Condition(exp)
+		: 
+		Condition(exp), 
+		targetPosition(parameters[0]),
+		targetTile(parameters[1])
 	{
 	}
 	
@@ -148,9 +152,9 @@ namespace  SGA
 		return t.getTileTypeID()==tileType.getID();
 	}
 
-	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: targetParam(parameters[0]),
-		Condition(exp)
+	IsPlayerEntity::IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
+		Condition(exp), 
+		targetParam(parameters[0])
 	{
 	}
 
@@ -161,9 +165,9 @@ namespace  SGA
 	}
 	
 	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		playerParam(parameters[0]),
-		technologyTypeParam(parameters[1]),
-		Condition(exp)
+		technologyTypeParam(parameters[1])
 	{
 	}
 
@@ -176,9 +180,9 @@ namespace  SGA
 	}
 
 	HasNoEntity::HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		playerParam(parameters[0]),
-		entityTypeParam(parameters[1]),
-		Condition(exp)
+		entityTypeParam(parameters[1])
 	{
 	}
 
@@ -248,9 +252,9 @@ namespace  SGA
 	}
 	
 	HasEntity::HasEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		playerParam(parameters[0]),
-		entityTypeParam(parameters[1]),
-		Condition(exp)
+		entityTypeParam(parameters[1])
 	{
 	}
 
@@ -271,9 +275,9 @@ namespace  SGA
 
 	
 	CanResearch::CanResearch(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		playerParam(parameters[0]),
-		technologyTypeParam(parameters[1]),
-		Condition(exp)
+		technologyTypeParam(parameters[1])
 	{
 	}
 
@@ -286,8 +290,9 @@ namespace  SGA
 	}
 
 	CanSpawnCondition::CanSpawnCondition(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceEntityParam(parameters[0]), targetEntityTypeParam(parameters[1]),
-		Condition(exp)
+		: Condition(exp), 
+		sourceEntityParam(parameters[0]),
+		targetEntityTypeParam(parameters[1])
 	{
 	}
 
@@ -316,8 +321,8 @@ namespace  SGA
 	}
 
 	CanAfford::CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: sourceParam(parameters[0]), costParam(parameters[1]),
-		Condition(exp)
+		: Condition(exp), 
+		sourceParam(parameters[0]), costParam(parameters[1])
 	{
 	}
 
@@ -333,7 +338,7 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters[param.getIndex()] < idCostPair.second)
+			if (parameters[static_cast<size_t>(param.getIndex())] < idCostPair.second)
 				return false;
 		}
 

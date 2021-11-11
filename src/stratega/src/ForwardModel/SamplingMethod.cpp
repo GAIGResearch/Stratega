@@ -4,6 +4,7 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Representation/Vector2.h>
 #include <cmath>
+#pragma warning(disable: 5045)
 std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& gameState) const
 {
 	std::vector<SGA::Vector2i> targets;
@@ -13,9 +14,9 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 		return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
 	}; 
 
-	for (int x = 0; x < static_cast<int>(gameState.getBoardWidth()); x++)
+	for (int x = 0; x < gameState.getBoardWidth(); x++)
 	{
-		for (int y = 0; y < static_cast<int>(gameState.getBoardHeight()); y++)
+		for (int y = 0; y < gameState.getBoardHeight(); y++)
 		{
 			if (isValidPos(x, y))
 				targets.emplace_back(x, y);
@@ -45,7 +46,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& /*gameState*/, const
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.getTileAt({ (int)targetPosition.x, (int)targetPosition.y }).getTileTypeID() != -1;
+	return gameState.getTileAt({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -60,9 +61,9 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 			return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
 		};
 
-		for (int x = 0; x < static_cast<int>(gameState.getBoardWidth()); x++)
+		for (int x = 0; x < gameState.getBoardWidth(); x++)
 		{
-			for (int y = 0; y < static_cast<int>(gameState.getBoardHeight()); y++)
+			for (int y = 0; y < gameState.getBoardHeight(); y++)
 			{
 				if (isValidPos(x, y))
 					targets.emplace_back(x, y);
@@ -85,10 +86,10 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 		};
 		
 		// Iterate over an rectangle as large as 'shapeSize' and take every valid position
-		auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x - shapeSize));
-		auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.getBoardWidth() - 1), static_cast<int>(position.x + shapeSize));
+		auto startCheckPositionX = std::max<int>(0, static_cast<int>(position.x) - shapeSize);
+		auto endCheckPositionX = std::min<int>(gameState.getBoardWidth() - 1, static_cast<int>(position.x) + shapeSize);
 		auto startCheckPositionY = std::max<int>(0, static_cast<int>(position.y - shapeSize));
-		auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.getBoardHeight() - 1), static_cast<int>(position.y + shapeSize));
+		auto endCheckPositionY = std::min<int>(gameState.getBoardHeight() - 1, static_cast<int>(position.y) + shapeSize);
 
 		for (auto x = startCheckPositionX; x <= endCheckPositionX; x++)
 		{
@@ -136,7 +137,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 {
 	std::vector<SGA::Vector2i> positions;
 	
-	Node root((int)position.x, (int)position.y);
+	Node root(static_cast<int>(position.x), static_cast<int>(position.y));
 	root.visited = true;
 	root.totalCost = 0;
 
@@ -168,15 +169,15 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 		//Get neighbours
 		std::vector<Node> neighbours;
 		{
-			auto startCheckPositionX = std::max<int>(0, static_cast<int>(currentNode.posX - 1));
-			auto endCheckPositionX = std::min<int>(static_cast<int>(gameState.getBoardWidth() - 1), static_cast<int>(currentNode.posX + 1));
-			auto startCheckPositionY = std::max<int>(0, static_cast<int>(currentNode.posY - 1));
-			auto endCheckPositionY = std::min<int>(static_cast<int>(gameState.getBoardHeight() - 1), static_cast<int>(currentNode.posY + 1));
+			auto startCheckPositionX = std::max<int>(0, currentNode.posX - 1);
+			auto endCheckPositionX = std::min<int>(gameState.getBoardWidth() - 1, currentNode.posX + 1);
+			auto startCheckPositionY = std::max<int>(0, currentNode.posY - 1);
+			auto endCheckPositionY = std::min<int>(gameState.getBoardHeight() - 1, currentNode.posY + 1);
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
 				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
-					|| std::floor(totalCost + 1) > searchSize)
+					|| std::floor(totalCost + 1) > static_cast<float>(searchSize))
 					return false;		
 				else
 					return true;
@@ -189,10 +190,10 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 				{
 					//Allow diagonals
 					if (!allowDiagonals)
-						if (x == startCheckPositionX && y == startCheckPositionY ||
-							x == endCheckPositionX && y == endCheckPositionY ||
-							x == startCheckPositionX && y == endCheckPositionY ||
-							x == endCheckPositionX && y == startCheckPositionY)
+						if ((x == startCheckPositionX && y == startCheckPositionY) ||
+							(x == endCheckPositionX && y == endCheckPositionY) ||
+							(x == startCheckPositionX && y == endCheckPositionY) ||
+							(x == endCheckPositionX && y == startCheckPositionY))
 							continue;
 
 					//Valid neighbors
@@ -274,7 +275,7 @@ bool SGA::Dijkstra::validatePosition(const GameState& gameState, const Vector2f&
 
 	for(auto& position : positions)
 	{
-		if (targetPosition.distance(Vector2f(position.x,position.y)) <= 0.5f)
+		if (targetPosition.distance(Vector2f(static_cast<float>(position.x), static_cast<float>(position.y))) <= static_cast<double>(0.5f))
 			return true;
 	}
 

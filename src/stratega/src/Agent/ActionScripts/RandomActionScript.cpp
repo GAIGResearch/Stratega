@@ -1,12 +1,12 @@
 #include <Stratega/Agent/ActionScripts/RandomActionScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	Action RandomActionScript::getAction(const GameState& /*gameState*/, std::vector<Action>& actionSpace, int playerID) const
 	{
 		if(actionSpace.size() > 0)
-			return actionSpace[rand() % actionSpace.size()];
+			return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 		else 
 			return Action::createEndAction(playerID);	
 	}
@@ -29,7 +29,7 @@ namespace SGA
 			return suitableActions.at(rand() % suitableActions.size());*/
 
 		if (actionSpace.size() > 0)
-			return actionSpace[rand() % actionSpace.size()];
+			return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 		else return Action::createEndAction(playerID);
 	}
 }

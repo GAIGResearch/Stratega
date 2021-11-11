@@ -13,7 +13,7 @@ namespace SGA {
 
 		Action getAction(const GameState& gameState, std::vector<Action>& actionSpace, int playerID) const override;
 		Action getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int playerID, int unitID) const override;
-		[[nodiscard]] std::string toString() const override { return "RunAwayFromOpponentScript"; };
+		std::string toString() const override { return "RunAwayFromOpponentScript"; };
 
 
 	private:

@@ -11,11 +11,8 @@ namespace SGA
 	class LevelDefinition
 	{		
 	public:
-		//LevelDefinition(std::vector<EntityPlacement> entityPlacements, Grid2D<std::shared_ptr<TileType>> board);
-         LevelDefinition(
-            std::vector< EntityPlacement > entityPlacements,
-            Grid2D< std::shared_ptr< TileType > > board)
-             : entityPlacements(entityPlacements), board(board)
+         LevelDefinition( std::vector< EntityPlacement > newEntityPlacements, Grid2D< std::shared_ptr< TileType > > newBoard)
+             : entityPlacements(newEntityPlacements), board(newBoard)
          {
          }
 		std::string name;

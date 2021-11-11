@@ -1,5 +1,6 @@
 #include <Stratega/Agent/ActionScripts/RunToFriendlyUnitsScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
+#pragma warning(disable: 5045)
 
 namespace SGA
 {
@@ -41,7 +42,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = (int)maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = static_cast<int>(maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits));
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -50,7 +51,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
 		
@@ -104,7 +105,7 @@ namespace SGA
 				for (size_t i = 0; i < subActions.size(); i++)
 				{
 					auto& action = subActions.at(i);
-					const int dist = (int)maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits);
+					const int dist = static_cast<int>(maximalDistanceToFriends(action.getTargets()[1].getPosition(gameState), positions, friendlyUnits));
 					if (dist < actionDistance)
 					{
 						actionDistance = dist;
@@ -113,7 +114,7 @@ namespace SGA
 				}
 
 				if (bestAction != -1)
-					return subActions[bestAction];
+					return subActions[static_cast<size_t>(bestAction)];
 			}
 		}
 		

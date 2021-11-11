@@ -1,7 +1,7 @@
 #include <Stratega/Representation/Entity.h>
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/GameInfo.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	bool Entity::isNeutral() const
@@ -14,14 +14,14 @@ namespace SGA
 		return type->getID();
 	}
 
-	void Entity::init(const EntityType* type, int entityID)
+	void Entity::init(const EntityType* newType, int entityID)
 	{
-		this->type = type;
+		this->type = newType;
 		this->id = entityID;
 		
 		// Add actions
-		attachedActions.reserve(type->getActionIDs().size());
-		for (auto actionTypeID : type->getActionIDs())
+		attachedActions.reserve(newType->getActionIDs().size());
+		for (auto actionTypeID : newType->getActionIDs())
 		{
 			attachedActions.emplace_back(ActionInfo{ actionTypeID, 0 });
 		}
@@ -46,6 +46,7 @@ namespace SGA
              return parameters[param.second.getIndex()];
           }
        }
+	   return -1;
     }
 
 	double& Entity::getRawParameter(const std::string& paramName)
@@ -57,6 +58,8 @@ namespace SGA
 				return parameters[param.second.getIndex()];
 			}
 		}
+
+		throw std::runtime_error("Parameter not found");
 	}
 
 
@@ -144,7 +147,7 @@ namespace SGA
 		//Remove buffs applied but keep value clamped to min and max
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
 		{
-			const auto& param = type->getParameterByIndex(i);
+			const auto& param = type->getParameterByIndex(static_cast<int>(i));
 			double maxParameter = param.getMaxValue();
 			double minParameter = param.getMinValue();
 
@@ -162,7 +165,7 @@ namespace SGA
 		//Recompute each parameter
 		for (size_t i = 0; i < (size_t)parameters.size(); i++)
 		{
-			const auto& param = type->getParameterByIndex(i);
+			const auto& param = type->getParameterByIndex(static_cast<int>(i));
 			double previousMaxParameter = param.getMaxValue();
 			double maxParameter = previousMaxParameter;
 

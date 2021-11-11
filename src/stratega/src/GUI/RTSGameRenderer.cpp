@@ -9,14 +9,22 @@
 #include <iomanip>
 #include <sstream>
 
+#include<Stratega/Utils/warnings.h>
+
+DISABLE_WARNING_PUSH
+#if defined(__clang__)    
+DISABLE_WARNING_FORMAT
+#elif defined(__GNUC__)
+DISABLE_WARNING_FORMAT
+#endif
 namespace SGA
 {
 	RTSGameRenderer::RTSGameRenderer(SGA::Vector2i& newResolution)
 		: state(),
 		fowState(),
-		assignment(),
 		config(nullptr),
-		window(sf::VideoMode((int)newResolution.x, (int)newResolution.y), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
+		assignment(),		
+		window(sf::VideoMode(static_cast<unsigned>(newResolution.x), static_cast<unsigned>(newResolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		pointOfViewPlayerID(NO_PLAYER_ID),
 		fowSettings(),
 		zoomValue(5.f),
@@ -28,7 +36,7 @@ namespace SGA
 
 		// Initialize View
 		sf::View view = window.getView();
-		view.setCenter((float)(window.getSize().x / 2.), (float)(window.getSize().y / 2.));
+		view.setCenter(static_cast<float>(window.getSize().x / 2.), static_cast<float>(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
@@ -199,7 +207,6 @@ namespace SGA
 						//we click on someone
 						if (actionsSettings.waitingForEntity)
 						{
-							auto gridPos = toGridFloat(pos);
 							assignEntity(state, actionsSettings, unit->getID());
 						}
 						else
@@ -226,7 +233,7 @@ namespace SGA
 					if (actionsSettings.waitingForPosition)
 					{
 						auto gridPos = toGrid(pos);
-						assignPosition(state, actionsSettings, { (float)gridPos.x,(float)gridPos.y });
+						assignPosition(state, actionsSettings, { static_cast<float>(gridPos.x),static_cast<float>(gridPos.y )});
 					}
 					else
 					{
@@ -351,7 +358,7 @@ namespace SGA
 			{
 				auto& selectionTexture = assetCache.getTexture("circleCollider");
 				sf::Sprite selectionSprite(selectionTexture);
-				selectionSprite.setOrigin(selectionTexture.getSize().x / 2.f, selectionTexture.getSize().y / 2.f);
+				selectionSprite.setOrigin(static_cast<float>(selectionTexture.getSize().x) / 2.f, static_cast<float>(selectionTexture.getSize().y) / 2.f);
 				selectionSprite.setPosition(toISO(unit.x(), unit.y()) + sf::Vector2f{ TILE_WIDTH_HALF, TILE_HEIGHT_HALF });
 				selectionSprite.setColor(sf::Color::Blue);
 				window.draw(selectionSprite);
@@ -371,7 +378,7 @@ namespace SGA
 					if (!tile->header)
 						continue;
 
-					for (int b = 0; b < tile->header->polyCount; ++b)
+					for (size_t b = 0; b < static_cast<size_t>(tile->header->polyCount); ++b)
 					{
 						const dtPoly* p = &tile->polys[b];
 						if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
@@ -380,9 +387,9 @@ namespace SGA
 						const dtPolyDetail* pd = &tile->detailMeshes[b];
 
 						//Draw polygon
-						for (int j = 0; j < pd->triCount; ++j)
+						for (size_t j = 0; j < pd->triCount; ++j)
 						{
-							const unsigned char* t = &tile->detailTris[(pd->triBase + j) * 4];
+							const unsigned char* t = &tile->detailTris[static_cast<size_t>((pd->triBase + static_cast<unsigned int>(j)) * 4)];
 
 							sf::ConvexShape polygon;
 
@@ -393,11 +400,11 @@ namespace SGA
 							polygon.setFillColor(sf::Color(20, 140, 240, 64));
 							polygon.setOutlineThickness(1);
 							polygon.setPointCount(3);
-							for (int k = 0; k < 3; ++k)
+							for (size_t k = 0; k < 3; ++k)
 							{
 								if (t[k] < p->vertCount)
 								{
-									float* pos = &tile->verts[p->verts[t[k]] * 3];
+									float* pos = &tile->verts[static_cast<size_t>(p->verts[static_cast<size_t>(t[k])] * 3)];
 									polygon.setPoint(k, toISO(pos[0], pos[2]));
 								}
 							}
@@ -497,16 +504,16 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2(0, (float)window.getSize().y- (float)window.getSize().y/4));
-		ImGui::SetNextWindowSize(ImVec2(static_cast<float>((float)window.getSize().x), (float)window.getSize().y/4));
+		ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)- static_cast<float>(window.getSize().y)/4));
+		ImGui::SetNextWindowSize(ImVec2(static_cast<float>((window.getSize().x)), static_cast<float>(window.getSize().y)/4));
 
 		//ImGui::SetNextWindowContentSize(ImVec2(600, 700));
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
 		ImGui::Columns(3, "mixed");
-		ImGui::SetColumnWidth(0, (float)window.getSize().x/4);
-		ImGui::SetColumnWidth(1, (float)(window.getSize().x/4)*2);
-		ImGui::SetColumnWidth(2, (float)window.getSize().x/4);
+		ImGui::SetColumnWidth(0, static_cast<float>(window.getSize().x/4));
+		ImGui::SetColumnWidth(1, static_cast<float>((window.getSize().x/4)*2));
+		ImGui::SetColumnWidth(2, static_cast<float>(window.getSize().x/4));
 		ImGui::Separator();
 
 		//Ask widget to get	
@@ -677,7 +684,7 @@ namespace SGA
 						switch (targetType.getType())
 						{
 						case ActionTarget::Position:
-							actionInfo += " x:" + std::to_string((int)targetType.getPosition(state).x) + ",y:" + std::to_string((int)targetType.getPosition(state).y);
+							actionInfo += " x:" + std::to_string(static_cast<int>(targetType.getPosition(state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(state).y));
 							break;
 						case ActionTarget::EntityReference:
 							actionInfo += state.getEntity(targetType.getEntityID())->getEntityType().getName();
@@ -692,6 +699,8 @@ namespace SGA
 							actionInfo += " Entity: " + targetType.getEntityType(state).getName();
 							break;
 						case ActionTarget::ContinuousActionReference:
+							break;
+						case ActionTarget::TileTypeReference:
 							break;
 						}
 					}

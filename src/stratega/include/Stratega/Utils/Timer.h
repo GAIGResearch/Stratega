@@ -1,3 +1,5 @@
+#pragma warning(disable: 5045)
+#pragma warning(disable: 4244)
 #pragma once
 #include <vector>
 #include <unordered_map>
@@ -34,8 +36,8 @@ namespace SGA
 		/// Creates an instance of a Timer. 
 		/// <summary>
 		/// <param name="maxTimeMs">Max time used to check the remaining time.</param>
-		Timer(long maxTimeMs=0) :
-			maxTimeMs(maxTimeMs)
+		Timer(long newMaxTimeMs=0) :
+			maxTimeMs(newMaxTimeMs)
 		{
 			start();
 		}
@@ -74,7 +76,7 @@ namespace SGA
 				tempEndTime = endTime;
 			}
 
-			return (long)std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count();
+			return /*static_cast<long>*/(std::chrono::duration_cast<std::chrono::milliseconds>(tempEndTime - startTime).count());
 		}
 
 		/// <summary>
@@ -82,7 +84,7 @@ namespace SGA
 		/// <summary>
 		double elapsedSeconds() const
 		{
-			return elapsedMilliseconds()/1000.0;
+			return static_cast<double>(elapsedMilliseconds()/ static_cast<long>(1000.0));
 		}
 		
 		/// <summary>
@@ -119,7 +121,7 @@ namespace SGA
 			if (diff < 0)
 				return 0;
 			else
-				return diff;
+				return static_cast<double>(diff);
 		}
 
 		/// <summary>
@@ -147,7 +149,7 @@ namespace SGA
 		/// <returns>A proportion of the time completed. 0.0 means timer just started, while 1.0 means time is exactly complete. </returns>
 		double percCompletedTime() const
 		{
-			return elapsedMilliseconds() / maxTimeMs;
+			return static_cast<double>(elapsedMilliseconds() / maxTimeMs);
 		}
 	};
 }

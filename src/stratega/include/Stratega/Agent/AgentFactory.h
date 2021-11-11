@@ -30,20 +30,20 @@ namespace SGA
 		bool registerAgentFn(const std::string& name, const AgentGeneratorParams& agentFn);
 		
 		template<typename T>
-		bool registerAgent(const std::string name)
+		bool registerAgent(const std::string newName)
 		{
 			return registerAgentFn(
-				name,
-				[](std::string name) { return static_cast<Agent*>(new T(name)); }
+				newName,
+				[](std::string registeredName) { return static_cast<Agent*>(new T(registeredName)); }
 			);
 		}
 
 		template<typename T, typename Params>
-		bool registerAgent(const std::string& name)
+		bool registerAgent(const std::string& newName)
 		{
 			bool normalRegister = registerAgentFn(
-				name,
-				[](std::string name) { return static_cast<Agent*>(new T(name,Params())); }
+				newName,
+				[](std::string agentName) { return static_cast<Agent*>(new T(agentName,Params())); }
 			);
 
 			// The agent is already registered without any parameters
@@ -53,8 +53,8 @@ namespace SGA
 			}
 
 			return registerAgentFn(
-				name,
-				[](std::string name,const YAML::Node node) { return static_cast<Agent*>(new T(name, node.as<Params>())); }
+				newName,
+				[](std::string registeredName,const YAML::Node node) { return static_cast<Agent*>(new T(registeredName, node.as<Params>())); }
 			);
 		}
 		

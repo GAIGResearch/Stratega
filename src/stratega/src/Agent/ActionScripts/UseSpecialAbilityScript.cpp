@@ -1,6 +1,6 @@
 #include <Stratega/Agent/ActionScripts/UseSpecialAbilityScript.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	Action UseSpecialAbilityScript::getAction(const GameState& gameState, std::vector<Action>& actionSpace, int /*playerID*/) const
@@ -22,11 +22,11 @@ namespace SGA
 
 			// if there is anything left, return a random action
 			if (!subsetActions.empty())
-				return subsetActions[rand() % subsetActions.size()];
+				return subsetActions[static_cast<size_t>(rand() % static_cast<int>(subsetActions.size()))];
 		}
 		
 		// return a random action by default
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 	}
 
 	Action UseSpecialAbilityScript::getActionForUnit(const GameState& gameState, std::vector<Action>& actionSpace, int /*playerID*/, int unitID) const
@@ -59,10 +59,10 @@ namespace SGA
 
 			// if there is any special ability to use, return a random one, else default to any random action
 			if (!subsetActions.empty())
-				return subsetActions[rand() % subsetActions.size()];
+				return subsetActions[static_cast<size_t>(rand() % static_cast<int>(subsetActions.size()))];
 		}
 		
 		
-		return actionSpace[rand() % actionSpace.size()];
+		return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 	}
 }

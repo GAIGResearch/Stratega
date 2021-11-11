@@ -78,25 +78,28 @@ add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
 
 target_include_directories(Stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
-target_link_libraries(Stratega
-        PUBLIC
-        #CONAN_PKG::opengl
-        project_options
-        #project_warnings
-        # TODO: Is this public private separation of modules accurate?
-        CONAN_PKG::yaml-cpp
-        CONAN_PKG::recastnavigation
-        "$<$<TARGET_EXISTS:Threads::Threads>:Threads::Threads>"  #use threads if the target exists
-        PRIVATE        
-        CONAN_PKG::imgui
-        imgui
-        # other platforms use Conan's `sfml`
-        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
-        # for linux we have to use the targets of `sfml`'s components individually
-        "$<$<PLATFORM_ID:Linux>:sfml-system>"
-        "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
-        "$<$<PLATFORM_ID:Linux>:sfml-window>"
-        )
+function(target_link_libraries_system target)
+  set(libs ${ARGN})
+  foreach(lib ${libs})
+    get_target_property(lib_include_dirs ${lib} INTERFACE_INCLUDE_DIRECTORIES)
+    target_include_directories(${target} SYSTEM PRIVATE ${lib_include_dirs})
+    target_link_libraries(${target} ${lib} project_options
+        project_warnings)
+  endforeach(lib)
+endfunction(target_link_libraries_system)
+
+target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
+target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
+target_link_libraries_system(Stratega CONAN_PKG::imgui)
+target_link_libraries_system(Stratega imgui)
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries_system(Stratega sfml-system)
+    target_link_libraries_system(Stratega sfml-graphics)
+    target_link_libraries_system(Stratega sfml-window)
+else()
+    target_link_libraries_system(Stratega CONAN_PKG::sfml)
+endif()
 
 install(TARGETS
         Stratega

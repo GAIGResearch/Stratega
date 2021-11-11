@@ -26,7 +26,7 @@ namespace  SGA
 
 		using ForwardModel::generateActions;
 
-		[[nodiscard]] std::vector<Action> generateActions(const GameState& state) const;
+		std::vector<Action> generateActions(const GameState& state) const;
 		
 		std::unique_ptr<ForwardModel> clone() const override;
 
