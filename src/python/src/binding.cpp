@@ -21,6 +21,8 @@
 #include <Stratega/Game/AgentThread.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Arena/Arena.h>
+#include <Stratega/Representation/Buff.h>
+#include <Stratega/Representation/BuffType.h>
 #include <fstream>
 #include <sstream>
 //#include <filesystem>
@@ -352,7 +354,10 @@ PYBIND11_MODULE(stratega, m)
 	py::bind_map<std::unordered_map<SGA::ActionCategory, std::vector<int>>>(m, "ActionCategoriesMap");
 	py::bind_map<std::unordered_map<SGA::EntityCategory, std::vector<int>>>(m, "EntityCategoriesMap");
 
-	
+	//Buffs
+	py::bind_vector<std::vector<SGA::Buff>>(m, "BuffsList");
+	py::bind_vector<std::vector<SGA::BuffType>>(m, "BuffsTypesList");
+	py::bind_map<std::unordered_map<int, SGA::BuffType>>(m, "BuffTypesMap");
 	
 	py::class_<std::vector<SGA::Action>>(m, "ActionList")
 		.def(py::init<>())
@@ -482,6 +487,33 @@ PYBIND11_MODULE(stratega, m)
 			}
 			,"For continuous actions, list of effects that are applied when this action is aborted. Aborted actions do not execute the OnTick effect in the game tick they have been aborted."
 			)
+		;
+
+	// ---- Buff type ----
+	py::class_<SGA::BuffType>(m, "BuffType", "Contains the definition of an Buff.")
+		.def(py::init<>())
+
+		.def_property("name", &SGA::BuffType::getName, &SGA::BuffType::setName)
+		.def("get_name", &SGA::BuffType::getName, "Name of this buff type.")
+		.def("set_name", &SGA::BuffType::setName, py::arg("name"), "Name of this buff type.")
+
+		.def_property("id", &SGA::BuffType::getID, &SGA::BuffType::setID)
+		.def("get_id", &SGA::BuffType::getID, "Unique ID of this buff type")
+		.def("set_id", &SGA::BuffType::setID, py::arg("id"), "Unique ID of this buff type")
+		;
+	
+
+	// ---- Buff ----
+	py::class_<SGA::Buff>(m, "Buff", "Contains the information of an Buff.")
+		.def(py::init<>())
+
+		.def("get_buff_type", &SGA::Buff::getType, "Return buff type")
+
+		.def("get_elapsed_ticks", &SGA::Buff::getElapsedTicks, "Get the elapsed ticks")
+		.def("set_elapsed_ticks", &SGA::Buff::setElapsedTicks, py::arg("newElapsedTicks"), "Set elapsed ticks")
+
+		.def("get_duration_ticks", &SGA::Buff::getDurationTicks, "Get the duration ticks")
+		.def("set_duration_ticks", &SGA::Buff::setDurationTicks, py::arg("newDurartionTicks"), "Set duration ticks")
 		;
 
 	// ---- Entity type ----
@@ -624,6 +656,8 @@ PYBIND11_MODULE(stratega, m)
 		.def("print_info", &SGA::Entity::printInfo, "Prints information about the entity, parameters and actions")
 		.def("get_param_values", py::overload_cast<>(&SGA::Entity::getParamValues, py::const_), "Gets the list of parameters values. Modifiable.")
 		.def("get_param_values", py::overload_cast<>(&SGA::Entity::getParamValues), "Gets the list of parameters values.")
+		.def("get_buffs", py::overload_cast<>(&SGA::Entity::getBuffs, py::const_), "Gets the list of buffs. Modifiable.")
+		.def("get_buffs", py::overload_cast<>(&SGA::Entity::getBuffs), "Gets the list of buffs.")
 		.def("get_entity_parameter_names", &SGA::Entity::getEntityParameterNames, "Gets the list of parameters names.")
 		.def("get_entity_parameters", &SGA::Entity::getEntityParameters, " Gets a map with all pairs <parameter,value>")
 		.def("get_parameter", &SGA::Entity::getParameter, py::arg("paramName"), "Gets the value of a specific parameter, by name ")
@@ -631,7 +665,7 @@ PYBIND11_MODULE(stratega, m)
 
 		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions, py::const_), "Gets the list of continuous actions attached to this entity. Modifiable.")
 		.def("get_continuous_actions", py::overload_cast<>(&SGA::Entity::getContinuousActions), "Gets the list of continuous actions attached to this entity. ")
-
+		
 		.def("get_movement_speed", &SGA::Entity::getMovementSpeed, "Returns the movement speed of this entity.")
 		.def("get_collision_radius", &SGA::Entity::getCollisionRadius, " Returns the collision radius of this entity.")
 		.def("get_id", &SGA::Entity::getID, "Returns theID of this entity.")
@@ -1346,6 +1380,8 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_action_type", &SGA::GameInfo::getActionType, py::arg("typeID"), "Returns the action type.")
 		.def("get_action_type_id", &SGA::GameInfo::getActionTypeID, py::arg("actionName"),"Returns the action type ID.")
 
+		.def("get_buff_type", &SGA::GameInfo::getBuffType, py::arg("buffTypeID"),"Returns the buff type by ID.")
+
 		.def("get_technology_counts", &SGA::GameInfo::getTechnologyCounts, "Returns a map of tuples with the tree ID and how many technologies each has.")
 		.def("get_technology", &SGA::GameInfo::getTechnology, py::arg("technologyID"), "Returns the action type.")
 		.def("get_technology_type_id", &SGA::GameInfo::getTechnologyTypeID, py::arg("technologyName"), "Returns the ID of a technology that matches the requested name, in any of the trees of the tree collection.")
@@ -1357,6 +1393,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_parameter_id_lookup", &SGA::GameInfo::getParameterIDLookup)
 		.def("get_player_parameter_types", &SGA::GameInfo::getPlayerParameterTypes)
 		.def("get_player_spawnable_types", &SGA::GameInfo::getPlayerSpawnableTypes)
+		.def("get_buff_types", &SGA::GameInfo::getBuffTypes)
 		.def("get_entity_types", &SGA::GameInfo::getEntityTypes)
 		.def("get_action_types", &SGA::GameInfo::getActionTypes)
 		.def("get_tile_types", &SGA::GameInfo::getTileTypes)

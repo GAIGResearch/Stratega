@@ -24,7 +24,6 @@ typedef int ParameterID;
 
         public:
             /* Getters and setters for BuffType*/
-
             int getID() const { return id; }
             void setID(int newID) { this->id = newID; }
 

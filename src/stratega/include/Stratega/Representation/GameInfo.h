@@ -233,6 +233,7 @@ namespace SGA
 		const std::unordered_set<EntityTypeID>& getPlayerSpawnableTypes() const { return *playerSpawnableTypes; }
 		const std::unordered_map<int, EntityType>& getEntityTypes() const { return *entityTypes; }
 		const std::unordered_map<int, ActionType>& getActionTypes() const { return *actionTypes; }
+		const std::unordered_map<int, BuffType>& getBuffTypes() const { return *buffTypes; }
 		const std::unordered_map<int, TileType>& getTileTypes() const { return *tileTypes; }
 		const TechnologyTreeCollection& getTechnologyTreeCollection() const { return *technologyTreeCollection; }
 		const std::unordered_map<std::string, std::unordered_set<EntityTypeID>>& getEntityGroups() const { return entityGroups; }

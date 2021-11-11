@@ -12,23 +12,33 @@ Agents:
         Budget: TIME
         RolloutLength: 10
 
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected: ../../assets/Tiles/selected.png
+        FogOfWar: ../../assets/Tiles/notVisible.png
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
 
 Tiles:
     Plain:
-        Sprite: ../../GUI/Assets/Tiles/plain.png
+        Sprite: ../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../GUI/Assets/Tiles/water.png
+        Sprite: ../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../GUI/Assets/Tiles/rock.png
+        Sprite: ../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../GUI/Assets/Tiles/forest.png
+        Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -111,7 +121,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../../GUI/Assets/Entities/unit_2.png
+        Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -122,7 +132,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../GUI/Assets/Entities/unit_3.png
+        Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -133,7 +143,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../GUI/Assets/Entities/unit_6.png
+        Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
@@ -144,7 +154,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../../GUI/Assets/Entities/unit_1.png
+        Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:

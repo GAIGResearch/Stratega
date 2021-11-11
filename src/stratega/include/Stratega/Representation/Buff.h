@@ -33,19 +33,42 @@ namespace SGA {
            return b;
         }
 
+        /// <summary>
+        /// Return the buff type
+        /// </summary>
+        /// <returns>Buff type</returns>
         const BuffType& getType() const 
         { 
             return *type;
         }
 
+        /// <summary>
+        /// Return the number of ticks elapsed of this buff
+        /// </summary>
+        /// <returns>Elapsed ticks</returns>
         int getElapsedTicks() const { return elapsedTicks; }
 
+        /// <summary>
+        /// Apply the new amount of elapsed ticks this buff has
+        /// </summary>
+        /// <param name="newElapsedTicks">New amount of elapsed ticks</param>
         void setElapsedTicks(int newElapsedTicks) { elapsedTicks = newElapsedTicks; }
 
+        /// <summary>
+        /// Return the number of duration ticks of this buff
+        /// </summary>
+        /// <returns>Duration ticks</returns>
         int getDurationTicks() const { return durationTicks; }
 
+        /// <summary>
+        /// Apply the new amount of duration ticks this buff has
+        /// </summary>
+        /// <param name="newElapsedTicks">New amount of duration ticks</param>
         void setDurationTicks(int newDurartionTicks) { durationTicks=newDurartionTicks; }
 
+        /// <summary>
+        /// Increment the elpased tick by one
+        /// </summary>
         void incrementElapseTicks() { elapsedTicks++; }
     };
 }  // namespace SGA
