@@ -294,7 +294,7 @@ namespace SGA
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
-	const BuffType& FunctionParameter::getBuffType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const BuffType& FunctionParameter::getBuffType(const GameState& state, const std::vector<ActionTarget>& /*actionTargets*/) const
 	{
 		if(parameterType == Type::BuffTypeReference)
 		{
