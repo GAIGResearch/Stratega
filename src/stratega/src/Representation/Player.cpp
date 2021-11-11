@@ -1,5 +1,5 @@
 #include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Gamestate.h>
+#include <Stratega/Representation/GameState.h>
 #pragma warning(disable: 5045)
 namespace SGA
 {
