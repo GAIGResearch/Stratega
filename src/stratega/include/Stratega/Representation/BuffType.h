@@ -48,9 +48,9 @@ typedef int ParameterID;
                multiplicationModifiers = m;
             }
 
-            double getParameterWithAdditiveBuffsApplied(double baseValue, ParameterID id) const 
+            double getParameterWithAdditiveBuffsApplied(double baseValue, ParameterID searchedID) const 
             {
-               auto itA = additiveModifiers.find(id);
+               auto itA = additiveModifiers.find(searchedID);
                if(itA != additiveModifiers.end())
                {
                   baseValue += itA->second;
@@ -59,9 +59,9 @@ typedef int ParameterID;
                return baseValue;
             }
             
-            double getParameterWithOutAdditiveBuffsApplied(double baseValue, ParameterID id) const 
+            double getParameterWithOutAdditiveBuffsApplied(double baseValue, ParameterID searchedID) const
             {
-               auto itA = additiveModifiers.find(id);
+               auto itA = additiveModifiers.find(searchedID);
                if(itA != additiveModifiers.end())
                {
                   baseValue -= itA->second;
@@ -70,10 +70,10 @@ typedef int ParameterID;
                return baseValue;
             }
 
-            double getParameterWithOutMultiplicationBuffsApplied(double baseValue, ParameterID id) const
+            double getParameterWithOutMultiplicationBuffsApplied(double baseValue, ParameterID searchedID) const
             {
                 double newBaseValue = baseValue;
-                auto itA = multiplicationModifiers.find(id);
+                auto itA = multiplicationModifiers.find(searchedID);
                 if (itA != multiplicationModifiers.end())
                 {
                     baseValue /= itA->second;
@@ -81,10 +81,10 @@ typedef int ParameterID;
                 return  baseValue - newBaseValue;
             }
 
-            double getMultiplicationSum(double baseValue, ParameterID id) const
+            double getMultiplicationSum(double baseValue, ParameterID searchedID) const
             {
                 double newBaseValue = baseValue;
-                auto itA = multiplicationModifiers.find(id);
+                auto itA = multiplicationModifiers.find(searchedID);
                 if(itA != multiplicationModifiers.end())
                 {
                    baseValue *= itA->second;

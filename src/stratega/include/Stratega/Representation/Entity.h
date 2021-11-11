@@ -358,12 +358,12 @@ namespace SGA
 		/// <summary>
 		/// Remove all the buffs of the same type
 		/// <summary>
-		void removeBuffsOfType(const BuffType& type)
+		void removeBuffsOfType(const BuffType& newType)
 		{
 			auto it = buffs.begin();
 			while (it != buffs.end())
 			{
-				if (it->getType().getID() == type.getID())
+				if (it->getType().getID() == newType.getID())
 				{
 					it = buffs.erase(it);
 				}
