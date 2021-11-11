@@ -176,7 +176,7 @@ namespace SGA
 		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
 		/// </summary>
-		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue)
+		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue) const
 		{
 			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameterByName(parameterName).getIndex(), newValue);
 		}
@@ -187,7 +187,7 @@ namespace SGA
 		/// <param name="entity">Entity to search parameter from</param>
 		/// <param name="parameterID">Index of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
-		void modifyEntityParameterByID(Entity& entity, int parameterID, double newValue)
+		void modifyEntityParameterByID(Entity& entity, int parameterID, double newValue) const
 		{
 			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameter(parameterID).getIndex(), newValue);
 		}
@@ -199,7 +199,7 @@ namespace SGA
 		/// <param name="parameterIndex">Index of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		/// <param name="gameInfo">Game info object with the information of the current game</param>
-		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue);
+		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const;
 		
 		/// <summary>
 		/// Modify player parameter by name
@@ -208,7 +208,7 @@ namespace SGA
 		/// <param name="parameterName">Name of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		/// <param name="gameInfo">Game info object with the information of the current game</param>
-		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo)
+		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo) const
 		{
 			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterName).getIndex(), newValue);
 		}
@@ -220,7 +220,7 @@ namespace SGA
 		/// <param name="parameterID">ID of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		/// <param name="gameInfo">Game info object with the information of the current game</param>
-		void modifyPlayerParameterByID(Player& player, int parameterID, double newValue, GameInfo& gameInfo)
+		void modifyPlayerParameterByID(Player& player, int parameterID, double newValue, const GameInfo& gameInfo) const
 		{
 			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterID).getIndex(), newValue);
 		}
@@ -231,7 +231,7 @@ namespace SGA
 		/// <param name="player">Player to search parameter from</param>
 		/// <param name="parameterIndex">Index of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
-		void modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue);
+		void modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const;
 
 	protected:
 

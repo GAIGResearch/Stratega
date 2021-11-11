@@ -16,12 +16,26 @@ namespace SGA
 
 	}
 	
-	void ModifyResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ModifyResource::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
+		auto targetResource = resourceReference.getRawParameterValue(state, targets);
 		auto amount = amountParameter.getConstant(state, targets);
 
 		targetResource += amount;
+		
+		int parameterID = resourceReference.getParameter(state, targets).getIndex();
+
+		if (resourceReference.getType() != FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = resourceReference.getEntity(state, targets);
+			fm.modifyEntityParameterByID(entity, parameterID, targetResource);
+		}
+		else
+		{
+			auto& player = resourceReference.getPlayer(state, targets);
+			fm.modifyPlayerParameterByID(player, parameterID, targetResource, *state.getGameInfo());
+		}
+		
 	}
 
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -118,12 +132,13 @@ namespace SGA
 
 	}
 
-	void ChangeResource::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void ChangeResource::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
 		double amount = amountParameter.getConstant(state, targets);
+		auto& entity = resourceReference.getEntity(state, targets);
+		int parameterID = resourceReference.getParameter(state, targets).getIndex();
 
-		targetResource = amount;
+		fm.modifyEntityParameterByID(entity, parameterID, amount);
 	}
 	
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -134,16 +149,18 @@ namespace SGA
 
 	}
 	
-	void Attack::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void Attack::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
-		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
-		
+		auto targetResource = resourceReference.getRawParameterValue(state, targets);
+		int parameterID = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
-		
+
+		fm.modifyEntityParameterByID(entity, parameterID, targetResource);
+
 		if(targetResource <= 0)
 			entity.flagRemove();
 	}
@@ -157,19 +174,21 @@ namespace SGA
 
 	}
 	
-	void AttackProbability::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void AttackProbability::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
-		auto& targetResource = resourceReference.getRawParameterValue(state, targets);
+		auto targetResource = resourceReference.getRawParameterValue(state, targets);
+		int parameterID = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		auto probability = probabilityParameter.getConstant(state, targets);
 		
 		std::uniform_int_distribution<unsigned int> distribution(0, 100);
        
 		//Get chance to attack
-		if(distribution(state.getRndEngine()) > probability)
+		if(distribution(state.getRndEngine()) < probability)
 		{
 			targetResource -= amount;
+			fm.modifyEntityParameterByID(entity, parameterID, targetResource);
 			auto targetvalueResource = resourceReference.getParameterValue(state, targets);
 			if (targetvalueResource <= 0)
 				entity.flagRemove();
@@ -227,20 +246,43 @@ namespace SGA
 	{
 	}
 
-	void TransferEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void TransferEffect::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		const auto& sourceType = sourceParam.getParameter(state, targets);
-		auto& sourceValue = sourceParam.getRawParameterValue(state, targets);
-		auto& targetValue = targetParam.getRawParameterValue(state, targets);
+		auto sourceValue = sourceParam.getRawParameterValue(state, targets);
+		auto targetValue = targetParam.getRawParameterValue(state, targets);
 		auto amount = amountParam.getConstant(state, targets);
 
 		// Compute how much the source can transfer, if the source does not have enough just take everything
 		amount = std::min(amount, sourceValue - sourceType.getMinValue());
 		// Transfer
 		sourceValue -= amount;
-		// ToDo should check the maximum, but currently we have no way to set the maximum in the configuration
-		// Resulting in problems for ProtectTheBase
 		targetValue = targetValue + amount;
+
+		int parameterSourceID = sourceParam.getParameter(state, targets).getIndex();	
+		int parameterTargetID = targetParam.getParameter(state, targets).getIndex();
+
+		if (sourceParam.getType() == FunctionParameter::Type::ParameterReference)
+		{
+			auto& entitySource = sourceParam.getEntity(state, targets);			
+			fm.modifyEntityParameterByID(entitySource, parameterSourceID, sourceValue);		
+		}
+		else
+		{
+			auto& playerSource = sourceParam.getPlayer(state, targets);
+			fm.modifyPlayerParameterByID(playerSource, parameterSourceID, sourceValue, *state.getGameInfo());
+		}
+		
+		if (targetParam.getType() == FunctionParameter::Type::ParameterReference)
+		{
+			auto& entityTarget = targetParam.getEntity(state, targets);
+			fm.modifyEntityParameterByID(entityTarget, parameterTargetID, targetValue);
+		}
+		else
+		{
+			auto& playerTarget = targetParam.getPlayer(state, targets);
+			fm.modifyPlayerParameterByID(playerTarget, parameterTargetID, targetValue, *state.getGameInfo());
+		}
 	}
 
 	ChangeOwnerEffect::ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)

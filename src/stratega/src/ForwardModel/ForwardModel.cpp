@@ -514,7 +514,7 @@ namespace SGA
 		onEntitySpawnEffects.emplace_back(ose); 
 	}
 
-	void ForwardModel::modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue)
+	void ForwardModel::modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const
 	{
 		//Get parameter
 		auto& parameterValue = entity.getRawParameterAt(parameterIndex);
@@ -524,7 +524,7 @@ namespace SGA
 		std::max(entity.getMinParameterAt(parameterIndex), std::min(parameterValue, entity.getMaxParameterAt(parameterIndex)));
 	}
 
-	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue)
+	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
 	{
 		//Get parameter
 		auto& parameterValue = player.getRawParameterAt(parameterIndex);
