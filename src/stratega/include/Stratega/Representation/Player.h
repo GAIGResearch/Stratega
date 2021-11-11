@@ -116,19 +116,19 @@ namespace SGA
 		/// Gets a specific parameters value, by index 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameterAt(int paramIdx) { return parameters[paramIdx]; }
+		double getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Gets a specific max parameters value, by index 
 		/// <summary>
 		/// <returns>The max parameter value.</returns>
-		double getMaxParameterAt(int paramIdx) { return maxParameters[paramIdx]; }
+		double getMaxParameterAt(int paramIdx) { return maxParameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Gets a specific min parameters value, by index 
 		/// <summary>
 		/// <returns>The min parameter value.</returns>
-		double getMinParameterAt(int paramIdx) { return minParameters[paramIdx]; }
+		double getMinParameterAt(int paramIdx) { return minParameters[static_cast<size_t>(paramIdx)]; }
 
 		/// <summary>
 		/// Sets the parameter of this play
@@ -140,13 +140,13 @@ namespace SGA
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setMaxParameter(int paramIdx, double val) { maxParameters[paramIdx] = val; }
+		void setMaxParameter(int paramIdx, double val) { maxParameters[static_cast<size_t>(paramIdx)] = val; }
 
 		/// <summary>
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setMinParameter(int paramIdx, double val) { minParameters[paramIdx] = val; }
+		void setMinParameter(int paramIdx, double val) { minParameters[static_cast<size_t>(paramIdx)] = val; }
 
 		/// <summary>
 		/// Sets a size for the vector of parameters of this player.
