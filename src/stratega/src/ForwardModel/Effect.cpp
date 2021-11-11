@@ -41,8 +41,9 @@ namespace SGA
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		buffReference(parameters.at(1)),
-        entityParam(parameters.at(0)),
-		buffTicks(parameters.at(2))
+		buffTicks(parameters.at(2)),
+        entityParam(parameters.at(0))
+		
 	{
 
 	}
