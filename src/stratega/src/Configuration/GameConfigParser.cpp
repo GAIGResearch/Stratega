@@ -863,6 +863,7 @@ namespace SGA
                 param.setMaxValue(nameParamPair.second.as<double>());
                 param.setDefaultValue(param.getMaxValue());
                 param.setIndex(static_cast<int>(parameterBucket.size()));
+                parameterBucket.insert({ param.getID(), std::move(param) });
             }
         }
 	}

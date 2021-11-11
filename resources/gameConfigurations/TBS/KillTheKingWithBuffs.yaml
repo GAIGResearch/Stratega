@@ -23,18 +23,16 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Buffs: # Buff lists
-    BuffOne:
+    HealthBuff:
+        MultiplicationModifier:
+            Health: 1.5
+    HealthBoostBuff:
+        MultiplicationModifier:
+            Health: 1.1
+    AttackBoostBuff:
         AdditiveModifier: 
-            Health: 30
-        MultiplicationModifier: 
+            AttackDamage: 20
             AttackRange: 2
-            Health: 2
-    BuffTwo:
-        AdditiveModifier: 
-            Health: 30
-        MultiplicationModifier: 
-            Health: 2
-
 
 Tiles:
     Plain:
@@ -55,7 +53,6 @@ Tiles:
         Symbol: F
         IsWalkable: true
 
-        
 Board:
     GenerationType: Manual
     Layout: |-
@@ -78,6 +75,7 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
+
     AddBuffAround:
         Type: EntityAction
         Cooldown: 1
@@ -91,9 +89,43 @@ Actions:
                         Shape: Circle
                         Size: 1
                 Conditions:
-                    - "HasNoBuff(Target, BuffTwo)"
+                    - "HasNoBuff(Target, HealthBuff)"
         Effects:
-            - "ApplyBuff(Target, BuffTwo, 2)"
+            - "ApplyBuff(Target, HealthBuff, 2)"
+
+    BoostAttackPower:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Archer]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.AttackRange)"
+                    - "HasNoBuff(Target, AttackBoostBuff)"
+        Effects:
+            - "ApplyBuff(Target, AttackBoostBuff, 5)"
+
+    BoostHealth:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+                    - "HasNoBuff(Target, HealthBoostBuff)"
+        Effects:
+            - "ApplyBuff(Target, HealthBoostBuff, 2)"
 
     Attack:
         Type: EntityAction
@@ -112,22 +144,6 @@ Actions:
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
-
-    BoostHealth:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: All
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-                Conditions:
-                    - "InRange(Source, Target, Source.AttackRange)"
-        Effects:
-            - "ApplyBuff(Target, BuffTwo, 5)"
 
     Move:
         Type: EntityAction
@@ -167,7 +183,6 @@ Actions:
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
 
-
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
@@ -200,7 +215,7 @@ Entities:
             Health: 40
             HealAmount: 10
             MovementPoints: 5
-        Actions: [Heal, Move]
+        Actions: [Heal, Move, BoostHealth]
 
     King:
         Sprite: ../../assets/Entities/unit_1.png
@@ -211,7 +226,7 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move, BoostHealth]
+        Actions: [Attack, Move, BoostAttackPower]
         ##Each tick add a buff to the warrior entities around the king
         OnTickActions: [AddBuffAround]
             
