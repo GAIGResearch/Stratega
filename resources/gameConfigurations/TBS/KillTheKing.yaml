@@ -3,57 +3,34 @@ GameConfig:
     RoundLimit: 100
     FogOfWar: true
 
+
 Agents:
     - HumanAgent
-    - DoNothingAgent
-    #- MCTSAgent:
-    #    FmCalls: 100
-    #    Budget: TIME
-    #    RolloutLength: 10
-
-GameRenderer:
-    Resolution:
-        Width: 800
-        Height: 600
-    Default Assets:
-        Selected: ../../assets/Tiles/selected.png
-        FogOfWar: ../../assets/Tiles/notVisible.png
-    #Optional:
-    #Font: ../../assets/arial.ttf
-    #OutlineShader: ../../assets/OutLine.frag
-
-Buffs: # Buff lists
-    BuffOne:
-        AdditiveModifier: 
-            Health: 20
-        MultiplicationModifier: 
-            AttackRange: 2
-    BuffTwo:
-        AdditiveModifier: 
-            Health: 30
-        MultiplicationModifier: 
-            Health: 2
+    #- OSLAAgent
+    - MCTSAgent:
+        FmCalls: 100
+        Budget: TIME
+        RolloutLength: 10
 
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../GUI/Assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../GUI/Assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../GUI/Assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../GUI/Assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
-
         
 Board:
     GenerationType: Manual
@@ -75,44 +52,8 @@ Board:
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-
 Actions:
-    AddBuffAround:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: [Warrior]
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 1
-                Conditions:
-                    - "HasNoBuff(Source, BuffTwo)"
-        Effects:
-            - "ApplyBuff(Target, BuffTwo, 2)"
-
     Attack:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: All
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 1
-                Conditions:
-                    #- "DifferentPlayer(Source, Target)"
-                    - "InRange(Source, Target, Source.AttackRange)"
-        Effects:
-            - "Attack(Target.Health, Source.AttackDamage)"
-
-    BoostHealth:
         Type: EntityAction
         Cooldown: 1
         Targets:
@@ -124,9 +65,10 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "ApplyBuff(Target, BuffTwo, 5)"
+            - "Attack(Target.Health, Source.AttackDamage)"
 
     Move:
         Type: EntityAction
@@ -169,51 +111,48 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../GUI/Assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
-        Parameters:           
-            AttackRange: [0,10,10]
-            Health: [0,200,200]
-            AttackDamage: [0,100,100]
-            MovementPoints: [0,2,2]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
 
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../GUI/Assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
-        Parameters:            
-            AttackRange: [0,5,5]
-            AttackDamage: [0,10,10]
-            Health: [0,100,100]
-            MovementPoints: [0,2,2]
+        Parameters:
+            Health: 100
+            AttackRange: 5
+            AttackDamage: 10
+            MovementPoints: 2
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../GUI/Assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
-        Parameters:           
-            HealRange: [0,2,2]
-            Health: [0,40,40]
-            HealAmount: [0,10,10]
-            MovementPoints: [0,5,5]
+        Parameters:
+            Health: 40
+            HealRange: 2
+            HealAmount: 10
+            MovementPoints: 5
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../../assets/Entities/unit_1.png
+        Sprite: ../../GUI/Assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
-            Health: [0,400,400]
-            AttackRange: [0,2,2]
-            AttackDamage: [0,100,100]
-            MovementPoints: [0,1,1]
-        Actions: [Attack, Move, BoostHealth]
-        ##Each tick add a buff to the warrior entities around the king
-        OnTickActions: [AddBuffAround]
-            
+            Health: 400
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 1
+        Actions: [Attack, Move]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -224,11 +163,6 @@ ForwardModel:
         - OnTick:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
-        #Each tick add a buff to the King
-        - OnTick:
-            ValidTargets: King
-            Effects:
-                - "ApplyBuff(Source, BuffOne, 1)"
 
 #Action categories
 GameDescription:

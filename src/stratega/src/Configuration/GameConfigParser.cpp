@@ -835,22 +835,35 @@ namespace SGA
                 config.parameters.insert({ nameParamPair.first, config.parameters.size() });
             }
 
-            auto parameter = nameParamPair.second.as<std::vector<double>>();
-            if (parameter.size() == 3)
+            //Check if is a vector of min, max and default
+            if (nameParamPair.second.IsSequence())
             {
-                // Construct the parameter
+                auto parameter = nameParamPair.second.as<std::vector<double>>();
+                if (parameter.size() == 3)
+                {
+                    // Construct the parameter
+                    Parameter param;
+                    param.setID(config.parameters.at(nameParamPair.first));
+                    param.setName(nameParamPair.first);
+                    param.setMinValue(parameter[0]);
+                    param.setMaxValue(parameter[1]);
+                    param.setDefaultValue(parameter[2]);
+                    param.setIndex(static_cast<int>(parameterBucket.size()));
+                    parameterBucket.insert({ param.getID(), std::move(param) });
+                }
+                else
+                    throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
+            }
+            else
+            {
                 Parameter param;
                 param.setID(config.parameters.at(nameParamPair.first));
                 param.setName(nameParamPair.first);
-                param.setMinValue(parameter[0]);
-                param.setMaxValue(parameter[1]);
-                param.setDefaultValue(parameter[2]);
+                param.setMinValue(0);
+                param.setMaxValue(nameParamPair.second.as<double>());
+                param.setDefaultValue(param.getMaxValue());
                 param.setIndex(static_cast<int>(parameterBucket.size()));
-                parameterBucket.insert({ param.getID(), std::move(param) });
             }
-            else
-                throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
-            
         }
 	}
 
@@ -1082,6 +1095,7 @@ namespace SGA
           // AdditiveModifier
           std::unordered_map< ParameterID, double > additiveModifiers;
           parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
+          type.setAdditiveModifiers(additiveModifiers);
           // MultiplicationModifiers
           std::unordered_map< ParameterID, double > multiplicationModifiers;
           parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);

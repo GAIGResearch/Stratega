@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    - DoNothingAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
@@ -21,6 +21,20 @@ GameRenderer:
     #Optional:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
+
+Buffs: # Buff lists
+    BuffOne:
+        AdditiveModifier: 
+            Health: 30
+        MultiplicationModifier: 
+            AttackRange: 2
+            Health: 2
+    BuffTwo:
+        AdditiveModifier: 
+            Health: 30
+        MultiplicationModifier: 
+            Health: 2
+
 
 Tiles:
     Plain:
@@ -64,7 +78,42 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
+    AddBuffAround:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "HasNoBuff(Target, BuffTwo)"
+        Effects:
+            - "ApplyBuff(Target, BuffTwo, 2)"
+
     Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
+
+    BoostHealth:
         Type: EntityAction
         Cooldown: 1
         Targets:
@@ -76,10 +125,9 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "Attack(Target.Health, Source.AttackDamage)"
+            - "ApplyBuff(Target, BuffTwo, 5)"
 
     Move:
         Type: EntityAction
@@ -126,20 +174,20 @@ Entities:
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
-        Parameters:
-            Health: 200
-            AttackRange: 2
-            AttackDamage: 100
+        Parameters:           
+            AttackRange: 10
+            Health: [0,200,200]
+            AttackDamage: [0,100,100]
             MovementPoints: 2
 
     Archer:
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
-        Parameters:
-            Health: 100
+        Parameters:            
             AttackRange: 5
             AttackDamage: 10
+            Health: [0,100,100]
             MovementPoints: 2
         Actions: [Attack, Move]
 
@@ -147,9 +195,9 @@ Entities:
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
-        Parameters:
-            Health: 40
+        Parameters:           
             HealRange: 2
+            Health: 40
             HealAmount: 10
             MovementPoints: 5
         Actions: [Heal, Move]
@@ -159,11 +207,14 @@ Entities:
         Symbol: k
         LineOfSightRange: 6
         Parameters:
-            Health: 400
+            Health: [0,400,400]
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, BoostHealth]
+        ##Each tick add a buff to the warrior entities around the king
+        OnTickActions: [AddBuffAround]
+            
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
