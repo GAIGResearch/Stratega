@@ -204,9 +204,10 @@ namespace  SGA
 	
 
 	HasNoBuff::HasNoBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		entityParam(parameters[0]),
-		buffTypeParam(parameters[1]),
-		Condition(exp)
+		buffTypeParam(parameters[1])
+		
 	{
 	}
 
@@ -228,9 +229,9 @@ namespace  SGA
 	}
 
 	HasBuff::HasBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
 		entityParam(parameters[0]),
-		buffTypeParam(parameters[1]),
-		Condition(exp)
+		buffTypeParam(parameters[1])
 	{
 	}
 

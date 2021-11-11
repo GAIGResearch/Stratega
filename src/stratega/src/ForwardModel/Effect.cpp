@@ -39,10 +39,10 @@ namespace SGA
 	}
 
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
 		buffReference(parameters.at(1)),
         entityParam(parameters.at(0)),
-		buffTicks(parameters.at(2)),
-		Effect(exp)
+		buffTicks(parameters.at(2))
 	{
 
 	}
@@ -72,9 +72,9 @@ namespace SGA
 	}
 
 	RemoveBuff::RemoveBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
 		buffReference(parameters.at(1)),
-        entityParam(parameters.at(0)),
-		Effect(exp)
+        entityParam(parameters.at(0))		
 	{
 
 	}
@@ -99,16 +99,14 @@ namespace SGA
 	}
 
 	RemoveAllBuffs::RemoveAllBuffs(const std::string exp, const std::vector<FunctionParameter>& parameters) :
-        entityParam(parameters.at(0)),
-		Effect(exp)
+		Effect(exp),
+		entityParam(parameters.at(0))
 	{
 
 	}
 	
 	void RemoveAllBuffs::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
-		auto& entity = entityParam.getEntity(state, targets);
-		
 		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
 		{
 			auto& entity = entityParam.getEntity(state, targets);
