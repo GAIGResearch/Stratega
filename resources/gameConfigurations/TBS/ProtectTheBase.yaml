@@ -157,7 +157,7 @@ Entities:
         LineOfSightRange: 5
         Actions: [SpawnMiner, SpawnFighter]
         Parameters:
-            Gold: 500
+            Gold: [0,5000,500]
             Health: 100
 
     Miner:

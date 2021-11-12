@@ -22,18 +22,17 @@ namespace SGA
 		auto amount = amountParameter.getConstant(state, targets);
 
 		targetResource += amount;
-		
-		int parameterID = resourceReference.getParameter(state, targets).getIndex();
-
-		if (resourceReference.getType() != FunctionParameter::Type::EntityPlayerReference)
+		auto& param = resourceReference.getParameter(state, targets);
+		int parameterIndex = param.getIndex();
+		if (!resourceReference.isPlayerParameter(state, targets))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
-			fm.modifyEntityParameterByID(entity, parameterID, targetResource);
+			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 		}
 		else
 		{
 			auto& player = resourceReference.getPlayer(state, targets);
-			fm.modifyPlayerParameterByID(player, parameterID, targetResource, *state.getGameInfo());
+			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
 		}
 		
 	}
@@ -134,10 +133,18 @@ namespace SGA
 	void ChangeResource::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		double amount = amountParameter.getConstant(state, targets);
-		auto& entity = resourceReference.getEntity(state, targets);
-		int parameterID = resourceReference.getParameter(state, targets).getIndex();
-
-		fm.modifyEntityParameterByID(entity, parameterID, amount);
+		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
+		
+		if (!resourceReference.isPlayerParameter(state, targets))
+		{
+			auto& entitySource = resourceReference.getEntity(state, targets);
+			fm.modifyEntityParameterByIndex(entitySource, parameterIndex, amount);
+		}
+		else
+		{
+			auto& playerSource = resourceReference.getPlayer(state, targets);
+			fm.modifyPlayerParameterByIndex(playerSource, parameterIndex, amount);
+		}
 	}
 	
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -152,13 +159,13 @@ namespace SGA
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto targetResource = resourceReference.getRawParameterValue(state, targets);
-		int parameterID = resourceReference.getParameter(state, targets).getIndex();
+		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
 
-		fm.modifyEntityParameterByID(entity, parameterID, targetResource);
+		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
 		if(targetResource <= 0)
 			entity.flagRemove();
@@ -177,7 +184,7 @@ namespace SGA
 	{		
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto targetResource = resourceReference.getRawParameterValue(state, targets);
-		int parameterID = resourceReference.getParameter(state, targets).getIndex();
+		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		auto probability = probabilityParameter.getConstant(state, targets);
 		
@@ -187,7 +194,7 @@ namespace SGA
 		if(distribution(state.getRndEngine()) < probability)
 		{
 			targetResource -= amount;
-			fm.modifyEntityParameterByID(entity, parameterID, targetResource);
+			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 			auto targetvalueResource = resourceReference.getParameterValue(state, targets);
 			if (targetvalueResource <= 0)
 				entity.flagRemove();
@@ -262,29 +269,29 @@ namespace SGA
 		sourceValue -= amount;
 		targetValue = targetValue + amount;
 
-		int parameterSourceID = sourceParam.getParameter(state, targets).getIndex();	
-		int parameterTargetID = targetParam.getParameter(state, targets).getIndex();
+		int parameterSourceIndex = sourceParam.getParameter(state, targets).getIndex();
+		int parameterTargetIndex = targetParam.getParameter(state, targets).getIndex();
 
-		if (sourceParam.getType() == FunctionParameter::Type::ParameterReference)
+		if (!sourceParam.isPlayerParameter(state, targets))
 		{
 			auto& entitySource = sourceParam.getEntity(state, targets);			
-			fm.modifyEntityParameterByID(entitySource, parameterSourceID, sourceValue);		
+			fm.modifyEntityParameterByIndex(entitySource, parameterSourceIndex, sourceValue);
 		}
 		else
 		{
 			auto& playerSource = sourceParam.getPlayer(state, targets);
-			fm.modifyPlayerParameterByID(playerSource, parameterSourceID, sourceValue, *state.getGameInfo());
+			fm.modifyPlayerParameterByIndex(playerSource, parameterSourceIndex, sourceValue);
 		}
 		
-		if (targetParam.getType() == FunctionParameter::Type::ParameterReference)
+		if (!targetParam.isPlayerParameter(state, targets))
 		{
 			auto& entityTarget = targetParam.getEntity(state, targets);
-			fm.modifyEntityParameterByID(entityTarget, parameterTargetID, targetValue);
+			fm.modifyEntityParameterByIndex(entityTarget, parameterTargetIndex, targetValue);
 		}
 		else
 		{
 			auto& playerTarget = targetParam.getPlayer(state, targets);
-			fm.modifyPlayerParameterByID(playerTarget, parameterTargetID, targetValue, *state.getGameInfo());
+			fm.modifyPlayerParameterByIndex(playerTarget, parameterTargetIndex, targetValue);
 		}
 	}
 
