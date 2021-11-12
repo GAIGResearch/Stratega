@@ -26,6 +26,18 @@ While we are at it, we define the agents that should play the game.
         - RandomAgent
         - HumanAgent
 
+Next, we have to define the Game renderer configuration, with the resolution and the default assets used y the GUI.
+
+.. code-block:: yaml
+
+   GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+  
 Next, we define that each player can store gold.
 We do this by assigning an additional parameter to the players which represents the currency.
 
@@ -45,16 +57,16 @@ Finally, don't forget to assign a symbol to each tile since we will later use it
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: .../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
@@ -71,7 +83,7 @@ Additionally, we assign the actions and the cost for spawning the fighter, which
 
     Entities:
         City:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             CanSpawn: Fighter
@@ -80,7 +92,7 @@ Additionally, we assign the actions and the cost for spawning the fighter, which
                 Health: 100
 
         Fighter:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit2.png
             Symbol: f
             LineOfSightRange: 6
             Actions: [Move, Attack]
@@ -277,16 +289,16 @@ Full yaml
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
@@ -336,7 +348,7 @@ Full yaml
 
     Entities:
         City:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             CanSpawn: Fighter
@@ -345,7 +357,7 @@ Full yaml
                 Health: 100
 
         Fighter:
-            Sprite: ../../GUI/Assets/Entities/unit2.png
+            Sprite: ../../assets/Entities/unit2.png
             Symbol: f
             LineOfSightRange: 6
             Actions: [Move, Attack]

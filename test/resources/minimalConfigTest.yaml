@@ -1,0 +1,128 @@
+Agents:
+    - HumanAgent
+    - HumanAgent
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected:
+            Sprite: ../../resources/assets/Tiles/selected.png
+        FogOfWar:
+            Sprite: ../../resources/assets/Tiles/notVisible.png
+    #Optional:
+    Font: ../../resources/assets/arial.ttf
+    OutlineShader: ../../resources/assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../resources/assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../resources/assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../resources/assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../resources/assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M
+        M  .  .  .  .  M  .  M
+        M  .  .  .  .  W  W  W
+        M  .  .  w1 .  W  W  W
+        M  M  M  .  .  W  W  W
+        M  M  M  .  w0 .  .  M
+        M  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M
+
+Actions:
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
+
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    #Type: Dijkstra
+                    #Options:
+                    #    SearchSize: 3
+                    #    AllowDiagonals: true
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    Heal:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+
+
+Entities:
+    Warrior:
+        Sprite: ../../resources/assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 6
+        Actions: [Attack, Move, Heal]
+        Parameters:
+            Health: 200
+            AttackRange: 4
+            AttackDamage: 100
+            MovementPoints: 2
+            HealAmount: 10
+            HealRange: 2
+
+ForwardModel:
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "HasNoEntity(Source, Warrior)"
+
+    Trigger:
+        - OnTick:
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"

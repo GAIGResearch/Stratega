@@ -33,195 +33,242 @@ YAML
         RoundLimit: 100
 
     Agents:
-        - RandomAgent
+        - DoNothingAgent
         - HumanAgent
+
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            Selected: ../../assets/Tiles/selected.png
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
 
     Player:
         Actions: [Research]
         CanSpawn: Buildings
         Parameters:
-            Food: 500
+            Food: 100
             Gold: 0
-            Iron: 50  
+            Iron: 50
             Wood: 100
             Bricks: 50
-            Research: 10000
+            Research: 20
 
     Tiles:
         Plain:
-            Sprite: ../../GUI/Assets/Tiles/plain.png
+            Sprite: ../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../GUI/Assets/Tiles/water.png
+            Sprite: ../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../GUI/Assets/Tiles/rock.png
+            Sprite: ../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
         Forest:
-            Sprite: ../../GUI/Assets/Tiles/forest.png
+            Sprite: ../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
         Ore:
-            Sprite: ../../GUI/Assets/Tiles/ore.png
+            Sprite: ../../assets/Tiles/ore.png
             Symbol: O
             IsWalkable: true
         Animals:
-            Sprite: ../../GUI/Assets/Tiles/animals.png
+            Sprite: ../../assets/Tiles/animals.png
             Symbol: A
             IsWalkable: true
         Clay:
-            Sprite: ../../GUI/Assets/Tiles/clay.png
+            Sprite: ../../assets/Tiles/clay.png
             Symbol: C
             IsWalkable: true
         Gold:
-            Sprite: ../../GUI/Assets/Tiles/gold.png
+            Sprite: ../../assets/Tiles/gold.png
             Symbol: G
             IsWalkable: true
 
     Entities:
         City:
-            Sprite: ../../GUI/Assets/Entities/castle.png
+            Sprite: ../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             Actions: [Spawn]
             CanSpawn: [Villager, Builder, Spy, Architect]
             Cost:
             Parameters:
-                Health: 800
+                Health: 80
                 Range: 6
 
         Wonder:
-            Sprite: ../../GUI/Assets/Entities/wonder.png
+            Sprite: ../../assets/Entities/wonder.png
             LineOfSightRange: 5
             Actions: []
+            RequiredTechnology: Wonder
             Cost:
-                Wood: 2000
-                Iron: 2000
-                Food: 2000
-                Bricks: 2000
+                Wood: 200
+                Iron: 200
+                Food: 50
+                Bricks: 200
             Parameters:
-                Health: 200
+                Health: 150
                 Range: 6
 
         University:
-            Sprite: ../../GUI/Assets/Entities/university.png
+            Sprite: ../../assets/Entities/university.png
             LineOfSightRange: 5
             RequiredTechnology: Education
             Actions: []
             Cost:
+                Food: 5
+                Iron: 20 
+                Wood: 20
+                Bricks: 30
             Parameters:
-                Health: 200
+                Health: 100
                 Range: 6
 
         Outpost:
-            Sprite: ../../GUI/Assets/Entities/tower.png
+            Sprite: ../../assets/Entities/tower.png
             LineOfSightRange: 8
             RequiredTechnology: BasicStructure
             Actions: []
             Cost:
+                Food: 5
+                Iron: 10
+                Wood: 10
+                Bricks: 20
             Parameters:
-                Health: 200
+                Health: 20
                 Range: 7
-                Time: 200
+                Time: 2
 
         GuardTower:
-            Sprite: ../../GUI/Assets/Entities/guardTower.png
+            Sprite: ../../assets/Entities/guardTower.png
             LineOfSightRange: 4
             RequiredTechnology: GuardTower
-            Actions: []
+            Actions: [Attack]
             Cost:
+                Food: 5
+                Iron: 20
+                Wood: 30
+                Bricks: 30
             Parameters:
-                Health: 200
+                Health: 40
                 Range: 6
-                Time: 200
+                Time: 2
 
         Farm:
-            Sprite: ../../GUI/Assets/Entities/farm.png
+            Sprite: ../../assets/Entities/farm.png
             LineOfSightRange: 3
             Cost:
+                Iron: 15
+                Wood: 15
+                Bricks: 15
             Parameters:
-                Health: 800
+                Health: 20
                 Range: 6
 
         Masonry:
-            Sprite: ../../GUI/Assets/Entities/masonry.png
+            Sprite: ../../assets/Entities/masonry.png
             LineOfSightRange: 3
             Cost:
+                Food: 5
+                Iron: 15
+                Wood: 15
+                Bricks: 5
             Parameters:
-                Health: 800
+                Health: 40
                 Range: 6
 
         Saw:
-            Sprite: ../../GUI/Assets/Entities/saw.png
+            Sprite: ../../assets/Entities/saw.png
             LineOfSightRange: 3
             Cost:
+                Food: 5
+                Iron: 15
+                Wood: 10
+                Bricks: 15
             Parameters:
-                Health: 800
+                Health: 40
                 Range: 6
 
         IronMine:
-            Sprite: ../../GUI/Assets/Entities/mine.png
+            Sprite: ../../assets/Entities/mine.png
             LineOfSightRange: 3
             Cost:
+                Food: 5
+                Iron: 10
+                Wood: 20
+                Bricks: 10
             Parameters:
-                Health: 800
+                Health: 40
                 Range: 6
 
         GoldMine:
-            Sprite: ../../GUI/Assets/Entities/mine2.png
+            Sprite: ../../assets/Entities/mine2.png
             LineOfSightRange: 3
             Cost:
+                Food: 20
+                Iron: 20
+                Wood: 20
+                Bricks: 20
             Parameters:
-                Health: 800
+                Health: 40
                 Range: 6
-            
+                
         Villager:
-            Sprite: ../../GUI/Assets/Entities/unit7.png
+            Sprite: ../../assets/Entities/unit_5.png
             LineOfSightRange: 3
             Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
             Cost:
+                Food: 5
             Parameters:
                 Speed: 1
                 Range: 3
-                WoodCutting: 0.1
-                BrickMaking: 0.1
-                LivestockFarming: 0.1
-                IronMining: 0.1
-                GoldMining: 0.1
-            
+                WoodCutting: 5
+                BrickMaking: 5
+                LivestockFarming: 5
+                IronMining: 5
+                GoldMining: 5
+                
         Builder:
-            Sprite: ../../GUI/Assets/Entities/unit10.png
+            Sprite: ../../assets/Entities/unit_7.png
             LineOfSightRange: 3
             CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
             Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
             Cost:
+                Food: 8
             Parameters:
                 Speed: 1
                 Range: 6
 
         Spy:
-            Sprite: ../../GUI/Assets/Entities/unit9.png
+            Sprite: ../../assets/Entities/unit_6.png
             LineOfSightRange: 5
             Actions: [Move, Sabotage]
             RequiredTechnology: Sabotage
             Cost:
+                Food: 10
             Parameters:
                 Health: 20
                 Speed: 1
                 Range: 6
 
         Architect:
-            Sprite: ../../GUI/Assets/Entities/unit11.png
+            Sprite: ../../assets/Entities/unit_8.png
             LineOfSightRange: 3
             RequiredTechnology: Architecture
             CanSpawn: [Wonder]
             Actions: [Move, BuildWonder]
             Cost:
+                Food: 15
             Parameters:
                 Speed: 1
                 Range: 6
@@ -240,11 +287,17 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Attackable
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
+                        - "DifferentPlayer(Source, Target)"
                         - "InRange(Source, Target, Source.Range)"
             Effects:
                 - "AttackProbability(Target.Health, 1000, 50)"
                 - "Remove(Source)"
+
         Attack:
             Type: EntityAction
             Cooldown: 100
@@ -252,7 +305,12 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Spy
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
                     Conditions:
+                        - "DifferentPlayer(Source, Target)"
                         - "InRange(Source, Target, Source.Range)"
             Effects:
                 - "AttackProbability(Target.Health, 1000, 20)"
@@ -264,8 +322,11 @@ YAML
             Targets:
                 Target:
                     Type: Position
-                    Shape: Circle
-                    Size: 100 # Target.Speed
+                    SamplingMethod:
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 4
+                        AllowDiagonals: false
                     Conditions:
                         - "IsWalkable(Target)"
             Effects:
@@ -278,8 +339,11 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: IronMine
-                    Conditions:
-                        - "InRange(Source, Target, 3)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
             Effects:
                 - "ModifyResource(Source.Player.Iron, Source.IronMining)"
 
@@ -290,8 +354,11 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: GoldMine
-                    Conditions:
-                        - "InRange(Source, Target, 3)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
             Effects:
                 - "ModifyResource(Source.Player.Gold, Source.GoldMining)"
 
@@ -302,8 +369,11 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Farm
-                    Conditions:
-                        - "InRange(Source, Target, 3)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
             Effects:
                 - "ModifyResource(Source.Player.Food, Source.LivestockFarming)"
 
@@ -314,8 +384,11 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Saw
-                    Conditions:
-                        - "InRange(Source, Target, 3)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
             Effects:
                 - "ModifyResource(Source.Player.Wood, Source.WoodCutting)"
 
@@ -326,8 +399,11 @@ YAML
                 Target:
                     Type: Entity
                     ValidTargets: Masonry
-                    Conditions:
-                        - "InRange(Source, Target, 3)"
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Circle
+                            Size: 3
             Effects:
                 - "ModifyResource(Source.Player.Bricks, Source.BrickMaking)"
 
@@ -345,8 +421,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
 
@@ -367,8 +446,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition, Ore)"
@@ -389,8 +471,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition, Gold)"
@@ -411,8 +496,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition,Animals)"
@@ -433,8 +521,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition, Plain)"
@@ -455,8 +546,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition, Clay)"
@@ -477,8 +571,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
                         - "IsTileType(TargetPosition, Forest)"
@@ -499,8 +596,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
             Effects:
@@ -520,8 +620,11 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
             Effects:
@@ -541,13 +644,15 @@ YAML
 
                 TargetPosition:
                     Type: Position
-                    Shape: Square
-                    Size: 4
+                    SamplingMethod: 
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
-    #                   - "IsTileType(Forest)"
             TriggerComplete:
-                - "HasElapsedTick(200)"
+                - "HasElapsedTick(2)"
             OnStart:
                 - "PayCost(Source.Player, EntityTypeTarget)"
             OnComplete:
@@ -577,92 +682,92 @@ YAML
                 Description: Enables advance research
                 Cost:
                     Research: 5
-                Time: 200
+                Time: 2
             Chemistry:
                 Description: Enables sabotage technology tree
                 Requirements: [Education]
                 Cost:
                     Research: 10
-                Time: 500
+                Time: 5
             Architecture:
                 Description: Enables architect spawn
                 Requirements: [Education]
                 Cost:
                     Research: 15
-                Time: 500
+                Time: 5
             BasicStructure:
                 Description: Enable outpost
                 Requirements: [Education]
                 Cost:
                     Research: 15
-                Time: 500
+                Time: 5
             SiegeEngineers:
                 Description:  Enables sabotage technology tree
                 Requirements: [Architecture]
                 Cost:
                     Research: 20
-                Time: 600
+                Time: 6
             Sabotage:
                 Description:  Enables sabotage
                 Requirements: [SiegeEngineers, Chemistry]
                 Cost:
                     Research: 20
-                Time: 700
+                Time: 7
             GuardTower:
                 Description:  Enables guard tower spawn
                 Requirements: [Architecture, BasicStructure]
                 Cost:
                     Research: 30
-                Time: 600
+                Time: 6
             Wonder:
                 Description:  Enables wonder building
                 Requirements: [Architecture, BasicStructure]
                 Cost:
                     Research: 100
-                Time: 4000
+                Time: 4
 
         ResourceTree:
             BetterTools:
                 Description: Enables resource technologies
                 Cost:
                     Research: 5
-                Time: 200
+                Time: 2
             HeavyPlow:
                 Description: Increase food production
                 Requirements: [BetterTools]
                 Cost:
                     Research: 20
-                Time: 400
+                Time: 4
             BowSaw:
                 Description: Increase wood production
                 Requirements: [BetterTools]
                 Cost:
                     Research: 20
-                Time: 400
+                Time: 4
             OreShaftMining:
                 Description: Increase ore production
                 Requirements: [BetterTools]
                 Cost:
                     Research: 25
-                Time: 400
+                Time: 4
             ClayShaftMining:
                 Description:  Increase clay production
                 Requirements: [BetterTools]
                 Cost:
                     Research: 25
-                Time: 400
+                Time: 4
             CropRotation:
                 Description:  Increase food production
                 Requirements: [HeavyPlow]
                 Cost:
                     Research: 30
-                Time: 600
+                Time: 6
             TwoManSaw:
                 Description:  Enables guard tower spawn
                 Requirements: [BowSaw]
                 Cost:
                     Research: 30
-                Time: 600
+                Time: 6
 
 
     Board:
@@ -712,7 +817,7 @@ YAML
             M  F  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  F  F  F  .  .  .  .  c0 .  M
             M  F  F  F  F  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-                   
+                    
     ForwardModel:
         WinConditions: #If true: Player -> win game
             UnitAlive:
@@ -723,26 +828,26 @@ YAML
             - "ResourceLowerEqual(Source.Food, 0)"
 
         Trigger:
-       #Global resource compsumption
+    #Global resource compsumption
             - OnTick:
                 ValidTargets: Buildings
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
-                    - "ModifyResource(Source.Player.Food, -0.04)"
+                    - "ModifyResource(Source.Player.Food, -1)"
             - OnTick:
                 ValidTargets: Units
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
-                    - "ModifyResource(Source.Player.Food, -0.04)"
+                    - "ModifyResource(Source.Player.Food, -1)"
 
             - OnTick:
                 ValidTargets: University
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
-                    - "ModifyResource(Source.Player.Research, +0.6)"
+                    - "ModifyResource(Source.Player.Research, +2)"
         #Upgrade villagers resuorce collection
             #Food
             - OnTick:
@@ -751,7 +856,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, HeavyPlow)"
                 Effects:
-                    - "ChangeResource(Source.LivestockFarming, 0.11)"
+                    - "ChangeResource(Source.LivestockFarming, 10)"
 
             - OnTick:
                 ValidTargets: Villager
@@ -759,7 +864,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, CropRotation)"
                 Effects:
-                    - "ChangeResource(Source.LivestockFarming, 0.13)"
+                    - "ChangeResource(Source.LivestockFarming, 15)"
             #Wood
             - OnTick:
                 ValidTargets: Villager
@@ -767,7 +872,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, BowSaw)"
                 Effects:
-                    - "ChangeResource(Source.WoodCutting, 0.12)"
+                    - "ChangeResource(Source.WoodCutting, 10)"
 
             - OnTick:
                 ValidTargets: Villager
@@ -775,7 +880,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, TwoManSaw)"
                 Effects:
-                    - "ChangeResource(Source.WoodCutting, 0.13)"
+                    - "ChangeResource(Source.WoodCutting, 15)"
             #Ore
             - OnTick:
                 ValidTargets: Villager
@@ -783,7 +888,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, OreShaftMining)"
                 Effects:
-                    - "ChangeResource(Source.IronMining, 0.125)"
+                    - "ChangeResource(Source.IronMining, 12)"
             #Clay
             - OnTick:
                 ValidTargets: Villager
@@ -791,7 +896,7 @@ YAML
                     - "IsPlayerEntity(Source)"
                     - "HasResearched(Source.Player, ClayShaftMining)"
                 Effects:
-                    - "ChangeResource(Source.BrickMaking, 0.125)"
+                    - "ChangeResource(Source.BrickMaking, 12)"
 
     #Action categories
     GameDescription:
@@ -802,3 +907,11 @@ YAML
             Gather: [MineIron, MineGold, FarmLivestock, CutWood, MakeBrick]
             Spawn: [Spawn, BuildIronMine, BuildGoldMine, BuildFarm, BuildUniversity, BuildMansory, BuildSaw, BuildOutpost, BuildGuardTower, BuildWonder]
             Attack: [Sabotage, Attack]
+        Entities:
+            Base: [City]
+            Building: [City, Farm, IronMine, GoldMine, Outpost, GuardTower, University, Wonder]
+            Spawner: [City, Builder, Architect]
+            Unit: [Spy, Villager, Builder, Architect]
+            Fighter: [Spy]
+            NoFighter: [Villager, Builder, Architect]
+            Melee: [Spy]

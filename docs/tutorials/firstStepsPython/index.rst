@@ -13,9 +13,20 @@ First, let's be sure that the option "STRATEGA_BUILD_BINDINGS" in the Stratega C
 
 .. code-block:: cmake
 
-    option(STRATEGA_BUILD_BINDINGS "Enable to build the bindings to other languages." ON)
+    option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
 
-This option will generate a pyd file that contains a Python module, to be called by other Python code. The module can be found in the output folder once the build is completed.
+This option will generate a pyd file that contains a Python module, to be called by other Python code. The module can be found in the folder src/python once the build is completed.
+
+++++++++++++++++++++++
+Installing from pip
+++++++++++++++++++++++
+
+Instead of building the project from the source project, you can run the following command on the console using pip:
+
+.. code-block:: cmake
+
+    pip install stratega
+
 
 ++++++++++++++++++++++
 Stratega running modes
@@ -39,11 +50,14 @@ First, we need to import the python binary module produced from C++:
 
     import stratega
 
-Next, it's time to read the Yaml configuration and store it in a varible. The following method *load_config* receives the file path of the yaml and generates a `GameConfig.h <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Configuration/GameConfig.h>`_ object.
+Next, it's time to read the Yaml configuration and store it in a varible. The following method *load_config* receives the file path of the yaml and generates a `GameConfig.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Configuration/GameConfig.h>`_ object.
 
 .. code-block:: python
 
-    config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+    config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
+
+.. note::
+    When you install the python module, it also installs the main resource folder with all the default game configurations and sprites. You can load them using any path that begins with: "resources/gameConfigurations/..."
 
 Once we have the configuration stored, we need to create the GameRunner by passing as argument the previous stored configuration.
 
@@ -61,7 +75,7 @@ The last step is to call the *play* method of the the GameRunner and  pass a lis
 
 .. code-block:: python
 
-    resolution=stratega.Vector2f(1920,1080)
+    resolution=stratega.Vector2i(1920,1080)
     runner.play(config_agents, resolution, 0)
 
 The complete GUI call would looks as follows:
@@ -72,15 +86,18 @@ The complete GUI call would looks as follows:
 
     if __name__ == "__main__": 
         
-        config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+        config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
         runner = stratega.create_runner(config)    
         
         config_agents = stratega.generate_agents(config)
 
-        resolution=stratega.Vector2f(1920,1080)
+        resolution=stratega.Vector2i(1920,1080)
         runner.play(config_agents, resolution, 0)
 
 To execute Stratega with your own python agents, check the next section below: Testing your Python agent
+
+.. note::
+    Inside src/python/agents is a python script with a set of pre-implemented agents an the minimal code to run gui/arena using the included gameconfigurations of the python module
 
 Arena mode
 ++++++++++
@@ -101,7 +118,10 @@ Lets start importing our python module and loading the game configuration, they 
 
     if __name__ == "__main__": 
         
-        config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+        config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
+
+.. note::
+    When you install the python module, it also installs the main resource folder with all the default game configurations and sprites. You can load them using any path that begins with: "resources/gameConfigurations/..."
 
 The Arena will need some parameters and it is time to define them. If you want to check in details what it means each parameter, check the :ref:`Arena <_arena>`.
 
@@ -144,7 +164,7 @@ The complete arena call would looks as follows:
 
     if __name__ == "__main__": 
         
-        config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+        config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
 
         number_of_games=1
         player_count=2
@@ -161,6 +181,10 @@ The complete arena call would looks as follows:
             config.level_definitions= stratega.load_levels_from_yaml(maps_path, config)
             map_number=len(config.level_definitions)
             arena.run_games(player_count, seed, number_of_games,map_number)
+
+.. note::
+    Inside src/python/agents is a python script with a set of pre-implemented agents an the minimal code to run gui/arena using the included gameconfigurations of the python module
+
 
 ++++++++++++++++++++++++++
 Testing your Python agent
@@ -190,7 +214,7 @@ Lets check the following example that creates a list of two agents, the first on
 
     agent_list=["DoNothingAgent", RandomPythonAgent()]
 
-You can find all the in-built agents in `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/src/Agent/AgentFactory.cpp>`_.
+You can find all the in-built agents in `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Agent/AgentFactory.cpp>`_.
 
 GUI mode
 ++++++++
@@ -199,7 +223,7 @@ The method *play* can be overloaded with a list of agents. The agents are define
 
 .. code-block:: python
 
-    resolution=stratega.Vector2f(1920,1080)
+    resolution=stratega.Vector2i(1920,1080)
     runner.play(["HumanAgent", RandomPythonAgent()], resolution, 0)
 
 
@@ -211,12 +235,12 @@ The complete GUI call would looks as follows:
 
     if __name__ == "__main__": 
         
-        config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+        config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
         runner = stratega.create_runner(config)    
         
         config_agents = stratega.generate_agents(config)
 
-        resolution=stratega.Vector2f(1920,1080)
+        resolution=stratega.Vector2i(1920,1080)
         runner.play(["HumanAgent", RandomPythonAgent()], resolution, 0)
 
 Arena mode
@@ -243,7 +267,7 @@ The complete arena call would looks as follows:
 
     if __name__ == "__main__": 
         
-        config = stratega.load_config("../../../gameConfigs/TBS/KillTheKing.yaml")
+        config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
 
         number_of_games=1
         player_count=2
