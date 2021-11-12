@@ -133,7 +133,7 @@ namespace SGA
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 	
-	bool FunctionParameter::isPlayerParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	bool FunctionParameter::isPlayerParameter(const std::vector<ActionTarget>& actionTargets) const
 	{
 		if (parameterType == Type::ParameterReference)
 		{
@@ -156,29 +156,6 @@ namespace SGA
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
-	bool FunctionParameter::isPlayerParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
-	{
-		if (parameterType == Type::ParameterReference)
-		{
-			if(actionTargets[data.parameterData.argumentIndex].getType()==ActionTarget::EntityReference)
-			{
-				return false;
-			}
-			else if(actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
-			{
-				return true;
-			}
-			
-		}
-		if(parameterType == Type::EntityPlayerParameterReference)
-		{
-			return true;
-		}
-
-
-		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
-	}
-	
 	double FunctionParameter::getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
            return getRawParameterValue(const_cast<GameState& >(state), actionTargets);

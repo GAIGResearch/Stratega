@@ -24,7 +24,7 @@ namespace SGA
 		targetResource += amount;
 		auto& param = resourceReference.getParameter(state, targets);
 		int parameterIndex = param.getIndex();
-		if (!resourceReference.isPlayerParameter(state, targets))
+		if (!resourceReference.isPlayerParameter(targets))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
@@ -135,7 +135,7 @@ namespace SGA
 		double amount = amountParameter.getConstant(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		
-		if (!resourceReference.isPlayerParameter(state, targets))
+		if (!resourceReference.isPlayerParameter(targets))
 		{
 			auto& entitySource = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entitySource, parameterIndex, amount);
@@ -272,7 +272,7 @@ namespace SGA
 		int parameterSourceIndex = sourceParam.getParameter(state, targets).getIndex();
 		int parameterTargetIndex = targetParam.getParameter(state, targets).getIndex();
 
-		if (!sourceParam.isPlayerParameter(state, targets))
+		if (!sourceParam.isPlayerParameter(targets))
 		{
 			auto& entitySource = sourceParam.getEntity(state, targets);			
 			fm.modifyEntityParameterByIndex(entitySource, parameterSourceIndex, sourceValue);
@@ -283,7 +283,7 @@ namespace SGA
 			fm.modifyPlayerParameterByIndex(playerSource, parameterSourceIndex, sourceValue);
 		}
 		
-		if (!targetParam.isPlayerParameter(state, targets))
+		if (!targetParam.isPlayerParameter(targets))
 		{
 			auto& entityTarget = targetParam.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entityTarget, parameterTargetIndex, targetValue);
