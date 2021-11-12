@@ -150,6 +150,26 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 
 	};
+
+	class HasNoBuff : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter buffTypeParam;
+
+	public:
+		HasNoBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class HasBuff : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter buffTypeParam;
+
+	public:
+		HasBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes
 	class CanSpawnCondition : public Condition

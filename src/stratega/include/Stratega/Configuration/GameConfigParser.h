@@ -48,6 +48,13 @@ namespace SGA
                     type.second.getActionIDs().emplace_back(config.getActionID(actionName));
                 }
 
+                // Assign On Tick Actions to entities
+                auto onTickActions = types[type.second.getName()]["OnTickActions"].as<std::vector<std::string>>(std::vector<std::string>());
+                for (const auto& actionName : onTickActions)
+                {
+                    type.second.getOnTickActionIDs().emplace_back(config.getActionID(actionName));
+                }
+
                 // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
                 type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], config));
                 auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
@@ -56,6 +63,8 @@ namespace SGA
                 type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], config));
             }
         }
+        void parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const;
+        
 		
 	private:
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
@@ -63,6 +72,7 @@ namespace SGA
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
         EntityCategory parseEntityCategory(const std::string& name) const;
+        void parseModifiers(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map< ParameterID, double >& modifiers) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
         std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
         void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const;

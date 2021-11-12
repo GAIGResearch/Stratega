@@ -173,8 +173,67 @@ namespace SGA
 		/// </summary>
 		const std::vector<OnEntitySpawnEffect>& getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
 
-	protected:
+		/// <summary>
+		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
+		/// </summary>
+		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue) const
+		{
+			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameterByName(parameterName).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		///  Modify entity parameter by ID
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterID">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		void modifyEntityParameterByID(Entity& entity, int parameterID, double newValue) const
+		{
+			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameter(parameterID).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify entity parameter by index
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterIndex">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const;
+		
+		/// <summary>
+		/// Modify player parameter by name
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterName">Name of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo) const
+		{
+			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterName).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify player parameter by ID
+		/// </summary>
+		/// <param name="player">Player to search parameter from</param>
+		/// <param name="parameterID">ID of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyPlayerParameterByID(Player& player, int parameterID, double newValue, const GameInfo& gameInfo) const
+		{
+			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterID).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify a player parameter by index
+		/// </summary>
+		/// <param name="player">Player to search parameter from</param>
+		/// <param name="parameterIndex">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		void modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const;
 
+	protected:
 
 		/// <summary>
 		/// Effects applied on every tick of the game.
@@ -261,6 +320,17 @@ namespace SGA
 		/// <param name="state">State where these continuous actions are checked.</param>
 		void checkPlayerContinuousActionIsComplete(GameState& state) const;
 
+		/// <summary>
+		/// Verifies and removes the expired buffs
+		/// </summary>
+		/// <param name="state">State where these buffs are checked.</param>
+		void removeExpiredBuffs(GameState& state) const;
+
+		/// <summary>
+		/// Executes actions of each entitty type
+		/// </summary>
+		/// <param name="state">State where these actions are executed.</param>
+		void executeOnTickEntityActions(GameState& state) const;
 
 		/// <summary>
 		/// It generates a default action space unique pointer.

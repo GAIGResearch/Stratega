@@ -32,7 +32,6 @@ namespace SGA
 		GameState();
 
 
-
 		/***** ACTIONS AND RESEARCH FUNCTIONS *****/
 
 		/// <summary>
@@ -321,8 +320,6 @@ namespace SGA
 		/// </summary>
 		/// <returns>The ID of the next continuous action.</returns>
 		int getNextContinuousActionID() { return continuousActionNextID; }
-
-
 
 
 		/***** MISC UTILITIES *****/

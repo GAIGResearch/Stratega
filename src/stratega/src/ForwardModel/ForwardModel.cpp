@@ -19,8 +19,6 @@ namespace SGA
 		actionBucket = actionSpace->generateActions(state, playerID);
 	}
 
-
-	
 	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
 	{
 		if (state.getFogOfWarTileId() != -1 && playerID != state.getFogOfWarTileId())
@@ -379,17 +377,92 @@ namespace SGA
 
 		}
 	}
-		
+	
+	void ForwardModel::removeExpiredBuffs(GameState& state) const
+	{
+		//Remove expired Buffs
+		auto& entities = state.getEntities();
+		for (auto et = entities.begin(); et != entities.end(); et++)
+		{
+			auto& buffs = et->getBuffs();
+			auto it = buffs.begin();
+			while (it != buffs.end())
+			{
+				it->incrementElapseTicks();
+				if (it->getElapsedTicks() >= it->getDurationTicks())
+				{
+					it = buffs.erase(it);
+					et->recomputeStats();
+				}
+				else it++;
+			}
+		}
+
+		auto& players = state.getPlayers();
+		for (auto player = players.begin(); player != players.end(); player++)
+		{
+			auto& buffs = player->getBuffs();
+			auto it = buffs.begin();
+			while (it != buffs.end())
+			{
+				it->incrementElapseTicks();
+				if (it->getElapsedTicks() >= it->getDurationTicks())
+				{
+					it = buffs.erase(it);
+					player->recomputeStats(state);
+				}
+				else it++;
+			}
+		}
+	}
+
+	void ForwardModel::executeOnTickEntityActions(GameState& state) const
+	{
+		//ExecuteOnTickEntityActions
+		std::vector<Action> bucket;
+		auto& entities = state.getEntities();
+
+		//Generate entities actions
+		for (const auto& sourceEntity : entities)
+		{
+			for (const auto& actionTypeID : sourceEntity.getEntityType().getOnTickActionIDs())
+			{
+				const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+				if (!state.canExecuteAction(sourceEntity, actionType))
+					continue;
+
+				// Generate all actions
+				if (actionType.getTargets().size() == 0/*TargetType::None*/)
+				{
+					// Self-actions do not have a target, only a source
+					bucket.emplace_back(actionSpace->generateSelfAction(sourceEntity, actionType));
+				}
+				else
+				{
+					auto targets = actionSpace->generateTargets(state, sourceEntity, actionType);
+					actionSpace->generateActions(state, sourceEntity, actionType, targets, bucket);
+				}
+			}
+		}
+
+		//Execute actions
+		for (auto& action : bucket)
+		{
+			executeAction(state, action);
+		}
+	}
+
 	void ForwardModel::endTick(GameState& state) const
 	{
 		state.incTick();
-
+		removeExpiredBuffs(state);
 		executeOnTriggerEffects(state);
+		executeOnTickEntityActions(state);
 		checkEntitiesContinuousActionIsComplete(state);
-		checkPlayerContinuousActionIsComplete(state);
+		checkPlayerContinuousActionIsComplete(state);		
 	}
 	
-
 	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
@@ -438,5 +511,31 @@ namespace SGA
 	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose) 
 	{ 
 		onEntitySpawnEffects.emplace_back(ose); 
+	}
+
+	void ForwardModel::modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const
+	{
+		//Get parameter
+		auto& parameterValue = entity.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		const double min = entity.getMinParameterAt(parameterIndex);
+		const double max = entity.getMaxParameterAt(parameterIndex);
+		if (min != max)
+			parameterValue=std::max(min, std::min(parameterValue, max));
+	}
+
+	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
+	{
+		//Get parameter
+		auto& parameterValue = player.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		const double min = player.getMinParameterAt(parameterIndex);
+		const double max = player.getMaxParameterAt(parameterIndex);
+		if(min!=max)
+			parameterValue=std::max(min, std::min(parameterValue, max));
 	}
 }

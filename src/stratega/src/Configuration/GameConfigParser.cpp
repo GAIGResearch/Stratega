@@ -67,8 +67,12 @@ namespace SGA
         parseEntityGroups(configNode["EntityGroups"], *config);
         parseAgents(configNode["Agents"], *config);
         parseTileTypes(configNode["Tiles"], *config);
-        
+
         parsePlayers(configNode["Player"], *config);
+
+        if(configNode["Buffs"].IsDefined())
+           parseBuffs(configNode["Buffs"], *config);
+        
 
 		if(configNode["TechnologyTrees"].IsDefined())
 			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
@@ -823,7 +827,7 @@ namespace SGA
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
 	{
-        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, double>>(std::map<std::string, double>()))
+        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>()))
         {
             // Assign IDs to parameters that do not exist yet
             if (config.parameters.find(nameParamPair.first) == config.parameters.end())
@@ -831,15 +835,36 @@ namespace SGA
                 config.parameters.insert({ nameParamPair.first, static_cast<int>(config.parameters.size()) });
             }
 
-            // Construct the parameter
-            Parameter param;
-            param.setID(config.parameters.at(nameParamPair.first));
-            param.setName(nameParamPair.first);
-            param.setMinValue(0);
-            param.setMaxValue(nameParamPair.second);
-            param.setDefaultValue(param.getMaxValue());
-            param.setIndex(static_cast<int>(parameterBucket.size()));
-            parameterBucket.insert({ param.getID(), std::move(param) });
+            //Check if is a vector of min, max and default
+            if (nameParamPair.second.IsSequence())
+            {
+                auto parameter = nameParamPair.second.as<std::vector<double>>();
+                if (parameter.size() == 3)
+                {
+                    // Construct the parameter
+                    Parameter param;
+                    param.setID(config.parameters.at(nameParamPair.first));
+                    param.setName(nameParamPair.first);
+                    param.setMinValue(parameter[0]);
+                    param.setMaxValue(parameter[1]);
+                    param.setDefaultValue(parameter[2]);
+                    param.setIndex(static_cast<int>(parameterBucket.size()));
+                    parameterBucket.insert({ param.getID(), std::move(param) });
+                }
+                else
+                    throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
+            }
+            else
+            {
+                Parameter param;
+                param.setID(config.parameters.at(nameParamPair.first));
+                param.setName(nameParamPair.first);
+                param.setMinValue(0);
+                param.setMaxValue(nameParamPair.second.as<double>());
+                param.setDefaultValue(param.getMaxValue());
+                param.setIndex(static_cast<int>(parameterBucket.size()));
+                parameterBucket.insert({ param.getID(), std::move(param) });
+            }
         }
 	}
 
@@ -1039,4 +1064,46 @@ namespace SGA
     	//Add new level definition
         levelDefinitions.emplace(static_cast<int>(levelDefinitions.size()), newLevel);
     }
-}
+
+    void  GameConfigParser::parseModifiers(const YAML::Node& modifierNode, GameConfig& config, std::unordered_map< ParameterID, double >& modifiers) const
+    {
+       for(const auto& nameParamPair : modifierNode.as< std::map< std::string, double > >(
+              std::map< std::string, double >())) {
+          // Check if parameter is found
+          if(config.parameters.find(nameParamPair.first) == config.parameters.end()) {
+             throw std::runtime_error("Cannot find parameter for Buffs");
+          }
+
+          modifiers.insert(
+             {config.parameters.find(nameParamPair.first)->second, nameParamPair.second});
+       }
+    }
+
+    void GameConfigParser::parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const
+    {
+       if(! buffsNode.IsDefined()) {
+          throw std::runtime_error("Cannot find definition for Buffs");
+       }
+
+       auto types = buffsNode.as< std::map< std::string, YAML::Node > >();
+       for(const auto& nameTypePair : types) {
+          BuffType type;
+          type.setName(nameTypePair.first);
+
+          type.setID(static_cast< int >(config.buffsTypes.size()));
+
+          //Parse modifiers
+          // AdditiveModifier
+          std::unordered_map< ParameterID, double > additiveModifiers;
+          parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
+          type.setAdditiveModifiers(additiveModifiers);
+          // MultiplicationModifiers
+          std::unordered_map< ParameterID, double > multiplicationModifiers;
+          parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);
+          type.setMultiplicationModifiers(multiplicationModifiers);
+
+          //Add buff type
+           config.buffsTypes.emplace(type.getID(), std::move(type));
+       }
+    }
+    }

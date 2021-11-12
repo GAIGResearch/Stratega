@@ -25,12 +25,12 @@ Player:
     Actions: [Research]
     CanSpawn: Buildings
     Parameters:
-        Food: 800
-        Gold: 0
-        Iron: 500
-        Wood: 500
-        Bricks: 500
-        Research: 200
+        Food: [0,10000,800]
+        Gold: [0,10000,0]
+        Iron: [0,10000,500]
+        Wood: [0,10000,500]
+        Bricks: [0,10000,500]
+        Research: [0,10000,200]
 
 Tiles:
     Plain:
@@ -206,11 +206,11 @@ Entities:
         Parameters:
             Speed: 1
             Range: 3
-            WoodCutting: 0.05
-            BrickMaking: 0.05
-            LivestockFarming: 0.1
-            IronMining: 0.05
-            GoldMining: 0.1
+            WoodCutting: [0,1,0.05]
+            BrickMaking: [0,1,0.05]
+            LivestockFarming: [0,1,0.1]
+            IronMining: [0,1,0.05]
+            GoldMining: [0,1,0.1]
             
     Builder:
         Sprite: ../../assets/Entities/unit_7.png

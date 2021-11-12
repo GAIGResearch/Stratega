@@ -8,7 +8,7 @@ Game State Representation
 ###########################
 This page describes several components that form the game state, as well as other aspects that are important parts of Stratega. The game state contains information about 
 the elements that form the game at a given time. This is: players, entities, current board and general status of the game (current turn, if it's over, who won, etc).  
-Visit the :ref:`cpp-reference <cpp-reference>` and the `GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_ 
+Visit the :ref:`cpp-reference <cpp-reference>` and the `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_ 
 file for more information. The rest of this page provides an introduction to important components of the game as defined in Stratega.
 
 +++++++++++++++
@@ -20,7 +20,7 @@ the same classes. Therefore, Stratega uses the same objects to represent the inf
 the type of game that is being played in specific cases. 
 
 .. code-block:: c++
-    :caption: Enumeration for Game Type (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_)
+    :caption: Enumeration for Game Type (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_)
 
 	enum class GameType
 	{
@@ -47,7 +47,7 @@ Stratega provides functionality to writing bots for any of the games in the fram
 of tiles that can possibly be found in the game, etc). The former type of information is *dynamic*, as it changes with the state of the game. The latter is *static*, as it applies to the game
 as it has been designed. 
 
-Static information about the game is given by the class GameInfo, in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameInfo.h>`_, 
+Static information about the game is given by the class GameInfo, in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameInfo.h>`_, 
 which is accessible from any game state. GameInfo contains information about all types used by the game. This allows agent to access information about the game being played dynamically. 
 This information refers to tiles, entities, actions, etc. that can be observed during the game, irrespective of the current game state. Concretely, this information includes:
 
@@ -60,7 +60,7 @@ This information refers to tiles, entities, actions, etc. that can be observed d
 
 
 .. code-block:: yaml
-    :caption: Entity Groups (`BasicRTS.yaml <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/resources/gameConfigurations/TBS/BasicTBS.yaml>`_)
+    :caption: Entity Groups (`BasicRTS.yaml <https://github.com/GAIGResearch/Stratega/blob/dev/resources/gameConfigurations/TBS/BasicTBS.yaml>`_)
 
     EntityGroups:
         Units: [Worker, Warrior, Archer, Catapult]
@@ -71,7 +71,7 @@ This information refers to tiles, entities, actions, etc. that can be observed d
 +++++++++++++++
 Game State
 +++++++++++++++
-The Game State class `GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_ contains dynamic data information about a
+The Game State class `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_ contains dynamic data information about a
 particular game state. This includes information about the status of the game, like the current tick (or turn), if the game is over and (in that case) which player won, or who's turn
 it is if the game is not over. It also contains information about the game type (RTS or TBS) and a pointer to GameInfo (described above)  for static information about the game.
 
@@ -121,7 +121,7 @@ By default Stratega instantiates one player for each agent defined in the config
     - CombatAgent
 
 instantiates two players to play the given game: a one step look ahead (OSLA) agent and a rule based one (CombatAgent). These agents need to be defined in the method 
-AgentFactory::getDefaultFactory(), in the file `AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Agent/AgentFactory.cpp>`_.
+AgentFactory::getDefaultFactory(), in the file `AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Agent/AgentFactory.cpp>`_.
 
 
 ..
@@ -162,8 +162,8 @@ level provided in YAML format.
 
 **Tiles** form the board and have a *tile type*, an <x,y> position, and two flags that indicate if i) the tile is
 walkable; and ii) if it blocks link of sight between entities. Instantiations of Tile 
-(`Tile.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/Tile.h>`_) are dynamic, 
-while their TileType (`TileType.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/TileType.h>`_)
+(`Tile.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/Tile.h>`_) are dynamic, 
+while their TileType (`TileType.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/TileType.h>`_)
 decribes static information, common for all types of the same type. Each tile type has a name, an associated character
 (for YAML level instantiations), an ID and the values for walkable and line of sight blocking for this type.
 
@@ -230,12 +230,12 @@ The following YAML definition shows the entity type 'Archer' for a given game:
 Entity types can be seen as the 'templates' of a given entity, which will be given an ID, owner, position and initial value for its parameters when 
 instantiated in the game and placed in the board.
 
-Entities can be retrieved from the `GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_ 
+Entities can be retrieved from the `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_ 
 by its position, entity ID or player ID (which returns a collection of all entities owned by a player). 
 
 For more information regarding entities, check the following classes and the :ref:`cpp <cpp-reference>` documentation:
- - `EntityType.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/EntityType.h>`_
- - `Entity.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/Entity.h>`_
+ - `EntityType.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/EntityType.h>`_
+ - `Entity.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/Entity.h>`_
 
 ..
     Here we should describe how we represent Units, Buildings, etc
@@ -298,8 +298,8 @@ is another technology that must be researched before this one becomes available.
 be completed.
 
 Technologies can be researched through actions, and the code includes functions to inspect the technology trees 
-(in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameInfo.h>`_) and to check if a 
+(in `GameInfo.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameInfo.h>`_) and to check if a 
 technology can be researched or has been researched already 
-(in `GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_).
+(in `GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_).
 
 

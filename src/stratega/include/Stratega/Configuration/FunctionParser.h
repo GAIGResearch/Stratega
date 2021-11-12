@@ -19,6 +19,7 @@ namespace SGA
 		IDMap parameterIDs;
 		IDMap entityTypeIDs;
 		IDMap tileTypeIDs;
+		IDMap buffTypeIDs;
 		IDMap technologyTypeIDs;
 
 		static ParseContext fromGameConfig(const GameConfig& config);
@@ -66,6 +67,7 @@ namespace SGA
 		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names

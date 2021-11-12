@@ -23,7 +23,7 @@ Player:
     CanSpawn: Buildings
     Parameters:
         Gold: 0
-        Prod: 5
+        Prod: [0,100,5]
         Score: 0
 
 Tiles:

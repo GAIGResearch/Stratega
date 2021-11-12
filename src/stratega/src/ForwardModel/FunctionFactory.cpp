@@ -24,6 +24,8 @@ namespace SGA
 		factory.registerFunction<CanSpawnCondition>("CanSpawn");
 		factory.registerFunction<CanAfford>("CanAfford");
 		factory.registerFunction<HasElapsedTime>("HasElapsedTick");
+		factory.registerFunction<HasNoBuff>("HasNoBuff");
+		factory.registerFunction<HasBuff>("HasBuff");
 		
 		return factory;
 	}
@@ -47,6 +49,7 @@ namespace SGA
 		factory.registerFunction<ResearchTechnology>("Research");
 		factory.registerFunction<SpawnEntityRandom>("SpawnRandom");
 		factory.registerFunction<PayCostEffect>("PayCost");
+		factory.registerFunction<ApplyBuff>("ApplyBuff");
 		
 		return factory;
 	}

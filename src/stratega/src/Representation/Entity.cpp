@@ -1,7 +1,7 @@
 #include <Stratega/Representation/Entity.h>
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/GameInfo.h>
-
+#pragma warning(disable: 5045)
 namespace SGA
 {
 	bool Entity::isNeutral() const
@@ -27,15 +27,29 @@ namespace SGA
 		}
 
 		// Set parameter values
-		lineOfSightRange = newType->getLoSRange();
-		parameters.reserve(newType->getParameters().size());
+		lineOfSightRange = type->getLoSRange();
+		parameters.reserve(type->getParameters().size());
+		maxParameters.reserve(type->getParameters().size());
+		minParameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
 			parameters.emplace_back(idParamPair.second.getDefaultValue());
+			maxParameters.emplace_back(idParamPair.second.getMaxValue());
+			minParameters.emplace_back(idParamPair.second.getMinValue());
 		}
 	}
 
 	double Entity::getParameter(const std::string& paramName) const
+    {
+       for(const auto& param : type->getParameters()) {
+          if(param.second.getName() == paramName) {
+             return parameters[param.second.getIndex()];
+          }
+       }
+	   return -1;
+    }
+
+	double& Entity::getRawParameter(const std::string& paramName)
 	{
 		for (const auto& param : type->getParameters())
 		{
@@ -45,7 +59,7 @@ namespace SGA
 			}
 		}
 
-		return -1;
+		throw std::runtime_error("Parameter not found");
 	}
 
 
@@ -128,4 +142,54 @@ namespace SGA
 		std::cout << "]" << std::endl;
 	}
 
+	void Entity::recomputeStats()
+	{
+		//Remove buffs applied but keep value clamped to min and max
+		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		{
+			const auto& param = type->getParameterByIndex(static_cast<int>(i));
+			double maxParameter = param.getMaxValue();
+			double minParameter = param.getMinValue();
+
+			//Update the max value
+			maxParameters[i] = maxParameter;
+
+			//Keep parameter inside max and min
+			if (parameters[i] > maxParameter)
+				parameters[i] = maxParameter;
+			else if (parameters[i] < minParameter)
+				parameters[i] = minParameter;
+
+		}
+
+		//Recompute each parameter
+		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		{
+			const auto& param = type->getParameterByIndex(static_cast<int>(i));
+			double previousMaxParameter = param.getMaxValue();
+			double maxParameter = previousMaxParameter;
+
+			//Add to each parameterMax the additive and multiplication:	
+			//Add buffs additive
+			for (auto& buff : buffs)
+			{
+				const auto& buffType = buff.getType();
+				maxParameter = buffType.getParameterWithAdditiveBuffsApplied(maxParameter, param.getID());
+			}
+
+			double multiplicationSum = 0;
+			//Add buffs multiplication
+			for (auto& buff : buffs)
+			{
+				auto& buffType = buff.getType();
+				multiplicationSum += buffType.getMultiplicationSum(previousMaxParameter, param.getID());
+			}
+			maxParameter += multiplicationSum;
+
+			//Write new value with the different of the max parameters
+			parameters[i] += maxParameter - previousMaxParameter;
+			//Update the max value
+			maxParameters[i] = maxParameter;
+		}
+	}
 }

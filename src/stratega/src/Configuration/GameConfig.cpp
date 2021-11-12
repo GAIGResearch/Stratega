@@ -33,6 +33,8 @@ namespace SGA
 		for (const auto& idParamPair : parameterTypes)
 		{
 			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
+			player.setMaxParameter(idParamPair.second.getIndex(), idParamPair.second.getMaxValue());
+			player.setMinParameter(idParamPair.second.getIndex(), idParamPair.second.getMinValue());
 		}
 
 		// Add actions

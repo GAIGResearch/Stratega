@@ -6,7 +6,7 @@ Implementing Simple AI Agents
 
 This page shows a few examples about how to create C++ AI agents for Stratega. In all cases, a new AI agent must do the following, independently if the agent is created to play RTS or TBS games:
 
-#. Extend the class **Agent** from `./include/Stratega/Agent/Agent.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/Agent.h>`_
+#. Extend the class **Agent** from `./include/Stratega/Agent/Agent.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/Agent.h>`_
 #. Override the method *computeAction*.   
 
 The **computeAction** method is called every tick/turn of the game and it should return an ActionAssignment object with the list of actions the agent wants to execute.
@@ -109,7 +109,7 @@ And this is all. This code is compatible with the RTS and TBS types of games in 
 Testing your agent
 ==================
 
-In order to test your agent, you need to add it to Stratega's agent factory. Open `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Agent/AgentFactory.cpp>`_ and:
+In order to test your agent, you need to add it to Stratega's agent factory. Open `./src/Agent/AgentFactory.cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Agent/AgentFactory.cpp>`_ and:
 #. add an include statement to the header file of your agent.
 #. add a line with your agent name to the *getDefaultFactory* method.
 

@@ -29,8 +29,8 @@ Player:
     Actions: [Build, Research]
     CanSpawn: Buildings
     Parameters:
-        Gold: 0
-        Prod: 50
+        Gold: [0,1000,0]
+        Prod: [0,1000,50]
 
 Tiles:
     Plain:

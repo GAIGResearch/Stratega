@@ -34,7 +34,7 @@ namespace SGA
 						if (parameter.second.getName() == parameterName)
 						{
 							// (u * x) / ((u*(x-minValue[parameterName])-x+maxValue[parameterName])
-							const double x = entity.getParameterAt(parameter.second.getIndex());
+							const double x = entity.getRawParameterAt(parameter.second.getIndex());
 							const double u = attributeUValues[parameterName];
 							double den = (u * (x - minValue[parameterName]) - (x + maxValue[parameterName]));
 

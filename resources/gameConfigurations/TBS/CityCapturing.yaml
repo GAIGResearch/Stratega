@@ -20,7 +20,7 @@ GameRenderer:
 
 Player:
     Parameters:
-        Gold: 5
+        Gold: [0,1000,5]
 
 Tiles:
     Plain:
