@@ -122,9 +122,9 @@ This code produces the following output for the game 'KillTheKing':
 
 All these *type* classes have information about the entities, tiles and actions they represent, such as:
 
-#. `EntityType.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/EntityType.h>`_: Spawn/Build requirements, spawn costs, line of sights and actions that can be executed by this entity.
-#. `TileType.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/TileType.h>`_: Properties of the tile, such as if it's walkable or blocks the line of sight.
-#. `ActionType.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/ForwardModel/ActionType.h>`_: Action source (player or entity), preconditions for the action to take place, list of effects and action targets.
+#. `EntityType.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/EntityType.h>`_: Spawn/Build requirements, spawn costs, line of sights and actions that can be executed by this entity.
+#. `TileType.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/TileType.h>`_: Properties of the tile, such as if it's walkable or blocks the line of sight.
+#. `ActionType.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/ForwardModel/ActionType.h>`_: Action source (player or entity), preconditions for the action to take place, list of effects and action targets.
 
 
 You're encouraged to look at the :ref:`cpp Reference <cpp-reference>` for variables and methods that can be used to retrieve this information.
@@ -187,9 +187,9 @@ These descriptors can be retrieved using the *gameDescription* member of the Gam
     
 
 Line 1 accesses the actionCategories map, which is indexed by a category and whose value is the set of action types that correspond to that category. Each category key is a value of 
-the enumerator ActionCategory, in `GameDescription.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameDescription.h>`_, whose name can be
+the enumerator ActionCategory, in `GameDescription.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameDescription.h>`_, whose name can be
 obtained by the function `toString` from the GameDescription class (line 3 above). Lines 5 to 9 show a loop through the vector of actions of this category, printing its name and its id.
-Note that these IDs can be used to receive the action type object (from `ActionType.h <https://github.com/GAIGResearch/Stratega/tree/refactor/cmake_and_deps/src/stratega/include/Stratega/ForwardModel>`_), 
+Note that these IDs can be used to receive the action type object (from `ActionType.h <https://github.com/GAIGResearch/Stratega/tree/dev/src/stratega/include/Stratega/ForwardModel>`_), 
 as shown in line 7.
 
 The output of the above snippet is as follows:
@@ -429,7 +429,7 @@ Game State
 
 
 One of the things that can be queried about the game state is the current state of the board. The board
-is a Grid2d<Tile> object owned by the GameState (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameState.h>`_)
+is a Grid2d<Tile> object owned by the GameState (`GameState.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameState.h>`_)
 which provides acces to its bounds (width x height) and the tiles it contains.
 
 For instance, the following snippet runs through all the tiles in the board and prints some basic information. Each
@@ -602,7 +602,7 @@ by the fog of war (i.e. only visible enemy entities will be visible). Player IDs
 where the number of players can be retrieved from the game state with the function "getNumPlayers()".
 
 Entities can also be filtered by entity categories. Entity categories are defined in an enumerator in  
-`GameDescription.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Representation/GameDescription.h>`_:
+`GameDescription.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Representation/GameDescription.h>`_:
 
 .. code-block:: c++
     :linenos:
@@ -798,7 +798,7 @@ latter are part of the *static* information of the game.
             print(act.get_action_name(),", is entity action: " , act.is_entity_action())
 
 Action objects have **targets**, which are stored in the vector "targets" of the Action struct 
-(`Action.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/ForwardModel/Action.h>`_)
+(`Action.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/ForwardModel/Action.h>`_)
 These ActionTargets have many variables that can be consulted. Among them, the most relevant ones are:
 
 #. getPlayerID(): Id of the player who's target of this action.
@@ -806,7 +806,7 @@ These ActionTargets have many variables that can be consulted. Among them, the m
 #. getPosition(): <x,y> position where this action takes place.
 #. getTechnologyID(): If this action is a research one, the ID of the technology that is to be researched by it.
 #. getType(): Returns the type of the target, which is one of the values defined in the "enum Type" from ActionTarget  
-(`ActionTarget.h <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/ForwardModel/ActionTarget.h>`_).
+(`ActionTarget.h <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/ForwardModel/ActionTarget.h>`_).
 
 Extending the previous code snippet, we can access (and print to console) extra information about the targets of the actions:
 

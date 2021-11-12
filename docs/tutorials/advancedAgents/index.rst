@@ -17,13 +17,13 @@ please check the following papers:
 Stratega's implementation of these agents can be found in the following files:
 
 #. Monte Carlo Tree Search (MCTS): in 'include/Stratega/Agent/TreeSearchAgents/' (there are also corresponding .cpp files in 'src/Stratega/Agent/TreeSearchAgents/'):
-    * `MCTSAgent.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSAgent.h>`_: Main entry point for the agent, which implements the init and computeAction methods as specified in :ref:`Implementing Simple AI Agents <implement_cpp_agent>`.
-    * `MCTSNode.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSNode.h>`_: Implements a node for MCTS. It contains the main functions for the MCTS algorithm (tree selection, simulation, back-propagation and UCT).  
-    * `MCTSParameters.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSParameters.h>`_: Parameters of the agent. For more information, see below how to provide these via YAML.
+    * `MCTSAgent.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSAgent.h>`_: Main entry point for the agent, which implements the init and computeAction methods as specified in :ref:`Implementing Simple AI Agents <implement_cpp_agent>`.
+    * `MCTSNode.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSNode.h>`_: Implements a node for MCTS. It contains the main functions for the MCTS algorithm (tree selection, simulation, back-propagation and UCT).  
+    * `MCTSParameters.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSParameters.h>`_: Parameters of the agent. For more information, see below how to provide these via YAML.
 #. Rolling Horizon Evolutionary Algorithm (RHEA): in 'include/Stratega/Agent/RHEAAgent/' (plus .cpp in 'src/Stratega/Agent/RHEAAgent/')
-    * `RHEAAgent.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAAgent.h>`_: Main agent class for the RHEA agent, with the implementation of the methods init and computeAction, as specified in :ref:`Implementing Simple AI Agents <implement_cpp_agent>`. It also manages the population of individuals for the evolutionary algorithm.
-    * `RHEAGenome.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAGenome.h>`_: Implements an individual for RHEA, which all the main functions such as mutation, crossover and evaluation.
-    * `RHEAParameters.h/cpp <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAParameters.h>`_: Parameters of the agent. For more information, see below how to provide these via YAML.
+    * `RHEAAgent.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAAgent.h>`_: Main agent class for the RHEA agent, with the implementation of the methods init and computeAction, as specified in :ref:`Implementing Simple AI Agents <implement_cpp_agent>`. It also manages the population of individuals for the evolutionary algorithm.
+    * `RHEAGenome.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAGenome.h>`_: Implements an individual for RHEA, which all the main functions such as mutation, crossover and evaluation.
+    * `RHEAParameters.h/cpp <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAParameters.h>`_: Parameters of the agent. For more information, see below how to provide these via YAML.
 
 
 +++++++++++++++++++
@@ -35,16 +35,16 @@ These two agents have in common that they both use a class to specify parameters
 
 #. Budget information: see section below.
 #. Player ID of the agent (needs to be set up in the agent's init method).
-#. A `State Heuristic <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/Heuristic/StateHeuristic.h>`_, used to evaluate states found during search. State heuristic is a pure virtual function that requires the implementation of two functions: *evaluateGameState* (that provies a numerical value given a game state) and *getName* (used for printing purposes). Stratega provides some huristics as examples:
-    * `MinimizeDistanceHeuristic <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.cpp>`_, which aims to minimize the distance of the player's units to the opponent's.
-    * `AbstractHeuristic <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Stratega/Agent/Heuristic/AbstractHeuristic.cpp>`_, which aims to maximize the difference between the player's units properties and those of the opponent.
+#. A `State Heuristic <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/Heuristic/StateHeuristic.h>`_, used to evaluate states found during search. State heuristic is a pure virtual function that requires the implementation of two functions: *evaluateGameState* (that provies a numerical value given a game state) and *getName* (used for printing purposes). Stratega provides some huristics as examples:
+    * `MinimizeDistanceHeuristic <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.cpp>`_, which aims to minimize the distance of the player's units to the opponent's.
+    * `AbstractHeuristic <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Stratega/Agent/Heuristic/AbstractHeuristic.cpp>`_, which aims to maximize the difference between the player's units properties and those of the opponent.
 #. An Opponent Model, used to determine which actions the opponent could take when simulating actions with the forward model. This is a class of type `BaseActionScript <https://github.com/GAIGResearch/Stratega/blob/dev/Stratega/include/Stratega/Agent/ActionScript/BaseActionScript.h>`_, which requires the implementation of a function called *getAction*. This function returns an action for a given game state, and it can be used as a way to incorporate domain knowledge into the game.
 #. A Portfolio, which is a collection of 'BaseActionScript' objects. This is useful for implementing portfolio-based search methods. See, for instance, this `paper <https://www.diego-perez.net/papers/PortfolioStrategaCEC2021.pdf>`_.
 
 Each class, 'MCTSParameters' and 'RHEAParameters', extend the base class with parameters that are specific to each algorithm. For instance, 
-for `MCTS <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSParameters.h>`_ you can specify 
+for `MCTS <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/MCTSAgent/MCTSParameters.h>`_ you can specify 
 values for the tree policy balancing constant C, the playout length or if Monte Carlo rollouts are active. For 
-`RHEA <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAParameters.h>`_ you can specify the population size,
+`RHEA <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/include/Stratega/Agent/RHEAAgent/RHEAParameters.h>`_ you can specify the population size,
 mutation rate or tournament size for selection.
 
 MCTS and RHEA also show how parameters can be set and initialized. Stratega allows you to do this in two independent ways:
@@ -126,7 +126,7 @@ In YAML, these parameters can be sent to the agents following the format below:
 
 
 Finally, in order for Stratega to link the YAML and the 'decode' function, an agent able to receive parameters must be defined in 
-`AgentFactory <https://github.com/GAIGResearch/Stratega/blob/refactor/cmake_and_deps/src/stratega/src/Stratega/Agent/AgentFactory.cpp>`_ as follows, using the name of the class
+`AgentFactory <https://github.com/GAIGResearch/Stratega/blob/dev/src/stratega/src/Stratega/Agent/AgentFactory.cpp>`_ as follows, using the name of the class
 that contains the 'decode' function:
 
 .. code-block:: c++
