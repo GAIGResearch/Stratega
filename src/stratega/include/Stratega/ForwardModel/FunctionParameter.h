@@ -137,7 +137,7 @@ namespace SGA
 
 		const TileType& getTileType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 
-		const bool isPlayerParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
-		const bool isPlayerParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		bool isPlayerParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		bool isPlayerParameter(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 	};
 }
