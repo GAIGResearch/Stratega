@@ -522,8 +522,7 @@ namespace SGA
 		//Keep it in bounds min/max
 		const double min = entity.getMinParameterAt(parameterIndex);
 		const double max = entity.getMaxParameterAt(parameterIndex);
-		if (min != max)
-			parameterValue=std::max(min, std::min(parameterValue, max));
+		parameterValue=std::max(min, std::min(parameterValue, max));
 	}
 
 	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
@@ -535,7 +534,6 @@ namespace SGA
 		//Keep it in bounds min/max
 		const double min = player.getMinParameterAt(parameterIndex);
 		const double max = player.getMaxParameterAt(parameterIndex);
-		if(min!=max)
-			parameterValue=std::max(min, std::min(parameterValue, max));
+		parameterValue=std::max(min, std::min(parameterValue, max));
 	}
 }

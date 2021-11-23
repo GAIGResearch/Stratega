@@ -846,13 +846,13 @@ namespace SGA
                     param.setID(config.parameters.at(nameParamPair.first));
                     param.setName(nameParamPair.first);
                     param.setMinValue(parameter[0]);
-                    param.setMaxValue(parameter[1]);
-                    param.setDefaultValue(parameter[2]);
+                    param.setDefaultValue(parameter[1]);
+                    param.setMaxValue(parameter[2]);               
                     param.setIndex(static_cast<int>(parameterBucket.size()));
                     parameterBucket.insert({ param.getID(), std::move(param) });
                 }
                 else
-                    throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
+                    throw std::runtime_error("Parameter definition does not follow the template: [min, default value, max]");
             }
             else
             {
