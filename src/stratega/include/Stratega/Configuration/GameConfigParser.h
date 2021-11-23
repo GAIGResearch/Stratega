@@ -1,6 +1,8 @@
 #pragma once
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/LevelDefinition.h>
+#include <Stratega/Utils/filesystem.hpp>
+
 namespace SGA
 {
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath="");
@@ -67,6 +69,29 @@ namespace SGA
         
 		
 	private:
+        YAML::Node loadNode(const YAML::Node& origin, std::string node, GameConfig& config) const
+        {
+            auto foundNode = origin;
+            //Check if is yaml path
+           while (foundNode[node].IsScalar())
+            {
+               auto yamlPath = foundNode[node].as<std::string>();
+               //Load yaml file
+
+               using namespace ghc::filesystem;
+
+               path filePath = yamlPath;
+               // Convert path to an absolute path relative to the path of the configuration file
+               auto tmp = current_path();
+               current_path(canonical(path(config.yamlPath).parent_path()));
+               filePath = canonical(filePath);
+               current_path(tmp);
+
+               foundNode = YAML::LoadFile(filePath.string());
+            }
+
+            return foundNode[node];
+        }
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
