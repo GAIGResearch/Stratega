@@ -126,9 +126,8 @@ with open(path.join(python_directory, "README.md")) as f:
 
 setup(
     name='Stratega',
-    version='0.0.15',
+    version='0.0.16',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
-    #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
     long_description=long_description,
     cmake_args=shlex.split(os.environ.get('STRATEGA_EXTRA_CMAKE_ARGS', '')),

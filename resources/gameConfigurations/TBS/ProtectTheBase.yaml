@@ -157,7 +157,7 @@ Entities:
         LineOfSightRange: 5
         Actions: [SpawnMiner, SpawnFighter]
         Parameters:
-            Gold: [0,5000,500]
+            Gold: [0,500,5000]
             Health: 100
 
     Miner:
@@ -166,7 +166,7 @@ Entities:
         LineOfSightRange: 4
         Actions: [Move, Mine, Deposit]
         Parameters:
-            Gold: 0
+            Gold: [0,0,1000]
             Health: 20
 
     Fighter:
@@ -184,7 +184,7 @@ Entities:
         LineOfSightRange: 6
         Actions: []
         Parameters:
-            Gold: 200
+            Gold: [0,200,1000]
 
 EntityGroups:
     Attackable: [Base, Fighter, Miner]

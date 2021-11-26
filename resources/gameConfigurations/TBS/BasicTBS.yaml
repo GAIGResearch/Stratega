@@ -22,9 +22,9 @@ Player:
     Actions: [Build, Research]
     CanSpawn: Buildings
     Parameters:
-        Gold: 0
-        Prod: [0,100,5]
-        Score: 0
+        Gold: [0,0,1000]
+        Prod: [0,5,100]
+        Score: [0,0,1000]
 
 Tiles:
     Plain:

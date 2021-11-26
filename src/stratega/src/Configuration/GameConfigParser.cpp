@@ -5,7 +5,7 @@
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
-#include <Stratega/Utils/filesystem.hpp>
+
 
 namespace SGA
 {
@@ -55,45 +55,47 @@ namespace SGA
         auto config = std::make_unique<GameConfig>();
         config->resourcesPath = resourcesPath;
         config->yamlPath = filePath;
-        config->gameType = configNode["GameConfig"]["Type"].as<GameType>();
-        config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
-        config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
 
-        config->applyFogOfWar = configNode["GameConfig"]["FogOfWar"].as<bool>(config->applyFogOfWar);
+        auto gameConfigNode = loadNode(configNode, "GameConfig", *config);
+        config->gameType = gameConfigNode["Type"].as<GameType>();
+        config->tickLimit = gameConfigNode["RoundLimit"].as<int>(config->tickLimit);
+        config->numPlayers = gameConfigNode["PlayerCount"].as<int>(config->numPlayers);
+
+        config->applyFogOfWar = gameConfigNode["FogOfWar"].as<bool>(config->applyFogOfWar);
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(configNode["Entities"], *config);
-        parseEntityGroups(configNode["EntityGroups"], *config);
-        parseAgents(configNode["Agents"], *config);
-        parseTileTypes(configNode["Tiles"], *config);
+		parseEntities(loadNode(configNode, "Entities", *config), *config);
+        parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
+        parseAgents(loadNode(configNode, "Agents", *config), *config);
+        parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
 
-        parsePlayers(configNode["Player"], *config);
+        parsePlayers(loadNode(configNode, "Player", *config), *config);
 
-        if(configNode["Buffs"].IsDefined())
-           parseBuffs(configNode["Buffs"], *config);
+        if(loadNode(configNode, "Buffs", *config).IsDefined())
+           parseBuffs(loadNode(configNode, "Buffs", *config), *config);
         
 
-		if(configNode["TechnologyTrees"].IsDefined())
-			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
+		if(loadNode(configNode, "TechnologyTrees", *config).IsDefined())
+			parseTechnologyTrees(loadNode(configNode, "TechnologyTrees", *config), *config);
 		
-        parseActions(configNode["Actions"], *config);
-        parseForwardModel(configNode["ForwardModel"], *config);
+        parseActions(loadNode(configNode, "Actions", *config), *config);
+        parseForwardModel(loadNode(configNode, "ForwardModel", *config), *config);
 
-        if (configNode["GameDescription"].IsDefined())
-            parseGameDescription(configNode["GameDescription"], *config);
+        if (loadNode(configNode, "GameDescription", *config).IsDefined())
+            parseGameDescription(loadNode(configNode, "GameDescription", *config), *config);
 
-        if (configNode["GameRunner"].IsDefined())
-            parseGameRunner(configNode["GameRunner"], *config);
+        if (loadNode(configNode, "GameRunner", *config).IsDefined())
+            parseGameRunner(loadNode(configNode, "GameRunner", *config), *config);
 
-        assignPlayerActions(configNode["Player"], *config);
-        assignEntitiesActions(configNode["Entities"], *config);
+        assignPlayerActions(loadNode(configNode, "Player", *config), *config);
+        assignEntitiesActions(loadNode(configNode, "Entities", *config), *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);
 
     	//Parse last the boards after adding the actions to entities
-        parseBoardGenerator(configNode["Board"], *config);
+        parseBoardGenerator(loadNode(configNode, "Board", *config), *config);
         return config;
 	}
 
@@ -657,7 +659,7 @@ namespace SGA
     {
         config.renderConfig = std::make_unique<RenderConfig>();
 
-        for (const auto& entityNode : configNode["Entities"])
+        for (const auto& entityNode : loadNode(configNode, "Entities", config))
         {
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;
@@ -665,7 +667,7 @@ namespace SGA
         }       
 
         //Read GameRenderer configuration
-        const auto gameRendererNode = configNode["GameRenderer"];
+        const auto gameRendererNode = loadNode(configNode, "GameRenderer", config);
         if (gameRendererNode.IsDefined())
         {
             //Read resolution
@@ -807,7 +809,7 @@ namespace SGA
             throw std::runtime_error("GameRender not defined in yaml");
         }       
 
-        for (const auto& tileNode : configNode["Tiles"])
+        for (const auto& tileNode : loadNode(configNode, "Tiles", config))
         {
             auto tileName = tileNode.first.as<std::string>();
             auto tileConfig = tileNode.second;
@@ -846,13 +848,13 @@ namespace SGA
                     param.setID(config.parameters.at(nameParamPair.first));
                     param.setName(nameParamPair.first);
                     param.setMinValue(parameter[0]);
-                    param.setMaxValue(parameter[1]);
-                    param.setDefaultValue(parameter[2]);
+                    param.setDefaultValue(parameter[1]);
+                    param.setMaxValue(parameter[2]);               
                     param.setIndex(static_cast<int>(parameterBucket.size()));
                     parameterBucket.insert({ param.getID(), std::move(param) });
                 }
                 else
-                    throw std::runtime_error("Parameter definition does not follow the template: [min, max, default value]");
+                    throw std::runtime_error("Parameter definition does not follow the template: [min, default value, max]");
             }
             else
             {
