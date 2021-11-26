@@ -1,3 +1,7 @@
 {
-    "restructuredtext.confPath": "${workspaceFolder}\\docs"
+    "restructuredtext.confPath": "${workspaceFolder}\\docs",
+    "restructuredtext.pythonRecommendation.disabled": true,
+    "restructuredtext.syntaxHighlighting.disabled": true,
+    "restructuredtext.languageServer.disabled": true,
+    "restructuredtext.linter.disabled": true
 }
