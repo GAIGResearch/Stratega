@@ -365,6 +365,34 @@ namespace SGA
 			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
 		}
 	}
+	SpawnEntityRandomLocation::SpawnEntityRandomLocation(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp), 
+		targetEntityTypeParam(parameters[0])
+	{
+	}
+
+	void SpawnEntityRandomLocation::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (fm.getGameType()==GameType::TBS)
+		{
+			
+			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+			std::uniform_int_distribution<int> widthMax(0, state.getBoardWidth());
+			std::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
+
+			Vector2i spawnPos{widthMax(state.getRndEngine()), heightMax(state.getRndEngine())};
+			while (!state.isWalkable(spawnPos) && !state.isInBounds(spawnPos))
+			{
+				spawnPos = { widthMax(state.getRndEngine()), heightMax(state.getRndEngine()) };
+			}
+			
+			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
+		}
+		else
+		{
+			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
+		}
+	}
 
 
 	SpawnEntity::SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)

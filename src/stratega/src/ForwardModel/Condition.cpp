@@ -163,6 +163,28 @@ namespace  SGA
 		const auto& entity = targetParam.getEntity(state, targets);
 		return !entity.isNeutral();
 	}
+
+	IsTickMultipleOf::IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		multipleParam(parameters[0])
+	{
+	}
+
+	bool IsTickMultipleOf::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double multipleTick = multipleParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if((currentTick % static_cast<int>(multipleTick)) == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
 	
 	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Condition(exp),

@@ -110,6 +110,16 @@ namespace SGA
 	};
 
 	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
+	class SpawnEntityRandomLocation : public Effect
+	{
+		FunctionParameter targetEntityTypeParam;
+
+	public:
+		SpawnEntityRandomLocation(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	// ToDo This effect makes a lot of assumptions, for example what a valid position is or how large the spawn-area is. Additionally it doesn't work for RTS
 	class SpawnEntity : public Effect
 	{
 		FunctionParameter spawnSource;

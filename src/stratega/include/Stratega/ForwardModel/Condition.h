@@ -109,6 +109,15 @@ namespace SGA
 		IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class IsTickMultipleOf : public Condition
+	{
+		FunctionParameter multipleParam;
+
+	public:
+		IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 	class IsResearched : public Condition
 	{

@@ -26,6 +26,7 @@ namespace SGA
 		factory.registerFunction<HasElapsedTime>("HasElapsedTick");
 		factory.registerFunction<HasNoBuff>("HasNoBuff");
 		factory.registerFunction<HasBuff>("HasBuff");
+		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
 		
 		return factory;
 	}
@@ -50,6 +51,7 @@ namespace SGA
 		factory.registerFunction<SpawnEntityRandom>("SpawnRandom");
 		factory.registerFunction<PayCostEffect>("PayCost");
 		factory.registerFunction<ApplyBuff>("ApplyBuff");
+		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
 		
 		return factory;
 	}

@@ -1,0 +1,147 @@
+GameConfig:
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: true
+
+
+Agents:
+    - HumanAgent
+    - DoNothingAgent
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected: ../../assets/Tiles/selected.png
+        FogOfWar: ../../assets/Tiles/notVisible.png
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+Actions:
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
+
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+
+Entities:
+    Warrior:
+        Sprite: ../../assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 6
+        Actions: [Attack, Move]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
+    Flag:
+        Sprite: ../../assets/Entities/gold_chest.png
+        Symbol: f
+        LineOfSightRange: 5
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
+
+
+ForwardModel:
+    Trigger:
+        - OnTick:
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"
+        - OnTick:
+            #Type: Entity, Player, State
+            Conditions:
+                - "IsTickMultipleOf(10)"
+                #- "ResourceLowerEqual(GameState, 1)"
+            Effects:
+                - "SpawnEntityRandomLocation(Flag)"
+
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 1000
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5
