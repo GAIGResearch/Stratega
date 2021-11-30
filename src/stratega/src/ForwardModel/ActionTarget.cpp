@@ -29,6 +29,12 @@ namespace SGA
 	{
 		return ActionTarget(Type::PlayerReference, Data{ PlayerReference, playerID });
 	}
+	
+	
+	ActionTarget ActionTarget::createGameStateActionTarget()
+	{
+		return ActionTarget(Type::Gamestate, Data{});
+	}
 
 	ActionTarget ActionTarget::createTechnologyEntityActionTarget(int technologyID)
 	{

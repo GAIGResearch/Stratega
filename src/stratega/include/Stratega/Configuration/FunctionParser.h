@@ -61,6 +61,7 @@ namespace SGA
 
 		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss) const;
 		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;

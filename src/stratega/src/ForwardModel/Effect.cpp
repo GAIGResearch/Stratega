@@ -24,15 +24,19 @@ namespace SGA
 		targetResource += amount;
 		auto& param = resourceReference.getParameter(state, targets);
 		int parameterIndex = param.getIndex();
-		if (!resourceReference.isPlayerParameter(targets))
+		if (resourceReference.isEntityParameter(targets))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 		}
-		else
+		else if (resourceReference.isPlayerParameter(targets))
 		{
 			auto& player = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
+		}
+		else
+		{
+			fm.modifyStateParameterByIndex(state, parameterIndex, targetResource);
 		}
 		
 	}
@@ -381,11 +385,11 @@ namespace SGA
 			std::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
 
 			Vector2i spawnPos{widthMax(state.getRndEngine()), heightMax(state.getRndEngine())};
-			while (!state.isWalkable(spawnPos) && !state.isInBounds(spawnPos))
+			do
 			{
-				spawnPos = { widthMax(state.getRndEngine()), heightMax(state.getRndEngine()) };
-			}
-			
+				spawnPos = { widthMax(state.getRndEngine())-1, heightMax(state.getRndEngine())-1 };
+			} while (!state.isWalkable(spawnPos) || !state.isInBounds(spawnPos));
+
 			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
 		}
 		else

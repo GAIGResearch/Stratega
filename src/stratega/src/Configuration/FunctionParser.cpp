@@ -68,6 +68,7 @@ namespace SGA
 				((param = parseEntityTypeReference(ss, context))) ||
 				((param = parseTileTypeReference(ss, context))) ||
 				((param = parseBuffTypeReference(ss, context))) ||
+				((param = parseGameStateParameterReference(ss, context))) ||
 				((param = parseTechnologyTypeReference(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -204,6 +205,33 @@ namespace SGA
 		}
 
 		return FunctionParameter::createEntityPlayerParameterReference({ parameterIt->second, targetIt->second });
+	}
+	
+	nonstd::optional<FunctionParameter> FunctionParser::parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 2);
+		if(!names)
+		{
+			return {};
+		}
+
+		auto stateName = names.value()[0];
+		auto parameterName = names.value()[1];
+		if(stateName != "GameState"&& stateName != "Gamestate")
+		{
+			ss.seekg(begin);
+			return {};
+		}
+
+		auto targetIt = context.targetIDs.find(stateName);
+		auto parameterIt = context.parameterIDs.find(parameterName);
+		if (parameterIt == context.parameterIDs.end())
+		{
+			throw std::runtime_error("Unknown parameter/action-target: " + stateName + "." + parameterName);
+		}
+
+		return FunctionParameter::createGameStateParameterReference({ parameterIt->second, -1 });
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const

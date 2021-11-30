@@ -25,7 +25,8 @@ namespace SGA
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
 			TimeReference, // References the Time for specific Entities or Technologies,
 			TileTypeReference, // References TileTypes defined in the Game. Like Plain, Forest...
-			BuffTypeReference // References BuffTypes defined in the Game. Like Plain, Forest...
+			BuffTypeReference, // References BuffTypes defined in the Game. Like Plain, Forest...
+			GameStateParameterReference, // References BuffTypes defined in the Game. Like Plain, Forest...
 		};
 
 	private:
@@ -105,6 +106,7 @@ namespace SGA
 		static FunctionParameter createEntityPlayerReference(int argumentIndex);
 		static FunctionParameter createTimeReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
+		static FunctionParameter createGameStateParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
@@ -138,5 +140,7 @@ namespace SGA
 		const TileType& getTileType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 
 		bool isPlayerParameter(const std::vector<ActionTarget>& actionTargets) const;
+		bool isEntityParameter(const std::vector<ActionTarget>& actionTargets) const;
+		bool isStateParameter(const std::vector<ActionTarget>& actionTargets) const;
 	};
 }

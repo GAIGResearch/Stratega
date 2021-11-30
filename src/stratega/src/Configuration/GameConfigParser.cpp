@@ -63,6 +63,10 @@ namespace SGA
 
         config->applyFogOfWar = gameConfigNode["FogOfWar"].as<bool>(config->applyFogOfWar);
 
+        //Parse parameters
+        auto parametersNode = gameConfigNode["Parameters"];
+        parseParameterList(parametersNode, *config, config->stateParameterTypes);
+
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
 		parseEntities(loadNode(configNode, "Entities", *config), *config);
@@ -304,6 +308,7 @@ namespace SGA
             type.setName(nameTypePair.first);
         	
             context.targetIDs.emplace("Source", 0);
+            //context.targetIDs.emplace("GameState", -1);
         	
         	//Parse all the targets
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
@@ -507,7 +512,11 @@ namespace SGA
 
                 // Initiliaze OnTickEffect
                 OnTickEffect onTickEffect;
-                onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
@@ -522,7 +531,7 @@ namespace SGA
                 auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
 
                 // Initiliaze OnTickEffect
-                OnEntitySpawnEffect onSpawnEffect;
+                OnEntitySpawnEffect onSpawnEffect;                
                 onSpawnEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);

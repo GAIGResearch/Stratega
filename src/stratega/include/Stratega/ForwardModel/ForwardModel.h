@@ -14,12 +14,23 @@ namespace SGA
 		LastManStanding,
 		UnitAlive
 	};
+
+	enum class SourceOnTickEffectType
+	{
+		Entity,
+		Player,
+		GameState
+	};
 	
 	struct OnTickEffect
 	{
-		std::unordered_set<EntityTypeID> validTargets;
+		SourceOnTickEffectType type;
+		
 		std::vector<std::shared_ptr<Condition>> conditions;
 		std::vector<std::shared_ptr<Effect>> effects;
+
+		//Entity
+		std::unordered_set<EntityTypeID> validTargets;
 	};
 
 	struct OnEntitySpawnEffect
@@ -232,6 +243,38 @@ namespace SGA
 		/// <param name="parameterIndex">Index of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		void modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const;
+
+		/// <summary>
+		/// Modify state parameter by name
+		/// </summary>
+		/// <param name="state">State to search parameter from</param>
+		/// <param name="parameterName">Name of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyStateByParameterByName(GameState& state, std::string& parameterName, double newValue, GameInfo& gameInfo) const
+		{
+			modifyStateParameterByIndex(state, gameInfo.getStateParameter(parameterName).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify state parameter by ID
+		/// </summary>
+		/// <param name="state">State to search parameter from</param>
+		/// <param name="parameterID">ID of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyStateParameterByID(GameState& state, int parameterID, double newValue, const GameInfo& gameInfo) const
+		{
+			modifyStateParameterByIndex(state, gameInfo.getStateParameter(parameterID).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify a state parameter by index
+		/// </summary>
+		/// <param name="state">State to search parameter from</param>
+		/// <param name="parameterIndex">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		void modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const;
 
 	protected:
 

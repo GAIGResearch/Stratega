@@ -146,6 +146,27 @@ namespace YAML
         }
     };
 
+     template<>
+    struct convert<SGA::SourceOnTickEffectType>
+    {
+        static bool decode(const Node& node, SGA::SourceOnTickEffectType& rhs)
+        {
+            if (!node.IsScalar())
+                return false;
+            auto value = node.as<std::string>();
+            if (value == "Entity")
+                rhs = SGA::SourceOnTickEffectType::Entity;
+            else if (value == "Player")
+                rhs = SGA::SourceOnTickEffectType::Player;
+            else if (value == "GameState")
+                rhs = SGA::SourceOnTickEffectType::GameState;
+            else
+                return false;
+
+            return true;
+        }
+    };
+
     template<>
     struct convert<SGA::TargetType::Type>
     {

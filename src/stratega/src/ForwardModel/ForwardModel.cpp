@@ -207,12 +207,64 @@ namespace SGA
 		// Execute OnTick-trigger
 		for (const auto& onTickEffect : onTickEffects)
 		{
-			for (const auto& entity : state.getEntities())
+			if (onTickEffect.type == SourceOnTickEffectType::Entity)
 			{
-				if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
-					continue;
+				for (const auto& entity : state.getEntities())
+				{
+					if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
+						continue;
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+					auto isValid = true;
+					for (const auto& condition : onTickEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onTickEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else if (onTickEffect.type == SourceOnTickEffectType::Player)
+			{
+				for (const auto& player : state.getPlayers())
+				{
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createPlayerActionTarget(player.getID()));
+					auto isValid = true;
+					for (const auto& condition : onTickEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onTickEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else
+			{
+				//GameState source
+
 				std::vector<ActionTarget> targets;
-				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+				targets.emplace_back(ActionTarget::createGameStateActionTarget());
 				auto isValid = true;
 				for (const auto& condition : onTickEffect.conditions)
 				{
@@ -525,6 +577,17 @@ namespace SGA
 		parameterValue=std::max(min, std::min(parameterValue, max));
 	}
 
+	void ForwardModel::modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const
+	{
+		//Get parameter
+		auto& parameterValue = state.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		const double min = state.getMinParameterAt(parameterIndex);
+		const double max = state.getMaxParameterAt(parameterIndex);
+		parameterValue=std::max(min, std::min(parameterValue, max));
+	}
 	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
 	{
 		//Get parameter
