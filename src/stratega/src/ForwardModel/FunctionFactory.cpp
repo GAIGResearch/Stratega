@@ -54,6 +54,7 @@ namespace SGA
 		factory.registerFunction<PayCostEffect>("PayCost");
 		factory.registerFunction<ApplyBuff>("ApplyBuff");
 		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
+		factory.registerFunction<Push>("Push");
 		
 		return factory;
 	}

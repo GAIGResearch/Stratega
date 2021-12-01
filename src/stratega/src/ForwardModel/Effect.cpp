@@ -174,6 +174,27 @@ namespace SGA
 		if(targetResource <= 0)
 			entity.flagRemove();
 	}
+	
+	Push::Push(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void Push::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = target.getPosition() - entity.getPosition();
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+
+	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp), 

@@ -1,6 +1,6 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 1000
+    RoundLimit: 10000
     FogOfWar: true
 
 Buffs: # Buff lists
@@ -27,6 +27,7 @@ Player:
     Parameters:
         Zones: [0,0,5]
         SpawnedUnits: [0,0,5]
+        Score: [0,0,200]
 Tiles:
     Plain:
         Sprite: ../../assets/Tiles/plain.png
@@ -53,8 +54,8 @@ Board:
         M  .  .  .  W  W  W  M
         M  .  b1 .  .  .  W  M
         M  .  .  w1 .  .  W  M
-        M  .  .  .  W  .  W  M
-        M  .  .  .  W  .  W  M
+        M  .  .  .  .  .  W  M
+        M  .  .  .  .  .  W  M
         M  M  .  .  .  .  W  M
         M  M  M  M  .  .  W  M
         M  W  M  .  .  M  W  M
@@ -76,8 +77,8 @@ Board:
         M  W  .  .  .  M  M  M
         M  W  .  .  .  .  M  M
         M  W  .  .  .  .  .  M
-        M  W  .  z  z  z  .  M
-        M  W  .  z  w0 z  .  M
+        M  W  .  .  .  .  .  M
+        M  W  .  .  w0 .  .  M
         M  W  .  .  .  b0 .  M
         M  W  W  W  .  .  .  M
         M  M  M  M  M  M  M  M
@@ -244,7 +245,7 @@ Entities:
 ForwardModel:
     WinConditions: #If true: Player -> win game
         Flags:
-        - "ResourceGreaterEqual(Source.Zones, 5)"
+        - "ResourceGreaterEqual(Source.Score, 250)"
 
     Trigger:
         - OnTick:
@@ -263,6 +264,7 @@ ForwardModel:
                 - "IsNotNeutral(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Zones, +1)"
+                - "ModifyResource(Source.Player.Score, +1)"
 
 
 GameRunner:

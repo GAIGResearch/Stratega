@@ -284,6 +284,11 @@ namespace SGA
 		std::vector<OnTickEffect> onTickEffects;
 
 		/// <summary>
+		/// Effects applied after every action is executed.
+		/// </summary>
+		std::vector<OnTickEffect> onExecutionEffects;
+
+		/// <summary>
 		/// Effects applied when a new entity is spawned in the game.
 		/// </summary>
 		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
