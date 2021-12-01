@@ -27,6 +27,8 @@ namespace SGA
 		factory.registerFunction<HasNoBuff>("HasNoBuff");
 		factory.registerFunction<HasBuff>("HasBuff");
 		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
+		factory.registerFunction<IsNeutral>("IsNeutral");
+		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
 		
 		return factory;
 	}

@@ -311,6 +311,7 @@ namespace SGA
             //context.targetIDs.emplace("GameState", -1);
         	
         	//Parse all the targets
+            if(nameTypePair.second["Targets"].IsDefined())
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;

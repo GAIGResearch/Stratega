@@ -80,6 +80,28 @@ namespace  SGA
 		return false;
 	}
 	
+	IsNeutral::IsNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool IsNeutral::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return targetEntity.isNeutral();
+	}
+	
+	IsNotNeutral::IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool IsNotNeutral::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return !targetEntity.isNeutral();
+	}
+	
 	SamePlayer::SamePlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{
 	}
