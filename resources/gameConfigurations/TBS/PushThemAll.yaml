@@ -89,14 +89,6 @@ Actions:
         Effects:
             - "ChangeOwner(Source, 1)"
 
-    CheckTile:
-        Type: EntityAction
-        Preconditions:
-            - "IsTileType(Source, Hole)"
-        Cooldown: 1
-        Effects:
-            - "Remove(Source)"
-
     Move:
         Type: EntityAction
         Preconditions:
@@ -121,7 +113,6 @@ Entities:
         Symbol: w
         LineOfSightRange: 6
         Actions: [Push, Move, ChangeOwner]
-        OnTickActions: [CheckTile]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -138,6 +129,13 @@ ForwardModel:
             ValidTargets: Warrior
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+        - OnAdvance:
+            Type: Entity
+            ValidTargets: Warrior
+            Conditions:
+                - "IsTileType(Source, Hole)"
+            Effects:
+                - "Remove(Source)"
 
 
 GameRunner:

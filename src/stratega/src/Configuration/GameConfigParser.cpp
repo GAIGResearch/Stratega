@@ -523,6 +523,26 @@ namespace SGA
 				// Add it to the fm
                 fm->addOnTickEffect(onTickEffect);
 			}
+            else if(map.find("OnAdvance") != map.end())
+			{
+                auto nameEffectsPair = *map.find("OnAdvance");
+				
+                context.targetIDs.emplace("Source", 0);
+                auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                // Initiliaze OnTickEffect
+                OnTickEffect onTickEffect;
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
+                parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
+                parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
+				// Add it to the fm
+                fm->addOnAdvanceEffect(onTickEffect);
+			}
             else if(map.find("OnSpawn") != map.end())
             {
                 auto nameEffectsPair = *map.find("OnSpawn");

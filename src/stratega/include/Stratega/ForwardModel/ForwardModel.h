@@ -169,6 +169,12 @@ namespace SGA
 		void addOnTickEffect(OnTickEffect& ote);
 
 		/// <summary>
+		/// Adds an OnAdvanceEffect to the forward mode, which will be executed every game tick.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnAdvanceEffect(OnTickEffect& ote);
+
+		/// <summary>
 		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
 		/// </summary>
 		/// <param name="ote">Effect to add.</param>
@@ -284,9 +290,9 @@ namespace SGA
 		std::vector<OnTickEffect> onTickEffects;
 
 		/// <summary>
-		/// Effects applied after every action is executed.
+		/// Effects applied after every advanced game is executed.
 		/// </summary>
-		std::vector<OnTickEffect> onExecutionEffects;
+		std::vector<OnTickEffect> onAdvanceEffects;
 
 		/// <summary>
 		/// Effects applied when a new entity is spawned in the game.
@@ -355,6 +361,12 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
+
+		/// <summary>
+		/// Executes the OnAdvance effects in the state provided
+		/// </summary>
+		/// <param name="state">State where the trigger events are to be executed.</param>
+		void executeOnAdvanceEffects(GameState& state) const;
 
 		/// <summary>
 		/// Verifies if the continuous actions of the game entities should complete.
