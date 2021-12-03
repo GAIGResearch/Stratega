@@ -8,6 +8,7 @@
 #include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
 #include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
+#include <Stratega/Agent/RuleBasedAgents/PusherAgent.h>
 
 namespace SGA
 {
@@ -69,6 +70,7 @@ namespace SGA
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
+		factory.registerAgent<PusherAgent>("PusherAgent");
 		
 		return factory;
 	}

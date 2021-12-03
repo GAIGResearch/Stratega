@@ -10,7 +10,7 @@ Buffs: # Buff lists
 
 Agents:
     - HumanAgent
-    - DoNothingAgent
+    - PusherAgent
 
 GameRenderer:
     Resolution:
@@ -50,7 +50,7 @@ Board:
     GenerationType: Manual
     Layout: |-
         M  M  M  M  H  M  M  M  M
-        H  H  H  H  H  H  H  H  M
+        M  H  H  H  H  H  H  H  M
         M  H  .  w1 .  w1 .  H  M
         M  H  .  w1 .  w1 .  H  M
         M  H  .  .  .  .  .  H  M
