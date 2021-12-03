@@ -265,7 +265,7 @@ namespace SGA
 	{
 		// Create a index lookup to ensure that we can map an found path to the correct index
 		std::unordered_map<Vector2i, int, VectorHash2i> indexLookup;
-		for (int i = 0; i < targets.size(); i++)
+		for (size_t i = 0; i < targets.size(); i++)
 		{
 			indexLookup.emplace(targets[i], i);
 		}
@@ -405,7 +405,7 @@ namespace SGA
 	bool PusherAgent::analyzePath(GameState& state, Entity& target, const std::vector<Entity>& opponentUnits, const std::vector<Vector2i>& path, int pushCount, double& pathCostOutput) const
 	{
 		pathCostOutput = pushCount;
-		for (int i = 0; i < path.size(); i++)
+		for (auto i = 0; i < path.size(); i++)
 		{
 			auto dangers = GetDangerousDirections(state, path[i]);
 			bool avoid = false;
