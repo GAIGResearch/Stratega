@@ -179,7 +179,7 @@ Entities:
             MovementPoints: 2
             Flags: [0,0,1]
     Flag:
-        Sprite: ../../assets/Entities/gold_chest.png
+        Sprite: ../../assets/Entities/wonder.png
         Symbol: f
         LineOfSightRange: 5
 

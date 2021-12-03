@@ -238,6 +238,7 @@ ForwardModel:
 
     Trigger:
         - OnTick:
+            Type: Entity
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 

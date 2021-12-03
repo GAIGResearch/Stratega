@@ -1,7 +1,7 @@
 GameConfig:
     Type: TBS
     RoundLimit: 1000
-    FogOfWar: true
+    FogOfWar: false
 
 Buffs: # Buff lists
     AttackBoostBuff:
