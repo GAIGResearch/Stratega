@@ -179,7 +179,7 @@ namespace SGA
 			}
 
 			// After finding our attack target, first try to push an opponent. But only if we can't attack our attack target immediately
-			if (bestAttackIndex == -1 || paths[bestAttackIndex].second.size() != 1)
+			if (static_cast<int>(bestAttackIndex) == -1 || paths[bestAttackIndex].second.size() != 1)
 			{
 				actionBucket.clear();
 				std::vector<Action> pushActions = filterActionTypes(actions, "Push");
@@ -193,7 +193,7 @@ namespace SGA
 						continue; // Do not push our own units
 
 					// We can attack our attack target immediately, so do that
-					if (bestAttackIndex != -1 && pushTarget->getID() == attackTarget[bestAttackIndex].getID() && paths[bestAttackIndex].second.empty())
+					if (static_cast<int>(bestAttackIndex) != -1 && pushTarget->getID() == attackTarget[bestAttackIndex].getID() && paths[bestAttackIndex].second.empty())
 					{
 						bestAction = push;
 						break;
@@ -217,7 +217,7 @@ namespace SGA
 			if (bestAction.getActionFlag() != ActionFlag::EndTickAction)
 				break;
 			
-			if (bestAttackIndex != -1)
+			if (static_cast<int>(bestAttackIndex) != -1)
 			{
 				// We found an path to attack an opponent, now find an available move that follows our computed path
 				auto& path = paths[bestAttackIndex].second;
@@ -276,7 +276,7 @@ namespace SGA
 		}
 
 		// BFS
-		while (openList.size() > 0 && foundCounter < targets.size())
+		while (static_cast<int>(openList.size()) > 0 && foundCounter < static_cast<int>(targets.size()))
 		{
 			for (Direction moveDir : CARDINAL_DIRECTIONS)
 			{

@@ -351,7 +351,7 @@ namespace SGA
 		}
 		case Type::Constant:
 		{
-			return *state.getPlayer(data.constValue);
+			return *state.getPlayer(static_cast<int>(data.constValue));
 		}
 		default:
 			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
