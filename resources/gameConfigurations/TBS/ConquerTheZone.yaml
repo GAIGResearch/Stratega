@@ -245,7 +245,7 @@ Entities:
 ForwardModel:
     WinConditions: #If true: Player -> win game
         Flags:
-        - "ResourceGreaterEqual(Source.Score, 250)"
+        - "ResourceGreaterEqual(Source.Score, 200)"
 
     Trigger:
         - OnTick:

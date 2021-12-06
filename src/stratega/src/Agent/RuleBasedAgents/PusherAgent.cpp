@@ -104,8 +104,6 @@ namespace SGA
 
 	ActionAssignment PusherAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
-		/*unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
-		return playTurn(state, forwardModel);*/
 		return playTurn(state, forwardModel);
 	}
 
@@ -139,7 +137,6 @@ namespace SGA
 
 		// Go through all units and return the first action that we deem good
 		// Since this function is called multiple times, we will eventually use up all actions available
-		//auto bestAction = forwardModel.actionSpace->generateEndOfTurnAction(state, gameCommunicator.getPlayerID());
 		auto actions = forwardModel.generateActions(currentState, getPlayerID());
 		Action bestAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
 
@@ -151,7 +148,7 @@ namespace SGA
 			// Compute all positions where we could attack an unit and store it in possibleTargets
 			for (auto& opponent : opponentUnits)
 			{
-				Vector2i opponentPositon = Vector2i(opponent.getPosition().x, opponent.getPosition().y);
+				Vector2i opponentPositon = Vector2i(static_cast<int>(opponent.getPosition().x), static_cast<int>(opponent.getPosition().y));
 				auto attacks = getAttackDirections(state, opponentPositon);
 				for (auto& attack : attacks)
 				{
@@ -166,10 +163,10 @@ namespace SGA
 			}
 
 			auto paths = ShortestPaths(state, { static_cast<int>(u.getPosition().x),static_cast<int>(u.getPosition().y) }, possibleTargets);
-			int bestAttackIndex = -1;
+			size_t bestAttackIndex = -1;
 			double lowestCost = std::numeric_limits<double>::max();
 			// Search for the best attack target by using an heuristic to estimate how good one attack is
-			for (auto i = 0; i < paths.size(); i++)
+			for (size_t i = 0; i < paths.size(); i++)
 			{
 				double costOutput = 0;
 				// Is this a better attack than a previously found attack?
@@ -187,14 +184,11 @@ namespace SGA
 				actionBucket.clear();
 				std::vector<Action> pushActions = filterActionTypes(actions, "Push");
 				actionBucket.insert(actionBucket.end(), pushActions.begin(), pushActions.end());
-				//actionBucket.emplace_back(pushActions);
-				//forwardModel.actionSpace->generatePushActions(u, actionBucket);
 
 				int minimumPushCount = std::numeric_limits<int>::max();
 				for (auto& push : actionBucket)
 				{
 					auto* pushTarget = push.getTargets()[1].getEntity(state);
-					//auto* pushTarget = state.getEntityAt(push.getTargets()[1].getEntity());
 					if (pushTarget->getOwnerID() == this->getPlayerID())
 						continue; // Do not push our own units
 
@@ -236,8 +230,6 @@ namespace SGA
 				actionBucket.clear();
 				auto moveActions = filterActionTypes(actions, "Move");
 				actionBucket.insert(actionBucket.end(), moveActions.begin(), moveActions.end());
-				//actionBucket.emplace_back(moveActions);
-				//forwardModel.actionSpace->generateMoveActions(u, actionBucket);
 
 				for (auto& move : actionBucket)
 				{
@@ -355,7 +347,7 @@ namespace SGA
 
 	bool PusherAgent::canKill(const GameState& state, Vector2i pos) const
 	{
-		auto tile = state.getTileAt({ pos.x,pos.y });
+		const auto tile = state.getTileAt({ pos.x,pos.y });
 
 		if (!tile.isWalkable())
 			return false;
@@ -364,14 +356,6 @@ namespace SGA
 			return true;
 		else
 			return false;
-		/*auto targetTile = state.getBoard().getTile(pos.x, pos.y);
-		for (auto& effect : onTileEnterEffects)
-		{
-			if (effect.type == EffectType::Death && effect.targetTileTypeID == targetTile.tileTypeID)
-				return true;
-		}
-
-		return false;*/
 	}
 
 	std::unordered_map<Direction, int> PusherAgent::getAttackDirections(const GameState& state, const Vector2i& pos) const
@@ -405,7 +389,7 @@ namespace SGA
 	bool PusherAgent::analyzePath(GameState& state, Entity& target, const std::vector<Entity>& opponentUnits, const std::vector<Vector2i>& path, int pushCount, double& pathCostOutput) const
 	{
 		pathCostOutput = pushCount;
-		for (auto i = 0; i < path.size(); i++)
+		for (size_t i = 0; i < path.size(); i++)
 		{
 			auto dangers = GetDangerousDirections(state, path[i]);
 			bool avoid = false;
@@ -431,7 +415,7 @@ namespace SGA
 
 			// The longer the path the more it costs
 			// Also more dangerous tiles increase the cost aswell, anti-proportional to the time it takes to reach them
-			pathCostOutput += 1 + avoid * (1 / (i + 1));
+			pathCostOutput += static_cast<double>(1 + avoid * (1 / (i + 1)));
 		}
 
 		return true;
