@@ -6,7 +6,8 @@
 #include <vector>
 #include <queue>
 #include <map>
-
+#pragma warning(disable: 4365)
+#pragma warning(disable: 4267)
 
 namespace SGA
 {

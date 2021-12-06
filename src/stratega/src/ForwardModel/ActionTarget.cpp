@@ -271,5 +271,5 @@ namespace SGA
 		}
 	}
 
-	ActionTarget::ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {};
+	ActionTarget::ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {}
 }
