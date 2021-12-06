@@ -182,7 +182,7 @@ namespace SGA
 
 	}
 	
-	void Push::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Push::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
 	{		
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getEntity(state, targets);
@@ -193,7 +193,6 @@ namespace SGA
 		{
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
 		}
-
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
