@@ -119,12 +119,6 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
 
-    ChangeOwner:
-        Type: EntityAction
-        Cooldown: 1
-        Effects:
-            - "ChangeOwner(Source, 1)"
-
     Move:
         Type: EntityAction
         Preconditions:
@@ -221,7 +215,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move, ChangeOwner]
+        Actions: [Attack, Move]
         Parameters:
             Health: 200
             AttackRange: 2

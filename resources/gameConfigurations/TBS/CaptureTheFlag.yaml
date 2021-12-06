@@ -116,7 +116,7 @@ Actions:
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 50
+                        SearchSize: 5
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
