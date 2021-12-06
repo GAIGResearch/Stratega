@@ -1,5 +1,7 @@
 #pragma once
 #include <Stratega/Agent/Agent.h>
+#include <Stratega/Agent/RuleBasedAgents/VectorHash2i.h>
+#include <Stratega/Agent/RuleBasedAgents/Direction.h>
 #include <Stratega/Agent/Heuristic/UnitEvaluator.h> 
 #include <vector>
 #include <queue>
@@ -8,39 +10,6 @@
 
 namespace SGA
 {
-	class VectorHash2i
-	{
-	public:
-
-		// Use sum of lengths of first and last names 
-		// as hash function. 
-		size_t operator()(const Vector2i& v) const
-		{
-			// Probably not good, but sufficient enough for now
-			return v.x * 11 + v.y * 31;
-		}
-	};
-
-	enum class Direction
-	{
-		North,
-		NorthEast,
-		East,
-		SouthEast,
-		South,
-		SouthWest,
-		West,
-		NorthWest,
-		None
-	};
-
-	const Direction CARDINAL_DIRECTIONS[4] = { Direction::North, Direction::East, Direction::South, Direction::West };
-	const Direction ALL_DIRECTIONS[8] = { Direction::North, Direction::NorthEast, Direction::East, Direction::SouthEast, Direction::South, Direction::SouthWest, Direction::West, Direction::NorthWest };
-
-	Direction GetDirectionTo(const Vector2i& from, const Vector2i& to);
-	Direction ReverseDir(Direction d);
-	Vector2i MoveTo(const Vector2i& pos, Direction d);
-
 	class PusherAgent : public Agent
 	{
 	public:

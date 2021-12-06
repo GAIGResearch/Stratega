@@ -224,7 +224,6 @@ namespace SGA
 			return {};
 		}
 
-		auto targetIt = context.targetIDs.find(stateName);
 		auto parameterIt = context.parameterIDs.find(parameterName);
 		if (parameterIt == context.parameterIDs.end())
 		{
