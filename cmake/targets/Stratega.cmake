@@ -23,6 +23,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/RHEAAgent/RHEAParameters.cpp
         Agent/RuleBasedAgents/CombatAgent.cpp
         Agent/RuleBasedAgents/PusherAgent.cpp
+        Agent/RuleBasedAgents/Direction.cpp
         Agent/ScriptedAgent.cpp
         Agent/StateAbstraction/StateFactory.cpp
         Agent/TreeSearchAgents/ActionAbstractionMCTSAgent.cpp

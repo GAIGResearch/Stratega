@@ -3,7 +3,7 @@
 #include <vector>
 #include <queue>
 #include <map>
-
+#include <Stratega/Representation/Vector2.h>
 
 namespace SGA
 {
