@@ -108,7 +108,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: All
+                ValidTargets: Warrior
                 SamplingMethod:
                     Type: Neighbours
                     Options:

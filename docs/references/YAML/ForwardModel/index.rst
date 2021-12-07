@@ -21,6 +21,7 @@ Forward Model
         Trigger:
         #Global resource compsumption
             - OnTick:
+                Type: Entity
                 ValidTargets: Buildings
                 Conditions:
                     - "IsPlayerEntity(Source)"
