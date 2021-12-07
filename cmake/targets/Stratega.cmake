@@ -58,6 +58,7 @@ set(STRATEGA_SOURCE_FILES
         GUI/TileMap.cpp
         GUI/Widgets/ActionsController.cpp
         GUI/Widgets/FogOfWarController.cpp
+        NewGUI/GridLayout.cpp
         Logging/FileLogger.cpp
         Logging/Log.cpp
         Logging/LoggingScope.cpp
