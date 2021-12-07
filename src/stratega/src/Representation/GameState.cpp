@@ -1,5 +1,7 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/Condition.h>
+#include <vector>
+#include <algorithm>
 #pragma warning(disable: 5045)
 #include<Stratega/Utils/warnings.h>
 
@@ -39,7 +41,7 @@ namespace SGA
 		fogOfWarId(-1),
 		currentPlayer(0),
 		fogOfWarApplied(false)		
-	{
+	{		
 	}
 
 	Entity* GameState::getEntity(int entityID)

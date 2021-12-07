@@ -702,6 +702,8 @@ namespace SGA
 							break;
 						case ActionTarget::TileTypeReference:
 							break;
+						case ActionTarget::Gamestate:
+							break;
 						}
 					}
 

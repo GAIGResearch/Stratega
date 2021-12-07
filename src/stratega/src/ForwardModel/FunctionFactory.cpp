@@ -26,6 +26,9 @@ namespace SGA
 		factory.registerFunction<HasElapsedTime>("HasElapsedTick");
 		factory.registerFunction<HasNoBuff>("HasNoBuff");
 		factory.registerFunction<HasBuff>("HasBuff");
+		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
+		factory.registerFunction<IsNeutral>("IsNeutral");
+		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
 		
 		return factory;
 	}
@@ -50,6 +53,8 @@ namespace SGA
 		factory.registerFunction<SpawnEntityRandom>("SpawnRandom");
 		factory.registerFunction<PayCostEffect>("PayCost");
 		factory.registerFunction<ApplyBuff>("ApplyBuff");
+		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
+		factory.registerFunction<Push>("Push");
 		
 		return factory;
 	}

@@ -808,12 +808,14 @@ ForwardModel:
     Trigger:
    #Global resource compsumption
         - OnTick:
+            Type: Entity
             ValidTargets: Buildings
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Food, -0.04)"
         - OnTick:
+            Type: Entity
             ValidTargets: Units
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -821,6 +823,7 @@ ForwardModel:
                 - "ModifyResource(Source.Player.Food, -0.04)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: University
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -829,6 +832,7 @@ ForwardModel:
     #Upgrade villagers resource collection
         #Food
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -837,6 +841,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 0.11)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -845,6 +850,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 0.13)"
         #Wood
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -853,6 +859,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 0.06)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -861,6 +868,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 0.08)"
         #Ore
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -869,6 +877,7 @@ ForwardModel:
                 - "ChangeResource(Source.IronMining, 0.08)"
         #Clay
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"

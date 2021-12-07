@@ -55,6 +55,22 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
+	class IsNeutral : public Condition
+	{
+	public:
+		IsNeutral(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotNeutral : public Condition
+	{
+	public:
+		IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class SamePlayer : public Condition
 	{
 	public:
@@ -107,6 +123,15 @@ namespace SGA
 
 	public:
 		IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsTickMultipleOf : public Condition
+	{
+		FunctionParameter multipleParam;
+
+	public:
+		IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	

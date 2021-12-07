@@ -24,15 +24,19 @@ namespace SGA
 		targetResource += amount;
 		auto& param = resourceReference.getParameter(state, targets);
 		int parameterIndex = param.getIndex();
-		if (!resourceReference.isPlayerParameter(targets))
+		if (resourceReference.isEntityParameter(targets))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 		}
-		else
+		else if (resourceReference.isPlayerParameter(targets))
 		{
 			auto& player = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
+		}
+		else
+		{
+			fm.modifyStateParameterByIndex(state, parameterIndex, targetResource);
 		}
 		
 	}
@@ -169,6 +173,26 @@ namespace SGA
 
 		if(targetResource <= 0)
 			entity.flagRemove();
+	}
+	
+	Push::Push(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void Push::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = target.getPosition() - entity.getPosition();
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -359,6 +383,34 @@ namespace SGA
 					return;
 				}
 			}
+		}
+		else
+		{
+			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
+		}
+	}
+	SpawnEntityRandomLocation::SpawnEntityRandomLocation(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp), 
+		targetEntityTypeParam(parameters[0])
+	{
+	}
+
+	void SpawnEntityRandomLocation::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (fm.getGameType()==GameType::TBS)
+		{
+			
+			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+			std::uniform_int_distribution<int> widthMax(0, state.getBoardWidth());
+			std::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
+
+			Vector2i spawnPos{widthMax(state.getRndEngine()), heightMax(state.getRndEngine())};
+			do
+			{
+				spawnPos = { widthMax(state.getRndEngine())-1, heightMax(state.getRndEngine())-1 };
+			} while (!state.isWalkable(spawnPos) || !state.isInBounds(spawnPos));
+
+			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
 		}
 		else
 		{
