@@ -13,6 +13,9 @@ GameConfig
         Type: TBS
         ActionTimer: 10s
         RoundLimit: 100
+        Parameters:
+          FlagsCaptured: [0,0,10]
+          CurrentSpawnedFlagsNumber: [0,0,5]
 
 :Properties:
 
@@ -33,3 +36,8 @@ GameConfig
      - ``int``
      - 
      - Defines the turns limit in ticks
+   * - ``Parameters``
+     - ``false``
+     - ``map``
+     - 
+     - List of parameters of the state. Optionally you can define the min and max value of the parameter by defining it with the following template "[min,default,max]".
