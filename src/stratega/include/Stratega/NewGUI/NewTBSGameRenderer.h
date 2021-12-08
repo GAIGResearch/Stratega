@@ -5,10 +5,13 @@
 #include <Stratega/GUI/EntityRenderer.h>
 #include <Stratega/GUI/Widgets/FogOfWarController.h>
 #include <Stratega/GUI/Widgets/ActionsController.h>
+#include <Stratega/NewGUI/Widget.h>
+#include <Stratega/NewGUI/World.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
-
+#include <Stratega/NewGUI/SGARenderTarget.h>
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
+
 
 namespace SGA
 {
@@ -67,5 +70,10 @@ namespace SGA
 		float zoomValue;
 		bool dragging;
 		sf::Vector2f oldMousePosition;
+
+		//New system
+		std::vector<std::unique_ptr<SGAWidget>> widgets;
+		World world;
+		SGARenderTarget renderTarget;
 	};
 }

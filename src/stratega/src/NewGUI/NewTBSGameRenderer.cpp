@@ -11,7 +11,8 @@
 #include <Stratega/Utils/filesystem.hpp>
 
 #include<Stratega/Utils/warnings.h>
-
+#include <Stratega/NewGUI/World.h>
+#include <Stratega/NewGUI/GridLayoutWidget.h>
 DISABLE_WARNING_PUSH
 #if defined(__clang__)    
 DISABLE_WARNING_FORMAT
@@ -27,7 +28,10 @@ namespace SGA
 		fowState(),
 		window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		zoomValue(5.f),
-		dragging(false)
+		dragging(false),
+		world(World::createIsometricGrid(200, 100)),
+		renderTarget(window)
+		//world(World::createIsometricGrid(tileWidth, tileHeight))
 	{
 		// Initialize View
 		sf::View view = window.getView();
@@ -35,6 +39,9 @@ namespace SGA
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
+
+		//Add layout widget
+		widgets.emplace_back( std::make_unique<GridLayout>(world));
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -56,6 +63,14 @@ namespace SGA
 	void NewTBSGameRenderer::update(const GameState& newState)
 	{
 		this->state = newState;
+		
+		//Update world
+		world.update(newState);
+		//Render widgets
+		for (auto& widget : widgets)
+		{
+			widget->update(newState);
+		}
 	}
 
 	void NewTBSGameRenderer::handleInput()
@@ -91,16 +106,20 @@ namespace SGA
 		handleInput();
 
 		window.clear();
-		renderLayers();
+
+		//Render world
+		world.render();		
+
 		ImGui::SFML::Update(window, deltaClock.restart());
 		
+		//Render widgets
+		for (auto& widget : widgets)
+		{
+			widget->render(renderTarget);
+		}
+
 		ImGui::SFML::Render(window);
 		window.display();
-	}
-
-	void NewTBSGameRenderer::renderLayers()
-	{
-		
 	}
 
 	void NewTBSGameRenderer::mouseScrolled(const sf::Event& event)
@@ -130,7 +149,7 @@ namespace SGA
 		// Mouse button is pressed, get the position and set moving as active
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
-			
+			dragging = true;
 		}
 		if (event.mouseButton.button == sf::Mouse::Right)
 		{
