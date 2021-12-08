@@ -1,6 +1,6 @@
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
-#include <Stratega/GUI/TBSGameRenderer.h>
+#include <Stratega/NewGUI/NewTBSGameRenderer.h>
 
 namespace SGA
 {
@@ -11,7 +11,7 @@ namespace SGA
 
 	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
-		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
+		auto* tbsRenderer = dynamic_cast<NewTBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
 		while(!currentState->isGameOver())
 		{

@@ -71,6 +71,10 @@ set(STRATEGA_SOURCE_FILES
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
+        NewGUI/GridLayout.cpp
+        NewGUI/NewTBSGameRenderer.cpp
+        NewGUI/SpriteData.cpp
+        NewGUI/TextureAtlas.cpp
         )
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
