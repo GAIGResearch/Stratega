@@ -28,6 +28,11 @@ namespace SGA
 		ActionAssignment getPlayerActions() override;
 		bool isGameEndRequested() override;
 
+		bool isWaiting() const override
+		{
+			return false;
+		}
+
 		void closeWindow() override
 		{
 			window.close();

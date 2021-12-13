@@ -27,7 +27,7 @@ namespace SGA
 		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
 
-		bool isActionAvailable() const;
+		bool isWaiting() const override;
 		bool isGameEndRequested() override;
 
 		void closeWindow() override

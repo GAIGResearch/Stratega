@@ -59,7 +59,7 @@ message("\nDeactivated warnings as errors.\n")
     set(WARNINGS_AS_ERRORS OFF)   
 endif()
 
-# print out a short summary of the compiler information
+# print out a short summary of the compiler inforMoved Arena and GUI filesmation
 message("C++ Compiler: ${CMAKE_CXX_COMPILER}")
 message("C++ Compiler Info: ${CMAKE_CXX_COMPILER_ID}, version ${CMAKE_CXX_COMPILER_VERSION}")
 message("Build type: ${CMAKE_BUILD_TYPE}")
