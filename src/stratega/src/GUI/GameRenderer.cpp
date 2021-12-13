@@ -1,7 +1,7 @@
 #include <cassert>
 
 #include <Stratega/GUI/GameRenderer.h>
-#ifdef BUILD_GUI
+#ifndef BUILD_HEADLESS
 #include <Stratega/GUI/RTSGameRenderer.h>
 #include <Stratega/GUI/TBSGameRenderer.h>
 #endif
@@ -11,7 +11,7 @@ namespace SGA
 {
 	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2i& resolution)
 	{
-#ifdef BUILD_GUI
+#ifndef BUILD_HEADLESS
 		if (type == GameType::TBS)
 		{
 			return std::make_unique<TBSGameRenderer>(resolution);

@@ -116,8 +116,8 @@ enable_doxygen()
 include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
 # configure conan and fetch all dependencies
-if(NOT BUILD_HEADLESS)
-    add_compile_definitions(BUILD_GUI)
+if(NOT SGA_BUILD_HEADLESS)
+    add_compile_definitions(BUILD_HEADLESS)
    if (CMAKE_SYSTEM_NAME MATCHES Linux)
     # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
     # We will have to fetch it manually in this case and add it to our project.
@@ -137,7 +137,7 @@ include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
 # find the downloaded/installed packages
 
 find_package(Threads)
-if(NOT BUILD_HEADLESS)
+if(NOT SGA_BUILD_HEADLESS)
    find_package(imgui REQUIRED)
    find_package(OpenGL REQUIRED)
    if (CMAKE_SYSTEM_NAME MATCHES Linux)
@@ -152,7 +152,7 @@ find_package(recastnavigation REQUIRED)
 
 
 # define the targets of the project
-if(NOT BUILD_HEADLESS)
+if(NOT SGA_BUILD_HEADLESS)
    include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
     include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
 endif()
