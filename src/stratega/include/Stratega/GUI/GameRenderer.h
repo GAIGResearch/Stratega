@@ -68,6 +68,8 @@ namespace SGA
 		/// Close the sfml window.
 		/// </summary>
 		virtual void closeWindow() = 0;
+
+		virtual bool isWaiting() = 0;
 	};
 
 	/// <summary>

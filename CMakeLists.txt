@@ -49,6 +49,8 @@ option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages
 option(ENABLE_TESTING "Enable Test Builds" ON)
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
 
+option(BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
+
 #If CMAKE_NO_SYSTEM_FROM_IMPORTED is OFF, pybind11 should be treated as SYSTEM and it should not throw warnings
 #but it does for some reason that we dont know.
 #The temporal solution for this problem is to disable the warnings when we want to build the pyhton bindings
@@ -114,12 +116,18 @@ enable_doxygen()
 include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
 # configure conan and fetch all dependencies
-if (CMAKE_SYSTEM_NAME MATCHES Linux)
+if(NOT BUILD_HEADLESS)
+    add_compile_definitions(BUILD_GUI)
+   if (CMAKE_SYSTEM_NAME MATCHES Linux)
     # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
     # We will have to fetch it manually in this case and add it to our project.
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
-endif ()
-include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
+    endif ()
+    include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
+else()
+    set(ENABLE_STRATEGA_BINDINGS OFF)
+endif()
+
 include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
@@ -129,20 +137,26 @@ include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
 # find the downloaded/installed packages
 
 find_package(Threads)
-find_package(imgui REQUIRED)
-find_package(OpenGL REQUIRED)
-if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
-else ()
-    find_package(SFML COMPONENTS system window graphics REQUIRED)
-endif ()
+if(NOT BUILD_HEADLESS)
+   find_package(imgui REQUIRED)
+   find_package(OpenGL REQUIRED)
+   if (CMAKE_SYSTEM_NAME MATCHES Linux)
+       add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
+   else ()
+       find_package(SFML COMPONENTS system window graphics REQUIRED)
+   endif ()
+endif()
+
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
 
 # define the targets of the project
-include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
-include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
+if(NOT BUILD_HEADLESS)
+   include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
+    include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
+endif()
+
 include(${CMAKE_CONFIG_FOLDER}/targets/Arena.cmake)
 include(${CMAKE_CONFIG_FOLDER}/targets/Stratega.cmake)
 if (ENABLE_STRATEGA_BINDINGS)

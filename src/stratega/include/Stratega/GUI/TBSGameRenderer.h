@@ -1,14 +1,18 @@
 #pragma once
+
+#include <Stratega/ForwardModel/ActionAssignment.h>
+
 #include <Stratega/GUI/GameRenderer.h>
 #include <Stratega/GUI/AssetCache.h>
 #include <Stratega/GUI/TileMap.h>
 #include <Stratega/GUI/EntityRenderer.h>
 #include <Stratega/GUI/Widgets/FogOfWarController.h>
 #include <Stratega/GUI/Widgets/ActionsController.h>
-#include <Stratega/ForwardModel/ActionAssignment.h>
+
 
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
+
 
 namespace SGA
 {
