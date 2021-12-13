@@ -49,7 +49,7 @@ option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages
 option(ENABLE_TESTING "Enable Test Builds" ON)
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
 
-option(BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
+option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
 #If CMAKE_NO_SYSTEM_FROM_IMPORTED is OFF, pybind11 should be treated as SYSTEM and it should not throw warnings
 #but it does for some reason that we dont know.
@@ -116,8 +116,7 @@ enable_doxygen()
 include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
 # configure conan and fetch all dependencies
-if(NOT SGA_BUILD_HEADLESS)
-    add_compile_definitions(BUILD_HEADLESS)
+if(NOT SGA_BUILD_HEADLESS)   
    if (CMAKE_SYSTEM_NAME MATCHES Linux)
     # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
     # We will have to fetch it manually in this case and add it to our project.
@@ -125,6 +124,7 @@ if(NOT SGA_BUILD_HEADLESS)
     endif ()
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 else()
+    add_compile_definitions(BUILD_HEADLESS)
     set(ENABLE_STRATEGA_BINDINGS OFF)
 endif()
 
