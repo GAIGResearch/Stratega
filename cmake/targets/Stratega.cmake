@@ -81,6 +81,8 @@ else()
 message("Building HEADLESS mode")
 endif()
 
+#Copy Assets folder
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
