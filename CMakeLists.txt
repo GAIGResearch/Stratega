@@ -135,8 +135,12 @@ include(${PROJECT_BINARY_DIR}/conan_paths.cmake)
 
 
 # find the downloaded/installed packages
-
+if (CMAKE_SYSTEM_NAME MATCHES Linux)
+    set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+    set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+ endif ()
 find_package(Threads)
+
 if(NOT SGA_BUILD_HEADLESS)
    find_package(imgui REQUIRED)
    find_package(OpenGL REQUIRED)
