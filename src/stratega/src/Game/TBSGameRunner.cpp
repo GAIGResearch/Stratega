@@ -1,6 +1,5 @@
 #include <Stratega/Game/TBSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
-#include <Stratega/GUI/TBSGameRenderer.h>
 
 namespace SGA
 {
@@ -11,7 +10,6 @@ namespace SGA
 
 	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
-		auto* tbsRenderer = dynamic_cast<TBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
 		while(!currentState->isGameOver())
 		{
@@ -25,7 +23,7 @@ namespace SGA
 					// Render
 					while (agentThread.isComputing())
 					{
-						tbsRenderer->render();
+						renderer->render();
 					}
 
 					auto results = agentThread.join();
@@ -52,11 +50,11 @@ namespace SGA
 			{
 				try
 				{
-					while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
+					while (renderer->isWaiting() && !renderer->isGameEndRequested())
 					{
 						renderer->render();
 					}
-					nextAction = tbsRenderer->getPlayerActions();
+					nextAction = renderer->getPlayerActions();
 				}
 				catch (const std::exception& ex)
 				{
@@ -76,7 +74,7 @@ namespace SGA
 			renderer->update(*currentState);
 		}
 
-		tbsRenderer->closeWindow();
+		renderer->closeWindow();
 	}
 
 	void TBSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)

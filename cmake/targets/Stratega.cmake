@@ -52,14 +52,7 @@ set(STRATEGA_SOURCE_FILES
         Game/GameRunner.cpp
         Game/RTSGameRunner.cpp
         Game/TBSGameRunner.cpp
-        GUI/AssetCache.cpp
-        GUI/EntityRenderer.cpp
         GUI/GameRenderer.cpp
-        GUI/RTSGameRenderer.cpp
-        GUI/TBSGameRenderer.cpp
-        GUI/TileMap.cpp
-        GUI/Widgets/ActionsController.cpp
-        GUI/Widgets/FogOfWarController.cpp
         Logging/FileLogger.cpp
         Logging/Log.cpp
         Logging/LoggingScope.cpp
@@ -73,6 +66,23 @@ set(STRATEGA_SOURCE_FILES
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
         )
+if(NOT SGA_BUILD_HEADLESS)
+   list(APPEND STRATEGA_SOURCE_FILES
+        GUI/AssetCache.cpp
+        GUI/EntityRenderer.cpp
+        GUI/RTSGameRenderer.cpp
+        GUI/TBSGameRenderer.cpp
+        GUI/TileMap.cpp
+        GUI/Widgets/ActionsController.cpp
+        GUI/Widgets/FogOfWarController.cpp
+        )
+message("Building GUI mode")
+else()
+message("Building HEADLESS mode")
+endif()
+
+#Copy Assets folder
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
@@ -92,15 +102,22 @@ endfunction(target_link_libraries_system)
 
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
-target_link_libraries_system(Stratega CONAN_PKG::imgui)
-target_link_libraries_system(Stratega imgui)
 
-if(UNIX AND NOT APPLE)
-    target_link_libraries_system(Stratega sfml-system)
-    target_link_libraries_system(Stratega sfml-graphics)
-    target_link_libraries_system(Stratega sfml-window)
-else()
-    target_link_libraries_system(Stratega CONAN_PKG::sfml)
+if(CMAKE_SYSTEM_NAME MATCHES Linux)
+target_link_libraries(Stratega Threads::Threads)
+endif()
+
+if(NOT SGA_BUILD_HEADLESS)
+    target_link_libraries_system(Stratega CONAN_PKG::imgui)
+    target_link_libraries_system(Stratega imgui)
+
+    if(UNIX AND NOT APPLE)
+        target_link_libraries_system(Stratega sfml-system)
+        target_link_libraries_system(Stratega sfml-graphics)
+        target_link_libraries_system(Stratega sfml-window)        
+    else()
+        target_link_libraries_system(Stratega CONAN_PKG::sfml)
+    endif()
 endif()
 
 install(TARGETS

@@ -647,16 +647,16 @@ namespace SGA
 	ActionAssignment TBSGameRenderer::getPlayerActions()
 	{
 		ActionAssignment returnValue;
-		if(isActionAvailable())
+		if(!isWaiting())
 		{
 			returnValue.assignActionOrReplace(selectedAction.value());
 		}
 		return returnValue;
 	}
 
-	bool TBSGameRenderer::isActionAvailable() const
+	bool TBSGameRenderer::isWaiting() const
 	{
-		return selectedAction.has_value();
+		return !selectedAction.has_value();
 	}
 
 	void TBSGameRenderer::updateFow()
