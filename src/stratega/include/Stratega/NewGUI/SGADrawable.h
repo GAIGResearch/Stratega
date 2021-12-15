@@ -3,25 +3,18 @@
 #include <Stratega/Representation/GameState.h>
 
 namespace SGA {
+    class SGARenderTarget;
 
     struct SGADrawable
     {
-        Vector2f position;
+        const TileType& type;
+        Vector2i position;
         int zPosition;
 
-        SGADrawable(const Vector2f& newPosition, int newZPosition)
-            : position(newPosition), zPosition(newZPosition)
-        {
-        }
+        SGADrawable(const Vector2i& newPosition, int newZPosition, const TileType& newType);
 
-        void update()
-        {
+        void update();
 
-        }
-
-        void render()
-        {
-
-        }        
+        void render(SGARenderTarget& renderTarget);
     };
 }

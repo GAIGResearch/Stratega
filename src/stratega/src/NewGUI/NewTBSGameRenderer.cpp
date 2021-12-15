@@ -108,7 +108,7 @@ namespace SGA
 		window.clear();
 
 		//Render world
-		world.render();		
+		world.render(renderTarget);
 
 		ImGui::SFML::Update(window, deltaClock.restart());
 		

@@ -63,6 +63,7 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/World.cpp
         NewGUI/GridLayoutWidget.cpp
         NewGUI/SGARenderTarget.cpp
+        NewGUI/SGADrawable.cpp
         Logging/FileLogger.cpp
         Logging/Log.cpp
         Logging/LoggingScope.cpp

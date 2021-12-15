@@ -7,4 +7,14 @@ namespace SGA
 	{
 
 	}
+
+	void SGARenderTarget::drawTile(const Vector2i& position, const TileType& tile)
+	{
+		std::cout<<"RenderingTile"<<std::endl;
+	}
+
+	void SGARenderTarget::drawVertices(sf::VertexArray vertexArray)
+	{
+		target.draw(vertexArray);
+	}
 }

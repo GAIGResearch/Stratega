@@ -28,7 +28,8 @@ namespace SGA {
 		//{
 
 	 ////   }
-	 //  void drawTile(const Tile& tile);
+		 void drawTile(const Vector2i& position, const TileType& tile);
+
 	 //  void drawTileHighlight(const Vector2i& position);
 
 	 //  void drawEntityCentered(const EntityType& type, const Vector2i& position, const Color& outlineColor = Color::Transparent);
@@ -38,10 +39,7 @@ namespace SGA {
 
 	 //  void drawSprite(const std::string& spriteName, const Vector2f& position);
 
-		void drawVertices(sf::VertexArray vertexArray)
-		{
-			target.draw(vertexArray);
-		}
+		  void drawVertices(sf::VertexArray vertexArray);
 
 	  private:/*
 	   void drawSprite(const SpriteData& data, const Vector2f& position, const Color& outlineColor = Color::Transparent);*/

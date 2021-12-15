@@ -2,6 +2,7 @@
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/NewGUI/SGADrawable.h>
+#include <Stratega/NewGUI/SGARenderTarget.h>
 #include <SFML/System/Vector2.hpp>
 
 namespace SGA
@@ -28,6 +29,6 @@ namespace SGA
 
         void update(const GameState& state);
 
-        void render();
+        void render(SGARenderTarget& renderTarget);
     };
 }

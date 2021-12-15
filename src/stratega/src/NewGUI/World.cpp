@@ -43,7 +43,6 @@ namespace SGA
         };
     }
 
-
     World World::createIsometricGrid(int tileWidth, int tileHeight)
     {
         return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) };
@@ -56,25 +55,25 @@ namespace SGA
 
     void World::update(const GameState& state)
     {
+        drawableList.clear();
         //Update list of drawable list
-
-        // populate the vertex array, with one quad per tile
         for (int x = 0; x < state.getBoardWidth(); ++x)
         {
             for (int y = 0; y < state.getBoardHeight(); ++y)
             {
                 // get the current tile
-
                 const auto& tile = state.getTileAt({ x, y });
-
+                const auto& tileType = state.getGameInfo()->getTileType(tile.getTileTypeID());
+                drawableList.emplace_back(SGADrawable({ x,y }, 0, tileType));
             }
         }
-
-        render();
     }
 
-    void World::render()
+    void World::render(SGARenderTarget& renderTarget)
     {
-
+        for (auto& drawable : drawableList)
+        {
+            drawable.render(renderTarget);
+        }
     }
 }
