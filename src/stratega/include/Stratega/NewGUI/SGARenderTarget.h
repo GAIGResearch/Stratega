@@ -28,7 +28,8 @@ namespace SGA {
 		//{
 
 	 ////   }
-		 void drawTile(const Vector2i& position, const TileType& tile);
+		 void drawTile(const Vector2f& position, const TileType& tile);
+		 void drawEntity(const Vector2f& position, const EntityType& tile);
 
 	 //  void drawTileHighlight(const Vector2i& position);
 

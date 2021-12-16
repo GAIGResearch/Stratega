@@ -14,6 +14,8 @@
 #include<Stratega/Utils/warnings.h>
 #include <Stratega/NewGUI/World.h>
 #include <Stratega/NewGUI/GridLayoutWidget.h>
+#include <Stratega/NewGUI/MouseInformationWidget.h>
+#include <Stratega/NewGUI/WorldControllerWidget.h>
 
 DISABLE_WARNING_PUSH
 #if defined(__clang__)    
@@ -41,7 +43,9 @@ namespace SGA
 		window.setView(view);
 
 		//Add layout widget
-		widgets.emplace_back( std::make_unique<GridLayoutWidget>(world));
+		widgets.emplace_back( std::make_unique<GridLayoutWidget>("Grid Layout", window ,world));
+		widgets.emplace_back( std::make_unique<MouseInformationWidget>("Mouse Information", window,world));
+		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window,world));
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -72,7 +76,8 @@ namespace SGA
 		//Render widgets
 		for (auto& widget : widgets)
 		{
-			widget->update(newState);
+			if(widget->enabled)
+				widget->update(newState);
 		}
 	}
 
@@ -118,35 +123,16 @@ namespace SGA
 		//Render widgets
 		for (auto& widget : widgets)
 		{
-			widget->render(*renderTarget);
+			if (widget->enabled)
+				widget->render(*renderTarget);
 		}
 
-		auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-		sf::VertexArray selectedTile(sf::Lines, 8);
-		auto gridPos = world.toStratega(mousePos);
-		auto gridPosI = SGA::Vector2i(std::floor(gridPos.x), std::floor(gridPos.y));
-		selectedTile[0] = sf::Vertex(world.toSFML(gridPosI), sf::Color::Yellow);
-		selectedTile[1] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x + 1, gridPosI.y)), sf::Color::Yellow);
-
-		selectedTile[2] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x + 1, gridPosI.y)), sf::Color::Yellow);
-		selectedTile[3] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x + 1, gridPosI.y + 1)), sf::Color::Yellow);
-
-		selectedTile[4] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x + 1, gridPosI.y + 1)), sf::Color::Yellow);
-		selectedTile[5] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x, gridPosI.y + 1)), sf::Color::Yellow);
-
-		selectedTile[6] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x, gridPosI.y + 1)), sf::Color::Yellow);
-		selectedTile[7] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x, gridPosI.y)), sf::Color::Yellow);
-
-		window.draw(selectedTile);
-
-		ImGui::Begin("Mouse window");
-		std::string gridPosText = "Grid Position: (" + std::to_string(gridPos.x) + "," + std::to_string(gridPos.y) + ")";
-		auto strategaMousPos = world.toStrategaRounded( mousePos);
-		std::string gridMousePosText = "Grid Position Round: (" + std::to_string(strategaMousPos.x) + "," + std::to_string(strategaMousPos.y) + ")";
-		std::string windowMousePosText = "Mouse Position Round: (" + std::to_string((int)mousePos.x) + "," + std::to_string((int)mousePos.y) + ")";
-		//ImGui::Text(gridPosText.c_str());
-		ImGui::Text(gridMousePosText.c_str());
-		ImGui::Text(windowMousePosText.c_str());
+		//Components window
+		ImGui::Begin("Widgets controller");
+		for (auto& widget : widgets)
+		{
+			ImGui::Checkbox(widget->name.c_str(), &widget->enabled);
+		}
 		ImGui::End();
 
 		sf::CircleShape s(10);

@@ -3,10 +3,9 @@
 #include <imgui.h>
 namespace SGA
 {
-	GridLayoutWidget::GridLayoutWidget(World& newWorld):
-		world(newWorld)
+	GridLayoutWidget::GridLayoutWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld):
+		SGAWidget(widgetName, newWindow, newWorld)
 	{
-
 	}
 
 	void GridLayoutWidget::update(const GameState& state)
@@ -46,18 +45,8 @@ namespace SGA
 
 		renderTarget.drawVertices(vertices);
 
-		ImGui::Begin("Test window");
-		std::string text;
-		text = "XRatio.x";
-		ImGui::DragFloat(text.c_str(), &world.xBaseVector.x, 1, -200, 200);
-		text = "XRatio.y";
-		ImGui::DragFloat(text.c_str(), &world.xBaseVector.y, 1, -200, 200);
-		text = "YRatio.x";
-		ImGui::DragFloat(text.c_str(), &world.yBaseVector.x, 1, -200, 200);
-		text = "YRatio.y";
-		ImGui::DragFloat(text.c_str(), &world.yBaseVector.y, 1, -200, 200);
-		text = "Draw outbounds";
-		ImGui::Checkbox(text.c_str(), &drawCompleteGrid);
+		ImGui::Begin("Grid layout");
+		ImGui::Checkbox("Draw outbounds", &drawCompleteGrid);
 		ImGui::End();
 	}
 }

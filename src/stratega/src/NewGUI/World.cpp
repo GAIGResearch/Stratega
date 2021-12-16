@@ -1,5 +1,5 @@
 #include<Stratega/NewGUI/World.h>
-
+#include <algorithm>
 
 namespace SGA
 {
@@ -64,16 +64,35 @@ namespace SGA
                 // get the current tile
                 const auto& tile = state.getTileAt({ x, y });
                 const auto& tileType = state.getGameInfo()->getTileType(tile.getTileTypeID());
-                drawableList.emplace_back(SGADrawable({ x,y }, 0, tileType));
+                Vector2f position(x, y);
+                drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileType));
             }
         }
+
+        for (auto& entity : state.getEntities())
+        {
+            const auto& position = entity.getPosition();
+            drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType()));
+        }
+
+        //Oder by y
+        std::sort(drawableList.begin(), drawableList.end(), [](const std::unique_ptr<SGADrawable>& lhs, const std::unique_ptr<SGADrawable>& rhs)
+        {
+            if (lhs->zPosition != lhs->zPosition)
+                return (lhs->zPosition < lhs->zPosition);
+
+            if (lhs->position.y < lhs->position.y)
+                return(lhs->position.x < lhs->position.x);
+            else
+                return(lhs->position.x > lhs->position.x);
+        });
     }
 
     void World::render(SGARenderTarget& renderTarget)
     {
         for (auto& drawable : drawableList)
         {
-            drawable.render(renderTarget);
+            drawable->render(renderTarget);
         }
     }
 }

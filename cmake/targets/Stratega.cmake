@@ -62,7 +62,8 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/Widget.cpp
         NewGUI/World.cpp
         NewGUI/GridLayoutWidget.cpp
-        NewGUI/GridLayout.cpp
+        NewGUI/MouseInformationWidget.cpp
+        NewGUI/WorldControllerWidget.cpp
         NewGUI/SGARenderTarget.cpp
         NewGUI/SGADrawable.cpp
         Logging/FileLogger.cpp
@@ -77,7 +78,6 @@ set(STRATEGA_SOURCE_FILES
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
-        NewGUI/GridLayout.cpp
         NewGUI/NewTBSGameRenderer.cpp
         NewGUI/SpriteData.cpp
         NewGUI/ResourceManager.cpp

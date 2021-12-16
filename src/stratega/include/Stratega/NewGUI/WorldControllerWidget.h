@@ -7,14 +7,12 @@ namespace SGA
 {
 	struct World;
 	
-	struct GridLayoutWidget : public SGAWidget
+	struct WorldControllerWidget : public SGAWidget
 	{
-		GridLayoutWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld);
+		WorldControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
 
-		//Custom information
-		bool drawCompleteGrid = false;
 	};
 }

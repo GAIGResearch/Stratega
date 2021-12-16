@@ -4,18 +4,33 @@
 namespace SGA
 {
 
-    SGADrawable::SGADrawable(const Vector2i& newPosition, int newZPosition, const TileType& newType)
-        : position(newPosition), zPosition(newZPosition), type(newType)
+    SGADrawableTile::SGADrawableTile(const Vector2f& newPosition, int newZPosition, const TileType& newType)
+        : SGADrawable(newPosition, newZPosition), type(newType)
     {
     }
 
-    void SGADrawable::update()
+    void SGADrawableTile::update()
     {
 
     }
 
-    void SGADrawable::render(SGARenderTarget& renderTarget)
+    void SGADrawableTile::render(SGARenderTarget& renderTarget) const
     {
         renderTarget.drawTile(position, type);
+    }
+
+    SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType)
+        : SGADrawable(newPosition, newZPosition), type(newType)
+    {
+    }
+
+    void SGADrawableEntity::update()
+    {
+
+    }
+
+    void SGADrawableEntity::render(SGARenderTarget& renderTarget) const 
+    {
+        renderTarget.drawEntity(position, type);
     }
 }

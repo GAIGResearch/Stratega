@@ -5,16 +5,43 @@
 namespace SGA {
     class SGARenderTarget;
 
+    
     struct SGADrawable
     {
-        const TileType& type;
-        Vector2i position;
-        int zPosition;
+        const Vector2f position;
+        const int zPosition;
 
-        SGADrawable(const Vector2i& newPosition, int newZPosition, const TileType& newType);
+        SGADrawable(const Vector2f& newPosition, int newZPosition)
+            : position(newPosition), zPosition(newZPosition)
+        {
 
-        void update();
+        }
 
-        void render(SGARenderTarget& renderTarget);
+        virtual void update()=0;
+
+        virtual void render(SGARenderTarget& renderTarget) const = 0;
     };
+
+    struct SGADrawableTile: public SGADrawable
+    {
+        const TileType& type;
+
+        SGADrawableTile(const Vector2f& newPosition, int newZPosition, const TileType& newType);
+
+        void update() override;
+
+        void render(SGARenderTarget& renderTarget) const override;
+    };
+
+    struct SGADrawableEntity: public SGADrawable
+    {
+        const EntityType& type;
+
+        SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType);
+
+        void update() override;
+
+        void render(SGARenderTarget& renderTarget) const override;
+    };
+
 }

@@ -4,11 +4,17 @@
 #include <Stratega/NewGUI/SGADrawable.h>
 #include <Stratega/NewGUI/SGARenderTarget.h>
 #include <SFML/System/Vector2.hpp>
-
+#include <memory>
 namespace SGA
 {
+    static const int TILE_WIDTH = 256;
+    static const int TILE_HEIGHT = 144;
+
     static const int  TILE_ORIGIN_X = 0;
     static const int TILE_ORIGIN_Y = 112;
+    //Units
+    static const int  UNIT_OFFSET_ORIGIN_X = (TILE_WIDTH / 2);
+    static const int UNIT_OFFSET_ORIGIN_Y = static_cast<int>(static_cast<float>(TILE_HEIGHT) / 1.2);
 
     struct World
     {
@@ -16,7 +22,11 @@ namespace SGA
         sf::Vector2f yBaseVector;
         Vector2i size;
 
-        std::vector<SGADrawable> drawableList;
+        bool interpolateStates=true;
+        bool enableInterpolationAnimations=true;
+
+        std::vector<std::unique_ptr<SGADrawable>> drawableList;
+
         World() = default;
         World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size);
 
