@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector)
-        : xBaseVector(xBaseVector), yBaseVector(yBaseVector)
+    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size)
+        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size)
     {
     }
 
@@ -43,14 +43,14 @@ namespace SGA
         };
     }
 
-    World World::createIsometricGrid(int tileWidth, int tileHeight)
+    World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size)
     {
-        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) };
+        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size};
     }
 
-    World World::createRectangleGrid(int tileWidth, int tileHeight)
+    World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size)
     {
-        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight) };
+        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size};
     }
 
     void World::update(const GameState& state)

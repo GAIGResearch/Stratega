@@ -17,7 +17,7 @@ namespace SGA
 			filePaths.emplace_back(namePathPair.second);
 			tileSpritePaths.emplace(gameConfig.getTileID(namePathPair.first), namePathPair.second);
 		}
-		tileset.init(filePaths);
+		/*tileset.init(filePaths);*/
 
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);

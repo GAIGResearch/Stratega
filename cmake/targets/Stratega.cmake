@@ -62,6 +62,7 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/Widget.cpp
         NewGUI/World.cpp
         NewGUI/GridLayoutWidget.cpp
+        NewGUI/GridLayout.cpp
         NewGUI/SGARenderTarget.cpp
         NewGUI/SGADrawable.cpp
         Logging/FileLogger.cpp
@@ -79,7 +80,8 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/GridLayout.cpp
         NewGUI/NewTBSGameRenderer.cpp
         NewGUI/SpriteData.cpp
-        NewGUI/TextureAtlas.cpp
+        NewGUI/ResourceManager.cpp
+        GUI/TextureAtlas.cpp
         )
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")

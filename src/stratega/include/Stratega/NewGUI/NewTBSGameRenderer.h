@@ -15,6 +15,8 @@
 
 namespace SGA
 {
+	class ResourceManager;
+
 	class NewTBSGameRenderer : public GameRenderer
 	{
 	public:
@@ -75,6 +77,7 @@ namespace SGA
 		//New system
 		std::vector<std::unique_ptr<SGAWidget>> widgets;
 		World world;
-		SGARenderTarget renderTarget;
+		std::unique_ptr<SGARenderTarget> renderTarget;
+		std::unique_ptr<ResourceManager> resourceManager;
 	};
 }

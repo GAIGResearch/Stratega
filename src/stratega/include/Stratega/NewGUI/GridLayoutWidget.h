@@ -7,14 +7,15 @@ namespace SGA
 {
 	struct World;
 	
-	struct GridLayout : public SGAWidget
+	struct GridLayoutWidget : public SGAWidget
 	{
-		GridLayout(World& newWorld);
+		GridLayoutWidget(World& newWorld);
 
 		void update(const GameState& state) override;
 
 		void render(SGARenderTarget& renderTarget) override;
 
+		bool drawCompleteGrid = false;
 		World& world;
 	};
 }

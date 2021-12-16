@@ -6,16 +6,16 @@
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/Tile.h>
 #include <Stratega/NewGUI/ResourceManager.h>
-#include <Stratega/NewGUI/World.h>
+//#include <Stratega/NewGUI/World.h>
 #include <imgui-SFML.h>
 
 namespace SGA {
-
+	struct World;
 	class SGARenderTarget
 	{
 	  public:
 
-		  SGARenderTarget(sf::RenderTarget& newTarget/*, const ResourceManager& resourceManager, World& world*/);
+		  SGARenderTarget(sf::RenderTarget& newTarget, const ResourceManager& resourceManager, const World& world );
 
 		//SGARenderTarget(sf::RenderTarget& target, const ResourceManager& resourceManager, World& world)
 		//	  target(target), resourceManager(resourceManager), world(world)
@@ -44,8 +44,8 @@ namespace SGA {
 	  private:/*
 	   void drawSprite(const SpriteData& data, const Vector2f& position, const Color& outlineColor = Color::Transparent);*/
 
-	   sf::RenderTarget& target;/*
+	   sf::RenderTarget& target;
 	   const ResourceManager& resourceManager;
-	   const World& world;*/
+	   const World& world;
 	};
 }

@@ -7,7 +7,7 @@
 namespace SGA
 {
 	EntityRenderer::EntityRenderer()
-		: atlas(2)
+		/*: atlas(2)*/
 	{
 		
 	}
@@ -22,7 +22,7 @@ namespace SGA
 			filePaths.emplace_back(namePathPair.second);
 			entitySpritePaths.emplace(gameConfig.getEntityID(namePathPair.first), namePathPair.second);
 		}
-		atlas.init(filePaths);
+		/*atlas.init(filePaths);*/
 
 		// Initialise vertex array
 		vertices.setPrimitiveType(sf::Quads);
