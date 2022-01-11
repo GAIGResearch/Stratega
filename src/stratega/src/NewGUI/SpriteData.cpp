@@ -8,8 +8,8 @@ namespace SGA
 	}
 
 	
-	SpriteData::SpriteData(const sf::Texture& texture, const sf::IntRect& rect)
-		: spriteTexture(&texture), spriteRect(rect)
+	SpriteData::SpriteData(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2u& size)
+		: spriteTexture(&texture), spriteRect(rect), spriteSize(size)
 	{
 	}
 
@@ -26,6 +26,11 @@ namespace SGA
 	const sf::IntRect& SpriteData::getSpriteRect() const
 	{
 		return spriteRect;
+	}
+
+	const sf::Vector2u& SpriteData::getSpriteSize() const
+	{
+		return spriteSize;
 	}
 
 	const sf::FloatRect& SpriteData::getFloatSpriteRect() const

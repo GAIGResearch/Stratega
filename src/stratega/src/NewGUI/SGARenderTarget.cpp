@@ -23,7 +23,8 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(UNIT_OFFSET_ORIGIN_X, UNIT_OFFSET_ORIGIN_Y);
+		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 //sf::Vector2f origin(UNIT_OFFSET_ORIGIN_X, UNIT_OFFSET_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 		 target.draw(sprite);
 	}

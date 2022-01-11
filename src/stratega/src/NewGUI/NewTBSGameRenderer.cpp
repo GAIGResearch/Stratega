@@ -65,7 +65,6 @@ namespace SGA
 
 	ActionAssignment NewTBSGameRenderer::getPlayerActions()
 	{
-
 		ActionAssignment returnValue= temp;
 		temp.clear();
 		return returnValue;

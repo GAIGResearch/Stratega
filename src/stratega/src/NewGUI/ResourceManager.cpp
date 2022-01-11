@@ -72,12 +72,12 @@ SpriteData ResourceManager::getTileSprite(const TileType& tileType) const
 
 SpriteData ResourceManager::getEntitySprite(const std::string& spriteName) const
 {
-   return SpriteData{ entityAtlas.getAtlasTexture(), entityAtlas.getSpriteRect(spriteName)};
+   return SpriteData{ entityAtlas.getAtlasTexture(), entityAtlas.getSpriteRect(spriteName), entityAtlas.getSpriteSize() };
 }
 
 SpriteData ResourceManager::getTileSprite(const std::string& spriteName) const
 {
-   return SpriteData{ tileAtlas.getAtlasTexture(), tileAtlas.getSpriteRect(spriteName)};
+   return SpriteData{ tileAtlas.getAtlasTexture(), tileAtlas.getSpriteRect(spriteName), tileAtlas.getSpriteSize()};
 }
 
 std::unique_ptr< ResourceManager > ResourceManager::constructFromConfig(const GameConfig& config)
