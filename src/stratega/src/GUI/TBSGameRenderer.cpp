@@ -249,6 +249,7 @@ namespace SGA
 			dragging = false;
 		}
 	}
+
 	void TBSGameRenderer::mouseButtonPressed(const sf::Event& event)
 	{
 		// Mouse button is pressed, get the position and set moving as active

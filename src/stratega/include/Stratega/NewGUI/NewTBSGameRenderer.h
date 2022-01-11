@@ -28,8 +28,10 @@ namespace SGA
 		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
 
-		bool isActionAvailable() const {
-			return false;
+		bool isActionAvailable() const
+		{
+			return temp.getAssignmentCount() > 0;
+			//return selectedAction.has_value();
 		}
 
 		bool isGameEndRequested() override;
@@ -55,12 +57,12 @@ namespace SGA
 		GameState fowState;
 
 		bool endGameRequested = false;
-		/*nonstd::optional<Action> selectedAction;
-		bool endGameRequested = false;*/
+		nonstd::optional<Action> selectedAction;
+		//bool endGameRequested = false;
 		
 		sf::RenderWindow window;
 		sf::Clock deltaClock;
-
+		ActionAssignment temp;
 		/*
 		int pointOfViewPlayerID;
 		AssetCache assetCache;
@@ -79,5 +81,6 @@ namespace SGA
 		World world;
 		std::unique_ptr<SGARenderTarget> renderTarget;
 		std::unique_ptr<ResourceManager> resourceManager;
+		int playerID;
 	};
 }

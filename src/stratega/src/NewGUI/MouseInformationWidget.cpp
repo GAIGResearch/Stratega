@@ -55,7 +55,8 @@ namespace SGA
 	}
 
 	EntityInformationWidget::EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld) :
-		SGAWidget(widgetName, newWindow, newWorld)
+		SGAWidget(widgetName, newWindow, newWorld),
+		currentGameState(nullptr)
 	{
 	}
 

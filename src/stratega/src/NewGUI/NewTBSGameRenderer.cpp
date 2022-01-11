@@ -15,6 +15,7 @@
 #include <Stratega/NewGUI/World.h>
 #include <Stratega/NewGUI/GridLayoutWidget.h>
 #include <Stratega/NewGUI/MouseInformationWidget.h>
+#include <Stratega/NewGUI/TBSActionsWidget.h>
 #include <Stratega/NewGUI/WorldControllerWidget.h>
 
 DISABLE_WARNING_PUSH
@@ -32,10 +33,10 @@ namespace SGA
 		fowState(),
 		window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		zoomValue(5.f),
-		dragging(false)
-		//world(World::createIsometricGrid(tileWidth, tileHeight))
+		dragging(false),
+		selectedAction()
 	{
-		// Initialize View
+		//Initialize View
 		sf::View view = window.getView();
 		view.setCenter(static_cast<float>(window.getSize().x / 2.), static_cast<float>(window.getSize().y / 2.));
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
@@ -43,10 +44,11 @@ namespace SGA
 		window.setView(view);
 
 		//Add layout widget
-		widgets.emplace_back( std::make_unique<GridLayoutWidget>("Grid Layout", window ,world));
-		widgets.emplace_back( std::make_unique<MouseInformationWidget>("Mouse Information", window,world));
-		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window,world));
-		widgets.emplace_back( std::make_unique<EntityInformationWidget>("Entity Information", window,world));
+		widgets.emplace_back( std::make_unique<GridLayoutWidget>("Grid Layout", window, world));
+		widgets.emplace_back( std::make_unique<MouseInformationWidget>("Mouse Information", window, world));
+		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window, world));
+		widgets.emplace_back( std::make_unique<EntityInformationWidget>("Entity Information", window, world));
+		widgets.emplace_back( std::make_unique<TBSActionsWidget>("Actions Controller", window, world, temp));
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -63,8 +65,9 @@ namespace SGA
 
 	ActionAssignment NewTBSGameRenderer::getPlayerActions()
 	{
-		ActionAssignment returnValue;
-		
+
+		ActionAssignment returnValue= temp;
+		temp.clear();
 		return returnValue;
 	}
 
@@ -159,6 +162,12 @@ namespace SGA
 		view.setSize(window.getDefaultView().getSize()); // Reset the size
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
+
+		for (auto& widget : widgets)
+		{
+			if (widget->enabled)
+				widget->mouseScrolled(event);
+		}
 	}
 	void NewTBSGameRenderer::mouseButtonReleased(const sf::Event& event)
 	{
@@ -167,6 +176,12 @@ namespace SGA
 		{
 			dragging = false;
 			
+		}
+
+		for (auto& widget : widgets)
+		{
+			if (widget->enabled)
+				widget->mouseButtonReleased(event);
 		}
 	}
 	void NewTBSGameRenderer::mouseButtonPressed(const sf::Event& event)
@@ -180,6 +195,12 @@ namespace SGA
 		if (event.mouseButton.button == sf::Mouse::Right)
 		{
 			
+		}
+
+		for (auto& widget : widgets)
+		{
+			if (widget->enabled)
+				widget->mouseButtonPressed(event);
 		}
 	}
 	void NewTBSGameRenderer::mouseMoved(const sf::Event& event)
@@ -199,11 +220,17 @@ namespace SGA
 		// Save the new position as the old one
 		// We're recalculating this, since we've changed the view
 		oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+
+		for (auto& widget : widgets)
+		{
+			if (widget->enabled)
+				widget->mouseMoved(event);
+		}
 	}
 
 	void NewTBSGameRenderer::setPlayerPointOfView(int playerID)
 	{
-		
 		update(state);
+		playerID = playerID;
 	}
 }

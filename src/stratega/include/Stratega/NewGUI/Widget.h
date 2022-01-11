@@ -18,6 +18,24 @@ namespace SGA
 		virtual void update(const GameState& state) = 0;
 		virtual void render(SGARenderTarget& renderTarget) = 0;
 
+		// Event Handling
+		virtual void mouseScrolled(const sf::Event& event)
+		{
+
+		}
+		virtual void mouseButtonReleased(const sf::Event& event)
+		{
+
+		}
+		virtual void mouseButtonPressed(const sf::Event& event)
+		{
+
+		}
+		virtual void mouseMoved(const sf::Event& event)
+		{
+
+		}
+
 		bool enabled = true;
 		const std::string name;
 		sf::RenderWindow& window;
