@@ -387,7 +387,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the current game tick limit.
 		/// </summary>
-		int getTickLimit() { return tickLimit; }
+		int getTickLimit() const { return tickLimit; }
 		
 		/// <summary>
 		/// Sets the time limit of the game, measured in ticks.

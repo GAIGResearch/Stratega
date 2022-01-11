@@ -15,6 +15,8 @@
 #include <Stratega/NewGUI/World.h>
 #include <Stratega/NewGUI/GridLayoutWidget.h>
 #include <Stratega/NewGUI/MouseInformationWidget.h>
+#include <Stratega/NewGUI/GameStateInformationWidget.h>
+#include <Stratega/NewGUI/PlayerInformationWidget.h>
 #include <Stratega/NewGUI/TBSActionsWidget.h>
 #include <Stratega/NewGUI/WorldControllerWidget.h>
 
@@ -49,6 +51,8 @@ namespace SGA
 		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window, world));
 		widgets.emplace_back( std::make_unique<EntityInformationWidget>("Entity Information", window, world));
 		widgets.emplace_back( std::make_unique<TBSActionsWidget>("Actions Controller", window, world, temp));
+		widgets.emplace_back( std::make_unique<GameStateInformationWidget>("State Information", window, world));
+		widgets.emplace_back( std::make_unique<PlayerInformationWidget>("Player Information", window, world));
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)

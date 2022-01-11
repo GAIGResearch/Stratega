@@ -62,6 +62,105 @@ namespace SGA
 		ImGui::Separator();
 		ImGui::End();
 
+
+		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
+		ImGui::Begin("Actions");
+		ImGui::BeginChild("Scrolling");
+		ImGui::BeginGroup();
+
+		int index = 0;
+		for (auto action : actionsHumanPlayer)
+		{
+
+			std::string actionInfo = std::to_string(index);
+			if (action.getActionTypeID() == -1)
+			{
+				if (action.getActionFlag() == ActionFlag::AbortContinuousAction)
+				{
+					if (action.getTargets()[0].getType() == ActionTarget::EntityReference)
+					{
+						//We need to find the continues action name that will abort
+						auto& sourceEntity = *state->getEntityConst(action.getTargets()[0].getEntityID());
+						for (const auto& continueAction : sourceEntity.getContinuousActions())
+						{
+							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
+							{
+								const ActionType& actionType = continueAction.getActionType();
+								actionInfo += " Abort " + actionType.getName();
+							}
+						}
+					}
+					else
+					{
+						//We need to find the continues action name that will abort
+						auto& sourcePlayer = action.getTargets()[0].getPlayerConst(*state);
+						for (auto& continueAction : sourcePlayer.getContinuousActions())
+						{
+							if (continueAction.getContinuousActionID() == action.getContinuousActionID())
+							{
+								const ActionType& actionType = continueAction.getActionType();
+								actionInfo += " Abort " + actionType.getName();
+							}
+						}
+					}
+
+
+
+				}
+				else
+					actionInfo += " SpecialAction";
+			}
+			else
+			{
+				const ActionType& actionType = action.getActionType();
+
+				actionInfo += " " + actionType.getName();
+
+				//TODO Clean this :D IS TEMPORAL
+				for (auto& targetType : action.getTargets())
+				{
+					switch (targetType.getType())
+					{
+					case ActionTarget::Position:
+						actionInfo += " x:" + std::to_string(static_cast<int>(targetType.getPosition(*state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(*state).y));
+						break;
+					case ActionTarget::EntityReference:
+						actionInfo += state->getEntityConst(targetType.getEntityID())->getEntityType().getName();
+						break;
+					case ActionTarget::PlayerReference:
+						actionInfo += " Player: " + std::to_string(0/*pointOfViewPlayerID*/);
+						break;
+					case ActionTarget::TechnologyReference:
+						actionInfo += " Technology: " + state->getGameInfo()->getTechnologyTreeCollection().getTechnology(targetType.getTechnologyID()).name;
+						break;
+					case ActionTarget::EntityTypeReference:
+						actionInfo += " Entity: " + targetType.getEntityType(*state).getName();
+						break;
+					case ActionTarget::ContinuousActionReference:
+						break;
+					case ActionTarget::TileTypeReference:
+						break;
+					}
+				}
+
+			}
+
+			index++;
+
+			if (ImGui::Button(actionInfo.c_str()))
+			{
+				temp.clear();
+				temp.assignActionOrReplace(action);
+				break;
+			}
+		}
+
+		ImGui::EndGroup();
+
+		ImGui::EndChild();
+		ImGui::End();
+
 	}
 
 

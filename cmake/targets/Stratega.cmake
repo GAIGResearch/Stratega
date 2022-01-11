@@ -63,6 +63,8 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/World.cpp
         NewGUI/GridLayoutWidget.cpp
         NewGUI/MouseInformationWidget.cpp
+        NewGUI/PlayerInformationWidget.cpp
+        NewGUI/GameStateInformationWidget.cpp
         NewGUI/TBSActionsWidget.cpp
         NewGUI/WorldControllerWidget.cpp
         NewGUI/SGARenderTarget.cpp
