@@ -41,7 +41,10 @@ namespace SGA {
 	 //  void drawSprite(const std::string& spriteName, const Vector2f& position);
 
 		  void drawVertices(sf::VertexArray vertexArray);
-
+		  const ResourceManager& getResourceManager()
+		  {
+			  return resourceManager;
+		  }
 	  private:/*
 	   void drawSprite(const SpriteData& data, const Vector2f& position, const Color& outlineColor = Color::Transparent);*/
 

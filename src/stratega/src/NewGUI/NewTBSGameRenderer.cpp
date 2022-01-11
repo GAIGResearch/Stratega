@@ -46,6 +46,7 @@ namespace SGA
 		widgets.emplace_back( std::make_unique<GridLayoutWidget>("Grid Layout", window ,world));
 		widgets.emplace_back( std::make_unique<MouseInformationWidget>("Mouse Information", window,world));
 		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window,world));
+		widgets.emplace_back( std::make_unique<EntityInformationWidget>("Entity Information", window,world));
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -181,7 +182,6 @@ namespace SGA
 			
 		}
 	}
-
 	void NewTBSGameRenderer::mouseMoved(const sf::Event& event)
 	{
 		if (!dragging)
