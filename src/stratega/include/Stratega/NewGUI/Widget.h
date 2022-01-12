@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Stratega/ForwardModel/ActionAssignment.h>
+#include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/NewGUI/SGARenderTarget.h>
 #include <Stratega/NewGUI/ResourceManager.h>
 #include <Stratega/NewGUI/World.h>
@@ -11,8 +12,8 @@ namespace SGA
 {
 	struct SGAWidget
 	{
-		SGAWidget(const std::string& newName, sf::RenderWindow& newWindow, World& newWorld):
-			name(newName), window(newWindow), world(newWorld)
+		SGAWidget(const std::string& newName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
+			name(newName), window(newWindow), world(newWorld), fm(fm)
 		{
 		}
 		virtual void update(const GameState& state) = 0;
@@ -40,12 +41,13 @@ namespace SGA
 		const std::string name;
 		sf::RenderWindow& window;
 		World& world;
+		const ForwardModel* fm;
 	};
 
 
 	struct EntityInformationWidget : public SGAWidget
 	{
-		EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld);
+		EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;

@@ -7,8 +7,8 @@
 #include <sstream>
 namespace SGA
 {
-	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ActionAssignment& temp):
-		SGAWidget(widgetName, newWindow, newWorld),
+	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp):
+		SGAWidget(widgetName, newWindow, newWorld, fm),
 		state(nullptr),
 		temp(temp)
 	{
@@ -17,7 +17,7 @@ namespace SGA
 	void TBSActionsWidget::update(const GameState& state)
 	{
 		this->state = &state;
-		
+		actionsHumanPlayer = fm->generateActions(state, state.getCurrentTBSPlayer()/*pointOfViewPlayerID*/);
 	}
 
 	void TBSActionsWidget::render(SGARenderTarget& renderTarget)
@@ -65,7 +65,7 @@ namespace SGA
 
 		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
-		ImGui::Begin("Actions");
+		ImGui::Begin("Available Actions");
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
@@ -161,6 +161,96 @@ namespace SGA
 		ImGui::EndChild();
 		ImGui::End();
 
+
+		//Draw possible actions
+		std::vector<sf::CircleShape> actionsShapes;
+		if (waitingForPosition)
+		{
+			for (auto& possibleAction : actionsHumanPlayer)
+			{
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.getActionFlag() == ActionFlag::ContinuousAction
+					|| possibleAction.getActionFlag() == ActionFlag::AbortContinuousAction
+					|| possibleAction.getActionTypeID() != actionTypeSelected)
+					continue;
+
+				//Get source
+				const auto& actionType = possibleAction.getActionType();
+				//Check the source and the selected entity is the same
+				if (actionType.getSourceType() == ActionSourceType::Entity)
+				{
+					auto& entity = possibleAction.getTargets()[0].getEntityConst(*state);
+					if (entity.getID() != *selectedEntities.begin())
+						continue;
+				}
+
+				for (auto& actionTarget : possibleAction.getTargets())
+				{
+					if (actionTarget.getType() == ActionTarget::Position)
+					{
+						auto position = actionTarget.getPosition(*state);
+
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+						possibleActionPositionShape.setOrigin(7.5, 7.5);
+						sf::Vector2f temp = world.toSFML(position);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
+			}
+		}
+		else if (waitingForEntity)
+		{
+			for (auto& possibleAction : actionsHumanPlayer)
+			{
+				//Check if action is compatible with the selected type and targets
+				if (possibleAction.getActionTypeID() == -1 || possibleAction.getActionFlag() == ActionFlag::ContinuousAction
+					|| possibleAction.getActionFlag() == ActionFlag::AbortContinuousAction ||
+					possibleAction.getActionTypeID() != actionTypeSelected)
+					continue;
+
+				//Get source
+				const auto& actionType = possibleAction.getActionType();
+
+				//Check the source and the selected entity is the same
+				if (actionType.getSourceType() == ActionSourceType::Entity)
+				{
+					auto& entity = possibleAction.getTargets()[0].getEntityConst(*state);
+					if (entity.getID() != *selectedEntities.begin())
+						continue;
+				}
+
+				//Avoid source entity
+				for (size_t i = 1; i < possibleAction.getTargets().size(); ++i)
+				{
+					if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
+					{
+						auto position = possibleAction.getTargets()[i].getPosition(*state);
+
+						sf::CircleShape possibleActionPositionShape(15);
+						possibleActionPositionShape.setFillColor(sf::Color::White);
+						possibleActionPositionShape.setOrigin(7.5, 7.5);
+						sf::Vector2f temp = world.toSFML(position);
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+
+						actionsShapes.emplace_back(possibleActionPositionShape);
+					}
+				}
+
+				for (const auto& shape : actionsShapes)
+				{
+					window.draw(shape);
+				}
+			}
+		}
+
 	}
 
 
@@ -168,7 +258,7 @@ namespace SGA
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
-			auto pos = world.toStratega(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
+			Vector2i pos = world.toStrategaRounded(window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 			//If selected unit we check if there is action in tile
 			if (waitingForPosition)
 			{

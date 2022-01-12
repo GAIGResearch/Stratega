@@ -3,8 +3,8 @@
 #include <imgui.h>
 namespace SGA
 {
-	WorldControllerWidget::WorldControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld):
-		SGAWidget(widgetName, newWindow, newWorld)
+	WorldControllerWidget::WorldControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
+		SGAWidget(widgetName, newWindow, newWorld, fm)
 	{
 	}
 

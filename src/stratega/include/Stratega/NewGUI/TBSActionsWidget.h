@@ -26,7 +26,7 @@ namespace SGA
 		bool waitingForEntity = false;
 		ActionAssignment& temp;
 
-		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ActionAssignment& temp);
+		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;

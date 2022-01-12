@@ -7,8 +7,8 @@
 #include <sstream>
 namespace SGA
 {
-	MouseInformationWidget::MouseInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld):
-		SGAWidget(widgetName, newWindow, newWorld)
+	MouseInformationWidget::MouseInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
+		SGAWidget(widgetName, newWindow, newWorld, fm)
 	{
 	}
 
@@ -54,8 +54,8 @@ namespace SGA
 		ImGui::End();
 	}
 
-	EntityInformationWidget::EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld) :
-		SGAWidget(widgetName, newWindow, newWorld),
+	EntityInformationWidget::EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
+		SGAWidget(widgetName, newWindow, newWorld, fm),
 		currentGameState(nullptr)
 	{
 	}

@@ -7,8 +7,8 @@
 #include <sstream>
 namespace SGA
 {
-	PlayerInformationWidget::PlayerInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld):
-		SGAWidget(widgetName, newWindow, newWorld)
+	PlayerInformationWidget::PlayerInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
+		SGAWidget(widgetName, newWindow, newWorld, fm)
 	{
 	}
 

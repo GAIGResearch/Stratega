@@ -45,14 +45,7 @@ namespace SGA
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
 
-		//Add layout widget
-		widgets.emplace_back( std::make_unique<GridLayoutWidget>("Grid Layout", window, world));
-		widgets.emplace_back( std::make_unique<MouseInformationWidget>("Mouse Information", window, world));
-		widgets.emplace_back( std::make_unique<WorldControllerWidget>("World Controller", window, world));
-		widgets.emplace_back( std::make_unique<EntityInformationWidget>("Entity Information", window, world));
-		widgets.emplace_back( std::make_unique<TBSActionsWidget>("Actions Controller", window, world, temp));
-		widgets.emplace_back( std::make_unique<GameStateInformationWidget>("State Information", window, world));
-		widgets.emplace_back( std::make_unique<PlayerInformationWidget>("Player Information", window, world));
+		
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -65,6 +58,14 @@ namespace SGA
 		ImGui::SFML::Init(window);
 
 		update(initialState);
+		//Add layout widget
+		widgets.emplace_back(std::make_unique<GridLayoutWidget>("Grid Layout", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<WorldControllerWidget>("World Controller", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<EntityInformationWidget>("Entity Information", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp));
+		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
 	}
 
 	ActionAssignment NewTBSGameRenderer::getPlayerActions()
