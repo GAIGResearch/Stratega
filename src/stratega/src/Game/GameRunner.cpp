@@ -6,6 +6,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/GUI/GameRenderer.h>
+#include <SFML/Graphics.hpp>
 
 namespace SGA
 {
@@ -51,7 +52,7 @@ namespace SGA
 	void GameRunner::render(SGA::Vector2i& resolution)
 	{
 		ensureRendererInitialized(resolution);
-		renderer->render();
+		renderer->render((float)deltaClock.getElapsedTime().asSeconds());
 	}
 
 	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)

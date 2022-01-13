@@ -1,6 +1,6 @@
 #include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
-
+#include <SFML/Graphics.hpp>
 namespace SGA
 {
 	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)
@@ -12,6 +12,7 @@ namespace SGA
 	{
 		std::vector<AgentThread> threads(agents.size());
 		std::vector<AgentThread> results(agents.size());
+		sf::Clock deltaClock;
 		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
 		{
 			// Run agents
@@ -29,7 +30,7 @@ namespace SGA
 			auto startTime = std::chrono::high_resolution_clock::now();
 			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(config->budgetTimeMs))
 			{
-				renderer->render();
+				renderer->render((float)deltaClock.getElapsedTime().asSeconds());
 			}
 
 			// Collect actions

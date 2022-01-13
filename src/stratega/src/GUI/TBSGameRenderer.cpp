@@ -102,7 +102,7 @@ namespace SGA
 		}
 	}
 
-	void TBSGameRenderer::render()
+	void TBSGameRenderer::render(float dt)
 	{
 		handleInput();
 		

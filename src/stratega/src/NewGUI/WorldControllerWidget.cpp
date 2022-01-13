@@ -16,6 +16,15 @@ namespace SGA
 	void WorldControllerWidget::render(SGARenderTarget& renderTarget)
 	{
 		ImGui::Begin("World Controller");
+
+		ImGui::Checkbox("Draw Tiles", &world.drawTiles);
+		ImGui::Checkbox("Draw Entities", &world.drawEntities);
+
+		ImGui::Checkbox("Interpolate GameStates", &world.interpolateStates);
+
+		if(world.interpolateStates)
+			ImGui::Checkbox("Interpolation animations enabled", &world.enableInterpolationAnimations);
+
 		std::string text;
 		text = "XRatio.x";
 		ImGui::DragFloat(text.c_str(), &world.xBaseVector.x, 1, -200, 200);
@@ -26,8 +35,7 @@ namespace SGA
 		text = "YRatio.y";
 		ImGui::DragFloat(text.c_str(), &world.yBaseVector.y, 1, -200, 200);
 
-		ImGui::Checkbox("Interpolate GameStates", &world.interpolateStates);
-		ImGui::Checkbox("Interpolation animations enabled", &world.enableInterpolationAnimations);
+		
 		ImGui::End();
 	}
 }

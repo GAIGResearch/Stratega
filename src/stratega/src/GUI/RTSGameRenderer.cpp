@@ -110,7 +110,7 @@ namespace SGA
 		}
 	}
 
-	void RTSGameRenderer::render()
+	void RTSGameRenderer::render(float dt)
 	{
 		handleInput();
 

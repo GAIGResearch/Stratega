@@ -58,6 +58,10 @@ namespace SGA
 		ImGui::SFML::Init(window);
 
 		update(initialState);
+
+		//Update world
+		world.init(initialState);
+
 		//Add layout widget
 		widgets.emplace_back(std::make_unique<GridLayoutWidget>("Grid Layout", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
@@ -117,14 +121,14 @@ namespace SGA
 		return endGameRequested;
 	}
 
-	void NewTBSGameRenderer::render()
+	void NewTBSGameRenderer::render(float dt)
 	{
 		handleInput();
 
 		window.clear();
 
 		//Render world
-		world.render(*renderTarget);
+		world.render(*renderTarget, dt);
 
 		ImGui::SFML::Update(window, deltaClock.restart());
 		

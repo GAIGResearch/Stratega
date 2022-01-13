@@ -45,6 +45,8 @@ namespace SGA
 		SpriteData getTileSprite(const TileType& entityType) const;
 		SpriteData getTileSprite(const std::string& spriteName) const;
 		SpriteData getEntitySprite(const std::string& spriteName) const;
+
+		SpriteData getSprite(const std::string& spriteName) const;
 		
 		static std::unique_ptr<ResourceManager> constructFromConfig(const GameConfig& config);
 	

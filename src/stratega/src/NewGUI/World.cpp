@@ -53,28 +53,8 @@ namespace SGA
         return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size};
     }
 
-    void World::update(const GameState& state)
+    void World::sortDrawables()
     {
-        drawableList.clear();
-        //Update list of drawable list
-        for (int x = 0; x < state.getBoardWidth(); ++x)
-        {
-            for (int y = 0; y < state.getBoardHeight(); ++y)
-            {
-                // get the current tile
-                const auto& tile = state.getTileAt({ x, y });
-                const auto& tileType = state.getGameInfo()->getTileType(tile.getTileTypeID());
-                Vector2f position(x, y);
-                drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileType));
-            }
-        }
-
-        for (auto& entity : state.getEntities())
-        {
-            const auto& position = entity.getPosition();
-            drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType()));
-        }
-
         //Oder by y
         std::sort(drawableList.begin(), drawableList.end(), [](const std::unique_ptr<SGADrawable>& lhs, const std::unique_ptr<SGADrawable>& rhs)
         {
@@ -86,13 +66,54 @@ namespace SGA
             else
                 return(lhs->position.x > lhs->position.x);
         });
+    } 
+    
+    void World::init(const GameState& state)
+    {
+        resetDrawables();
+        addTileDrawables(state);       
+    }
+    
+    void World::update(const GameState& state)
+    {
+        if (interpolateStates)
+        {
+            if (!interpolateStatesBefore)
+            {
+                resetDrawables();
+                addTileDrawables(state);
+                
+            }
+            interpolateStatesBefore = interpolateStates;
+
+            interpolateEntityDrawables(state);
+        }       
+        else
+        {
+            resetDrawables();
+            addTileDrawables(state);
+            addEntityDrawables(state);
+        }
+
+        sortDrawables();
     }
 
-    void World::render(SGARenderTarget& renderTarget)
+    void World::render(SGARenderTarget& renderTarget, float dt)
     {
+        animatingNumber = 0;
+
         for (auto& drawable : drawableList)
         {
-            drawable->render(renderTarget);
+            auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawable.get());
+            if ((drawableEntity&&drawEntities) || (!drawableEntity && drawTiles))
+            {
+                drawable->update(dt);
+                drawable->render(renderTarget);
+            }            
+
+            //Check if is animating
+            if (drawable->isAnimating)
+                animatingNumber++;
         }
     }
 }
