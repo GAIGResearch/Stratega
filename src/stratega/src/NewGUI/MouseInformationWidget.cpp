@@ -93,6 +93,9 @@ namespace SGA
 				//window_flags += ImGuiWindowFlags_NoNav;
 				////window_flags+= ImGuiWindowFlags_NoBackground;
 				//window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+				
+				//Highlight entity drwable
+				world.getEntity(entity->getID())->isHighlighted=true;
 
 				ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
@@ -107,10 +110,11 @@ namespace SGA
 				ImGui::Separator();
 
 				//Add units
-				auto* texture = renderTarget.getResourceManager().getEntitySprite(entityType).getTexture();
+				
+				auto texture = renderTarget.getResourceManager().getEntitySprite(entityType).createSprite();
 
 				ImGui::Image(
-					*texture,
+					texture,
 					sf::Vector2f(100, 100),
 					sf::Color::White,
 					sf::Color::Transparent);
@@ -134,28 +138,27 @@ namespace SGA
 				ImGui::NextColumn();
 
 				ImGui::Columns(1);
-				//ImGui::Separator();
+				ImGui::Separator();
 
-				//ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
-				//ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
+				ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
+				ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
 
 
-				//for (auto entity : state.getPlayerEntities(fowSettings.selectedPlayerID))
-				//{
-				//	//Check if entity have sprite
-				//	auto searchedEntityType = entity.getEntityType();
-				//	//Add units
-				//	sf::Texture& searchedTexture = assetCache.getTexture(searchedEntityType.getName());
+				for (auto entity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
+				{
+					//Check if entity have sprite
+					auto searchedEntityType = entity.getEntityType();
+					//Add units
 
-				//	if (ImGui::ImageButton(searchedTexture, sf::Vector2f(50, 50), -10))
-				//	{
-				//		/*selectedEntityID = entity->id;*/
-				//	}
-				//	ImGui::SameLine();
-				//}
+					if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+					{
+						/*selectedEntityID = entity->id;*/
+					}
+					ImGui::SameLine();
+				}
 
-				//ImGui::EndChild();
-				//ImGui::SameLine();
+				ImGui::EndChild();
+				ImGui::SameLine();
 
 				ImGui::Spacing();
 				ImGui::End();

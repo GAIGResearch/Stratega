@@ -116,6 +116,8 @@ namespace SGA
             //Check if is animating
             if (drawable->isAnimating)
                 animatingNumber++;
+
+            drawable->isHighlighted=false;
         }
     }
 }
