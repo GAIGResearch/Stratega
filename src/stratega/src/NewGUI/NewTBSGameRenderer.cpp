@@ -66,7 +66,7 @@ namespace SGA
 		widgets.emplace_back(std::make_unique<GridLayoutWidget>("Grid Layout", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<WorldControllerWidget>("World Controller", window, world, config->forwardModel.get()));
-		widgets.emplace_back(std::make_unique<EntityInformationWidget>("Entity Information", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<GridInformationWidget>("Grid Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp));
 		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
@@ -121,16 +121,17 @@ namespace SGA
 		return endGameRequested;
 	}
 
-	void NewTBSGameRenderer::render(float dt)
+	void NewTBSGameRenderer::render()
 	{
 		handleInput();
 
 		window.clear();
 
 		//Render world
-		world.render(*renderTarget, dt);
+		auto dt = deltaClock.restart();
+		world.render(*renderTarget, dt.asSeconds());
 
-		ImGui::SFML::Update(window, deltaClock.restart());
+		ImGui::SFML::Update(window, dt);
 		
 		//Render widgets
 		for (auto& widget : widgets)

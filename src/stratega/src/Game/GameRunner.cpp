@@ -52,7 +52,7 @@ namespace SGA
 	void GameRunner::render(SGA::Vector2i& resolution)
 	{
 		ensureRendererInitialized(resolution);
-		renderer->render((float)deltaClock.getElapsedTime().asSeconds());
+		renderer->render();
 	}
 
 	void GameRunner::checkInitializationTime(std::chrono::milliseconds initializationTime, int playerID)

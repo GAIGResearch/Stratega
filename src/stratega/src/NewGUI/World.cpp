@@ -102,6 +102,7 @@ namespace SGA
 
     void World::render(SGARenderTarget& renderTarget, float dt)
     {
+        //std::cout << "DT: " << dt << std::endl;
         animatingNumber = 0;
 
         for (auto& drawable : drawableList)

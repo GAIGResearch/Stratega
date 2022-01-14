@@ -166,6 +166,21 @@ namespace SGA
             return nullptr;
         }
 
+        SGADrawableTile* getTile(Vector2i& pos) const
+        {
+            for (auto& drawable : drawableList)
+            {
+                auto* tile = dynamic_cast<SGADrawableTile*>(drawable.get());
+                if (tile)
+                {
+                    if (tile->position.x == pos.x&& tile->position.y == pos.y)
+                        return tile;
+                }
+            }
+
+            return nullptr;
+        }
+
         void render(SGARenderTarget& renderTarget, float dt);
 
     private:

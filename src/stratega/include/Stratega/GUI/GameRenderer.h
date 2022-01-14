@@ -45,7 +45,7 @@ namespace SGA
 		/// <summary>
 		/// Handles input and updates the window. This method has to be called continuously, or else the window will freeze.
 		/// </summary>
-		virtual void render(float dt) = 0;
+		virtual void render() = 0;
 		/// <summary>
 		/// Sets the point of view from which the user can see and interact with the game.
 		/// </summary>

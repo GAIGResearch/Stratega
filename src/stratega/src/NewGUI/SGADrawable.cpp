@@ -16,7 +16,11 @@ namespace SGA
 
     void SGADrawableTile::render(SGARenderTarget& renderTarget) const
     {
-        renderTarget.drawTile(position, type, 255*alpha);
+        if (isHighlighted)
+            renderTarget.drawTileHighlight(position, type, 255 * alpha);
+        else
+            renderTarget.drawTile(position, type, 255 * alpha);
+        
     }
 
     SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID)
@@ -33,7 +37,7 @@ namespace SGA
             case AnimationType::Move:
                 if (targetPosition != position && targetPosition.distance(position)>0.1f)
                 {
-                    position = Interpolate(position, targetPosition, dt * 0.001f);
+                    position = Interpolate(position, targetPosition, dt * 10);
                 }
                 else
                 {
@@ -44,7 +48,7 @@ namespace SGA
             case AnimationType::Dissappear:
                 if (alpha > 0.01)
                 {
-                    alpha = Interpolate(alpha, 0, dt * 0.001f);
+                    alpha = Interpolate(alpha, 0, dt * 5);
                     if (alpha < 0)
                         alpha = 0;
                 }
@@ -59,7 +63,7 @@ namespace SGA
             case AnimationType::Appear:
                 if (alpha <1)
                 {
-                    alpha = Interpolate(alpha, 1, dt * 0.001f);
+                    alpha = Interpolate(alpha, 1, dt * 5);
                     if (alpha > 1)
                         alpha = 1;
                 }

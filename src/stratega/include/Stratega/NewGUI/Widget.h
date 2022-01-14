@@ -45,15 +45,16 @@ namespace SGA
 	};
 
 
-	struct EntityInformationWidget : public SGAWidget
+	struct GridInformationWidget : public SGAWidget
 	{
-		EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm);
+		GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
 
 	private:
 		bool drawEntityInformation = true;
+		bool drawTileInformation = true;
 		const GameState* currentGameState;
 	};
 }

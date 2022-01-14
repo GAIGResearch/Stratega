@@ -178,9 +178,6 @@ namespace SGA
 		bool shouldCheckInitTime;
 		long initBudgetTimetMs;
 		long initDisqualificationBudgetTimeMs;
-
-		sf::Clock deltaClock;
-
 	};
 
 	/// <summary>

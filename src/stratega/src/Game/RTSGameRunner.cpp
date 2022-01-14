@@ -12,7 +12,6 @@ namespace SGA
 	{
 		std::vector<AgentThread> threads(agents.size());
 		std::vector<AgentThread> results(agents.size());
-		sf::Clock deltaClock;
 		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
 		{
 			// Run agents
@@ -29,8 +28,8 @@ namespace SGA
 			// Render
 			auto startTime = std::chrono::high_resolution_clock::now();
 			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(config->budgetTimeMs))
-			{
-				renderer->render((float)deltaClock.getElapsedTime().asSeconds());
+			{				
+				renderer->render();
 			}
 
 			// Collect actions

@@ -13,7 +13,6 @@ namespace SGA
 	{
 		auto* tbsRenderer = dynamic_cast<NewTBSGameRenderer*>(renderer.get());
 		AgentThread agentThread;
-		sf::Clock deltaClock;
 		while(!currentState->isGameOver())
 		{
 			ActionAssignment nextAction;
@@ -26,7 +25,7 @@ namespace SGA
 					// Render
 					while (agentThread.isComputing())
 					{
-						tbsRenderer->render((float)deltaClock.getElapsedTime().asSeconds());
+						tbsRenderer->render();
 					}
 
 					auto results = agentThread.join();
@@ -55,7 +54,7 @@ namespace SGA
 				{
 					while (!tbsRenderer->isActionAvailable() && !renderer->isGameEndRequested())
 					{
-						renderer->render((float)deltaClock.getElapsedTime().asSeconds());
+						renderer->render();
 					}
 					nextAction = tbsRenderer->getPlayerActions();
 				}

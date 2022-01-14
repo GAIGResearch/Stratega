@@ -54,28 +54,25 @@ namespace SGA
 		ImGui::End();
 	}
 
-	EntityInformationWidget::EntityInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
+	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
 		SGAWidget(widgetName, newWindow, newWorld, fm),
 		currentGameState(nullptr)
 	{
 	}
 
-	void EntityInformationWidget::update(const GameState& state)
+	void GridInformationWidget::update(const GameState& state)
 	{
 		currentGameState = &state;
 	}
 
-	void EntityInformationWidget::render(SGARenderTarget& renderTarget)
+	void GridInformationWidget::render(SGARenderTarget& renderTarget)
 	{
-		ImGui::Begin("Entity infomation");
+		ImGui::Begin("Grid information");
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
+		ImGui::Checkbox("Draw tile information", &drawTileInformation);
 		ImGui::End();
-
-		if (drawEntityInformation)
+		
 		{
-			/*ImGui::Begin("Entity");
-			ImGui::Checkbox("Draw entity information", &drawEntityInformation);
-			ImGui::End();*/
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
@@ -83,6 +80,8 @@ namespace SGA
 
 			if (entity)
 			{
+				if (!drawEntityInformation)
+					return;
 				//ImGuiWindowFlags window_flags = 0;
 				//window_flags += ImGuiWindowFlags_NoTitleBar;
 				//window_flags += ImGuiWindowFlags_NoScrollbar;
@@ -97,7 +96,7 @@ namespace SGA
 				//Highlight entity drwable
 				world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(300, 270), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information"/*, NULL, window_flags*/);
 
@@ -161,6 +160,62 @@ namespace SGA
 				ImGui::SameLine();
 
 				ImGui::Spacing();
+				ImGui::End();
+			}
+			else
+			{
+				if (!drawTileInformation)
+					return;
+
+				auto gridPosRounded = world.toStrategaRounded(mousePos);
+				if (!currentGameState->isInBounds(gridPosRounded))
+					return;
+
+				//Highlight tile drwable
+				if(world.getTile(gridPosRounded))
+					world.getTile(gridPosRounded)->isHighlighted = true;
+
+				ImGui::SetNextWindowSize(ImVec2(300, 170), ImGuiCond_Always);
+				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+				ImGui::Begin("Tile Information"/*, NULL, window_flags*/);
+
+				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAt(gridPosRounded).getTileTypeID());
+
+				ImGui::Text(tileType.getName().c_str());
+				ImGui::Columns(2, "mixed");
+				ImGui::SetColumnWidth(0, 100.0f);
+
+				ImGui::Separator();
+
+				//Add units
+
+				auto texture = renderTarget.getResourceManager().getTileSprite(tileType).createSprite();
+
+				ImGui::Image(
+					texture,
+					sf::Vector2f(100, 100),
+					sf::Color::White,
+					sf::Color::Transparent);
+
+
+				ImGui::NextColumn();
+				ImGui::Text("Parameters: ");
+
+				if(tileType.isWalkable())
+					ImGui::BulletText("Is walkable: true");
+				else
+					ImGui::BulletText("Is walkable: false");
+
+				if(tileType.blockSight())
+					ImGui::BulletText("Block sight: true");
+				else
+					ImGui::BulletText("Block sight: false");
+
+				if(tileType.isDefaultTile())
+					ImGui::BulletText("Is default tile: true");
+				else
+					ImGui::BulletText("Is default tile: false");
+
 				ImGui::End();
 			}
 
