@@ -11,11 +11,12 @@
 
 namespace SGA {
 	struct World;
+	struct RenderConfig;
 	class SGARenderTarget
 	{
 	  public:
 
-		  SGARenderTarget(sf::RenderTarget& newTarget, const ResourceManager& resourceManager, const World& world );
+		  SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& resourceManager, const World& world, const RenderConfig& renderConfig);
 
 	//	SGARenderTarget(sf::RenderTarget& target, const ResourceManager& resourceManager, World& world)
 	//		  target(target), resourceManager(resourceManager), world(world)
@@ -34,6 +35,18 @@ namespace SGA {
 		 void drawTile(const Vector2f& position, const std::string& spriteName, float alpha = 1);
 		 void drawEntity(const Vector2f& position, const std::string& spriteName, float alpha = 1);
 
+		 void drawTileHighlight(const Vector2f& position, const TileType& type, float alpha = 1);
+		 void drawEntityHighlight(const Vector2f& position, const EntityType& type, float alpha = 1);
+
+		 void drawTileHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1);
+		 void drawEntityHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1);
+
+		 void drawTileOutlineColor(const Vector2f& position, const TileType& type, sf::Color color, float alpha = 1);
+		 void drawEntityOutlineColor(const Vector2f& position, const EntityType& type, sf::Color color, float alpha = 1);
+
+		 void drawTileOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color, float alpha = 1);
+		 void drawEntityOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color,float alpha = 1);
+
 	 //  void drawTileHighlight(const Vector2i& position);
 
 	 //  void drawEntityCentered(const EntityType& type, const Vector2i& position, const Color& outlineColor = Color::Transparent);
@@ -51,7 +64,7 @@ namespace SGA {
 	 /*  void drawSprite(const SpriteData& data, const Vector2f& position, const Color& outlineColor = Color::Transparent);*/
 
 	   sf::RenderTarget& target;
-	   const ResourceManager& resourceManager;
+	   ResourceManager& resourceManager;
 	   const World& world;
 	};
 }

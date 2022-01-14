@@ -9,6 +9,21 @@ namespace SGA {
 ResourceManager::ResourceManager() : entityAtlas(), defaultTextFont()
 {
     TILE_SELECTION_SPRITE_NAME = "@_selectionSprite_@";
+    DEFAULT_PLAYER_COLORS=
+    {
+    	sf::Color::Red,
+    	sf::Color::Blue,
+    	sf::Color{0, 128, 128}, // Teal
+    	sf::Color{128,0,128}, // Purple
+    	sf::Color::Yellow,
+    	sf::Color{255,165,0}, // Orange
+    	sf::Color::Green,
+    	sf::Color{255,192,203}, // Pink
+    	sf::Color{128,128,128}, // Grey
+    	sf::Color{173,216,230}, // Light Blue
+    	sf::Color{0,100,0}, // Dark Green
+    	sf::Color{139,69,19} // Brown
+    };
 }
 
 const sf::Font& ResourceManager::getDefaultFont() const
@@ -16,7 +31,7 @@ const sf::Font& ResourceManager::getDefaultFont() const
    return defaultTextFont;
 }
 
-const sf::Shader& ResourceManager::getOutlineShader() const
+sf::Shader& ResourceManager::getOutlineShader()
 {
    return outlineShader;
 }
@@ -121,9 +136,8 @@ std::unique_ptr< ResourceManager > ResourceManager::constructFromConfig(const Ga
    manager->outlineShader.loadFromFile(
       config.renderConfig->outlineShaderPath, sf::Shader::Fragment);
    manager->outlineShader.setUniform("texture", sf::Shader::CurrentTexture);
-   manager->outlineShader.setUniform("outlineThickness", 4.f);
-   manager->outlineShader.setUniform(
-      "textureSize", sf::Glsl::Vec2(manager->entityAtlas.getAtlasTexture().getSize()));
+   manager->outlineShader.setUniform("outlineThickness", 1.4f);
+   manager->outlineShader.setUniform("textureSize", sf::Glsl::Vec2(manager->entityAtlas.getAtlasTexture().getSize()));
 
    return manager;
 }

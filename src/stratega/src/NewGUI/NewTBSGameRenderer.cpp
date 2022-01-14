@@ -54,13 +54,13 @@ namespace SGA
 
 		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() });
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
-		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world);
+		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
 
 		update(initialState);
 
 		//Update world
-		world.init(initialState);
+		world.init(initialState, *gameConfig.renderConfig);
 
 		//Add layout widget
 		widgets.emplace_back(std::make_unique<GridLayoutWidget>("Grid Layout", window, world, config->forwardModel.get()));

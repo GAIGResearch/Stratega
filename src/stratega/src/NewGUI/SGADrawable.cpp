@@ -19,8 +19,8 @@ namespace SGA
         renderTarget.drawTile(position, type, 255*alpha);
     }
 
-    SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID)
-        : SGADrawable(newPosition, newZPosition), type(newType), entityID(newEntityID), animation(AnimationType::None)
+    SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID)
+        : SGADrawable(newPosition, newZPosition), type(newType), entityID(newEntityID), playerID(newPlayerID), animation(AnimationType::None)
     {
     }
 
@@ -50,6 +50,7 @@ namespace SGA
                 }
                 else
                 {
+                    alpha = 0;
                     isAnimating = false;
                     animation = AnimationType::None;
                     shouldRemove = true;
@@ -77,6 +78,9 @@ namespace SGA
 
     void SGADrawableEntity::render(SGARenderTarget& renderTarget) const 
     {
-        renderTarget.drawEntity(position, type, 255*alpha);
+        if(isHighlighted)
+            renderTarget.drawEntityHighlight(position, type, 255*alpha);
+        else
+            renderTarget.drawEntityOutlineColor(position, type, renderTarget.getResourceManager().getPlayerColor(playerID), 255 * alpha);
     }
 }

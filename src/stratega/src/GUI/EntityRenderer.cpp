@@ -30,7 +30,7 @@ namespace SGA
 		// Initialise shader
 		outlineShader.loadFromFile(renderConfig.outlineShaderPath, sf::Shader::Fragment);
 		outlineShader.setUniform("texture", sf::Shader::CurrentTexture);
-		outlineShader.setUniform("outlineThickness", 1.4f);
+		outlineShader.setUniform("outlineThickness", 0.1f);
 		outlineShader.setUniform("textureSize", sf::Glsl::Vec2(atlas.getAtlasTexture().getSize()));
 	}
 

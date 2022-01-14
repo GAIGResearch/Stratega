@@ -4,6 +4,7 @@
 #include <Stratega/NewGUI/SGADrawable.h>
 #include <Stratega/NewGUI/SGARenderTarget.h>
 #include <SFML/System/Vector2.hpp>
+#include <Stratega/Configuration/RenderConfig.h>
 #include <memory>
 namespace SGA
 {
@@ -50,7 +51,7 @@ namespace SGA
 
         static World createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size);
 
-        void init(const GameState& state);
+        void init(const GameState& state, const RenderConfig& renderConfig);
         void update(const GameState& state);
         void resetDrawables()
         {
@@ -76,7 +77,7 @@ namespace SGA
             for (auto& entity : state.getEntities())
             {                
                 const auto& position = entity.getPosition();
-                drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID()));
+                drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
             }
         }
         void interpolateEntityDrawables(const GameState& state)
@@ -123,7 +124,7 @@ namespace SGA
                 else
                 {
                     const auto& position = entity.getPosition();
-                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID()));
+                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
 
                     if (enableInterpolationAnimations)
                     {
@@ -168,7 +169,7 @@ namespace SGA
         void render(SGARenderTarget& renderTarget, float dt);
 
     private:
-
+        GameState lastUpdatedState;
         bool interpolateStatesBefore = true;
     };
 }

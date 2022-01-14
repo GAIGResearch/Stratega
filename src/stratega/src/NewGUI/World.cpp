@@ -68,7 +68,7 @@ namespace SGA
         });
     } 
     
-    void World::init(const GameState& state)
+    void World::init(const GameState& state, const RenderConfig& renderConfig)
     {
         resetDrawables();
         addTileDrawables(state);       
@@ -76,6 +76,8 @@ namespace SGA
     
     void World::update(const GameState& state)
     {
+        lastUpdatedState = state;
+
         if (interpolateStates)
         {
             if (!interpolateStatesBefore)
@@ -107,7 +109,7 @@ namespace SGA
             auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawable.get());
             if ((drawableEntity&&drawEntities) || (!drawableEntity && drawTiles))
             {
-                drawable->update(dt);
+                drawable->update(dt);                
                 drawable->render(renderTarget);
             }            
 

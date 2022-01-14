@@ -13,6 +13,8 @@ namespace SGA {
         bool isAnimating;
         float alpha;
         bool shouldRemove = false;
+        bool isHighlighted = false;
+
         SGADrawable(const Vector2f& newPosition, int newZPosition)
             : position(newPosition), zPosition(newZPosition), isAnimating(false), alpha (1)
         {
@@ -74,9 +76,10 @@ namespace SGA {
     {
         const EntityType& type;
         const int entityID;
+        const int playerID;
         Vector2f targetPosition;
         AnimationType animation;
-        SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID);
+        SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID);
 
         void update(float dt) override;
 
