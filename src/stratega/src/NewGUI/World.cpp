@@ -37,7 +37,8 @@ namespace SGA
     Vector2i World::toStrategaRounded(const sf::Vector2f& pos) const
     {
         auto convertedPos = toStratega(pos);
-        return {
+        return 
+        {
            static_cast<int>(std::floor(convertedPos.x)),
            static_cast<int>(std::floor(convertedPos.y))
         };

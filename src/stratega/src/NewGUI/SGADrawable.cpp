@@ -48,7 +48,7 @@ namespace SGA
             case AnimationType::Dissappear:
                 if (alpha > 0.01)
                 {
-                    alpha = Interpolate(alpha, 0, dt * 5);
+                    alpha = Interpolate(alpha, 0, dt * 2);
                     if (alpha < 0)
                         alpha = 0;
                 }
@@ -63,8 +63,8 @@ namespace SGA
             case AnimationType::Appear:
                 if (alpha <1)
                 {
-                    alpha = Interpolate(alpha, 1, dt * 5);
-                    if (alpha > 1)
+                    alpha = Interpolate(alpha, 1, dt * 2);
+                    if (alpha > 0.95)
                         alpha = 1;
                 }
                 else
@@ -82,9 +82,15 @@ namespace SGA
 
     void SGADrawableEntity::render(SGARenderTarget& renderTarget) const 
     {
-        if(isHighlighted)
+        if(isHighlighted&&!isAnimating)
             renderTarget.drawEntityHighlight(position, type, 255*alpha);
         else
+            if (isAnimating&& animation != AnimationType::Move)
+            {
+                if(animation== AnimationType::Appear|| animation == AnimationType::Dissappear)
+                    renderTarget.drawEntity(position, type, 255 * alpha);
+            }
+            else
             renderTarget.drawEntityOutlineColor(position, type, renderTarget.getResourceManager().getPlayerColor(playerID), 255 * alpha);
     }
 }
