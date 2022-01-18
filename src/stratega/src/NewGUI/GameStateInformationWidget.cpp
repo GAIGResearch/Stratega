@@ -24,6 +24,21 @@ namespace SGA
 		ImGui::Text(text.c_str());
 		text = "Current Player : " + std::to_string(state->getCurrentTBSPlayer());
 		ImGui::Text(text.c_str());
+
+		//ImGui::Text("Parameters: ");
+
+		//int parameterIndex = 0;
+		//for (const auto& parameter : state->getParameters())
+		//{
+		//	//Double to string with 2 precision
+		//	std::stringstream stream;
+		//	stream << std::fixed << std::setprecision(2) << entity->getParameter(parameter.second.getName());
+		//	std::string valueParameter = stream.str();
+
+		//	std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
+		//	ImGui::BulletText(parameterInfo.c_str());
+		//}
+
 		ImGui::End();
 	}
 
