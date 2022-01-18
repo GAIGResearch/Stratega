@@ -38,7 +38,7 @@ namespace SGA
         int animatingNumber=0;
 
         World() = default;
-        World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size);
+        World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size, std::unordered_set<int>& newSelectedEntities);
 
         sf::Vector2f toSFML(const Vector2f& pos) const;
 
@@ -47,9 +47,9 @@ namespace SGA
         Vector2f toStratega(const sf::Vector2f& pos) const;
         Vector2i toStrategaRounded(const sf::Vector2f& pos) const;
 
-        static World createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size);
+        static World createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities);
 
-        static World createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size);
+        static World createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities);
 
         void init(const GameState& state, const RenderConfig& renderConfig);
         void update(const GameState& state);
@@ -90,18 +90,20 @@ namespace SGA
                     it = drawableList.erase(it);
                 else
                 {
-                    if (enableInterpolationAnimations)
+                    auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(it->get());
+                    if (drawableEntity)
                     {
-                        auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(it->get());
-                        if (drawableEntity)
+                        if (enableInterpolationAnimations)
                         {
                             auto* foundEntity = state.getEntityConst(drawableEntity->entityID);
                             if (!foundEntity)
                             {
                                 drawableEntity->dissappear();
                             }
-                        }
+                        }                       
                     }
+                    
+
                     ++it;
                 }
             }
@@ -186,5 +188,6 @@ namespace SGA
     private:
         GameState lastUpdatedState;
         bool interpolateStatesBefore = true;
+        std::unordered_set<int>* selectedEntities;
     };
 }

@@ -7,17 +7,19 @@
 #include <sstream>
 namespace SGA
 {
-	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp):
+	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
 		SGAWidget(widgetName, newWindow, newWorld, fm),
 		state(nullptr),
-		temp(temp)
+		temp(temp),
+		selectedEntities(newSelectedEntities),
+		playerID(newPlayerID)
 	{
 	}
 
 	void TBSActionsWidget::update(const GameState& state)
 	{
 		this->state = &state;
-		actionsHumanPlayer = fm->generateActions(state, state.getCurrentTBSPlayer()/*pointOfViewPlayerID*/);
+		actionsHumanPlayer = fm->generateActions(state, playerID/*pointOfViewPlayerID*/);
 	}
 
 	void TBSActionsWidget::render(SGARenderTarget& renderTarget)
@@ -48,9 +50,9 @@ namespace SGA
 		ImGui::Text("Actions");
 
 		//Ask widget to get
-		if (true/*pointOfViewPlayerID != NO_PLAYER_ID*/)
+		if (playerID != -1/*pointOfViewPlayerID != NO_PLAYER_ID*/)
 		{
-			auto actionsToExecute = getWidgetResult(state->getCurrentTBSPlayer());
+			auto actionsToExecute = getWidgetResult(playerID);
 			if (!actionsToExecute.empty())
 			{
 				temp.clear();
@@ -275,7 +277,7 @@ namespace SGA
 
 
 			auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
-			if (selectedEntity /*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
+			if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
 			{
 				//Assign selected unit
 				if (waitingForEntity)
@@ -285,7 +287,7 @@ namespace SGA
 				else
 				{
 					//Pick up entity
-					//if (selectedEntity->getOwnerID() == pointOfViewPlayerID)
+					//if (selectedEntity->getOwnerID() == playerID)
 						selectedEntities.emplace(selectedEntity->getID());
 				}
 			}

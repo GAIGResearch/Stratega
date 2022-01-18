@@ -52,7 +52,7 @@ namespace SGA
 	{
 		config = &gameConfig;
 
-		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() });
+		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities);
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
@@ -67,7 +67,7 @@ namespace SGA
 		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<WorldControllerWidget>("World Controller", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<GridInformationWidget>("Grid Information", window, world, config->forwardModel.get()));
-		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp));
+		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, selectedEntities, playerID));
 		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
 	}
@@ -239,7 +239,7 @@ namespace SGA
 
 	void NewTBSGameRenderer::setPlayerPointOfView(int playerID)
 	{
-		update(state);
-		playerID = playerID;
+		this->playerID = playerID;
+		update(state);		
 	}
 }

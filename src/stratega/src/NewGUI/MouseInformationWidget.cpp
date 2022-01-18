@@ -120,6 +120,10 @@ namespace SGA
 
 
 				ImGui::NextColumn();
+
+				std::string owner = "Owner ID: ";
+				owner += std::to_string(entity->getOwnerID());
+				ImGui::Text(owner.c_str());
 				ImGui::Text("Parameters: ");
 
 				int parameterIndex = 0;

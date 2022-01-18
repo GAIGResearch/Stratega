@@ -63,6 +63,7 @@ namespace SGA
 		sf::RenderWindow window;
 		sf::Clock deltaClock;
 		ActionAssignment temp;
+
 		/*
 		int pointOfViewPlayerID;
 		AssetCache assetCache;

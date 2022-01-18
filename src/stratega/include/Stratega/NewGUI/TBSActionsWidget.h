@@ -11,9 +11,11 @@ namespace SGA
 	{
 		const GameState* state;
 
+		//Actions
 		std::vector<SGA::Action> actionsHumanPlayer;
 
-		std::unordered_set<int> selectedEntities;
+		//Current selected entities
+		std::unordered_set<int>& selectedEntities;
 
 		//List of targets
 		std::vector<SGA::ActionTarget> selectedTargets;
@@ -26,7 +28,10 @@ namespace SGA
 		bool waitingForEntity = false;
 		ActionAssignment& temp;
 
-		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp);
+		//Current player
+		int& playerID;
+
+		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;

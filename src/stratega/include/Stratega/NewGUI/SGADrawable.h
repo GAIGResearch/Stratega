@@ -64,13 +64,35 @@ namespace SGA {
         void render(SGARenderTarget& renderTarget) const override;
     };
 
-    enum class AnimationType
+    enum AnimationType
     {
-        None,
-        Move,
-        Dissappear,
-        Appear
+        None = 1 << 0,
+        Move = 1 << 1,
+        Dissappear = 1 << 2,
+        Appear = 1 << 3
     };
+
+    inline AnimationType operator~ (AnimationType a) { return static_cast<AnimationType>(~static_cast<std::underlying_type<AnimationType>::type>(a)); }
+    inline AnimationType operator| (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) | static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType operator& (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) & static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType operator^ (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) ^ static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator|= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) |= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator&= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) &= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator^= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) ^= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+
+    //AnimationType operator|(AnimationType lhs, AnimationType rhs) {
+    //    return static_cast<AnimationType>(
+    //        static_cast<std::underlying_type_t<AnimationType>>(lhs) |
+    //        static_cast<std::underlying_type_t<AnimationType>>(rhs)
+    //        );
+    //}
+
+    //AnimationType operator&(AnimationType lhs, AnimationType rhs) {
+    //    return static_cast<AnimationType>(
+    //        static_cast<std::underlying_type_t<AnimationType>>(lhs) &
+    //        static_cast<std::underlying_type_t<AnimationType>>(rhs)
+    //        );
+    //}
 
     struct SGADrawableEntity: public SGADrawable
     {
@@ -89,21 +111,21 @@ namespace SGA {
         {
             isAnimating = true;
             targetPosition = newPosition;
-            animation = AnimationType::Move;
+            animation |= AnimationType::Move;
         }
         
         void dissappear()
         {
             alpha = 1;
             isAnimating = true;
-            animation = AnimationType::Dissappear;
+            animation |= AnimationType::Dissappear;
         }
 
         void appear()
         {
             alpha = 0;
             isAnimating = true;
-            animation = AnimationType::Appear;
+            animation |= AnimationType::Appear;
         }
     };
 

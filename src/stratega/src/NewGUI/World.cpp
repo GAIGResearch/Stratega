@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size)
-        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size)
+    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
+        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size), selectedEntities(&newSelectedEntities)
     {
     }
 
@@ -44,14 +44,14 @@ namespace SGA
         };
     }
 
-    World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size)
+    World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
     {
-        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size};
+        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size, newSelectedEntities};
     }
 
-    World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size)
+    World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
     {
-        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size};
+        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size, newSelectedEntities};
     }
 
     void World::sortDrawables()
@@ -84,8 +84,7 @@ namespace SGA
             if (!interpolateStatesBefore)
             {
                 resetDrawables();
-                addTileDrawables(state);
-                
+                addTileDrawables(state);                
             }
             interpolateStatesBefore = interpolateStates;
 
@@ -113,13 +112,24 @@ namespace SGA
             {
                 drawable->update(dt);                
                 drawable->render(renderTarget);
-            }            
+
+                if(drawableEntity)
+                    if (selectedEntities->count(drawableEntity->entityID) != 0)
+                        drawableEntity->isHighlighted = true;
+                    else
+                        drawable->isHighlighted = false;
+                else
+                    drawable->isHighlighted = false;
+            }
+            else
+            {
+                drawable->isHighlighted = false;
+            }
 
             //Check if is animating
             if (drawable->isAnimating)
                 animatingNumber++;
 
-            drawable->isHighlighted=false;
         }
     }
 }

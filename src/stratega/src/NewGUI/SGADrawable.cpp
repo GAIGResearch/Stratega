@@ -30,54 +30,53 @@ namespace SGA
 
     void SGADrawableEntity::update(float dt)
     {
-        if (isAnimating)
+        isAnimating = false;
+
+        if (animation & AnimationType::Move)
         {
-            switch (animation)
+            if (targetPosition != position && targetPosition.distance(position) > 0.1f)
             {
-            case AnimationType::Move:
-                if (targetPosition != position && targetPosition.distance(position)>0.1f)
-                {
-                    position = Interpolate(position, targetPosition, dt * 10);
-                }
-                else
-                {
-                    isAnimating = false;
-                    animation = AnimationType::None;
-                }
-                break;
-            case AnimationType::Dissappear:
-                if (alpha > 0.01)
-                {
-                    alpha = Interpolate(alpha, 0, dt * 2);
-                    if (alpha < 0)
-                        alpha = 0;
-                }
-                else
-                {
-                    alpha = 0;
-                    isAnimating = false;
-                    animation = AnimationType::None;
-                    shouldRemove = true;
-                }
-                break;
-            case AnimationType::Appear:
-                if (alpha <1)
-                {
-                    alpha = Interpolate(alpha, 1, dt * 2);
-                    if (alpha > 0.95)
-                        alpha = 1;
-                }
-                else
-                {
-                    isAnimating = false;
-                    animation = AnimationType::None;
-                }
-                break;
-            default:
-                break;
+                position = Interpolate(position, targetPosition, dt * 10);
+                isAnimating = true;
             }
-            
+            else
+            {
+                animation &= ~AnimationType::Move;
+            }
         }
+
+        if (animation & AnimationType::Dissappear)
+        {
+            if (alpha > 0.01)
+            {
+                alpha = Interpolate(alpha, 0, dt * 2);
+                if (alpha < 0)
+                    alpha = 0;
+                isAnimating = true;
+            }
+            else
+            {
+                alpha = 0;
+                animation &= ~AnimationType::Dissappear;
+                shouldRemove = true;
+            }
+        }
+
+        if (animation & AnimationType::Appear)
+        {
+            if (alpha < 1)
+            {
+                alpha = Interpolate(alpha, 1, dt * 2);
+                if (alpha > 0.95)
+                    alpha = 1;
+                isAnimating = true;
+            }
+            else
+            {
+                animation &= ~AnimationType::Appear;
+            }
+        }            
+        
     }
 
     void SGADrawableEntity::render(SGARenderTarget& renderTarget) const 
@@ -85,12 +84,11 @@ namespace SGA
         if(isHighlighted&&!isAnimating)
             renderTarget.drawEntityHighlight(position, type, 255*alpha);
         else
-            if (isAnimating&& animation != AnimationType::Move)
+            if (animation & AnimationType::Appear || animation & AnimationType::Dissappear)
             {
-                if(animation== AnimationType::Appear|| animation == AnimationType::Dissappear)
-                    renderTarget.drawEntity(position, type, 255 * alpha);
+                renderTarget.drawEntity(position, type, 255 * alpha);
             }
             else
-            renderTarget.drawEntityOutlineColor(position, type, renderTarget.getResourceManager().getPlayerColor(playerID), 255 * alpha);
+                renderTarget.drawEntityOutlineColor(position, type, renderTarget.getResourceManager().getPlayerColor(playerID), 255 * alpha);
     }
 }

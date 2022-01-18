@@ -64,6 +64,22 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 
 Actions:
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "SpawnEntity(Source, Warrior, Target)"
+
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -119,7 +135,7 @@ Actions:
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
 
-
+    
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
@@ -163,7 +179,7 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Spawn]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play

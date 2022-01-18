@@ -68,6 +68,8 @@ namespace SGA
 		/// Close the sfml window.
 		/// </summary>
 		virtual void closeWindow() = 0;
+
+		std::unordered_set<int> selectedEntities;
 	};
 
 	/// <summary>
