@@ -1,14 +1,20 @@
 #pragma once
 #include <Stratega/GUI/GameRenderer.h>
+/*
 #include <Stratega/GUI/AssetCache.h>
 #include <Stratega/GUI/TileMap.h>
 #include <Stratega/GUI/EntityRenderer.h>
 #include <Stratega/GUI/Widgets/FogOfWarController.h>
-#include <Stratega/GUI/Widgets/ActionsController.h>
+#include <Stratega/GUI/Widgets/ActionsController.h>*/
+
 #include <Stratega/NewGUI/Widget.h>
 #include <Stratega/NewGUI/World.h>
+
 #include <Stratega/ForwardModel/ActionAssignment.h>
+
 #include <Stratega/NewGUI/SGARenderTarget.h>
+
+#include <Stratega/NewGUI/FOWControllerWidget.h>
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 
@@ -83,6 +89,8 @@ namespace SGA
 		std::unique_ptr<SGARenderTarget> renderTarget;
 		std::unique_ptr<ResourceManager> resourceManager;
 		int playerID;
+
+		FogOfWarSettings settings;
 
 	};
 }

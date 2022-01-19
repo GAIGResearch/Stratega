@@ -62,7 +62,7 @@ namespace SGA
 		sf::Clock deltaClock;
 		int pointOfViewPlayerID;
 		AssetCache assetCache;
-		Widgets::FogOfWarSettings fowSettings;
+		FogOfWarSettings fowSettings;
 		Widgets::ActionsSettings actionsSettings;
 		TileMap tileMap;
 		EntityRenderer entityRenderer;

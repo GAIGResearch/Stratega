@@ -3,19 +3,13 @@
 #include <Stratega/GUI/TextureAtlas.h>
 #include <unordered_map>
 
+#include <Stratega/NewGUI/FogOfWarSettings.h>
 namespace SGA
 {
     struct GameState;
     struct RenderConfig;
     struct GameConfig;
 	struct Tile;
-
-	enum class FogRenderType
-	{
-		Nothing,
-		Fog,
-		Tiles
-	};
 
 	static const sf::Color FOG_COLOR = { 144, 161, 168 };
 

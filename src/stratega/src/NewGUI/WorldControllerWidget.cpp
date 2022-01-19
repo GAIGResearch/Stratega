@@ -21,7 +21,9 @@ namespace SGA
 		ImGui::Checkbox("Draw Entities", &world.drawEntities);
 
 		ImGui::Separator();
-		std::string temp = "Animators number playing: " + std::to_string(world.animatingNumber);
+		std::string temp = "Drawable number: " + std::to_string(world.drawableList.size());
+		ImGui::Text(temp.c_str());
+		temp = "Animators number playing: " + std::to_string(world.animatingNumber);
 
 		if (world.animationsRunning())
 			ImGui::Text("Animations running: true");

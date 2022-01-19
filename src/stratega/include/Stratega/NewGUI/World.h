@@ -3,6 +3,7 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/NewGUI/SGADrawable.h>
 #include <Stratega/NewGUI/SGARenderTarget.h>
+#include <Stratega/NewGUI/FogOfWarSettings.h>
 #include <SFML/System/Vector2.hpp>
 #include <Stratega/Configuration/RenderConfig.h>
 #include <memory>
@@ -38,7 +39,7 @@ namespace SGA
         int animatingNumber=0;
 
         World() = default;
-        World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size, std::unordered_set<int>& newSelectedEntities);
+        World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings);
 
         sf::Vector2f toSFML(const Vector2f& pos) const;
 
@@ -47,17 +48,17 @@ namespace SGA
         Vector2f toStratega(const sf::Vector2f& pos) const;
         Vector2i toStrategaRounded(const sf::Vector2f& pos) const;
 
-        static World createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities);
+        static World createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings);
 
-        static World createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities);
+        static World createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings);
 
-        void init(const GameState& state, const RenderConfig& renderConfig);
-        void update(const GameState& state);
+        void init(const GameState& state, const GameState& fowState, const RenderConfig& renderConfig);
+        void update(const GameState& state, const GameState& fowState);
         void resetDrawables()
         {
             drawableList.clear();
         }
-        void addTileDrawables(const GameState& state)
+        void addTileDrawables(const GameState& state, const GameState& fowState)
         {
             //Update list of drawable list
             for (int x = 0; x < state.getBoardWidth(); ++x)
@@ -66,21 +67,37 @@ namespace SGA
                 {
                     // get the current tile
                     const auto& tile = state.getTileAt({ x, y });
+                    const auto& tileFOW =fowState.getTileAt({ x, y });
                     const auto& tileType = state.getGameInfo()->getTileType(tile.getTileTypeID());
+                    const auto& tileTypeFOW = fowState.getGameInfo()->getTileType(tileFOW.getTileTypeID());
                     Vector2f position(x, y);
-                    drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileType));
+                    if (tileTypeFOW.getID()==-1&& fowSettings->renderFogOfWar)
+                    {
+                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileTypeFOW));
+                    }
+                    else
+                    {
+                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileType));
+                    }
                 }
             }
         }
-        void addEntityDrawables(const GameState& state)
+        void addEntityDrawables(const GameState& state, const GameState& fowState)
         {
-            for (auto& entity : state.getEntities())
-            {                
-                const auto& position = entity.getPosition();
-                drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
-            }
+            if(fowSettings->renderFogOfWar)
+                for (auto& entity : fowState.getEntities())
+                {                
+                    const auto& position = entity.getPosition();
+                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                }
+            else
+                for (auto& entity : state.getEntities())
+                {
+                    const auto& position = entity.getPosition();
+                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                }
         }
-        void interpolateEntityDrawables(const GameState& state)
+        void interpolateEntityDrawables(const GameState& state, const GameState& fowState)
         {
             auto it = drawableList.begin();
             while (it != drawableList.end())
@@ -95,47 +112,120 @@ namespace SGA
                     {
                         if (enableInterpolationAnimations)
                         {
-                            auto* foundEntity = state.getEntityConst(drawableEntity->entityID);
-                            if (!foundEntity)
+                            if (fowSettings->renderFogOfWar)
                             {
-                                drawableEntity->dissappear();
+                                auto* foundEntity = fowState.getEntityConst(drawableEntity->entityID);
+                                if (!foundEntity)
+                                {
+                                    drawableEntity->dissappear();
+                                }
                             }
-                        }                       
-                    }
-                    
+                            else
+                            {
+                                auto* foundEntity = state.getEntityConst(drawableEntity->entityID);
+                                if (!foundEntity)
+                                {
+                                    drawableEntity->dissappear();
+                                }
+                            }
 
-                    ++it;
-                }
-            }
-
-            for (auto& entity : state.getEntities())
-            {
-                if (hasEntity(entity.getID()))
-                {
-                    const auto& position = entity.getPosition();
-                    auto* drawableEntity = getEntity(entity.getID());
-                    if (enableInterpolationAnimations)
-                    {
-                        drawableEntity->moveTo(position);
+                            ++it;
+                            
+                        }
+                        else
+                        {
+                            it = drawableList.erase(it);
+                        }
+                       
                     }
                     else
                     {
-                        drawableEntity->updatePosition(position);
-                    }
+                        ++it;
+                    }                     
                 }
-                else
-                {
-                    const auto& position = entity.getPosition();
-                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 0, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+            }
 
-                    if (enableInterpolationAnimations)
+            if (fowSettings->renderFogOfWar)
+            {
+                for (auto& entity : fowState.getEntities())
+                {
+                    if (hasEntity(entity.getID()))
                     {
-                        auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawableList.back().get());
-                        if(!drawableEntity->isAnimating)
-                            drawableEntity->appear();
+                        const auto& position = entity.getPosition();
+                        auto* drawableEntity = getEntity(entity.getID());
+                        if (enableInterpolationAnimations)
+                        {
+                            drawableEntity->moveTo(position);
+                        }
+                        else
+                        {
+                            drawableEntity->updatePosition(position);
+                        }
+                    }
+                    else
+                    {
+                        const auto& position = entity.getPosition();
+                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+
+                        if (enableInterpolationAnimations)
+                        {
+                            auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawableList.back().get());
+                            if (!drawableEntity->isAnimating)
+                                drawableEntity->appear();
+                        }
                     }
                 }
             }
+            else
+            {
+                for (auto& entity : state.getEntities())
+                {
+                    if (hasEntity(entity.getID()))
+                    {
+                        const auto& position = entity.getPosition();
+                        auto* drawableEntity = getEntity(entity.getID());
+                        if (enableInterpolationAnimations)
+                        {
+                            drawableEntity->moveTo(position);
+                        }
+                        else
+                        {
+                            drawableEntity->updatePosition(position);
+                        }
+                    }
+                    else
+                    {
+                        const auto& position = entity.getPosition();
+                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+
+                        if (enableInterpolationAnimations)
+                        {
+                            auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawableList.back().get());
+                            if (!drawableEntity->isAnimating)
+                                drawableEntity->appear();
+                        }
+                    }
+                }
+            }            
+        }
+
+        void interpolateTilesDrawables(const GameState& state, const GameState& fowState)
+        {
+            auto it = drawableList.begin();
+            while (it != drawableList.end())
+            {
+                auto* drawableTile = dynamic_cast<SGADrawableTile*>(it->get());
+                if (drawableTile)
+                {
+                    it = drawableList.erase(it);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+            
+            addTileDrawables(state, fowState);
         }
         void sortDrawables();
         bool animationsRunning()
@@ -187,7 +277,9 @@ namespace SGA
 
     private:
         GameState lastUpdatedState;
+        GameState lastUpdatedStateFOW;
         bool interpolateStatesBefore = true;
         std::unordered_set<int>* selectedEntities;
+        const FogOfWarSettings* fowSettings;
     };
 }

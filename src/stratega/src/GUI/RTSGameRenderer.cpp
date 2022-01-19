@@ -3,6 +3,7 @@
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
 
+#include <Stratega/NewGUI/FogOfWarSettings.h>
 #include <SFML/Window.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>

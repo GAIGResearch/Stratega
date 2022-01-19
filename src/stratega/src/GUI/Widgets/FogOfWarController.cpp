@@ -4,7 +4,7 @@
 using namespace SGA;
 namespace Widgets
 {
-	bool fowController(const GameState& state, FogOfWarSettings& fowSettings)
+	bool fowController(const GameState& state, SGA::FogOfWarSettings& fowSettings)
 	{
 		static std::unordered_map<FogRenderType, std::string> nameLookup =
 		{

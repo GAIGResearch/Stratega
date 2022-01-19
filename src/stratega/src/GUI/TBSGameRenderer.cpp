@@ -356,10 +356,10 @@ namespace SGA
 		else
 			ImGui::Text("Is disabled in config");
 
-		if(fowController(state, fowSettings))
+		/*if(fowController(state, fowSettings))
 		{
 			updateFow();
-		}
+		}*/
 		ImGui::End();
 	}
 

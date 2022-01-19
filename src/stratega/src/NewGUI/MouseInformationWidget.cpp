@@ -94,7 +94,8 @@ namespace SGA
 				//window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 				
 				//Highlight entity drwable
-				world.getEntity(entity->getID())->isHighlighted=true;
+				if(world.getEntity(entity->getID()))
+					world.getEntity(entity->getID())->isHighlighted=true;
 
 				ImGui::SetNextWindowSize(ImVec2(300, 270), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));

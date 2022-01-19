@@ -52,15 +52,16 @@ namespace SGA
 	{
 		config = &gameConfig;
 
-		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities);
+		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
 
-		update(initialState);
+		state = initialState;
+		updateFow();
 
 		//Update world
-		world.init(initialState, *gameConfig.renderConfig);
+		world.init(initialState,fowState ,*gameConfig.renderConfig);
 
 		//Add layout widget
 		widgets.emplace_back(std::make_unique<GridLayoutWidget>("Grid Layout", window, world, config->forwardModel.get()));
@@ -70,6 +71,7 @@ namespace SGA
 		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, selectedEntities, playerID));
 		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
+		widgets.emplace_back(std::make_unique<FOWControllerWidget>("FOW Controller", window, world, config->forwardModel.get(), &settings));
 	}
 
 	ActionAssignment NewTBSGameRenderer::getPlayerActions()
@@ -81,16 +83,25 @@ namespace SGA
 
 	void NewTBSGameRenderer::update(const GameState& newState)
 	{
-		this->state = newState;
-		
+		state = newState;
+		updateFow();
+
 		//Update world
-		world.update(newState);
+		world.update(state,fowState);
+
 		//Render widgets
 		for (auto& widget : widgets)
 		{
 			if(widget->enabled)
-				widget->update(newState);
+				widget->update(fowState);
 		}
+	}
+
+	void NewTBSGameRenderer::updateFow()
+	{
+		fowState = state;
+		if(settings.renderFogOfWar)
+			fowState.applyFogOfWar(settings.selectedPlayerID);
 	}
 
 	void NewTBSGameRenderer::handleInput()
@@ -105,7 +116,7 @@ namespace SGA
 
 			switch (event.type)
 			{
-			case sf::Event::Closed: { break; }
+			case sf::Event::Closed: {endGameRequested = true; break; }
 			case sf::Event::MouseWheelScrolled: { mouseScrolled(event); break; }
 			case sf::Event::MouseButtonReleased: { mouseButtonReleased(event); break; }
 			case sf::Event::MouseButtonPressed: { mouseButtonPressed(event); break; }
@@ -138,6 +149,21 @@ namespace SGA
 		{
 			if (widget->enabled)
 				widget->render(*renderTarget);
+		}
+
+		if (settings.settingsChanged)
+		{
+			updateFow();
+			//Update world
+			world.update(state ,fowState);
+			settings.settingsChanged = false;
+
+			//Render widgets
+			for (auto& widget : widgets)
+			{
+				if (widget->enabled)
+					widget->update(fowState);
+			}
 		}
 
 		//Components window

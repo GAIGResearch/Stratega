@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
-        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size), selectedEntities(&newSelectedEntities)
+    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
+        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size), selectedEntities(&newSelectedEntities), fowSettings(&newSettings)
     {
     }
 
@@ -44,14 +44,14 @@ namespace SGA
         };
     }
 
-    World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
+    World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
     {
-        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size, newSelectedEntities};
+        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size, newSelectedEntities, newSettings };
     }
 
-    World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities)
+    World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
     {
-        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size, newSelectedEntities};
+        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size, newSelectedEntities, newSettings };
     }
 
     void World::sortDrawables()
@@ -59,42 +59,46 @@ namespace SGA
         //Oder by y
         std::sort(drawableList.begin(), drawableList.end(), [](const std::unique_ptr<SGADrawable>& lhs, const std::unique_ptr<SGADrawable>& rhs)
         {
-            if (lhs->zPosition != lhs->zPosition)
-                return (lhs->zPosition < lhs->zPosition);
+            if (lhs->zPosition != rhs->zPosition)
+                return (lhs->zPosition < rhs->zPosition);
 
-            if (lhs->position.y < lhs->position.y)
-                return(lhs->position.x < lhs->position.x);
-            else
-                return(lhs->position.x > lhs->position.x);
+            return std::tie(lhs->position.y, lhs->position.x) < std::tie(rhs->position.y, rhs->position.x);      
+
         });
     } 
     
-    void World::init(const GameState& state, const RenderConfig& renderConfig)
-    {
-        resetDrawables();
-        addTileDrawables(state);       
-    }
-    
-    void World::update(const GameState& state)
+    void World::init(const GameState& state, const GameState& fowState, const RenderConfig& renderConfig)
     {
         lastUpdatedState = state;
+        lastUpdatedStateFOW = fowState;
+
+        resetDrawables();
+        addTileDrawables(lastUpdatedState, lastUpdatedStateFOW);
+    }
+    
+    void World::update(const GameState& state, const GameState& fowState)
+    {
+        lastUpdatedState = state;
+        lastUpdatedStateFOW = fowState;
 
         if (interpolateStates)
         {
             if (!interpolateStatesBefore)
             {
                 resetDrawables();
-                addTileDrawables(state);                
+                //addTileDrawables(state);                
             }
             interpolateStatesBefore = interpolateStates;
 
-            interpolateEntityDrawables(state);
+            interpolateTilesDrawables(lastUpdatedState, lastUpdatedStateFOW);
+            interpolateEntityDrawables(lastUpdatedState, lastUpdatedStateFOW);
         }       
         else
         {
             resetDrawables();
-            addTileDrawables(state);
-            addEntityDrawables(state);
+
+            addEntityDrawables(lastUpdatedState, lastUpdatedStateFOW);
+            addTileDrawables(lastUpdatedState, lastUpdatedStateFOW);
         }
 
         sortDrawables();
@@ -114,12 +118,17 @@ namespace SGA
                 drawable->render(renderTarget);
 
                 if(drawableEntity)
+                {
                     if (selectedEntities->count(drawableEntity->entityID) != 0)
                         drawableEntity->isHighlighted = true;
                     else
                         drawable->isHighlighted = false;
+                }                    
                 else
+                {
                     drawable->isHighlighted = false;
+                }
+                    
             }
             else
             {

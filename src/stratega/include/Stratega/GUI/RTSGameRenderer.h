@@ -7,6 +7,7 @@
 #include <Stratega/GUI/Widgets/ActionsController.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
 
+#include <Stratega/NewGUI/FogOfWarSettings.h>
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <Stratega/Utils/filesystem.hpp>
@@ -64,7 +65,7 @@ namespace SGA
 		sf::Clock deltaClock;
 		int pointOfViewPlayerID;
 		AssetCache assetCache;
-		Widgets::FogOfWarSettings fowSettings;
+		FogOfWarSettings fowSettings;
 		Widgets::ActionsSettings actionsSettings;
 		TileMap tileMap;
 		EntityRenderer entityRenderer;
