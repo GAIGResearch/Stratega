@@ -50,14 +50,7 @@ set(STRATEGA_SOURCE_FILES
         Game/GameRunner.cpp
         Game/RTSGameRunner.cpp
         Game/TBSGameRunner.cpp
-        GUI/AssetCache.cpp
-        GUI/EntityRenderer.cpp
         GUI/GameRenderer.cpp
-        GUI/RTSGameRenderer.cpp
-        GUI/TBSGameRenderer.cpp
-        GUI/TileMap.cpp
-        GUI/Widgets/ActionsController.cpp
-        GUI/Widgets/FogOfWarController.cpp
         NewGUI/GridLayout.cpp
         NewGUI/Widget.cpp
         NewGUI/World.cpp

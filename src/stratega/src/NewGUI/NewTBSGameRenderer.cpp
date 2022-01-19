@@ -1,6 +1,5 @@
 #include <Stratega/NewGUI/NewTBSGameRenderer.h>
 #include <Stratega/NewGUI/ResourceManager.h>
-#include <Stratega/GUI/GridUtils.h>
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
 

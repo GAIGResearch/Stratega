@@ -1,8 +1,6 @@
 #include <cassert>
 
 #include <Stratega/GUI/GameRenderer.h>
-#include <Stratega/GUI/RTSGameRenderer.h>
-#include <Stratega/GUI/TBSGameRenderer.h>
 #include <Stratega/NewGUI/NewTBSGameRenderer.h>
 
 namespace SGA
