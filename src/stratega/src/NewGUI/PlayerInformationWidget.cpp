@@ -25,9 +25,9 @@ namespace SGA
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
-		if (true/*pointOfViewPlayerID != NO_PLAYER_ID*/)
+		if (world.getFOWSettings().selectedPlayerID != -1)
 		{
-			const auto* player = state->getPlayer(state->getCurrentTBSPlayer()/*fowSettings.selectedPlayerID*/);
+			const auto* player = state->getPlayer(world.getFOWSettings().selectedPlayerID);
 			for (const auto& parameter : state->getGameInfo()->getPlayerParameterTypes())
 			{
 				//Double to string with 2 precision

@@ -45,7 +45,8 @@ namespace SGA
 		view.zoom(zoomValue); // Apply the zoom level (this transforms the view)
 		window.setView(view);
 
-		
+		settings.renderFogOfWar = true;
+		settings.renderType = FogRenderType::Fog;
 	}
 
 	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
@@ -56,7 +57,7 @@ namespace SGA
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
-
+		settings.renderFogOfWar = config->applyFogOfWar;
 		state = initialState;
 		updateFow();
 
@@ -121,7 +122,7 @@ namespace SGA
 			case sf::Event::MouseButtonReleased: { mouseButtonReleased(event); break; }
 			case sf::Event::MouseButtonPressed: { mouseButtonPressed(event); break; }
 			case sf::Event::MouseMoved: { mouseMoved(event); 	break; }
-									  //case sf::Event::KeyPressed: {keyPressed(event); break;	}
+			case sf::Event::KeyPressed: {keyPressed(event); break;	}
 			default:  break;
 			}
 		}
@@ -204,14 +205,127 @@ namespace SGA
 				widget->mouseScrolled(event);
 		}
 	}
+	void NewTBSGameRenderer::keyPressed(const sf::Event& event)
+	{
+		// Camera movement
+		sf::Vector2f movementDir;
+		float cameraSpeed = 50;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			movementDir.y = -cameraSpeed;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			movementDir.y = cameraSpeed;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			movementDir.x = -cameraSpeed;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			movementDir.x = cameraSpeed;
+		}
+		sf::View view = window.getView();
+		view.setCenter(view.getCenter() + movementDir);
+		window.setView(view);
+
+	}
 	void NewTBSGameRenderer::mouseButtonReleased(const sf::Event& event)
 	{
-		// Mouse button is released, no longer move
-		if (event.mouseButton.button == sf::Mouse::Left)
+		if (state.getGameType() == GameType::TBS)
 		{
-			dragging = false;
-			
+			// Mouse button is released, no longer move
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				dragging = false;
+			}
 		}
+		else
+		{
+			// Mouse button is released, no longer move
+			if (event.mouseButton.button == sf::Mouse::Middle) {
+				dragging = false;
+			}
+
+			//if (event.mouseButton.button == sf::Mouse::Left)
+			//{
+			//	dragging = false;
+
+			//	sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			//	auto worldPos = toGrid(pos);
+			//	auto movementDir = pos - oldMousePosition;
+			//	auto movementDistance = std::sqrt(movementDir.x * movementDir.x + movementDir.y * movementDir.y);
+
+			//	if (movementDistance <= 10.0)
+			//	{
+			//		// The user clicked somewhere
+			//		if (!actionsSettings.selectedEntities.empty())
+			//		{
+			//			auto* unit = state.getEntity(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
+
+			//			if (unit)
+			//			{
+			//				//we click on someone
+			//				if (actionsSettings.waitingForEntity)
+			//				{
+			//					assignEntity(state, actionsSettings, unit->getID());
+			//				}
+			//				else
+			//				{
+			//					actionsSettings.selectedEntities.clear();
+			//				}
+
+			//			}
+			//			else
+			//			{
+			//				if (actionsSettings.waitingForPosition)
+			//				{
+			//					auto gridPos = toGridFloat(pos);
+			//					assignPosition(state, actionsSettings, { gridPos.x,gridPos.y });
+			//				}
+			//				else
+			//				{
+			//					actionsSettings.selectedEntities.clear();
+			//				}
+			//			}
+			//		}
+			//		else
+			//		{
+			//			if (actionsSettings.waitingForPosition)
+			//			{
+			//				auto gridPos = toGrid(pos);
+			//				assignPosition(state, actionsSettings, { static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
+			//			}
+			//			else
+			//			{
+			//				actionsSettings.selectedEntities.clear();
+			//				actionsSettings.reset();
+			//			}
+			//		}
+			//	}
+			//	else
+			//	{
+			//		// The user selected an area
+			//		auto prevMouseWorldPos = oldMousePosition;
+			//		auto xLeft = std::min(prevMouseWorldPos.x, pos.x);
+			//		auto xRight = std::max(prevMouseWorldPos.x, pos.x);
+			//		auto yLeft = std::min(prevMouseWorldPos.y, pos.y);
+			//		auto yRight = std::max(prevMouseWorldPos.y, pos.y);
+
+			//		for (auto& unit : state.getEntities())
+			//		{
+			//			sf::Vector2f screenPos = toISO(unit.x(), unit.y());
+			//			if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
+			//			{
+			//				if (unit.getOwnerID() == pointOfViewPlayerID)
+			//					actionsSettings.selectedEntities.emplace(unit.getID());
+			//			}
+			//		}
+			//	}
+			//}
+		}
+		
 
 		for (auto& widget : widgets)
 		{
@@ -222,14 +336,22 @@ namespace SGA
 	void NewTBSGameRenderer::mouseButtonPressed(const sf::Event& event)
 	{
 		// Mouse button is pressed, get the position and set moving as active
-		if (event.mouseButton.button == sf::Mouse::Left)
+		if (state.getGameType() == GameType::TBS)
 		{
-			dragging = true;
-			oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				dragging = true;
+				oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+			}
 		}
-		if (event.mouseButton.button == sf::Mouse::Right)
+		else
 		{
-			
+			// Mouse button is pressed, get the position and set moving as active
+			if (event.mouseButton.button == sf::Mouse::Middle)
+			{
+				dragging = true;
+				oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+			}
 		}
 
 		for (auto& widget : widgets)
@@ -266,6 +388,7 @@ namespace SGA
 	void NewTBSGameRenderer::setPlayerPointOfView(int playerID)
 	{
 		this->playerID = playerID;
+		settings.selectedPlayerID = playerID;
 		update(state);		
 	}
 }

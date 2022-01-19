@@ -15,7 +15,7 @@ namespace SGA
 		}
 		if (type == GameType::RTS)
 		{
-			return std::make_unique<RTSGameRenderer>(resolution);
+			return std::make_unique<NewTBSGameRenderer>(resolution);
 		}
 
 		assert(false);

@@ -88,6 +88,19 @@ namespace SGA
 		return nullptr;
 	}
 
+	const Entity* GameState::getEntityAtConst(const Vector2f& pos, float maxDistance) const
+	{
+		for (auto& entity : entities)
+		{
+			if (entity.getPosition() == pos)
+				return &entity;
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+				return &entity;
+		}
+
+		return nullptr;
+	}
+
 
 	const Player* GameState::getPlayer(int playerID) const
 	{

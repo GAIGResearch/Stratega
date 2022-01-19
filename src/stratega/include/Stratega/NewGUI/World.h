@@ -244,7 +244,10 @@ namespace SGA
             }
             return false;
         }
-
+        const FogOfWarSettings& getFOWSettings()
+        {
+            return *fowSettings;
+        }
         SGADrawableEntity* getEntity(const int entityID) const
         {
             for (auto& drawable : drawableList)

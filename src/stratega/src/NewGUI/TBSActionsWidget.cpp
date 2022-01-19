@@ -19,7 +19,7 @@ namespace SGA
 	void TBSActionsWidget::update(const GameState& state)
 	{
 		this->state = &state;
-		actionsHumanPlayer = fm->generateActions(state, playerID/*pointOfViewPlayerID*/);
+		actionsHumanPlayer = fm->generateActions(state, playerID);
 	}
 
 	void TBSActionsWidget::render(SGARenderTarget& renderTarget)
@@ -50,7 +50,7 @@ namespace SGA
 		ImGui::Text("Actions");
 
 		//Ask widget to get
-		if (playerID != -1/*pointOfViewPlayerID != NO_PLAYER_ID*/)
+		if (playerID != -1)
 		{
 			auto actionsToExecute = getWidgetResult(playerID);
 			if (!actionsToExecute.empty())
@@ -253,8 +253,102 @@ namespace SGA
 			}
 		}
 
+
+		// Handle dragging
+		if (dragging)
+		{
+			auto currentPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			auto diff = oldMousePosition - currentPos;
+			auto yLeft = std::min(currentPos.y, oldMousePosition.y);
+			auto xLeft = std::min(currentPos.x, oldMousePosition.x);
+			sf::RectangleShape selectedArea({ std::abs(diff.x), std::abs(diff.y) });
+			selectedArea.setFillColor(sf::Color::Transparent);
+			selectedArea.setOutlineColor(sf::Color::White);
+			selectedArea.setOutlineThickness(10);
+			selectedArea.setPosition(xLeft, yLeft);
+			window.draw(selectedArea);
+		}
 	}
 
+	void TBSActionsWidget::mouseButtonReleased(const sf::Event& event)
+	{
+		if (event.mouseButton.button == sf::Mouse::Left && state->getGameType()==GameType::RTS)
+		{
+			dragging = false;
+
+			sf::Vector2f pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+			auto worldPos = world.toStratega(pos);
+			auto movementDir = pos - oldMousePosition;
+			auto movementDistance = std::sqrt(movementDir.x * movementDir.x + movementDir.y * movementDir.y);
+
+			if (movementDistance <= 10.0)
+			{
+				// The user clicked somewhere
+				if (!selectedEntities.empty())
+				{
+					const auto* unit = state->getEntityAtConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
+
+					if (unit)
+					{
+						//we click on someone
+						if (waitingForEntity)
+						{
+							assignEntity(unit->getID());
+						}
+						else
+						{
+							selectedEntities.clear();
+						}
+
+					}
+					else
+					{
+						if (waitingForPosition)
+						{
+							auto gridPos = world.toStratega(pos);
+							assignPosition({ gridPos.x,gridPos.y });
+						}
+						else
+						{
+							selectedEntities.clear();
+						}
+					}
+				}
+				else
+				{
+					if (waitingForPosition)
+					{
+						auto gridPos = world.toStratega(pos);
+						assignPosition({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
+					}
+					else
+					{
+						selectedEntities.clear();
+						reset();
+					}
+				}
+			}
+			else
+			{
+				// The user selected an area
+				auto prevMouseWorldPos = oldMousePosition;
+				auto xLeft = std::min(prevMouseWorldPos.x, pos.x);
+				auto xRight = std::max(prevMouseWorldPos.x, pos.x);
+				auto yLeft = std::min(prevMouseWorldPos.y, pos.y);
+				auto yRight = std::max(prevMouseWorldPos.y, pos.y);
+
+				for (const auto& unit : state->getEntities())
+				{
+					sf::Vector2f screenPos = world.toSFML(unit.getPosition());
+					if (screenPos.x > xLeft && screenPos.x < xRight && screenPos.y > yLeft && screenPos.y < yRight)
+					{
+						if (unit.getOwnerID() == world.getFOWSettings().selectedPlayerID)
+							selectedEntities.emplace(unit.getID());
+					}
+				}
+			}
+		}
+	}
 
 	void TBSActionsWidget::mouseButtonPressed(const sf::Event& event)
 	{
@@ -275,30 +369,38 @@ namespace SGA
 				}
 			}
 
-
-			auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
-			if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
+			if (state->getGameType() == GameType::TBS)
 			{
-				//Assign selected unit
-				if (waitingForEntity)
+				auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
+				if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
 				{
-					assignEntity(selectedEntity->getID());
-				}
-				else
-				{
-					//Pick up entity
-					//if (selectedEntity->getOwnerID() == playerID)
+					//Assign selected unit
+					if (waitingForEntity)
+					{
+						assignEntity(selectedEntity->getID());
+					}
+					else
+					{
+						//Pick up entity
+						//if (selectedEntity->getOwnerID() == playerID)
 						selectedEntities.emplace(selectedEntity->getID());
+					}
 				}
+				//else
+				//{
+				//	//Restart selected actions of unit and selected unit
+				//	dragging = true;
+				//	oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+				//}
 			}
-			//else
-			//{
-			//	//Restart selected actions of unit and selected unit
-			//	dragging = true;
-			//	oldMousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-			//}
+			else
+			{
+				oldMousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+				dragging = true;
+			}
+			
 		}
-		if (event.mouseButton.button == sf::Mouse::Right)
+		if (event.mouseButton.button == sf::Mouse::Right && state->getGameType()==GameType::TBS)
 		{
 			//selectedAction = Action::createEndAction(pointOfViewPlayerID);
 			temp.clear();

@@ -147,19 +147,19 @@ namespace SGA
 				ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
 				ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
 
-
-				for (auto entity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
-				{
-					//Check if entity have sprite
-					auto searchedEntityType = entity.getEntityType();
-					//Add units
-
-					if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+				if(entity->getOwnerID()!=-1)
+					for (auto entity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
 					{
-						/*selectedEntityID = entity->id;*/
+						//Check if entity have sprite
+						auto searchedEntityType = entity.getEntityType();
+						//Add units
+
+						if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+						{
+							/*selectedEntityID = entity->id;*/
+						}
+						ImGui::SameLine();
 					}
-					ImGui::SameLine();
-				}
 
 				ImGui::EndChild();
 				ImGui::SameLine();

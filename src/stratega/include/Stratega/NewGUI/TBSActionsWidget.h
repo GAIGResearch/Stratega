@@ -31,12 +31,17 @@ namespace SGA
 		//Current player
 		int& playerID;
 
+		//RTS selection box
+		bool dragging = false;
+		sf::Vector2f oldMousePosition;
+
 		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
 
 		void mouseButtonPressed(const sf::Event& event) override;
+		void mouseButtonReleased(const sf::Event& event) override;
 
 		//Configuration
 		bool removeSelectedEntities = false;

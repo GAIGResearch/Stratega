@@ -57,6 +57,7 @@ namespace SGA
 		void mouseButtonReleased(const sf::Event& event);
 		void mouseButtonPressed(const sf::Event& event);
 		void mouseMoved(const sf::Event& event);
+		void keyPressed(const sf::Event& event);
 
 		const GameConfig* config;
 		GameState state;
