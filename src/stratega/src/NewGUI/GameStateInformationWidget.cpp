@@ -20,7 +20,7 @@ namespace SGA
 	void GameStateInformationWidget::render(SGARenderTarget& renderTarget)
 	{
 		ImGui::Begin("State info");
-		std::string text = "Tick: " + std::to_string(state->getCurrentTick())+ "/"+ std::to_string(state->getTickLimit());
+		std::string text = "Tick: " + std::to_string(state->getCurrentTick()) + "/"+ std::to_string(state->getTickLimit());
 		ImGui::Text(text.c_str());
 		text = "Current Player : " + std::to_string(state->getCurrentTBSPlayer());
 		ImGui::Text(text.c_str());

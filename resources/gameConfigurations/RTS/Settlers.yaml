@@ -1,7 +1,7 @@
 GameConfig:
     Type: RTS
     ActionTimer: 10s
-    RoundLimit: 100
+    RoundLimit: 10000
 
 GameRenderer:
     Resolution:
