@@ -6,11 +6,7 @@ namespace SGA
 	SGARenderTarget::SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& resourceManager, const World& world, const RenderConfig& renderConfig) :
 		target(newTarget), resourceManager(resourceManager), world(world)
 	{
-		//// Initialise shader
-		//outlineShader.loadFromFile(renderConfig.outlineShaderPath, sf::Shader::Fragment);
-		//outlineShader.setUniform("texture", sf::Shader::CurrentTexture);
-		//outlineShader.setUniform("outlineThickness", 0.1f);
-		//outlineShader.setUniform("textureSize", sf::Glsl::Vec2(resourceManager.getEntityAtlas().getSpriteSize()));
+		
 	}
 
 	void SGARenderTarget::drawTile(const Vector2f& position, const TileType& tile, float alpha)
@@ -21,7 +17,7 @@ namespace SGA
 		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 sprite.setColor(color);
 		 target.draw(sprite);
 	}
@@ -35,7 +31,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 
 		 auto color = sprite.getColor();
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 sprite.setColor(color);
 		 target.draw(sprite);
 	}
@@ -48,7 +44,7 @@ namespace SGA
 		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 sprite.setColor(color);
 		 target.draw(sprite);
 	}
@@ -61,7 +57,7 @@ namespace SGA
 		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 sprite.setColor(color);
 		 target.draw(sprite);
 	}
@@ -75,7 +71,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 
 		 auto color = sf::Color::Yellow;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);
@@ -93,7 +89,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 
 		 auto color = sf::Color::Yellow;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture()); 
 		 outlineShader.setParameter("outlineColor", color);
@@ -111,7 +107,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 		 
 		 auto color = sf::Color::Yellow;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);
@@ -129,7 +125,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 		 		 
 		 auto color = sf::Color::Yellow;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);
@@ -148,7 +144,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 
 		 auto color = outlineColor;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);
@@ -166,7 +162,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 
 		 auto color = outlineColor;
-		 color.a = alpha;		
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture()); 
 		 outlineShader.setParameter("outlineColor", color);
@@ -184,7 +180,7 @@ namespace SGA
 		 sprite.setOrigin(origin);
 		 
 		 auto color = outlineColor;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);
@@ -204,7 +200,7 @@ namespace SGA
 		 
 		 
 		 auto color = outlineColor;
-		 color.a = alpha;
+		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
 		 outlineShader.setParameter("outlineColor", color);

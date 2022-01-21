@@ -7,7 +7,7 @@ namespace SGA {
       sf::Vector2f xBaseVector;
       sf::Vector2f yBaseVector;
 
-      GridLayout(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector);
+      GridLayout(const sf::Vector2f& newXBaseVector, const sf::Vector2f& newYBaseVector);
 
       sf::Vector2f toSFML(const Vector2f& pos) const;
       sf::Vector2f toSFML(const Vector2i& pos) const;

@@ -7,24 +7,24 @@ namespace SGA
 	{
 	}
 
-	void TextureAtlas::create(sf::Vector2u spriteSize, size_t numSprites, int pixelGap)
+	void TextureAtlas::create(sf::Vector2u newSpriteSize, size_t numSprites, int newPixelGap)
 	{
-		this->spriteSize = spriteSize;
-		this->pixelGap = pixelGap;
+		this->spriteSize = newSpriteSize;
+		this->pixelGap = newPixelGap;
 
 		// Compute optimal number of sprites in the x-axis and y-axis to form a perfect square
-		auto ratio = spriteSize.y / static_cast<double>(spriteSize.x);
-		auto xCountF = std::sqrt(numSprites / ratio);
+		auto ratio = newSpriteSize.y / static_cast<double>(newSpriteSize.x);
+		auto xCountF = sqrt(static_cast<double>(numSprites) / ratio);
 		auto yCountF = xCountF * ratio;
 
 		// Since we don't want to split up a texture, turn the square into a slightly inaccurate rectangle
-		spriteCount.x = static_cast<unsigned int>(std::ceil(xCountF));
-		spriteCount.y = static_cast<unsigned int>(std::ceil(yCountF));
+		spriteCount.x = static_cast<unsigned int>(ceil(xCountF));
+		spriteCount.y = static_cast<unsigned int>(ceil(yCountF));
 		assert(spriteCount.x * spriteCount.y >= numSprites);
 
 		// Create atlas
-		auto width = spriteSize.x * spriteCount.x + (spriteSize.x - 1) * pixelGap;
-		auto height = spriteSize.y * spriteCount.y + (spriteSize.y - 1) * pixelGap;
+		auto width = static_cast<unsigned int>(newSpriteSize.x * spriteCount.x + (newSpriteSize.x - 1) * static_cast<unsigned int>(newPixelGap));
+		auto height = static_cast<unsigned int>(newSpriteSize.y * spriteCount.y + (newSpriteSize.y - 1) * static_cast<unsigned int>(newPixelGap));
 		atlas.create(width, height);
 	}
 

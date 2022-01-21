@@ -1,8 +1,8 @@
 #include <Stratega/NewGUI/GridLayout.h>
 
 namespace SGA {
-   GridLayout::GridLayout(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector)
-      : xBaseVector(xBaseVector), yBaseVector(yBaseVector)
+   GridLayout::GridLayout(const sf::Vector2f& newXBaseVector, const sf::Vector2f& newYBaseVector)
+      : xBaseVector(newXBaseVector), yBaseVector(newYBaseVector)
    {
    }
 
@@ -43,7 +43,7 @@ namespace SGA {
 
    GridLayout GridLayout::createIsometricGrid(int tileWidth, int tileHeight)
    {
-      return {sf::Vector2f(static_cast<float>(tileWidth) / 2., static_cast<float>(-tileWidth) / 2.), sf::Vector2f(static_cast<float>(tileHeight) / 2., static_cast<float>(tileHeight) / 2.)};
+      return {sf::Vector2f(static_cast<float>(tileWidth) / 2.0f, static_cast<float>(-tileWidth) / 2.0f), sf::Vector2f(static_cast<float>(tileHeight) / 2.0f, static_cast<float>(tileHeight) / 2.0f)};
    }
 
    GridLayout GridLayout::createRectangleGrid(int tileWidth, int tileHeight)
