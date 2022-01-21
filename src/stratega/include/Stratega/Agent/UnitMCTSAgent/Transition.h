@@ -3,15 +3,16 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <utility>
 
 #include "Stratega/ForwardModel/Action.h"
-#include "Stratega/ForwardModel/EntityForwardModel.h"
+#include "Stratega/ForwardModel/ForwardModel.h"
 #include "Stratega/Representation/Entity.h"
 #include "Stratega/Representation/GameState.h"
 //#include "Stratega/Agent/TreeSearchAgents/UnitMCTSNode.h"
 
 namespace SGA {
-int unitStateHash(EntityForwardModel& forwardModel, GameState state, Entity entity);
+int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity);
 
 int unitActionHash(Action action);
 

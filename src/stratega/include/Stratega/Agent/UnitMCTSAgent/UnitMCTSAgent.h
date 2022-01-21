@@ -9,7 +9,10 @@ namespace SGA {
 
     class UnitMCTSAgent: public Agent {
     public:
-        explicit UnitMCTSAgent(MCTSParameters&& params) : parameters_(std::move(params))
+
+        void init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/);
+
+        explicit UnitMCTSAgent(const std::string& name, UnitMCTSParameters&& params) : Agent{ name }, parameters_(std::move(params))
         {
             // K=0.1, RL=1, OS=3;
             parameters_.K = 0.1;
@@ -54,8 +57,10 @@ namespace SGA {
             treeNodetoAbsNode = std::map< int, int >();
         }
 
-        ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+        //ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs) override;
+        ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
         bool isTwoNodeApproxmateHomomorphism(
+            const ForwardModel& forwardModel,
             UnitMCTSNode* node1,
             UnitMCTSNode* node2,
             double reward_threshold,
@@ -77,7 +82,7 @@ namespace SGA {
         bool initialized = false;
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;
         int previousActionIndex = -1;
-        MCTSParameters parameters_;
+        UnitMCTSParameters parameters_;
         bool continuePreviousSearch = true;
         int playerTurn = -1;
         int step = 1;

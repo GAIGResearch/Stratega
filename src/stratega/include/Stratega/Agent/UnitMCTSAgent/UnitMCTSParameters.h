@@ -3,13 +3,13 @@
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
-#include <Stratega/Agent/Heuristic/UnitNumberHeuristic.h>
-#include <Stratega/Agent/TreeSearchAgents/Transition.h>
+// #include <Stratega/Agent/Heuristic/UnitNumberHeuristic.h>
+#include <Stratega/Agent/UnitMCTSAgent/Transition.h>
 #include <random>
 #include <yaml-cpp/yaml.h>
 
 namespace SGA {
-    struct MCTSParameters: AgentParameters {
+    struct UnitMCTSParameters: AgentParameters {
         double K = sqrt(2);
         int ROLLOUT_LENGTH = 3;
         bool ROLLOUTS_ENABLED = true;
@@ -24,6 +24,7 @@ namespace SGA {
         double T_THRESHOLD = 0.3;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
+        double REMAINING_FM_CALLS = -1;
 
         int global_nodeID = 0;
 
@@ -47,6 +48,7 @@ namespace SGA {
 
         // std::unique_ptr<StateHeuristic> STATE_HEURISTIC = std::make_unique<UnitNumberHeuristic>();
         std::unique_ptr< StateHeuristic > STATE_HEURISTIC = std::make_unique< AimToKingHeuristic >();
+        std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();
 
         void printDetails() const;
     };
@@ -54,14 +56,14 @@ namespace SGA {
 
 namespace YAML {
     template <>
-    struct convert< SGA::MCTSParameters > {
-        static bool decode(const Node& node, SGA::MCTSParameters& rhs)
+    struct convert< SGA::UnitMCTSParameters > {
+        static bool decode(const Node& node, SGA::UnitMCTSParameters& rhs)
         {
             rhs.K = node["K"].as< double >(rhs.K);
             rhs.ROLLOUT_LENGTH = node["RolloutLength"].as< int >(rhs.ROLLOUT_LENGTH);
             rhs.ROLLOUTS_ENABLED = node["EnableRollouts"].as< bool >(rhs.ROLLOUTS_ENABLED);
-            rhs.MAX_FM_CALLS = node["MAX_FM_CALLS"].as< int >(rhs.MAX_FM_CALLS);
-            rhs.REMAINING_FM_CALLS = rhs.MAX_FM_CALLS;
+            rhs.maxFMCalls = node["MAX_FM_CALLS"].as< int >(rhs.maxFMCalls); // MAX_FM_CALLS
+            rhs.REMAINING_FM_CALLS = rhs.maxFMCalls;
             rhs.DO_STATE_ABSTRACTION = node["DO_STATE_ABSTRACTION"].as< bool >(rhs.DO_STATE_ABSTRACTION);
             rhs.R_THRESHOLD = node["R_THRESHOLD"].as< double >(rhs.R_THRESHOLD);
             rhs.CONTINUE_PREVIOUS_SEARCH = node["CONTINUE_PREVIOUS_SEARCH"].as< bool >(

@@ -111,6 +111,71 @@ namespace SGA
 		return bucket;
 	}
 
+	// <summary>
+	// Implemented for Unit-MCTS, creat action space for each unit.
+	// </summary>
+	std::vector<Action> ActionSpace::generateUnitActions(const GameState& gameState, Entity& e, int playerID, bool generateEnd) const
+	{
+		std::vector<Action> bucket;
+
+		//std::cout << "generating Unit Action" << std::endl;
+		auto& sourceEntity = e;
+		
+		//Generate entities actions
+		for (const auto& actionInfo : sourceEntity.getAttachedActions())
+		{
+			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
+
+			bool generateContinuousAction = true;
+			//Check if action is continuos
+			if (actionType.isContinuous())
+			{
+				//Check if entity is already executing it
+				for (const auto& action : sourceEntity.getContinuousActions())
+				{
+					if (action.getActionTypeID() == actionType.getID())
+					{
+						//This entity cant execute the action
+						generateContinuousAction = false;
+
+						//Give the posibility to abort it
+
+						bucket.emplace_back(Action::createAbortEntityAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
+					}
+				}
+			}
+			if (!generateContinuousAction)
+				continue;
+
+			// Check if this action can be executed		
+			if (gameState.getCurrentTick() - actionInfo.lastExecutedTick < actionType.getCooldown())
+				continue;
+			if (!gameState.canExecuteAction(sourceEntity, actionType))
+				continue;
+
+			// Generate all actions
+			if (actionType.getTargets().size() == 0/*TargetType::None*/)
+			{
+				// Self-actions do not have a target, only a source
+				bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
+			}
+			else
+			{
+				auto targets = generateTargets(gameState, sourceEntity, actionType);
+				generateActions(gameState, sourceEntity, actionType, targets, bucket);
+			}
+		}
+
+		//Generate EndTurnAction
+		if (gameState.getGameType() == GameType::TBS && generateEnd)
+		{
+			//std::cout << "!!!! generating End action" << std::endl;
+			bucket.emplace_back(Action::createEndAction(playerID));
+		}
+
+		return bucket;
+	}
+
 	auto productActionTargets(const std::vector<std::vector<ActionTarget>>& lists)
 	{		
 		std::vector<std::vector<ActionTarget>> result;

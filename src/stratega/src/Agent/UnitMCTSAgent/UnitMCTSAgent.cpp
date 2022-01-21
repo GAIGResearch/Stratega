@@ -1,24 +1,32 @@
-#include <Stratega/Agent/TreeSearchAgents/Transition.h>
+#include <Stratega/Agent/UnitMCTSAgent/Transition.h>
 #include <Stratega/Agent/UnitMCTSAgent/UnitMCTSAgent.h>
 #include <cassert>
 #include <numeric>
 
 namespace SGA {
+    void UnitMCTSAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
+    {
+        parameters_.PLAYER_ID = getPlayerID();
+        //if (parameters_.heuristic == nullptr)
+        //    parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        if (parameters_.budgetType == Budget::UNDEFINED)
+            parameters_.budgetType = Budget::TIME;
+        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+    }
 
-    ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, long timeBudgetMs)
+    ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
        if(newRound) {
           // std::cout << "----> start round ----->"<< std::endl; // state.printBoard();
           newRound = false;
        }
-       parameters_
-          .global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
+       parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
        auto units = state.getPlayerEntities(getPlayerID());  // std::cout << "*** -2" << std::endl;
 
        /* initialize the order of unit moving, call at the first step store the entities*/
        if(unitIndexInitialized == false) {
           for(auto unit : units) {
-             unitIndex.push_back(unit->id);
+             unitIndex.push_back(unit.getID());
              // state.printEntityInfo(unit->id);
           }
           unitIndexInitialized = true;
@@ -29,7 +37,7 @@ namespace SGA {
 
        int tmp_counter1 = 0;
        for(auto u : units) {
-          eIDtoUnitArrayIndex.insert(std::pair< int, int >(u->id, tmp_counter1));
+          eIDtoUnitArrayIndex.insert(std::pair< int, int >(u.getID(), tmp_counter1));
           tmp_counter1 += 1;
        }
 
@@ -46,7 +54,7 @@ namespace SGA {
           needNextUnit = true;
        } else {
           auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
-          auto actionSpace_tmp = forwardModel.generateUnitActions(state, *e, getPlayerID(), false);
+          auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
 
           if(actionSpace_tmp.size() == 0) {
              needNextUnit = true;
@@ -88,7 +96,7 @@ namespace SGA {
        // std::cout << "[UnitMCTS]: unitIndex this step " << unitIndex[unitThisStep] << std::endl;
        // //std::cout << "*** 0" << std::endl;
 
-       parameters_.REMAINING_FM_CALLS = parameters_.MAX_FM_CALLS;
+       parameters_.REMAINING_FM_CALLS = parameters_.maxFMCalls;
 
        if(false && parameters_.DO_STATE_ABSTRACTION) {
           std::cout << " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ HomoMCTS Starts: " << step
@@ -98,7 +106,7 @@ namespace SGA {
                     << " ------------------------------ " << std::endl;
        }
 
-       if(state.gameType != GameType::TBS) {
+       if(state.getGameType() != GameType::TBS) {
           throw std::runtime_error("MCTSAgent only supports TBS-Games");
        }
 
@@ -114,7 +122,7 @@ namespace SGA {
        // generate actions and update unitThisStep
        // const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
        std::vector< Action > actionSpace = forwardModel.generateUnitActions(
-          state, *units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
+          state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
 
        // std::cout << "ActionSpace length: " << actionSpace.size() << std::endl;
        // if (actionSpace.size() <= 1) {
@@ -228,6 +236,7 @@ namespace SGA {
                       for(int k = 0; k < absNodes[i][j].size();
                           k++) {  // compare between new initial nodes to the abstracted Nodes
                          if(! isTwoNodeApproxmateHomomorphism(
+                               forwardModel,
                                node1,
                                absNodes[i][j][k],
                                parameters_.R_THRESHOLD,
@@ -267,7 +276,7 @@ namespace SGA {
 
              // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
              if(parameters_.REMAINING_FM_CALLS <= 0
-                || rootNode->n_search_iteration >= parameters_.MAX_FM_CALLS) {
+                || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
                 rootNode->eliminateAbstraction();
                 // deleteAbstraction();
                 break;
@@ -292,7 +301,7 @@ namespace SGA {
               unitNextStep = 0;
           }*/
 
-          auto bestAction = rootNode->actionSpace.at(bestActionIndex);
+          auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 
           // calculate the branching factor
           std::vector< int > branching_number = {};
@@ -321,10 +330,10 @@ namespace SGA {
                           << " ------------------------------ " << std::endl;
           }
 
-          if(bestAction.actionTypeFlags == ActionFlag::EndTickAction)
+          if(bestAction.getActionFlag() == ActionFlag::EndTickAction)
              step++;
 
-          previousActionIndex = (bestAction.actionTypeFlags == ActionFlag::EndTickAction)
+          previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction)
                                    ? -1
                                    : bestActionIndex;  // std::cout << "*** 9" << std::endl;
 
@@ -360,7 +369,7 @@ namespace SGA {
           << std::endl;
           */
 
-          if(bestAction.actionTypeFlags == ActionFlag::EndTickAction) {
+          if(bestAction.getActionFlag() == ActionFlag::EndTickAction) {
              // std::cout << "----> ends round ----->" << std::endl;
              // state.printBoard();
              newRound = true;
@@ -372,10 +381,10 @@ namespace SGA {
     }
 
     // actual reward, what if using the approximate Q? combination of heuristic score [stage1]
-    bool UnitMCTSAgent::isTwoNodeApproxmateHomomorphism(UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
+    bool UnitMCTSAgent::isTwoNodeApproxmateHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
     {
-       auto actionSpace1 = node1->actionSpace;
-       auto actionSpace2 = node2->actionSpace;
+        auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
+       auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
        double max_reward_difference = 0.0;
        std::map< int, int > commonActions = std::map< int, int >();
        std::vector< int > commonActionsVector = std::vector< int >();

@@ -12,6 +12,10 @@ set(STRATEGA_SOURCE_FILES
         Agent/DoNothingAgent.cpp
         Agent/Heuristic/AbstractHeuristic.cpp
         Agent/Heuristic/MinimizeDistanceHeuristic.cpp
+        Agent/UnitMCTSAgent/Transition.cpp
+        Agent/UnitMCTSAgent/UnitMCTSAgent.cpp
+        Agent/UnitMCTSAgent/UnitMCTSNode.cpp
+        Agent/UnitMCTSAgent/UnitMCTSParameters.cpp
         Agent/MCTSAgent/MCTSAgent.cpp
         Agent/MCTSAgent/MCTSNode.cpp
         Agent/MCTSAgent/MCTSParameters.cpp
@@ -21,6 +25,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/RHEAAgent/RHEAAgent.cpp
         Agent/RHEAAgent/RHEAGenome.cpp
         Agent/RHEAAgent/RHEAParameters.cpp
+        Agent/RuleBasedAgents/KTKCombatAgent.cpp
         Agent/RuleBasedAgents/CombatAgent.cpp
         Agent/RuleBasedAgents/PusherAgent.cpp
         Agent/RuleBasedAgents/Direction.cpp

@@ -82,6 +82,9 @@ namespace SGA
 		/// <returns>The list of available actions for player with ID 'playerID' in game state 'state'.</returns>
 		std::vector<Action> generateActions(const GameState& state, int playerID) const;
 
+		std::vector<Action> generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd = true) const;
+
+
 		/// <summary>
 		/// Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.
 		/// </summary>

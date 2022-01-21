@@ -1,14 +1,14 @@
-#include "Stratega/Agent/TreeSearchAgents/Transition.h"
+#include "Stratega/Agent/UnitMCTSAgent/Transition.h"
 
 namespace SGA {
 
-int unitStateHash(EntityForwardModel& forwardModel, GameState state, Entity entity)
+int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity)
 {
    // get entity type
-   int eID = entity.typeID;
+    int eID = entity.getEntityTypeID();//entity.typeID;
 
    // get entity position
-   int x = entity.position.x, y = entity.position.y;
+   int x = entity.x(), y = entity.y();
    int base = 1000000;
 
    // return hash
@@ -18,19 +18,20 @@ int unitStateHash(EntityForwardModel& forwardModel, GameState state, Entity enti
 int unitActionHash(Action action)
 {
    // endTurn action
-   if(action.actionTypeFlags == ActionFlag::EndTickAction) {
+   if(action.getActionFlag() == ActionFlag::EndTickAction) {
       return 0;
    } else {
       // move and attack: 10000 + x*100 + y for move, attack: 100+targetID
       // action.actionTypeID
       int attackBase = 100;
       int moveBase = 10000;
+      auto& targets = action.getTargets();
 
-      if(action.targets[1].getType() == ActionTarget::Type::Position) {
-         return moveBase + action.targets[1].data.position.x * 100
-                + action.targets[1].data.position.y;
-      } else if(action.targets[1].getType() == ActionTarget::Type::EntityReference) {
-         int eID = action.targets[1].data.entityID;
+      if(targets[1].getType() == ActionTarget::Type::Position) {
+         return moveBase + targets[1].getPosition().x * 100
+                + targets[1].getPosition().y;
+      } else if(targets[1].getType() == ActionTarget::Type::EntityReference) {
+         int eID = targets[1].getEntityID();
          return attackBase + eID;
       } else {
          std::cout << "[actionHahs] action type unknown" << std::endl;
@@ -38,19 +39,6 @@ int unitActionHash(Action action)
    }
 }
 
-/*
-// two nodes are responsible for the same unit type
-bool isTwoNodeApproxmateHomomorphism(UnitMCTSNode node1, UnitMCTSNode node2, double
-reward_threshold, double transition_threshold) {
-
-        // for all action, reward situation
-        double max_reward_diff = 10.0;
-
-
-
-        return false;
-}
-*/
 
 Transition::Transition()
 {
@@ -61,7 +49,7 @@ Transition::Transition()
 void Transition::addTransition(int stateHash, int actionHash, int nextStateHash, double reward)
 {
    transition_mapping[stateHash].push_back(std::make_pair(actionHash, nextStateHash));
-   std::pair SApair = std::make_pair(stateHash, nextStateHash);
+   std::pair<int, int> SApair = std::make_pair(stateHash, nextStateHash);
    // TODO
    // reward_mapping[SApair].push_back(reward);
 }

@@ -84,6 +84,17 @@ namespace SGA
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 
+	Vector2f ActionTarget::getPosition() const
+	{
+		if (targetType == Position)
+		{
+			return data.position;
+		}
+		else {
+			throw std::runtime_error("Cannot call getPosition when targetType != Position");
+		}
+	}
+
 	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{
 		if (targetType == Position)

@@ -10,6 +10,7 @@
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/KTKCombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/PusherAgent.h>
+#include <Stratega/Agent/UnitMCTSAgent/UnitMCTSAgent.h>
 
 namespace SGA
 {
