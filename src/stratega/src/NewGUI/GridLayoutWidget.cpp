@@ -3,12 +3,12 @@
 #include <imgui.h>
 namespace SGA
 {
-	GridLayoutWidget::GridLayoutWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
-		SGAWidget(widgetName, newWindow, newWorld, fm)
+	GridLayoutWidget::GridLayoutWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm):
+		SGAWidget(widgetName, newWindow, newWorld, newFm)
 	{
 	}
 
-	void GridLayoutWidget::update(const GameState& state)
+	void GridLayoutWidget::update(const GameState& /*state*/)
 	{
 
 	}

@@ -14,7 +14,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getTileSprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
+		 sf::Vector2f origin(256.0f/2.0f, TILE_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
 		 color.a = static_cast<sf::Uint8>(alpha);
@@ -27,7 +27,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x)/2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 
 		 auto color = sprite.getColor();
@@ -41,7 +41,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getTileSprite(spriteName);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
+		 sf::Vector2f origin(256.0f/2.0f, TILE_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
 		 color.a = static_cast<sf::Uint8>(alpha);
@@ -54,7 +54,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(spriteName);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x) / 2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 		 auto color = sprite.getColor();
 		 color.a = static_cast<sf::Uint8>(alpha);
@@ -67,7 +67,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getTileSprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
+		 sf::Vector2f origin(256.0f/2.0f, TILE_ORIGIN_Y);
 		 sprite.setOrigin(origin);
 
 		 auto color = sf::Color::Yellow;
@@ -85,7 +85,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x) / 2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 
 		 auto color = sf::Color::Yellow;
@@ -103,7 +103,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getTileSprite(spriteName);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
+		 sf::Vector2f origin(256.0f/2.0f, static_cast<float>(TILE_ORIGIN_Y));
 		 sprite.setOrigin(origin);
 		 
 		 auto color = sf::Color::Yellow;
@@ -121,7 +121,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(spriteName);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x) / 2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 		 		 
 		 auto color = sf::Color::Yellow;
@@ -140,7 +140,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getTileSprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(256/2, TILE_ORIGIN_Y);
+		 sf::Vector2f origin(256.0f/2.0f, static_cast<float>(TILE_ORIGIN_Y));
 		 sprite.setOrigin(origin);
 
 		 auto color = outlineColor;
@@ -158,7 +158,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(tile);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x) / 2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 
 		 auto color = outlineColor;
@@ -194,7 +194,7 @@ namespace SGA
 		 auto spriteData=resourceManager.getEntitySprite(spriteName);
 		 auto sprite = spriteData.createSprite();
 		 sprite.setPosition(world.toSFML(position));
-		 sf::Vector2f origin(spriteData.getSpriteSize().x/2, 360);
+		 sf::Vector2f origin(static_cast<float>(spriteData.getSpriteSize().x) / 2.0f, 360.0f);
 		 sprite.setOrigin(origin);
 
 		 

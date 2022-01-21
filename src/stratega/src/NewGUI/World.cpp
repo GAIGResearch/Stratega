@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-    World::World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
-        : xBaseVector(xBaseVector), yBaseVector(yBaseVector), size(size), selectedEntities(&newSelectedEntities), fowSettings(&newSettings)
+    World::World(const sf::Vector2f& newXBaseVector, const sf::Vector2f& newYBaseVector, const Vector2i newSize, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
+        : xBaseVector(newXBaseVector), yBaseVector(newYBaseVector), size(newSize), selectedEntities(&newSelectedEntities), fowSettings(&newSettings)
     {
     }
 
@@ -67,7 +67,7 @@ namespace SGA
         });
     } 
     
-    void World::init(const GameState& state, const GameState& fowState, const RenderConfig& renderConfig)
+    void World::init(const GameState& state, const GameState& fowState, const RenderConfig& /*renderConfig*/)
     {
         lastUpdatedState = state;
         lastUpdatedStateFOW = fowState;
