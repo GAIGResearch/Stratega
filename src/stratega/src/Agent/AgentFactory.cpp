@@ -74,6 +74,7 @@ namespace SGA
 		factory.registerAgent<CombatAgent>("CombatAgent");
 		factory.registerAgent<PusherAgent>("PusherAgent");
         factory.registerAgent<KTKCombatAgent>("KTKCombatAgent");
+		factory.registerAgent<UnitMCTSAgent, UnitMCTSParameters>("UnitMCTSAgent");
 		
 		return factory;
 	}

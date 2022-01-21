@@ -9,7 +9,6 @@ namespace SGA {
 
     class UnitMCTSAgent: public Agent {
     public:
-
         void init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/);
 
         explicit UnitMCTSAgent(const std::string& name, UnitMCTSParameters&& params) : Agent{ name }, parameters_(std::move(params))

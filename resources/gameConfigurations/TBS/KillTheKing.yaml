@@ -1,16 +1,30 @@
 GameConfig:
     Type: TBS
     RoundLimit: 100
-    FogOfWar: true
+    FogOfWar: false
 
 
 Agents:
-    - HumanAgent
+    #- HumanAgent
     #- OSLAAgent
-    - MCTSAgent:
+    #- UnitMCTSAgent:
+    #    DO_STATE_ABSTRACTION: true
+    #    Budget: FMCALLS
+    #    fmCalls: 20000
+    #    RolloutLength: 20
+    #    CONTINUE_PREVIOUS_SEARCH: false
+    #    N_BATCH_STOP: -1
+    - UnitMCTSAgent:
         Budget: FMCALLS
-        FmCalls: 20000
+        fmCalls: 20000
         RolloutLength: 20
+        CONTINUE_PREVIOUS_SEARCH: false
+        N_BATCH_STOP: -1
+    #- MCTSAgent:
+    #    Budget: FMCALLS
+    #    FmCalls: 20000
+    #    RolloutLength: 20
+    - KTKCombatAgent
 
 GameRenderer:
     Resolution:
@@ -90,7 +104,7 @@ Actions:
                 SamplingMethod: 
                     Type: Dijkstra
                     Options:
-                        SearchSize: 3
+                        SearchSize: 1
                         AllowDiagonals: false
                 #    Type: Neighbours
                 #    Options:
@@ -124,12 +138,12 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Empty]
         Parameters:
-            Health: 200
-            AttackRange: 2
-            AttackDamage: 100
-            MovementPoints: 2
+            Health: 100
+            AttackRange: 1.5
+            AttackDamage: 70
+            MovementPoints: 1
 
     Archer:
         Sprite: ../../assets/Entities/unit_3.png
@@ -137,32 +151,32 @@ Entities:
         LineOfSightRange: 10
         Parameters:
             Health: 100
-            AttackRange: 5
-            AttackDamage: 10
-            MovementPoints: 2
-        Actions: [Attack, Move]
+            AttackRange: 2
+            AttackDamage: 50
+            MovementPoints: 1
+        Actions: [Attack, Move, Empty]
 
     Healer:
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
-            Health: 40
+            Health: 50
             HealRange: 2
-            HealAmount: 10
-            MovementPoints: 5
-        Actions: [Heal, Move]
+            HealAmount: 50
+            MovementPoints: 1
+        Actions: [Heal, Move, Empty]
 
     King:
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
-            Health: 400
-            AttackRange: 2
-            AttackDamage: 100
+            Health: 200
+            AttackRange: 1
+            AttackDamage: 50
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Empty]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -182,6 +196,7 @@ GameDescription:
         Move: [Move]
         Heal: [Heal]
         Attack: [Attack]
+        Empty: [Empty]
     Entities:
         Unit: [King, Warrior, Archer, Healer]
         Fighter: [Warrior, Archer]

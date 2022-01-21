@@ -14,6 +14,11 @@ namespace SGA
 		return actionBucket;
 	}
 
+	std::vector <Action> ForwardModel::generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd) const
+	{
+		return actionSpace->generateUnitActions(state, e, playerID, generateEnd);
+	}
+
 	void ForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
 		actionBucket = actionSpace->generateActions(state, playerID);
