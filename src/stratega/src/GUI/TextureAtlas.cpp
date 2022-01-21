@@ -1,5 +1,5 @@
 #include <Stratega/GUI/TextureAtlas.h>
-
+#include <math.h>
 namespace SGA
 {
 	TextureAtlas::TextureAtlas()
@@ -23,8 +23,8 @@ namespace SGA
 		assert(spriteCount.x * spriteCount.y >= numSprites);
 
 		// Create atlas
-		auto width = static_cast<unsigned int>(newSpriteSize.x * spriteCount.x + (newSpriteSize.x - 1) * static_cast<unsigned int>(newPixelGap));
-		auto height = static_cast<unsigned int>(newSpriteSize.y * spriteCount.y + (newSpriteSize.y - 1) * static_cast<unsigned int>(newPixelGap));
+		auto width = static_cast<unsigned int>(newSpriteSize.x * spriteCount.x + (newSpriteSize.x - static_cast<unsigned int>(1)) * static_cast<unsigned int>(newPixelGap));
+		auto height = static_cast<unsigned int>(newSpriteSize.y * spriteCount.y + (newSpriteSize.y - static_cast<unsigned int>(1)) * static_cast<unsigned int>(newPixelGap));
 		atlas.create(width, height);
 	}
 

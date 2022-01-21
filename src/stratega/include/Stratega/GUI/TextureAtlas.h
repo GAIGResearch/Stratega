@@ -1,8 +1,7 @@
 #pragma once
 #include <cassert>
 #include <string>
-#include <unordered_map>/*
-#include <filesystem>*/
+#include <unordered_map>
 #include <SFML/Graphics.hpp>
 
 namespace SGA
