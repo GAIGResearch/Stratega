@@ -20,7 +20,7 @@ namespace SGA
 	public:
 		TextureAtlas();
 
-		void create(sf::Vector2u spriteSize, size_t numSprites, int pixelGap = 0);
+		void create(sf::Vector2u newSpriteSize, size_t numSprites, int newPixelGap = 0);
 		void emplace(const std::string& key, const sf::Image& image);
 		bool isDefined(const std::string& key) const;
 

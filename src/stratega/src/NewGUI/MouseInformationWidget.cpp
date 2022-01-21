@@ -27,7 +27,7 @@ namespace SGA
 			//Draw mouse tile
 			sf::VertexArray selectedTile(sf::Lines, 8);
 			
-			auto gridPosI = SGA::Vector2i(std::floor(gridPos.x), std::floor(gridPos.y));
+			auto gridPosI = SGA::Vector2i(static_cast<int>(std::floor(gridPos.x)), static_cast<int>(std::floor(gridPos.y)));
 			selectedTile[0] = sf::Vertex(world.toSFML(gridPosI), sf::Color::Yellow);
 			selectedTile[1] = sf::Vertex(world.toSFML(Vector2i(gridPosI.x + 1, gridPosI.y)), sf::Color::Yellow);
 

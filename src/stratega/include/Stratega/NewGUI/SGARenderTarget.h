@@ -17,23 +17,23 @@ namespace SGA {
 	public:
 		SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& resourceManager, const World& world, const RenderConfig& renderConfig);
 
-		void drawTile(const Vector2f& position, const TileType& type, float alpha = 1);
-		void drawEntity(const Vector2f& position, const EntityType& type, float alpha = 1);
+		void drawTile(const Vector2f& position, const TileType& type, float alpha = 1.0f);
+		void drawEntity(const Vector2f& position, const EntityType& type, float alpha = 1.0f);
 
-		void drawTile(const Vector2f& position, const std::string& spriteName, float alpha = 1);
-		void drawEntity(const Vector2f& position, const std::string& spriteName, float alpha = 1);
+		void drawTile(const Vector2f& position, const std::string& spriteName, float alpha = 1.0f);
+		void drawEntity(const Vector2f& position, const std::string& spriteName, float alpha = 1.0f);
 
-		void drawTileHighlight(const Vector2f& position, const TileType& type, float alpha = 1);
-		void drawEntityHighlight(const Vector2f& position, const EntityType& type, float alpha = 1);
+		void drawTileHighlight(const Vector2f& position, const TileType& type, float alpha = 1.0f);
+		void drawEntityHighlight(const Vector2f& position, const EntityType& type, float alpha = 1.0f);
 
-		void drawTileHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1);
-		void drawEntityHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1);
+		void drawTileHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1.0f);
+		void drawEntityHighlight(const Vector2f& position, const std::string& spriteName, float alpha = 1.0f);
 
-		void drawTileOutlineColor(const Vector2f& position, const TileType& type, sf::Color color, float alpha = 1);
-		void drawEntityOutlineColor(const Vector2f& position, const EntityType& type, sf::Color color, float alpha = 1);
+		void drawTileOutlineColor(const Vector2f& position, const TileType& type, sf::Color color, float alpha = 1.0f);
+		void drawEntityOutlineColor(const Vector2f& position, const EntityType& type, sf::Color color, float alpha = 1.0f);
 
-		void drawTileOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color, float alpha = 1);
-		void drawEntityOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color,float alpha = 1);
+		void drawTileOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color, float alpha = 1.0f);
+		void drawEntityOutlineColor(const Vector2f& position, const std::string& spriteName, sf::Color color,float alpha = 1.0f);
 
 		void drawVertices(sf::VertexArray vertexArray);
 

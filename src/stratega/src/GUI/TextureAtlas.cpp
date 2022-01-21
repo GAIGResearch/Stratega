@@ -42,8 +42,8 @@ namespace SGA
 		}
 
 		// Insert the image into the atlas
-		auto startX = currentPosition.x * (spriteSize.x + pixelGap);
-		auto startY = currentPosition.y * (spriteSize.y + pixelGap);
+		auto startX = currentPosition.x * (spriteSize.x + static_cast<unsigned int>(pixelGap));
+		auto startY = currentPosition.y * (spriteSize.y + static_cast<unsigned int>(pixelGap));
 		atlas.update(image, startX, startY);
 		rectLookup.emplace(key, sf::IntRect(static_cast<int>(startX), static_cast<int>(startY), static_cast<int>(spriteSize.x), static_cast<int>(spriteSize.y)));
 
