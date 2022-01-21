@@ -102,9 +102,7 @@ std::unique_ptr< ResourceManager > ResourceManager::constructFromConfig(const Ga
 
    // Construct texture atlas
    auto spriteEntityCount = config.renderConfig->entitySpritePaths.size();
-   //spriteEntityCount += ! config.renderConfig->selectedPath.empty();
-   auto spriteTileCount = config.renderConfig->tileSpritePaths.size();/*
-   spriteTileCount += ! config.renderConfig->selectedPath.empty();*/
+   auto spriteTileCount = config.renderConfig->tileSpritePaths.size();
 
    sf::Image image;
 

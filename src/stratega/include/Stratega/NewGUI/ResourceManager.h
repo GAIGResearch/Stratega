@@ -21,14 +21,6 @@ namespace SGA
 
 		const sf::Font& getDefaultFont() const;
 		sf::Shader& getOutlineShader();
-		void setOutlineShaderColor(sf::Color& newColor)
-		{
-			outlineShader.setParameter("outlineColor", newColor);
-		}
-		void setTextureShader(sf::Texture& newTexture)
-		{
-			outlineShader.setUniform("texture", newTexture);
-		}
 		sf::Color getPlayerColor(int playerID) const;
 		
 		sf::Vector2u getSpriteSize() const;

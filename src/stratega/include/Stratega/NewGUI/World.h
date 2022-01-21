@@ -102,7 +102,7 @@ namespace SGA
             auto it = drawableList.begin();
             while (it != drawableList.end())
             {
-                //use *it here
+                //Remove entities that should be removed
                 if (it->get()->shouldRemove)
                     it = drawableList.erase(it);
                 else
@@ -128,15 +128,12 @@ namespace SGA
                                     drawableEntity->dissappear();
                                 }
                             }
-
-                            ++it;
-                            
+                            ++it;                            
                         }
                         else
                         {
                             it = drawableList.erase(it);
-                        }
-                       
+                        }                       
                     }
                     else
                     {
@@ -156,6 +153,7 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             drawableEntity->moveTo(position);
+                            drawableEntity->appear();
                         }
                         else
                         {
@@ -187,6 +185,7 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             drawableEntity->moveTo(position);
+                            drawableEntity->appear();
                         }
                         else
                         {

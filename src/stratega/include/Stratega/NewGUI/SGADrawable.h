@@ -5,7 +5,22 @@
 namespace SGA {
     class SGARenderTarget;
 
-    
+    enum AnimationType
+    {
+        None = 1 << 0,
+        Move = 1 << 1,
+        Dissappear = 1 << 2,
+        Appear = 1 << 3
+    };
+
+    inline AnimationType operator~ (AnimationType a) { return static_cast<AnimationType>(~static_cast<std::underlying_type<AnimationType>::type>(a)); }
+    inline AnimationType operator| (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) | static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType operator& (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) & static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType operator^ (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) ^ static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator|= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) |= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator&= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) &= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+    inline AnimationType& operator^= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) ^= static_cast<std::underlying_type<AnimationType>::type>(b)); }
+
     struct SGADrawable
     {
         Vector2f position;
@@ -21,8 +36,9 @@ namespace SGA {
 
         }
 
-        virtual void update(float dt)=0;
+        virtual ~SGADrawable() = default;
 
+        virtual void update(float dt)=0;
         virtual void render(SGARenderTarget& renderTarget) const = 0;
 
         void updatePosition(const Vector2f& newPosition)
@@ -40,7 +56,6 @@ namespace SGA {
 
             return pointA + (pointB - pointA) * factor;
         }
-
         float Interpolate(  const float& pointA, const float& pointB, float factor)
         {
             if (factor > 1.f)
@@ -60,40 +75,8 @@ namespace SGA {
         SGADrawableTile(const Vector2f& newPosition, int newZPosition, const TileType& newType);
 
         void update(float dt) override;
-
         void render(SGARenderTarget& renderTarget) const override;
     };
-
-    enum AnimationType
-    {
-        None = 1 << 0,
-        Move = 1 << 1,
-        Dissappear = 1 << 2,
-        Appear = 1 << 3
-    };
-
-    inline AnimationType operator~ (AnimationType a) { return static_cast<AnimationType>(~static_cast<std::underlying_type<AnimationType>::type>(a)); }
-    inline AnimationType operator| (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) | static_cast<std::underlying_type<AnimationType>::type>(b)); }
-    inline AnimationType operator& (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) & static_cast<std::underlying_type<AnimationType>::type>(b)); }
-    inline AnimationType operator^ (AnimationType a, AnimationType b) { return static_cast<AnimationType>(static_cast<std::underlying_type<AnimationType>::type>(a) ^ static_cast<std::underlying_type<AnimationType>::type>(b)); }
-    inline AnimationType& operator|= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) |= static_cast<std::underlying_type<AnimationType>::type>(b)); }
-    inline AnimationType& operator&= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) &= static_cast<std::underlying_type<AnimationType>::type>(b)); }
-    inline AnimationType& operator^= (AnimationType& a, AnimationType b) { return reinterpret_cast<AnimationType&>(reinterpret_cast<std::underlying_type<AnimationType>::type&>(a) ^= static_cast<std::underlying_type<AnimationType>::type>(b)); }
-
-    //AnimationType operator|(AnimationType lhs, AnimationType rhs) {
-    //    return static_cast<AnimationType>(
-    //        static_cast<std::underlying_type_t<AnimationType>>(lhs) |
-    //        static_cast<std::underlying_type_t<AnimationType>>(rhs)
-    //        );
-    //}
-
-    //AnimationType operator&(AnimationType lhs, AnimationType rhs) {
-    //    return static_cast<AnimationType>(
-    //        static_cast<std::underlying_type_t<AnimationType>>(lhs) &
-    //        static_cast<std::underlying_type_t<AnimationType>>(rhs)
-    //        );
-    //}
-
     struct SGADrawableEntity: public SGADrawable
     {
         const EntityType& type;
@@ -104,7 +87,6 @@ namespace SGA {
         SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID);
 
         void update(float dt) override;
-
         void render(SGARenderTarget& renderTarget) const override;
 
         void moveTo(const Vector2f& newPosition)
@@ -112,20 +94,28 @@ namespace SGA {
             isAnimating = true;
             targetPosition = newPosition;
             animation |= AnimationType::Move;
-        }
-        
+        }        
         void dissappear()
         {
+            if (alpha == 0)
+                return;
             alpha = 1;
             isAnimating = true;
+            shouldRemove = false;
             animation |= AnimationType::Dissappear;
+            if (animation & AnimationType::Appear)
+                animation &= ~AnimationType::Appear;
         }
-
         void appear()
         {
+            if (alpha == 1)
+                return;
             alpha = 0;
             isAnimating = true;
             animation |= AnimationType::Appear;
+            shouldRemove = false;
+            if (animation & AnimationType::Dissappear)
+                animation &= ~AnimationType::Dissappear;
         }
     };
 

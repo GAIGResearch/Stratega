@@ -70,13 +70,14 @@ namespace SGA
                 if (alpha > 0.95)
                     alpha = 1;
                 isAnimating = true;
+                shouldRemove = true;
             }
             else
             {
+                shouldRemove = true;
                 animation &= ~AnimationType::Appear;
             }
-        }            
-        
+        }
     }
 
     void SGADrawableEntity::render(SGARenderTarget& renderTarget) const 

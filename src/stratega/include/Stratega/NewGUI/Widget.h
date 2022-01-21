@@ -12,8 +12,8 @@ namespace SGA
 {
 	struct SGAWidget
 	{
-		SGAWidget(const std::string& newName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
-			name(newName), window(newWindow), world(newWorld), fm(fm)
+		SGAWidget(const std::string& newName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm) :
+			name(newName), window(newWindow), world(newWorld), fm(newFm)
 		{
 		}
 		virtual void update(const GameState& state) = 0;

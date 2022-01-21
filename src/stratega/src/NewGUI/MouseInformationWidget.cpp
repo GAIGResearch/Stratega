@@ -71,7 +71,10 @@ namespace SGA
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
 		ImGui::End();
-		
+		ImGuiIO& io = ImGui::GetIO();
+		if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
+			return;
+		else
 		{
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -82,7 +85,8 @@ namespace SGA
 			{
 				if (!drawEntityInformation)
 					return;
-				//ImGuiWindowFlags window_flags = 0;
+
+				ImGuiWindowFlags window_flags = 0;
 				//window_flags += ImGuiWindowFlags_NoTitleBar;
 				//window_flags += ImGuiWindowFlags_NoScrollbar;
 				//window_flags += ImGuiWindowFlags_MenuBar;
@@ -91,7 +95,7 @@ namespace SGA
 				//window_flags += ImGuiWindowFlags_NoCollapse;
 				//window_flags += ImGuiWindowFlags_NoNav;
 				////window_flags+= ImGuiWindowFlags_NoBackground;
-				//window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+				window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 				
 				//Highlight entity drwable
 				if(world.getEntity(entity->getID()))
@@ -99,7 +103,7 @@ namespace SGA
 
 				ImGui::SetNextWindowSize(ImVec2(300, 270), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
-				ImGui::Begin("Entity Information"/*, NULL, window_flags*/);
+				ImGui::Begin("Entity Information", NULL, window_flags);
 
 				auto& entityType = entity->getEntityType();
 
