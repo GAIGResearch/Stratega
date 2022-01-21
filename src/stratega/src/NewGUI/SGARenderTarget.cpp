@@ -74,8 +74,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a});
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -92,8 +92,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture()); 
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -110,8 +110,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -128,8 +128,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -147,8 +147,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -165,8 +165,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture()); 
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -183,8 +183,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}
@@ -203,8 +203,8 @@ namespace SGA
 		 color.a = static_cast<sf::Uint8>(alpha);
 		 auto& outlineShader = resourceManager.getOutlineShader();
 		 outlineShader.setUniform("texture", spriteData.getTexture());
-		 outlineShader.setParameter("outlineColor", color);
-		 outlineShader.setParameter("alpha", alpha);
+		 outlineShader.setUniform("outlineColor", sf::Glsl::Vec4{ color.r, color.g, color.b, color.a });
+		 outlineShader.setUniform("alpha", alpha);
 
 		 target.draw(sprite, &outlineShader);
 	}

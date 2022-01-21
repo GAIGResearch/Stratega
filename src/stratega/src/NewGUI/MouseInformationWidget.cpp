@@ -7,17 +7,17 @@
 #include <sstream>
 namespace SGA
 {
-	MouseInformationWidget::MouseInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
-		SGAWidget(widgetName, newWindow, newWorld, fm)
+	MouseInformationWidget::MouseInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm):
+		SGAWidget(widgetName, newWindow, newWorld, newFm)
 	{
 	}
 
-	void MouseInformationWidget::update(const GameState& state)
+	void MouseInformationWidget::update(const GameState& /*state*/)
 	{
 		
 	}
 	
-	void MouseInformationWidget::render(SGARenderTarget& renderTarget)
+	void MouseInformationWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
 		auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 		auto gridPos = world.toStratega(mousePos);
@@ -54,8 +54,8 @@ namespace SGA
 		ImGui::End();
 	}
 
-	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm) :
-		SGAWidget(widgetName, newWindow, newWorld, fm),
+	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm) :
+		SGAWidget(widgetName, newWindow, newWorld, newFm),
 		currentGameState(nullptr)
 	{
 	}
@@ -152,12 +152,11 @@ namespace SGA
 				ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
 
 				if(entity->getOwnerID()!=-1)
-					for (auto entity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
+					for (auto playerEntity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
 					{
 						//Check if entity have sprite
-						auto searchedEntityType = entity.getEntityType();
+						auto searchedEntityType = playerEntity.getEntityType();
 						//Add units
-
 						if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
 						{
 							/*selectedEntityID = entity->id;*/

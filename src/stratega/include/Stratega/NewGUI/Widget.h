@@ -49,7 +49,7 @@ namespace SGA
 
 	struct GridInformationWidget : public SGAWidget
 	{
-		GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm);
+		GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;

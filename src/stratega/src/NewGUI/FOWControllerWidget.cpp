@@ -7,8 +7,8 @@
 #include <sstream>
 namespace SGA
 {
-	FOWControllerWidget::FOWControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, FogOfWarSettings* newSettings):
-		SGAWidget(widgetName, newWindow, newWorld, fm),
+	FOWControllerWidget::FOWControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm, FogOfWarSettings* newSettings):
+		SGAWidget(widgetName, newWindow, newWorld, newFm),
 		fowSettings(newSettings),
 		currentState(nullptr)
 	{
@@ -19,7 +19,7 @@ namespace SGA
 		currentState = &state;
 	}
 	
-	void FOWControllerWidget::render(SGARenderTarget& renderTarget)
+	void FOWControllerWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
 		static std::unordered_map<FogRenderType, std::string> nameLookup =
 		{

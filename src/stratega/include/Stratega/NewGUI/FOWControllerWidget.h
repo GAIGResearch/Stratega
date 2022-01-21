@@ -12,7 +12,7 @@ namespace SGA
 	
 	struct FOWControllerWidget : public SGAWidget
 	{
-		FOWControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, FogOfWarSettings* newSettings);
+		FOWControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm, FogOfWarSettings* newSettings);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
