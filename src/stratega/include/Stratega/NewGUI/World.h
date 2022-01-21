@@ -39,7 +39,7 @@ namespace SGA
         int animatingNumber=0;
 
         World() = default;
-        World(const sf::Vector2f& xBaseVector, const sf::Vector2f& yBaseVector, const  Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings);
+        World(const sf::Vector2f& newXBaseVector, const sf::Vector2f& newYBaseVector, const  Vector2i newSize, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings);
 
         sf::Vector2f toSFML(const Vector2f& pos) const;
 
@@ -168,8 +168,9 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawableList.back().get());
-                            if (!drawableEntity->isAnimating)
-                                drawableEntity->appear();
+                            if (drawableEntity != nullptr)
+                                if (!drawableEntity->isAnimating)
+                                    drawableEntity->appear();
                         }
                     }
                 }
@@ -200,8 +201,9 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawableList.back().get());
-                            if (!drawableEntity->isAnimating)
-                                drawableEntity->appear();
+                            if(drawableEntity!=nullptr)
+                                if (!drawableEntity->isAnimating)
+                                    drawableEntity->appear();
                         }
                     }
                 }
