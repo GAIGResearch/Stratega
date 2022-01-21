@@ -20,7 +20,7 @@ GameRenderer:
 
 Player:
     Parameters:
-        Gold: 5
+        Gold: [0,5,1000]
 
 Tiles:
     Plain:
@@ -210,6 +210,7 @@ ForwardModel:
 
     Trigger:
         - OnTick:
+            Type: Entity
             ValidTargets: City
             Conditions:
                 - "IsPlayerEntity(Source)"

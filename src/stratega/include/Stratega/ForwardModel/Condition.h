@@ -55,6 +55,22 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
+	class IsNeutral : public Condition
+	{
+	public:
+		IsNeutral(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotNeutral : public Condition
+	{
+	public:
+		IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class SamePlayer : public Condition
 	{
 	public:
@@ -109,6 +125,15 @@ namespace SGA
 		IsPlayerEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class IsTickMultipleOf : public Condition
+	{
+		FunctionParameter multipleParam;
+
+	public:
+		IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 	
 	class IsResearched : public Condition
 	{
@@ -149,6 +174,26 @@ namespace SGA
 		HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 
+	};
+
+	class HasNoBuff : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter buffTypeParam;
+
+	public:
+		HasNoBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class HasBuff : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter buffTypeParam;
+
+	public:
+		HasBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
 	// ToDo This condition makes a lot of assumptions, mainly we had to add additional data to EntityType like RequiredTechnology and spawnableTypes

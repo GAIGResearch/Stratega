@@ -28,6 +28,8 @@ namespace SGA
 			executeAction(state, action.second);
 		}
 
+		executeOnAdvanceEffects(state);
+
 		//Remove flagged entities
 		auto& entities = state.getEntities();
 		auto it = entities.begin();

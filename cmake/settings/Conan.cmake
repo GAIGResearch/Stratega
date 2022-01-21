@@ -18,9 +18,8 @@ macro(run_conan)
             ${CONAN_EXTRA_REQUIRES}
             OPTIONS
             ${CONAN_EXTRA_OPTIONS}
-            BASIC_SETUP NO_OUTPUT_DIR CMAKE_TARGETS # individual targets to link to
-            CONAN_SYSTEM_INCLUDES ON
+            BASIC_SETUP NO_OUTPUT_DIRS
+            CMAKE_TARGETS # individual targets to link to
             BUILD missing
     )
-
 endmacro()

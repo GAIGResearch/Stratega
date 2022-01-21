@@ -1,6 +1,5 @@
 #include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
-#include <SFML/Graphics.hpp>
 namespace SGA
 {
 	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)

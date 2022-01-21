@@ -45,6 +45,11 @@ namespace SGA
 		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> playerParameterTypes;
 
 		/// <summary>
+		/// Relation of parameters defined in the game: id -> parameter object.
+		/// </summary>
+		std::shared_ptr<std::unordered_map<ParameterID, Parameter>> stateParameterTypes;
+
+		/// <summary>
 		/// Set of entity type IDs of this game.
 		/// </summary>
 		std::shared_ptr<std::unordered_set<EntityTypeID>> playerSpawnableTypes;
@@ -58,6 +63,11 @@ namespace SGA
 		/// Relation of action types in this game: id -> action type object
 		/// </summary>
 		std::shared_ptr<std::unordered_map<int, ActionType>> actionTypes;
+
+		/// <summary>
+		/// Relation of buff types in this game: id -> buff type object
+		/// </summary>
+		std::shared_ptr<std::unordered_map<int, BuffType>> buffTypes;
 
 		/// <summary>
 		/// Relation of tile types in this game: id -> tile type object
@@ -84,6 +94,13 @@ namespace SGA
 		const EntityType& getEntityType(int entityTypeID) const;
 
 		/// <summary>
+		/// Returns the buff type.
+		/// </summary>
+		/// <param name="buffTypeID">The ID of the buff type.</param>
+		/// <returns>The buff type.</returns>
+		const BuffType& getBuffType(int buffTypeID) const;
+
+		/// <summary>
 		/// Returns the tile type.
 		/// </summary>
 		/// <param name="tileTypeID">The ID of the tile type</param>
@@ -91,7 +108,7 @@ namespace SGA
 		const TileType& getTileType(int tileTypeID) const;
 
 
-		/**** PARAMTERS ***/
+		/**** PARAMETERS ***/
 
 		/// <summary>
 		/// Returns the ID of the parameter.
@@ -121,7 +138,42 @@ namespace SGA
 		/// </summary>
 		/// <param name="ParameterID">The ID of the parameter</param>
 		/// <returns> The parameter.</returns>
-		const SGA::Parameter& getPlayerParameter(ParameterID id) const;		
+		const SGA::Parameter& getPlayerParameter(ParameterID id) const;
+
+		/// <summary>
+		/// Returns the parameter of the player.
+		/// </summary>
+		/// <param name="ParameterID">The ID of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getPlayerParameter(std::string& name) const;
+		
+		/// <summary>
+		/// Returns the parameter of the player by index.
+		/// </summary>
+		/// <param name="ParameterID">The index of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getPlayerParameterByIndex(int index) const;
+		
+		/// <summary>
+		/// Returns the parameter of the state.
+		/// </summary>
+		/// <param name="ParameterID">The ID of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getStateParameter(ParameterID id) const;
+
+		/// <summary>
+		/// Returns the parameter of the state.
+		/// </summary>
+		/// <param name="ParameterID">The ID of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getStateParameter(std::string& name) const;
+		
+		/// <summary>
+		/// Returns the parameter of the state by index.
+		/// </summary>
+		/// <param name="ParameterID">The index of the parameter</param>
+		/// <returns> The parameter.</returns>
+		const SGA::Parameter& getStateParameterByIndex(int index) const;
 
 
 		/*** ACTION TYPES ***/
@@ -190,9 +242,11 @@ namespace SGA
 		void setGameDescription(std::shared_ptr <GameDescription> gd) { gameDescription = gd; }
 		void setParameterIDLookup(std::shared_ptr<std::unordered_map<std::string, ParameterID>> pID) { parameterIDLookup = pID; }
 		void setPlayerParameterTypes(std::shared_ptr<std::unordered_map<ParameterID, Parameter>> pt) { playerParameterTypes = pt; }
+		void setStateParameterTypes(std::shared_ptr<std::unordered_map<ParameterID, Parameter>> pt) { stateParameterTypes = pt; }
 		void setPlayerSpawnableTypes(std::shared_ptr<std::unordered_set<EntityTypeID>> pt) { playerSpawnableTypes = pt; }
 		void setEntityTypes(std::shared_ptr<std::unordered_map<int, EntityType>> et) { entityTypes = et; }
 		void setActionTypes(std::shared_ptr<std::unordered_map<int, ActionType>> at) { actionTypes = at; }
+		void setBuffTypes(std::shared_ptr<std::unordered_map<int, BuffType>> bt) { buffTypes = bt; }
 		void setTileTypes(std::shared_ptr<std::unordered_map<int, TileType>> tt) { tileTypes = tt; }
 		void setTechnologyTreeCollection(std::shared_ptr<TechnologyTreeCollection> tt) { technologyTreeCollection = tt; }
 		void setEntityGroups(std::unordered_map<std::string, std::unordered_set<EntityTypeID>> eg) { entityGroups = eg; }
@@ -203,9 +257,11 @@ namespace SGA
 		const GameDescription& getGameDescription() const { return *gameDescription; }
 		const std::unordered_map<std::string, ParameterID>& getParameterIDLookup() const { return *parameterIDLookup; }
 		const std::unordered_map<ParameterID, Parameter>& getPlayerParameterTypes() const { return *playerParameterTypes; }
+		const std::unordered_map<ParameterID, Parameter>& getStateParameterTypes() const { return *stateParameterTypes; }
 		const std::unordered_set<EntityTypeID>& getPlayerSpawnableTypes() const { return *playerSpawnableTypes; }
 		const std::unordered_map<int, EntityType>& getEntityTypes() const { return *entityTypes; }
 		const std::unordered_map<int, ActionType>& getActionTypes() const { return *actionTypes; }
+		const std::unordered_map<int, BuffType>& getBuffTypes() const { return *buffTypes; }
 		const std::unordered_map<int, TileType>& getTileTypes() const { return *tileTypes; }
 		const TechnologyTreeCollection& getTechnologyTreeCollection() const { return *technologyTreeCollection; }
 		const std::unordered_map<std::string, std::unordered_set<EntityTypeID>>& getEntityGroups() const { return entityGroups; }

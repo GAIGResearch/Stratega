@@ -34,8 +34,7 @@ namespace SGA
 		fowState(),
 		window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		zoomValue(5.f),
-		dragging(false),
-		selectedAction()
+		dragging(false)
 	{
 		//Initialize View
 		sf::View view = window.getView();
@@ -68,7 +67,7 @@ namespace SGA
 		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<WorldControllerWidget>("World Controller", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<GridInformationWidget>("Grid Information", window, world, config->forwardModel.get()));
-		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, selectedEntities, playerID));
+		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, futureActionsToPlay, selectedEntities, playerID));
 		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<FOWControllerWidget>("FOW Controller", window, world, config->forwardModel.get(), &settings));
@@ -94,6 +93,24 @@ namespace SGA
 		{
 			if(widget->enabled)
 				widget->update(fowState);
+		}
+
+		if (state.getGameType() == GameType::RTS)
+		{
+			auto it = futureActionsToPlay.begin();
+			//Assign entity actions if they are still valid
+			while (it != futureActionsToPlay.end())
+			{
+				if (!it->validate(fowState)) {
+
+					it = futureActionsToPlay.erase(it);
+				}
+				else
+				{
+					temp.assignActionOrReplace(*it);
+					++it;
+				}
+			}
 		}
 	}
 

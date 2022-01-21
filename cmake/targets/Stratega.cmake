@@ -22,6 +22,8 @@ set(STRATEGA_SOURCE_FILES
         Agent/RHEAAgent/RHEAGenome.cpp
         Agent/RHEAAgent/RHEAParameters.cpp
         Agent/RuleBasedAgents/CombatAgent.cpp
+        Agent/RuleBasedAgents/PusherAgent.cpp
+        Agent/RuleBasedAgents/Direction.cpp
         Agent/ScriptedAgent.cpp
         Agent/StateAbstraction/StateFactory.cpp
         Agent/TreeSearchAgents/ActionAbstractionMCTSAgent.cpp
@@ -51,6 +53,25 @@ set(STRATEGA_SOURCE_FILES
         Game/RTSGameRunner.cpp
         Game/TBSGameRunner.cpp
         GUI/GameRenderer.cpp
+
+
+        Logging/FileLogger.cpp
+        Logging/Log.cpp
+        Logging/LoggingScope.cpp
+        Representation/BuildContext.cpp
+        Representation/Entity.cpp
+        Representation/EntityType.cpp
+        Representation/GameDescription.cpp
+        Representation/GameInfo.cpp
+        Representation/GameState.cpp
+        Representation/Player.cpp
+        Representation/TechnologyTree.cpp
+        Representation/Tile.cpp       
+        )
+if(NOT SGA_BUILD_HEADLESS)
+   list(APPEND STRATEGA_SOURCE_FILES
+        GUI/AssetCache.cpp        
+        GUI/TextureAtlas.cpp        
         NewGUI/GridLayout.cpp
         NewGUI/Widget.cpp
         NewGUI/World.cpp
@@ -63,31 +84,26 @@ set(STRATEGA_SOURCE_FILES
         NewGUI/WorldControllerWidget.cpp
         NewGUI/SGARenderTarget.cpp
         NewGUI/SGADrawable.cpp
-        Logging/FileLogger.cpp
-        Logging/Log.cpp
-        Logging/LoggingScope.cpp
-        Representation/BuildContext.cpp
-        Representation/Entity.cpp
-        Representation/EntityType.cpp
-        Representation/GameDescription.cpp
-        Representation/GameInfo.cpp
-        Representation/GameState.cpp
-        Representation/Player.cpp
-        Representation/TechnologyTree.cpp
-        Representation/Tile.cpp
+
         NewGUI/NewTBSGameRenderer.cpp
         NewGUI/SpriteData.cpp
         NewGUI/ResourceManager.cpp
-        GUI/TextureAtlas.cpp
         )
+message("Building GUI mode")
+else()
+message("Building HEADLESS mode")
+endif()
+
+#Copy Assets folder
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
 add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
 
 target_include_directories(Stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
-#target_compile_options(Stratega PRIVATE project_options
-#        project_warnings)
+
 
 function(target_link_libraries_system target)
   set(libs ${ARGN})
@@ -96,43 +112,29 @@ function(target_link_libraries_system target)
     target_include_directories(${target} SYSTEM PRIVATE ${lib_include_dirs})
     target_link_libraries(${target} ${lib} project_options
         project_warnings)
-        message("${lib_include_dirs}")
   endforeach(lib)
 endfunction(target_link_libraries_system)
 
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
-target_link_libraries_system(Stratega CONAN_PKG::imgui)
-target_link_libraries_system(Stratega imgui)
 
 
-if(UNIX AND NOT APPLE)
-    target_link_libraries_system(Stratega sfml-system)
-    target_link_libraries_system(Stratega sfml-graphics)
-    target_link_libraries_system(Stratega sfml-window)
-else()
-    target_link_libraries_system(Stratega CONAN_PKG::sfml)
+if(CMAKE_SYSTEM_NAME MATCHES Linux)
+target_link_libraries(Stratega Threads::Threads)
 endif()
 
-#target_link_libraries(Stratega
-#        PUBLIC
-#        #CONAN_PKG::opengl
-#        project_options
-#        project_warnings
-#        # TODO: Is this public private separation of modules accurate?
-#        CONAN_PKG::yaml-cpp
-#        CONAN_PKG::recastnavigation
-#        "$<$<TARGET_EXISTS:Threads::Threads>:Threads::Threads>"  #use threads if the target exists
-#        PRIVATE        
-#        CONAN_PKG::imgui
-#        imgui
-#        # other platforms use Conan's `sfml`
-#        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
-#        # for linux we have to use the targets of `sfml`'s components individually
-#        "$<$<PLATFORM_ID:Linux>:sfml-system>"
-#        "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
-#        "$<$<PLATFORM_ID:Linux>:sfml-window>"
-#        )
+if(NOT SGA_BUILD_HEADLESS)
+    target_link_libraries_system(Stratega CONAN_PKG::imgui)
+    target_link_libraries_system(Stratega imgui)
+
+    if(UNIX AND NOT APPLE)
+        target_link_libraries_system(Stratega sfml-system)
+        target_link_libraries_system(Stratega sfml-graphics)
+        target_link_libraries_system(Stratega sfml-window)        
+    else()
+        target_link_libraries_system(Stratega CONAN_PKG::sfml)
+    endif()
+endif()
 
 install(TARGETS
         Stratega

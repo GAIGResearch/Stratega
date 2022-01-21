@@ -8,6 +8,7 @@
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/GameDescription.h>
 #include <Stratega/Representation/LevelDefinition.h>
+#include <Stratega/Representation/BuffType.h>
 #include <yaml-cpp/yaml.h>
 #include <memory>
 
@@ -41,6 +42,10 @@ namespace SGA
         std::unordered_map<std::string, ParameterID> parameters;
         std::unordered_map<std::string, std::unordered_set<int>> entityGroups;
         std::unordered_map<int, EntityType> entityTypes;
+        //Gamestate
+        std::unordered_map<ParameterID, Parameter> stateParameterTypes;
+        //Buffs
+        std::unordered_map<int, BuffType> buffsTypes;
     	// Actions
         std::unordered_map<int, ActionType> actionTypes;
     	// State-Generation
@@ -69,8 +74,10 @@ namespace SGA
             gameInfo.setEntityTypes(std::make_shared<std::unordered_map<int, EntityType>>(entityTypes));
             gameInfo.setTileTypes(std::make_shared<std::unordered_map<int, TileType>>(tileTypes));
             gameInfo.setPlayerParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(playerParameterTypes));
+            gameInfo.setStateParameterTypes(std::make_shared<std::unordered_map<ParameterID, Parameter>>(stateParameterTypes));
             gameInfo.setEntityGroups(entityGroups);
             gameInfo.setActionTypes(std::make_shared<std::unordered_map<int, ActionType>>(actionTypes));
+            gameInfo.setBuffTypes(std::make_shared<std::unordered_map<int, BuffType>>(buffsTypes));
             gameInfo.setParameterIDLookup(std::make_shared<std::unordered_map<std::string, ParameterID>>(parameters));
             gameInfo.setTechnologyTreeCollection(std::make_shared<TechnologyTreeCollection>(technologyTreeCollection));
             gameInfo.setPlayerSpawnableTypes(std::make_shared<std::unordered_set<EntityTypeID>>(playerSpawnableTypes));

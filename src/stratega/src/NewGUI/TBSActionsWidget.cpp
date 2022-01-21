@@ -7,10 +7,11 @@
 #include <sstream>
 namespace SGA
 {
-	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
+	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::vector<Action>& futureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
 		SGAWidget(widgetName, newWindow, newWorld, fm),
 		state(nullptr),
 		temp(temp),
+		futureActionsToPlay(futureActionsToPlay),
 		selectedEntities(newSelectedEntities),
 		playerID(newPlayerID)
 	{
@@ -19,6 +20,7 @@ namespace SGA
 	void TBSActionsWidget::update(const GameState& state)
 	{
 		this->state = &state;
+		if(playerID!=-2)
 		actionsHumanPlayer = fm->generateActions(state, playerID);
 	}
 
@@ -53,12 +55,31 @@ namespace SGA
 		if (playerID != -1)
 		{
 			auto actionsToExecute = getWidgetResult(playerID);
-			if (!actionsToExecute.empty())
+			if (state->getGameType()==GameType::TBS)
 			{
-				temp.clear();
-				temp.assignActionOrReplace(actionsToExecute.front());
-				//selectedAction = actionsToExecute.front();
+				if (!actionsToExecute.empty())
+				{
+					temp.clear();
+					temp.assignActionOrReplace(actionsToExecute.front());
+				}
 			}
+			else
+			{
+				for (auto& action : actionsToExecute)
+				{
+					if (action.getActionTypeID() == -1 || action.isPlayerAction())
+					{
+						//If continuous or Player action we assign it directly
+						temp.assignActionOrReplace(action);
+					}
+					else
+					{
+						//If is Entity action we save it for future calls
+						futureActionsToPlay.emplace_back(action);
+					}
+				}
+			}
+			
 		}
 
 		ImGui::Separator();
@@ -467,6 +488,9 @@ namespace SGA
 	{
 		std::vector<Action> actionsToExecute;
 		//Check if the we have action type selected
+		if (playerID == -2)
+			return actionsToExecute;
+
 		if (hasActionTypeSelected())
 		{
 			//Selected actiontype

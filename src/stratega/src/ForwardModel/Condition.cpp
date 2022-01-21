@@ -80,6 +80,28 @@ namespace  SGA
 		return false;
 	}
 	
+	IsNeutral::IsNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool IsNeutral::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return targetEntity.isNeutral();
+	}
+	
+	IsNotNeutral::IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool IsNotNeutral::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return !targetEntity.isNeutral();
+	}
+	
 	SamePlayer::SamePlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{
 	}
@@ -163,6 +185,28 @@ namespace  SGA
 		const auto& entity = targetParam.getEntity(state, targets);
 		return !entity.isNeutral();
 	}
+
+	IsTickMultipleOf::IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		multipleParam(parameters[0])
+	{
+	}
+
+	bool IsTickMultipleOf::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double multipleTick = multipleParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if((currentTick % static_cast<int>(multipleTick)) == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
 	
 	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Condition(exp),
@@ -200,6 +244,56 @@ namespace  SGA
 		}
 
 		return !hasEntity;
+	}
+	
+
+	HasNoBuff::HasNoBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		entityParam(parameters[0]),
+		buffTypeParam(parameters[1])
+		
+	{
+	}
+
+	bool HasNoBuff::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffTypeParam.getBuffType(state, targets);
+
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			return !player->hasBuff(buffType.getID());
+		}
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			return !entity.hasBuff(buffType.getID());
+		}
+	}
+
+	HasBuff::HasBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		entityParam(parameters[0]),
+		buffTypeParam(parameters[1])
+	{
+	}
+
+	bool HasBuff::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto& buffType = buffTypeParam.getBuffType(state, targets);
+
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			auto* player = state.getPlayer(entity.getOwnerID());
+			return player->hasBuff(buffType.getID());
+		}
+		else
+		{
+			auto& entity = entityParam.getEntity(state, targets);
+			return entity.hasBuff(buffType.getID());
+		}
 	}
 	
 	HasEntity::HasEntity(const std::string exp, const std::vector<FunctionParameter>& parameters) :

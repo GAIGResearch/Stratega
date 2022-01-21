@@ -28,6 +28,8 @@ namespace SGA
 		bool waitingForEntity = false;
 		ActionAssignment& temp;
 
+		std::vector<Action>& futureActionsToPlay;
+
 		//Current player
 		int& playerID;
 
@@ -35,7 +37,7 @@ namespace SGA
 		bool dragging = false;
 		sf::Vector2f oldMousePosition;
 
-		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
+		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::vector<Action>& futureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;

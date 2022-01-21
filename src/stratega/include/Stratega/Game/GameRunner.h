@@ -10,7 +10,6 @@
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/Game/GameObserver.h>
 #include <Stratega/Utils/IteratorToPtrVector.h>
-#include <SFML/Graphics.hpp>
 
 namespace SGA
 {

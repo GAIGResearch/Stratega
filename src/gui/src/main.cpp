@@ -11,7 +11,8 @@ int main()
    //   renderer.render();
    //}
 	std::mt19937 rngEngine(0);
-	std::string configPath("../resources/gameConfigurations/RTS/BasicRTS.yaml");
+	//std::string configPath("../resources/gameConfigurations/RTS/Settlers.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/Settlers.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();

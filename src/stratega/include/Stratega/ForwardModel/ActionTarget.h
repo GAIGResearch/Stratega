@@ -32,12 +32,14 @@ namespace SGA
 			EntityTypeReference,
 			TechnologyReference,
 			ContinuousActionReference,
-			TileTypeReference
+			TileTypeReference,
+			Gamestate
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
 		static ActionTarget createPlayerActionTarget(int playerID);
+		static ActionTarget createGameStateActionTarget();
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
 		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 		static ActionTarget createEntityTypeActionTarget(EntityTypeID entityTypeID);
@@ -98,6 +100,9 @@ namespace SGA
 			case TileTypeReference:
 				return "TileTypeReference";
 				break;
+			case Gamestate:
+				return "Gamestate";
+				break;
 			default:
 				return "Not defined";
 			}
@@ -123,6 +128,11 @@ namespace SGA
 			Data(Vector2f data):
 				position(data)
 			{
+			}
+
+			Data()
+			{
+
 			}
 
 			Data(ActionTarget::Type targetType, int data):
@@ -161,7 +171,7 @@ namespace SGA
 		Data data;
 
 		// Private since this class should only be constructed using the static methods
-		ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {};
+		ActionTarget(const Type& type, const Data& newData);
 	};
 
 }

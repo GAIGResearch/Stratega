@@ -5,7 +5,6 @@
 #include <Stratega/ForwardModel/RTSForwardModel.h>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
-#include <Stratega/Utils/filesystem.hpp>
 
 namespace SGA
 {
@@ -55,41 +54,51 @@ namespace SGA
         auto config = std::make_unique<GameConfig>();
         config->resourcesPath = resourcesPath;
         config->yamlPath = filePath;
-        config->gameType = configNode["GameConfig"]["Type"].as<GameType>();
-        config->tickLimit = configNode["GameConfig"]["RoundLimit"].as<int>(config->tickLimit);
-        config->numPlayers = configNode["GameConfig"]["PlayerCount"].as<int>(config->numPlayers);
 
-        config->applyFogOfWar = configNode["GameConfig"]["FogOfWar"].as<bool>(config->applyFogOfWar);
+        auto gameConfigNode = loadNode(configNode, "GameConfig", *config);
+        config->gameType = gameConfigNode["Type"].as<GameType>();
+        config->tickLimit = gameConfigNode["RoundLimit"].as<int>(config->tickLimit);
+        config->numPlayers = gameConfigNode["PlayerCount"].as<int>(config->numPlayers);
+
+        config->applyFogOfWar = gameConfigNode["FogOfWar"].as<bool>(config->applyFogOfWar);
+
+        //Parse parameters
+        auto parametersNode = gameConfigNode["Parameters"];
+        parseParameterList(parametersNode, *config, config->stateParameterTypes);
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(configNode["Entities"], *config);
-        parseEntityGroups(configNode["EntityGroups"], *config);
-        parseAgents(configNode["Agents"], *config);
-        parseTileTypes(configNode["Tiles"], *config);
+		parseEntities(loadNode(configNode, "Entities", *config), *config);
+        parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
+        parseAgents(loadNode(configNode, "Agents", *config), *config);
+        parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
+
+        parsePlayers(loadNode(configNode, "Player", *config), *config);
+
+        if(loadNode(configNode, "Buffs", *config).IsDefined())
+           parseBuffs(loadNode(configNode, "Buffs", *config), *config);
         
-        parsePlayers(configNode["Player"], *config);
 
-		if(configNode["TechnologyTrees"].IsDefined())
-			parseTechnologyTrees(configNode["TechnologyTrees"], *config);
+		if(loadNode(configNode, "TechnologyTrees", *config).IsDefined())
+			parseTechnologyTrees(loadNode(configNode, "TechnologyTrees", *config), *config);
 		
-        parseActions(configNode["Actions"], *config);
-        parseForwardModel(configNode["ForwardModel"], *config);
+        parseActions(loadNode(configNode, "Actions", *config), *config);
+        parseForwardModel(loadNode(configNode, "ForwardModel", *config), *config);
 
-        if (configNode["GameDescription"].IsDefined())
-            parseGameDescription(configNode["GameDescription"], *config);
+        if (loadNode(configNode, "GameDescription", *config).IsDefined())
+            parseGameDescription(loadNode(configNode, "GameDescription", *config), *config);
 
-        if (configNode["GameRunner"].IsDefined())
-            parseGameRunner(configNode["GameRunner"], *config);
+        if (loadNode(configNode, "GameRunner", *config).IsDefined())
+            parseGameRunner(loadNode(configNode, "GameRunner", *config), *config);
 
-        assignPlayerActions(configNode["Player"], *config);
-        assignEntitiesActions(configNode["Entities"], *config);
+        assignPlayerActions(loadNode(configNode, "Player", *config), *config);
+        assignEntitiesActions(loadNode(configNode, "Entities", *config), *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);
 
     	//Parse last the boards after adding the actions to entities
-        parseBoardGenerator(configNode["Board"], *config);
+        parseBoardGenerator(loadNode(configNode, "Board", *config), *config);
         return config;
 	}
 
@@ -298,8 +307,10 @@ namespace SGA
             type.setName(nameTypePair.first);
         	
             context.targetIDs.emplace("Source", 0);
+            //context.targetIDs.emplace("GameState", -1);
         	
         	//Parse all the targets
+            if(nameTypePair.second["Targets"].IsDefined())
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;
@@ -501,11 +512,35 @@ namespace SGA
 
                 // Initiliaze OnTickEffect
                 OnTickEffect onTickEffect;
-                onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
                 fm->addOnTickEffect(onTickEffect);
+			}
+            else if(map.find("OnAdvance") != map.end())
+			{
+                auto nameEffectsPair = *map.find("OnAdvance");
+				
+                context.targetIDs.emplace("Source", 0);
+                auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                // Initiliaze OnTickEffect
+                OnTickEffect onTickEffect;
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
+                parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
+                parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
+				// Add it to the fm
+                fm->addOnAdvanceEffect(onTickEffect);
 			}
             else if(map.find("OnSpawn") != map.end())
             {
@@ -516,7 +551,7 @@ namespace SGA
                 auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
 
                 // Initiliaze OnTickEffect
-                OnEntitySpawnEffect onSpawnEffect;
+                OnEntitySpawnEffect onSpawnEffect;                
                 onSpawnEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
@@ -653,7 +688,7 @@ namespace SGA
     {
         config.renderConfig = std::make_unique<RenderConfig>();
 
-        for (const auto& entityNode : configNode["Entities"])
+        for (const auto& entityNode : loadNode(configNode, "Entities", config))
         {
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;
@@ -661,7 +696,7 @@ namespace SGA
         }       
 
         //Read GameRenderer configuration
-        const auto gameRendererNode = configNode["GameRenderer"];
+        const auto gameRendererNode = loadNode(configNode, "GameRenderer", config);
         if (gameRendererNode.IsDefined())
         {
             //Read resolution
@@ -803,7 +838,7 @@ namespace SGA
             throw std::runtime_error("GameRender not defined in yaml");
         }       
 
-        for (const auto& tileNode : configNode["Tiles"])
+        for (const auto& tileNode : loadNode(configNode, "Tiles", config))
         {
             auto tileName = tileNode.first.as<std::string>();
             auto tileConfig = tileNode.second;
@@ -823,7 +858,7 @@ namespace SGA
 
     void GameConfigParser::parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const
 	{
-        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, double>>(std::map<std::string, double>()))
+        for (const auto& nameParamPair : parameterNode.as<std::map<std::string, YAML::Node>>(std::map<std::string, YAML::Node>()))
         {
             // Assign IDs to parameters that do not exist yet
             if (config.parameters.find(nameParamPair.first) == config.parameters.end())
@@ -831,15 +866,36 @@ namespace SGA
                 config.parameters.insert({ nameParamPair.first, static_cast<int>(config.parameters.size()) });
             }
 
-            // Construct the parameter
-            Parameter param;
-            param.setID(config.parameters.at(nameParamPair.first));
-            param.setName(nameParamPair.first);
-            param.setMinValue(0);
-            param.setMaxValue(nameParamPair.second);
-            param.setDefaultValue(param.getMaxValue());
-            param.setIndex(static_cast<int>(parameterBucket.size()));
-            parameterBucket.insert({ param.getID(), std::move(param) });
+            //Check if is a vector of min, max and default
+            if (nameParamPair.second.IsSequence())
+            {
+                auto parameter = nameParamPair.second.as<std::vector<double>>();
+                if (parameter.size() == 3)
+                {
+                    // Construct the parameter
+                    Parameter param;
+                    param.setID(config.parameters.at(nameParamPair.first));
+                    param.setName(nameParamPair.first);
+                    param.setMinValue(parameter[0]);
+                    param.setDefaultValue(parameter[1]);
+                    param.setMaxValue(parameter[2]);               
+                    param.setIndex(static_cast<int>(parameterBucket.size()));
+                    parameterBucket.insert({ param.getID(), std::move(param) });
+                }
+                else
+                    throw std::runtime_error("Parameter definition does not follow the template: [min, default value, max]");
+            }
+            else
+            {
+                Parameter param;
+                param.setID(config.parameters.at(nameParamPair.first));
+                param.setName(nameParamPair.first);
+                param.setMinValue(0);
+                param.setMaxValue(nameParamPair.second.as<double>());
+                param.setDefaultValue(param.getMaxValue());
+                param.setIndex(static_cast<int>(parameterBucket.size()));
+                parameterBucket.insert({ param.getID(), std::move(param) });
+            }
         }
 	}
 
@@ -1039,4 +1095,46 @@ namespace SGA
     	//Add new level definition
         levelDefinitions.emplace(static_cast<int>(levelDefinitions.size()), newLevel);
     }
-}
+
+    void  GameConfigParser::parseModifiers(const YAML::Node& modifierNode, GameConfig& config, std::unordered_map< ParameterID, double >& modifiers) const
+    {
+       for(const auto& nameParamPair : modifierNode.as< std::map< std::string, double > >(
+              std::map< std::string, double >())) {
+          // Check if parameter is found
+          if(config.parameters.find(nameParamPair.first) == config.parameters.end()) {
+             throw std::runtime_error("Cannot find parameter for Buffs");
+          }
+
+          modifiers.insert(
+             {config.parameters.find(nameParamPair.first)->second, nameParamPair.second});
+       }
+    }
+
+    void GameConfigParser::parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const
+    {
+       if(! buffsNode.IsDefined()) {
+          throw std::runtime_error("Cannot find definition for Buffs");
+       }
+
+       auto types = buffsNode.as< std::map< std::string, YAML::Node > >();
+       for(const auto& nameTypePair : types) {
+          BuffType type;
+          type.setName(nameTypePair.first);
+
+          type.setID(static_cast< int >(config.buffsTypes.size()));
+
+          //Parse modifiers
+          // AdditiveModifier
+          std::unordered_map< ParameterID, double > additiveModifiers;
+          parseModifiers(nameTypePair.second["AdditiveModifier"], config, additiveModifiers);
+          type.setAdditiveModifiers(additiveModifiers);
+          // MultiplicationModifiers
+          std::unordered_map< ParameterID, double > multiplicationModifiers;
+          parseModifiers(nameTypePair.second["MultiplicationModifier"], config, multiplicationModifiers);
+          type.setMultiplicationModifiers(multiplicationModifiers);
+
+          //Add buff type
+           config.buffsTypes.emplace(type.getID(), std::move(type));
+       }
+    }
+    }

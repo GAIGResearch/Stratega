@@ -1,6 +1,8 @@
 #pragma once
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/Representation/LevelDefinition.h>
+#include <Stratega/Utils/filesystem.hpp>
+
 namespace SGA
 {
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath="");
@@ -48,6 +50,13 @@ namespace SGA
                     type.second.getActionIDs().emplace_back(config.getActionID(actionName));
                 }
 
+                // Assign On Tick Actions to entities
+                auto onTickActions = types[type.second.getName()]["OnTickActions"].as<std::vector<std::string>>(std::vector<std::string>());
+                for (const auto& actionName : onTickActions)
+                {
+                    type.second.getOnTickActionIDs().emplace_back(config.getActionID(actionName));
+                }
+
                 // Data for hardcoded condition canSpawn => Technology-requirements and spawnable-entities
                 type.second.setSpawnableEntityTypes(parseEntityGroup(types[type.second.getName()]["CanSpawn"], config));
                 auto name = types[type.second.getName()]["RequiredTechnology"].as<std::string>("");
@@ -56,13 +65,39 @@ namespace SGA
                 type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], config));
             }
         }
+        void parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const;
+        
 		
 	private:
+        YAML::Node loadNode(const YAML::Node& origin, std::string node, GameConfig& config) const
+        {
+            auto foundNode = origin;
+            //Check if is yaml path
+           while (foundNode[node].IsScalar())
+            {
+               auto yamlPath = foundNode[node].as<std::string>();
+               //Load yaml file
+
+               using namespace ghc::filesystem;
+
+               path filePath = yamlPath;
+               // Convert path to an absolute path relative to the path of the configuration file
+               auto tmp = current_path();
+               current_path(canonical(path(config.yamlPath).parent_path()));
+               filePath = canonical(filePath);
+               current_path(tmp);
+
+               foundNode = YAML::LoadFile(filePath.string());
+            }
+
+            return foundNode[node];
+        }
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
         EntityCategory parseEntityCategory(const std::string& name) const;
+        void parseModifiers(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map< ParameterID, double >& modifiers) const;
         void parseParameterList(const YAML::Node& parameterNode, GameConfig& config, std::unordered_map<ParameterID, Parameter>& parameterBucket) const;
         std::string parseFilePath(const YAML::Node& pathNode, const GameConfig& config) const;
         void parseMaps(const YAML::Node& mapsLayout, std::unordered_map<int, LevelDefinition>& levelDefinitions, const GameConfig& config) const;
@@ -104,6 +139,27 @@ namespace YAML
                 rhs = SGA::ActionSourceType::Entity;
             else if (value == "PlayerAction")
                 rhs = SGA::ActionSourceType::Player;
+            else
+                return false;
+
+            return true;
+        }
+    };
+
+     template<>
+    struct convert<SGA::SourceOnTickEffectType>
+    {
+        static bool decode(const Node& node, SGA::SourceOnTickEffectType& rhs)
+        {
+            if (!node.IsScalar())
+                return false;
+            auto value = node.as<std::string>();
+            if (value == "Entity")
+                rhs = SGA::SourceOnTickEffectType::Entity;
+            else if (value == "Player")
+                rhs = SGA::SourceOnTickEffectType::Player;
+            else if (value == "GameState")
+                rhs = SGA::SourceOnTickEffectType::GameState;
             else
                 return false;
 

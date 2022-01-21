@@ -13,6 +13,16 @@ namespace SGA
 		else throw std::runtime_error("No entity type associated to ID " + std::to_string(entityTypeID));
 	}
 
+	const BuffType& GameInfo::getBuffType(int buffTypeID) const
+	{
+		auto it = buffTypes->find(buffTypeID);
+           if(it != buffTypes->end())
+		{
+			return it->second;
+		}
+		else throw std::runtime_error("No buff type associated to ID " + std::to_string(buffTypeID));
+	}
+
 	const ActionType& GameInfo::getActionTypeConst(int actionTypeID)
 	{
 		auto it = actionTypes->find(actionTypeID);
@@ -54,6 +64,60 @@ namespace SGA
 			return it->second;
 		}
 		else throw std::runtime_error("No player parameter associated to ID " + std::to_string(id));
+	}
+	
+	const SGA::Parameter& GameInfo::getPlayerParameter(std::string& name) const
+	{
+		for (const auto& parameter : *playerParameterTypes)
+		{
+			if(parameter.second.getName()== name)
+				return parameter.second;
+		}
+
+		throw std::runtime_error("No player parameter associated to name " + name);
+	}
+	
+	const SGA::Parameter& GameInfo::getPlayerParameterByIndex(int index) const
+	{
+		for (const auto& parameter : *playerParameterTypes)
+		{
+			if(parameter.second.getIndex()==index)
+				return parameter.second;
+		}
+
+		throw std::runtime_error("No player parameter associated to index " + std::to_string(index));
+	}
+
+	const SGA::Parameter& GameInfo::getStateParameter(ParameterID id) const
+	{
+		auto it = stateParameterTypes->find(id);
+		if (it != stateParameterTypes->end())
+		{
+			return it->second;
+		}
+		else throw std::runtime_error("No state parameter associated to ID " + std::to_string(id));
+	}
+	
+	const SGA::Parameter& GameInfo::getStateParameter(std::string& name) const
+	{
+		for (const auto& parameter : *stateParameterTypes)
+		{
+			if(parameter.second.getName()== name)
+				return parameter.second;
+		}
+
+		throw std::runtime_error("No state parameter associated to name " + name);
+	}
+	
+	const SGA::Parameter& GameInfo::getStateParameterByIndex(int index) const
+	{
+		for (const auto& parameter : *stateParameterTypes)
+		{
+			if(parameter.second.getIndex()==index)
+				return parameter.second;
+		}
+
+		throw std::runtime_error("No state parameter associated to index " + std::to_string(index));
 	}
 
 	const Parameter& GameInfo::getParameterType(int entityTypeID, int globalParameterID) const

@@ -25,14 +25,14 @@ namespace SGA
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 
-		if (world.getFOWSettings().selectedPlayerID != -1)
+		if (world.getFOWSettings().selectedPlayerID != -2)
 		{
 			const auto* player = state->getPlayer(world.getFOWSettings().selectedPlayerID);
 			for (const auto& parameter : state->getGameInfo()->getPlayerParameterTypes())
 			{
 				//Double to string with 2 precision
 				std::stringstream stream;
-				stream << std::fixed << std::setprecision(2) << player->getParameter(parameter.second.getIndex());
+				stream << std::fixed << std::setprecision(2) << player->getRawParameterAt(parameter.second.getIndex());
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;

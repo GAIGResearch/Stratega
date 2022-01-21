@@ -21,8 +21,8 @@ GameRenderer:
 
 Player:
     Parameters:
-        SpawnPoints: 100
-        Score: 0
+        SpawnPoints: [0,100,1000]
+        Score: [0,0,1000]
 
 Tiles:
     Plain:

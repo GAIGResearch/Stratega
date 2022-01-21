@@ -25,12 +25,12 @@ Player:
     Actions: [Research]
     CanSpawn: Buildings
     Parameters:
-        Food: 800
-        Gold: 0
-        Iron: 500
-        Wood: 500
-        Bricks: 500
-        Research: 200
+        Food: [0,800,10000]
+        Gold: [0,0,10000]
+        Iron: [0,500,10000]
+        Wood: [0,500,10000]
+        Bricks: [0,500,10000]
+        Research: [0,200,10000]
 
 Tiles:
     Plain:
@@ -206,11 +206,11 @@ Entities:
         Parameters:
             Speed: 1
             Range: 3
-            WoodCutting: 0.05
-            BrickMaking: 0.05
-            LivestockFarming: 0.1
-            IronMining: 0.05
-            GoldMining: 0.1
+            WoodCutting: [0,0.05,1]
+            BrickMaking: [0,0.05,1]
+            LivestockFarming: [0,0.1,1]
+            IronMining: [0,0.05,1]
+            GoldMining: [0,0.1,1]
             
     Builder:
         Sprite: ../../assets/Entities/unit_7.png
@@ -808,12 +808,14 @@ ForwardModel:
     Trigger:
    #Global resource compsumption
         - OnTick:
+            Type: Entity
             ValidTargets: Buildings
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Food, -0.04)"
         - OnTick:
+            Type: Entity
             ValidTargets: Units
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -821,6 +823,7 @@ ForwardModel:
                 - "ModifyResource(Source.Player.Food, -0.04)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: University
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -829,6 +832,7 @@ ForwardModel:
     #Upgrade villagers resource collection
         #Food
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -837,6 +841,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 0.11)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -845,6 +850,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 0.13)"
         #Wood
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -853,6 +859,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 0.06)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -861,6 +868,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 0.08)"
         #Ore
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -869,6 +877,7 @@ ForwardModel:
                 - "ChangeResource(Source.IronMining, 0.08)"
         #Clay
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"

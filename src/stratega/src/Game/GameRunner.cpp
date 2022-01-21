@@ -6,7 +6,6 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Configuration/GameConfig.h>
 #include <Stratega/GUI/GameRenderer.h>
-#include <SFML/Graphics.hpp>
 
 namespace SGA
 {

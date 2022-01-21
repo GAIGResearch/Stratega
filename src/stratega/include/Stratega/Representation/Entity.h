@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <Stratega/Representation/Vector2.h>
 #include <Stratega/Representation/Path.h>
+#include <Stratega/Representation/Buff.h>
 #include <Stratega/ForwardModel/Action.h>
 
 namespace SGA
@@ -52,15 +53,35 @@ namespace SGA
 		/// </summary>
 		std::vector<ActionInfo> attachedActions;
 
+		///// <summary>
+		///// Actions that this entity can execute in this game.
+		///// </summary>
+		//std::vector<ActionInfo> attachedActions;
+
 		/// <summary>
 		/// Array of actions currently being executed by this entity
 		/// </summary>
 		std::vector<Action> continuousAction;
 
 		/// <summary>
+		/// Array of buffs currently applied to this entity
+		/// </summary>
+		std::vector<Buff> buffs;
+
+		/// <summary>
 		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.
 		/// </summary>
 		std::vector<double> parameters;
+
+		/// <summary>
+		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> maxParameters;
+
+		/// <summary>
+		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> minParameters;
 		
 		/// <summary>
 		/// Entity type
@@ -195,16 +216,40 @@ namespace SGA
 		std::unordered_map<std::string, double> getEntityParameters() const;
 
 		/// <summary>
-		/// Gets the value of a specific parameter, by name 
+		/// Gets the value of a specific parameter with buffs applied, by name 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameter(const std::string& paramName) const;
+	    double getParameter(const std::string& paramName) const;
+
+		/// <summary>
+		/// Gets the reference value of a specific parameter raw, by name 
+		/// <summary>
+		/// <returns>The parameter reference value.</returns>
+		double& getRawParameter(const std::string& paramName);
 		
 		/// <summary>
-		/// Gets a specific parameters, by index 
+		/// Gets a specific parameters raw, by index 
+		/// <summary>
+		/// <returns>The parameter reference value.</returns>
+		double& getRawParameterAt(int paramIdx) { return parameters[paramIdx]; }
+
+		/// <summary>
+		/// Gets a specific parameters value, by index 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
 		double& getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+		
+		/// <summary>
+		/// Gets a specific max parameters value, by index 
+		/// <summary>
+		/// <returns>The max parameter value.</returns>
+		double getMaxParameterAt(int paramIdx) { return maxParameters[paramIdx]; }
+		
+		/// <summary>
+		/// Gets a specific min parameters value, by index 
+		/// <summary>
+		/// <returns>The min parameter value.</returns>
+		double getMinParameterAt(int paramIdx) { return minParameters[paramIdx]; }
 
 		/// <summary>
 		/// Gets the list of continuous actions attached to this entity. Modifiable.
@@ -218,6 +263,17 @@ namespace SGA
 		/// <returns>The list of continuous actions attached to this entity.</returns>
 		const std::vector<Action>& getContinuousActions() const { return continuousAction; }
 
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. Modifiable.
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		std::vector<Buff>& getBuffs() { return buffs; }
+
+		/// <summary>
+		/// Gets the list of buffs attached to this entity. 
+		/// <summary>
+		/// <returns>The list of buffs attached to this entity.</returns>
+		const std::vector<Buff>& getBuffs() const { return buffs; }
 
 		/// <summary>
 		/// Returns the movement speed of this entity.
@@ -286,5 +342,55 @@ namespace SGA
 		/// </summary>
 		void setPath(Path p) { path = p; }
 
+		/// <summary>
+		/// Add buff to the player
+		/// <summary>
+		void addBuff(Buff b)
+		{
+			buffs.emplace_back(b);
+		}
+
+		/// <summary>
+		/// Recompute all the parameteres with the applied buffs
+		/// <summary>
+		void recomputeStats();
+
+		/// <summary>
+		/// Remove all the buffs of the same type
+		/// <summary>
+		void removeBuffsOfType(const BuffType& newType)
+		{
+			auto it = buffs.begin();
+			while (it != buffs.end())
+			{
+				if (it->getType().getID() == newType.getID())
+				{
+					it = buffs.erase(it);
+				}
+				else it++;
+			}
+		}
+
+		/// <summary>
+		/// Recompute all the buffs
+		/// <summary>
+		void removeAllBuffs()
+		{
+			buffs.clear();
+		}
+
+		/// <summary>
+		/// Check if player has a buff type applied
+		/// <summary>
+		bool hasBuff(int typeID) const
+		{
+			for (auto& buff : buffs)
+			{
+				if (buff.getType().getID() == typeID)
+					return true;
+			}
+
+			return false;
+		}
 	};
 }

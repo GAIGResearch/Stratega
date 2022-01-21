@@ -5,11 +5,11 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
-    #- MCTSAgent:
-    #    FmCalls: 100
-    #    Budget: TIME
-    #    RolloutLength: 10
+    #- OSLAAgent
+    - MCTSAgent:
+        FmCalls: 100
+        Budget: TIME
+        RolloutLength: 10
 
 GameRenderer:
     Resolution:
@@ -40,7 +40,6 @@ Tiles:
         Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
-
         
 Board:
     GenerationType: Manual
@@ -62,7 +61,6 @@ Board:
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-
 Actions:
     Spawn:
         Type: EntityAction
@@ -188,6 +186,7 @@ ForwardModel:
 
     Trigger:
         - OnTick:
+            Type: Entity
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 

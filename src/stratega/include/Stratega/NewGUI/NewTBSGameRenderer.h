@@ -1,4 +1,7 @@
 #pragma once
+
+#include <Stratega/ForwardModel/ActionAssignment.h>
+
 #include <Stratega/GUI/GameRenderer.h>
 /*
 #include <Stratega/GUI/AssetCache.h>
@@ -34,12 +37,11 @@ namespace SGA
 		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
 
-		bool isActionAvailable() const
+		bool isActionAvailable() override
 		{
 			return temp.getAssignmentCount() > 0;
 			//return selectedAction.has_value();
 		}
-
 		bool isGameEndRequested() override;
 
 		void closeWindow() override
@@ -59,25 +61,22 @@ namespace SGA
 		void mouseMoved(const sf::Event& event);
 		void keyPressed(const sf::Event& event);
 
+		//Game configuration
 		const GameConfig* config;
+
+		//Gamestates
 		GameState state;
 		GameState fowState;
 
 		bool endGameRequested = false;
-		nonstd::optional<Action> selectedAction;
-		//bool endGameRequested = false;
 		
+		//Window and delta time clok
 		sf::RenderWindow window;
 		sf::Clock deltaClock;
-		ActionAssignment temp;
 
-		/*
-		int pointOfViewPlayerID;
-		AssetCache assetCache;
-		Widgets::FogOfWarSettings fowSettings;
-		Widgets::ActionsSettings actionsSettings;
-		TileMap tileMap;
-		EntityRenderer entityRenderer;*/
+		//Actions to play
+		ActionAssignment temp;
+		std::vector<Action> futureActionsToPlay;
 
 		// Variables for input handling
 		float zoomValue;
@@ -91,7 +90,7 @@ namespace SGA
 		std::unique_ptr<ResourceManager> resourceManager;
 		int playerID;
 
+		//FOW settings
 		FogOfWarSettings settings;
-
 	};
 }

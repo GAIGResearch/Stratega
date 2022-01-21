@@ -33,6 +33,8 @@ namespace SGA
 		for (const auto& idParamPair : parameterTypes)
 		{
 			player.setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
+			player.setMaxParameter(idParamPair.second.getIndex(), idParamPair.second.getMaxValue());
+			player.setMinParameter(idParamPair.second.getIndex(), idParamPair.second.getMinValue());
 		}
 
 		// Add actions
@@ -55,6 +57,16 @@ namespace SGA
 
 		generateGameInfo(*state);
 		
+		// Add parameters
+		state->resizeParameters(static_cast<int>(state->getGameInfo()->getStateParameterTypes().size()));
+		const auto parameterTypes = state->getGameInfo()->getStateParameterTypes();
+		for (const auto& idParamPair : parameterTypes)
+		{
+			state->setParameter(idParamPair.second.getIndex(), idParamPair.second.getDefaultValue());
+			state->setMaxParameter(idParamPair.second.getIndex(), idParamPair.second.getMaxValue());
+			state->setMinParameter(idParamPair.second.getIndex(), idParamPair.second.getMinValue());
+		}
+
 		addPlayers(*state);
 
 		// Create some lookups for initializing the board and entities

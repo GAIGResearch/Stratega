@@ -87,7 +87,8 @@ class CMakeBuild(build_ext):
             # Multi-config generators have a different way to specify configs
             if not single_config:
                 cmake_args += [
-                    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
+                    "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir),
+                    "-DENABLE_STRATEGA_BINDINGS=ON"
                 ]
                 build_args += ["--config", cfg]
 
@@ -125,9 +126,8 @@ with open(path.join(python_directory, "README.md")) as f:
 
 setup(
     name='Stratega',
-    version='0.0.18',
+    version='0.0.16',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
-    #author_email='jorgehurtadogrueso@gmail.com',
     description='Stratega python bindings',
     long_description=long_description,
     cmake_args=shlex.split(os.environ.get('STRATEGA_EXTRA_CMAKE_ARGS', '')),
