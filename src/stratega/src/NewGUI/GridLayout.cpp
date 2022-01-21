@@ -43,12 +43,12 @@ namespace SGA {
 
    GridLayout GridLayout::createIsometricGrid(int tileWidth, int tileHeight)
    {
-      return {sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.)};  
+      return {sf::Vector2f(static_cast<float>(tileWidth) / 2., static_cast<float>(-tileWidth) / 2.), sf::Vector2f(static_cast<float>(tileHeight) / 2., static_cast<float>(tileHeight) / 2.)};
    }
 
    GridLayout GridLayout::createRectangleGrid(int tileWidth, int tileHeight)
    {
-      return {sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight)};
+      return {sf::Vector2f(static_cast<float>(tileWidth), 0), sf::Vector2f(0,static_cast<float>(tileHeight))};
    }
 
 }

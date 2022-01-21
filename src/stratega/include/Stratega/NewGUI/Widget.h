@@ -16,23 +16,25 @@ namespace SGA
 			name(newName), window(newWindow), world(newWorld), fm(newFm)
 		{
 		}
+		virtual ~SGAWidget() = default;
+
 		virtual void update(const GameState& state) = 0;
 		virtual void render(SGARenderTarget& renderTarget) = 0;
 
 		// Event Handling
-		virtual void mouseScrolled(const sf::Event& event)
+		virtual void mouseScrolled(const sf::Event& /*event*/)
 		{
 
 		}
-		virtual void mouseButtonReleased(const sf::Event& event)
+		virtual void mouseButtonReleased(const sf::Event& /*event*/)
 		{
 
 		}
-		virtual void mouseButtonPressed(const sf::Event& event)
+		virtual void mouseButtonPressed(const sf::Event& /*event*/)
 		{
 
 		}
-		virtual void mouseMoved(const sf::Event& event)
+		virtual void mouseMoved(const sf::Event& /*event*/)
 		{
 
 		}
