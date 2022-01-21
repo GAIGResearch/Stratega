@@ -442,7 +442,7 @@ namespace SGA
 	void ForwardModel::checkPlayerContinuousActionIsComplete(GameState& state) const
 	{
 		//Player continuous Action
-		std::vector<Player> players = state.getPlayers();
+		std::vector<Player>& players = state.getPlayers();
 		for (size_t j = 0; j < players.size(); j++)
 		{
 			const auto& continuousActions = players[j].getContinuousActions();
