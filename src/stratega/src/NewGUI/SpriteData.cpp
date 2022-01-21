@@ -33,7 +33,7 @@ namespace SGA
 		return spriteSize;
 	}
 
-	const sf::FloatRect& SpriteData::getFloatSpriteRect() const
+	const sf::FloatRect SpriteData::getFloatSpriteRect() const
 	{
 		return sf::FloatRect(static_cast<float>(spriteRect.left), static_cast<float>(spriteRect.top), static_cast<float>(spriteRect.width), static_cast<float>(spriteRect.height));
 	}

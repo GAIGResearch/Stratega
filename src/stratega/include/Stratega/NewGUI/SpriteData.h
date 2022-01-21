@@ -9,13 +9,13 @@ namespace SGA
 		SpriteData();
 		SpriteData(const sf::Texture& texture, const sf::IntRect& rect, const sf::Vector2u&);
 		
-		[[nodiscard]] const sf::Texture* getTexture() const;
+		const sf::Texture* getTexture() const;
 		void setTexture(const sf::Texture& texture);
-		[[nodiscard]] const sf::IntRect& getSpriteRect() const;
-		[[nodiscard]] const sf::Vector2u& getSpriteSize() const;
-		[[nodiscard]] const sf::FloatRect& getFloatSpriteRect() const;
+		const sf::IntRect& getSpriteRect() const;
+		const sf::Vector2u& getSpriteSize() const;
+		const sf::FloatRect getFloatSpriteRect() const;
 		void setSpriteRect(sf::IntRect rect);
-		[[nodiscard]] sf::Sprite createSprite() const;
+		sf::Sprite createSprite() const;
 	
 	private:
 		const sf::Texture* spriteTexture;

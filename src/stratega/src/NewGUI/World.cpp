@@ -46,12 +46,12 @@ namespace SGA
 
     World World::createIsometricGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
     {
-        return { sf::Vector2f(tileWidth / 2., -tileWidth / 2.), sf::Vector2f(tileHeight / 2., tileHeight / 2.) , size, newSelectedEntities, newSettings };
+        return { sf::Vector2f(static_cast<float>(tileWidth) / 2., static_cast<float>(-tileWidth) / 2.), sf::Vector2f(static_cast<float>(tileHeight) / 2., static_cast<float>(tileHeight) / 2.) , size, newSelectedEntities, newSettings };
     }
 
     World World::createRectangleGrid(int tileWidth, int tileHeight, const Vector2i size, std::unordered_set<int>& newSelectedEntities, const FogOfWarSettings& newSettings)
     {
-        return { sf::Vector2f(tileWidth, 0), sf::Vector2f(0, tileHeight), size, newSelectedEntities, newSettings };
+        return { sf::Vector2f(static_cast<float>(tileWidth), 0), sf::Vector2f(0, static_cast<float>(tileHeight)), size, newSelectedEntities, newSettings };
     }
 
     void World::sortDrawables()
