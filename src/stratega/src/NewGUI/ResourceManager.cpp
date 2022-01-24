@@ -65,7 +65,7 @@ bool ResourceManager::tryGetTileSelectionSprite(SpriteData& outputData) const
    return false;
 }
 
-bool ResourceManager::tryGetFowSprite(SpriteData& outputData) const
+bool ResourceManager::tryGetFowSprite(SpriteData& /*outputData*/) const
 {
    //if(spriteAtlas.isDefined(TileType::FOG_OF_WAR_TYPE.getName())) {
    //   outputData.setTexture(spriteAtlas.getAtlasTexture());

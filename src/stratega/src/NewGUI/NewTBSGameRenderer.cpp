@@ -221,7 +221,7 @@ namespace SGA
 				widget->mouseScrolled(event);
 		}
 	}
-	void NewTBSGameRenderer::keyPressed(const sf::Event& event)
+	void NewTBSGameRenderer::keyPressed(const sf::Event& /*event*/)
 	{
 		// Camera movement
 		sf::Vector2f movementDir;
