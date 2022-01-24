@@ -15,7 +15,7 @@ namespace SGA {
 	class SGARenderTarget
 	{
 	public:
-		SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& resourceManager, const World& world, const RenderConfig& renderConfig);
+		SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& newResourceManager, const World& newWorld, const RenderConfig& newRenderConfig);
 
 		void drawTile(const Vector2f& position, const TileType& type, float alpha = 1.0f);
 		void drawEntity(const Vector2f& position, const EntityType& type, float alpha = 1.0f);

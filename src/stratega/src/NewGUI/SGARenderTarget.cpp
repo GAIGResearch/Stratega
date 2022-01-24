@@ -3,8 +3,8 @@
 
 namespace SGA
 {
-	SGARenderTarget::SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& resourceManager, const World& world, const RenderConfig& renderConfig) :
-		target(newTarget), resourceManager(resourceManager), world(world)
+	SGARenderTarget::SGARenderTarget(sf::RenderTarget& newTarget, ResourceManager& newResourceManager, const World& newWorld, const RenderConfig& newRenderConfig) :
+		target(newTarget), resourceManager(newResourceManager), world(newWorld)
 	{
 		
 	}

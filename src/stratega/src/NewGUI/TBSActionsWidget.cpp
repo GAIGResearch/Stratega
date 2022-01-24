@@ -12,22 +12,20 @@ namespace SGA
 		state(nullptr),
 		actionAssignment(newActionAssignment),
 		futureActionsToPlay(newFutureActionsToPlay),
-		selectedEntities(newSelectedEntities),
-		currentPlayerID(newPlayerID)
+		currentPlayerID(newPlayerID),
+		selectedEntities(newSelectedEntities)		
 	{
 	}
 
-	void TBSActionsWidget::update(const GameState& state)
+	void TBSActionsWidget::update(const GameState& newState)
 	{
-		this->state = &state;
+		this->state = &newState;
 		if(currentPlayerID !=-2)
-		actionsHumanPlayer = fm->generateActions(state, currentPlayerID);
+		actionsHumanPlayer = fm->generateActions(newState, currentPlayerID);
 	}
 
-	void TBSActionsWidget::render(SGARenderTarget& renderTarget)
+	void TBSActionsWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
-		//getWidgetResult();
-
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
 		window_flags += ImGuiWindowFlags_NoScrollbar;
@@ -163,6 +161,8 @@ namespace SGA
 					case ActionTarget::ContinuousActionReference:
 						break;
 					case ActionTarget::TileTypeReference:
+						break;
+					case ActionTarget::Gamestate:
 						break;
 					}
 				}

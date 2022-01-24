@@ -39,7 +39,7 @@ namespace SGA
 
 		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
-		void update(const GameState& state) override;
+		void update(const GameState& newState) override;
 		void render(SGARenderTarget& renderTarget) override;
 
 		void mouseButtonPressed(const sf::Event& event) override;
