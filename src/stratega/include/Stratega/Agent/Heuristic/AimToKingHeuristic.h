@@ -78,6 +78,6 @@ namespace SGA
 
 			return (score+2.0)/4.0;
 		}
-		static std::string getName() { return "UnitNumberHeuristic"; }
+		std::string getName() const override { return "AimToKingHeuristic"; }
 	};
 }
