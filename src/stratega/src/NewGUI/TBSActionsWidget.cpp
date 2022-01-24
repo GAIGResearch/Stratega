@@ -10,9 +10,9 @@ namespace SGA
 	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
 		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
+		selectedEntities(newSelectedEntities),
 		actionAssignment(newActionAssignment),
 		futureActionsToPlay(newFutureActionsToPlay),		
-		selectedEntities(newSelectedEntities),
 		currentPlayerID(newPlayerID)
 	{
 	}
