@@ -11,9 +11,11 @@ namespace SGA
 	{
         std::string outlineShaderPath;
         std::string fontPath;
-        std::string entityCircleColliderPath;
 
-        std::string selectedPath;
+		bool isIsometricGrid;
+
+		Vector2f tileSpriteOrigin;
+		Vector2f entitySpriteOrigin;
 
 		std::map<std::string, std::string> entitySpritePaths;
 		std::map<std::string, std::string> tileSpritePaths;

@@ -1,14 +1,7 @@
 #pragma once
-
 #include <Stratega/ForwardModel/ActionAssignment.h>
 
 #include <Stratega/GUI/GameRenderer.h>
-/*
-#include <Stratega/GUI/AssetCache.h>
-#include <Stratega/GUI/TileMap.h>
-#include <Stratega/GUI/EntityRenderer.h>
-#include <Stratega/GUI/Widgets/FogOfWarController.h>
-#include <Stratega/GUI/Widgets/ActionsController.h>*/
 
 #include <Stratega/NewGUI/Widget.h>
 #include <Stratega/NewGUI/World.h>
@@ -26,10 +19,10 @@ namespace SGA
 {
 	class ResourceManager;
 
-	class NewTBSGameRenderer : public GameRenderer
+	class GenericGameRenderer : public GameRenderer
 	{
 	public:
-		NewTBSGameRenderer(SGA::Vector2i& resolution);
+		GenericGameRenderer(SGA::Vector2i& resolution);
 		
 		void init(const GameState& initialState, const GameConfig& gameConfig) override;
 		void update(const GameState& state) override;

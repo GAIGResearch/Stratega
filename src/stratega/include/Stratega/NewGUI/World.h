@@ -9,19 +9,6 @@
 #include <memory>
 namespace SGA
 {
-    static const int TILE_WIDTH = 256;
-    static const int TILE_HEIGHT = 144;
-
-    static const int  TILE_ORIGIN_X = 0;
-    static const int TILE_ORIGIN_Y = 112;
-    //Units
-    static const int  UNIT_OFFSET_ORIGIN_X = (TILE_WIDTH / 2);
-    static const int UNIT_OFFSET_ORIGIN_Y = static_cast<int>(static_cast<float>(TILE_HEIGHT) / 1.2);
-
-    //Other sprites
-    static const int  TILE_OFFSET_ORIGIN_X = 0/*TILE_WIDTH / 2*/;
-    static const int TILE_OFFSET_ORIGIN_Y = 112/2;
-
     struct World
     {
         sf::Vector2f xBaseVector;

@@ -7,7 +7,7 @@ namespace SGA
 {
 	struct World;
 	
-	struct TBSActionsWidget : public SGAWidget
+	struct ActionsWidget : public SGAWidget
 	{
 		const GameState* state;
 
@@ -37,7 +37,7 @@ namespace SGA
 		bool dragging = false;
 		sf::Vector2f oldMousePosition;
 
-		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
+		ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
 		void update(const GameState& newState) override;
 		void render(SGARenderTarget& renderTarget) override;

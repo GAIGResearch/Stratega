@@ -1,4 +1,4 @@
-#include <Stratega/NewGUI/NewTBSGameRenderer.h>
+#include <Stratega/NewGUI/GenericGameRenderer.h>
 #include <Stratega/NewGUI/ResourceManager.h>
 #include <Stratega/Configuration/RenderConfig.h>
 #include <Stratega/Configuration/GameConfig.h>
@@ -16,7 +16,7 @@
 #include <Stratega/NewGUI/MouseInformationWidget.h>
 #include <Stratega/NewGUI/GameStateInformationWidget.h>
 #include <Stratega/NewGUI/PlayerInformationWidget.h>
-#include <Stratega/NewGUI/TBSActionsWidget.h>
+#include <Stratega/NewGUI/ActionsWidget.h>
 #include <Stratega/NewGUI/WorldControllerWidget.h>
 
 DISABLE_WARNING_PUSH
@@ -28,7 +28,7 @@ DISABLE_WARNING_FORMAT
 
 namespace SGA
 {
-	NewTBSGameRenderer::NewTBSGameRenderer(SGA::Vector2i& resolution)
+	GenericGameRenderer::GenericGameRenderer(SGA::Vector2i& resolution)
 		: config(nullptr),
 		state(),
 		fowState(),
@@ -47,11 +47,15 @@ namespace SGA
 		settings.renderType = FogRenderType::Fog;
 	}
 
-	void NewTBSGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
+	void GenericGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
 	{
 		config = &gameConfig;
 
-		world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+		if(config->renderConfig->isIsometricGrid)
+			world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+		else
+			world = World::createRectangleGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
@@ -67,20 +71,20 @@ namespace SGA
 		widgets.emplace_back(std::make_unique<MouseInformationWidget>("Mouse Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<WorldControllerWidget>("World Controller", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<GridInformationWidget>("Grid Information", window, world, config->forwardModel.get()));
-		widgets.emplace_back(std::make_unique<TBSActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, futureActionsToPlay, selectedEntities, playerID));
+		widgets.emplace_back(std::make_unique<ActionsWidget>("Actions Controller", window, world, config->forwardModel.get(), temp, futureActionsToPlay, selectedEntities, playerID));
 		widgets.emplace_back(std::make_unique<GameStateInformationWidget>("State Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<PlayerInformationWidget>("Player Information", window, world, config->forwardModel.get()));
 		widgets.emplace_back(std::make_unique<FOWControllerWidget>("FOW Controller", window, world, config->forwardModel.get(), &settings));
 	}
 
-	ActionAssignment NewTBSGameRenderer::getPlayerActions()
+	ActionAssignment GenericGameRenderer::getPlayerActions()
 	{
 		ActionAssignment returnValue= temp;
 		temp.clear();
 		return returnValue;
 	}
 
-	void NewTBSGameRenderer::update(const GameState& newState)
+	void GenericGameRenderer::update(const GameState& newState)
 	{
 		state = newState;
 		updateFow();
@@ -114,14 +118,14 @@ namespace SGA
 		}
 	}
 
-	void NewTBSGameRenderer::updateFow()
+	void GenericGameRenderer::updateFow()
 	{
 		fowState = state;
 		if(settings.renderFogOfWar)
 			fowState.applyFogOfWar(settings.selectedPlayerID);
 	}
 
-	void NewTBSGameRenderer::handleInput()
+	void GenericGameRenderer::handleInput()
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
 		sf::Event event;
@@ -144,12 +148,12 @@ namespace SGA
 		}
 	}
 
-	bool NewTBSGameRenderer::isGameEndRequested()
+	bool GenericGameRenderer::isGameEndRequested()
 	{
 		return endGameRequested;
 	}
 
-	void NewTBSGameRenderer::render()
+	void GenericGameRenderer::render()
 	{
 		handleInput();
 
@@ -201,7 +205,7 @@ namespace SGA
 		window.display();
 	}
 
-	void NewTBSGameRenderer::mouseScrolled(const sf::Event& event)
+	void GenericGameRenderer::mouseScrolled(const sf::Event& event)
 	{
 		// Determine the scroll direction and adjust the zoom level
 		if (event.mouseWheelScroll.delta <= -1)
@@ -221,7 +225,7 @@ namespace SGA
 				widget->mouseScrolled(event);
 		}
 	}
-	void NewTBSGameRenderer::keyPressed(const sf::Event& /*event*/)
+	void GenericGameRenderer::keyPressed(const sf::Event& /*event*/)
 	{
 		// Camera movement
 		sf::Vector2f movementDir;
@@ -247,7 +251,7 @@ namespace SGA
 		window.setView(view);
 
 	}
-	void NewTBSGameRenderer::mouseButtonReleased(const sf::Event& event)
+	void GenericGameRenderer::mouseButtonReleased(const sf::Event& event)
 	{
 		if (state.getGameType() == GameType::TBS)
 		{
@@ -349,7 +353,7 @@ namespace SGA
 				widget->mouseButtonReleased(event);
 		}
 	}
-	void NewTBSGameRenderer::mouseButtonPressed(const sf::Event& event)
+	void GenericGameRenderer::mouseButtonPressed(const sf::Event& event)
 	{
 		// Mouse button is pressed, get the position and set moving as active
 		if (state.getGameType() == GameType::TBS)
@@ -376,7 +380,7 @@ namespace SGA
 				widget->mouseButtonPressed(event);
 		}
 	}
-	void NewTBSGameRenderer::mouseMoved(const sf::Event& event)
+	void GenericGameRenderer::mouseMoved(const sf::Event& event)
 	{
 		if (!dragging)
 			return;
@@ -401,7 +405,7 @@ namespace SGA
 		}
 	}
 
-	void NewTBSGameRenderer::setPlayerPointOfView(int newPlayerID)
+	void GenericGameRenderer::setPlayerPointOfView(int newPlayerID)
 	{
 		this->playerID = newPlayerID;
 		settings.selectedPlayerID = newPlayerID;

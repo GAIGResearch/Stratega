@@ -727,18 +727,6 @@ namespace SGA
                     throw std::runtime_error("Fog Of War not defined in GameRenderer section");
 
                 }
-                
-                const auto selectedNode = defaultAssetsNode["Selected"];
-                if (selectedNode.IsDefined())
-                {
-                    
-                    std::string selectedPath = parseFilePath(selectedNode, config);
-                    config.renderConfig->selectedPath = selectedPath;
-                }
-                else
-                {
-                    throw std::runtime_error("Selected not defined in GameRenderer section");
-                }
             }
             else
             {
@@ -800,38 +788,6 @@ namespace SGA
                     config.renderConfig->fontPath = filePath.string();
                 }
             }
-            
-            //Load EntityCircleCollider only on RTS
-            if (config.gameType == SGA::GameType::RTS)
-            {
-                const auto entityColliderNode = gameRendererNode["EntityCollider"];
-                if (entityColliderNode.IsDefined())
-                {
-                    config.renderConfig->entityCircleColliderPath = parseFilePath(entityColliderNode, config);
-                }
-                else
-                {
-                    if (config.resourcesPath != "")
-                    {
-                        ghc::filesystem::path path(config.resourcesPath);
-                        path = path / "assets/Tiles/circleCollider.png";
-                        config.renderConfig->entityCircleColliderPath = path.string();
-                    }
-                    else
-                    {
-                        using namespace ghc::filesystem;
-
-                        path filePath = "../../assets/Tiles/circleCollider.png";
-                        // Convert path to an absolute path relative to the path of the configuration file
-                        auto tmp = current_path();
-                        current_path(canonical(path(config.yamlPath).parent_path()));
-                        filePath = canonical(filePath);
-                        current_path(tmp);
-                        config.renderConfig->entityCircleColliderPath = filePath.string();
-                    }
-                }
-            }
-            
         }
         else
         {
@@ -843,6 +799,46 @@ namespace SGA
             auto tileName = tileNode.first.as<std::string>();
             auto tileConfig = tileNode.second;
             config.renderConfig->tileSpritePaths.emplace(tileName, parseFilePath(tileConfig["Sprite"], config));
+        }
+
+        const auto tileSpriteOriginNode = gameRendererNode["TileSpriteOrigin"];
+        if (tileSpriteOriginNode.IsDefined())
+        {
+            Vector2f newTileSpriteOrigin;
+
+            newTileSpriteOrigin.x = tileSpriteOriginNode["Width"].as<float>();
+            newTileSpriteOrigin.y = tileSpriteOriginNode["Height"].as<float>();
+
+           config.renderConfig->tileSpriteOrigin = newTileSpriteOrigin;
+        }
+        else
+        {
+            throw std::runtime_error("Tile sprite origin is not defined in GameRenderer section");
+        }
+
+        const auto entitySpriteOriginNode = gameRendererNode["EntitySpriteOrigin"];
+        if (entitySpriteOriginNode.IsDefined())
+        {
+            Vector2f newEntitySpriteOrigin;
+
+            newEntitySpriteOrigin.x = entitySpriteOriginNode["Width"].as<float>();
+            newEntitySpriteOrigin.y = entitySpriteOriginNode["Height"].as<float>();
+
+           config.renderConfig->entitySpriteOrigin = newEntitySpriteOrigin;
+        }
+        else
+        {
+            throw std::runtime_error("Entity sprite origin is not defined in GameRenderer section");
+        }
+
+        const auto isIsometricNode = gameRendererNode["GridIsIsometric"];
+        if (isIsometricNode.IsDefined())
+        {
+            config.renderConfig->isIsometricGrid = isIsometricNode.as<bool>();
+        }
+        else
+        {
+            throw std::runtime_error("GridIsIsometric is not defined in GameRenderer section");
         }
     }
 

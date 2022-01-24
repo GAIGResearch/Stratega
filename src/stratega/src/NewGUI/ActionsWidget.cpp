@@ -1,4 +1,4 @@
-#include <Stratega/NewGUI/TBSActionsWidget.h>
+#include <Stratega/NewGUI/ActionsWidget.h>
 #include <Stratega/NewGUI/World.h>
 #include <imgui-SFML.h>
 #include <imgui.h>
@@ -7,7 +7,7 @@
 #include <sstream>
 namespace SGA
 {
-	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
+	ActionsWidget::ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
 		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
 		selectedEntities(newSelectedEntities),
@@ -17,14 +17,14 @@ namespace SGA
 	{
 	}
 
-	void TBSActionsWidget::update(const GameState& newState)
+	void ActionsWidget::update(const GameState& newState)
 	{
 		this->state = &newState;
 		if(currentPlayerID !=-2)
 		actionsHumanPlayer = fm->generateActions(newState, currentPlayerID);
 	}
 
-	void TBSActionsWidget::render(SGARenderTarget& /*renderTarget*/)
+	void ActionsWidget::render(SGARenderTarget& renderTarget)
 	{
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
@@ -217,7 +217,7 @@ namespace SGA
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 						possibleActionPositionShape.setOrigin(7.5, 7.5);
 						sf::Vector2f temp = world.toSFML(position);
-						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f{0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteOrigin.y / 2)});
 
 						actionsShapes.emplace_back(possibleActionPositionShape);
 					}
@@ -261,7 +261,7 @@ namespace SGA
 						possibleActionPositionShape.setFillColor(sf::Color::White);
 						possibleActionPositionShape.setOrigin(7.5, 7.5);
 						sf::Vector2f temp = world.toSFML(position);
-						possibleActionPositionShape.setPosition(temp + sf::Vector2f(TILE_OFFSET_ORIGIN_X, TILE_OFFSET_ORIGIN_Y));
+						possibleActionPositionShape.setPosition(temp + sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteOrigin.y / 2)});
 
 						actionsShapes.emplace_back(possibleActionPositionShape);
 					}
@@ -291,7 +291,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::mouseButtonReleased(const sf::Event& event)
+	void ActionsWidget::mouseButtonReleased(const sf::Event& event)
 	{
 		if (event.mouseButton.button == sf::Mouse::Left && state->getGameType()==GameType::RTS)
 		{
@@ -371,7 +371,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::mouseButtonPressed(const sf::Event& event)
+	void ActionsWidget::mouseButtonPressed(const sf::Event& event)
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
@@ -429,12 +429,12 @@ namespace SGA
 		}		
 	}
 
-	bool TBSActionsWidget::hasActionsTargetAvailable(const SGA::ActionType& actionType) const
+	bool ActionsWidget::hasActionsTargetAvailable(const SGA::ActionType& actionType) const
 	{
 		return selectedTargets.size() < actionType.getTargets().size();
 	}
 
-	void TBSActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void ActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
 		auto& targetType = actionType.getTargets()[selectedTargets.size()].first;
@@ -484,7 +484,7 @@ namespace SGA
 	}
 
 
-	std::vector<Action> TBSActionsWidget::getWidgetResult(int playerID)
+	std::vector<Action> ActionsWidget::getWidgetResult(int playerID)
 	{
 		std::vector<Action> actionsToExecute;
 		//Check if the we have action type selected
@@ -515,7 +515,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::getTechnologyType(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void ActionsWidget::getTechnologyType(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -645,7 +645,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getEntityType(int playerID, const ActionType& actionType)
+	void ActionsWidget::getEntityType(int playerID, const ActionType& actionType)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -746,14 +746,14 @@ namespace SGA
 
 	}
 
-	void TBSActionsWidget::getPositionReference()
+	void ActionsWidget::getPositionReference()
 	{
 		ImGui::Text("Choose position");
 		//Need to receive a new position from the gui
 		waitingForPosition = true;
 	}
 
-	void TBSActionsWidget::getEntityReference()
+	void ActionsWidget::getEntityReference()
 	{
 		ImGui::Text("Choose entity");
 		//Need to receive a new position from the gui
@@ -761,7 +761,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::verifyActionTargets(int playerID, std::vector<Action>& actionsToExecute)
+	void ActionsWidget::verifyActionTargets(int playerID, std::vector<Action>& actionsToExecute)
 	{
 		//Verify the selected targets are valid						
 		const ActionType& actionType = state->getGameInfo()->getActionType(actionTypeSelected);
@@ -780,7 +780,7 @@ namespace SGA
 		reset();
 	}
 
-	void TBSActionsWidget::verifyPlayerActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void ActionsWidget::verifyPlayerActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -802,7 +802,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::verifyEntityActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void ActionsWidget::verifyEntityActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -834,7 +834,7 @@ namespace SGA
 		}
 	}
 
-	bool TBSActionsWidget::checkSelectedEntitiesAvailable()
+	bool ActionsWidget::checkSelectedEntitiesAvailable()
 	{
 		if (selectedEntities.empty())
 			return false;
@@ -853,7 +853,7 @@ namespace SGA
 		return areAvailable;
 	}
 
-	void TBSActionsWidget::getActionType(int playerID)
+	void ActionsWidget::getActionType(int playerID)
 	{
 		std::unordered_set<int> actionTypes;
 
@@ -878,7 +878,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
+	void ActionsWidget::getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
@@ -889,7 +889,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes)
+	void ActionsWidget::getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
@@ -906,14 +906,14 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::assignPosition(Vector2f position)
+	void ActionsWidget::assignPosition(Vector2f position)
 	{
 		auto positionTarget = SGA::ActionTarget::createPositionActionTarget(position);
 
 		selectedTargets.emplace_back(positionTarget);
 	}
 
-	void TBSActionsWidget::assignEntity(int entity)
+	void ActionsWidget::assignEntity(int entity)
 	{
 		auto entityTarget = SGA::ActionTarget::createEntityActionTarget(entity);
 

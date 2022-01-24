@@ -3,7 +3,7 @@
 #include <Stratega/GUI/GameRenderer.h>
 
 #ifndef BUILD_HEADLESS
-#include <Stratega/NewGUI/NewTBSGameRenderer.h>
+#include <Stratega/NewGUI/GenericGameRenderer.h>
 #endif
 #include <Stratega/Representation/GameState.h>
 
@@ -12,14 +12,7 @@ namespace SGA
 	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2i& resolution)
 	{
 #ifndef BUILD_HEADLESS
-		if (type == GameType::TBS)
-		{
-			return std::make_unique<NewTBSGameRenderer>(resolution);
-		}
-		if (type == GameType::RTS)
-		{
-			return std::make_unique<NewTBSGameRenderer>(resolution);
-		}
+			return std::make_unique<GenericGameRenderer>(resolution);
 #else
 		throw std::runtime_error("Stratega was compiled in headless mode, GUI is not available.");
 #endif

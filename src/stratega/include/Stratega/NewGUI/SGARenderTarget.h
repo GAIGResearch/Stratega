@@ -41,10 +41,15 @@ namespace SGA {
 		{
 			return resourceManager;
 		}
+		const RenderConfig& getRenderConfig()
+		{
+			return renderConfig;
+		}
 	  private:
 
 	   sf::RenderTarget& target;
 	   ResourceManager& resourceManager;
 	   const World& world;
+	   const RenderConfig& renderConfig;
 	};
 }

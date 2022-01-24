@@ -80,12 +80,12 @@ if(NOT SGA_BUILD_HEADLESS)
         NewGUI/FOWControllerWidget.cpp
         NewGUI/PlayerInformationWidget.cpp
         NewGUI/GameStateInformationWidget.cpp
-        NewGUI/TBSActionsWidget.cpp
+        NewGUI/ActionsWidget.cpp
         NewGUI/WorldControllerWidget.cpp
         NewGUI/SGARenderTarget.cpp
         NewGUI/SGADrawable.cpp
 
-        NewGUI/NewTBSGameRenderer.cpp
+        NewGUI/GenericGameRenderer.cpp
         NewGUI/SpriteData.cpp
         NewGUI/ResourceManager.cpp
         )
