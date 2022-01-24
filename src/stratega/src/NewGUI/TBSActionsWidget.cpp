@@ -11,9 +11,9 @@ namespace SGA
 		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
 		actionAssignment(newActionAssignment),
-		futureActionsToPlay(newFutureActionsToPlay),
-		currentPlayerID(newPlayerID),
-		selectedEntities(newSelectedEntities)		
+		futureActionsToPlay(newFutureActionsToPlay),		
+		selectedEntities(newSelectedEntities),
+		currentPlayerID(newPlayerID)
 	{
 	}
 
