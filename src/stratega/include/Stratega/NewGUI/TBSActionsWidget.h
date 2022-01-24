@@ -26,7 +26,7 @@ namespace SGA
 		//Let GUI know the widget is waiting for a position or entity to be assigned
 		bool waitingForPosition = false;
 		bool waitingForEntity = false;
-		ActionAssignment& temp;
+		ActionAssignment& actionAssignment;
 
 		std::vector<Action>& futureActionsToPlay;
 
@@ -37,7 +37,7 @@ namespace SGA
 		bool dragging = false;
 		sf::Vector2f oldMousePosition;
 
-		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::vector<Action>& futureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
+		TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
@@ -78,24 +78,24 @@ namespace SGA
 			return selectedEntities.find(unitID) != selectedEntities.end();
 		}
 
-		std::vector<SGA::Action> getWidgetResult(int playerID);
+		std::vector<SGA::Action> getWidgetResult(int pyID);
 
 		//Get TargetTypes
-		void getActionTarget(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getActionTarget(int pyID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 
-		void getEntityType(int playerID, const SGA::ActionType& actionType);
-		void getTechnologyType(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getEntityType(int pyID, const SGA::ActionType& actionType);
+		void getTechnologyType(int pyID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 		void getPositionReference();
 		void getEntityReference();
 
 		//Verify action targets
-		void verifyActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute);
-		void verifyPlayerActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
-		void verifyEntityActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
+		void verifyActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute);
+		void verifyPlayerActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
+		void verifyEntityActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
 
 		//Get action type
-		void getActionType(int playerID);
-		void getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes);
+		void getActionType(int pyID);
+		void getPlayerPossibleActionTypes(int pyID, std::unordered_set<int>& actionTypes);
 		void getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes);
 
 		// Assign to the list of selected targets a position target

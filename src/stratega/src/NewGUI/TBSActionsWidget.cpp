@@ -7,11 +7,11 @@
 #include <sstream>
 namespace SGA
 {
-	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm, ActionAssignment& temp, std::vector<Action>& futureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
-		SGAWidget(widgetName, newWindow, newWorld, fm),
+	TBSActionsWidget::TBSActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
+		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
-		temp(temp),
-		futureActionsToPlay(futureActionsToPlay),
+		actionAssignment(newActionAssignment),
+		futureActionsToPlay(newFutureActionsToPlay),
 		selectedEntities(newSelectedEntities),
 		playerID(newPlayerID)
 	{
@@ -59,8 +59,8 @@ namespace SGA
 			{
 				if (!actionsToExecute.empty())
 				{
-					temp.clear();
-					temp.assignActionOrReplace(actionsToExecute.front());
+					actionAssignment.clear();
+					actionAssignment.assignActionOrReplace(actionsToExecute.front());
 				}
 			}
 			else
@@ -70,7 +70,7 @@ namespace SGA
 					if (action.getActionTypeID() == -1 || action.isPlayerAction())
 					{
 						//If continuous or Player action we assign it directly
-						temp.assignActionOrReplace(action);
+						actionAssignment.assignActionOrReplace(action);
 					}
 					else
 					{
@@ -173,8 +173,8 @@ namespace SGA
 
 			if (ImGui::Button(actionInfo.c_str()))
 			{
-				temp.clear();
-				temp.assignActionOrReplace(action);
+				actionAssignment.clear();
+				actionAssignment.assignActionOrReplace(action);
 				break;
 			}
 		}
@@ -424,8 +424,8 @@ namespace SGA
 		if (event.mouseButton.button == sf::Mouse::Right && state->getGameType()==GameType::TBS)
 		{
 			//selectedAction = Action::createEndAction(pointOfViewPlayerID);
-			temp.clear();
-			temp=temp.createEndActionAssignment(state->getCurrentTBSPlayer());
+			actionAssignment.clear();
+			actionAssignment = actionAssignment.createEndActionAssignment(state->getCurrentTBSPlayer());
 		}		
 	}
 
@@ -434,7 +434,7 @@ namespace SGA
 		return selectedTargets.size() < actionType.getTargets().size();
 	}
 
-	void TBSActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::getActionTarget(int pyID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
 		auto& targetType = actionType.getTargets()[selectedTargets.size()].first;
@@ -484,7 +484,7 @@ namespace SGA
 	}
 
 
-	std::vector<Action> TBSActionsWidget::getWidgetResult(int playerID)
+	std::vector<Action> TBSActionsWidget::getWidgetResult(int pyID)
 	{
 		std::vector<Action> actionsToExecute;
 		//Check if the we have action type selected
@@ -515,7 +515,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::getTechnologyType(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::getTechnologyType(int pyID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -645,7 +645,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getEntityType(int playerID, const ActionType& actionType)
+	void TBSActionsWidget::getEntityType(int pyID, const ActionType& actionType)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -761,7 +761,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::verifyActionTargets(int playerID, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::verifyActionTargets(int pyID, std::vector<Action>& actionsToExecute)
 	{
 		//Verify the selected targets are valid						
 		const ActionType& actionType = state->getGameInfo()->getActionType(actionTypeSelected);
@@ -780,7 +780,7 @@ namespace SGA
 		reset();
 	}
 
-	void TBSActionsWidget::verifyPlayerActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void TBSActionsWidget::verifyPlayerActionTargets(int pyID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -802,7 +802,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::verifyEntityActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void TBSActionsWidget::verifyEntityActionTargets(int pyID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -853,7 +853,7 @@ namespace SGA
 		return areAvailable;
 	}
 
-	void TBSActionsWidget::getActionType(int playerID)
+	void TBSActionsWidget::getActionType(int pyID)
 	{
 		std::unordered_set<int> actionTypes;
 
@@ -878,12 +878,12 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
+	void TBSActionsWidget::getPlayerPossibleActionTypes(int pyID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
 
-		for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
+		for (auto& attachedActions : state->getPlayer(pyID)->getAttachedActions())
 		{
 			actionTypes.insert(attachedActions.actionTypeID);
 		}

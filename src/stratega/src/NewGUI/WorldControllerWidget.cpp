@@ -3,17 +3,17 @@
 #include <imgui.h>
 namespace SGA
 {
-	WorldControllerWidget::WorldControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
-		SGAWidget(widgetName, newWindow, newWorld, fm)
+	WorldControllerWidget::WorldControllerWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM):
+		SGAWidget(widgetName, newWindow, newWorld, newFM)
 	{
 	}
 
-	void WorldControllerWidget::update(const GameState& state)
+	void WorldControllerWidget::update(const GameState& /*state*/)
 	{
 
 	}
 	
-	void WorldControllerWidget::render(SGARenderTarget& renderTarget)
+	void WorldControllerWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
 		ImGui::Begin("World Controller");
 
