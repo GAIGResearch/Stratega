@@ -21,7 +21,7 @@ namespace SGA {
           newRound = false;
        }
        parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
-       auto units = state.getPlayerEntities(getPlayerID());  // std::cout << "*** -2" << std::endl;
+       auto units = state.getPlayerEntities(getPlayerID()); 
 
        /* initialize the order of unit moving, call at the first step store the entities*/
        if(unitIndexInitialized == false) {
@@ -139,8 +139,6 @@ namespace SGA {
        // reuse the tree after an endTurnAction
        // std::cout << actionSpace.size() << std::endl;
        if(actionSpace.size() == 1) {
-          // std::cout << "[UnitMCTS]: actionSpace.size() == 1 " << unitIndex[unitThisStep] <<
-          // std::endl;
           rootNode = nullptr;
           previousActionIndex = -1;
           step++;
@@ -275,14 +273,13 @@ namespace SGA {
              tmp_batch_used++;
 
              // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
-             if(parameters_.REMAINING_FM_CALLS <= 0
-                || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
+             if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
                 rootNode->eliminateAbstraction();
                 // deleteAbstraction();
                 break;
              }
 
-             if(tmp_batch_used >= 0) {
+             if(tmp_batch_used >= parameters_.absIteration) {
                 stop_abstraction = true;
                 deleteAbstraction();  // initialize the array empty again,
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false

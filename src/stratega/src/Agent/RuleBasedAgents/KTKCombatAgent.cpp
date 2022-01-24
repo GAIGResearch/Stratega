@@ -202,6 +202,7 @@ namespace SGA
 
 	ActionAssignment KTKCombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
+		//std::cout << "start turn" << std::endl;
 		for (const auto& a : currentState.getGameInfo()->getActionTypes())
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.getName();
@@ -253,7 +254,6 @@ namespace SGA
 				highestScore = score;
 				bestAttackTarget = &opp;
 			}
-
 		}
 
 
@@ -275,6 +275,7 @@ namespace SGA
 		auto actions = fm.generateActions(currentState, getPlayerID());
 		Action nextAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
 		bool foundAction = false;
+
 		for (auto unit : myUnits)
 		{
 			auto subActions = filterUnitActions(actions, unit);
@@ -307,11 +308,12 @@ namespace SGA
 					continue; // No healerino opponents units
 
 				double targetHealth = targetUnit.getParameter("Health");
-				double maxHealth = (currentState.getGameInfo()->getEntityTypes()).at(targetUnit.getID()).getParamMax("Health");
+				double maxHealth = targetUnit.getEntityType().getParamMax("Health");
 				if (targetHealth >= maxHealth)
 					continue; // Stop healing units that are already full
 
 				auto score = getHealScore(actions, targetUnit, heal, opponentUnits, currentState);
+
 				if (score > highestScore)
 				{
 					highestScore = score;
@@ -339,6 +341,7 @@ namespace SGA
 		{
 			//std::cout << "Combat Agent " << "does something" << std::endl;
 		}
+		//std::cout << "end combat agent" << std::endl;
 
 		return ActionAssignment::fromSingleAction(nextAction);
 	}

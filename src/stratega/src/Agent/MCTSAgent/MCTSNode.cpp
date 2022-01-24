@@ -329,8 +329,8 @@ namespace SGA
 		}
 		else
 		{
-			if (treesize % 500 == 0)
-				std::cout << "tree size: " << treesize << "\n";
+			//if (treesize % 500 == 0)
+			//	std::cout << "tree size: " << treesize << "\n";
 		}
 	}
 

@@ -35,6 +35,7 @@ namespace SGA {
         // approximate homomorhpism
         int batch_size = 20;
         int n_batch_stop = 2;
+        int absIteration = 10000;
 
         // for state abstraction according to the value;
         std::vector< double > approx_Q = {};
@@ -69,6 +70,7 @@ namespace YAML {
             rhs.CONTINUE_PREVIOUS_SEARCH = node["CONTINUE_PREVIOUS_SEARCH"].as< bool >(
                 rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.n_batch_stop = node["N_BATCH_STOP"].as< int >(rhs.n_batch_stop);
+            rhs.absIteration = node["ABS_ITERATION"].as< int >(rhs.absIteration);
             return true;
         }
     };
