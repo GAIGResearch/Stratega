@@ -7,17 +7,17 @@
 #include <sstream>
 namespace SGA
 {
-	PlayerInformationWidget::PlayerInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm):
-		SGAWidget(widgetName, newWindow, newWorld, fm)
+	PlayerInformationWidget::PlayerInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM):
+		SGAWidget(widgetName, newWindow, newWorld, newFM)
 	{
 	}
 
-	void PlayerInformationWidget::update(const GameState& state)
+	void PlayerInformationWidget::update(const GameState& newState)
 	{
-		this->state = &state;
+		this->state = &newState;
 	}
 	
-	void PlayerInformationWidget::render(SGARenderTarget& renderTarget)
+	void PlayerInformationWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
 		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
 		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);

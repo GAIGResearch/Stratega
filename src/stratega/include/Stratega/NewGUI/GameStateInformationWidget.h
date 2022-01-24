@@ -9,9 +9,9 @@ namespace SGA
 	
 	struct GameStateInformationWidget : public SGAWidget
 	{
-		GameStateInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* fm);
+		GameStateInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM);
 
-		void update(const GameState& state) override;
+		void update(const GameState& newState) override;
 		void render(SGARenderTarget& renderTarget) override;
 
 	private:
