@@ -9,7 +9,7 @@ namespace SGA
     {
     }
 
-    void SGADrawableTile::update(float dt)
+    void SGADrawableTile::update(float /*dt*/)
     {
 
     }

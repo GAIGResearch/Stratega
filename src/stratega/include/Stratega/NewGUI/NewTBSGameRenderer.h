@@ -34,7 +34,7 @@ namespace SGA
 		void init(const GameState& initialState, const GameConfig& gameConfig) override;
 		void update(const GameState& state) override;
 		void render() override;
-		void setPlayerPointOfView(int playerID) override;
+		void setPlayerPointOfView(int newPlayerID) override;
 		ActionAssignment getPlayerActions() override;
 
 		bool isActionAvailable() override

@@ -401,10 +401,10 @@ namespace SGA
 		}
 	}
 
-	void NewTBSGameRenderer::setPlayerPointOfView(int playerID)
+	void NewTBSGameRenderer::setPlayerPointOfView(int newPlayerID)
 	{
-		this->playerID = playerID;
-		settings.selectedPlayerID = playerID;
+		this->playerID = newPlayerID;
+		settings.selectedPlayerID = newPlayerID;
 		update(state);		
 	}
 }
