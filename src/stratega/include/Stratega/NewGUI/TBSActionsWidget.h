@@ -31,7 +31,7 @@ namespace SGA
 		std::vector<Action>& futureActionsToPlay;
 
 		//Current player
-		int& playerID;
+		int& currentPlayerID;
 
 		//RTS selection box
 		bool dragging = false;
@@ -78,24 +78,24 @@ namespace SGA
 			return selectedEntities.find(unitID) != selectedEntities.end();
 		}
 
-		std::vector<SGA::Action> getWidgetResult(int pyID);
+		std::vector<SGA::Action> getWidgetResult(int playerID);
 
 		//Get TargetTypes
-		void getActionTarget(int pyID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getActionTarget(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 
-		void getEntityType(int pyID, const SGA::ActionType& actionType);
-		void getTechnologyType(int pyID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getEntityType(int playerID, const SGA::ActionType& actionType);
+		void getTechnologyType(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 		void getPositionReference();
 		void getEntityReference();
 
 		//Verify action targets
-		void verifyActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute);
-		void verifyPlayerActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
-		void verifyEntityActionTargets(int pyID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
+		void verifyActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute);
+		void verifyPlayerActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
+		void verifyEntityActionTargets(int playerID, std::vector<SGA::Action>& actionsToExecute, const SGA::ActionType& actionType, SGA::Action& newAction);
 
 		//Get action type
-		void getActionType(int pyID);
-		void getPlayerPossibleActionTypes(int pyID, std::unordered_set<int>& actionTypes);
+		void getActionType(int playerID);
+		void getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes);
 		void getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes);
 
 		// Assign to the list of selected targets a position target

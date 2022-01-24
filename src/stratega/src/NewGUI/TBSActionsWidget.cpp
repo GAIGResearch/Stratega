@@ -13,15 +13,15 @@ namespace SGA
 		actionAssignment(newActionAssignment),
 		futureActionsToPlay(newFutureActionsToPlay),
 		selectedEntities(newSelectedEntities),
-		playerID(newPlayerID)
+		currentPlayerID(newPlayerID)
 	{
 	}
 
 	void TBSActionsWidget::update(const GameState& state)
 	{
 		this->state = &state;
-		if(playerID!=-2)
-		actionsHumanPlayer = fm->generateActions(state, playerID);
+		if(currentPlayerID !=-2)
+		actionsHumanPlayer = fm->generateActions(state, currentPlayerID);
 	}
 
 	void TBSActionsWidget::render(SGARenderTarget& renderTarget)
@@ -52,9 +52,9 @@ namespace SGA
 		ImGui::Text("Actions");
 
 		//Ask widget to get
-		if (playerID != -1)
+		if (currentPlayerID != -1)
 		{
-			auto actionsToExecute = getWidgetResult(playerID);
+			auto actionsToExecute = getWidgetResult(currentPlayerID);
 			if (state->getGameType()==GameType::TBS)
 			{
 				if (!actionsToExecute.empty())
@@ -434,7 +434,7 @@ namespace SGA
 		return selectedTargets.size() < actionType.getTargets().size();
 	}
 
-	void TBSActionsWidget::getActionTarget(int pyID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
 		auto& targetType = actionType.getTargets()[selectedTargets.size()].first;
@@ -484,7 +484,7 @@ namespace SGA
 	}
 
 
-	std::vector<Action> TBSActionsWidget::getWidgetResult(int pyID)
+	std::vector<Action> TBSActionsWidget::getWidgetResult(int playerID)
 	{
 		std::vector<Action> actionsToExecute;
 		//Check if the we have action type selected
@@ -515,7 +515,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::getTechnologyType(int pyID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::getTechnologyType(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -645,7 +645,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getEntityType(int pyID, const ActionType& actionType)
+	void TBSActionsWidget::getEntityType(int playerID, const ActionType& actionType)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -761,7 +761,7 @@ namespace SGA
 	}
 
 
-	void TBSActionsWidget::verifyActionTargets(int pyID, std::vector<Action>& actionsToExecute)
+	void TBSActionsWidget::verifyActionTargets(int playerID, std::vector<Action>& actionsToExecute)
 	{
 		//Verify the selected targets are valid						
 		const ActionType& actionType = state->getGameInfo()->getActionType(actionTypeSelected);
@@ -780,7 +780,7 @@ namespace SGA
 		reset();
 	}
 
-	void TBSActionsWidget::verifyPlayerActionTargets(int pyID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void TBSActionsWidget::verifyPlayerActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -802,7 +802,7 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::verifyEntityActionTargets(int pyID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
+	void TBSActionsWidget::verifyEntityActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
 	{
 		//Generate action targets + source
 		std::vector<ActionTarget> actionTargets;
@@ -853,7 +853,7 @@ namespace SGA
 		return areAvailable;
 	}
 
-	void TBSActionsWidget::getActionType(int pyID)
+	void TBSActionsWidget::getActionType(int playerID)
 	{
 		std::unordered_set<int> actionTypes;
 
@@ -878,12 +878,12 @@ namespace SGA
 		}
 	}
 
-	void TBSActionsWidget::getPlayerPossibleActionTypes(int pyID, std::unordered_set<int>& actionTypes)
+	void TBSActionsWidget::getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
 
-		for (auto& attachedActions : state->getPlayer(pyID)->getAttachedActions())
+		for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
 		{
 			actionTypes.insert(attachedActions.actionTypeID);
 		}

@@ -1,4 +1,3 @@
-#include <Stratega/NewGUI/StrategaRenderer.h>
 #include <Stratega//Configuration/GameConfigParser.h>
 #include <Stratega/Game/GameRunner.h>
 #include <Stratega/Utils/filesystem.hpp>
