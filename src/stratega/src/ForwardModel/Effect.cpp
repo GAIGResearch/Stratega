@@ -174,7 +174,17 @@ namespace SGA
 		if(targetResource <= 0)
 			entity.flagRemove();
 	}
+
+	Empty::Empty(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0])
+	{
+	}
 	
+	void Empty::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+	}
+
 	Push::Push(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		entityParam(parameters[0]), targetParam(parameters[1])

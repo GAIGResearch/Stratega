@@ -432,6 +432,7 @@ namespace SGA
         else if (name == "Gather")   actionCategory = SGA::ActionCategory::Gather;
         else if (name == "Move")     actionCategory = SGA::ActionCategory::Move;
         else if (name == "Spawn")    actionCategory = SGA::ActionCategory::Spawn;
+        else if (name == "Empty")    actionCategory = SGA::ActionCategory::Empty;
         else throw std::runtime_error("Cannot find action category: " + name);
 		
         return actionCategory;

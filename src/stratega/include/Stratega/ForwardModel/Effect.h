@@ -79,6 +79,15 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class Empty :public Effect
+	{
+		FunctionParameter entityParam;
+		//FunctionParameter targetPositionParam;
+	public:
+		Empty(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class Push : public Effect
 	{
 		FunctionParameter entityParam;

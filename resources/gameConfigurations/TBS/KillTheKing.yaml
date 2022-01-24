@@ -5,7 +5,7 @@ GameConfig:
 
 
 Agents:
-    #- HumanAgent
+    - HumanAgent
     #- OSLAAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
@@ -14,12 +14,12 @@ Agents:
     #    RolloutLength: 20
     #    CONTINUE_PREVIOUS_SEARCH: false
     #    N_BATCH_STOP: -1
-    - UnitMCTSAgent:
-        Budget: FMCALLS
-        fmCalls: 20000
-        RolloutLength: 20
-        CONTINUE_PREVIOUS_SEARCH: false
-        N_BATCH_STOP: -1
+    #- UnitMCTSAgent:
+    #    Budget: FMCALLS
+    #    fmCalls: 20000
+    #    RolloutLength: 20
+    #    CONTINUE_PREVIOUS_SEARCH: false
+    #    N_BATCH_STOP: -1
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    FmCalls: 20000
@@ -131,6 +131,13 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
+
+    Empty:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Effects:
+            - "ModifyResource(Source.MovementPoints, -1)"
 
 
 Entities:
