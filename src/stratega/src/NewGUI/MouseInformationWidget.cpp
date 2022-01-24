@@ -48,8 +48,8 @@ namespace SGA
 		auto strategaMousPos = world.toStrategaRounded(mousePos);
 		std::string gridMousePosText = "Grid Position Round: (" + std::to_string(strategaMousPos.x) + "," + std::to_string(strategaMousPos.y) + ")";
 		std::string windowMousePosText = "Mouse Position Round: (" + std::to_string((int)mousePos.x) + "," + std::to_string((int)mousePos.y) + ")";
-		ImGui::TextUnformatted(gridMousePosText.c_str());
-		ImGui::TextUnformatted(windowMousePosText.c_str());
+		ImGui::Text("%s", gridMousePosText.c_str());
+		ImGui::Text("%s", windowMousePosText.c_str());
 		ImGui::Checkbox("Draw mouse over grid", &drawGridTile);
 		ImGui::End();
 	}
@@ -107,7 +107,7 @@ namespace SGA
 
 				auto& entityType = entity->getEntityType();
 
-				ImGui::TextUnformatted(entityType.getName().c_str());
+				ImGui::Text("%s", entityType.getName().c_str());
 				ImGui::Columns(2, "mixed");
 				ImGui::SetColumnWidth(0, 100.0f);
 
@@ -128,7 +128,7 @@ namespace SGA
 
 				std::string owner = "Owner ID: ";
 				owner += std::to_string(entity->getOwnerID());
-				ImGui::TextUnformatted(owner.c_str());
+				ImGui::Text("%s", owner.c_str());
 				ImGui::Text("Parameters: ");
 
 				for (const auto& parameter : entityType.getParameters())
@@ -139,7 +139,7 @@ namespace SGA
 					std::string valueParameter = stream.str();
 
 					std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
-					ImGui::BulletText(parameterInfo.c_str());
+					ImGui::BulletText("%s", parameterInfo.c_str());
 				}
 
 				ImGui::NextColumn();
@@ -188,7 +188,7 @@ namespace SGA
 
 				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAt(gridPosRounded).getTileTypeID());
 
-				ImGui::TextUnformatted(tileType.getName().c_str());
+				ImGui::Text("%s", tileType.getName().c_str());
 				ImGui::Columns(2, "mixed");
 				ImGui::SetColumnWidth(0, 100.0f);
 

@@ -36,7 +36,7 @@ namespace SGA
 				std::string valueParameter = stream.str();
 
 				std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
-				ImGui::BulletText(parameterInfo.c_str());
+				ImGui::BulletText("%s", parameterInfo.c_str());
 			}
 		}
 

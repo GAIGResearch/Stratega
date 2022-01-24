@@ -22,7 +22,7 @@ namespace SGA
 
 		ImGui::Separator();
 		std::string temp = "Drawable number: " + std::to_string(world.drawableList.size());
-		ImGui::Text(temp.c_str());
+		ImGui::Text("%s", temp.c_str());
 		temp = "Animators number playing: " + std::to_string(world.animatingNumber);
 
 		if (world.animationsRunning())
@@ -30,7 +30,7 @@ namespace SGA
 		else
 			ImGui::Text("Animations running: false");
 
-		ImGui::Text(temp.c_str());
+		ImGui::Text("%s", temp.c_str());
 
 		ImGui::Separator();
 		ImGui::Checkbox("Interpolate GameStates", &world.interpolateStates);
