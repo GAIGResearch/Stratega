@@ -50,11 +50,11 @@ namespace SGA
 					n_repeat_selection = 0;
 			}
 			last_selected = selected;
-			double delta = selected->rollOut(forwardModel, params, randomGenerator);
-
+            double delta = selected->rollOut(forwardModel, params, randomGenerator);
+            
 			backUp(selected, delta);
 			params.currentIterations++; 
-			if (n_repeat_selection >= 100)
+			if (n_repeat_selection >= 20) // repeated selection
 				return;
 		}
 	}
