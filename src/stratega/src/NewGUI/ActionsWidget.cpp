@@ -184,7 +184,7 @@ namespace SGA
 		ImGui::EndChild();
 		ImGui::End();
 
-		float circleShapeSize = renderTarget.getResourceManager().getTileSpriteSize().y / 10;
+		float circleShapeSize = static_cast<float>(renderTarget.getResourceManager().getTileSpriteSize().y) / 10.0f;
 		//Draw possible actions
 		std::vector<sf::CircleShape> actionsShapes;
 		if (waitingForPosition)

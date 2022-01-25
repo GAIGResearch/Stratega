@@ -9,7 +9,7 @@
 
 namespace SGA
 {
-	std::unique_ptr<GameRenderer> createRenderer(const GameType& type, SGA::Vector2i& resolution)
+	std::unique_ptr<GameRenderer> createRenderer(const GameType& /*type*/, SGA::Vector2i& resolution)
 	{
 #ifndef BUILD_HEADLESS
 			return std::make_unique<GenericGameRenderer>(resolution);
