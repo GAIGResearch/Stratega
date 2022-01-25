@@ -6,7 +6,8 @@
 int main()
 {
 	std::mt19937 rngEngine(0);
-	std::string configPath("../resources/gameConfigurations/TBS/PushThemAll.yaml");
+	//std::string configPath("../resources/gameConfigurations/RTS/BasicRTS.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();

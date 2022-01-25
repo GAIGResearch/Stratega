@@ -13,6 +13,7 @@ else()
 endif()
 
 pybind11_add_module(stratega ${BINDING_SOURCE_FILES})
+
 message("\nAdding pybind11 module.\n")
 target_link_libraries(stratega PUBLIC Stratega)
 set_target_properties(stratega PROPERTIES
