@@ -52,12 +52,10 @@ namespace SGA
 	{
 		config = &gameConfig;
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
-		auto temp2 = config->renderConfig->tileSpriteSize;
-		//works 256, 144
 		if(config->renderConfig->isIsometricGrid) 
-			world = World::createIsometricGrid(config->renderConfig->tileSpriteSize.x, config->renderConfig->tileSpriteSize.y, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+			world = World::createIsometricGrid(static_cast<int>(config->renderConfig->tileSpriteSize.x), static_cast<int>(config->renderConfig->tileSpriteSize.y), { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
 		else
-			world = World::createRectangleGrid(config->renderConfig->tileSpriteSize.x, config->renderConfig->tileSpriteSize.y, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+			world = World::createRectangleGrid(static_cast<int>(config->renderConfig->tileSpriteSize.x), static_cast<int>(config->renderConfig->tileSpriteSize.y), { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
 
 		
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
