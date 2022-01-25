@@ -24,6 +24,7 @@ namespace SGA
 		sf::Color getPlayerColor(int playerID) const;
 		
 		sf::Vector2u getSpriteSize() const;
+		sf::Vector2u getTileSpriteSize() const;
 		bool tryGetTileSelectionSprite(SpriteData& outputData) const;
 		bool tryGetFowSprite(SpriteData& outputData) const;
 		SpriteData getEntitySprite(const EntityType& entityType) const;

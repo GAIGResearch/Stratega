@@ -54,6 +54,10 @@ sf::Vector2u ResourceManager::getSpriteSize() const
 {
    return entityAtlas.getSpriteSize();
 }
+sf::Vector2u ResourceManager::getTileSpriteSize() const
+{
+   return tileAtlas.getSpriteSize();
+}
 
 bool ResourceManager::tryGetTileSelectionSprite(SpriteData& outputData) const
 {

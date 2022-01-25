@@ -16,40 +16,39 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
-    GridIsIsometric: true
+        FogOfWar: ../../assets/Test2DTopDown/notVisible.png
+    GridIsIsometric: false
     TileSpriteOrigin:
-        Width: 128
-        Height: 112
+        Width: 0
+        Height: 0
     EntitySpriteOrigin:
-        Width: 256
-        Height: 360
+        Width: 0
+        Height: 0
     TileSpriteSize:
-        Width: 256
-        Height: 144
+        Width: 16
+        Height: 16
     EntitySpriteSize:
-        Width: 512
-        Height: 512
+        Width: 16
+        Height: 16
     #Optional:
     #Font: ../../assets/arial.ttf
-    #OutlineShader: ../../assets/OutLine.frag
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../assets/Test2DTopDown/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../assets/Test2DTopDown/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../assets/Test2DTopDown/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../assets/Test2DTopDown/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -148,7 +147,7 @@ Actions:
     
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../assets/Test2DTopDown/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -159,7 +158,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../assets/Test2DTopDown/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -170,7 +169,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../assets/Test2DTopDown/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
@@ -181,7 +180,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../../assets/Entities/unit_1.png
+        Sprite: ../../assets/Test2DTopDown/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:

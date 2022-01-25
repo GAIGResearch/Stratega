@@ -831,6 +831,36 @@ namespace SGA
             throw std::runtime_error("Entity sprite origin is not defined in GameRenderer section");
         }
 
+        const auto entitySpriteSizeNode = gameRendererNode["EntitySpriteSize"];
+        if (entitySpriteSizeNode.IsDefined())
+        {
+            Vector2f newEntitySpriteSize;
+
+            newEntitySpriteSize.x = entitySpriteSizeNode["Width"].as<float>();
+            newEntitySpriteSize.y = entitySpriteSizeNode["Height"].as<float>();
+
+           config.renderConfig->entitySpriteSize = newEntitySpriteSize;
+        }
+        else
+        {
+            throw std::runtime_error("Entity sprite size is not defined in GameRenderer section");
+        }
+
+        const auto tileSpriteSizeNode = gameRendererNode["TileSpriteSize"];
+        if (tileSpriteSizeNode.IsDefined())
+        {
+            Vector2f newTileSpriteSize;
+
+            newTileSpriteSize.x = tileSpriteSizeNode["Width"].as<float>();
+            newTileSpriteSize.y = tileSpriteSizeNode["Height"].as<float>();
+
+           config.renderConfig->tileSpriteSize = newTileSpriteSize;
+        }
+        else
+        {
+            throw std::runtime_error("Tile sprite size is not defined in GameRenderer section");
+        }
+
         const auto isIsometricNode = gameRendererNode["GridIsIsometric"];
         if (isIsometricNode.IsDefined())
         {

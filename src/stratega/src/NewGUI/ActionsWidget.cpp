@@ -184,7 +184,7 @@ namespace SGA
 		ImGui::EndChild();
 		ImGui::End();
 
-
+		float circleShapeSize = renderTarget.getResourceManager().getTileSpriteSize().y / 10;
 		//Draw possible actions
 		std::vector<sf::CircleShape> actionsShapes;
 		if (waitingForPosition)
@@ -213,11 +213,16 @@ namespace SGA
 					{
 						auto position = actionTarget.getPosition(*state);
 
-						sf::CircleShape possibleActionPositionShape(15);
+						sf::CircleShape possibleActionPositionShape(circleShapeSize);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
-						possibleActionPositionShape.setOrigin(7.5, 7.5);
+						possibleActionPositionShape.setOrigin(circleShapeSize*0.5f, circleShapeSize*0.5f);
 						sf::Vector2f temp = world.toSFML(position);
-						possibleActionPositionShape.setPosition(temp + sf::Vector2f{0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteOrigin.y / 2)});
+						sf::Vector2f offset;
+						if(renderTarget.getRenderConfig().isIsometricGrid)
+							offset= sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+						else
+							offset= sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+						possibleActionPositionShape.setPosition(temp + offset);
 
 						actionsShapes.emplace_back(possibleActionPositionShape);
 					}
@@ -257,11 +262,17 @@ namespace SGA
 					{
 						auto position = possibleAction.getTargets()[i].getPosition(*state);
 
-						sf::CircleShape possibleActionPositionShape(15);
+						sf::CircleShape possibleActionPositionShape(circleShapeSize);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
-						possibleActionPositionShape.setOrigin(7.5, 7.5);
+						possibleActionPositionShape.setOrigin(circleShapeSize*0.5f, circleShapeSize * 0.5f);
 						sf::Vector2f temp = world.toSFML(position);
-						possibleActionPositionShape.setPosition(temp + sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteOrigin.y / 2)});
+
+						sf::Vector2f offset;
+						if (renderTarget.getRenderConfig().isIsometricGrid)
+							offset = sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+						else
+							offset = sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+						possibleActionPositionShape.setPosition(temp + offset);
 
 						actionsShapes.emplace_back(possibleActionPositionShape);
 					}

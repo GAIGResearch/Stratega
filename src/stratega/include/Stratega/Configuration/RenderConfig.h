@@ -17,6 +17,9 @@ namespace SGA
 		Vector2f tileSpriteOrigin;
 		Vector2f entitySpriteOrigin;
 
+		Vector2f tileSpriteSize;
+		Vector2f entitySpriteSize;
+
 		std::map<std::string, std::string> entitySpritePaths;
 		std::map<std::string, std::string> tileSpritePaths;
 

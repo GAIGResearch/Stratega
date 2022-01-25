@@ -34,7 +34,8 @@ namespace SGA
 		fowState(),
 		window(sf::VideoMode(static_cast<unsigned>(resolution.x), static_cast<unsigned>(resolution.y)), "Stratega GUI", sf::Style::Default | sf::Style::Titlebar),
 		zoomValue(5.f),
-		dragging(false)
+		dragging(false),
+		playerID(-1)
 	{
 		//Initialize View
 		sf::View view = window.getView();
@@ -50,13 +51,15 @@ namespace SGA
 	void GenericGameRenderer::init(const GameState& initialState, const GameConfig& gameConfig)
 	{
 		config = &gameConfig;
-
-		if(config->renderConfig->isIsometricGrid)
-			world = World::createIsometricGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
-		else
-			world = World::createRectangleGrid(256, 144, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
-
 		resourceManager = ResourceManager::constructFromConfig(gameConfig);
+		auto temp2 = config->renderConfig->tileSpriteSize;
+		//works 256, 144
+		if(config->renderConfig->isIsometricGrid) 
+			world = World::createIsometricGrid(config->renderConfig->tileSpriteSize.x, config->renderConfig->tileSpriteSize.y, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+		else
+			world = World::createRectangleGrid(config->renderConfig->tileSpriteSize.x, config->renderConfig->tileSpriteSize.y, { initialState.getBoardWidth(), initialState.getBoardHeight() }, selectedEntities, settings);
+
+		
 		renderTarget = std::make_unique<SGARenderTarget>(window, *resourceManager, world, *gameConfig.renderConfig);
 		ImGui::SFML::Init(window);
 		settings.renderFogOfWar = config->applyFogOfWar;
@@ -194,12 +197,6 @@ namespace SGA
 			ImGui::Checkbox(widget->name.c_str(), &widget->enabled);
 		}
 		ImGui::End();
-
-		sf::CircleShape s(10);
-		s.setOrigin({ 5, 5 });
-		s.setPosition(world.toSFML(SGA::Vector2f{ 0, 0 }));
-		s.setFillColor(sf::Color::Red);
-		window.draw(s);
 
 		ImGui::SFML::Render(window);
 		window.display();
