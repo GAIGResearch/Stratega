@@ -9,6 +9,7 @@ namespace SGA {
         parameters_.PLAYER_ID = getPlayerID();
         //if (parameters_.heuristic == nullptr)
         //    parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+        std::unique_ptr< StateHeuristic > STATE_HEURISTIC = std::make_unique< AimToKingHeuristic >(initialState);
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
@@ -32,8 +33,7 @@ namespace SGA {
           unitIndexInitialized = true;
        }
 
-       std::map< int, int > eIDtoUnitArrayIndex =
-          {};  // each step, the unit array's index would change because the unit dies
+       std::map< int, int > eIDtoUnitArrayIndex = {};  // each step, the unit array's index would change because the unit dies
 
        int tmp_counter1 = 0;
        for(auto u : units) {
@@ -62,8 +62,6 @@ namespace SGA {
              // std::cout << "[DEBUG57]: actionSpace size " << actionSpace_tmp.size() << std::endl;
           }
        }
-
-       // std::cout << "*** -1" << std::endl;
 
        // if need to roll, decide which is the next.
        if(needNextUnit) {
@@ -113,9 +111,6 @@ namespace SGA {
        // initialize heuristic
        const auto processedForwardModel = parameters_.preprocessForwardModel(
           dynamic_cast< const TBSForwardModel& >(forwardModel));
-       if(parameters_.STATE_HEURISTIC == nullptr) {
-          parameters_.STATE_HEURISTIC = std::make_unique< AbstractHeuristic >(state);
-       }  // std::cout << "*** 1" << std::endl;
 
        parameters_.maxDepth = 0;  // for debugging
 

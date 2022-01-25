@@ -359,7 +359,7 @@ namespace SGA
 
 		// TODO@homomorphism collecting transitions
 		// addTransition(int stateHash, int actionHash, int nextStateHash, double reward);
-		double reward = params.STATE_HEURISTIC.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
+		double reward = params.heuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		int eID = unitIndex[unitThisStep];
 		int state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID));
 		auto unit_nextState = gameState.getEntity(eID);
@@ -496,11 +496,11 @@ namespace SGA
 				rolloutDepth++;
 			}
 			//return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), -200, 200);
-			return params.STATE_HEURISTIC->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
+			return params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		}
 
 		//return normalize(params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), -1000, 1000);
-		return params.STATE_HEURISTIC->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+		return params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
 	}
 
 	bool UnitMCTSNode::rolloutFinished(GameState& rollerState, int depth, UnitMCTSParameters& params)

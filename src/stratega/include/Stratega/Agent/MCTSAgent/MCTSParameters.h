@@ -13,6 +13,8 @@ namespace SGA {
 
         MCTSParameters() {}
 
+        int step = 0; //for debug
+
         double K = sqrt(2);                     //Balance constant for tree policy (UCT)
         int rolloutLength = 3;                  //Lenght of the complete playout.
         bool rolloutsEnabled = true;            //If the simulation/rollout phase should be executed or not.

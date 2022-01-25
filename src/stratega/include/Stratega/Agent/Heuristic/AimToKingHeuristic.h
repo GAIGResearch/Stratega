@@ -5,7 +5,13 @@ namespace SGA
 {
 	class AimToKingHeuristic : public StateHeuristic
 	{
+	private:
+		int unitNum = -1;
 	public:
+		AimToKingHeuristic(GameState& gameState) {
+			unitNum = gameState.getEntities().size();
+		}
+
 		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override {
 			double score = 0.0;
 
@@ -72,6 +78,7 @@ namespace SGA
 			score += 1.0 - opponent_king_hp / 400.0;
 
 			double Total_N_entities = 5.0;
+			//double Total_N_entities = unitNum;
 			Total_N_entities *= 4; // 4 for scaling
 			score += playerEntities.size() / Total_N_entities;
 			score -= opponentEntites.size() / Total_N_entities;

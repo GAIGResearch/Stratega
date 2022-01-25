@@ -38,11 +38,24 @@ namespace SGA
 	/// <param name="randomGenerator"></param>
 	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
 		// stop in case the budget is over.
+		MCTSNode* last_selected = nullptr;
+		int n_repeat_selection = 0;
 		while (!params.isBudgetOver()) {
+
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+			if ( last_selected != nullptr) {
+				if (last_selected == selected)
+					n_repeat_selection++;
+				else
+					n_repeat_selection = 0;
+			}
+			last_selected = selected;
 			double delta = selected->rollOut(forwardModel, params, randomGenerator);
+
 			backUp(selected, delta);
 			params.currentIterations++; 
+			if (n_repeat_selection >= 100)
+				return;
 		}
 	}
 
@@ -98,7 +111,7 @@ namespace SGA
 			//Compute the value of the child. First the exploitation value:
 			const double hvVal = child->value;
 			double childValue = hvVal / (child->nVisits + params.epsilon);
-			childValue = normalize(childValue, bounds[0], bounds[1]);
+			//childValue = normalize(childValue, bounds[0], bounds[1]);
 
 			//Then add the exploration factor multiplied by constant K.
 			double uctValue = childValue +
@@ -177,10 +190,11 @@ namespace SGA
 
 			//We evaluate the state at the end of the rollout using the heuristic specified in the parameter settings. 
 			//We then return this reward to the last node expanded in the tree.
-			return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			//return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			return params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		}
 
-		return normalize(params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
+		return params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
 	}
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)

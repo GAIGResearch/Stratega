@@ -48,7 +48,6 @@ namespace SGA {
         // std::make_unique<MinimizeDistanceHeuristic>();
 
         // std::unique_ptr<StateHeuristic> STATE_HEURISTIC = std::make_unique<UnitNumberHeuristic>();
-        std::unique_ptr< StateHeuristic > STATE_HEURISTIC = std::make_unique< AimToKingHeuristic >();
         std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();
 
         void printDetails() const;
