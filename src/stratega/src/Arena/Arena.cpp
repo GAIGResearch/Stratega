@@ -29,7 +29,7 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 			}
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
-			std::cout << "Using Seed: " << currentSeed << std::endl;
+			//std::cout << "Using Seed: " << currentSeed << std::endl;
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
 		}
@@ -92,7 +92,9 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
-		agents[i]->setSeed(seedDist(rngEngine));
+        unsigned int seed_one = seedDist(rngEngine);
+        std::cout << seed_one << std::endl;
+        agents[i]->setSeed(seed_one);
 	}
 
 	// Initialize logging	

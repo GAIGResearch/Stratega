@@ -9,16 +9,16 @@ namespace SGA {
         parameters_.PLAYER_ID = getPlayerID();
         //if (parameters_.heuristic == nullptr)
         //    parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        std::unique_ptr< StateHeuristic > STATE_HEURISTIC = std::make_unique< AimToKingHeuristic >(initialState);
+
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
+        parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
     }
 
     ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
        if(newRound) {
-          // std::cout << "----> start round ----->"<< std::endl; // state.printBoard();
           newRound = false;
        }
        parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
@@ -59,7 +59,6 @@ namespace SGA {
           if(actionSpace_tmp.size() == 0) {
              needNextUnit = true;
           } else {
-             // std::cout << "[DEBUG57]: actionSpace size " << actionSpace_tmp.size() << std::endl;
           }
        }
 
@@ -96,13 +95,6 @@ namespace SGA {
 
        parameters_.REMAINING_FM_CALLS = parameters_.maxFMCalls;
 
-       if(false && parameters_.DO_STATE_ABSTRACTION) {
-          std::cout << " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ HomoMCTS Starts: " << step
-                    << " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " << std::endl;
-       } else if(false) {
-          std::cout << " ------------------------------ UnitMCTS Starts: " << step
-                    << " ------------------------------ " << std::endl;
-       }
 
        if(state.getGameType() != GameType::TBS) {
           throw std::runtime_error("MCTSAgent only supports TBS-Games");
@@ -117,12 +109,7 @@ namespace SGA {
        // generate actions and update unitThisStep
        // const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
        std::vector< Action > actionSpace = forwardModel.generateUnitActions(
-          state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
-
-       // std::cout << "ActionSpace length: " << actionSpace.size() << std::endl;
-       // if (actionSpace.size() <= 1) {
-       //    std::cout << "CheckCOndition: !(actionSpace.size() <= 1)" << std::endl;
-       //}
+          state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), true);
 
        // std::cout << "[DEBUG13]: actionSpace size " << actionSpace.size() << std::endl;
 
@@ -132,7 +119,6 @@ namespace SGA {
        // we just instantly return it
        // todo update condition to an and in case we can compare gameStates, since we currently cannot
        // reuse the tree after an endTurnAction
-       // std::cout << actionSpace.size() << std::endl;
        if(actionSpace.size() == 1) {
           rootNode = nullptr;
           previousActionIndex = -1;
@@ -147,6 +133,7 @@ namespace SGA {
              // in case of deterministic games we know which move has been done by us
              // reuse the tree from the previous iteration
              // rootNode = std::move(rootNode->children.at(previousActionIndex));
+
              int bestChildID = -1;
              for(int i = 0; i < rootNode->children.size(); i++) {
                 if(rootNode->children[i]->childIndex == previousActionIndex) {
@@ -186,6 +173,7 @@ namespace SGA {
 
           int n_abs_iteration = 0;
           bool stop_abstraction = false;
+
           while(parameters_.DO_STATE_ABSTRACTION) {
              if(parameters_.REMAINING_FM_CALLS <= 0)
                 break;
@@ -274,7 +262,7 @@ namespace SGA {
                 break;
              }
 
-             if(tmp_batch_used >= parameters_.absIteration) {
+             if(tmp_batch_used >= parameters_.absBatch) {
                 stop_abstraction = true;
                 deleteAbstraction();  // initialize the array empty again,
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
@@ -301,7 +289,6 @@ namespace SGA {
           double mean_braching_factor = 0.0;
 
           ///*
-
           rootNode->get_branching_number(&branching_number, &n_node);
 
           if(branching_number.size() != 0) {
@@ -366,7 +353,6 @@ namespace SGA {
              // state.printBoard();
              newRound = true;
           }
-
           stepInit();  // reinitialize homomorphism
           return ActionAssignment::fromSingleAction(bestAction);
        }
@@ -375,7 +361,7 @@ namespace SGA {
     // actual reward, what if using the approximate Q? combination of heuristic score [stage1]
     bool UnitMCTSAgent::isTwoNodeApproxmateHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
     {
-        auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
+       auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
        auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
        double max_reward_difference = 0.0;
        std::map< int, int > commonActions = std::map< int, int >();

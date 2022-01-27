@@ -10,6 +10,7 @@
 
 namespace SGA {
     struct UnitMCTSParameters: AgentParameters {
+        int maxFMCalls = 20000;
         double K = sqrt(2);
         int ROLLOUT_LENGTH = 3;
         bool ROLLOUTS_ENABLED = true;
@@ -35,7 +36,7 @@ namespace SGA {
         // approximate homomorhpism
         int batch_size = 20;
         int n_batch_stop = 2;
-        int absIteration = 10000;
+        int absBatch = 10000;
 
         // for state abstraction according to the value;
         std::vector< double > approx_Q = {};
@@ -68,8 +69,7 @@ namespace YAML {
             rhs.R_THRESHOLD = node["R_THRESHOLD"].as< double >(rhs.R_THRESHOLD);
             rhs.CONTINUE_PREVIOUS_SEARCH = node["CONTINUE_PREVIOUS_SEARCH"].as< bool >(
                 rhs.CONTINUE_PREVIOUS_SEARCH);
-            rhs.n_batch_stop = node["N_BATCH_STOP"].as< int >(rhs.n_batch_stop);
-            rhs.absIteration = node["ABS_ITERATION"].as< int >(rhs.absIteration);
+            rhs.absBatch = node["ABS_BATCH"].as< int >(rhs.absBatch);
             return true;
         }
     };
