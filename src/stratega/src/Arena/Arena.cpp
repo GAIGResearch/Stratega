@@ -30,8 +30,12 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			//std::cout << "Using Seed: " << currentSeed << std::endl;
+            SGA::LoggingScope scope("Game " + std::to_string(gameCount));
+            SGA::logSingleValue("Map", std::to_string(currentMapID));
+            SGA::logSingleValue("Seed", std::to_string(currentSeed));
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
+            SGA::getDefaultLogger().flush();
 		}
 	}
 	catch (const std::exception& ex)
@@ -93,15 +97,13 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 		// Set seed of the agents for deterministic behaviour
         unsigned int seed_one = seedDist(rngEngine);
-        std::cout << seed_one << std::endl;
+        //std::cout << seed_one << std::endl;
         agents[i]->setSeed(seed_one);
 	}
 
-	// Initialize logging	
-	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-	SGA::logSingleValue("Map", std::to_string(currentMapID));
-	SGA::logSingleValue("Battle", std::to_string(gameBattleCount++));
-	SGA::logSingleValue("Seed", std::to_string(currentSeed));
+	// Initialize logging
+    SGA::LoggingScope battleScope("Battle" + std::to_string(gameBattleCount++));
+
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
@@ -121,7 +123,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 	// Kinda dirty hack to flush after every game
 	// This could result in weird yaml files, if logging is done outside of the game loggingScope
-	SGA::getDefaultLogger().flush();
+	//SGA::getDefaultLogger().flush();
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> newAgents)
