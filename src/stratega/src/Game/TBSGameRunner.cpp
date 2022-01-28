@@ -9,7 +9,7 @@ namespace SGA
 	}
 
 	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
-	{
+	{		
 		AgentThread agentThread;
 		while(!currentState->isGameOver())
 		{
@@ -50,7 +50,7 @@ namespace SGA
 			{
 				try
 				{
-					while (renderer->isWaiting() && !renderer->isGameEndRequested())
+					while (!renderer->isActionAvailable() && !renderer->isGameEndRequested())
 					{
 						renderer->render();
 					}

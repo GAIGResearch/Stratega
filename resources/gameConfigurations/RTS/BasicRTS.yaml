@@ -1,21 +1,30 @@
 GameConfig:
     Type: RTS
     ActionTimer: 10s
-    RoundLimit: 100
+    RoundLimit: 10000
 
 GameRenderer:
     Resolution:
         Width: 1280
         Height: 800
     Default Assets:
-        Selected: ../../assets/Tiles/selected.png
         FogOfWar: ../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
+    TileSpriteOrigin:
+        Width: 128
+        Height: 112
+    EntitySpriteOrigin:
+        Width: 256
+        Height: 360
+    TileSpriteSize:
+        Width: 256
+        Height: 144
+    EntitySpriteSize:
+        Width: 512
+        Height: 512
     #Optional:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
-    #Only for RTS
-    #EntityCollider:
-    #    Sprite: ../../assets/Tiles/circleCollider.png
 
 Agents:
     - HumanAgent

@@ -55,11 +55,11 @@ namespace SGA
 		std::vector<Buff> buffs;
 
 
-	public: 
+	public:
 
 		Player(int newID, bool newCanPlay) :
 			id(newID), canIPlay(newCanPlay) {}
-		 
+
 		/// <summary>
 		/// Indicates if a given action type can be executed by this player.
 		/// </summary>
@@ -255,7 +255,7 @@ namespace SGA
 		/// <summary>
 		/// Adds a new attached action to this player.
 		/// </summary>
-		void addAttachedAction(int actionTypeID, int lastExecutedTick) { attachedActions.emplace_back(ActionInfo{actionTypeID, lastExecutedTick}); }
+		void addAttachedAction(int actionTypeID, int lastExecutedTick) { attachedActions.emplace_back(ActionInfo{ actionTypeID, lastExecutedTick }); }
 
 		/// <summary>
 		/// Sets the last tick on an attached action, indexed by 'idx'
