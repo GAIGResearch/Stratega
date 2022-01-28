@@ -184,12 +184,35 @@ Entities:
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
+        IventorySize: 4
+        Slots: [Left hand, Right hand]
         Parameters:
             Health: 400
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
         Actions: [Attack, Move, Spawn]
+
+Objects:
+    HealthPotion:
+        Sprite: ../../assets/Entities/health_potion.png
+        Symbol: p
+        InventoryUse: 2 #spaces used by this object
+        CanEquip: [King] #Who can equip the object in the slots
+        SlotsUse: [Left hand] empty == cant be equiped in any slot
+
+        #OnEquip: actions executed when it is equiped in one slot
+        #OnEquipConditions: conditions to equip it
+
+        #OnAddedInventory: actions executed when it is added to the bag
+
+        OnUseSlot: [Health] #actions executed when the object is used in the slot
+        #OnUseInventory: [Health] ctions executed when the object is used in the inventory
+        #OnUseConditions: conditions to use
+
+        #OnTickActions: Actions executed everytick
+        Parameters:
+            HealAmount: 20
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
