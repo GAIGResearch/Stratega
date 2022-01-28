@@ -12,20 +12,8 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
+        Selected: ../../assets/Tiles/selected.png
         FogOfWar: ../../assets/Tiles/notVisible.png
-    GridIsIsometric: true
-    TileSpriteOrigin:
-        Width: 128
-        Height: 112
-    EntitySpriteOrigin:
-        Width: 256
-        Height: 360
-    TileSpriteSize:
-        Width: 256
-        Height: 144
-    EntitySpriteSize:
-        Width: 512
-        Height: 512
     #Optional:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag

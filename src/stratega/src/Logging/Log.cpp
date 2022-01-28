@@ -3,10 +3,6 @@
 
 namespace SGA
 {
-	std::unique_ptr<SGA::FileLogger> defaultLogger;
-	std::vector<SGA::LoggingScope*> loggingScopes;
-	std::mutex loggingMutex;
-
 	SGA::FileLogger& getDefaultLogger()
 	{
 		if (defaultLogger == nullptr)

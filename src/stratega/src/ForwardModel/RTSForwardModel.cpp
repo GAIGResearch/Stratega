@@ -558,9 +558,6 @@ namespace SGA
 
 	bool RTSForwardModel::checkGameIsFinished(GameState& state) const
 	{
-		if (state.getCurrentTick() >= state.getTickLimit())
-			return true;
-
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
 		for (Player& player : state.getPlayers())

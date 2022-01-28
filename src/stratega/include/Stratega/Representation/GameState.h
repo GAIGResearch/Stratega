@@ -151,7 +151,6 @@ namespace SGA
 		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
 		/// <returns>A pointer to the entity in this location.</returns>
 		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
-		const Entity* getEntityAtConst(const Vector2f& pos, float maxDistance = 0.0) const;
 		const Entity* getEntityAt(const Vector2f& pos) const;
 
 		/// <summary>
@@ -383,7 +382,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the current game tick limit.
 		/// </summary>
-		int getTickLimit() const { return tickLimit; }
+		int getTickLimit() { return tickLimit; }
 		
 		/// <summary>
 		/// Sets the time limit of the game, measured in ticks.

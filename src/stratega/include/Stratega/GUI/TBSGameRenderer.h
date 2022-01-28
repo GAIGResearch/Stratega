@@ -1,40 +1,33 @@
 #pragma once
+
 #include <Stratega/ForwardModel/ActionAssignment.h>
 
 #include <Stratega/GUI/GameRenderer.h>
+#include <Stratega/GUI/AssetCache.h>
+#include <Stratega/GUI/TileMap.h>
+#include <Stratega/GUI/EntityRenderer.h>
+#include <Stratega/GUI/Widgets/FogOfWarController.h>
+#include <Stratega/GUI/Widgets/ActionsController.h>
 
-#include <Stratega/NewGUI/Widget.h>
-#include <Stratega/NewGUI/World.h>
 
-#include <Stratega/ForwardModel/ActionAssignment.h>
-
-#include <Stratega/NewGUI/SGARenderTarget.h>
-
-#include <Stratega/NewGUI/FOWControllerWidget.h>
 #include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 
 
 namespace SGA
 {
-	class ResourceManager;
-
-	class GenericGameRenderer : public GameRenderer
+	class TBSGameRenderer : public GameRenderer
 	{
 	public:
-		GenericGameRenderer(SGA::Vector2i& resolution);
+		TBSGameRenderer(SGA::Vector2i& resolution);
 		
 		void init(const GameState& initialState, const GameConfig& gameConfig) override;
 		void update(const GameState& state) override;
 		void render() override;
-		void setPlayerPointOfView(int newPlayerID) override;
+		void setPlayerPointOfView(int playerID) override;
 		ActionAssignment getPlayerActions() override;
 
-		bool isActionAvailable() override
-		{
-			return temp.getAssignmentCount() > 0;
-			//return selectedAction.has_value();
-		}
+		bool isWaiting() const override;
 		bool isGameEndRequested() override;
 
 		void closeWindow() override
@@ -52,38 +45,34 @@ namespace SGA
 		void mouseButtonReleased(const sf::Event& event);
 		void mouseButtonPressed(const sf::Event& event);
 		void mouseMoved(const sf::Event& event);
-		void keyPressed(const sf::Event& event);
 
-		//Game configuration
+		// ImGUI
+		void createHUD();
+		void createWindowInfo();
+		void createWindowUnits();
+		void createWindowActions();
+		void createWindowPlayerParameters();
+		void createWindowFogOfWar();
+		void createEntityInformation();
+		void createActionBar();
+
 		const GameConfig* config;
-
-		//Gamestates
 		GameState state;
 		GameState fowState;
-
+		nonstd::optional<Action> selectedAction;
 		bool endGameRequested = false;
 		
-		//Window and delta time clok
 		sf::RenderWindow window;
 		sf::Clock deltaClock;
-
-		//Actions to play
-		ActionAssignment temp;
-		std::vector<Action> futureActionsToPlay;
-
+		int pointOfViewPlayerID;
+		AssetCache assetCache;
+		Widgets::FogOfWarSettings fowSettings;
+		Widgets::ActionsSettings actionsSettings;
+		TileMap tileMap;
+		EntityRenderer entityRenderer;
 		// Variables for input handling
 		float zoomValue;
 		bool dragging;
 		sf::Vector2f oldMousePosition;
-
-		//New system
-		std::vector<std::unique_ptr<SGAWidget>> widgets;
-		World world;
-		std::unique_ptr<SGARenderTarget> renderTarget;
-		std::unique_ptr<ResourceManager> resourceManager;
-		int playerID;
-
-		//FOW settings
-		FogOfWarSettings settings;
 	};
 }

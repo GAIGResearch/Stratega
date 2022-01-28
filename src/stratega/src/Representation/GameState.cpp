@@ -40,7 +40,7 @@ namespace SGA
 		board(0, 0, fogOfWarTile),		
 		fogOfWarId(-1),
 		currentPlayer(0),
-		fogOfWarApplied(false)
+		fogOfWarApplied(false)		
 	{		
 	}
 
@@ -78,19 +78,6 @@ namespace SGA
 	}
 
 	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
-	{
-		for (auto& entity : entities)
-		{
-			if (entity.getPosition() == pos)
-				return &entity;
-			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
-				return &entity;
-		}
-
-		return nullptr;
-	}
-
-	const Entity* GameState::getEntityAtConst(const Vector2f& pos, float maxDistance) const
 	{
 		for (auto& entity : entities)
 		{
