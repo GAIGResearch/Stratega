@@ -69,6 +69,7 @@ namespace SGA
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
 		parseEntities(loadNode(configNode, "Entities", *config), *config);
+		parseObjects(loadNode(configNode, "Objects", *config), *config);
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
         parseAgents(loadNode(configNode, "Agents", *config), *config);
         parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
@@ -255,6 +256,36 @@ namespace SGA
                 type.setLoSRange(0);
             else
                 type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
+
+
+            if (!nameTypePair.second["InventorySize"].IsDefined())
+                type.setInventorySize(0);
+            else
+                type.setInventorySize(nameTypePair.second["InventorySize"].as<double>());
+            
+            if (nameTypePair.second["Parameters"].IsDefined())
+                parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
+
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+
+    void GameConfigParser::parseObjects(const YAML::Node& entitiesNode, GameConfig& config) const
+    {
+        if(!entitiesNode.IsDefined())
+        {
+            return;
+        }
+		
+        auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+        for (const auto& nameTypePair : types)
+        {
+            EntityType type;
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+                       
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
@@ -689,6 +720,13 @@ namespace SGA
         config.renderConfig = std::make_unique<RenderConfig>();
 
         for (const auto& entityNode : loadNode(configNode, "Entities", config))
+        {
+            auto entityName = entityNode.first.as<std::string>();
+            auto entityConfig = entityNode.second;
+            config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
+        }  
+
+        for (const auto& entityNode : loadNode(configNode, "Objects", config))
         {
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;

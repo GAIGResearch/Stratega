@@ -73,6 +73,30 @@ namespace SGA
 		/// List of parameters and values that must be spent to spawn/build/create this unit.
 		/// </summary>
 		std::unordered_map<ParameterID, double> cost;
+				
+
+		//Object stuff
+		//Holder
+		std::vector<SlotID> slots;
+		int inventorySize;
+
+		//Object
+		std::vector<int> canEquip;
+		std::vector<SlotID> slotsUse;
+
+		std::vector<int> onEquipObjectActionIds;
+		std::vector<int> onEquipObjectConditionIds;
+
+		std::vector<int> onAddedInventoryObjectActionIds;
+
+		std::vector<int> onUseSlotObjectActionIds;
+
+		std::vector<int> onUseInventoryObjectActionIds;
+		std::vector<int> onUseInventoryObjectConditionIds;
+
+		std::vector<int> onTickObjectActionsIds;
+
+		
 
 	public:
 
@@ -132,6 +156,9 @@ namespace SGA
 
 		double getLoSRange() const { return lineOfSightRange; }
 		void setLoSRange(double d) { lineOfSightRange = d; }
+
+		int getInventorySize() const { return inventorySize; }
+		void setInventorySize(int d) { inventorySize = d; }
 
 
 		const std::unordered_map<ParameterID, Parameter>& getParameters() const { return parameters; }

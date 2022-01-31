@@ -105,6 +105,13 @@ namespace SGA
 		/// <summary>
 		double collisionRadius;
 
+		//Object stuff
+		
+		//Inventory
+		std::vector<Entity> inventory;
+		//Slots occupied
+		std::unordered_map<int, bool> slots;
+
 	public:
 
 		/// <summary>
@@ -391,6 +398,22 @@ namespace SGA
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Add a new object to the inventory
+		/// <summary>
+		void addObject(Entity newObject)
+		{
+			inventory.emplace_back(newObject);
+		}
+
+		/// <summary>
+		/// Remove new object from the inventory
+		/// <summary>
+		void removeObject()
+		{
+			//remove
 		}
 	};
 }

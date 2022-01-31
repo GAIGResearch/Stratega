@@ -194,6 +194,22 @@ namespace SGA
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
 		}
 	}
+	
+	PickUp::PickUp(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+
+	void PickUp::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		entity.addObject(target);
+		target.flagRemove();
+	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),

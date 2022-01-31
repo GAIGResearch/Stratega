@@ -70,7 +70,7 @@ Board:
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 p  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
@@ -145,13 +145,29 @@ Actions:
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
 
+    PickUp:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: HealthPotion
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "PickUp(Source, Target)"
+
     
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, PickUp]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -195,11 +211,11 @@ Entities:
 
 Objects:
     HealthPotion:
-        Sprite: ../../assets/Entities/health_potion.png
+        Sprite: ../../assets/Entities/arrow.png
         Symbol: p
         InventoryUse: 2 #spaces used by this object
         CanEquip: [King] #Who can equip the object in the slots
-        SlotsUse: [Left hand] empty == cant be equiped in any slot
+        SlotsUse: [Left hand] #empty == cant be equiped in any slot
 
         #OnEquip: actions executed when it is equiped in one slot
         #OnEquipConditions: conditions to equip it
