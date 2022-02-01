@@ -90,6 +90,28 @@ namespace  SGA
 
 		return targetEntity.isNeutral();
 	}
+
+	HasInventoryFull::HasInventoryFull(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool HasInventoryFull::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return !targetEntity.isInventoryFull();
+	}
+
+	HasNotInventoryFull::HasNotInventoryFull(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool HasNotInventoryFull::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return targetEntity.isInventoryFull();
+	}
 	
 	IsNotNeutral::IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{

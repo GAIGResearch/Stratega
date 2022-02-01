@@ -110,7 +110,7 @@ namespace SGA
 		//Inventory
 		std::vector<Entity> inventory;
 		//Slots occupied
-		std::unordered_map<int, bool> slots;
+		std::unordered_map<int, Entity> slots;
 
 	public:
 
@@ -401,6 +401,21 @@ namespace SGA
 		}
 
 		/// <summary>
+		/// Return the inventory size
+		/// <summary>
+		int getInventorySize() const;
+
+		/// <summary>
+		/// Return the iventory slots used
+		/// <summary>
+		int getInventoryUse() const;
+
+		/// <summary>
+		/// Check if inventory is full.
+		/// <summary>
+		int isInventoryFull() const;
+
+		/// <summary>
 		/// Add a new object to the inventory
 		/// <summary>
 		void addObject(Entity newObject)
@@ -414,6 +429,14 @@ namespace SGA
 		void removeObject()
 		{
 			//remove
+		}
+
+		/// <summary>
+		/// Retur the inventory of this entity
+		/// <summary>
+		const std::vector<Entity>& getInventory() const
+		{
+			return inventory;
 		}
 	};
 }

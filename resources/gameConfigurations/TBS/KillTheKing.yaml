@@ -5,11 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    #- OSLAAgent
-    - MCTSAgent:
-        FmCalls: 100
-        Budget: TIME
-        RolloutLength: 10
+    - OSLAAgent
 
 GameRenderer:
     Resolution:
@@ -69,9 +65,9 @@ Board:
         M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 p  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  p  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 p  p  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  p  p  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
     Spawn:
@@ -147,11 +143,12 @@ Actions:
 
     PickUp:
         Type: EntityAction
-        Cooldown: 1
+        Preconditions:
+            - "HasNotInventoryFull(Source)"
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: HealthPotion
+                ValidTargets: Object
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -168,6 +165,8 @@ Entities:
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move, PickUp]
+        InventorySize: 4
+        Slots: [Left hand, Right hand]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -200,7 +199,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
-        IventorySize: 4
+        InventorySize: 4
         Slots: [Left hand, Right hand]
         Parameters:
             Health: 400
@@ -213,7 +212,6 @@ Objects:
     HealthPotion:
         Sprite: ../../assets/Entities/arrow.png
         Symbol: p
-        InventoryUse: 2 #spaces used by this object
         CanEquip: [King] #Who can equip the object in the slots
         SlotsUse: [Left hand] #empty == cant be equiped in any slot
 
@@ -230,6 +228,10 @@ Objects:
         Parameters:
             HealAmount: 20
 
+EntityGroups:
+    Object: [HealthPotion]
+    Entities: [King, Warrior, Archer, Healer]
+
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
@@ -238,6 +240,7 @@ ForwardModel:
     Trigger:
         - OnTick:
             Type: Entity
+            ValidTargets: Entities
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 

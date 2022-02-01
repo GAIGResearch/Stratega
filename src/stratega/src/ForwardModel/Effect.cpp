@@ -208,6 +208,7 @@ namespace SGA
 		auto& target = targetParam.getEntity(state, targets);
 
 		entity.addObject(target);
+
 		target.flagRemove();
 	}
 

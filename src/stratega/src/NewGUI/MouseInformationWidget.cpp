@@ -129,6 +129,9 @@ namespace SGA
 				std::string owner = "Owner ID: ";
 				owner += std::to_string(entity->getOwnerID());
 				ImGui::Text("%s", owner.c_str());
+				std::string iventorySize = "Iventory: ";
+				iventorySize += std::to_string(entity->getInventoryUse()) +"/"+ std::to_string(entity->getInventorySize());
+				ImGui::Text("%s", iventorySize.c_str());
 				ImGui::Text("Parameters: ");
 
 				for (const auto& parameter : entityType.getParameters())
@@ -148,17 +151,18 @@ namespace SGA
 				ImGui::Separator();
 
 				ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
-				ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
+				ImGui::Text("Inventory: ");
+				ImGui::BeginChild("Inventory", ImVec2(0, 80), true, child_flags);
 
-				if(entity->getOwnerID()!=-1)
-					for (auto playerEntity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
+				if(entity->getOwnerID()!=-1)					
+					for (const auto& object : entity->getInventory())
 					{
 						//Check if entity have sprite
-						auto searchedEntityType = playerEntity.getEntityType();
+						auto searchedEntityType = object.getEntityType();
 						//Add units
 						if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
 						{
-							/*selectedEntityID = entity->id;*/
+
 						}
 						ImGui::SameLine();
 					}

@@ -29,6 +29,8 @@ namespace SGA
 		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
 		factory.registerFunction<IsNeutral>("IsNeutral");
 		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
+		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
+		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
 		
 		return factory;
 	}

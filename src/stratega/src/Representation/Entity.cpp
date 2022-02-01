@@ -192,4 +192,18 @@ namespace SGA
 			maxParameters[i] = maxParameter;
 		}
 	}
+	int Entity::getInventorySize() const
+	{
+		return type->getInventorySize();
+	}
+
+	int Entity::isInventoryFull() const
+	{
+		return  type->getInventorySize()-inventory.size() > 0;
+	}
+
+	int Entity::getInventoryUse() const
+	{
+		return (inventory.size());
+	}
 }
