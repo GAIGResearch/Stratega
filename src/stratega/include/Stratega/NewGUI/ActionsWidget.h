@@ -85,6 +85,8 @@ namespace SGA
 
 		void getEntityType(int playerID, const SGA::ActionType& actionType);
 		void getTechnologyType(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getObject(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
+		void getSlotObject(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 		void getPositionReference();
 		void getEntityReference();
 

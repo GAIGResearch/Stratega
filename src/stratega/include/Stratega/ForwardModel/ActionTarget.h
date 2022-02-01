@@ -33,11 +33,15 @@ namespace SGA
 			TechnologyReference,
 			ContinuousActionReference,
 			TileTypeReference,
-			Gamestate
+			Gamestate,
+			Object,
+			SlotObject
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
+		static ActionTarget createObjectActionTarget(int entityID);
+		static ActionTarget createSlotObjectActionTarget(int entityID);
 		static ActionTarget createPlayerActionTarget(int playerID);
 		static ActionTarget createGameStateActionTarget();
 		static ActionTarget createTechnologyEntityActionTarget(int technologyID);
@@ -64,6 +68,10 @@ namespace SGA
 		int getPlayerID() const;
 		int getPlayerID(const GameState& state) const;
 		int getEntityID() const
+		{
+			return data.entityID;
+		}
+		int getObjectID() const
 		{
 			return data.entityID;
 		}
@@ -103,6 +111,12 @@ namespace SGA
 			case Gamestate:
 				return "Gamestate";
 				break;
+			case Object:
+				return "Object";
+				break;
+			case SlotObject:
+				return "SlotObject";
+				break;
 			default:
 				return "Not defined";
 			}
@@ -141,6 +155,12 @@ namespace SGA
 				switch (targetType)
 				{
 				case EntityReference:
+					entityID = data;
+					break;
+				case SlotObject:
+					entityID = data;
+					break;
+				case Object:
 					entityID = data;
 					break;
 				case PlayerReference:

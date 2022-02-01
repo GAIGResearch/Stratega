@@ -233,4 +233,13 @@ namespace SGA
 		CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class CanEquipObject : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		CanEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 }

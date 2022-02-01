@@ -491,4 +491,34 @@ namespace SGA
 			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
 		}
 	}
+
+	EquipObject::EquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void EquipObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getObject(state, targets);
+
+		entity.equipObject(target.getID());
+	}
+
+	UnEquipObject::UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UnEquipObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getSlotObject(state, targets);
+
+		entity.unEquipObject(target.getID());
+	}
 }

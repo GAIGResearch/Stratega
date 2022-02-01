@@ -77,13 +77,11 @@ namespace SGA
 
 		//Object stuff
 		//Holder
-		std::vector<SlotID> slots;
+		std::vector<std::string> slots;
 		int inventorySize;
+		std::unordered_set<EntityTypeID> canEquipGroupEntityTypes;
 
 		//Object
-		std::vector<int> canEquip;
-		std::vector<SlotID> slotsUse;
-
 		std::vector<int> onEquipObjectActionIds;
 		std::vector<int> onEquipObjectConditionIds;
 
@@ -147,6 +145,9 @@ namespace SGA
 
 		char getSymbol() const { return symbol; }
 		void setSymbol(char s) { symbol = s; }
+		
+		const std::vector<std::string>& getSlots() const { return slots; }
+		void setSlots(std::vector<std::string> newSlots) { slots = newSlots; }
 
 		int getRequiredTechID() const { return requiredTechnologyID; }
 		void setRequiredTechID(int newID) { requiredTechnologyID = newID; }
@@ -176,5 +177,7 @@ namespace SGA
 		const std::unordered_map<ParameterID, double>& getCosts() const { return cost; }
 		void setCosts(const std::unordered_map<ParameterID, double>& c) { cost = c; }
 
+		const std::unordered_set<int>& getCanEquipGroupEntityTypes() const { return canEquipGroupEntityTypes; }
+		void setCanEquipGroupEntityTypes(const std::unordered_set<int>& groupTypes) { canEquipGroupEntityTypes = groupTypes; }
 	};
 }

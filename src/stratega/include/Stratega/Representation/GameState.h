@@ -162,6 +162,22 @@ namespace SGA
 		Entity* getEntity(int entityID);
 		const Entity* getEntityConst(int entityID) const;
 
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getObject(int entityID);
+		const Entity* getObjectConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getSlotObject(int entityID);
+		const Entity* getSlotObjectConst(int entityID) const;
+
 
 		/// <summary>
 		/// Adds a new entity of a given type to the game, in a given position, belonging to a specific player. 

@@ -412,5 +412,25 @@ namespace  SGA
 		return true;
 	}
 
+	CanEquipObject::CanEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	bool CanEquipObject::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getObject(state, targets);
+
+		auto& groupTypes = target.getEntityType().getCanEquipGroupEntityTypes();
+
+		if (groupTypes.count(entity.getEntityType().getID()))
+			return true;
+		else
+			return false;		
+	}
+
 
 }

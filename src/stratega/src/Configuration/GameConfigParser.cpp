@@ -68,9 +68,12 @@ namespace SGA
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(loadNode(configNode, "Entities", *config), *config);
-		parseObjects(loadNode(configNode, "Objects", *config), *config);
+		parseEntities(loadNode(configNode, "Entities", *config), *config);		        
+        parseObjects(loadNode(configNode, "Objects", *config), *config);
+        
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
+        parseObjectsAdditionalInformation(loadNode(configNode, "Objects", *config), *config);
+
         parseAgents(loadNode(configNode, "Agents", *config), *config);
         parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
 
@@ -289,9 +292,30 @@ namespace SGA
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
+            
+            if (nameTypePair.second["Slots"].IsDefined())
+                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"], config));
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+    
+    void GameConfigParser::parseObjectsAdditionalInformation(const YAML::Node& objectsNode, GameConfig& config) const
+    {
+        if(!objectsNode.IsDefined())
+        {
+            return;
+        }
+
+        for (auto& entityTp : config.entityTypes)
+        {
+            //Check if is in objects
+            if (objectsNode[entityTp.second.getName()].IsDefined())
+            {
+                if(objectsNode[entityTp.second.getName()]["CanEquip"].IsDefined())
+                    entityTp.second.setCanEquipGroupEntityTypes(parseEntityGroup(objectsNode[entityTp.second.getName()]["CanEquip"], config));
+            }
         }
     }
 
@@ -1001,6 +1025,29 @@ namespace SGA
         }
 
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
+	}
+    
+    std::vector<std::string> GameConfigParser::parseEntitySlots(const YAML::Node& slotNode, const GameConfig& config) const
+	{
+        if(!slotNode.IsDefined())
+        {
+            return {};
+        }
+		
+        std::vector<std::string> slots;
+		if(slotNode.IsScalar())
+		{
+            auto slotName = slotNode.as<std::string>();
+            slots.emplace_back(slotName);
+            return slots;
+		}
+		
+        if(slotNode.IsSequence())
+        {
+            return slotNode.as<std::vector<std::string>>();
+        }
+
+        throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-slot");
 	}
 
     std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const

@@ -110,7 +110,7 @@ namespace SGA
 		//Inventory
 		std::vector<Entity> inventory;
 		//Slots occupied
-		std::unordered_map<int, Entity> slots;
+		std::vector<std::pair<Entity, std::vector<int>>> slots;
 
 	public:
 
@@ -426,17 +426,137 @@ namespace SGA
 		/// <summary>
 		/// Remove new object from the inventory
 		/// <summary>
-		void removeObject()
+		void removeObject(int entityID)
 		{
 			//remove
+			auto iter = std::find_if(std::begin(inventory), std::end(inventory),
+				[&](Entity const& p) { return p.getID() == entityID; });
+			if (iter == inventory.end())
+				return;
+
+			inventory.erase(iter);
 		}
 
 		/// <summary>
-		/// Retur the inventory of this entity
+		/// Remove slot object from the slots
+		/// <summary>
+		void removeSlotObject(int entityID)
+		{
+			//remove
+			auto iter = std::find_if(std::begin(slots), std::end(slots),
+				[&](std::pair<Entity, std::vector<int>> const& p) { return p.first.getID() == entityID; });
+			if (iter == slots.end())
+				return;
+
+			slots.erase(iter);
+		}
+
+		/// <summary>
+		/// Return the inventory of this entity
 		/// <summary>
 		const std::vector<Entity>& getInventory() const
 		{
 			return inventory;
+		}
+
+		/// <summary>
+		/// Return the slots of this entity
+		/// <summary>
+		std::vector<std::pair<Entity, std::vector<int>>> getSlots() const
+		{
+			return slots;
+		}
+
+		void equipObject(int entityID)
+		{
+			//Move object from inventory to slots
+			Entity object = *getObject(entityID);
+			removeObject(entityID);
+
+
+			//Get list of slots used
+			std::pair<Entity, std::vector<int>> newEntry = { object, {} };
+			slots.emplace_back(newEntry);
+		}
+
+		void unEquipObject(int entityID)
+		{
+			//Move object from slot to inventory
+			Entity slotObject = *getSlotObject(entityID);
+			removeSlotObject(entityID);
+			addObject(slotObject);
+		}
+
+		/// <summary>
+		///	Return if the entity has a object with a specific Id
+		/// <summary>
+		bool hasObject(int entityID) const
+		{
+			auto iter = std::find_if(std::begin(inventory), std::end(inventory),
+				[&](Entity const& p) { return p.getID() == entityID; });
+			return iter == inventory.end() ? false : true;
+		}
+
+		/// <summary>
+		///	Return if the entity has a object with a specific Id
+		/// <summary>
+		bool hasSlotObject(int entityID) const
+		{
+			auto iter = std::find_if(std::begin(slots), std::end(slots),
+				[&](std::pair<Entity,std::vector<int>> const& p) { return p.first.getID() == entityID; });
+			return iter == slots.end() ? false : true;
+		}
+
+		/// <summary>
+		///	Return the object of this entity with a given entityID
+		/// <summary>
+		const Entity* getObjectConst(int entityID) const
+		{
+			auto iter = std::find_if(std::begin(inventory), std::end(inventory),
+				[&](Entity const& p) { return p.getID() == entityID; });
+			if (iter == inventory.end())
+				return nullptr;
+
+			return &*iter;
+		}
+
+		/// <summary>
+		///	Return the object of this entity with a given entityID
+		/// <summary>
+		Entity* getObject(int entityID)
+		{
+			auto iter = std::find_if(std::begin(inventory), std::end(inventory),
+				[&](Entity const& p) { return p.getID() == entityID; });
+			if (iter == inventory.end())
+				return nullptr;
+
+			return &*iter;
+		}
+		
+		/// <summary>
+		///	Return the object of this entity with a given entityID
+		/// <summary>
+		const Entity* getSlotObjectConst(int entityID) const
+		{
+			auto iter = std::find_if(std::begin(slots), std::end(slots),
+				[&](std::pair<Entity, std::vector<int>> const& p) { return p.first.getID() == entityID; });
+			if (iter == slots.end())
+				return nullptr;
+
+			return &iter->first;
+		}
+
+		/// <summary>
+		///	Return the object of this entity with a given entityID
+		/// <summary>
+		Entity* getSlotObject(int entityID)
+		{
+			auto iter = std::find_if(std::begin(slots), std::end(slots),
+				[&](std::pair<Entity, std::vector<int>> const& p) { return p.first.getID() == entityID; });
+			if (iter == slots.end())
+				return nullptr;
+
+			return &iter->first;
 		}
 	};
 }

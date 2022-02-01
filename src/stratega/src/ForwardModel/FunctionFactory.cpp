@@ -31,6 +31,7 @@ namespace SGA
 		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
 		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
 		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
+		factory.registerFunction<CanEquipObject>("CanEquipObject");
 		
 		return factory;
 	}
@@ -58,6 +59,8 @@ namespace SGA
 		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
 		factory.registerFunction<Push>("Push");
 		factory.registerFunction<PickUp>("PickUp");
+		factory.registerFunction<EquipObject>("EquipObject");
+		factory.registerFunction<UnEquipObject>("UnEquipObject");
 		
 		return factory;
 	}

@@ -145,6 +145,7 @@ Actions:
         Type: EntityAction
         Preconditions:
             - "HasNotInventoryFull(Source)"
+        Cooldown: 1
         Targets:
             Target:
                 Type: Entity
@@ -158,13 +159,55 @@ Actions:
         Effects:
             - "PickUp(Source, Target)"
 
+    EquipObject:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Object
+                Conditions:
+                    - "CanEquipObject(Source, Target)"
+        Effects:
+            - "EquipObject(Source, Target)"
+
+    UnEquipObject:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: SlotObject
+        Effects:
+            - "UnEquipObject(Source, Target)"
+
+#    UseObject:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Targets:
+#            Target:
+#                Type: Object
+#                Conditions:
+#                    - "CanUseObject(Source, Target)"
+#        Effects:
+#            - "UseObject(Source, Target)"
+#
+#    UseSlotObject:
+#        Type: EntityAction
+#        Cooldown: 1
+#        Targets:
+#            Target:
+#                Type: SlotObject
+#                Conditions:
+#                    - "CanUseSlotObject(Source, Target)"
+#        Effects:
+#            - "UseSlotObject(Source, Target)"
+
     
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move, PickUp]
+        Actions: [Attack, Move, PickUp, EquipObject, UnEquipObject]
         InventorySize: 4
         Slots: [Left hand, Right hand]
         Parameters:
@@ -212,19 +255,19 @@ Objects:
     HealthPotion:
         Sprite: ../../assets/Entities/arrow.png
         Symbol: p
-        CanEquip: [King] #Who can equip the object in the slots
+        CanEquip: [King, Warrior] #Who can equip the object in the slots
         SlotsUse: [Left hand] #empty == cant be equiped in any slot
 
-        #OnEquip: actions executed when it is equiped in one slot
+        #1 #OnEquip: actions executed when it is equiped in one slot
         #OnEquipConditions: conditions to equip it
 
-        #OnAddedInventory: actions executed when it is added to the bag
+        #1 #OnAddedInventory: actions executed when it is added to the bag
 
-        OnUseSlot: [Health] #actions executed when the object is used in the slot
-        #OnUseInventory: [Health] ctions executed when the object is used in the inventory
+        #1 #OnUseSlot: [Health] #actions executed when the object is used in the slot
+        #1 #OnUseInventory: [Health] ctions executed when the object is used in the inventory
         #OnUseConditions: conditions to use
 
-        #OnTickActions: Actions executed everytick
+        #1 #OnTickActions: Actions executed everytick
         Parameters:
             HealAmount: 20
 

@@ -19,7 +19,8 @@ namespace SGA
 		//If the method received a maps path, it will load them from the path instead of the game yaml
 		void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const;
 		void parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const;
-		void parseObjects(const YAML::Node& entitiesNode, GameConfig& config) const;
+		void parseObjects(const YAML::Node& objectsNode, GameConfig& config) const;
+		void parseObjectsAdditionalInformation(const YAML::Node& objectsNode, GameConfig& config) const;
         void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;
         void parseActions(const YAML::Node& actionsNode, GameConfig& config) const;
         void parseForwardModel(const YAML::Node& fmNode, GameConfig& config) const;
@@ -94,6 +95,7 @@ namespace SGA
             return foundNode[node];
         }
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
+        std::vector<std::string> parseEntitySlots(const YAML::Node& slotsNode, const GameConfig& config) const;
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
@@ -187,6 +189,10 @@ namespace YAML
                 rhs = SGA::TargetType::Type::Technology;
             else if (value == "ContinuousAction")
                 rhs = SGA::TargetType::Type::ContinuousAction;
+            else if (value == "Object")
+                rhs = SGA::TargetType::Type::Object;
+            else if (value == "SlotObject")
+                rhs = SGA::TargetType::Type::SlotObject;
             else
                 return false;
 

@@ -219,4 +219,22 @@ namespace SGA
 		PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class EquipObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		EquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class UnEquipObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
 }

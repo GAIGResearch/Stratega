@@ -15,6 +15,16 @@ namespace SGA
 		return ActionTarget(EntityReference, Data{ EntityReference, entityID });
 	}
 
+	ActionTarget ActionTarget::createObjectActionTarget(int entityID)
+	{
+		return ActionTarget(Object, Data{ Object, entityID });
+	}
+
+	ActionTarget ActionTarget::createSlotObjectActionTarget(int entityID)
+	{
+		return ActionTarget(SlotObject, Data{ SlotObject, entityID });
+	}
+
 	ActionTarget ActionTarget::createEntityTypeActionTarget(EntityTypeID entityTypeID)
 	{
 		return ActionTarget(EntityTypeReference, Data{ EntityTypeReference, entityTypeID });
