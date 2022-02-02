@@ -97,6 +97,7 @@ namespace SGA
 
         assignPlayerActions(loadNode(configNode, "Player", *config), *config);
         assignEntitiesActions(loadNode(configNode, "Entities", *config), *config);
+        assignObjectsActions(loadNode(configNode, "Objects", *config), *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);

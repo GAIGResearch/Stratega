@@ -392,6 +392,8 @@ namespace SGA
 		/// <param name="state">State where these actions are executed.</param>
 		void executeOnTickEntityActions(GameState& state) const;
 
+		void executeOnTickObjectsActions(GameState& state) const;
+
 		/// <summary>
 		/// It generates a default action space unique pointer.
 		/// </summary>

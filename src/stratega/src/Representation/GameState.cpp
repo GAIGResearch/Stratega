@@ -48,15 +48,48 @@ namespace SGA
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.getID() == entityID; });
-		return iter == entities.end() ? nullptr : &*iter;
+		if (iter == entities.end())
+		{
+			for (Entity& entity : entities)
+			{
+				Entity* foundEntity = entity.getObject(entityID);
+				if (foundEntity)
+					return foundEntity;
+				else
+				{
+					foundEntity = entity.getSlotObject(entityID);
+					if (foundEntity)
+						return foundEntity;
+				}
+			}
+			return nullptr;
+		}			
+		else
+			return &*iter;
 	}
 
 	const Entity* GameState::getEntityConst(int entityID) const
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.getID() == entityID; });
-		return iter == entities.end() ? nullptr : &*iter;
-
+		if (iter == entities.end())
+		{
+			for (const Entity& entity : entities)
+			{
+				const Entity* foundEntity = entity.getObjectConst(entityID);
+				if (foundEntity)
+					return foundEntity;
+				else
+				{
+					foundEntity = entity.getSlotObjectConst(entityID);
+					if (foundEntity)
+						return foundEntity;
+				}
+			}
+			return nullptr;
+		}
+		else
+			return &*iter;
 	}
 
 	Entity* GameState::getObject(int entityID)

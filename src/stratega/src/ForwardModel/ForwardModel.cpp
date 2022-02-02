@@ -587,6 +587,69 @@ namespace SGA
 			executeAction(state, action);
 		}
 	}
+	
+	void ForwardModel::executeOnTickObjectsActions(GameState& state) const
+	{
+		//ExecuteOnTickEntityActions
+		std::vector<Action> bucket;
+		auto& entities = state.getEntities();
+
+		//Generate entities actions
+		for (const auto& sourceEntity : entities)
+		{
+			for (const auto& sourceEntityObject : sourceEntity.getInventory())
+			{
+				for (const auto& actionTypeID : sourceEntityObject.getEntityType().getOnTickObjectActionIDs())
+				{
+					const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+					if (!state.canExecuteAction(sourceEntityObject, actionType))
+						continue;
+
+					// Generate all actions
+					if (actionType.getTargets().size() == 0/*TargetType::None*/)
+					{
+						// Self-actions do not have a target, only a source
+						bucket.emplace_back(actionSpace->generateSelfAction(sourceEntityObject, actionType));
+					}
+					else
+					{
+						auto targets = actionSpace->generateTargets(state, sourceEntityObject, actionType);
+						actionSpace->generateActions(state, sourceEntityObject, actionType, targets, bucket);
+					}
+				}
+			}
+			
+			for (const auto& sourceEntityObject : sourceEntity.getSlots())
+			{
+				for (const auto& actionTypeID : sourceEntityObject.first.getEntityType().getOnTickObjectActionIDs())
+				{
+					const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+					if (!state.canExecuteAction(sourceEntityObject.first, actionType))
+						continue;
+
+					// Generate all actions
+					if (actionType.getTargets().size() == 0/*TargetType::None*/)
+					{
+						// Self-actions do not have a target, only a source
+						bucket.emplace_back(actionSpace->generateSelfAction(sourceEntityObject.first, actionType));
+					}
+					else
+					{
+						auto targets = actionSpace->generateTargets(state, sourceEntityObject.first, actionType);
+						actionSpace->generateActions(state, sourceEntityObject.first, actionType, targets, bucket);
+					}
+				}
+			}			
+		}
+
+		//Execute actions
+		for (auto& action : bucket)
+		{
+			executeAction(state, action);
+		}
+	}
 
 	void ForwardModel::endTick(GameState& state) const
 	{
@@ -594,6 +657,7 @@ namespace SGA
 		removeExpiredBuffs(state);
 		executeOnTriggerEffects(state);
 		executeOnTickEntityActions(state);
+		executeOnTickObjectsActions(state);
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);		
 	}

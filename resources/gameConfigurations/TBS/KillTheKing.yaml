@@ -92,7 +92,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: All
+                ValidTargets: [Entities]
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -131,7 +131,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: All
+                ValidTargets: [Entities]
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -179,27 +179,23 @@ Actions:
         Effects:
             - "UnEquipObject(Source, Target)"
 
-#    UseObject:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Targets:
-#            Target:
-#                Type: Object
-#                Conditions:
-#                    - "CanUseObject(Source, Target)"
-#        Effects:
-#            - "UseObject(Source, Target)"
-#
-#    UseSlotObject:
-#        Type: EntityAction
-#        Cooldown: 1
-#        Targets:
-#            Target:
-#                Type: SlotObject
-#                Conditions:
-#                    - "CanUseSlotObject(Source, Target)"
-#        Effects:
-#            - "UseSlotObject(Source, Target)"
+    UseObject:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Object
+        Effects:
+            - "UseObject(Source, Target)"
+
+    UseSlotObject:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: SlotObject
+        Effects:
+            - "UseSlotObject(Source, Target)"
 
     
 Entities:
@@ -258,18 +254,20 @@ Objects:
         CanEquip: [King, Warrior] #Who can equip the object in the slots
         SlotsUse: [Right hand] #empty == cant be equiped in any slot
 
-        #1 #OnEquip: actions executed when it is equiped in one slot
-        #OnEquipConditions: conditions to equip it
+        #Source object , Target entity
+        OnEquip: #effects executed when the object is added to a slot
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+        OnAddedInventory: #effects executed when the object is added to the inventory
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+        OnUseSlot: #effects executed when the object is used in the slot
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+        OnUseInventory: #effects executed when the object is used in the inventory
+            - "ModifyResource(Target.Health, Source.HealAmount)"
 
-        #1 #OnAddedInventory: actions executed when it is added to the bag
-
-        #1 #OnUseSlot: [Health] #actions executed when the object is used in the slot
-        #1 #OnUseInventory: [Health] ctions executed when the object is used in the inventory
-        #OnUseConditions: conditions to use
-
-        #1 #OnTickActions: Actions executed everytick
+        OnTickActions: [Heal] #Execute when in on slot or inventory
         Parameters:
             HealAmount: 20
+            HealRange: 2
 
 EntityGroups:
     Object: [HealthPotion]

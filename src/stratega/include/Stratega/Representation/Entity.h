@@ -420,6 +420,7 @@ namespace SGA
 		/// <summary>
 		void addObject(Entity newObject)
 		{
+			newObject.position = position;
 			inventory.emplace_back(newObject);
 		}
 

@@ -521,4 +521,34 @@ namespace SGA
 
 		entity.unEquipObject(target.getID());
 	}
+
+	UseObject::UseObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getObject(state, targets);
+
+		//entity.equipObject(target.getID());
+	}
+
+	UseSlotObject::UseSlotObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseSlotObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getSlotObject(state, targets);
+
+		//entity.equipObject(target.getID());
+	}
 }

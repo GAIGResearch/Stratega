@@ -225,6 +225,9 @@ namespace SGA
 		const std::vector<int>& getOnTickActionIDs() const { return onTickActionIds; }
 		std::vector<int>& getOnTickActionIDs() { return onTickActionIds; }
 
+		const std::vector<int>& getOnTickObjectActionIDs() const { return onTickObjectActionsIds; }
+		std::vector<int>& getOnTickObjectActionIDs() { return onTickObjectActionsIds; }
+
 		const std::unordered_set<EntityTypeID>& getSpawnableEntityTypes() const { return spawnableEntityTypes; }
 		void setSpawnableEntityTypes(const std::unordered_set<EntityTypeID>& set) { spawnableEntityTypes = set; }
 
