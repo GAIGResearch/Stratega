@@ -49,7 +49,7 @@ namespace SGA
 
 	struct GridInformationWidget : public SGAWidget
 	{
-		GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm);
+		GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm, std::unordered_set<int>& newSelectedEntities);
 
 		void update(const GameState& state) override;
 		void render(SGARenderTarget& renderTarget) override;
@@ -58,5 +58,6 @@ namespace SGA
 		bool drawEntityInformation = true;
 		bool drawTileInformation = true;
 		const GameState* currentGameState;
+		std::unordered_set<int>& selectedEntities;
 	};
 }

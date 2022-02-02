@@ -54,9 +54,10 @@ namespace SGA
 		ImGui::End();
 	}
 
-	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm) :
+	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm, std::unordered_set<int>& newSelectedEntities) :
 		SGAWidget(widgetName, newWindow, newWorld, newFm),
-		currentGameState(nullptr)
+		currentGameState(nullptr),
+		selectedEntities(newSelectedEntities)
 	{
 	}
 
@@ -72,15 +73,21 @@ namespace SGA
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
 		ImGui::End();
 		ImGuiIO& io = ImGui::GetIO();
-		if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
+		/*if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
 			return;
-		else
+		else*/
 		{
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
-			const auto* entity = currentGameState->getEntityAt(gridPos);
-
+			auto* entity = currentGameState->getEntityAt(gridPos);
+			
+			//Check if we have entities selected
+			if (selectedEntities.size() > 0)
+			{
+				entity = currentGameState->getEntityConst(*selectedEntities.begin());
+			}
+				
 			if (entity)
 			{
 				if (!drawEntityInformation)
