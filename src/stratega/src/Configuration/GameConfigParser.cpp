@@ -284,7 +284,11 @@ namespace SGA
         {
             return;
         }
-		
+        FunctionParser parser;
+        auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+        context.targetIDs.emplace("Target", 1);
+
         auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
         for (const auto& nameTypePair : types)
         {
@@ -299,6 +303,16 @@ namespace SGA
             
             if (nameTypePair.second["SlotsUse"].IsDefined())
                 type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"], config));
+
+            //Add effects to object
+            auto onEquipEffects = nameTypePair.second["OnEquip"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Effect>(onEquipEffects, type.onEquipObjectEffects, context);
+            auto onAddedInventoryEffects = nameTypePair.second["OnAddedInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Effect>(onAddedInventoryEffects, type.onAddedInventoryObjectEffects, context);
+            auto onUseInventoryEffects = nameTypePair.second["OnUseInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Effect>(onUseInventoryEffects, type.onUseInventoryObjectEffects, context);
+            auto onUseSlotEffects = nameTypePair.second["OnUseSlot"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions<Effect>(onUseSlotEffects, type.onUseSlotObjectEffects, context);
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));

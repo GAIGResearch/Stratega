@@ -201,6 +201,7 @@ namespace SGA
 		}
 	}
 
+
 	void ForwardModel::executeOnTriggerEffects(GameState& state) const
 	{
 		// Execute OnTick-trigger
@@ -281,6 +282,101 @@ namespace SGA
 						effect->execute(state, *this, targets);
 					}
 				}
+			}
+		}
+	}
+	void ForwardModel::executeOnUseObjectSlot(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().onUseSlotObjectConditions)
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().onUseSlotObjectEffects)
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}	
+	
+	void ForwardModel::executeOnAddedObjectInventory(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().onAddedInventoryObjectConditions)
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().onAddedInventoryObjectEffects)
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}
+
+	void ForwardModel::executeOnUseObjectInventory(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().onUseInventoryObjectConditions)
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().onUseInventoryObjectEffects)
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}
+
+	void ForwardModel::executeOnEquipObjectSlot(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().onEquipObjectConditions)
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().onEquipObjectEffects)
+			{
+				effect->execute(state, *this, targets);
 			}
 		}
 	}

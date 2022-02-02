@@ -282,6 +282,11 @@ namespace SGA
 		/// <param name="newValue">New value of the parameter</param>
 		void modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const;
 
+
+		void executeOnUseObjectInventory(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnUseObjectSlot(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnEquipObjectSlot(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnAddedObjectInventory(GameState& state, Entity& sourceEntity, Entity& object) const;
 	protected:
 
 		/// <summary>
@@ -361,6 +366,8 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
+
+		
 
 		/// <summary>
 		/// Executes the OnAdvance effects in the state provided

@@ -202,14 +202,16 @@ namespace SGA
 
 	}
 
-	void PickUp::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	void PickUp::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		auto& entity = entityParam.getEntity(state, targets);
-		auto& target = targetParam.getEntity(state, targets);
+		auto& object = targetParam.getEntity(state, targets);
 
-		entity.addObject(target);
+		fm.executeOnAddedObjectInventory(state, entity, object);
 
-		target.flagRemove();
+		entity.addObject(object);
+
+		object.flagRemove();
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -498,13 +500,14 @@ namespace SGA
 	{
 	}
 
-	void EquipObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void EquipObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		//Equip object
 		auto& entity = entityParam.getEntity(state, targets);
-		auto& target = targetParam.getObject(state, targets);
+		auto& object = targetParam.getObject(state, targets);
 
-		entity.equipObject(target.getID());
+		fm.executeOnEquipObjectSlot(state, entity, object);
+		entity.equipObject(object.getID());
 	}
 
 	UnEquipObject::UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -519,7 +522,7 @@ namespace SGA
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getSlotObject(state, targets);
 
-		entity.unEquipObject(target.getID());
+		entity.unEquipObject(target.getID());		
 	}
 
 	UseObject::UseObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -528,13 +531,13 @@ namespace SGA
 	{
 	}
 
-	void UseObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void UseObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		//Equip object
 		auto& entity = entityParam.getEntity(state, targets);
-		auto& target = targetParam.getObject(state, targets);
+		auto& object = targetParam.getObject(state, targets);
 
-		//entity.equipObject(target.getID());
+		fm.executeOnUseObjectInventory(state, entity, object);
 	}
 
 	UseSlotObject::UseSlotObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -543,12 +546,12 @@ namespace SGA
 	{
 	}
 
-	void UseSlotObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	void UseSlotObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		//Equip object
 		auto& entity = entityParam.getEntity(state, targets);
-		auto& target = targetParam.getSlotObject(state, targets);
+		auto& object = targetParam.getSlotObject(state, targets);
 
-		//entity.equipObject(target.getID());
+		fm.executeOnUseObjectSlot(state, entity, object);
 	}
 }

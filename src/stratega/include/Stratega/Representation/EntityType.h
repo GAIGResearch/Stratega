@@ -9,6 +9,8 @@
 namespace SGA
 {
 	typedef int EntityTypeID;
+	class Effect;
+	class Condition;
 	/// <summary>
 	/// Contains the definition of the entity type. This information includes a list of parameters definitions,
 	/// the actions that can execute, required technologies to spawn a entity, a list of spawnable entity types and
@@ -83,21 +85,22 @@ namespace SGA
 		std::unordered_set<EntityTypeID> canEquipGroupEntityTypes;
 
 		//Object
-		std::vector<int> onEquipObjectActionIds;
-		std::vector<int> onEquipObjectConditionIds;
-
-		std::vector<int> onAddedInventoryObjectActionIds;
-
-		std::vector<int> onUseSlotObjectActionIds;
-
-		std::vector<int> onUseInventoryObjectActionIds;
-		std::vector<int> onUseInventoryObjectConditionIds;
+		
 
 		std::vector<int> onTickObjectActionsIds;
 
 		
 
 	public:
+		std::vector<std::shared_ptr<Effect>> onEquipObjectEffects;
+		std::vector<std::shared_ptr<Effect>> onAddedInventoryObjectEffects;
+		std::vector<std::shared_ptr<Effect>> onUseInventoryObjectEffects;
+		std::vector<std::shared_ptr<Effect>> onUseSlotObjectEffects;
+
+		std::vector<std::shared_ptr<Condition>> onEquipObjectConditions;
+		std::vector<std::shared_ptr<Condition>> onAddedInventoryObjectConditions;
+		std::vector<std::shared_ptr<Condition>> onUseInventoryObjectConditions;
+		std::vector<std::shared_ptr<Condition>> onUseSlotObjectConditions;
 
 		/// <summary>
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion

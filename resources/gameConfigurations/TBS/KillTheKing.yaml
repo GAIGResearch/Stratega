@@ -203,7 +203,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move, PickUp, EquipObject, UnEquipObject]
+        Actions: [Attack, Move, PickUp, EquipObject, UnEquipObject, UseObject, UseSlotObject]
         InventorySize: 4
         Slots: [Left hand, Right hand]
         Parameters:
@@ -255,13 +255,21 @@ Objects:
         SlotsUse: [Right hand] #empty == cant be equiped in any slot
 
         #Source object , Target entity
-        OnEquip: #effects executed when the object is added to a slot
+        OnEquip: 
+            #Conditions: #conditions executed when the object is added to a slot
+            Effects: #effects executed when the object is added to a slot
+                - "ModifyResource(Target.Health, Source.HealAmount)"
+        OnAddedInventory: 
+            #Conditions: #conditions executed when the object is added to the inventory
+            Effects: #effects executed when the object is added to the inventory
             - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnAddedInventory: #effects executed when the object is added to the inventory
+        OnUseSlot: 
+            #Conditions: #conditions executed when the object is used in the slot
+            Effects: #effects executed when the object is used in the slot
             - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnUseSlot: #effects executed when the object is used in the slot
-            - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnUseInventory: #effects executed when the object is used in the inventory
+        OnUseInventory:
+            #Conditions: #effects executed when the object is used in the inventory
+            Effects: #effects executed when the object is used in the inventory
             - "ModifyResource(Target.Health, Source.HealAmount)"
 
         OnTickActions: [Heal] #Execute when in on slot or inventory

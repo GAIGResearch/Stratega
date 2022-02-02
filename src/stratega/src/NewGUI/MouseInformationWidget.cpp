@@ -108,7 +108,7 @@ namespace SGA
 				if(world.getEntity(entity->getID()))
 					world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(250, 0), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information", NULL, window_flags);
 
