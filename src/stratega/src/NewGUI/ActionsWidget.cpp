@@ -573,7 +573,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(0, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -637,7 +637,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(0, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -681,7 +681,7 @@ namespace SGA
 				for (auto& object : entity->getInventory())
 				{
 					ImGui::PushID(elementNumber);
-					if (ImGui::Button(object.getEntityType().getName().c_str(), ImVec2(50, 50)))
+					if (ImGui::Button(object.getEntityType().getName().c_str(), ImVec2(0, 50)))
 					{
 						selectedTargets.emplace_back(ActionTarget::createObjectActionTarget(object.getID()));
 					}
@@ -703,7 +703,7 @@ namespace SGA
 				for (const auto& object : entity->getSlots())
 				{
 					ImGui::PushID(elementNumber);
-					if (ImGui::Button(object.first.getEntityType().getName().c_str(), ImVec2(50, 50)))
+					if (ImGui::Button(object.first.getEntityType().getName().c_str(), ImVec2(0, 50)))
 					{
 						selectedTargets.emplace_back(ActionTarget::createSlotObjectActionTarget(object.first.getID()));
 					}
@@ -737,7 +737,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(0, 50)))
 				{
 					bool canExecute = true;
 
@@ -785,7 +785,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(0, 50)))
 				{
 					bool canExecute = true;
 
@@ -938,7 +938,7 @@ namespace SGA
 		for (auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
-			if (ImGui::Button(state->getGameInfo()->getActionType(actionType).getName().c_str(), ImVec2(50, 50)))
+			if (ImGui::Button(state->getGameInfo()->getActionType(actionType).getName().c_str(), ImVec2(0, 50)))
 			{
 				actionTypeSelected = actionType;
 			}

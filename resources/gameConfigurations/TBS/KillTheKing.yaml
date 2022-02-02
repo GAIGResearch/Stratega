@@ -65,9 +65,9 @@ Board:
         M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  p  .  .  .  M
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 p  p  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  p  p  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  b  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 b  b  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  b  b  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
     Spawn:
@@ -248,9 +248,9 @@ Entities:
         Actions: [Attack, Move, Spawn]
 
 Objects:
-    HealthPotion:
-        Sprite: ../../assets/Entities/arrow.png
-        Symbol: p
+    Bread:
+        Sprite: ../../assets/Entities/bread.png
+        Symbol: b
         CanEquip: [King, Warrior] #Who can equip the object in the slots
         SlotsUse: [Right hand] #empty == cant be equiped in any slot
 
@@ -262,15 +262,15 @@ Objects:
         OnAddedInventory: 
             #Conditions: #conditions executed when the object is added to the inventory
             Effects: #effects executed when the object is added to the inventory
-            - "ModifyResource(Target.Health, Source.HealAmount)"
+                - "ModifyResource(Target.Health, Source.HealAmount)"
         OnUseSlot: 
             #Conditions: #conditions executed when the object is used in the slot
             Effects: #effects executed when the object is used in the slot
-            - "ModifyResource(Target.Health, Source.HealAmount)"
+                - "ModifyResource(Target.Health, Source.HealAmount)"
         OnUseInventory:
             #Conditions: #effects executed when the object is used in the inventory
             Effects: #effects executed when the object is used in the inventory
-            - "ModifyResource(Target.Health, Source.HealAmount)"
+                - "ModifyResource(Target.Health, Source.HealAmount)"
 
         OnTickActions: [Heal] #Execute when in on slot or inventory
         Parameters:
@@ -278,7 +278,7 @@ Objects:
             HealRange: 2
 
 EntityGroups:
-    Object: [HealthPotion]
+    Object: [Bread]
     Entities: [King, Warrior, Archer, Healer]
 
 ForwardModel:

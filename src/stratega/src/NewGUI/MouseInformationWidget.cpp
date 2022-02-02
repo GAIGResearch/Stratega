@@ -169,7 +169,7 @@ namespace SGA
 							//Check if entity have sprite
 							auto searchedEntityType = object.getEntityType();
 							//Add units
-							if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+							if (ImGui::Button(searchedEntityType.getName().c_str(), { 0, 50 }))
 							{
 
 							}
