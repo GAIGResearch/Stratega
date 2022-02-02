@@ -265,6 +265,9 @@ namespace SGA
                 type.setInventorySize(0);
             else
                 type.setInventorySize(nameTypePair.second["InventorySize"].as<double>());
+
+            if (nameTypePair.second["Slots"].IsDefined())
+                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"], config));
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
@@ -293,8 +296,8 @@ namespace SGA
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
             
-            if (nameTypePair.second["Slots"].IsDefined())
-                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"], config));
+            if (nameTypePair.second["SlotsUse"].IsDefined())
+                type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"], config));
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));

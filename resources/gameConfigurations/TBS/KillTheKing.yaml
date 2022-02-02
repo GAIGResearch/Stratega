@@ -256,7 +256,7 @@ Objects:
         Sprite: ../../assets/Entities/arrow.png
         Symbol: p
         CanEquip: [King, Warrior] #Who can equip the object in the slots
-        SlotsUse: [Left hand] #empty == cant be equiped in any slot
+        SlotsUse: [Right hand] #empty == cant be equiped in any slot
 
         #1 #OnEquip: actions executed when it is equiped in one slot
         #OnEquipConditions: conditions to equip it

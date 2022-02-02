@@ -102,13 +102,13 @@ namespace SGA
 				//window_flags += ImGuiWindowFlags_NoCollapse;
 				//window_flags += ImGuiWindowFlags_NoNav;
 				////window_flags+= ImGuiWindowFlags_NoBackground;
-				window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+				//window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 				
 				//Highlight entity drwable
 				if(world.getEntity(entity->getID()))
 					world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(300, 270), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information", NULL, window_flags);
 
@@ -158,26 +158,58 @@ namespace SGA
 				ImGui::Separator();
 
 				ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
-				ImGui::Text("Inventory: ");
-				ImGui::BeginChild("Inventory", ImVec2(0, 80), true, child_flags);
+				if (entity->getInventory().size())
+				{
+					ImGui::Text("Inventory: ");
+					ImGui::BeginChild("Inventory", ImVec2(0, 80), true, child_flags);
 
-				if(entity->getOwnerID()!=-1)					
-					for (const auto& object : entity->getInventory())
-					{
-						//Check if entity have sprite
-						auto searchedEntityType = object.getEntityType();
-						//Add units
-						if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+					if (entity->getOwnerID() != -1)
+						for (const auto& object : entity->getInventory())
 						{
+							//Check if entity have sprite
+							auto searchedEntityType = object.getEntityType();
+							//Add units
+							if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+							{
 
+							}
+							ImGui::SameLine();
 						}
-						ImGui::SameLine();
-					}
 
-				ImGui::EndChild();
-				ImGui::SameLine();
+					ImGui::EndChild();
+					ImGui::SameLine();
+				}
+				
 
 				ImGui::Spacing();
+				if (entity->getEntityType().getSlots().size() > 0)
+				{
+					ImGui::Text("Slots: ");
+					ImGui::BeginChild("Slots", ImVec2(0, 60), true, child_flags);
+					std::string tempText = "";
+					int currenSlotId = 0;
+					if (entity->getOwnerID() != -1)
+						for (const auto& slot : entity->getEntityType().getSlots())
+						{
+							tempText = slot;
+							const auto* slotUsedObject = entity->getSlotObjectBySlotId(currenSlotId);
+
+							if (slotUsedObject)
+							{
+								tempText += "\n ";
+								tempText += slotUsedObject->getEntityType().getName();
+							}
+								
+							if (ImGui::Button(tempText.c_str(), { 0,50 }))
+							{
+
+							}
+							ImGui::SameLine();
+							currenSlotId++;
+						}
+					ImGui::EndChild();
+					ImGui::SameLine();
+				}				
 				ImGui::End();
 			}
 			else

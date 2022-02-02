@@ -206,4 +206,48 @@ namespace SGA
 	{
 		return (inventory.size());
 	}
+
+	void Entity::equipObject(int entityID)
+	{
+		//Move object from inventory to slots
+		Entity object = *getObject(entityID);
+		removeObject(entityID);
+
+		//Get list of slots used
+		std::pair<Entity, std::vector<int>> newEntry = { object, type->getSlotsUsedIds(object) };
+		slots.emplace_back(newEntry);
+	}
+
+	bool Entity::checkSlotsAreNotInUse(const Entity& object) const
+	{
+		//Get slots that the object use
+		const auto slotsUsedByObject = object.getEntityType().getSlotsUsed();
+
+		//Check if this entity has any in use
+		for (auto& slot : slotsUsedByObject)
+		{
+			int slotID = this->getEntityType().getSlotId(slot);
+
+			for (auto& curreSlot : slots)
+			{
+				for (auto& currSlotId : curreSlot.second)
+				{
+					if (currSlotId == slotID)
+						return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	Entity* Entity::getSlotObject(int entityID)
+	{
+		auto iter = std::find_if(std::begin(slots), std::end(slots),
+			[&](std::pair<Entity, std::vector<int>> const& p) { return p.first.getID() == entityID; });
+		if (iter == slots.end())
+			return nullptr;
+
+		return &iter->first;
+	}
 }

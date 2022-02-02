@@ -78,6 +78,7 @@ namespace SGA
 		//Object stuff
 		//Holder
 		std::vector<std::string> slots;
+		std::vector<std::string> slotsUsed;
 		int inventorySize;
 		std::unordered_set<EntityTypeID> canEquipGroupEntityTypes;
 
@@ -134,6 +135,56 @@ namespace SGA
 		double getParamMin(std::string paramName) const;
 
 
+		std::vector<int> getSlotsUsedIds(Entity& object) const 
+		{
+			std::vector<int> slotsUsedIds;
+			int id = 0;
+			for (auto&currentSlot : slots)
+			{
+				for (auto& currentSlotUsed : object.getEntityType().getSlotsUsed())
+				{
+					if (currentSlot == currentSlotUsed)
+					{
+						slotsUsedIds.emplace_back(id);
+						break;
+					}
+				}
+				id++;
+			}
+			return slotsUsedIds;
+		}
+
+		int getSlotId(std::string slotName) const
+		{
+			int id = 0;
+			for (auto& currSlot : slots)
+			{
+				if (currSlot == slotName)
+					return id;
+				id++;
+			}
+			return -1;
+		}
+
+		std::vector<int> getSlotsUsedIds() const 
+		{
+			std::vector<int> slotsUsedIds;
+			int id = 0;
+			for (auto&currentSlot : slots)
+			{
+				for (auto& currentSlotUsed : getSlotsUsed())
+				{
+					if (currentSlot == currentSlotUsed)
+					{
+						slotsUsedIds.emplace_back(id);
+						break;
+					}
+				}
+				id++;
+			}
+			return slotsUsedIds;
+		}
+
 		/* Getters and setters for EntityType*/
 
 
@@ -148,6 +199,9 @@ namespace SGA
 		
 		const std::vector<std::string>& getSlots() const { return slots; }
 		void setSlots(std::vector<std::string> newSlots) { slots = newSlots; }
+
+		const std::vector<std::string>& getSlotsUsed() const { return slotsUsed; }
+		void setSlotsUsed(std::vector<std::string> newSlotsUsed) { slotsUsed = newSlotsUsed; }
 
 		int getRequiredTechID() const { return requiredTechnologyID; }
 		void setRequiredTechID(int newID) { requiredTechnologyID = newID; }

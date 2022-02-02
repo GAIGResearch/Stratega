@@ -467,17 +467,7 @@ namespace SGA
 			return slots;
 		}
 
-		void equipObject(int entityID)
-		{
-			//Move object from inventory to slots
-			Entity object = *getObject(entityID);
-			removeObject(entityID);
-
-
-			//Get list of slots used
-			std::pair<Entity, std::vector<int>> newEntry = { object, {} };
-			slots.emplace_back(newEntry);
-		}
+		void equipObject(int entityID);
 
 		void unEquipObject(int entityID)
 		{
@@ -486,6 +476,21 @@ namespace SGA
 			removeSlotObject(entityID);
 			addObject(slotObject);
 		}
+
+		const Entity* getSlotObjectBySlotId(int slotId) const 
+		{
+			for (auto& objectPair : slots)
+			{
+				for (auto& objectUsedIdPair : objectPair.second)
+				{
+					if (slotId == objectUsedIdPair)
+						return 	&objectPair.first;
+				}
+			}
+			return nullptr;
+		}
+
+		bool checkSlotsAreNotInUse(const Entity& object) const;
 
 		/// <summary>
 		///	Return if the entity has a object with a specific Id
@@ -549,14 +554,6 @@ namespace SGA
 		/// <summary>
 		///	Return the object of this entity with a given entityID
 		/// <summary>
-		Entity* getSlotObject(int entityID)
-		{
-			auto iter = std::find_if(std::begin(slots), std::end(slots),
-				[&](std::pair<Entity, std::vector<int>> const& p) { return p.first.getID() == entityID; });
-			if (iter == slots.end())
-				return nullptr;
-
-			return &iter->first;
-		}
+		Entity* getSlotObject(int entityID);
 	};
 }

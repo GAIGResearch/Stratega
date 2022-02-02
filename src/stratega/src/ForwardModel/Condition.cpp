@@ -427,7 +427,13 @@ namespace  SGA
 		auto& groupTypes = target.getEntityType().getCanEquipGroupEntityTypes();
 
 		if (groupTypes.count(entity.getEntityType().getID()))
-			return true;
+		{
+			//Check if slots that use the object are not used
+			if (entity.checkSlotsAreNotInUse(target))
+				return true;
+			else
+				return false;
+		}			
 		else
 			return false;		
 	}
