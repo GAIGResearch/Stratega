@@ -156,11 +156,21 @@ namespace SGA
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It searchs also the objects from the entities
 		/// </summary>
 		/// <param name="entityID"> ID of the entity to retrieve. </param>
 		/// <returns>A pointer to the entity.</returns>
 		Entity* getEntity(int entityID);
 		const Entity* getEntityConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It only search the entities in the gamestate without the objects of the inventories
+		/// </summary>
+		/// <param name="entityID"> ID of the entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getOnlyEntities(int entityID);
+		const Entity* getOnlyEntitiesConst(int entityID) const;
 
 		/// <summary>
 		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.

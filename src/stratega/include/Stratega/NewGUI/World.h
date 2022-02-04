@@ -101,7 +101,7 @@ namespace SGA
                         {
                             if (fowSettings->renderFogOfWar)
                             {
-                                auto* foundEntity = fowState.getEntityConst(drawableEntity->entityID);
+                                auto* foundEntity = fowState.getOnlyEntitiesConst(drawableEntity->entityID);
                                 if (!foundEntity)
                                 {
                                     drawableEntity->dissappear();
@@ -109,7 +109,7 @@ namespace SGA
                             }
                             else
                             {
-                                auto* foundEntity = state.getEntityConst(drawableEntity->entityID);
+                                auto* foundEntity = state.getOnlyEntitiesConst(drawableEntity->entityID);
                                 if (!foundEntity)
                                 {
                                     drawableEntity->dissappear();
