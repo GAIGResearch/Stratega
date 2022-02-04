@@ -199,6 +199,15 @@ namespace SGA
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
 
 		/// <summary>
+		/// Adds a entity of a given type to the game, in a given position, belonging to a specific player. 
+		/// </summary>
+		/// <param name="type">Type of the player, as defined <here cref="SGA::EntityType"/> </param>
+		/// <param name="playerID">ID of the player this new entity will belong to.</param>
+		/// <param name="position">Position where the entity will be added.</param>
+		/// <returns>Returns the unique ID of the entity created.</returns>
+		int addEntity(Entity entity, int playerID, const Vector2f& position);
+
+		/// <summary>
 		/// Gets the list of all entities.
 		/// </summary>
 		/// <returns>A vector with all entities in the game.</returns>

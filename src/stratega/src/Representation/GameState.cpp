@@ -188,6 +188,16 @@ namespace SGA
 		return instance.getID();
 	}
 
+	int GameState::addEntity(Entity instance, int playerID, const Vector2f& position)
+	{
+		instance.setOwnerID(playerID);
+		instance.setPosition(position);
+		entities.emplace_back(std::move(instance));
+		nextEntityID++;
+
+		return instance.getID();
+	}
+
 	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
 	{
 		for (auto& entity : entities)

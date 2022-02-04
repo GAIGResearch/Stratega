@@ -126,12 +126,28 @@ Actions:
     #    Effects:
     #        - "UseObject(Source, Target)"
 
+    #DropObject:
+    #    Type: EntityAction
+    #    Cooldown: 1
+    #    Targets:
+    #        Object:
+    #            Type: Object
+    #        Position:
+    #            Type: Position
+    #            SamplingMethod: 
+    #                Type: Dijkstra
+    #                Options:
+    #                    SearchSize: 3
+    #                    AllowDiagonals: false
+    #    Effects:
+    #        - "DropObject(Source, Object, Position)"
+
     UseSlotObject:
         Type: EntityAction
         Cooldown: 1
         Targets:
             Object:
-                Type: SlotObject
+                Type: Object
             TargetDoor:
                 Type: Entity
                 ValidTargets: Door
@@ -150,7 +166,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: s
         LineOfSightRange: 2
-        Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject]
+        Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject, DropObject]
         InventorySize: 4
         Slots: [Left hand, Right hand]
         Parameters:

@@ -97,6 +97,16 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class DropObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter objectParam;
+		FunctionParameter positionParam;
+	public:
+		DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class AttackProbability : public Effect
 	{
 		FunctionParameter resourceReference;

@@ -63,6 +63,7 @@ namespace SGA
 		factory.registerFunction<UnEquipObject>("UnEquipObject");
 		factory.registerFunction<UseObject>("UseObject");
 		factory.registerFunction<UseSlotObject>("UseSlotObject");
+		factory.registerFunction<DropObject>("DropObject");
 		
 		return factory;
 	}

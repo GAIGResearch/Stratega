@@ -213,6 +213,23 @@ namespace SGA
 
 		object.flagRemove();
 	}
+	
+	DropObject::DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), objectParam(parameters[1]), positionParam(parameters[2])
+	{
+
+	}
+
+	void DropObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		Entity object = objectParam.getObject(state, targets);
+		auto position = positionParam.getPosition(state, targets);
+
+		entity.removeObject(object.getID());
+		state.addEntity(object, -1, position);
+	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
