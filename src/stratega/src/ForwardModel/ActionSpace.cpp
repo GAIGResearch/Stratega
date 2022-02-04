@@ -225,6 +225,10 @@ namespace SGA
 				break;
 			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
+			case TargetType::Object: newTargets = generateObjectTargets(state, entity);
+				break;
+			case TargetType::SlotObject: newTargets = generateSlotObjectTargets(state, entity);
+				break;
 			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
 			case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
@@ -334,6 +338,30 @@ namespace SGA
 				targets.emplace_back(ActionTarget::createEntityActionTarget(entityID));
 			}
 		}
+		return targets;
+	}
+
+	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& gameState,  const Entity& source) const
+	{
+		std::vector<ActionTarget> targets;
+
+		for (const auto& object : source.getInventory())
+		{
+			targets.emplace_back(ActionTarget::createObjectActionTarget(object.getID()));
+		}
+		
+		return targets;
+	}
+
+	std::vector<ActionTarget> ActionSpace::generateSlotObjectTargets(const GameState& gameState,  const Entity& source) const
+	{
+		std::vector<ActionTarget> targets;
+
+		for (const auto& object : source.getSlots())
+		{
+			targets.emplace_back(ActionTarget::createSlotObjectActionTarget(object.first.getID()));
+		}
+		
 		return targets;
 	}
 

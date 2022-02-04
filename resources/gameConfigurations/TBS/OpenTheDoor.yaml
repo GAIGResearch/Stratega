@@ -57,7 +57,7 @@ Board:
         M  .  M  M  M  M  M  .  M  .  M  .  M  .  M  .  M  M  M  M  M  .  M
         M  .  M  .  .  .  .  .  M  .  M  .  M  .  M  .  .  .  .  .  M  .  M
         M  .  M  .  M  .  M  .  M  k  M  .  M  k  M  .  M  .  M  .  M  .  M
-        M  .  M  .  M  .  M  .  M  M  M  .  M  M  M  .  M  .  M  .  M  d0  M
+        M  .  M  .  M  .  M  .  M  M  M  .  M  M  M  .  M  .  M  .  M  .  M
         M  .  .  .  M  d1 M  .  .  .  .  .  .  .  .  .  M  d0 M  .  k  s0 M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
