@@ -291,7 +291,7 @@ namespace SGA
 		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
 		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
 		auto isValid = true;
-		for (const auto& condition : object.getEntityType().onUseSlotObjectConditions)
+		for (const auto& condition : object.getEntityType().getOnUseSlotObjectConditions())
 		{
 			if (!condition->isFullfiled(state, targets))
 			{
@@ -302,7 +302,7 @@ namespace SGA
 
 		if (isValid)
 		{
-			for (const auto& effect : object.getEntityType().onUseSlotObjectEffects)
+			for (const auto& effect : object.getEntityType().getOnUseSlotObjectEffects())
 			{
 				effect->execute(state, *this, targets);
 			}
@@ -315,7 +315,7 @@ namespace SGA
 		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
 		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
 		auto isValid = true;
-		for (const auto& condition : object.getEntityType().onAddedInventoryObjectConditions)
+		for (const auto& condition : object.getEntityType().getOnAddedInventoryObjectConditions())
 		{
 			if (!condition->isFullfiled(state, targets))
 			{
@@ -326,7 +326,7 @@ namespace SGA
 
 		if (isValid)
 		{
-			for (const auto& effect : object.getEntityType().onAddedInventoryObjectEffects)
+			for (const auto& effect : object.getEntityType().getOnAddedInventoryObjectEffects())
 			{
 				effect->execute(state, *this, targets);
 			}
@@ -339,7 +339,7 @@ namespace SGA
 		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
 		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
 		auto isValid = true;
-		for (const auto& condition : object.getEntityType().onUseInventoryObjectConditions)
+		for (const auto& condition : object.getEntityType().getOnUseInventoryObjectConditions())
 		{
 			if (!condition->isFullfiled(state, targets))
 			{
@@ -350,7 +350,7 @@ namespace SGA
 
 		if (isValid)
 		{
-			for (const auto& effect : object.getEntityType().onUseInventoryObjectEffects)
+			for (const auto& effect : object.getEntityType().getOnUseInventoryObjectEffects())
 			{
 				effect->execute(state, *this, targets);
 			}
@@ -363,7 +363,7 @@ namespace SGA
 		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
 		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
 		auto isValid = true;
-		for (const auto& condition : object.getEntityType().onEquipObjectConditions)
+		for (const auto& condition : object.getEntityType().getOnEquipObjectConditions())
 		{
 			if (!condition->isFullfiled(state, targets))
 			{
@@ -374,7 +374,7 @@ namespace SGA
 
 		if (isValid)
 		{
-			for (const auto& effect : object.getEntityType().onEquipObjectEffects)
+			for (const auto& effect : object.getEntityType().getOnEquipObjectEffects())
 			{
 				effect->execute(state, *this, targets);
 			}

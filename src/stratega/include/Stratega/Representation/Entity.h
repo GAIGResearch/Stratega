@@ -468,8 +468,14 @@ namespace SGA
 			return slots;
 		}
 
+		/// <summary>
+		/// Equip object from the inventory
+		/// <summary>
 		void equipObject(int entityID);
 
+		/// <summary>
+		/// UnEquip object from the slot
+		/// <summary>
 		void unEquipObject(int entityID)
 		{
 			//Move object from slot to inventory
@@ -478,6 +484,9 @@ namespace SGA
 			addObject(slotObject);
 		}
 
+		/// <summary>
+		/// Get the object from the slot with a specific ID
+		/// <summary>
 		const Entity* getSlotObjectBySlotId(int slotId) const 
 		{
 			for (auto& objectPair : slots)
@@ -491,6 +500,9 @@ namespace SGA
 			return nullptr;
 		}
 
+		/// <summary>
+		/// Checks if slots that a object needs are not in use
+		/// <summary>
 		bool checkSlotsAreNotInUse(const Entity& object) const;
 
 		/// <summary>

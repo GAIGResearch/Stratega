@@ -332,36 +332,52 @@ namespace SGA
                 //Add effects to object
                 if (objectsNode[entityTp.second.getName()]["OnEquip"].IsDefined())
                 {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
                     auto onEquipEffects = objectsNode[entityTp.second.getName()]["OnEquip"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Effect>(onEquipEffects, entityTp.second.onEquipObjectEffects, context);
+                    parser.parseFunctions<Effect>(onEquipEffects, newEffects, context);
+                    entityTp.second.setOnEquipObjectEffects(newEffects);
 
                     auto onEquipConditions = objectsNode[entityTp.second.getName()]["OnEquip"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Condition>(onEquipConditions, entityTp.second.onEquipObjectConditions, context);
+                    parser.parseFunctions<Condition>(onEquipConditions, newConditions, context);
+                    entityTp.second.setOnEquipObjectConditions(newConditions);
                 }
 
                 if (objectsNode[entityTp.second.getName()]["OnAddedInventory"].IsDefined())
                 {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
                     auto onAddedInventoryEffects = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Effect>(onAddedInventoryEffects, entityTp.second.onAddedInventoryObjectEffects, context);
+                    parser.parseFunctions<Effect>(onAddedInventoryEffects, newEffects, context);
+                    entityTp.second.setOnAddedInventoryObjectEffects(newEffects);
 
                     auto onAddedInventoryConditions = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Condition>(onAddedInventoryConditions, entityTp.second.onAddedInventoryObjectConditions, context);
+                    parser.parseFunctions<Condition>(onAddedInventoryConditions, newConditions, context);
+                    entityTp.second.setOnAddedInventoryObjectConditions(newConditions);
                 }
                 if (objectsNode[entityTp.second.getName()]["OnUseInventory"].IsDefined())
                 {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
                     auto onUseInventoryEffects = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Effect>(onUseInventoryEffects, entityTp.second.onUseInventoryObjectEffects, context);
+                    parser.parseFunctions<Effect>(onUseInventoryEffects, newEffects, context);
+                    entityTp.second.setOnUseInventoryObjectEffects(newEffects);
 
                     auto onUseInventoryConditions = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Condition>(onUseInventoryConditions, entityTp.second.onUseInventoryObjectConditions, context);
+                    parser.parseFunctions<Condition>(onUseInventoryConditions, newConditions, context);
+                    entityTp.second.setOnUseInventoryObjectConditions(newConditions);
                 }
                 if (objectsNode[entityTp.second.getName()]["OnUseSlot"].IsDefined())
                 {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
                     auto onUseSlotEffects = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Effect>(onUseSlotEffects, entityTp.second.onUseSlotObjectEffects, context);
+                    parser.parseFunctions<Effect>(onUseSlotEffects, newEffects, context);
+                    entityTp.second.setOnUseSlotObjectEffects(newEffects);
 
                     auto onUseSlotConditions = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                    parser.parseFunctions<Condition>(onUseSlotConditions, entityTp.second.onUseSlotObjectConditions, context);
+                    parser.parseFunctions<Condition>(onUseSlotConditions, newConditions, context);
+                    entityTp.second.setOnUseSlotObjectConditions(newConditions);
                 }
             }
 

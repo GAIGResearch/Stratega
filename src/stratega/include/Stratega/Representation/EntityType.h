@@ -89,9 +89,6 @@ namespace SGA
 
 		std::vector<int> onTickObjectActionsIds;
 
-		
-
-	public:
 		std::vector<std::shared_ptr<Effect>> onEquipObjectEffects;
 		std::vector<std::shared_ptr<Effect>> onAddedInventoryObjectEffects;
 		std::vector<std::shared_ptr<Effect>> onUseInventoryObjectEffects;
@@ -101,6 +98,9 @@ namespace SGA
 		std::vector<std::shared_ptr<Condition>> onAddedInventoryObjectConditions;
 		std::vector<std::shared_ptr<Condition>> onUseInventoryObjectConditions;
 		std::vector<std::shared_ptr<Condition>> onUseSlotObjectConditions;
+
+	public:
+		
 
 		/// <summary>
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
@@ -137,7 +137,9 @@ namespace SGA
 		/// </summary>
 		double getParamMin(std::string paramName) const;
 
-
+		/// <summary>
+		/// Get the slots Ids used by a specific ID
+		/// <summary>
 		std::vector<int> getSlotsUsedIds(Entity& object) const 
 		{
 			std::vector<int> slotsUsedIds;
@@ -157,6 +159,9 @@ namespace SGA
 			return slotsUsedIds;
 		}
 
+		/// <summary>
+		/// Get the slots Id by name
+		/// <summary>
 		int getSlotId(std::string slotName) const
 		{
 			int id = 0;
@@ -169,6 +174,9 @@ namespace SGA
 			return -1;
 		}
 
+		/// <summary>
+		/// Get the slotsIDs that are used
+		/// <summary>
 		std::vector<int> getSlotsUsedIds() const 
 		{
 			std::vector<int> slotsUsedIds;
@@ -190,7 +198,6 @@ namespace SGA
 
 		/* Getters and setters for EntityType*/
 
-
 		int getID() const { return id; }
 		void setID(int newID) { this->id = newID; }
 
@@ -202,6 +209,30 @@ namespace SGA
 		
 		const std::vector<std::string>& getSlots() const { return slots; }
 		void setSlots(std::vector<std::string> newSlots) { slots = newSlots; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnEquipObjectEffects() const { return onEquipObjectEffects; }
+		void setOnEquipObjectEffects(std::vector<std::shared_ptr<Effect>> newEffects) { onEquipObjectEffects = newEffects; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnAddedInventoryObjectEffects() const { return onAddedInventoryObjectEffects; }
+		void setOnAddedInventoryObjectEffects(std::vector<std::shared_ptr<Effect>> newEffects) { onAddedInventoryObjectEffects = newEffects; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnUseInventoryObjectEffects() const { return onUseInventoryObjectEffects; }
+		void setOnUseInventoryObjectEffects(std::vector<std::shared_ptr<Effect>> newEffects) { onUseInventoryObjectEffects = newEffects; }
+
+		const std::vector<std::shared_ptr<Effect>>& getOnUseSlotObjectEffects() const { return onUseSlotObjectEffects; }
+		void setOnUseSlotObjectEffects(std::vector<std::shared_ptr<Effect>> newEffects) { onUseSlotObjectEffects = newEffects; }
+
+		const std::vector<std::shared_ptr<Condition>>& getOnEquipObjectConditions() const { return onEquipObjectConditions; }
+		void setOnEquipObjectConditions(std::vector<std::shared_ptr<Condition>> newConditions) { onEquipObjectConditions = newConditions; }
+
+		const std::vector<std::shared_ptr<Condition>>& getOnAddedInventoryObjectConditions() const { return onAddedInventoryObjectConditions; }
+		void setOnAddedInventoryObjectConditions(std::vector<std::shared_ptr<Condition>> newConditions) { onAddedInventoryObjectConditions = newConditions; }
+
+		const std::vector<std::shared_ptr<Condition>>& getOnUseInventoryObjectConditions() const { return onUseInventoryObjectConditions; }
+		void setOnUseInventoryObjectConditions(std::vector<std::shared_ptr<Condition>> newConditions) { onUseInventoryObjectConditions = newConditions; }
+
+		const std::vector<std::shared_ptr<Condition>>& getOnUseSlotObjectConditions() const { return onUseSlotObjectConditions; }
+		void setOnUseSlotObjectConditions(std::vector<std::shared_ptr<Condition>> newConditions) { onUseSlotObjectConditions = newConditions; }
 
 		const std::vector<std::string>& getSlotsUsed() const { return slotsUsed; }
 		void setSlotsUsed(std::vector<std::string> newSlotsUsed) { slotsUsed = newSlotsUsed; }
