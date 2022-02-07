@@ -261,6 +261,10 @@ namespace SGA
 				break;
 			case TargetType::None: return {};
 				break;
+			case TargetType::SlotObject: return {};
+				break;
+			case TargetType::Object: return {};
+				break;
 			case TargetType::ContinuousAction: return {};
 				break;
 			}
@@ -341,7 +345,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& gameState,  const Entity& source) const
+	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& /*gameState*/,  const Entity& source) const
 	{
 		std::vector<ActionTarget> targets;
 
@@ -353,7 +357,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateSlotObjectTargets(const GameState& gameState,  const Entity& source) const
+	std::vector<ActionTarget> ActionSpace::generateSlotObjectTargets(const GameState& /*gameState*/,  const Entity& source) const
 	{
 		std::vector<ActionTarget> targets;
 

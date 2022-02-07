@@ -204,7 +204,7 @@ namespace SGA
 
 	int Entity::getInventoryUse() const
 	{
-		return (inventory.size());
+		return static_cast<int>(inventory.size());
 	}
 
 	void Entity::equipObject(int entityID)

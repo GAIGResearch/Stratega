@@ -267,10 +267,10 @@ namespace SGA
             if (!nameTypePair.second["InventorySize"].IsDefined())
                 type.setInventorySize(0);
             else
-                type.setInventorySize(nameTypePair.second["InventorySize"].as<double>());
+                type.setInventorySize(nameTypePair.second["InventorySize"].as<int>());
 
             if (nameTypePair.second["Slots"].IsDefined())
-                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"], config));
+                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"]));
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
@@ -301,7 +301,7 @@ namespace SGA
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
             
             if (nameTypePair.second["SlotsUse"].IsDefined())
-                type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"], config));
+                type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"]));
 
             
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
@@ -1093,7 +1093,7 @@ namespace SGA
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
 	}
     
-    std::vector<std::string> GameConfigParser::parseEntitySlots(const YAML::Node& slotNode, const GameConfig& config) const
+    std::vector<std::string> GameConfigParser::parseEntitySlots(const YAML::Node& slotNode) const
 	{
         if(!slotNode.IsDefined())
         {

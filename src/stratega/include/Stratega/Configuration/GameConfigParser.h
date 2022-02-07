@@ -110,7 +110,7 @@ namespace SGA
             return foundNode[node];
         }
         std::unordered_set<EntityTypeID> parseEntityGroup(const YAML::Node& groupNode, const GameConfig& config) const;
-        std::vector<std::string> parseEntitySlots(const YAML::Node& slotsNode, const GameConfig& config) const;
+        std::vector<std::string> parseEntitySlots(const YAML::Node& slotsNode) const;
         std::unordered_map<ParameterID, double> parseCost(const YAML::Node& costNode, const GameConfig& config) const;
 		TargetType parseTargetType(const YAML::Node& node, const GameConfig& config) const;
 		ActionCategory parseActionCategory(const std::string& name) const;
