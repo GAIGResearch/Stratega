@@ -670,7 +670,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getObject(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void ActionsWidget::getObject(int playerID, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -692,7 +692,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getSlotObject(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
+	void ActionsWidget::getSlotObject(int playerID, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
 	{
 		if (hasEntitiesSelected())
 		{
