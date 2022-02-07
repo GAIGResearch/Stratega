@@ -221,7 +221,7 @@ namespace SGA
 
 	}
 
-	void DropObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void DropObject::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		Entity object = objectParam.getObject(state, targets);
