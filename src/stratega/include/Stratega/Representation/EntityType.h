@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <stdexcept>
+#include <memory>
 #include <unordered_set>
 #include <Stratega/Representation/Parameter.h>
 #include <Stratega/Representation/Entity.h>
@@ -143,18 +144,18 @@ namespace SGA
 		std::vector<int> getSlotsUsedIds(Entity& object) const 
 		{
 			std::vector<int> slotsUsedIds;
-			int id = 0;
+			int currentId = 0;
 			for (auto&currentSlot : slots)
 			{
 				for (auto& currentSlotUsed : object.getEntityType().getSlotsUsed())
 				{
 					if (currentSlot == currentSlotUsed)
 					{
-						slotsUsedIds.emplace_back(id);
+						slotsUsedIds.emplace_back(currentId);
 						break;
 					}
 				}
-				id++;
+				currentId++;
 			}
 			return slotsUsedIds;
 		}
@@ -164,12 +165,12 @@ namespace SGA
 		/// <summary>
 		int getSlotId(std::string slotName) const
 		{
-			int id = 0;
+			int currentId = 0;
 			for (auto& currSlot : slots)
 			{
 				if (currSlot == slotName)
-					return id;
-				id++;
+					return currentId;
+				currentId++;
 			}
 			return -1;
 		}
@@ -180,18 +181,18 @@ namespace SGA
 		std::vector<int> getSlotsUsedIds() const 
 		{
 			std::vector<int> slotsUsedIds;
-			int id = 0;
+			int currentId = 0;
 			for (auto&currentSlot : slots)
 			{
 				for (auto& currentSlotUsed : getSlotsUsed())
 				{
 					if (currentSlot == currentSlotUsed)
 					{
-						slotsUsedIds.emplace_back(id);
+						slotsUsedIds.emplace_back(currentId);
 						break;
 					}
 				}
-				id++;
+				currentId++;
 			}
 			return slotsUsedIds;
 		}
