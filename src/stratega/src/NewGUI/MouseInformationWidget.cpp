@@ -72,7 +72,7 @@ namespace SGA
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
 		ImGui::End();
-		ImGuiIO& io = ImGui::GetIO();
+		//ImGuiIO& io = ImGui::GetIO();
 		/*if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
 			return;
 		else*/
