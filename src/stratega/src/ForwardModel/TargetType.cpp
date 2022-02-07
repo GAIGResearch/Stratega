@@ -35,6 +35,10 @@ namespace SGA
 		}break;
 		case EntityType:
 			break;
+		case Object:
+			break;
+		case SlotObject:
+			break;
 		case Entity:
 		{
 			if (sourceActionTarget.getType() == ActionTarget::PlayerReference)
