@@ -166,7 +166,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: s
         LineOfSightRange: 2
-        Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject, DropObject]
+        Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject]
         InventorySize: 4
         Slots: [Left hand, Right hand]
         Parameters:
