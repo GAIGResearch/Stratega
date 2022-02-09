@@ -7,7 +7,7 @@ GameConfig:
 Agents:
     #- HumanAgent
     - OSLAAgent
-    - OSLAAgent
+    - KTKCombatAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS
