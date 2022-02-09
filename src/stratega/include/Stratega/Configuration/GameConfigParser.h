@@ -38,11 +38,16 @@ namespace SGA
                 config.playerActionIds.emplace_back(config.getActionID(actionName));
             }
         }
-        void assignObjectsActions(const YAML::Node& configNode, GameConfig& config) const
+        void assignObjectsActions(const YAML::Node& entitiesNode, GameConfig& config) const
         {
+            if (!entitiesNode.IsDefined())
+            {
+                return;
+            }
+
             //Assign actions to objects
             // Parse additional configurations for entities that couldn't be handled previously
-            auto types = configNode.as<std::map<std::string, YAML::Node>>();
+            auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
             for (auto& type : config.entityTypes)
             {               
                 // Assign On Tick Actions to entities

@@ -147,7 +147,7 @@ Actions:
         Cooldown: 1
         Targets:
             Object:
-                Type: Object
+                Type: SlotObject
             TargetDoor:
                 Type: Entity
                 ValidTargets: Door
@@ -181,7 +181,7 @@ Entities:
 
 Objects:
     Key:
-       Sprite: ../../assets/Entities/bread.png
+       Sprite: ../../assets/Entities/key.png
        Symbol: k
        CanEquip: [Searcher] #Who can equip the object in the slots
        SlotsUse: [Right hand] #empty == cant be equiped in any slot

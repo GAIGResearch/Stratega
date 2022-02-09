@@ -5,7 +5,11 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    #- OSLAAgent
+    - MCTSAgent:
+        FmCalls: 100
+        Budget: TIME
+        RolloutLength: 10
 
 GameRenderer:
     Resolution:
@@ -65,9 +69,9 @@ Board:
         M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  b  .  .  .  M
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 b  b  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  b  b  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
     Spawn:
@@ -92,7 +96,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: [Entities]
+                ValidTargets: All
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -131,7 +135,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: [Entities]
+                ValidTargets: All
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -141,71 +145,13 @@ Actions:
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
 
-    PickUp:
-        Type: EntityAction
-        Preconditions:
-            - "HasNotInventoryFull(Source)"
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: Object
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-                Conditions:
-                    - "InRange(Source, Target, Source.AttackRange)"
-        Effects:
-            - "PickUp(Source, Target)"
-
-    EquipObject:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Object
-                Conditions:
-                    - "CanEquipObject(Source, Target)"
-        Effects:
-            - "EquipObject(Source, Target)"
-
-    UnEquipObject:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: SlotObject
-        Effects:
-            - "UnEquipObject(Source, Target)"
-
-    UseObject:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Object
-        Effects:
-            - "UseObject(Source, Target)"
-
-    UseSlotObject:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: SlotObject
-        Effects:
-            - "UseSlotObject(Source, Target)"
-
     
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move, PickUp, EquipObject, UnEquipObject, UseObject, UseSlotObject]
-        InventorySize: 4
-        Slots: [Left hand, Right hand]
+        Actions: [Attack, Move]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -238,48 +184,12 @@ Entities:
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
-        InventorySize: 4
-        Slots: [Left hand, Right hand]
         Parameters:
             Health: 400
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
         Actions: [Attack, Move, Spawn]
-
-Objects:
-    Bread:
-        Sprite: ../../assets/Entities/bread.png
-        Symbol: b
-        CanEquip: [King, Warrior] #Who can equip the object in the slots
-        SlotsUse: [Right hand] #empty == cant be equiped in any slot
-
-        #Source object , Target entity
-        OnEquip: 
-            #Conditions: #conditions executed when the object is added to a slot
-            Effects: #effects executed when the object is added to a slot
-                - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnAddedInventory: 
-            #Conditions: #conditions executed when the object is added to the inventory
-            Effects: #effects executed when the object is added to the inventory
-                - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnUseSlot: 
-            #Conditions: #conditions executed when the object is used in the slot
-            Effects: #effects executed when the object is used in the slot
-                - "ModifyResource(Target.Health, Source.HealAmount)"
-        OnUseInventory:
-            #Conditions: #effects executed when the object is used in the inventory
-            Effects: #effects executed when the object is used in the inventory
-                - "ModifyResource(Target.Health, Source.HealAmount)"
-
-        OnTickActions: [Heal] #Execute when in on slot or inventory
-        Parameters:
-            HealAmount: 20
-            HealRange: 2
-
-EntityGroups:
-    Object: [Bread]
-    Entities: [King, Warrior, Archer, Healer]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -289,7 +199,6 @@ ForwardModel:
     Trigger:
         - OnTick:
             Type: Entity
-            ValidTargets: Entities
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
 
