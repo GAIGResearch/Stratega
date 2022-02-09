@@ -14,7 +14,7 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 {
 	currentMapID = 0;
 	currentSeed = seed;
-	
+
 	try
 	{
 		for (int i = 0; i < gamesNumber * mapNumber; ++i)
@@ -29,15 +29,19 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 			}
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
-			std::cout << "Using Seed: " << currentSeed << std::endl;
+			//std::cout << "Using Seed: " << currentSeed << std::endl;
+			SGA::LoggingScope scope("Game " + std::to_string(gameCount));
+			SGA::logSingleValue("Map", std::to_string(currentMapID));
+			SGA::logSingleValue("Seed", std::to_string(currentSeed));
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
+			SGA::getDefaultLogger().flush();
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		std::cout << "Arena error: " << ex.what()<< std::endl;		
-	}	
+		std::cout << "Arena error: " << ex.what() << std::endl;
+	}
 }
 
 void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber, std::vector<std::shared_ptr<SGA::Agent>> agents)
@@ -60,7 +64,7 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber, 
 			currentSeed = seed + i;
 			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			std::cout << "Using Seed: " << currentSeed << std::endl;
-			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine,agents); };
+			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine, agents); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
 		}
 	}
@@ -81,7 +85,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	auto allAgents = config->generateAgents();
 	std::vector<std::shared_ptr<SGA::Agent>> agents(agentAssignment.size());
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
-	for(size_t i = 0; i < agentAssignment.size(); i++)
+	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		agents[i] = std::move(allAgents[static_cast<size_t>(agentAssignment[i])]);
 
@@ -92,19 +96,19 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
-		agents[i]->setSeed(seedDist(rngEngine));
+		unsigned int seed_one = seedDist(rngEngine);
+		//std::cout << seed_one << std::endl;
+		agents[i]->setSeed(seed_one);
 	}
 
-	// Initialize logging	
-	SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-	SGA::logSingleValue("Map", std::to_string(currentMapID));
-	SGA::logSingleValue("Battle", std::to_string(gameBattleCount++));
-	SGA::logSingleValue("Seed", std::to_string(currentSeed));
-	for(size_t i = 0; i < agentAssignment.size(); i++)
+	// Initialize logging
+	SGA::LoggingScope battleScope("Battle" + std::to_string(gameBattleCount++));
+
+	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
 	}
-	
+
 	// Run the game
 	try
 	{
@@ -119,7 +123,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 	// Kinda dirty hack to flush after every game
 	// This could result in weird yaml files, if logging is done outside of the game loggingScope
-	SGA::getDefaultLogger().flush();
+	//SGA::getDefaultLogger().flush();
 }
 
 void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> newAgents)
@@ -176,7 +180,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel)
 {
-	if(state.getGameType() == SGA::GameType::TBS)
+	if (state.getGameType() == SGA::GameType::TBS)
 	{
 		SGA::logValue("ActivePlayer", state.getCurrentTBSPlayer());
 
@@ -184,7 +188,7 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 		auto actions = forwardModel.generateActions(state, state.getCurrentTBSPlayer());
 		SGA::logValue("ActionCount", actions.size());
 	}
-	else if(state.getGameType() == SGA::GameType::RTS)
+	else if (state.getGameType() == SGA::GameType::RTS)
 	{
 		for (size_t i = 0; i < static_cast<size_t>(state.getNumPlayers()); i++)
 		{
@@ -208,4 +212,3 @@ void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardM
 		SGA::logSingleValue("WinnerID", finalState.getWinnerID());
 	}
 }
-
