@@ -6,7 +6,8 @@ GameConfig:
 
 Agents:
     #- HumanAgent
-    #- OSLAAgent
+    - OSLAAgent
+    - OSLAAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS
@@ -14,16 +15,16 @@ Agents:
     #    RolloutLength: 20
     #    CONTINUE_PREVIOUS_SEARCH: false
     #    ABS_BATCH: 16
-    - UnitMCTSAgent:
-        Budget: FMCALLS
-        fmCalls: 20000
-        RolloutLength: 20
-        CONTINUE_PREVIOUS_SEARCH: false
+    #- UnitMCTSAgent:
+    #    Budget: FMCALLS
+    #    fmCalls: 20000
+    #    RolloutLength: 20
+    #    CONTINUE_PREVIOUS_SEARCH: false
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    FmCalls: 20000
     #    RolloutLength: 20
-    - KTKCombatAgent
+    #- KTKCombatAgent
 
 GameRenderer:
     Resolution:
