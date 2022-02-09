@@ -36,26 +36,4 @@ namespace SGA
 
 
 	};
-	
-	typedef int SlotID;
-	
-	struct Slot
-	{
-
-	private:
-
-		SlotID id = -1;
-		std::string name;
-		int index = -1;
-	
-	public:
-
-		int getIndex() const { return index; }
-		const std::string& getName() const { return name; }
-		ParameterID getID() const { return id; }
-
-		void setID(int newID) { this->id = newID; }
-		void setName(const std::string& newName) { this->name = newName; }
-		void setIndex(int idx) { index = idx; }
-	};
 }

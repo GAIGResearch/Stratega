@@ -340,6 +340,7 @@ PYBIND11_MODULE(stratega, m)
 
 	//Entities
 	py::bind_map<std::unordered_map<std::string, std::unordered_set<int>>>(m, "EntityGroupsMap");
+	py::bind_vector<std::vector<std::pair<SGA::Entity, std::vector<int>>>>(m, "Slots");
 
 	//Actions
 	py::bind_map<std::unordered_map<int, SGA::Action>>(m, "ActionsMap");
@@ -565,6 +566,13 @@ PYBIND11_MODULE(stratega, m)
 			}
 			, "List of action IDs this entity can execute."
 				)
+		.def("get_slots",
+			[](SGA::EntityType& entityType)
+			{
+				return entityType.getSlots();
+			}
+			, "List of slots this entity has."
+				)
 		.def("get_spawnable_entity_types",
 			[](SGA::EntityType& entityType)
 			{
@@ -679,6 +687,23 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_path", &SGA::Entity::getPath, "Returns the path that this entity is following (RTS games only) ")
 		.def("inc_path_index", &SGA::Entity::incPathIndex, "Increments the current index of the path that this entity is following (RTS games only) ")
 		.def("set_path", &SGA::Entity::setPath, "Sets the path this entity is following (RTS games only) ")
+
+		.def("get_inventory_size", &SGA::Entity::getInventorySize, "Gets the inventory size.")
+		.def("get_inventory_use", &SGA::Entity::getInventoryUse, "Gets the inventory slots number used.")
+		.def("is_inventory_use", &SGA::Entity::isInventoryFull, "Return true if the inventory is full.")
+		.def("add_object", &SGA::Entity::addObject, py::arg("newObject"), "Adds object to the inventory.")
+		.def("remove_object", &SGA::Entity::removeObject, py::arg("entityID"), "Removes object from the inventory.")
+		.def("remove_slot_object", &SGA::Entity::removeSlotObject, py::arg("entityID"), "Removes object from slot.")
+		.def("get_inventory", &SGA::Entity::getInventory, "Get inventory list of entities.")
+		.def("get_slots", &SGA::Entity::getSlots, "Get slot list of entities.")
+		.def("equip_object", &SGA::Entity::equipObject, py::arg("entityID"), "Equip object from the inventory.")
+		.def("unequip_object", &SGA::Entity::unEquipObject, py::arg("entityID"), "Unequip object to the inventory.")
+		.def("check_slots_are_in_use", &SGA::Entity::checkSlotsAreNotInUse, py::arg("object"), "Checks if slots that a object needs are not in use.")
+		.def("has_object", &SGA::Entity::hasObject, py::arg("entityID"), "Return if the entity has a object with a specific Id.")
+		.def("has_slot_object", &SGA::Entity::hasSlotObject, py::arg("entityID"), "Return if the entity has a slot object with a specific Id.")
+
+		.def("get_object", &SGA::Entity::getObject, py::arg("entityID"), "Return the object of this entity with a given entityID.")
+		.def("get_slot_object", &SGA::Entity::getSlotObject, py::arg("entityID"), "Return the slot object of this entity with a given entityID.")
 		;
 
 	// ---- GameType ----
@@ -778,6 +803,9 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity by id")
 		.def("get_entity_at", &SGA::GameState::getEntityAt, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
+		.def("get_only_entities", &SGA::GameState::getOnlyEntities, py::arg("entityID"), py::return_value_policy::reference, "Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID. It only search the entities in the gamestate without the objects of the inventories. ")
+		.def("get_object", &SGA::GameState::getObject, py::arg("entityID"), py::return_value_policy::reference, "Return object by its ID")
+		.def("get_slot_object", &SGA::GameState::getSlotObject, py::arg("entityID"), py::return_value_policy::reference, "Return slot object by its ID")
 		.def("get_entity_const", &SGA::GameState::getEntityConst, py::arg("entityID"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
 		.def("add_entity", py::overload_cast<const SGA::EntityType&, int , const SGA::Vector2f& >(&SGA::GameState::addEntity), "Adds a new entity of a given type to the game, in a given position, belonging to a specific player. ")
 		.def("add_entity", py::overload_cast<SGA::Entity, int , const SGA::Vector2f& >(&SGA::GameState::addEntity), "Adds a new entity, in a given position, belonging to a specific player. ")
@@ -1012,6 +1040,8 @@ PYBIND11_MODULE(stratega, m)
 		.value("Entity", SGA::TargetType::Type::Entity)
 		.value("Technology", SGA::TargetType::Type::Technology)
 		.value("ContinuousAction", SGA::TargetType::Type::ContinuousAction)
+		.value("SlotObject", SGA::TargetType::Type::SlotObject)
+		.value("Object", SGA::TargetType::Type::Object)
 		.export_values();
 
 	// ---- TargetType ----	
@@ -1074,12 +1104,17 @@ PYBIND11_MODULE(stratega, m)
 		.value("TechnologyReference", SGA::ActionTarget::Type::TechnologyReference)
 		.value("ContinuousActionReference", SGA::ActionTarget::Type::ContinuousActionReference)
 		.value("TileTypeReference", SGA::ActionTarget::Type::TileTypeReference)
+		.value("Gamestate", SGA::ActionTarget::Type::Gamestate)
+		.value("SlotObject", SGA::ActionTarget::Type::SlotObject)
+		.value("Object", SGA::ActionTarget::Type::Object)
 		.export_values();
 
 	// ---- ActionTarget ----	
 	py::class_<SGA::ActionTarget>(m, "ActionTarget")
 		.def_static("create_position_action_target", &SGA::ActionTarget::createPositionActionTarget, py::arg("position"))
 		.def_static("create_entity_action_target", &SGA::ActionTarget::createEntityActionTarget, py::arg("entityID"))
+		.def_static("create_object_target", &SGA::ActionTarget::createObjectActionTarget, py::arg("entityID"))
+		.def_static("create_slot_object_action_target", &SGA::ActionTarget::createSlotObjectActionTarget, py::arg("entityID"))
 		.def_static("create_player_action_target", &SGA::ActionTarget::createPlayerActionTarget, py::arg("playerID"))
 		.def_static("create_technology_entity_action_target", &SGA::ActionTarget::createTechnologyEntityActionTarget, py::arg("technologyID"))
 		.def_static("create_continuous_action_target", &SGA::ActionTarget::createContinuousActionActionTarget, py::arg("continuousActionID"))
@@ -1099,6 +1134,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_player_id", py::overload_cast<const SGA::GameState&>(&SGA::ActionTarget::getPlayerID, py::const_))
 		.def("get_player_id", py::overload_cast<>(&SGA::ActionTarget::getPlayerID, py::const_))
 		.def("get_entity_id", &SGA::ActionTarget::getEntityID)
+		.def("get_object_id", &SGA::ActionTarget::getObjectID)
 		.def("get_continuous_action_id", &SGA::ActionTarget::getContinuousActionID)
 		.def("get_type", &SGA::ActionTarget::getType)
 		.def("get_type_string", &SGA::ActionTarget::getTypeString)
