@@ -90,6 +90,28 @@ namespace  SGA
 
 		return targetEntity.isNeutral();
 	}
+
+	HasInventoryFull::HasInventoryFull(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool HasInventoryFull::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return !targetEntity.isInventoryFull();
+	}
+
+	HasNotInventoryFull::HasNotInventoryFull(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	{
+	}
+
+	bool HasNotInventoryFull::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& targetEntity =targets[0].getEntityConst(state);
+
+		return targetEntity.isInventoryFull();
+	}
 	
 	IsNotNeutral::IsNotNeutral(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{
@@ -388,6 +410,32 @@ namespace  SGA
 		}
 
 		return true;
+	}
+
+	CanEquipObject::CanEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	bool CanEquipObject::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getObject(state, targets);
+
+		auto& groupTypes = target.getEntityType().getCanEquipGroupEntityTypes();
+
+		if (groupTypes.count(entity.getEntityType().getID()))
+		{
+			//Check if slots that use the object are not used
+			if (entity.checkSlotsAreNotInUse(target))
+				return true;
+			else
+				return false;
+		}			
+		else
+			return false;		
 	}
 
 

@@ -282,6 +282,11 @@ namespace SGA
 		/// <param name="newValue">New value of the parameter</param>
 		void modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const;
 
+
+		void executeOnUseObjectInventory(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnUseObjectSlot(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnEquipObjectSlot(GameState& state, Entity& sourceEntity, Entity& object) const;
+		void executeOnAddedObjectInventory(GameState& state, Entity& sourceEntity, Entity& object) const;
 	protected:
 
 		/// <summary>
@@ -362,6 +367,8 @@ namespace SGA
 		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
 
+		
+
 		/// <summary>
 		/// Executes the OnAdvance effects in the state provided
 		/// </summary>
@@ -391,6 +398,8 @@ namespace SGA
 		/// </summary>
 		/// <param name="state">State where these actions are executed.</param>
 		void executeOnTickEntityActions(GameState& state) const;
+
+		void executeOnTickObjectsActions(GameState& state) const;
 
 		/// <summary>
 		/// It generates a default action space unique pointer.

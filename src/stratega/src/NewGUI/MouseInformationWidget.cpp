@@ -54,9 +54,10 @@ namespace SGA
 		ImGui::End();
 	}
 
-	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm) :
+	GridInformationWidget::GridInformationWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFm, std::unordered_set<int>& newSelectedEntities) :
 		SGAWidget(widgetName, newWindow, newWorld, newFm),
-		currentGameState(nullptr)
+		currentGameState(nullptr),
+		selectedEntities(newSelectedEntities)
 	{
 	}
 
@@ -71,16 +72,22 @@ namespace SGA
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
 		ImGui::End();
-		ImGuiIO& io = ImGui::GetIO();
-		if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
+		//ImGuiIO& io = ImGui::GetIO();
+		/*if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) || ImGui::IsAnyItemActive() || ImGui::IsAnyItemHovered() || io.WantCaptureMouse)
 			return;
-		else
+		else*/
 		{
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
-			const auto* entity = currentGameState->getEntityAt(gridPos);
-
+			auto* entity = currentGameState->getEntityAt(gridPos);
+			
+			//Check if we have entities selected
+			if (selectedEntities.size() > 0)
+			{
+				entity = currentGameState->getEntityConst(*selectedEntities.begin());
+			}
+				
 			if (entity)
 			{
 				if (!drawEntityInformation)
@@ -95,13 +102,13 @@ namespace SGA
 				//window_flags += ImGuiWindowFlags_NoCollapse;
 				//window_flags += ImGuiWindowFlags_NoNav;
 				////window_flags+= ImGuiWindowFlags_NoBackground;
-				window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
+				//window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 				
 				//Highlight entity drwable
 				if(world.getEntity(entity->getID()))
 					world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(300, 270), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(250, 0), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information", NULL, window_flags);
 
@@ -129,6 +136,9 @@ namespace SGA
 				std::string owner = "Owner ID: ";
 				owner += std::to_string(entity->getOwnerID());
 				ImGui::Text("%s", owner.c_str());
+				std::string iventorySize = "Iventory: ";
+				iventorySize += std::to_string(entity->getInventoryUse()) +"/"+ std::to_string(entity->getInventorySize());
+				ImGui::Text("%s", iventorySize.c_str());
 				ImGui::Text("Parameters: ");
 
 				for (const auto& parameter : entityType.getParameters())
@@ -148,25 +158,58 @@ namespace SGA
 				ImGui::Separator();
 
 				ImGuiWindowFlags child_flags = ImGuiWindowFlags_HorizontalScrollbar;
-				ImGui::BeginChild("help", ImVec2(0, 80), true, child_flags);
+				if (entity->getInventory().size())
+				{
+					ImGui::Text("Inventory: ");
+					ImGui::BeginChild("Inventory", ImVec2(0, 80), true, child_flags);
 
-				if(entity->getOwnerID()!=-1)
-					for (auto playerEntity : currentGameState->getPlayerEntities(entity->getOwnerID()/*fowSettings.selectedPlayerID*/))
-					{
-						//Check if entity have sprite
-						auto searchedEntityType = playerEntity.getEntityType();
-						//Add units
-						if (ImGui::ImageButton(renderTarget.getResourceManager().getEntitySprite(searchedEntityType).createSprite(), sf::Vector2f(50, 50), -10))
+					if (entity->getOwnerID() != -1)
+						for (const auto& object : entity->getInventory())
 						{
-							/*selectedEntityID = entity->id;*/
-						}
-						ImGui::SameLine();
-					}
+							//Check if entity have sprite
+							auto searchedEntityType = object.getEntityType();
+							//Add units
+							if (ImGui::Button(searchedEntityType.getName().c_str(), { 0, 50 }))
+							{
 
-				ImGui::EndChild();
-				ImGui::SameLine();
+							}
+							ImGui::SameLine();
+						}
+
+					ImGui::EndChild();
+					ImGui::SameLine();
+				}
+				
 
 				ImGui::Spacing();
+				if (entity->getEntityType().getSlots().size() > 0)
+				{
+					ImGui::Text("Slots: ");
+					ImGui::BeginChild("Slots", ImVec2(0, 60), true, child_flags);
+					std::string tempText = "";
+					int currenSlotId = 0;
+					if (entity->getOwnerID() != -1)
+						for (const auto& slot : entity->getEntityType().getSlots())
+						{
+							tempText = slot;
+							const auto* slotUsedObject = entity->getSlotObjectBySlotId(currenSlotId);
+
+							if (slotUsedObject)
+							{
+								tempText += "\n ";
+								tempText += slotUsedObject->getEntityType().getName();
+							}
+								
+							if (ImGui::Button(tempText.c_str(), { 0,50 }))
+							{
+
+							}
+							ImGui::SameLine();
+							currenSlotId++;
+						}
+					ImGui::EndChild();
+					ImGui::SameLine();
+				}				
 				ImGui::End();
 			}
 			else

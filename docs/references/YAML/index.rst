@@ -19,7 +19,8 @@ This sections contains a reference of the Stratega description language.
    Tiles/index
    Board/index
    Actions/index
-   Entities/index   
+   Entities/index 
+   Objects/index   
 
    ForwardModel/index
    GameDescription/index

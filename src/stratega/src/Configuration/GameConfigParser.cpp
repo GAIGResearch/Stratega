@@ -68,20 +68,24 @@ namespace SGA
 
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(loadNode(configNode, "Entities", *config), *config);
+		parseEntities(loadNode(configNode, "Entities", *config), *config);		        
+        parseObjects(loadNode(configNode, "Objects", *config), *config);
+        
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
+        
         parseAgents(loadNode(configNode, "Agents", *config), *config);
         parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
 
-        parsePlayers(loadNode(configNode, "Player", *config), *config);
+        parsePlayers(loadNode(configNode, "Player", *config), *config);        
 
         if(loadNode(configNode, "Buffs", *config).IsDefined())
-           parseBuffs(loadNode(configNode, "Buffs", *config), *config);
-        
+           parseBuffs(loadNode(configNode, "Buffs", *config), *config);        
 
 		if(loadNode(configNode, "TechnologyTrees", *config).IsDefined())
 			parseTechnologyTrees(loadNode(configNode, "TechnologyTrees", *config), *config);
 		
+        parseObjectsAdditionalInformation(loadNode(configNode, "Objects", *config), *config);
+
         parseActions(loadNode(configNode, "Actions", *config), *config);
         parseForwardModel(loadNode(configNode, "ForwardModel", *config), *config);
 
@@ -91,8 +95,11 @@ namespace SGA
         if (loadNode(configNode, "GameRunner", *config).IsDefined())
             parseGameRunner(loadNode(configNode, "GameRunner", *config), *config);
 
+        
+
         assignPlayerActions(loadNode(configNode, "Player", *config), *config);
         assignEntitiesActions(loadNode(configNode, "Entities", *config), *config);
+        assignObjectsActions(loadNode(configNode, "Objects", *config), *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);
@@ -255,12 +262,126 @@ namespace SGA
                 type.setLoSRange(0);
             else
                 type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
+
+
+            if (!nameTypePair.second["InventorySize"].IsDefined())
+                type.setInventorySize(0);
+            else
+                type.setInventorySize(nameTypePair.second["InventorySize"].as<int>());
+
+            if (nameTypePair.second["Slots"].IsDefined())
+                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"]));
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+
+    void GameConfigParser::parseObjects(const YAML::Node& entitiesNode, GameConfig& config) const
+    {
+        if(!entitiesNode.IsDefined())
+        {
+            return;
+        }
+        
+
+        auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+        for (const auto& nameTypePair : types)
+        {
+            EntityType type;
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+                       
+            
+            if (nameTypePair.second["Parameters"].IsDefined())
+                parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
+            
+            if (nameTypePair.second["SlotsUse"].IsDefined())
+                type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"]));
+
+            
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+    
+    void GameConfigParser::parseObjectsAdditionalInformation(const YAML::Node& objectsNode, GameConfig& config) const
+    {
+        if(!objectsNode.IsDefined())
+        {
+            return;
+        }
+
+        FunctionParser parser;
+        auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+        context.targetIDs.emplace("Target", 1);
+
+        for (auto& entityTp : config.entityTypes)
+        {
+            //Check if is in objects
+            if (objectsNode[entityTp.second.getName()].IsDefined())
+            {
+                if(objectsNode[entityTp.second.getName()]["CanEquip"].IsDefined())
+                    entityTp.second.setCanEquipGroupEntityTypes(parseEntityGroup(objectsNode[entityTp.second.getName()]["CanEquip"], config));
+
+                //Add effects to object
+                if (objectsNode[entityTp.second.getName()]["OnEquip"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onEquipEffects = objectsNode[entityTp.second.getName()]["OnEquip"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onEquipEffects, newEffects, context);
+                    entityTp.second.setOnEquipObjectEffects(newEffects);
+
+                    auto onEquipConditions = objectsNode[entityTp.second.getName()]["OnEquip"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onEquipConditions, newConditions, context);
+                    entityTp.second.setOnEquipObjectConditions(newConditions);
+                }
+
+                if (objectsNode[entityTp.second.getName()]["OnAddedInventory"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onAddedInventoryEffects = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onAddedInventoryEffects, newEffects, context);
+                    entityTp.second.setOnAddedInventoryObjectEffects(newEffects);
+
+                    auto onAddedInventoryConditions = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onAddedInventoryConditions, newConditions, context);
+                    entityTp.second.setOnAddedInventoryObjectConditions(newConditions);
+                }
+                if (objectsNode[entityTp.second.getName()]["OnUseInventory"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onUseInventoryEffects = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onUseInventoryEffects, newEffects, context);
+                    entityTp.second.setOnUseInventoryObjectEffects(newEffects);
+
+                    auto onUseInventoryConditions = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onUseInventoryConditions, newConditions, context);
+                    entityTp.second.setOnUseInventoryObjectConditions(newConditions);
+                }
+                if (objectsNode[entityTp.second.getName()]["OnUseSlot"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onUseSlotEffects = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onUseSlotEffects, newEffects, context);
+                    entityTp.second.setOnUseSlotObjectEffects(newEffects);
+
+                    auto onUseSlotConditions = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onUseSlotConditions, newConditions, context);
+                    entityTp.second.setOnUseSlotObjectConditions(newConditions);
+                }
+            }
+
+            
         }
     }
 
@@ -693,6 +814,13 @@ namespace SGA
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;
             config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
+        }  
+
+        for (const auto& entityNode : loadNode(configNode, "Objects", config))
+        {
+            auto entityName = entityNode.first.as<std::string>();
+            auto entityConfig = entityNode.second;
+            config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
         }       
 
         //Read GameRenderer configuration
@@ -963,6 +1091,29 @@ namespace SGA
         }
 
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
+	}
+    
+    std::vector<std::string> GameConfigParser::parseEntitySlots(const YAML::Node& slotNode) const
+	{
+        if(!slotNode.IsDefined())
+        {
+            return {};
+        }
+		
+        std::vector<std::string> slots;
+		if(slotNode.IsScalar())
+		{
+            auto slotName = slotNode.as<std::string>();
+            slots.emplace_back(slotName);
+            return slots;
+		}
+		
+        if(slotNode.IsSequence())
+        {
+            return slotNode.as<std::vector<std::string>>();
+        }
+
+        throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-slot");
 	}
 
     std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const

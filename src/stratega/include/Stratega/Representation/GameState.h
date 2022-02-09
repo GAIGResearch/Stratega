@@ -156,11 +156,37 @@ namespace SGA
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It searchs also the objects from the entities
 		/// </summary>
 		/// <param name="entityID"> ID of the entity to retrieve. </param>
 		/// <returns>A pointer to the entity.</returns>
 		Entity* getEntity(int entityID);
 		const Entity* getEntityConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It only search the entities in the gamestate without the objects of the inventories
+		/// </summary>
+		/// <param name="entityID"> ID of the entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getOnlyEntities(int entityID);
+		const Entity* getOnlyEntitiesConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getObject(int entityID);
+		const Entity* getObjectConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getSlotObject(int entityID);
+		const Entity* getSlotObjectConst(int entityID) const;
 
 
 		/// <summary>
@@ -171,6 +197,15 @@ namespace SGA
 		/// <param name="position">Position where the entity will be added.</param>
 		/// <returns>Returns the unique ID of the entity created.</returns>
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
+
+		/// <summary>
+		/// Adds a entity of a given type to the game, in a given position, belonging to a specific player. 
+		/// </summary>
+		/// <param name="type">Type of the player, as defined <here cref="SGA::EntityType"/> </param>
+		/// <param name="playerID">ID of the player this new entity will belong to.</param>
+		/// <param name="position">Position where the entity will be added.</param>
+		/// <returns>Returns the unique ID of the entity created.</returns>
+		int addEntity(Entity entity, int playerID, const Vector2f& position);
 
 		/// <summary>
 		/// Gets the list of all entities.

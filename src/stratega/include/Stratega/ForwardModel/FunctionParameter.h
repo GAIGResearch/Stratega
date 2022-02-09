@@ -122,6 +122,10 @@ namespace SGA
 		double& getRawParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Vector2f getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Entity& getObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Entity& getSlotObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Entity& getObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Entity& getSlotObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Player& getPlayer(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		int getPlayerID(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

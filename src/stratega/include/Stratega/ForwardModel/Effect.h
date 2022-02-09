@@ -88,6 +88,25 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class PickUp : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		PickUp(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class DropObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter objectParam;
+		FunctionParameter positionParam;
+	public:
+		DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class AttackProbability : public Effect
 	{
 		FunctionParameter resourceReference;
@@ -208,6 +227,42 @@ namespace SGA
 
 	public:
 		PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class EquipObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		EquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class UnEquipObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class UseObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		UseObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class UseSlotObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		UseSlotObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 }

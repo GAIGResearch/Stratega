@@ -63,6 +63,23 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class HasInventoryFull : public Condition
+	{
+	public:
+		HasInventoryFull(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+
+	class HasNotInventoryFull : public Condition
+	{
+	public:
+		HasNotInventoryFull(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class IsNotNeutral : public Condition
 	{
 	public:
@@ -214,6 +231,15 @@ namespace SGA
 
 	public:
 		CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class CanEquipObject : public Condition
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		CanEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 }

@@ -194,6 +194,42 @@ namespace SGA
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
 		}
 	}
+	
+	PickUp::PickUp(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+
+	void PickUp::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getEntity(state, targets);
+
+		fm.executeOnAddedObjectInventory(state, entity, object);
+
+		entity.addObject(object);
+
+		object.flagRemove();
+	}
+	
+	DropObject::DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), objectParam(parameters[1]), positionParam(parameters[2])
+	{
+
+	}
+
+	void DropObject::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		Entity object = objectParam.getObject(state, targets);
+		auto position = positionParam.getPosition(state, targets);
+
+		entity.removeObject(object.getID());
+		state.addEntity(object, -1, position);
+	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
@@ -473,5 +509,66 @@ namespace SGA
 			const auto& param = parameterLookUp.at(idCostPair.first);
 			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
 		}
+	}
+
+	EquipObject::EquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void EquipObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getObject(state, targets);
+
+		fm.executeOnEquipObjectSlot(state, entity, object);
+		entity.equipObject(object.getID());
+	}
+
+	UnEquipObject::UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UnEquipObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getSlotObject(state, targets);
+
+		entity.unEquipObject(target.getID());		
+	}
+
+	UseObject::UseObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getObject(state, targets);
+
+		fm.executeOnUseObjectInventory(state, entity, object);
+	}
+
+	UseSlotObject::UseSlotObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseSlotObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getSlotObject(state, targets);
+
+		fm.executeOnUseObjectSlot(state, entity, object);
 	}
 }

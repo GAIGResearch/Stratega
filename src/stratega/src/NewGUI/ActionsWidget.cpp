@@ -164,6 +164,10 @@ namespace SGA
 						break;
 					case ActionTarget::Gamestate:
 						break;
+					case ActionTarget::Object:
+						break;
+					case ActionTarget::SlotObject:
+						break;
 					}
 				}
 
@@ -479,6 +483,16 @@ namespace SGA
 		{
 			break;
 		}
+		case TargetType::Object:
+		{
+			getObject(playerID, actionType, actionsToExecute);
+			break;
+		}
+		case TargetType::SlotObject:
+		{
+			getSlotObject(playerID, actionType, actionsToExecute);
+			break;
+		}
 		}
 
 		ImGui::PushStyleColor(ImGuiCol_Button, static_cast<ImVec4>(ImColor::HSV(0, 0.6f, 0.6f)));
@@ -559,7 +573,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(0, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -623,7 +637,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getTechnologyTreeCollection().getTechnology(possibleTechnology).name.c_str(), ImVec2(0, 50)))
 				{
 					//Check if the player fullfill the technology
 					bool canExecute = true;
@@ -656,6 +670,50 @@ namespace SGA
 		}
 	}
 
+	void ActionsWidget::getObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	{
+		if (hasEntitiesSelected())
+		{
+			int elementNumber = 0;
+			for (auto& entityID : selectedEntities)
+			{
+				const auto& entity = state->getEntityConst(entityID);
+				for (auto& object : entity->getInventory())
+				{
+					ImGui::PushID(elementNumber);
+					if (ImGui::Button(object.getEntityType().getName().c_str(), ImVec2(0, 50)))
+					{
+						selectedTargets.emplace_back(ActionTarget::createObjectActionTarget(object.getID()));
+					}
+					if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+					ImGui::PopID();
+				}
+			}
+		}
+	}
+
+	void ActionsWidget::getSlotObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	{
+		if (hasEntitiesSelected())
+		{
+			int elementNumber = 0;
+			for (auto& entityID : selectedEntities)
+			{
+				const auto& entity = state->getEntityConst(entityID);
+				for (const auto& object : entity->getSlots())
+				{
+					ImGui::PushID(elementNumber);
+					if (ImGui::Button(object.first.getEntityType().getName().c_str(), ImVec2(0, 50)))
+					{
+						selectedTargets.emplace_back(ActionTarget::createSlotObjectActionTarget(object.first.getID()));
+					}
+					if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+					ImGui::PopID();
+				}
+			}
+		}
+	}
+
 	void ActionsWidget::getEntityType(int playerID, const ActionType& actionType)
 	{
 		if (hasEntitiesSelected())
@@ -679,7 +737,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(0, 50)))
 				{
 					bool canExecute = true;
 
@@ -727,7 +785,7 @@ namespace SGA
 					continue;
 
 				ImGui::PushID(elementNumber);
-				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(50, 50)))
+				if (ImGui::Button(state->getGameInfo()->getEntityType(possibleActionType).getName().c_str(), ImVec2(0, 50)))
 				{
 					bool canExecute = true;
 
@@ -880,7 +938,7 @@ namespace SGA
 		for (auto& actionType : actionTypes)
 		{
 			ImGui::PushID(elementNumber);
-			if (ImGui::Button(state->getGameInfo()->getActionType(actionType).getName().c_str(), ImVec2(50, 50)))
+			if (ImGui::Button(state->getGameInfo()->getActionType(actionType).getName().c_str(), ImVec2(0, 50)))
 			{
 				actionTypeSelected = actionType;
 			}

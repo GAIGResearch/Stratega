@@ -324,6 +324,76 @@ namespace SGA
 				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
+	
+	Entity& FunctionParameter::getObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+			case Type::EntityPlayerReference:
+			case Type::ArgumentReference:
+			{
+				auto entityID = actionTargets[data.argumentIndex].getObjectID();
+				return *state.getObject(entityID);
+			}
+			case Type::ParameterReference:
+			case Type::EntityPlayerParameterReference:
+			default:
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+	
+	
+	Entity& FunctionParameter::getSlotObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+			case Type::EntityPlayerReference:
+			case Type::ArgumentReference:
+			{
+				auto entityID = actionTargets[data.argumentIndex].getObjectID();
+				return *state.getSlotObject(entityID);
+			}
+			case Type::ParameterReference:
+			case Type::EntityPlayerParameterReference:
+			default:
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+
+	const Entity& FunctionParameter::getObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+			case Type::EntityPlayerReference:
+			case Type::ArgumentReference:
+			{
+				auto entityID = actionTargets[data.argumentIndex].getObjectID();
+				return *state.getObjectConst(entityID);
+			}
+			case Type::ParameterReference:
+			case Type::EntityPlayerParameterReference:
+			default:
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+	
+	
+	const Entity& FunctionParameter::getSlotObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+			case Type::EntityPlayerReference:
+			case Type::ArgumentReference:
+			{
+				auto entityID = actionTargets[data.argumentIndex].getObjectID();
+				return *state.getSlotObjectConst(entityID);
+			}
+			case Type::ParameterReference:
+			case Type::EntityPlayerParameterReference:
+			default:
+				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
 
 	const Entity& FunctionParameter::getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{

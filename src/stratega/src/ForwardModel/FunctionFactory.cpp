@@ -29,6 +29,9 @@ namespace SGA
 		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
 		factory.registerFunction<IsNeutral>("IsNeutral");
 		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
+		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
+		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
+		factory.registerFunction<CanEquipObject>("CanEquipObject");
 		
 		return factory;
 	}
@@ -55,6 +58,12 @@ namespace SGA
 		factory.registerFunction<ApplyBuff>("ApplyBuff");
 		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
 		factory.registerFunction<Push>("Push");
+		factory.registerFunction<PickUp>("PickUp");
+		factory.registerFunction<EquipObject>("EquipObject");
+		factory.registerFunction<UnEquipObject>("UnEquipObject");
+		factory.registerFunction<UseObject>("UseObject");
+		factory.registerFunction<UseSlotObject>("UseSlotObject");
+		factory.registerFunction<DropObject>("DropObject");
 		
 		return factory;
 	}

@@ -48,15 +48,126 @@ namespace SGA
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.getID() == entityID; });
-		return iter == entities.end() ? nullptr : &*iter;
+		if (iter == entities.end())
+		{
+			for (Entity& entity : entities)
+			{
+				Entity* foundEntity = entity.getObject(entityID);
+				if (foundEntity)
+					return foundEntity;
+				else
+				{
+					foundEntity = entity.getSlotObject(entityID);
+					if (foundEntity)
+						return foundEntity;
+				}
+			}
+			return nullptr;
+		}			
+		else
+			return &*iter;
 	}
 
 	const Entity* GameState::getEntityConst(int entityID) const
 	{
 		auto iter = std::find_if(std::begin(entities), std::end(entities),
 			[&](Entity const& p) { return p.getID() == entityID; });
-		return iter == entities.end() ? nullptr : &*iter;
+		if (iter == entities.end())
+		{
+			for (const Entity& entity : entities)
+			{
+				const Entity* foundEntity = entity.getObjectConst(entityID);
+				if (foundEntity)
+					return foundEntity;
+				else
+				{
+					foundEntity = entity.getSlotObjectConst(entityID);
+					if (foundEntity)
+						return foundEntity;
+				}
+			}
+			return nullptr;
+		}
+		else
+			return &*iter;
+	}
 
+	Entity* GameState::getOnlyEntities(int entityID)
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p) { return p.getID() == entityID; });
+		if (iter == entities.end())
+		{
+			return nullptr;
+		}			
+		else
+			return &*iter;
+	}
+
+	const Entity* GameState::getOnlyEntitiesConst(int entityID) const
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p) { return p.getID() == entityID; });
+		if (iter == entities.end())
+		{
+			return nullptr;
+		}
+		else
+			return &*iter;
+	}
+
+	Entity* GameState::getObject(int entityID)
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p)
+		{
+			if (p.hasObject(entityID))
+				return true;
+			else
+				return false;
+		});
+		return iter == entities.end() ? nullptr : iter->getObject(entityID);
+	}
+
+	const Entity* GameState::getObjectConst(int entityID) const
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p)
+		{
+			if (p.hasObject(entityID))
+				return true;
+			else
+				return false;
+		});
+		return iter == entities.end() ? nullptr : iter->getObjectConst(entityID);
+		return nullptr;
+	}
+
+	Entity* GameState::getSlotObject(int entityID)
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p)
+		{
+			if (p.hasSlotObject(entityID))
+				return true;
+			else
+				return false;
+		});
+		return iter == entities.end() ? nullptr : iter->getSlotObject(entityID);
+	}
+
+	const Entity* GameState::getSlotObjectConst(int entityID) const
+	{
+		auto iter = std::find_if(std::begin(entities), std::end(entities),
+			[&](Entity const& p)
+		{
+			if (p.hasSlotObject(entityID))
+				return true;
+			else
+				return false;
+		});
+		return iter == entities.end() ? nullptr : iter->getSlotObjectConst(entityID);
+		return nullptr;
 	}
 
 	int GameState::addPlayer(Player& p)
@@ -69,6 +180,16 @@ namespace SGA
 	int GameState::addEntity(const EntityType& type, int playerID, const Vector2f& position)
 	{
 		auto instance = type.instantiateEntity(nextEntityID);
+		instance.setOwnerID(playerID);
+		instance.setPosition(position);
+		entities.emplace_back(std::move(instance));
+		nextEntityID++;
+
+		return instance.getID();
+	}
+
+	int GameState::addEntity(Entity instance, int playerID, const Vector2f& position)
+	{
 		instance.setOwnerID(playerID);
 		instance.setPosition(position);
 		entities.emplace_back(std::move(instance));
