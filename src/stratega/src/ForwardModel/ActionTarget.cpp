@@ -15,6 +15,16 @@ namespace SGA
 		return ActionTarget(EntityReference, Data{ EntityReference, entityID });
 	}
 
+	ActionTarget ActionTarget::createObjectActionTarget(int entityID)
+	{
+		return ActionTarget(Object, Data{ Object, entityID });
+	}
+
+	ActionTarget ActionTarget::createSlotObjectActionTarget(int entityID)
+	{
+		return ActionTarget(SlotObject, Data{ SlotObject, entityID });
+	}
+
 	ActionTarget ActionTarget::createEntityTypeActionTarget(EntityTypeID entityTypeID)
 	{
 		return ActionTarget(EntityTypeReference, Data{ EntityTypeReference, entityTypeID });
@@ -28,6 +38,12 @@ namespace SGA
 	ActionTarget ActionTarget::createPlayerActionTarget(int playerID)
 	{
 		return ActionTarget(Type::PlayerReference, Data{ PlayerReference, playerID });
+	}
+	
+	
+	ActionTarget ActionTarget::createGameStateActionTarget()
+	{
+		return ActionTarget(Type::Gamestate, Data{});
 	}
 
 	ActionTarget ActionTarget::createTechnologyEntityActionTarget(int technologyID)
@@ -265,4 +281,5 @@ namespace SGA
 		}
 	}
 
+	ActionTarget::ActionTarget(const Type& type, const Data& newData) : targetType(type), data(newData) {}
 }

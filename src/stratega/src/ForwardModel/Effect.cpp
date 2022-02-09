@@ -8,14 +8,14 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :		
+	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1))
 	{
 
 	}
-	
+
 	void ModifyResource::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		auto targetResource = resourceReference.getRawParameterValue(state, targets);
@@ -24,40 +24,44 @@ namespace SGA
 		targetResource += amount;
 		auto& param = resourceReference.getParameter(state, targets);
 		int parameterIndex = param.getIndex();
-		if (!resourceReference.isPlayerParameter(targets))
+		if (resourceReference.isEntityParameter(targets))
 		{
 			auto& entity = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 		}
-		else
+		else if (resourceReference.isPlayerParameter(targets))
 		{
 			auto& player = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
 		}
-		
+		else
+		{
+			fm.modifyStateParameterByIndex(state, parameterIndex, targetResource);
+		}
+
 	}
 
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		buffReference(parameters.at(1)),
 		buffTicks(parameters.at(2)),
-        entityParam(parameters.at(0))
-		
+		entityParam(parameters.at(0))
+
 	{
 
 	}
-	
+
 	void ApplyBuff::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& buffType = buffReference.getBuffType(state, targets);
 		auto ticks = buffTicks.getConstant(state, targets);
 
-		if(entityParam.getType()==FunctionParameter::Type::EntityPlayerReference)
+		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
 		{
 			auto& entity = entityParam.getEntity(state, targets);
 			auto* player = state.getPlayer(entity.getOwnerID());
 			auto newBuff = Buff::createBuff(
-			   buffType, player->getID(), static_cast<int>(ticks));
+				buffType, player->getID(), static_cast<int>(ticks));
 			player->addBuff(std::move(newBuff));
 			player->recomputeStats(state);
 		}
@@ -65,7 +69,7 @@ namespace SGA
 		{
 			auto& entity = entityParam.getEntity(state, targets);
 			auto newBuff = Buff::createBuff(
-			   buffType, entity.getID(), static_cast<int>(ticks));
+				buffType, entity.getID(), static_cast<int>(ticks));
 			entity.addBuff(std::move(newBuff));
 			entity.recomputeStats();
 		}
@@ -74,11 +78,11 @@ namespace SGA
 	RemoveBuff::RemoveBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		buffReference(parameters.at(1)),
-        entityParam(parameters.at(0))		
+		entityParam(parameters.at(0))
 	{
 
 	}
-	
+
 	void RemoveBuff::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& buffType = buffReference.getBuffType(state, targets);
@@ -104,7 +108,7 @@ namespace SGA
 	{
 
 	}
-	
+
 	void RemoveAllBuffs::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		if (entityParam.getType() == FunctionParameter::Type::EntityPlayerReference)
@@ -134,7 +138,7 @@ namespace SGA
 	{
 		double amount = amountParameter.getConstant(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
-		
+
 		if (!resourceReference.isPlayerParameter(targets))
 		{
 			auto& entitySource = resourceReference.getEntity(state, targets);
@@ -146,52 +150,108 @@ namespace SGA
 			fm.modifyPlayerParameterByIndex(playerSource, parameterIndex, amount);
 		}
 	}
-	
+
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
-		Effect(exp), 
+		Effect(exp),
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1))
 	{
 
 	}
-	
+
 	void Attack::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{		
+	{
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto targetResource = resourceReference.getRawParameterValue(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
-		
+
 		//Remove to the parameter with buffs appliead the amount
-        targetResource -= amount;
+		targetResource -= amount;
 
 		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
-		if(targetResource <= 0)
+		if (targetResource <= 0)
 			entity.flagRemove();
 	}
 
+	Push::Push(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+
+	void Push::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = target.getPosition() - entity.getPosition();
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+	
+	PickUp::PickUp(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+
+	void PickUp::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getEntity(state, targets);
+
+		fm.executeOnAddedObjectInventory(state, entity, object);
+
+		entity.addObject(object);
+
+		object.flagRemove();
+	}
+	
+	DropObject::DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), objectParam(parameters[1]), positionParam(parameters[2])
+	{
+
+	}
+
+	void DropObject::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		Entity object = objectParam.getObject(state, targets);
+		auto position = positionParam.getPosition(state, targets);
+
+		entity.removeObject(object.getID());
+		state.addEntity(object, -1, position);
+	}
+
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
-		Effect(exp), 
+		Effect(exp),
 		resourceReference(parameters.at(0)),
 		amountParameter(parameters.at(1)),
 		probabilityParameter(parameters.at(2))
 	{
 
 	}
-	
+
 	void AttackProbability::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
-	{		
+	{
 		auto& entity = resourceReference.getEntity(state, targets);
 		auto targetResource = resourceReference.getRawParameterValue(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		auto probability = probabilityParameter.getConstant(state, targets);
-		
+
 		std::uniform_int_distribution<unsigned int> distribution(0, 100);
-       
+
 		//Get chance to attack
-		if(distribution(state.getRndEngine()) < probability)
+		if (distribution(state.getRndEngine()) < probability)
 		{
 			targetResource -= amount;
 			fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
@@ -202,22 +262,22 @@ namespace SGA
 	}
 
 	Move::Move(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: 
-		Effect(exp), 
+		:
+		Effect(exp),
 		entityParam(parameters[0]), targetPositionParam(parameters[1])
 	{
 	}
-	
+
 	void Move::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
 		auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
-		
+
 		if (fm.getGameType() == GameType::TBS)
 		{
-			entity.setPosition( { std::floor(targetPosition.x), std::floor(targetPosition.y) } );
+			entity.setPosition({ std::floor(targetPosition.x), std::floor(targetPosition.y) });
 		}
-		else if(fm.getGameType() == GameType::RTS )
+		else if (fm.getGameType() == GameType::RTS)
 		{
 			const auto* rtsFM = dynamic_cast<const RTSForwardModel*>(&fm);
 
@@ -237,7 +297,7 @@ namespace SGA
 	}
 
 	SetToMaximum::SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
+		: Effect(exp),
 		targetResource(parameters[0])
 	{
 	}
@@ -251,7 +311,7 @@ namespace SGA
 	}
 
 	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
+		: Effect(exp),
 		sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])
 	{
 	}
@@ -274,7 +334,7 @@ namespace SGA
 
 		if (!sourceParam.isPlayerParameter(targets))
 		{
-			auto& entitySource = sourceParam.getEntity(state, targets);			
+			auto& entitySource = sourceParam.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entitySource, parameterSourceIndex, sourceValue);
 		}
 		else
@@ -282,7 +342,7 @@ namespace SGA
 			auto& playerSource = sourceParam.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(playerSource, parameterSourceIndex, sourceValue);
 		}
-		
+
 		if (!targetParam.isPlayerParameter(targets))
 		{
 			auto& entityTarget = targetParam.getEntity(state, targets);
@@ -297,12 +357,12 @@ namespace SGA
 
 	ChangeOwnerEffect::ChangeOwnerEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: Effect(exp),
-		targetEntityParam(parameters[0]), 
+		targetEntityParam(parameters[0]),
 		playerParam(parameters[1])
-		
+
 	{
 	}
-	
+
 	void ChangeOwnerEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		auto& targetEntity = targetEntityParam.getEntity(state, targets);
@@ -323,7 +383,7 @@ namespace SGA
 
 	ResearchTechnology::ResearchTechnology(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: Effect(exp), playerParam(parameters[0]),
-		  technologyTypeParam(parameters[1])
+		technologyTypeParam(parameters[1])
 	{
 	}
 
@@ -334,24 +394,24 @@ namespace SGA
 	}
 
 	SpawnEntityRandom::SpawnEntityRandom(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
-		sourceEntityParam(parameters[0]), 
+		: Effect(exp),
+		sourceEntityParam(parameters[0]),
 		targetEntityTypeParam(parameters[1])
 	{
 	}
 
 	void SpawnEntityRandom::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		if (fm.getGameType()==GameType::TBS)
+		if (fm.getGameType() == GameType::TBS)
 		{
 			auto& sourceEntity = sourceEntityParam.getEntity(state, targets);
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
 
-			for(int dx = -1; dx <= 1; dx++)
+			for (int dx = -1; dx <= 1; dx++)
 			{
 				for (int dy = -1; dy <= 1; dy++)
 				{
-					Vector2i spawnPos{ static_cast<int>(sourceEntity.x()) + dx, static_cast<int>(sourceEntity.y()) + dy};
+					Vector2i spawnPos{ static_cast<int>(sourceEntity.x()) + dx, static_cast<int>(sourceEntity.y()) + dy };
 					if (!state.isInBounds(spawnPos)) continue;
 					if (!state.isWalkable(spawnPos)) continue;
 
@@ -365,12 +425,40 @@ namespace SGA
 			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
 		}
 	}
+	SpawnEntityRandomLocation::SpawnEntityRandomLocation(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		targetEntityTypeParam(parameters[0])
+	{
+	}
+
+	void SpawnEntityRandomLocation::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		if (fm.getGameType() == GameType::TBS)
+		{
+
+			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
+			std::uniform_int_distribution<int> widthMax(0, state.getBoardWidth());
+			std::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
+
+			Vector2i spawnPos{ widthMax(state.getRndEngine()), heightMax(state.getRndEngine()) };
+			do
+			{
+				spawnPos = { widthMax(state.getRndEngine()) - 1, heightMax(state.getRndEngine()) - 1 };
+			} while (!state.isWalkable(spawnPos) || !state.isInBounds(spawnPos));
+
+			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
+		}
+		else
+		{
+			throw std::runtime_error("SpawnRandom is only available in TBS-Games");
+		}
+	}
 
 
 	SpawnEntity::SpawnEntity(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
-		spawnSource(parameters[0]), 
-		entityTypeParam(parameters[1]), 
+		: Effect(exp),
+		spawnSource(parameters[0]),
+		entityTypeParam(parameters[1]),
 		targetPositionParam(parameters[2])
 	{
 	}
@@ -384,9 +472,9 @@ namespace SGA
 	}
 
 	SpawnEntityGrid::SpawnEntityGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
-		spawnSource(parameters[0]), 
-		entityTypeParam(parameters[1]), 
+		: Effect(exp),
+		spawnSource(parameters[0]),
+		entityTypeParam(parameters[1]),
 		targetPositionParam(parameters[2])
 	{
 	}
@@ -396,15 +484,15 @@ namespace SGA
 		const auto& ownerID = spawnSource.getPlayerID(state, targets);
 		const auto& entityType = entityTypeParam.getEntityType(state, targets);
 		auto targetPosition = targetPositionParam.getPosition(state, targets);
-		targetPosition.x =static_cast<int>(targetPosition.x);
-		targetPosition.y =static_cast<int>(targetPosition.y);
+		targetPosition.x = static_cast<int>(targetPosition.x);
+		targetPosition.y = static_cast<int>(targetPosition.y);
 		fm.spawnEntity(state, entityType, ownerID, targetPosition);
 	}
 
-	
+
 	PayCostEffect::PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
-		: Effect(exp), 
-		sourceParam(parameters[0]), 
+		: Effect(exp),
+		sourceParam(parameters[0]),
 		costParam(parameters[1])
 	{
 	}
@@ -421,5 +509,66 @@ namespace SGA
 			const auto& param = parameterLookUp.at(idCostPair.first);
 			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
 		}
+	}
+
+	EquipObject::EquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void EquipObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getObject(state, targets);
+
+		fm.executeOnEquipObjectSlot(state, entity, object);
+		entity.equipObject(object.getID());
+	}
+
+	UnEquipObject::UnEquipObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UnEquipObject::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getSlotObject(state, targets);
+
+		entity.unEquipObject(target.getID());		
+	}
+
+	UseObject::UseObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getObject(state, targets);
+
+		fm.executeOnUseObjectInventory(state, entity, object);
+	}
+
+	UseSlotObject::UseSlotObject(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+	}
+
+	void UseSlotObject::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		//Equip object
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& object = targetParam.getSlotObject(state, targets);
+
+		fm.executeOnUseObjectSlot(state, entity, object);
 	}
 }

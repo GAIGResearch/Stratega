@@ -6,9 +6,9 @@
 
 namespace SGA
 {
-	static std::unique_ptr<SGA::FileLogger> defaultLogger;
-	static std::vector<SGA::LoggingScope*> loggingScopes;
-	static std::mutex loggingMutex;
+	extern std::unique_ptr<SGA::FileLogger> defaultLogger;
+	extern std::vector<SGA::LoggingScope*> loggingScopes;
+	extern std::mutex loggingMutex;
 
 	SGA::FileLogger& getDefaultLogger();
 	void setDefaultLogger(std::unique_ptr<SGA::FileLogger> logger);

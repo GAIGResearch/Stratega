@@ -207,12 +207,64 @@ namespace SGA
 		// Execute OnTick-trigger
 		for (const auto& onTickEffect : onTickEffects)
 		{
-			for (const auto& entity : state.getEntities())
+			if (onTickEffect.type == SourceOnTickEffectType::Entity)
 			{
-				if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
-					continue;
+				for (const auto& entity : state.getEntities())
+				{
+					if (onTickEffect.validTargets.find(entity.getEntityTypeID()) == onTickEffect.validTargets.end())
+						continue;
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+					auto isValid = true;
+					for (const auto& condition : onTickEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onTickEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else if (onTickEffect.type == SourceOnTickEffectType::Player)
+			{
+				for (const auto& player : state.getPlayers())
+				{
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createPlayerActionTarget(player.getID()));
+					auto isValid = true;
+					for (const auto& condition : onTickEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onTickEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else
+			{
+				//GameState source
+
 				std::vector<ActionTarget> targets;
-				targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+				targets.emplace_back(ActionTarget::createGameStateActionTarget());
 				auto isValid = true;
 				for (const auto& condition : onTickEffect.conditions)
 				{
@@ -226,6 +278,185 @@ namespace SGA
 				if (isValid)
 				{
 					for (const auto& effect : onTickEffect.effects)
+					{
+						effect->execute(state, *this, targets);
+					}
+				}
+			}
+		}
+	}
+	void ForwardModel::executeOnUseObjectSlot(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().getOnUseSlotObjectConditions())
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().getOnUseSlotObjectEffects())
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}	
+	
+	void ForwardModel::executeOnAddedObjectInventory(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().getOnAddedInventoryObjectConditions())
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().getOnAddedInventoryObjectEffects())
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}
+
+	void ForwardModel::executeOnUseObjectInventory(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().getOnUseInventoryObjectConditions())
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().getOnUseInventoryObjectEffects())
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}
+
+	void ForwardModel::executeOnEquipObjectSlot(GameState& state, Entity& targetEntity, Entity& object) const
+	{
+		std::vector<ActionTarget> targets;
+		targets.emplace_back(ActionTarget::createEntityActionTarget(object.getID()));
+		targets.emplace_back(ActionTarget::createEntityActionTarget(targetEntity.getID()));
+		auto isValid = true;
+		for (const auto& condition : object.getEntityType().getOnEquipObjectConditions())
+		{
+			if (!condition->isFullfiled(state, targets))
+			{
+				isValid = false;
+				break;
+			}
+		}
+
+		if (isValid)
+		{
+			for (const auto& effect : object.getEntityType().getOnEquipObjectEffects())
+			{
+				effect->execute(state, *this, targets);
+			}
+		}
+	}
+	
+	void ForwardModel::executeOnAdvanceEffects(GameState& state) const
+	{
+		// Execute OnTick-trigger
+		for (const auto& onAdvanceEffect : onAdvanceEffects)
+		{
+			if (onAdvanceEffect.type == SourceOnTickEffectType::Entity)
+			{
+				for (const auto& entity : state.getEntities())
+				{
+					if (onAdvanceEffect.validTargets.find(entity.getEntityTypeID()) == onAdvanceEffect.validTargets.end())
+						continue;
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+					auto isValid = true;
+					for (const auto& condition : onAdvanceEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onAdvanceEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else if (onAdvanceEffect.type == SourceOnTickEffectType::Player)
+			{
+				for (const auto& player : state.getPlayers())
+				{
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createPlayerActionTarget(player.getID()));
+					auto isValid = true;
+					for (const auto& condition : onAdvanceEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onAdvanceEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else
+			{
+				//GameState source
+
+				std::vector<ActionTarget> targets;
+				targets.emplace_back(ActionTarget::createGameStateActionTarget());
+				auto isValid = true;
+				for (const auto& condition : onAdvanceEffect.conditions)
+				{
+					if (!condition->isFullfiled(state, targets))
+					{
+						isValid = false;
+						break;
+					}
+				}
+
+				if (isValid)
+				{
+					for (const auto& effect : onAdvanceEffect.effects)
 					{
 						effect->execute(state, *this, targets);
 					}
@@ -307,7 +538,7 @@ namespace SGA
 	void ForwardModel::checkPlayerContinuousActionIsComplete(GameState& state) const
 	{
 		//Player continuous Action
-		std::vector<Player> players = state.getPlayers();
+		std::vector<Player>& players = state.getPlayers();
 		for (size_t j = 0; j < players.size(); j++)
 		{
 			const auto& continuousActions = players[j].getContinuousActions();
@@ -452,6 +683,69 @@ namespace SGA
 			executeAction(state, action);
 		}
 	}
+	
+	void ForwardModel::executeOnTickObjectsActions(GameState& state) const
+	{
+		//ExecuteOnTickEntityActions
+		std::vector<Action> bucket;
+		auto& entities = state.getEntities();
+
+		//Generate entities actions
+		for (const auto& sourceEntity : entities)
+		{
+			for (const auto& sourceEntityObject : sourceEntity.getInventory())
+			{
+				for (const auto& actionTypeID : sourceEntityObject.getEntityType().getOnTickObjectActionIDs())
+				{
+					const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+					if (!state.canExecuteAction(sourceEntityObject, actionType))
+						continue;
+
+					// Generate all actions
+					if (actionType.getTargets().size() == 0/*TargetType::None*/)
+					{
+						// Self-actions do not have a target, only a source
+						bucket.emplace_back(actionSpace->generateSelfAction(sourceEntityObject, actionType));
+					}
+					else
+					{
+						auto targets = actionSpace->generateTargets(state, sourceEntityObject, actionType);
+						actionSpace->generateActions(state, sourceEntityObject, actionType, targets, bucket);
+					}
+				}
+			}
+			
+			for (const auto& sourceEntityObject : sourceEntity.getSlots())
+			{
+				for (const auto& actionTypeID : sourceEntityObject.first.getEntityType().getOnTickObjectActionIDs())
+				{
+					const auto& actionType = state.getGameInfo()->getActionType(actionTypeID);
+
+					if (!state.canExecuteAction(sourceEntityObject.first, actionType))
+						continue;
+
+					// Generate all actions
+					if (actionType.getTargets().size() == 0/*TargetType::None*/)
+					{
+						// Self-actions do not have a target, only a source
+						bucket.emplace_back(actionSpace->generateSelfAction(sourceEntityObject.first, actionType));
+					}
+					else
+					{
+						auto targets = actionSpace->generateTargets(state, sourceEntityObject.first, actionType);
+						actionSpace->generateActions(state, sourceEntityObject.first, actionType, targets, bucket);
+					}
+				}
+			}			
+		}
+
+		//Execute actions
+		for (auto& action : bucket)
+		{
+			executeAction(state, action);
+		}
+	}
 
 	void ForwardModel::endTick(GameState& state) const
 	{
@@ -459,6 +753,7 @@ namespace SGA
 		removeExpiredBuffs(state);
 		executeOnTriggerEffects(state);
 		executeOnTickEntityActions(state);
+		executeOnTickObjectsActions(state);
 		checkEntitiesContinuousActionIsComplete(state);
 		checkPlayerContinuousActionIsComplete(state);		
 	}
@@ -508,6 +803,11 @@ namespace SGA
 		onTickEffects.emplace_back(ote); 
 	}
 
+	void ForwardModel::addOnAdvanceEffect(OnTickEffect& ote) 
+	{ 
+		onAdvanceEffects.emplace_back(ote); 
+	}
+
 	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose) 
 	{ 
 		onEntitySpawnEffects.emplace_back(ose); 
@@ -525,6 +825,17 @@ namespace SGA
 		parameterValue=std::max(min, std::min(parameterValue, max));
 	}
 
+	void ForwardModel::modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const
+	{
+		//Get parameter
+		auto& parameterValue = state.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		const double min = state.getMinParameterAt(parameterIndex);
+		const double max = state.getMaxParameterAt(parameterIndex);
+		parameterValue=std::max(min, std::min(parameterValue, max));
+	}
 	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
 	{
 		//Get parameter

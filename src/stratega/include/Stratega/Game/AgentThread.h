@@ -2,6 +2,9 @@
 #include <Stratega/Agent/Agent.h>
 #include <thread>
 #include <Stratega/Configuration/GameConfig.h>
+#ifdef __linux__ 
+#include <pthread.h>
+#endif
 namespace SGA
 {
 	struct AgentResults

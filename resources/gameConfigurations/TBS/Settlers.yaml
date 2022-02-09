@@ -12,8 +12,20 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        Selected: ../../assets/Tiles/selected.png
         FogOfWar: ../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
+    TileSpriteOrigin:
+        Width: 128
+        Height: 112
+    EntitySpriteOrigin:
+        Width: 256
+        Height: 360
+    TileSpriteSize:
+        Width: 256
+        Height: 144
+    EntitySpriteSize:
+        Width: 512
+        Height: 512
     #Optional:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
@@ -801,12 +813,14 @@ ForwardModel:
     Trigger:
    #Global resource compsumption
         - OnTick:
+            Type: Entity
             ValidTargets: Buildings
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
                 - "ModifyResource(Source.Player.Food, -1)"
         - OnTick:
+            Type: Entity
             ValidTargets: Units
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -814,6 +828,7 @@ ForwardModel:
                 - "ModifyResource(Source.Player.Food, -1)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: University
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -822,6 +837,7 @@ ForwardModel:
     #Upgrade villagers resuorce collection
         #Food
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -830,6 +846,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 10)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -838,6 +855,7 @@ ForwardModel:
                 - "ChangeResource(Source.LivestockFarming, 15)"
         #Wood
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -846,6 +864,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 10)"
 
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -854,6 +873,7 @@ ForwardModel:
                 - "ChangeResource(Source.WoodCutting, 15)"
         #Ore
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"
@@ -862,6 +882,7 @@ ForwardModel:
                 - "ChangeResource(Source.IronMining, 12)"
         #Clay
         - OnTick:
+            Type: Entity
             ValidTargets: Villager
             Conditions:
                 - "IsPlayerEntity(Source)"

@@ -6,7 +6,6 @@
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 
-
 namespace SGA
 {
     std::unique_ptr<GameConfig> loadConfigFromYAML(const std::string& filePath, const std::string& resourcesPath)
@@ -63,22 +62,30 @@ namespace SGA
 
         config->applyFogOfWar = gameConfigNode["FogOfWar"].as<bool>(config->applyFogOfWar);
 
+        //Parse parameters
+        auto parametersNode = gameConfigNode["Parameters"];
+        parseParameterList(parametersNode, *config, config->stateParameterTypes);
+
 		// Parse complex structures
 		// Order is important, only change if you are sure that a function doesn't depend on something parsed before it
-		parseEntities(loadNode(configNode, "Entities", *config), *config);
+		parseEntities(loadNode(configNode, "Entities", *config), *config);		        
+        parseObjects(loadNode(configNode, "Objects", *config), *config);
+        
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
+        
         parseAgents(loadNode(configNode, "Agents", *config), *config);
         parseTileTypes(loadNode(configNode, "Tiles", *config), *config);
 
-        parsePlayers(loadNode(configNode, "Player", *config), *config);
+        parsePlayers(loadNode(configNode, "Player", *config), *config);        
 
         if(loadNode(configNode, "Buffs", *config).IsDefined())
-           parseBuffs(loadNode(configNode, "Buffs", *config), *config);
-        
+           parseBuffs(loadNode(configNode, "Buffs", *config), *config);        
 
 		if(loadNode(configNode, "TechnologyTrees", *config).IsDefined())
 			parseTechnologyTrees(loadNode(configNode, "TechnologyTrees", *config), *config);
 		
+        parseObjectsAdditionalInformation(loadNode(configNode, "Objects", *config), *config);
+
         parseActions(loadNode(configNode, "Actions", *config), *config);
         parseForwardModel(loadNode(configNode, "ForwardModel", *config), *config);
 
@@ -88,8 +95,11 @@ namespace SGA
         if (loadNode(configNode, "GameRunner", *config).IsDefined())
             parseGameRunner(loadNode(configNode, "GameRunner", *config), *config);
 
+        
+
         assignPlayerActions(loadNode(configNode, "Player", *config), *config);
         assignEntitiesActions(loadNode(configNode, "Entities", *config), *config);
+        assignObjectsActions(loadNode(configNode, "Objects", *config), *config);
 
     	// Parse render data - ToDo split into the dedicated functions (Entity, Tile, etc)
         parseRenderConfig(configNode, *config);
@@ -252,12 +262,126 @@ namespace SGA
                 type.setLoSRange(0);
             else
                 type.setLoSRange(nameTypePair.second["LineOfSightRange"].as<double>());
+
+
+            if (!nameTypePair.second["InventorySize"].IsDefined())
+                type.setInventorySize(0);
+            else
+                type.setInventorySize(nameTypePair.second["InventorySize"].as<int>());
+
+            if (nameTypePair.second["Slots"].IsDefined())
+                type.setSlots(parseEntitySlots(nameTypePair.second["Slots"]));
             
             if (nameTypePair.second["Parameters"].IsDefined())
                 parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+
+    void GameConfigParser::parseObjects(const YAML::Node& entitiesNode, GameConfig& config) const
+    {
+        if(!entitiesNode.IsDefined())
+        {
+            return;
+        }
+        
+
+        auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+        for (const auto& nameTypePair : types)
+        {
+            EntityType type;
+            type.setName(nameTypePair.first);
+            type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setID(static_cast<int>(config.entityTypes.size()));
+                       
+            
+            if (nameTypePair.second["Parameters"].IsDefined())
+                parseParameterList(nameTypePair.second["Parameters"], config, type.getParameters());
+            
+            if (nameTypePair.second["SlotsUse"].IsDefined())
+                type.setSlotsUsed(parseEntitySlots(nameTypePair.second["SlotsUse"]));
+
+            
+            //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
+            config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+    
+    void GameConfigParser::parseObjectsAdditionalInformation(const YAML::Node& objectsNode, GameConfig& config) const
+    {
+        if(!objectsNode.IsDefined())
+        {
+            return;
+        }
+
+        FunctionParser parser;
+        auto context = ParseContext::fromGameConfig(config);
+        context.targetIDs.emplace("Source", 0);
+        context.targetIDs.emplace("Target", 1);
+
+        for (auto& entityTp : config.entityTypes)
+        {
+            //Check if is in objects
+            if (objectsNode[entityTp.second.getName()].IsDefined())
+            {
+                if(objectsNode[entityTp.second.getName()]["CanEquip"].IsDefined())
+                    entityTp.second.setCanEquipGroupEntityTypes(parseEntityGroup(objectsNode[entityTp.second.getName()]["CanEquip"], config));
+
+                //Add effects to object
+                if (objectsNode[entityTp.second.getName()]["OnEquip"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onEquipEffects = objectsNode[entityTp.second.getName()]["OnEquip"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onEquipEffects, newEffects, context);
+                    entityTp.second.setOnEquipObjectEffects(newEffects);
+
+                    auto onEquipConditions = objectsNode[entityTp.second.getName()]["OnEquip"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onEquipConditions, newConditions, context);
+                    entityTp.second.setOnEquipObjectConditions(newConditions);
+                }
+
+                if (objectsNode[entityTp.second.getName()]["OnAddedInventory"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onAddedInventoryEffects = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onAddedInventoryEffects, newEffects, context);
+                    entityTp.second.setOnAddedInventoryObjectEffects(newEffects);
+
+                    auto onAddedInventoryConditions = objectsNode[entityTp.second.getName()]["OnAddedInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onAddedInventoryConditions, newConditions, context);
+                    entityTp.second.setOnAddedInventoryObjectConditions(newConditions);
+                }
+                if (objectsNode[entityTp.second.getName()]["OnUseInventory"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onUseInventoryEffects = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onUseInventoryEffects, newEffects, context);
+                    entityTp.second.setOnUseInventoryObjectEffects(newEffects);
+
+                    auto onUseInventoryConditions = objectsNode[entityTp.second.getName()]["OnUseInventory"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onUseInventoryConditions, newConditions, context);
+                    entityTp.second.setOnUseInventoryObjectConditions(newConditions);
+                }
+                if (objectsNode[entityTp.second.getName()]["OnUseSlot"].IsDefined())
+                {
+                    std::vector<std::shared_ptr<Effect>> newEffects;
+                    std::vector<std::shared_ptr<Condition>> newConditions;
+                    auto onUseSlotEffects = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Effect>(onUseSlotEffects, newEffects, context);
+                    entityTp.second.setOnUseSlotObjectEffects(newEffects);
+
+                    auto onUseSlotConditions = objectsNode[entityTp.second.getName()]["OnUseSlot"]["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                    parser.parseFunctions<Condition>(onUseSlotConditions, newConditions, context);
+                    entityTp.second.setOnUseSlotObjectConditions(newConditions);
+                }
+            }
+
+            
         }
     }
 
@@ -304,8 +428,10 @@ namespace SGA
             type.setName(nameTypePair.first);
         	
             context.targetIDs.emplace("Source", 0);
+            //context.targetIDs.emplace("GameState", -1);
         	
         	//Parse all the targets
+            if(nameTypePair.second["Targets"].IsDefined())
             for (auto& target : nameTypePair.second["Targets"].as<std::map<std::string, YAML::Node>>())
             {
                 TargetType newTarget;
@@ -507,11 +633,35 @@ namespace SGA
 
                 // Initiliaze OnTickEffect
                 OnTickEffect onTickEffect;
-                onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
                 parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
 				// Add it to the fm
                 fm->addOnTickEffect(onTickEffect);
+			}
+            else if(map.find("OnAdvance") != map.end())
+			{
+                auto nameEffectsPair = *map.find("OnAdvance");
+				
+                context.targetIDs.emplace("Source", 0);
+                auto conditions = nameEffectsPair.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+
+                // Initiliaze OnTickEffect
+                OnTickEffect onTickEffect;
+                onTickEffect.type = nameEffectsPair.second["Type"].as<SourceOnTickEffectType>();
+
+                if(onTickEffect.type== SourceOnTickEffectType::Entity)
+                    onTickEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
+
+                parser.parseFunctions<Condition>(conditions, onTickEffect.conditions, context);
+                parser.parseFunctions<Effect>(effects, onTickEffect.effects, context);
+				// Add it to the fm
+                fm->addOnAdvanceEffect(onTickEffect);
 			}
             else if(map.find("OnSpawn") != map.end())
             {
@@ -522,7 +672,7 @@ namespace SGA
                 auto effects = nameEffectsPair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
 
                 // Initiliaze OnTickEffect
-                OnEntitySpawnEffect onSpawnEffect;
+                OnEntitySpawnEffect onSpawnEffect;                
                 onSpawnEffect.validTargets = parseEntityGroup(nameEffectsPair.second["ValidTargets"], config);
                 parser.parseFunctions<Condition>(conditions, onSpawnEffect.conditions, context);
                 parser.parseFunctions<Effect>(effects, onSpawnEffect.effects, context);
@@ -664,6 +814,13 @@ namespace SGA
             auto entityName = entityNode.first.as<std::string>();
             auto entityConfig = entityNode.second;
             config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
+        }  
+
+        for (const auto& entityNode : loadNode(configNode, "Objects", config))
+        {
+            auto entityName = entityNode.first.as<std::string>();
+            auto entityConfig = entityNode.second;
+            config.renderConfig->entitySpritePaths.emplace(entityName, parseFilePath(entityConfig["Sprite"], config));
         }       
 
         //Read GameRenderer configuration
@@ -697,18 +854,6 @@ namespace SGA
                 {
                     throw std::runtime_error("Fog Of War not defined in GameRenderer section");
 
-                }
-                
-                const auto selectedNode = defaultAssetsNode["Selected"];
-                if (selectedNode.IsDefined())
-                {
-                    
-                    std::string selectedPath = parseFilePath(selectedNode, config);
-                    config.renderConfig->selectedPath = selectedPath;
-                }
-                else
-                {
-                    throw std::runtime_error("Selected not defined in GameRenderer section");
                 }
             }
             else
@@ -771,38 +916,6 @@ namespace SGA
                     config.renderConfig->fontPath = filePath.string();
                 }
             }
-            
-            //Load EntityCircleCollider only on RTS
-            if (config.gameType == SGA::GameType::RTS)
-            {
-                const auto entityColliderNode = gameRendererNode["EntityCollider"];
-                if (entityColliderNode.IsDefined())
-                {
-                    config.renderConfig->entityCircleColliderPath = parseFilePath(entityColliderNode, config);
-                }
-                else
-                {
-                    if (config.resourcesPath != "")
-                    {
-                        ghc::filesystem::path path(config.resourcesPath);
-                        path = path / "assets/Tiles/circleCollider.png";
-                        config.renderConfig->entityCircleColliderPath = path.string();
-                    }
-                    else
-                    {
-                        using namespace ghc::filesystem;
-
-                        path filePath = "../../assets/Tiles/circleCollider.png";
-                        // Convert path to an absolute path relative to the path of the configuration file
-                        auto tmp = current_path();
-                        current_path(canonical(path(config.yamlPath).parent_path()));
-                        filePath = canonical(filePath);
-                        current_path(tmp);
-                        config.renderConfig->entityCircleColliderPath = filePath.string();
-                    }
-                }
-            }
-            
         }
         else
         {
@@ -814,6 +927,76 @@ namespace SGA
             auto tileName = tileNode.first.as<std::string>();
             auto tileConfig = tileNode.second;
             config.renderConfig->tileSpritePaths.emplace(tileName, parseFilePath(tileConfig["Sprite"], config));
+        }
+
+        const auto tileSpriteOriginNode = gameRendererNode["TileSpriteOrigin"];
+        if (tileSpriteOriginNode.IsDefined())
+        {
+            Vector2f newTileSpriteOrigin;
+
+            newTileSpriteOrigin.x = tileSpriteOriginNode["Width"].as<float>();
+            newTileSpriteOrigin.y = tileSpriteOriginNode["Height"].as<float>();
+
+           config.renderConfig->tileSpriteOrigin = newTileSpriteOrigin;
+        }
+        else
+        {
+            throw std::runtime_error("Tile sprite origin is not defined in GameRenderer section");
+        }
+
+        const auto entitySpriteOriginNode = gameRendererNode["EntitySpriteOrigin"];
+        if (entitySpriteOriginNode.IsDefined())
+        {
+            Vector2f newEntitySpriteOrigin;
+
+            newEntitySpriteOrigin.x = entitySpriteOriginNode["Width"].as<float>();
+            newEntitySpriteOrigin.y = entitySpriteOriginNode["Height"].as<float>();
+
+           config.renderConfig->entitySpriteOrigin = newEntitySpriteOrigin;
+        }
+        else
+        {
+            throw std::runtime_error("Entity sprite origin is not defined in GameRenderer section");
+        }
+
+        const auto entitySpriteSizeNode = gameRendererNode["EntitySpriteSize"];
+        if (entitySpriteSizeNode.IsDefined())
+        {
+            Vector2f newEntitySpriteSize;
+
+            newEntitySpriteSize.x = entitySpriteSizeNode["Width"].as<float>();
+            newEntitySpriteSize.y = entitySpriteSizeNode["Height"].as<float>();
+
+           config.renderConfig->entitySpriteSize = newEntitySpriteSize;
+        }
+        else
+        {
+            throw std::runtime_error("Entity sprite size is not defined in GameRenderer section");
+        }
+
+        const auto tileSpriteSizeNode = gameRendererNode["TileSpriteSize"];
+        if (tileSpriteSizeNode.IsDefined())
+        {
+            Vector2f newTileSpriteSize;
+
+            newTileSpriteSize.x = tileSpriteSizeNode["Width"].as<float>();
+            newTileSpriteSize.y = tileSpriteSizeNode["Height"].as<float>();
+
+           config.renderConfig->tileSpriteSize = newTileSpriteSize;
+        }
+        else
+        {
+            throw std::runtime_error("Tile sprite size is not defined in GameRenderer section");
+        }
+
+        const auto isIsometricNode = gameRendererNode["GridIsIsometric"];
+        if (isIsometricNode.IsDefined())
+        {
+            config.renderConfig->isIsometricGrid = isIsometricNode.as<bool>();
+        }
+        else
+        {
+            throw std::runtime_error("GridIsIsometric is not defined in GameRenderer section");
         }
     }
 
@@ -908,6 +1091,29 @@ namespace SGA
         }
 
         throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-group");
+	}
+    
+    std::vector<std::string> GameConfigParser::parseEntitySlots(const YAML::Node& slotNode) const
+	{
+        if(!slotNode.IsDefined())
+        {
+            return {};
+        }
+		
+        std::vector<std::string> slots;
+		if(slotNode.IsScalar())
+		{
+            auto slotName = slotNode.as<std::string>();
+            slots.emplace_back(slotName);
+            return slots;
+		}
+		
+        if(slotNode.IsSequence())
+        {
+            return slotNode.as<std::vector<std::string>>();
+        }
+
+        throw std::runtime_error("Encountered an unknown Node-Type when parsing a entity-slot");
 	}
 
     std::unordered_map<ParameterID, double> GameConfigParser::parseCost(const YAML::Node& costNode, const GameConfig& config) const

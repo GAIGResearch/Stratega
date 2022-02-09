@@ -83,9 +83,7 @@ namespace SGA
 		/// Initializes the research technologies to all players, to none.
 		/// </summary>
 		void initResearchTechs();
-
-
-
+		
 		/***** BOARD FUNCTIONS *****/
 
 		/// <summary>
@@ -153,15 +151,42 @@ namespace SGA
 		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
 		/// <returns>A pointer to the entity in this location.</returns>
 		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
+		const Entity* getEntityAtConst(const Vector2f& pos, float maxDistance = 0.0) const;
 		const Entity* getEntityAt(const Vector2f& pos) const;
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It searchs also the objects from the entities
 		/// </summary>
 		/// <param name="entityID"> ID of the entity to retrieve. </param>
 		/// <returns>A pointer to the entity.</returns>
 		Entity* getEntity(int entityID);
 		const Entity* getEntityConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// It only search the entities in the gamestate without the objects of the inventories
+		/// </summary>
+		/// <param name="entityID"> ID of the entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getOnlyEntities(int entityID);
+		const Entity* getOnlyEntitiesConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getObject(int entityID);
+		const Entity* getObjectConst(int entityID) const;
+
+		/// <summary>
+		/// Returns an object/entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
+		/// </summary>
+		/// <param name="entityID"> ID of the object/entity to retrieve. </param>
+		/// <returns>A pointer to the entity.</returns>
+		Entity* getSlotObject(int entityID);
+		const Entity* getSlotObjectConst(int entityID) const;
 
 
 		/// <summary>
@@ -172,6 +197,15 @@ namespace SGA
 		/// <param name="position">Position where the entity will be added.</param>
 		/// <returns>Returns the unique ID of the entity created.</returns>
 		int addEntity(const EntityType& type, int playerID, const Vector2f& position);
+
+		/// <summary>
+		/// Adds a entity of a given type to the game, in a given position, belonging to a specific player. 
+		/// </summary>
+		/// <param name="type">Type of the player, as defined <here cref="SGA::EntityType"/> </param>
+		/// <param name="playerID">ID of the player this new entity will belong to.</param>
+		/// <param name="position">Position where the entity will be added.</param>
+		/// <returns>Returns the unique ID of the entity created.</returns>
+		int addEntity(Entity entity, int playerID, const Vector2f& position);
 
 		/// <summary>
 		/// Gets the list of all entities.
@@ -384,7 +418,7 @@ namespace SGA
 		/// <summary>
 		/// Returns the current game tick limit.
 		/// </summary>
-		int getTickLimit() { return tickLimit; }
+		int getTickLimit() const { return tickLimit; }
 		
 		/// <summary>
 		/// Sets the time limit of the game, measured in ticks.
@@ -427,6 +461,76 @@ namespace SGA
 		/// </summary>
 		/// <returns></returns>
 		std::mt19937& getRndEngine() { return rngEngine; }
+
+
+		/***** PARAMETERS *****/
+
+		/// <summary>
+		/// Returns the list of parameters, can't be modified.
+		/// </summary>
+		const std::vector<double>& getParameters() const { return parameters; }
+
+		/// <summary>
+		/// Returns the list of parameters of this player (can be modified)
+		/// </summary>
+		std::vector<double>& getParameters() { return parameters; }
+
+		/// <summary>
+		/// Returns a reference to a parameter value of this player.
+		/// </summary>
+		double& getRawParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+
+		/// <summary>yer to a certain value
+		/// </summary>
+		/// Returns a const value of a parameter of this player.
+		/// </summary>
+		const double& getRawParameterAt(int paramIdx) const { return parameters[static_cast<size_t>(paramIdx)]; }
+
+		/// <summary>
+		/// Gets a specific parameters value, by index 
+		/// <summary>
+		/// <returns>The parameter value.</returns>
+		double getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+
+		/// <summary>
+		/// Gets a specific max parameters value, by index 
+		/// <summary>
+		/// <returns>The max parameter value.</returns>
+		double getMaxParameterAt(int paramIdx) { return maxParameters[static_cast<size_t>(paramIdx)]; }
+
+		/// <summary>
+		/// Gets a specific min parameters value, by index 
+		/// <summary>
+		/// <returns>The min parameter value.</returns>
+		double getMinParameterAt(int paramIdx) { return minParameters[static_cast<size_t>(paramIdx)]; }
+
+		/// <summary>
+		/// Sets the parameter of this play
+		/// <param name="paramIdx">Parameter index of this param.</param>
+		/// <param name="val">Value to be set for the parameter.</param>
+		void setParameter(int paramIdx, double val) { parameters[static_cast<size_t>(paramIdx)] = val; }
+
+		/// <summary>
+		/// Sets the parameter of this play
+		/// <param name="paramIdx">Parameter index of this param.</param>
+		/// <param name="val">Value to be set for the parameter.</param>
+		void setMaxParameter(int paramIdx, double val) { maxParameters[static_cast<size_t>(paramIdx)] = val; }
+
+		/// <summary>
+		/// Sets the parameter of this play
+		/// <param name="paramIdx">Parameter index of this param.</param>
+		/// <param name="val">Value to be set for the parameter.</param>
+		void setMinParameter(int paramIdx, double val) { minParameters[static_cast<size_t>(paramIdx)] = val; }
+
+		/// <summary>
+		/// Sets a size for the vector of parameters of this player.
+		/// </summary>
+		void resizeParameters(int cap)
+		{
+			parameters.resize(static_cast<size_t>(cap));
+			maxParameters.resize(static_cast<size_t>(cap));
+			minParameters.resize(static_cast<size_t>(cap));
+		}
 
 
 	private:
@@ -525,5 +629,19 @@ namespace SGA
 		/// </summary>
 		bool fogOfWarApplied;
 
+		/// <summary>
+		/// List of parameter values.
+		/// </summary>
+		std::vector<double> parameters;
+
+		/// <summary>
+		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> maxParameters;
+
+		/// <summary>
+		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
+		/// </summary>
+		std::vector<double> minParameters;
 	};
 }

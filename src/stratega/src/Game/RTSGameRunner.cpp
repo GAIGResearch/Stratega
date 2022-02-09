@@ -1,6 +1,5 @@
 #include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
-
 namespace SGA
 {
 	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)
@@ -28,7 +27,7 @@ namespace SGA
 			// Render
 			auto startTime = std::chrono::high_resolution_clock::now();
 			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(config->budgetTimeMs))
-			{
+			{				
 				renderer->render();
 			}
 

@@ -28,6 +28,8 @@ namespace SGA
 			executeAction(state, action.second);
 		}
 
+		executeOnAdvanceEffects(state);
+
 		//Remove flagged entities
 		auto& entities = state.getEntities();
 		auto it = entities.begin();
@@ -556,6 +558,9 @@ namespace SGA
 
 	bool RTSForwardModel::checkGameIsFinished(GameState& state) const
 	{
+		if (state.getCurrentTick() >= state.getTickLimit())
+			return true;
+
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
 		for (Player& player : state.getPlayers())
