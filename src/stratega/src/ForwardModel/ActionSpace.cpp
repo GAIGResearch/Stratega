@@ -5,6 +5,7 @@ namespace SGA
 	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const
 	{
 		std::vector<Action> bucket;
+		std::unordered_map<std::string, int> actionTypesNumber;
 		//Generate entities actions
 		for (const auto& sourceEntity : gameState.getEntities())
 		{
@@ -14,7 +15,7 @@ namespace SGA
 			for (const auto& actionInfo : sourceEntity.getAttachedActions())
 			{
 				const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
-				
+				actionTypesNumber[actionType.getName()] = 0;
 				bool generateContinuousAction = true;
 				//Check if action is continuos
 				if (actionType.isContinuous())
@@ -61,6 +62,7 @@ namespace SGA
 		for (const auto& actionInfo : player.getAttachedActions())
 		{
 			const auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
+			actionTypesNumber[actionType.getName()] = 0;
 			bool generateContinuousAction = true;
 			//Check if action is continuos
 			if (actionType.isContinuous())
@@ -106,8 +108,32 @@ namespace SGA
 		if(gameState.getGameType() == GameType::TBS)
 		{
 			bucket.emplace_back(Action::createEndAction(playerID));
+			actionTypesNumber["EndTickAction"] = 0;
 		}
-		std::cout << "Action number: " << bucket.size()<<" Player ID: "<<playerID<<std::endl;
+		std::cout << "	Action number: " << bucket.size() << " Player ID: " << playerID << std::endl;
+		std::cout << "		-";
+		
+		for (auto& action : bucket)
+		{
+			if (action.getActionFlag() != ActionFlag::EndTickAction)
+			{
+				int temp = actionTypesNumber[action.getActionType().getName()];
+				temp++;
+				actionTypesNumber[action.getActionType().getName()] = temp;
+			}
+			else
+			{
+				int temp = actionTypesNumber["EndTickAction"];
+				temp++;
+				actionTypesNumber["EndTickAction"] = temp;
+			}
+		}
+
+		for (auto& actionTypeNumber : actionTypesNumber)
+		{
+			std::cout << " [" << actionTypeNumber.first << "]: " << actionTypeNumber.second;
+		}
+		std::cout <<std::endl;
 		return bucket;
 	}
 
@@ -236,9 +262,10 @@ namespace SGA
 
 			if (isValidAction)
 			{
-				actionBucket.emplace_back(action);
+				actionBucket.emplace_back(action);				
 			}
 		}
+
 	}
 
 	void ActionSpace::generateActions(const GameState& state, const Player& sourcePlayer, const ActionType& actionType, const std::vector<std::vector<ActionTarget>>& targets, std::vector<Action>& actionBucket) const
