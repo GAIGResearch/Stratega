@@ -95,7 +95,11 @@ namespace SGA
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{
 		if (state.getCurrentTick() >= state.getTickLimit())
+		{
+			std::cout << "Game finished tick limit" << std::endl;
 			return true;
+		}
+			
 
 		int numberPlayerCanPlay = 0;
 		int winnerID = -1;
