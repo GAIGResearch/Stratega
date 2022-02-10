@@ -1,13 +1,12 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 100
+    RoundLimit: 5
     FogOfWar: false
-
 
 Agents:
     #- HumanAgent
-    - OSLAAgent
-    - KTKCombatAgent
+    - RandomAgent
+    - RandomAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS

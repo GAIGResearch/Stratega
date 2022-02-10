@@ -107,7 +107,7 @@ namespace SGA
 		{
 			bucket.emplace_back(Action::createEndAction(playerID));
 		}
-		
+		std::cout << "Action number: " << bucket.size()<<" Player ID: "<<playerID<<std::endl;
 		return bucket;
 	}
 
