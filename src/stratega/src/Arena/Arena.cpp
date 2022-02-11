@@ -97,7 +97,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 
 		// Set seed of the agents for deterministic behaviour
         unsigned int seed_one = seedDist(rngEngine);
-        //std::cout << seed_one << std::endl;
+        std::cout << "agent["<<i<<"] seed:" << seed_one << std::endl;
         agents[i]->setSeed(seed_one);
 	}
 
