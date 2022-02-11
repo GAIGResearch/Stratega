@@ -134,9 +134,9 @@ namespace SGA
 		}
 
 		std::cout << ", [Parameters: ";
-		for (auto& parameter : parameters)
+		for (auto& parameterType : type->getParameters())
 		{
-			std::cout << "(" << type->getParameters().find(parameterID++)->second.getName() << ": " << parameter << ")";
+			std::cout << "(" << parameterType.second.getName() << ": " << getParameter(parameterType.second.getName()) << ")";
 		}
 
 		std::cout << "]" << std::endl;

@@ -140,7 +140,7 @@ namespace  SGA
 		const auto& source = sourceEntity.getEntity(state, targets);
 		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
-		std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
+		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
 		return source.getPosition().distance(target) <= dist;
 	}
 
