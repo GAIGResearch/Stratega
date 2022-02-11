@@ -481,7 +481,7 @@ namespace SGA
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
-	std::vector<double>& FunctionParameter::getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	std::unordered_map<int, double>& FunctionParameter::getParameterList(GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{
@@ -512,7 +512,7 @@ namespace SGA
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
 
-	const std::vector<double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const std::unordered_map<int, double>& FunctionParameter::getParameterList(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if (getType() == Type::EntityPlayerReference)
 		{

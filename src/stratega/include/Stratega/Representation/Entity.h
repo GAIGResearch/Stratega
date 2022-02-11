@@ -71,17 +71,17 @@ namespace SGA
 		/// <summary>
 		/// Values for the parameters of this entity. Indexed by ID. Use getParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> parameters;
+		std::unordered_map<int, double> parameters;
 
 		/// <summary>
 		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> maxParameters;
+		std::unordered_map<int, double> maxParameters;
 
 		/// <summary>
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> minParameters;
+		std::unordered_map<int, double> minParameters;
 		
 		/// <summary>
 		/// Entity type
@@ -195,13 +195,13 @@ namespace SGA
 		/// Gets the list of parameters values. Modifiable.
 		/// <summary>
 		/// <returns>The list of parameters values.</returns>
-		std::vector<double>& getParamValues() { return parameters; }
+		std::unordered_map<int, double>& getParamValues() { return parameters; }
 		
 		/// <summary>
 		/// Gets the list of parameters values.
 		/// <summary>
 		/// <returns>The list of parameters values.</returns>
-		const std::vector<double>& getParamValues() const { return parameters; }
+		const std::unordered_map<int, double>& getParamValues() const { return parameters; }
 
 		/// <summary>
 		/// Gets the list of parameters names.
@@ -237,7 +237,7 @@ namespace SGA
 		/// Gets a specific parameters value, by index 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double& getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+		double& getParameterAt(int paramIdx) { return parameters[paramIdx]; }
 		
 		/// <summary>
 		/// Gets a specific max parameters value, by index 

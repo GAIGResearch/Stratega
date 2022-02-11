@@ -32,17 +32,17 @@ namespace SGA
 		/// <summary>
 		/// List of parameter values. Use GameState.getPlayerParameter(...) functions to retrieve this.
 		/// </summary>
-		std::vector<double> parameters;
+		std::unordered_map<int, double> parameters;
 
 		/// <summary>
 		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> maxParameters;
+		std::unordered_map<int, double> maxParameters;
 
 		/// <summary>
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> minParameters;
+		std::unordered_map<int, double> minParameters;
 
 		/// <summary>
 		/// Actions that this player can execute in this game.
@@ -94,23 +94,23 @@ namespace SGA
 		/// <summary>
 		/// Returns the list of parameters, can't be modified.
 		/// </summary>
-		const std::vector<double>& getParameters() const { return parameters; }
+		const std::unordered_map<int, double>& getParameters() const { return parameters; }
 
 		/// <summary>
 		/// Returns the list of parameters of this player (can be modified)
 		/// </summary>
-		std::vector<double>& getParameters() { return parameters; }
+		std::unordered_map<int, double>& getParameters() { return parameters; }
 
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getRawParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+		double& getRawParameterAt(int paramIdx) { return parameters.find(paramIdx)->second; }
 
 		/// <summary>yer to a certain value
 		/// </summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getRawParameterAt(int paramIdx) const { return parameters[static_cast<size_t>(paramIdx)]; }
+		const double& getRawParameterAt(int paramIdx) const { return parameters.find(paramIdx)->second; }
 
 		/// <summary>
 		/// Gets a specific parameters value, by index 
@@ -153,9 +153,9 @@ namespace SGA
 		/// </summary>
 		void resizeParameters(int cap)
 		{
-			parameters.resize(static_cast<size_t>(cap));
+			/*parameters.resize(static_cast<size_t>(cap));*//*
 			maxParameters.resize(static_cast<size_t>(cap));
-			minParameters.resize(static_cast<size_t>(cap));
+			minParameters.resize(static_cast<size_t>(cap));*/
 		}
 		/// <summary>
 		/// Removes a continuous action from the vector of continuous actions of this player.
