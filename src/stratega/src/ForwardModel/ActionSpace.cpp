@@ -1,11 +1,12 @@
 #include <Stratega/ForwardModel/ActionSpace.h>
 #pragma warning(disable: 5045)
+#include <map>
 namespace SGA
 {
 	std::vector<Action> ActionSpace::generateActions(const GameState& gameState, int playerID) const
 	{
 		std::vector<Action> bucket;
-		std::unordered_map<std::string, int> actionTypesNumber;
+		std::map<std::string, int> actionTypesNumber;
 		//Generate entities actions
 		for (const auto& sourceEntity : gameState.getEntities())
 		{
