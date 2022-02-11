@@ -33,9 +33,12 @@ namespace SGA
 		minParameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
-			parameters.emplace_back(idParamPair.second.getDefaultValue());
-			maxParameters.emplace_back(idParamPair.second.getMaxValue());
-			minParameters.emplace_back(idParamPair.second.getMinValue());
+			auto index = parameters.begin() + idParamPair.second.getIndex();
+			parameters.emplace(index, idParamPair.second.getDefaultValue());
+			index = maxParameters.begin() + idParamPair.second.getIndex();
+			maxParameters.emplace(index, idParamPair.second.getMaxValue());
+			 index = minParameters.begin() + idParamPair.second.getIndex();
+			minParameters.emplace(index, idParamPair.second.getMinValue());
 		}
 	}
 
