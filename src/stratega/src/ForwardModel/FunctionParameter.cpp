@@ -263,6 +263,7 @@ namespace SGA
 			const auto& param = getParameter(state, actionTargets);
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
 			{
+				std::cout <<"		" << param.getName()<<" "<<std::endl;
 				auto& entity = getEntity(state, actionTargets);
 				return entity.getRawParameterAt(param.getIndex());
 			}
