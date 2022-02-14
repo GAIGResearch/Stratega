@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/ActionSpace.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>

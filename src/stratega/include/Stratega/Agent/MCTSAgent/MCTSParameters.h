@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <yaml-cpp/yaml.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
@@ -20,7 +20,7 @@ namespace SGA {
         bool rolloutsEnabled = true;            //If the simulation/rollout phase should be executed or not.
         bool continuePreviousSearch = true;     //Indicates if tree should be kept between two consecutive decision making steps.
 
-        std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
+        boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
         double epsilon = 1e-2;                  //Small number to avoid /0
 
         /// <summary>

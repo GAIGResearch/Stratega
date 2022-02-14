@@ -1,4 +1,4 @@
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Agent/RandomAgent.h>
 
 namespace SGA
@@ -9,7 +9,7 @@ namespace SGA
 		auto actions = forwardModel.generateActions(state, getPlayerID());
 		// Uniformly sample a action
 
-		std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+		boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 		auto actionIndex = actionDist(getRNGEngine());
 		auto action = actions.at(actionIndex);
 		std::cout << "	ActionIndex to execute: " << actionIndex<<" From: "<< actions.size() << std::endl;

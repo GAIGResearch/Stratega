@@ -233,7 +233,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	void UnitMCTSNode::searchMCTS(ForwardModel& forwardModel, UnitMCTSParameters& params,
-		std::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes,
+		boost::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes,
 		std::map<int, std::vector<double> >* absNodeToStatistics) {
 
 		int numIterations = 0;
@@ -285,7 +285,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	UnitMCTSNode* UnitMCTSNode::treePolicy(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator,
+	UnitMCTSNode* UnitMCTSNode::treePolicy(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator,
 		std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics)
 	{
 		UnitMCTSNode* cur = this;
@@ -310,7 +310,7 @@ namespace SGA
 		return cur;
 	}
 
-	UnitMCTSNode* UnitMCTSNode::expand(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& /*randomGenerator*/,
+	UnitMCTSNode* UnitMCTSNode::expand(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& /*randomGenerator*/,
 		std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes)
 	{
 		//todo remove unnecessary copy of gameState
@@ -411,7 +411,7 @@ namespace SGA
 		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
 	}
 
-	UnitMCTSNode* UnitMCTSNode::uct(UnitMCTSParameters& params, std::mt19937& randomGenerator, std::map<int, std::vector<double> >* absNodeToStatistics)
+	UnitMCTSNode* UnitMCTSNode::uct(UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<double> >* absNodeToStatistics)
 	{
 		const bool iAmMoving = (gameState.getCurrentTBSPlayer() == params.PLAYER_ID);
 
@@ -471,7 +471,7 @@ namespace SGA
 				std::cout << "\t" << childValues[i] << "\n";
 			std::cout << "; selected: " << which << "\n";
 			std::cout << "; isFullyExpanded: " << isFullyExpanded() << "\n";
-			std::uniform_int_distribution<size_t> distrib(0, children.size() - 1);
+			boost::random::uniform_int_distribution<size_t> distrib(0, children.size() - 1);
 
 			which = static_cast<int>(distrib(randomGenerator));
 		}
@@ -480,7 +480,7 @@ namespace SGA
 		return children[which].get();
 	}
 
-	double UnitMCTSNode::rollOut(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator)
+	double UnitMCTSNode::rollOut(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		if (params.ROLLOUTS_ENABLED) {
 			auto gsCopy(gameState);
@@ -491,7 +491,7 @@ namespace SGA
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
 					break;
-				std::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
+				boost::random::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
 				rolloutDepth++;
 			}
@@ -557,7 +557,7 @@ namespace SGA
 		}
 	}
 
-	int UnitMCTSNode::mostVisitedAction(UnitMCTSParameters& params, std::mt19937& randomGenerator)
+	int UnitMCTSNode::mostVisitedAction(UnitMCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();
@@ -613,7 +613,7 @@ namespace SGA
 		return selected;
 	}
 
-	int UnitMCTSNode::bestAction(UnitMCTSParameters& params, std::mt19937& randomGenerator)
+	int UnitMCTSNode::bestAction(UnitMCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();

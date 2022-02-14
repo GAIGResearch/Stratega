@@ -5,14 +5,14 @@
 
 int main()
 {
-	std::mt19937 rngEngine(0);
+	boost::mt19937 rngEngine(0);
 	//std::string configPath("../resources/gameConfigurations/TBS/PushThemAll.yaml");
 	std::string configPath("../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();
 	// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+	boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 	for(auto& agent : agents)
 	{
 		auto seed = seedDist(rngEngine);

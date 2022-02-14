@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <unordered_map>
 #include <Stratega/Representation/Grid2D.h>
 #include <Stratega/Representation/Tile.h>
@@ -424,7 +424,7 @@ namespace SGA
 		/// Returns the game's random number generator.
 		/// </summary>
 		/// <returns></returns>
-		std::mt19937& getRndEngine() { return rngEngine; }
+		boost::mt19937& getRndEngine() { return rngEngine; }
 
 
 		/***** PARAMETERS *****/
@@ -570,7 +570,7 @@ namespace SGA
 		/// <summary>
 		/// Random number generator engine
 		/// </summary>
-		std::mt19937 rngEngine;
+		boost::mt19937 rngEngine;
 
 		/// <summary>
 		/// ID of the fog of war tile.

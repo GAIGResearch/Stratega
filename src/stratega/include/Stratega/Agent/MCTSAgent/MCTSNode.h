@@ -25,22 +25,22 @@ namespace SGA {
 		/// <summary>
 		/// MCTS Tree Policy phase.
 		/// </summary>
-		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// MCTS Expansion phase.
 		/// </summary>
-		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Chooses a child node with the highest UCB value.
 		/// </summary>
-		MCTSNode* uct(MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* uct(MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// MCTS Rollout phase.
 		/// </summary>
-		double rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		double rollOut(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Indicates if a rollout should be completed.
@@ -55,7 +55,7 @@ namespace SGA {
 		/// <summary>
 		/// Returns the best action found by the tree.
 		/// </summary>
-		int bestAction(MCTSParameters& params, std::mt19937& randomGenerator);
+		int bestAction(MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		// helper function: normalizes a value between a range aMin - aMax.
 		static double normalize(double aValue, double aMin, double aMax);
@@ -80,12 +80,12 @@ namespace SGA {
 		/// <summary>
 		/// Function for the main iteration of the MCTS algorithm
 		/// </summary>
-		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 		
 		/// <summary>
 		/// Returns the index of the most visited action of this node.
 		/// </summary>
-		int mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator);
+		int mostVisitedAction(MCTSParameters& params, boost::mt19937& randomGenerator);
 		
 		/// <summary>
 		/// Prints information of this node.
