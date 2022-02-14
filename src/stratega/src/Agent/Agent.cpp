@@ -25,6 +25,7 @@ namespace SGA
 	void Agent::setSeed(std::mt19937::result_type seed)
 	{
 		rngEngine.seed(seed);
+		std::cout << "set agent seed" << std::to_string(seed)<<std::endl;
 	}
 
 	std::mt19937& Agent::getRNGEngine()
