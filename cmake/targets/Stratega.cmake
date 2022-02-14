@@ -105,11 +105,9 @@ function(target_link_libraries_system target)
   endforeach(lib)
 endfunction(target_link_libraries_system)
 
-find_package(Boost 1.78 REQUIRED COMPONENTS random)
-
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
-target_link_libraries_system(Stratega Boost::random)
+target_link_libraries_system(Stratega CONAN_PKG::boost)
 
 if(CMAKE_SYSTEM_NAME MATCHES Linux)
 target_link_libraries(Stratega Threads::Threads)
