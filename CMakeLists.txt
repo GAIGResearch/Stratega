@@ -151,7 +151,7 @@ if(NOT SGA_BUILD_HEADLESS)
    endif ()
 endif()
 
-find_package(Boost 1.78 REQUIRED COMPONENTS random)
+find_package(Boost REQUIRED COMPONENTS random)
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
