@@ -295,8 +295,8 @@ namespace SGA
 			if (children[i] != nullptr) {
 				double childValue = children[i]->value / (children[i]->nVisits + params.epsilon);
 
-				//Add a small random noise to break ties randomly
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				//Add a small random noise to break ties randomly +-0.1
+				//childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
