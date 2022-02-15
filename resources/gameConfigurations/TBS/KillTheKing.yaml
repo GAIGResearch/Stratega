@@ -19,11 +19,11 @@ Agents:
     #    fmCalls: 20000
     #    RolloutLength: 20
     #    CONTINUE_PREVIOUS_SEARCH: false
-    #- MCTSAgent:
-    #    Budget: FMCALLS
-    #    FmCalls: 20000
-    #    RolloutLength: 20
-    - KTKCombatAgent
+    - MCTSAgent:
+        Budget: FMCALLS
+        FmCalls: 200
+        RolloutLength: 5
+    #- KTKCombatAgent
 
 GameRenderer:
     Resolution:
