@@ -61,9 +61,10 @@ namespace SGA
             //Do search!
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
             // get and store best action
+            std::cout << "	MCTSActionIndex to execute: ";
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestActionIndex));
-            std::cout << "	MCTSActionIndex to execute: " << bestActionIndex << " From: " << rootNode->getActionSpace(forwardModel, getPlayerID()).size() << std::endl;
+            std::cout <<  bestActionIndex << " From: " << rootNode->getActionSpace(forwardModel, getPlayerID()).size() << std::endl;
             // return best action
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             if (bestAction.getActionFlag() == ActionFlag::EndTickAction) {

@@ -271,9 +271,15 @@ namespace SGA
 		if (selected == -1 || allEqual)
 		{
 			//If all are equal, we opt to choose for the one with the best Q.
+			std::cout << "	Value[" << bestValue << "] All equal ";
 			selected = bestAction(params, randomGenerator);
+			
 		}
-
+		else
+		{
+			std::cout << "	Value[" << bestValue << "] ";
+		}
+		
 		return selected;
 	}
 
@@ -301,8 +307,12 @@ namespace SGA
 		if (selected == -1)
 		{
 			//This shouldn't happen, just pick the first action.
-			//cout << "Unexpected selection!" << "\n";
+			std::cout << "Unexpected selection!" << "\n";
 			selected = 0;
+		}
+		else
+		{
+			std::cout << " Best noise: "<< bestValue;
 		}
 
 		return selected;
