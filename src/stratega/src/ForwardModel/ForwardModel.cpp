@@ -39,7 +39,6 @@ namespace SGA
 			{
 				if (loseCondition->isFullfiled(state, targets))
 				{
-					std::cout << "Player" << playerID << "lost: " << loseCondition->expr()<<std::endl;
 					return true;
 				}
 					
@@ -73,7 +72,6 @@ namespace SGA
 				}
 				else
 				{
-					std::cout << "Player" << playerID << "won: "<<winCondition->expr() << std::endl;
 				}
 					
 			}

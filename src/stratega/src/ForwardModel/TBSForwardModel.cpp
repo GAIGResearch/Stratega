@@ -51,7 +51,7 @@ namespace SGA
 		//Check game is finished
 		state.setGameOver(checkGameIsFinished(state));
 
-		std::cout << "Advanced gamestate:";
+		/*std::cout << "Advanced gamestate:";
 		std::cout << " [";
 		if (action.getActionFlag() != ActionFlag::EndTickAction)
 		{
@@ -61,7 +61,7 @@ namespace SGA
 		{
 			std::cout << "EndTickAction";
 		}
-		std::cout << "]" << std::endl;
+		std::cout << "]" << std::endl;*/
 	}
 
 	std::vector<Action> TBSForwardModel::generateActions(const GameState& state) const
@@ -94,11 +94,11 @@ namespace SGA
 
 	bool TBSForwardModel::checkGameIsFinished(GameState& state) const
 	{
-		if (state.getCurrentTick() >= state.getTickLimit())
+		/*if (state.getCurrentTick() >= state.getTickLimit())
 		{
 			std::cout << "Game finished tick limit" << std::endl;
 			return true;
-		}
+		}*/
 			
 
 		int numberPlayerCanPlay = 0;

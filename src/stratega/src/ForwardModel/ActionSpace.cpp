@@ -111,8 +111,8 @@ namespace SGA
 			bucket.emplace_back(Action::createEndAction(playerID));
 			actionTypesNumber["EndTickAction"] = 0;
 		}
-		std::cout << "	Action number: " << bucket.size() << " Player ID: " << playerID << std::endl;
-		std::cout << "		-";
+		/*std::cout << "	Action number: " << bucket.size() << " Player ID: " << playerID << std::endl;
+		std::cout << "		-";*/
 		
 		for (auto& action : bucket)
 		{
@@ -130,11 +130,11 @@ namespace SGA
 			}
 		}
 
-		for (auto& actionTypeNumber : actionTypesNumber)
+		/*for (auto& actionTypeNumber : actionTypesNumber)
 		{
 			std::cout << " [" << actionTypeNumber.first << "]: " << actionTypeNumber.second;
 		}
-		std::cout <<std::endl;
+		std::cout <<std::endl;*/
 		return bucket;
 	}
 
