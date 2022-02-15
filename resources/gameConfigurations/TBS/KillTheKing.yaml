@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     #- HumanAgent
-    - RandomAgent
+    - OSLAAgent
     - RandomAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
@@ -101,14 +101,14 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                #    Type: Dijkstra
-                #    Options:
-                #        SearchSize: 1
-                #        AllowDiagonals: false
-                    Type: Neighbours
+                    Type: Dijkstra
                     Options:
-                        Shape: Square
-                        Size: 1
+                        SearchSize: 2
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Square
+                #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
         Effects:
