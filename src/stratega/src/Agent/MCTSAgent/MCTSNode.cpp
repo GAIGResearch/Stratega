@@ -260,7 +260,7 @@ namespace SGA
 				double childValue = children[i]->nVisits;
 
 				//Add a small noise (<<1) to all values to break ties randomly
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				//childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
