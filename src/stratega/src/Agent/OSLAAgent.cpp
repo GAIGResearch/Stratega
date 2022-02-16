@@ -15,14 +15,19 @@ namespace SGA
 		{
 			GameState gsCopy(state);
 			forwardModel.advanceGameState(gsCopy, actionSpace.at(i));
-			const double value = heuristic.evaluateGameState(forwardModel, gsCopy, getPlayerID());
+			double value = heuristic.evaluateGameState(forwardModel, gsCopy, getPlayerID());
+			value = noise(value, epsilon, doubleDistribution_(this->getRNGEngine()));
 			if (value > bestHeuristicValue)
 			{
 				bestHeuristicValue = value;
 				bestActionIndex = static_cast<int>(i);
 			}
 		}
-
 		return ActionAssignment::fromSingleAction(actionSpace.at(static_cast<size_t>(bestActionIndex)));
+	}
+
+	double OSLAAgent::noise(const double input, const double epsilon, const double random)
+	{
+		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
 	}
 }
