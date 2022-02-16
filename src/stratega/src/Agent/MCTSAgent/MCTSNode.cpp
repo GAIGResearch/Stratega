@@ -118,7 +118,7 @@ namespace SGA
 				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
 
 			//Add a small noise to break ties randomly
-			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+			//uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
 			childValues[i] = uctValue;
 		}
 

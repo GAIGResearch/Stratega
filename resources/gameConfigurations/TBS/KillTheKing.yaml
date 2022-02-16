@@ -6,7 +6,7 @@ GameConfig:
 Agents:
     #- HumanAgent
     #- OSLAAgent
-    - RandomAgent
+    #- RandomAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS
@@ -23,7 +23,7 @@ Agents:
         Budget: FMCALLS
         FmCalls: 200
         RolloutLength: 5
-    #- KTKCombatAgent
+    - KTKCombatAgent
 
 GameRenderer:
     Resolution:
