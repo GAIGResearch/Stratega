@@ -26,8 +26,8 @@ namespace SGA
 		return ActionAssignment::fromSingleAction(actionSpace.at(static_cast<size_t>(bestActionIndex)));
 	}
 
-	double OSLAAgent::noise(const double input, const double epsilon, const double random)
+	double OSLAAgent::noise(const double input, const double epsilonValue, const double random)
 	{
-		return (input + epsilon) * (1.0 + epsilon * (random - 0.5));
+		return (input + epsilonValue) * (1.0 + epsilonValue * (random - 0.5));
 	}
 }
