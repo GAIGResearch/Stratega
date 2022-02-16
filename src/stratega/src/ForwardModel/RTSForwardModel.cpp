@@ -14,19 +14,19 @@ namespace SGA
 
 	void RTSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
-		moveEntities(state);
-		resolveEntityCollisions(state);
-		resolveEnvironmentCollisions(state);
-
 		for (const auto& action : actions.getPlayerActions())
 		{
 			executeAction(state, action.second);
 		}
-		
-		for(const auto& action : actions.getEntityActions())
+
+		for (const auto& action : actions.getEntityActions())
 		{
 			executeAction(state, action.second);
 		}
+
+		moveEntities(state);
+		resolveEntityCollisions(state);
+		resolveEnvironmentCollisions(state);
 
 		executeOnAdvanceEffects(state);
 
@@ -39,7 +39,6 @@ namespace SGA
 			else 				it++;
 		}
 
-		moveEntities(state);
 		resolveEntityCollisions(state);
 		resolveEnvironmentCollisions(state);
 
@@ -65,7 +64,7 @@ namespace SGA
 			{
 				entity.incPathIndex();
 				// Did we reach the end of the path?
-				if (entity.getPath().m_nstraightPath <= entity.getPath().currentPathIndex)
+				if (entity.getPath().m_nstraightPath >= entity.getPath().currentPathIndex)
 				{
 						entity.setPosition(targetPos);
 						entity.setPath(Path());

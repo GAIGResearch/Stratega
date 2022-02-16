@@ -7,7 +7,7 @@
 #include <sstream>
 namespace SGA
 {
-	ActionsWidget::ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, std::vector<Action>& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
+	ActionsWidget::ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, ActionAssignment& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
 		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
 		selectedEntities(newSelectedEntities),
@@ -73,7 +73,7 @@ namespace SGA
 					else
 					{
 						//If is Entity action we save it for future calls
-						futureActionsToPlay.emplace_back(action);
+						futureActionsToPlay.assignActionOrReplace(action);
 					}
 				}
 			}
