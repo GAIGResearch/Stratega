@@ -43,17 +43,17 @@ namespace SGA
 		while (!params.isBudgetOver()) {
 
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
-			if ( last_selected != nullptr) {
+			if (last_selected != nullptr) {
 				if (last_selected == selected)
 					n_repeat_selection++;
 				else
 					n_repeat_selection = 0;
 			}
 			last_selected = selected;
-            double delta = selected->rollOut(forwardModel, params, randomGenerator);
-            
+			double delta = selected->rollOut(forwardModel, params, randomGenerator);
+
 			backUp(selected, delta);
-			params.currentIterations++; 
+			params.currentIterations++;
 			if (n_repeat_selection >= 20) // repeated selection
 				return;
 		}
@@ -118,7 +118,7 @@ namespace SGA
 				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
 
 			//Add a small noise to break ties randomly
-			//uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 			childValues[i] = uctValue;
 		}
 
@@ -176,7 +176,7 @@ namespace SGA
 
 			//If we must keep rolling.
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
-				
+
 				//Find my action space.
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
@@ -260,7 +260,7 @@ namespace SGA
 				double childValue = children[i]->nVisits;
 
 				//Add a small noise (<<1) to all values to break ties randomly
-				//childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -271,15 +271,9 @@ namespace SGA
 		if (selected == -1 || allEqual)
 		{
 			//If all are equal, we opt to choose for the one with the best Q.
-			std::cout << "	Value[" << bestValue << "] All equal ";
 			selected = bestAction(params, randomGenerator);
-			
 		}
-		else
-		{
-			std::cout << "	Value[" << bestValue << "] ";
-		}
-		
+
 		return selected;
 	}
 
@@ -295,8 +289,8 @@ namespace SGA
 			if (children[i] != nullptr) {
 				double childValue = children[i]->value / (children[i]->nVisits + params.epsilon);
 
-				//Add a small random noise to break ties randomly +-0.1
-				//childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				//Add a small random noise to break ties randomly
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -307,12 +301,8 @@ namespace SGA
 		if (selected == -1)
 		{
 			//This shouldn't happen, just pick the first action.
-			std::cout << "Unexpected selection!" << "\n";
+			//cout << "Unexpected selection!" << "\n";
 			selected = 0;
-		}
-		else
-		{
-			std::cout << " Best noise: "<< bestValue;
 		}
 
 		return selected;
@@ -360,7 +350,7 @@ namespace SGA
 
 	void MCTSNode::print() const
 	{
-		std::cout << this->value / this->nVisits << "; "<< this->nVisits << "; " << children.size();
+		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size();
 	}
-	
+
 }

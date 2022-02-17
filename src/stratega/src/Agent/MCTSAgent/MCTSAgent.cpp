@@ -42,12 +42,12 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-           if(parameters_.continuePreviousSearch && previousActionIndex != -1
-              && rootNode->children.size() > 0)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1
+                && rootNode->children.size() > 0)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration
-                
+
                 rootNode = std::move(rootNode->children.at(static_cast<size_t>(previousActionIndex)));
                 rootNode->parentNode = nullptr;	// release parent
                 rootNode->setDepth(0);
@@ -61,10 +61,9 @@ namespace SGA
             //Do search!
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
             // get and store best action
-            std::cout << "	MCTSActionIndex to execute: ";
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestActionIndex));
-            std::cout <<" index: " << bestActionIndex << " From: " << rootNode->getActionSpace(forwardModel, getPlayerID()).size() << std::endl;
+
             // return best action
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             if (bestAction.getActionFlag() == ActionFlag::EndTickAction) {

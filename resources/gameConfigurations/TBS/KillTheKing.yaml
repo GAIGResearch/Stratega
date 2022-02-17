@@ -1,12 +1,12 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 5
+    RoundLimit: 100
     FogOfWar: false
+
 
 Agents:
     #- HumanAgent
     #- OSLAAgent
-    #- RandomAgent
     #- UnitMCTSAgent:
     #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS
@@ -14,15 +14,15 @@ Agents:
     #    RolloutLength: 20
     #    CONTINUE_PREVIOUS_SEARCH: false
     #    ABS_BATCH: 16
-    #- UnitMCTSAgent:
-    #    Budget: FMCALLS
-    #    fmCalls: 20000
-    #    RolloutLength: 20
-    #    CONTINUE_PREVIOUS_SEARCH: false
-    - MCTSAgent:
+    - UnitMCTSAgent:
         Budget: FMCALLS
-        FmCalls: 200
-        RolloutLength: 5
+        fmCalls: 20000
+        RolloutLength: 20
+        CONTINUE_PREVIOUS_SEARCH: false
+    #- MCTSAgent:
+    #    Budget: FMCALLS
+    #    FmCalls: 20000
+    #    RolloutLength: 20
     - KTKCombatAgent
 
 GameRenderer:
@@ -103,7 +103,7 @@ Actions:
                 SamplingMethod: 
                 #    Type: Dijkstra
                 #    Options:
-                #        SearchSize: 2
+                #        SearchSize: 1
                 #        AllowDiagonals: false
                     Type: Neighbours
                     Options:

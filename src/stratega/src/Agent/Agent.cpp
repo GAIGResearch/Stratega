@@ -25,15 +25,12 @@ namespace SGA
 	void Agent::setSeed(boost::mt19937::result_type seed)
 	{
 		rngEngine.seed(seed);
-		std::cout << "set agent seed" << std::to_string(seed)<<std::endl;
 	}
 
 	boost::mt19937& Agent::getRNGEngine()
 	{
 		return rngEngine;
 	}
-
-
 
 	std::vector<Action> Agent::filterActionsByTypeID(const std::vector<Action>& actions, int typeID) const
 	{

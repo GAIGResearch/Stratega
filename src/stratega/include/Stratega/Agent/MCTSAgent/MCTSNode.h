@@ -12,11 +12,11 @@ namespace SGA {
 
 	protected:
 		int nVisits = 0;			//number of visits to this node.
-		double bounds[2] = {0, 1};	//Reward bounds in this node.
-				
+		double bounds[2] = { 0, 1 };	//Reward bounds in this node.
+
 
 	public:
-		
+
 		/// <summary>
 		/// Initializes the node.
 		/// </summary>
@@ -62,7 +62,7 @@ namespace SGA {
 
 		// helper function: adds a small random noise to a value and returns it.
 		static double noise(double input, double epsilon, double random);
-		
+
 		// setter for the depth of this node and all nodes in the sub-tree this is root of.
 		void setDepth(int depth);
 
@@ -81,12 +81,12 @@ namespace SGA {
 		/// Function for the main iteration of the MCTS algorithm
 		/// </summary>
 		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
-		
+
 		/// <summary>
 		/// Returns the index of the most visited action of this node.
 		/// </summary>
 		int mostVisitedAction(MCTSParameters& params, boost::mt19937& randomGenerator);
-		
+
 		/// <summary>
 		/// Prints information of this node.
 		/// </summary>
@@ -96,6 +96,6 @@ namespace SGA {
 
 		// Creates a new node to be inserted in the tree.
 		MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex, int ownerID);
-		
+
 	};
 }

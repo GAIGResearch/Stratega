@@ -143,10 +143,6 @@ namespace SGA
             for (auto& entity : entityPlacements)
             {
                 state.addEntity(*entity.entityType, entity.ownerID, entity.position);
-            }
-            for (auto& entity : state.getEntities())
-            {
-                entity.printInfo();
             }       
         }
 

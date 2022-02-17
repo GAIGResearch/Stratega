@@ -6,7 +6,7 @@ namespace SGA
 		: actionSpace(generateDefaultActionSpace())
 	{
 	}
-	
+
 	std::vector<Action> ForwardModel::generateActions(const GameState& state, int playerID) const
 	{
 		std::vector<Action> actionBucket;
@@ -32,16 +32,13 @@ namespace SGA
 		//Check Lose conditions
 		std::vector<ActionTarget> targets;
 		targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
-		
+
 		for (auto& loseConditionType : loseConditions)
 		{
 			for (auto& loseCondition : loseConditionType)
 			{
 				if (loseCondition->isFullfiled(state, targets))
-				{
 					return true;
-				}
-					
 			}
 		}
 
@@ -61,7 +58,7 @@ namespace SGA
 		for (auto& winConditionType : winConditions)
 		{
 			bool playerWon = true;
-			
+
 			//Check condition list
 			for (auto& winCondition : winConditionType)
 			{
@@ -70,17 +67,11 @@ namespace SGA
 					playerWon = false;
 					break;
 				}
-				else
-				{
-				}
-					
+
 			}
 
 			if (playerWon)
-			{
 				return true;
-			}
-				
 		}
 
 		return false;
@@ -298,7 +289,7 @@ namespace SGA
 			}
 		}
 	}
-	
+
 	void ForwardModel::executeOnAdvanceEffects(GameState& state) const
 	{
 		// Execute OnTick-trigger
@@ -387,11 +378,11 @@ namespace SGA
 	{
 		//Check if condition is complete
 		auto& entities = state.getEntities();
-		for(auto et = entities.begin(); et != entities.end(); et++)
+		for (auto et = entities.begin(); et != entities.end(); et++)
 		{
 			auto& continuousActions = et->getContinuousActions();
 			auto it = continuousActions.begin();
-			while(it != continuousActions.end())
+			while (it != continuousActions.end())
 			{
 				auto& actionType = it->getActionType();
 				//Add one elapsed tick
@@ -526,7 +517,7 @@ namespace SGA
 
 		}
 	}
-	
+
 	void ForwardModel::removeExpiredBuffs(GameState& state) const
 	{
 		//Remove expired Buffs
@@ -609,15 +600,15 @@ namespace SGA
 		executeOnTriggerEffects(state);
 		executeOnTickEntityActions(state);
 		checkEntitiesContinuousActionIsComplete(state);
-		checkPlayerContinuousActionIsComplete(state);		
+		checkPlayerContinuousActionIsComplete(state);
 	}
-	
+
 	void ForwardModel::spawnEntity(GameState& state, const EntityType& entityType, int playerID, const Vector2f& position) const
 	{
 		auto entityID = state.addEntity(entityType, playerID, position);
 
 		std::vector<ActionTarget> targets = { ActionTarget::createEntityActionTarget(entityID) };
-		for(const auto& onSpawnEffect : onEntitySpawnEffects)
+		for (const auto& onSpawnEffect : onEntitySpawnEffects)
 		{
 			if (onSpawnEffect.validTargets.find(entityType.getID()) == onSpawnEffect.validTargets.end())
 				continue;
@@ -652,19 +643,19 @@ namespace SGA
 		loseConditions.emplace_back(conditions);
 	}
 
-	void ForwardModel::addOnTickEffect(OnTickEffect& ote) 
-	{ 
-		onTickEffects.emplace_back(ote); 
+	void ForwardModel::addOnTickEffect(OnTickEffect& ote)
+	{
+		onTickEffects.emplace_back(ote);
 	}
 
-	void ForwardModel::addOnAdvanceEffect(OnTickEffect& ote) 
-	{ 
-		onAdvanceEffects.emplace_back(ote); 
+	void ForwardModel::addOnAdvanceEffect(OnTickEffect& ote)
+	{
+		onAdvanceEffects.emplace_back(ote);
 	}
 
-	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose) 
-	{ 
-		onEntitySpawnEffects.emplace_back(ose); 
+	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose)
+	{
+		onEntitySpawnEffects.emplace_back(ose);
 	}
 
 	void ForwardModel::modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const
@@ -676,7 +667,7 @@ namespace SGA
 		//Keep it in bounds min/max
 		const double min = entity.getMinParameterAt(parameterIndex);
 		const double max = entity.getMaxParameterAt(parameterIndex);
-		parameterValue=std::max(min, std::min(parameterValue, max));
+		parameterValue = std::max(min, std::min(parameterValue, max));
 	}
 
 	void ForwardModel::modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const
@@ -688,7 +679,7 @@ namespace SGA
 		//Keep it in bounds min/max
 		const double min = state.getMinParameterAt(parameterIndex);
 		const double max = state.getMaxParameterAt(parameterIndex);
-		parameterValue=std::max(min, std::min(parameterValue, max));
+		parameterValue = std::max(min, std::min(parameterValue, max));
 	}
 	void ForwardModel::modifyPlayerParameterByIndex(Player& player, int parameterIndex, double newValue) const
 	{
@@ -699,6 +690,6 @@ namespace SGA
 		//Keep it in bounds min/max
 		const double min = player.getMinParameterAt(parameterIndex);
 		const double max = player.getMaxParameterAt(parameterIndex);
-		parameterValue=std::max(min, std::min(parameterValue, max));
+		parameterValue = std::max(min, std::min(parameterValue, max));
 	}
 }
