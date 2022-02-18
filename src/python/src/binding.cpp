@@ -1093,7 +1093,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_tile_type", &SGA::ActionTarget::getTileType, py::arg("state"))
 		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawnableEntities, py::arg("state"))
 
-		.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
+		//.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
 		.def("get_technology_id", &SGA::ActionTarget::getTechnologyID)
 		.def("get_player_id", py::overload_cast<const SGA::GameState&>(&SGA::ActionTarget::getPlayerID, py::const_))
 		.def("get_player_id", py::overload_cast<>(&SGA::ActionTarget::getPlayerID, py::const_))
