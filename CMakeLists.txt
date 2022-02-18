@@ -154,6 +154,10 @@ endif()
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
+if(APPLE)
+    enable_language(OBJC)
+    enable_language(OBJCXX)
+endif()
 
 # define the targets of the project
 if(NOT SGA_BUILD_HEADLESS)
