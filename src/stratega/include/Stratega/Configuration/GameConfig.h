@@ -143,7 +143,7 @@ namespace SGA
             for (auto& entity : entityPlacements)
             {
                 state.addEntity(*entity.entityType, entity.ownerID, entity.position);
-            }            
+            }       
         }
 
         virtual void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const

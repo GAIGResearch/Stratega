@@ -5,7 +5,7 @@
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 // #include <Stratega/Agent/Heuristic/UnitNumberHeuristic.h>
 #include <Stratega/Agent/UnitMCTSAgent/Transition.h>
-#include <random>
+#include <boost/random.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace SGA {
@@ -42,8 +42,8 @@ namespace SGA {
         std::vector< double > approx_Q = {};
         std::vector< int > depth_list = {};
 
-        std::uniform_real_distribution< double >
-            doubleDistribution_ = std::uniform_real_distribution< double >(0, 1);
+        boost::random::uniform_real_distribution< double >
+            doubleDistribution_ = boost::random::uniform_real_distribution< double >(0, 1);
 
         // std::unique_ptr<StateHeuristic> STATE_HEURISTIC = nullptr;
         // std::make_unique<MinimizeDistanceHeuristic>();

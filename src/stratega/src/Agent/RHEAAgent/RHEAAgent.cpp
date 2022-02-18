@@ -49,7 +49,7 @@ namespace SGA
         }
     }
 
-    void RHEAAgent::initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937&)
+    void RHEAAgent::initializePopulation(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937&)
     {
         // create params_.popSize new random individuals
         pop_.clear();
@@ -60,7 +60,7 @@ namespace SGA
     }
 
 
-    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator)
     {
         std::vector<RHEAGenome> newPop;
 
@@ -91,7 +91,7 @@ namespace SGA
 
     bool sortByFitness(const RHEAGenome& i, const RHEAGenome& j) { return i.getValue() > j.getValue(); }
 
-    void RHEAAgent::rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    void RHEAAgent::rheaLoop(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator)
     {
         // keep improving the population until the fmCall limit has been reached
         while (!params_.isBudgetOver() && !gameState.isGameOver())
@@ -101,7 +101,7 @@ namespace SGA
         sort(pop_.begin(), pop_.end(), sortByFitness);
     }
 
-    std::vector<RHEAGenome> RHEAAgent::nextGeneration(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    std::vector<RHEAGenome> RHEAAgent::nextGeneration(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator)
     {
         // placeholder for the next generation
         std::vector<RHEAGenome> newPop;
@@ -121,7 +121,7 @@ namespace SGA
         return newPop;
     }
 
-    RHEAGenome RHEAAgent::getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator)
+    RHEAGenome RHEAAgent::getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator)
     {
         params_.currentIterations++;
         if (params_.popSize > 1)
@@ -142,9 +142,9 @@ namespace SGA
        // // sample subset, sort by fitness, select best individual
        // // parent 1
        ///* std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-       //     params_.tournamentSize, std::mt19937{ std::random_device{}() });*/
+       //     params_.tournamentSize, boost::mt19937{ std::random_device{}() });*/
        // /*auto parent1 = pop_;
-       // std::shuffle(parent1.begin(), parent1.end(), std::mt19937{ std::random_device{}() });*/
+       // std::shuffle(parent1.begin(), parent1.end(), boost::mt19937{ std::random_device{}() });*/
 
        // sort(tournament.begin(), tournament.end(), sortByFitness);
        // RHEAGenome& parent1 = tournament[0];
@@ -153,7 +153,7 @@ namespace SGA
        // // parent 2
        ///* tournament.clear();
        // std::sample(pop_.begin(), pop_.end(), std::back_inserter(tournament),
-       //     params_.tournamentSize, std::mt19937{ std::random_device{}() });
+       //     params_.tournamentSize, boost::mt19937{ std::random_device{}() });
 
        // std::sort(tournament.begin(), tournament.end(), sortByFitness);
        // RHEAGenome& parent2 = tournament[0];

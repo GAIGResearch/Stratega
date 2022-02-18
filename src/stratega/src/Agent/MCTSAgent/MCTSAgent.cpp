@@ -42,12 +42,12 @@ namespace SGA
         else
         {
             const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-           if(parameters_.continuePreviousSearch && previousActionIndex != -1
-              && rootNode->children.size() > 0)
+            if (parameters_.continuePreviousSearch && previousActionIndex != -1
+                && rootNode->children.size() > 0)
             {
                 // in case of deterministic games we know which move has been done by us
                 // reuse the tree from the previous iteration
-                
+
                 rootNode = std::move(rootNode->children.at(static_cast<size_t>(previousActionIndex)));
                 rootNode->parentNode = nullptr;	// release parent
                 rootNode->setDepth(0);

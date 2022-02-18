@@ -48,19 +48,19 @@ namespace SGA {
           void increaseTreeSize();
 
           // tree policy phase
-          UnitMCTSNode* treePolicy(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
-          UnitMCTSNode* expand(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes);
-          UnitMCTSNode* uct(UnitMCTSParameters& params, std::mt19937& randomGenerator, std::map<int, std::vector<double> >* absNodeToStatistics);
+          UnitMCTSNode* treePolicy(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
+          UnitMCTSNode* expand(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes);
+          UnitMCTSNode* uct(UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<double> >* absNodeToStatistics);
 
           // rollout phase
-          double rollOut(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator);
+          double rollOut(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator);
           static bool rolloutFinished(GameState& rollerState, int depth, UnitMCTSParameters& params);
 
           // backpropagation phase
           static void backUp(UnitMCTSNode* node, double result, std::map<int, std::vector<double> >* absNodeToStatistics);
 
           // return action
-          int bestAction(UnitMCTSParameters& params, std::mt19937& randomGenerator);
+          int bestAction(UnitMCTSParameters& params, boost::mt19937& randomGenerator);
 
           // helper functions
           static double normalize(double aValue, double aMin, double aMax);
@@ -74,8 +74,8 @@ namespace SGA {
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_);
 
           //void setRootGameState(shared_ptr<TreeNode> root);
-          void searchMCTS(ForwardModel& forwardModel, UnitMCTSParameters& params, std::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
-          int mostVisitedAction(UnitMCTSParameters& params, std::mt19937& randomGenerator);
+          void searchMCTS(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
+          int mostVisitedAction(UnitMCTSParameters& params, boost::mt19937& randomGenerator);
           void print() const override;
           void get_branching_number(std::vector<int>* v, int* n);
 

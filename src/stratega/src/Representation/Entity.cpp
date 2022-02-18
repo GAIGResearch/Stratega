@@ -27,15 +27,15 @@ namespace SGA
 		}
 
 		// Set parameter values
-		lineOfSightRange = type->getLoSRange();
-		parameters.reserve(type->getParameters().size());
-		maxParameters.reserve(type->getParameters().size());
-		minParameters.reserve(type->getParameters().size());
+		//lineOfSightRange = type->getLoSRange();
+		///*parameters.reserve(type->getParameters().size());*/
+		//maxParameters.reserve(type->getParameters().size());
+		//minParameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
-			parameters.emplace_back(idParamPair.second.getDefaultValue());
-			maxParameters.emplace_back(idParamPair.second.getMaxValue());
-			minParameters.emplace_back(idParamPair.second.getMinValue());
+			parameters[idParamPair.second.getIndex()]=idParamPair.second.getDefaultValue();
+			maxParameters[idParamPair.second.getIndex()]=idParamPair.second.getMaxValue();
+			minParameters[idParamPair.second.getIndex()]=idParamPair.second.getMinValue();
 		}
 	}
 
@@ -43,7 +43,7 @@ namespace SGA
     {
        for(const auto& param : type->getParameters()) {
           if(param.second.getName() == paramName) {
-             return parameters[param.second.getIndex()];
+             return parameters.find(param.second.getIndex())->second;
           }
        }
 	   return -1;
@@ -77,7 +77,7 @@ namespace SGA
 	{
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : type->getParameters())
-			params.emplace(param.second.getName(), parameters[param.second.getIndex()]);
+			params.emplace(param.second.getName(), parameters.find(param.second.getIndex())->second);
 		return params;
 	}
 
@@ -134,9 +134,9 @@ namespace SGA
 		}
 
 		std::cout << ", [Parameters: ";
-		for (auto& parameter : parameters)
+		for (auto& parameterType : type->getParameters())
 		{
-			std::cout << "(" << type->getParameters().find(parameterID++)->second.getName() << ": " << parameter << ")";
+			std::cout << "(" << parameterType.second.getName() << ": " << getParameter(parameterType.second.getName()) << ")";
 		}
 
 		std::cout << "]" << std::endl;

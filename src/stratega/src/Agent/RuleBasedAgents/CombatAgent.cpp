@@ -262,8 +262,8 @@ namespace SGA
 		if (bestAttackTarget == nullptr)
 		{
 			auto& rngEngine2 = getRNGEngine();
-			std::uniform_int_distribution<int> widthDist(0, currentState.getBoardWidth() - 1);
-			std::uniform_int_distribution<int> heightDist(0, currentState.getBoardHeight() - 1);
+			boost::random::uniform_int_distribution<int> widthDist(0, currentState.getBoardWidth() - 1);
+			boost::random::uniform_int_distribution<int> heightDist(0, currentState.getBoardHeight() - 1);
 			moveTarget.x = widthDist(rngEngine2);
 			moveTarget.y = heightDist(rngEngine2);
 		}

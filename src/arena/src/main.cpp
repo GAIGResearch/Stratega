@@ -6,7 +6,7 @@
 int main(int argc, char** argv)
 {
 	InputParser parser(argc, argv);
-	auto seed = parser.getCmdOption<unsigned int>("-seed", 0);
+	auto seed = parser.getCmdOption<unsigned int>("-seed", 13837);
 	auto numberOfGames = parser.getCmdOption<unsigned int>("-gamesNumber", 1);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
@@ -14,7 +14,6 @@ int main(int argc, char** argv)
     auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	//Optional
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
-
 	if(configPath.empty())
 	{
 		std::cout << "You have to provide the argument -configPath" << std::endl;

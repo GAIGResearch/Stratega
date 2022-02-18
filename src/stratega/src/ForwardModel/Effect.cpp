@@ -2,7 +2,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/ForwardModel/TBSForwardModel.h>
 #include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <random>
+#include <boost/random.hpp>
 
 #include "Stratega/ForwardModel/FunctionParameter.h"
 #pragma warning(disable: 5045)
@@ -222,7 +222,7 @@ namespace SGA
 		auto amount = amountParameter.getConstant(state, targets);
 		auto probability = probabilityParameter.getConstant(state, targets);
 		
-		std::uniform_int_distribution<unsigned int> distribution(0, 100);
+		boost::random::uniform_int_distribution<unsigned int> distribution(0, 100);
        
 		//Get chance to attack
 		if(distribution(state.getRndEngine()) < probability)
@@ -411,8 +411,8 @@ namespace SGA
 		{
 			
 			const auto& targetEntityType = targetEntityTypeParam.getEntityType(state, targets);
-			std::uniform_int_distribution<int> widthMax(0, state.getBoardWidth());
-			std::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
+			boost::random::uniform_int_distribution<int> widthMax(0, state.getBoardWidth());
+			boost::random::uniform_int_distribution<int> heightMax(0, state.getBoardHeight());
 
 			Vector2i spawnPos{widthMax(state.getRndEngine()), heightMax(state.getRndEngine())};
 			do

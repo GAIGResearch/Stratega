@@ -850,7 +850,7 @@ PYBIND11_MODULE(stratega, m)
 		;
 
 	//---- Random Engine ----
-	py::class_<std::mt19937>(m, "mt19937");
+	py::class_<boost::mt19937>(m, "mt19937");
 
 	
 
@@ -1093,7 +1093,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_tile_type", &SGA::ActionTarget::getTileType, py::arg("state"))
 		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawnableEntities, py::arg("state"))
 
-		.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
+		//.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
 		.def("get_technology_id", &SGA::ActionTarget::getTechnologyID)
 		.def("get_player_id", py::overload_cast<const SGA::GameState&>(&SGA::ActionTarget::getPlayerID, py::const_))
 		.def("get_player_id", py::overload_cast<>(&SGA::ActionTarget::getPlayerID, py::const_))
@@ -1179,10 +1179,10 @@ PYBIND11_MODULE(stratega, m)
 					std::cout,                               // std::ostream&
 					py::module_::import("sys").attr("stdout") // Python output
 				);
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1221,9 +1221,9 @@ PYBIND11_MODULE(stratega, m)
 					}
 				}
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1262,9 +1262,9 @@ PYBIND11_MODULE(stratega, m)
 					}
 				}
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1288,9 +1288,9 @@ PYBIND11_MODULE(stratega, m)
 					py::module_::import("sys").attr("stdout") // Python output
 				);
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
