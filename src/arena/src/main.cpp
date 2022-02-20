@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
     auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	//Optional
-	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
+	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/Alex_test.yaml");
 	if(configPath.empty())
 	{
 		std::cout << "You have to provide the argument -configPath" << std::endl;
