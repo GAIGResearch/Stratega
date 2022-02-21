@@ -359,7 +359,7 @@ struct Startup {
     opMap.add({ANY_TYPE, ".", STR}, &TypeSpecificFunction);
     opMap.add({MAP, ".", STR}, &MapIndex);
     opMap.add({STR, "%", ANY_TYPE}, &FormatOperation);
-    opMap.add({UNARY, "!", BOOL}, &UnaryNotOperation);
+    opMap.add({UNARY, "!", cparse::BOOL}, &UnaryNotOperation);
 
     // Note: The order is important:
     opMap.add({NUM, ANY_OP, NUM}, &NumeralOperation);

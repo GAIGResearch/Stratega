@@ -68,12 +68,13 @@ set(STRATEGA_SOURCE_FILES
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp     
         
-        Utils/cparse/builtin-features.cpp
+        
         Utils/cparse/catch.cpp
         Utils/cparse/containers.cpp
         Utils/cparse/functions.cpp
         Utils/cparse/packToken.cpp
         Utils/cparse/shunting-yard.cpp
+        Utils/cparse/builtin-features.cpp
         )
 if(NOT SGA_BUILD_HEADLESS)
    list(APPEND STRATEGA_SOURCE_FILES

@@ -4,4 +4,4 @@
  * at static initialization time:
  */
 #define STATIC_CPARSE_STARTUP
-#include "./builtin-features.inc"
+#include <Stratega/Utils/cparse/builtin-features.h>

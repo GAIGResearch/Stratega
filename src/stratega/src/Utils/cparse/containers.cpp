@@ -1,7 +1,6 @@
 #include <string>
 
 #include <Stratega/Utils/cparse/shunting-yard.h>
-
 #include <Stratega/Utils/cparse/containers.h>
 #include <Stratega/Utils/cparse/functions.h>
 

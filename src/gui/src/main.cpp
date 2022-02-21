@@ -3,15 +3,18 @@
 #include <Stratega/Utils/filesystem.hpp>
 #undef max
 #include <Stratega/Utils/cparse/shunting-yard.h>
-#include <Stratega/Utils/cparse/packToken.h>
-#include <Stratega/Utils/cparse/functions.h>
-#include <Stratega/Utils/cparse/containers.h>
+#include <Stratega/Utils/cparse/builtin-features.h>
 
 int main()
 {
+	cparse_startup();
+
 	cparse::TokenMap vars;
 	vars["pi"] = 3.14;
-	//std::cout << cparse::calculator::calculate("1") << std::endl;
+	std::cout << cparse::calculator::calculate("-pi+1", vars) << std::endl; // 2.14
+	std::cout << cparse::calculator::calculate("pi + 1", vars) << std::endl; // 0.14
+	std::cout << cparse::calculator::calculate("pi-b == 3", vars) << std::endl; // 1 (true)
+	std::cout << cparse::calculator::calculate("sqrt(4) + 3**2 == 11") << std::endl; // 1 (true)
 
 	//std::mt19937 rngEngine(0);
 	////std::string configPath("../resources/gameConfigurations/RTS/BasicRTS.yaml");

@@ -24,13 +24,10 @@ using namespace cparse;
 #define __CPARSE_STARTUP
 #endif
 
-#include <Stratega/Utils/cparse/builtin-features/functions.inc>
-
-#include <Stratega/Utils/cparse/builtin-features/operations.inc>
-
-#include <Stratega/Utils/cparse/builtin-features/reservedWords.inc>
-
-#include <Stratega/Utils/cparse/builtin-features/typeSpecificFunctions.inc>
+#include <Stratega/Utils/cparse/builtin-features/functions.h>
+#include <Stratega/Utils/cparse/builtin-features/operations.h>
+#include <Stratega/Utils/cparse/builtin-features/reservedWords.h>
+#include <Stratega/Utils/cparse/builtin-features/typeSpecificFunctions.h>
 
 /**
  * If STATIC_CPARSE_STARTUP is undefined

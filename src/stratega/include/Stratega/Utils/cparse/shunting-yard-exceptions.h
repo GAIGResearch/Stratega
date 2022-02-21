@@ -2,7 +2,7 @@
 #ifndef SHUNTING_YARD_EXCEPTIONS_H_
 #define SHUNTING_YARD_EXCEPTIONS_H_
 
-#include "./shunting-yard.h"
+#include <Stratega/Utils/cparse/shunting-yard.h>
 
 #include <string>
 #include <stdexcept>
