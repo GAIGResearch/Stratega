@@ -70,6 +70,7 @@ namespace SGA
 		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const;
 		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseExpression(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names
 		/// </summary>

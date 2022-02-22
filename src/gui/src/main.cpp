@@ -27,7 +27,9 @@ int main()
 	{
 		vars[parameter.second.getName()] = parameter.second.getDefaultValue();
 	}
-	std::cout << cparse::calculator::calculate(expressionTest.c_str(), vars) << std::endl;
+	cparse::calculator temp;
+	temp.compile(expressionTest.c_str());
+	//std::cout << cparse::calculator::calculate(expressionTest.c_str(), vars) << std::endl;
 
 	//
 	//auto agents = gameConfig->generateAgents();

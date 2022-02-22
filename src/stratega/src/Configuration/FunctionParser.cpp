@@ -69,7 +69,8 @@ namespace SGA
 				((param = parseTileTypeReference(ss, context))) ||
 				((param = parseBuffTypeReference(ss, context))) ||
 				((param = parseGameStateParameterReference(ss, context))) ||
-				((param = parseTechnologyTypeReference(ss, context))))
+				((param = parseTechnologyTypeReference(ss, context))) ||
+				((param = parseExpression(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
 			}
@@ -125,6 +126,35 @@ namespace SGA
 		}
 
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
+	}
+	
+	nonstd::optional<FunctionParameter> FunctionParser::parseExpression(std::istringstream& ss, const ParseContext& context) const
+	{
+		auto begin = ss.tellg();
+
+		while (ss.peek()!=')' || ss.peek() == ',')
+		{
+			ss.get();
+		}
+
+		/*auto names = parseAccessorList(ss, 2);
+		if(!names)
+		{
+			ss.seekg(begin);
+			return {};
+		}
+
+		auto targetName = names.value()[0];
+		auto parameterName = names.value()[1];
+		auto targetIt = context.targetIDs.find(targetName);
+		auto parameterIt = context.parameterIDs.find(parameterName);
+		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
+		{
+			ss.seekg(begin);
+			return {};
+		}*/
+		//ss.seekg(begin);
+		return FunctionParameter::createParameterReference({ 0, 1 });
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
@@ -352,7 +382,23 @@ namespace SGA
 		}
 
 		auto lastName = parseText(ss);
-		if (!lastName.has_value() || ss.peek() == '.')
+		//char nextChar = ss.peek();
+		//char nextNtextChar = ss.peek();
+		/*
+		if ()
+		{
+			if (!isalpha(nextNtextChar))
+			{
+				std::cout<<"test";
+			}
+			
+			if (nextNtextChar != ')')
+			{
+				std::cout<<"test";
+			}
+			
+		}*/
+		if (!lastName.has_value() || ss.peek() == '.'   || (!isalpha(ss.peek()) && ss.peek() != ')' && ss.peek() != ',') /*|| (ss.peek()!=')' || ss.peek() != ',')*/)
 		{
 			ss.seekg(begin);
 			return {};

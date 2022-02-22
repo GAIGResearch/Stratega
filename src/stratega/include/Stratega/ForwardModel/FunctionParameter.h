@@ -27,6 +27,7 @@ namespace SGA
 			TileTypeReference, // References TileTypes defined in the Game. Like Plain, Forest...
 			BuffTypeReference, // References BuffTypes defined in the Game. Like Plain, Forest...
 			GameStateParameterReference, // References BuffTypes defined in the Game. Like Plain, Forest...
+			Expression
 		};
 
 	private:
@@ -60,6 +61,10 @@ namespace SGA
 			{
 				constValue = data;
 			}
+			/*Data(std::string newExpression)
+			{
+				expression = newExpression;
+			}*/
 			Data(ParameterReference data)
 			{
 				parameterData = data;
@@ -91,6 +96,7 @@ namespace SGA
 			int technologyTypeID;
 			int buffTypeID;
 			ContinuousActionReference continuousActionData;
+			//std::string expression;
 		};
 		
 		Type parameterType;
@@ -111,6 +117,7 @@ namespace SGA
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 		static FunctionParameter createBuffTypeReference(int buffTypeID);
+		static FunctionParameter createExpression(std::string expression);
 
 		Type getType() const;
 		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;

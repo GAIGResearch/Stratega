@@ -8,6 +8,11 @@ namespace SGA
 		return FunctionParameter(Type::Constant, { constValue });
 	}
 	
+	/*FunctionParameter FunctionParameter::createExpression(std::string expression)
+	{
+		return FunctionParameter(Type::Expression, { expression });
+	}*/
+	
 	FunctionParameter FunctionParameter::createArgumentReference(int argumentIndex)
 	{
 		return FunctionParameter(Type::ArgumentReference, { Type::ArgumentReference, argumentIndex});
@@ -81,6 +86,7 @@ namespace SGA
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference: return getParameterValue(state, actionTargets);
 			case Type::TimeReference: return getTime(state, actionTargets);
+			//Parse expression
 			default:
 				throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
