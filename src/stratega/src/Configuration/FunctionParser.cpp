@@ -59,7 +59,8 @@ namespace SGA
 		while (ss.peek() != ')' && !ss.eof())
 		{
 			nonstd::optional<FunctionParameter> param;
-			if (((param = parseConstant(ss))) ||
+			if (((param = parseDice(ss))) ||
+				((param = parseConstant(ss))) ||
 				((param = parseEntityPlayerReference(ss, context))) ||
 				((param = parseEntityPlayerParameterReference(ss, context))) ||
 				((param = parseTimeReference(ss, context))) ||
@@ -69,7 +70,7 @@ namespace SGA
 				((param = parseTileTypeReference(ss, context))) ||
 				((param = parseBuffTypeReference(ss, context))) ||
 				((param = parseGameStateParameterReference(ss, context))) ||
-				((param = parseTechnologyTypeReference(ss, context))) ||
+				((param = parseTechnologyTypeReference(ss, context))) ||				
 				((param = parseExpression(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -99,10 +100,60 @@ namespace SGA
 		{
 			double value;
 			ss >> value;
+			if (isalpha(ss.peek()) && (ss.peek()!=')' && ss.peek()!=','))
+				return {};
 			return FunctionParameter::createConstParameter(prefix == '-' ? -value : value);
 		}
 
 		return {};
+	}
+	
+	nonstd::optional<FunctionParameter> FunctionParser::parseDice(std::istringstream& ss) const
+	{
+		auto begin = ss.tellg();
+		char prefix = '+';
+		if (ss.peek() == '+' || ss.peek() == '-')
+		{
+			ss.get(prefix);
+		}
+
+		int diceNumber = 0;
+		int diceFaceNumber = 0;
+		char c = ss.peek();
+		//Parse dice number
+		if (std::isdigit(ss.peek()))
+		{
+			ss >> diceNumber;			
+		}
+		else
+		{
+			return {};
+		}
+
+		//Remove d or D
+		if (std::isalpha(ss.peek()) && (ss.peek()=='d' || ss.peek()=='D'))
+		{
+			ss.get();
+
+			if (!std::isdigit(ss.peek()))
+				return{};
+		}
+		else
+		{
+			return {};
+		}
+
+		//Parse dice face number
+		if (std::isdigit(ss.peek()))
+		{
+			ss >> diceFaceNumber;
+		}
+		else
+		{
+			return {};
+		}
+
+		return FunctionParameter::createDiceAnotation({ prefix == '-' ? -diceNumber : diceNumber ,diceFaceNumber});
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
@@ -149,7 +200,7 @@ namespace SGA
 				if (!names)
 				{
 					ss.seekg(begin);
-					return {};
+					break;
 				}
 
 				auto targetName = names.value()[0];
@@ -159,7 +210,7 @@ namespace SGA
 				if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
 				{
 					ss.seekg(begin);
-					return {};
+					break;
 				}
 
 				temp.addParameter(FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second }));

@@ -29,7 +29,7 @@ namespace SGA
 			BuffTypeReference, // References BuffTypes defined in the Game. Like Plain, Forest...
 			GameStateParameterReference, // References BuffTypes defined in the Game. Like Plain, Forest...
 			Expression, //List of diferent string + function parameters (constant + parameter reference)
-			DiceAnotation // 4D12
+			DiceAnotation // 4d12
 		};
 
 		struct ExpressionStruct
@@ -83,6 +83,18 @@ namespace SGA
 			}
 		};
 
+		struct DiceAnotation
+		{
+			int diceNumber;
+			int diceFaceNumber;
+
+			DiceAnotation(int newDiceNumber, int newDiceFaceNumber):
+				diceNumber(newDiceNumber),
+				diceFaceNumber(newDiceFaceNumber)
+			{
+			}
+		};
+
 		struct ContinuousActionReference
 		{
 			int sourceEntity;
@@ -98,7 +110,7 @@ namespace SGA
 		
 
 
-		boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, ExpressionStruct> data;
+		boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, ExpressionStruct, DiceAnotation> data;
 		//union Data
 		//{
 		//	Data(double data)
@@ -147,12 +159,13 @@ namespace SGA
 		//Data data;
 
 		// Private since this class should only be constructed using the static methods
-		FunctionParameter(const Type& newType, const boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, ExpressionStruct>& newData) : parameterType(newType), data(newData) {};
+		FunctionParameter(const Type& newType, const boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, DiceAnotation, ExpressionStruct>& newData) : parameterType(newType), data(newData) {};
 
 	public:
 		static FunctionParameter createConstParameter(double constValue);
 		static FunctionParameter createArgumentReference(int argumentIndex);
 		static FunctionParameter createParameterReference(ParameterReference ref);
+		static FunctionParameter createDiceAnotation(DiceAnotation dic);
 		static FunctionParameter createEntityPlayerReference(int argumentIndex);
 		static FunctionParameter createTimeReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
@@ -165,10 +178,6 @@ namespace SGA
 
 		Type getType() const;
 		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;
-		
-		/*std::string getExpression() const {
-			return boost::get<std::string>(data);
-		}*/
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

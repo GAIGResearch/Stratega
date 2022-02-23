@@ -25,6 +25,11 @@ namespace SGA
 		return FunctionParameter(Type::ParameterReference, {ref});
 	}
 
+	FunctionParameter FunctionParameter::createDiceAnotation(DiceAnotation dic)
+	{
+		return FunctionParameter(Type::DiceAnotation, { dic });
+	}
+
 	FunctionParameter FunctionParameter::createEntityPlayerReference(int argumentIndex)
 	{
 		return FunctionParameter(Type::EntityPlayerReference, {argumentIndex });
@@ -90,10 +95,25 @@ namespace SGA
 				ExpressionStruct test = boost::get<ExpressionStruct>(data);
 				std::string expres = test.getExpression(state, actionTargets);				
 				double value = cparse::calculator::calculate(expres.c_str()).asDouble();
-				std::cout << "Calculate expression: " << expres << " -> " << value;
+				std::cout << "Calculate expression: " << expres << " -> " << value << std::endl;
 				return value;
-			}				
-				
+			}			
+			case Type::DiceAnotation: 
+			{
+				DiceAnotation test = boost::get<DiceAnotation>(data);	
+				auto rndEngine = state.getRndEngineCopy();
+				rndEngine.seed(std::chrono::system_clock::now().time_since_epoch().count());
+				std::uniform_int_distribution<int> distribution(1, test.diceFaceNumber);
+				double result=0;
+
+				for (size_t i = 0; i < test.diceNumber; i++)
+				{
+					result += distribution(rndEngine);
+				}
+
+				std::cout << "Roll dice: " << test.diceNumber<<"d"<<test.diceFaceNumber << " -> " << result<<std::endl;
+				return result;
+			}
 			case Type::ParameterReference:
 			case Type::EntityPlayerParameterReference: return getParameterValue(state, actionTargets);
 			case Type::TimeReference: return getTime(state, actionTargets);
