@@ -74,7 +74,7 @@ namespace SGA
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names
 		/// </summary>
-		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length) const;
+		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length, bool allowExpressions = false) const;
 		nonstd::optional<std::string> parseText(std::istringstream& ss) const;
 	};
 }

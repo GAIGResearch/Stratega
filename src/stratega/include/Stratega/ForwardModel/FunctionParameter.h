@@ -6,6 +6,7 @@
 #include <Stratega/Representation/TechnologyTree.h>
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/BuffType.h>
+#include <boost/variant.hpp>
 
 namespace SGA
 {
@@ -27,10 +28,49 @@ namespace SGA
 			TileTypeReference, // References TileTypes defined in the Game. Like Plain, Forest...
 			BuffTypeReference, // References BuffTypes defined in the Game. Like Plain, Forest...
 			GameStateParameterReference, // References BuffTypes defined in the Game. Like Plain, Forest...
-			Expression
+			Expression, //List of diferent string + function parameters (constant + parameter reference)
+			DiceAnotation // 4D12
+		};
+
+		struct ExpressionStruct
+		{
+		private:
+			std::vector<boost::variant<FunctionParameter, std::string>> dataVector;
+
+		public:
+			void addParameter(FunctionParameter parameter)
+			{
+				dataVector.emplace_back(parameter);
+			}
+
+			void addString(std::string string)
+			{
+				dataVector.emplace_back(string);
+			}
+
+			std::string getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+			{
+				std::string expression = "";
+				for (auto& point : dataVector)
+				{
+					if (point.type() == typeid(FunctionParameter))
+					{
+						auto pr = boost::get<FunctionParameter>(point);
+						expression += std::to_string(pr.getConstant(state, actionTargets));
+					}
+					else
+					{
+						expression += boost::get<std::string>(point);
+					}
+				}
+
+				return expression;
+			}
 		};
 
 	private:
+		
+
 		struct ParameterReference
 		{
 			ParameterID parameterID;
@@ -55,55 +95,59 @@ namespace SGA
 			}
 		};
 
-		union Data
-		{
-			Data(double data)
-			{
-				constValue = data;
-			}
-			/*Data(std::string newExpression)
-			{
-				expression = newExpression;
-			}*/
-			Data(ParameterReference data)
-			{
-				parameterData = data;
-			}
-			Data(ContinuousActionReference data)
-			{
-				continuousActionData = data;
-			}
-			Data (Type type, int data)
-			{
-				switch (type)
-				{
-				case Type::ArgumentReference: argumentIndex = static_cast<size_t>(data); break;
-				case Type::EntityTypeReference: entityTypeID = data; break;
-				case Type::TileTypeReference: tileTypeID = data; break;
-				case Type::TechnologyTypeReference: technologyTypeID = data; break;
-				case Type::BuffTypeReference:   buffTypeID = data; break;
-				case Type::TimeReference:   argumentIndex = static_cast<size_t>(data); break;
-				case Type::EntityPlayerReference:   argumentIndex = static_cast<size_t>(data); break;
-				default:
-					throw std::runtime_error("Unknown Type");
-				}
-			}
-			double constValue;
-			ParameterReference parameterData;
-			size_t argumentIndex;
-			int entityTypeID;
-			int tileTypeID;
-			int technologyTypeID;
-			int buffTypeID;
-			ContinuousActionReference continuousActionData;
-			//std::string expression;
-		};
+		
+
+
+		boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, ExpressionStruct> data;
+		//union Data
+		//{
+		//	Data(double data)
+		//	{
+		//		constValue = data;
+		//	}
+		//	/*Data(std::string newExpression)
+		//	{
+		//		expression = newExpression;
+		//	}*/
+		//	Data(ParameterReference data)
+		//	{
+		//		parameterData = data;
+		//	}
+		//	Data(ContinuousActionReference data)
+		//	{
+		//		continuousActionData = data;
+		//	}
+		//	Data (Type type, int data)
+		//	{
+		//		switch (type)
+		//		{
+		//		case Type::ArgumentReference: argumentIndex = static_cast<size_t>(data); break;
+		//		case Type::EntityTypeReference: entityTypeID = data; break;
+		//		case Type::TileTypeReference: tileTypeID = data; break;
+		//		case Type::TechnologyTypeReference: technologyTypeID = data; break;
+		//		case Type::BuffTypeReference:   buffTypeID = data; break;
+		//		case Type::TimeReference:   argumentIndex = static_cast<size_t>(data); break;
+		//		case Type::EntityPlayerReference:   argumentIndex = static_cast<size_t>(data); break;
+		//		default:
+		//			throw std::runtime_error("Unknown Type");
+		//		}
+		//	}
+		//	double constValue;
+		//	ParameterReference parameterData;
+		//	size_t argumentIndex;
+		//	int entityTypeID;
+		//	int tileTypeID;
+		//	int technologyTypeID;
+		//	int buffTypeID;
+		//	ContinuousActionReference continuousActionData;
+		//	//std::string expression;
+		//};
 		
 		Type parameterType;
-		Data data;
+		//Data data;
 
 		// Private since this class should only be constructed using the static methods
-		FunctionParameter(const Type& newType, const Data& newData) : parameterType(newType), data(newData) {};
+		FunctionParameter(const Type& newType, const boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, ExpressionStruct>& newData) : parameterType(newType), data(newData) {};
 
 	public:
 		static FunctionParameter createConstParameter(double constValue);
@@ -117,11 +161,14 @@ namespace SGA
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 		static FunctionParameter createBuffTypeReference(int buffTypeID);
-		static FunctionParameter createExpression(std::string expression);
+		static FunctionParameter createExpression(ExpressionStruct expression);
 
 		Type getType() const;
 		const ActionTarget& getActionTarget(const std::vector<ActionTarget>& actionTargets) const;
 		
+		/*std::string getExpression() const {
+			return boost::get<std::string>(data);
+		}*/
 		double getConstant(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Parameter& getParameter(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		double getParameterValue(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

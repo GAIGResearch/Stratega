@@ -123,6 +123,7 @@ function(target_link_libraries_system target)
   endforeach(lib)
 endfunction(target_link_libraries_system)
 
+target_link_libraries_system(Stratega CONAN_PKG::boost)
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
 #target_link_libraries_system(Stratega cparse)

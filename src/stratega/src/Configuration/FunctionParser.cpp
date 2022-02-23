@@ -130,11 +130,51 @@ namespace SGA
 	
 	nonstd::optional<FunctionParameter> FunctionParser::parseExpression(std::istringstream& ss, const ParseContext& context) const
 	{
+		FunctionParameter::ExpressionStruct temp;
 		auto begin = ss.tellg();
 
+		std::string mathExpress = "";
 		while (ss.peek()!=')' || ss.peek() == ',')
 		{
-			ss.get();
+			//Try parse parameters
+			if (isalpha(ss.peek()))
+			{
+				if (mathExpress.size() > 0)
+				{
+					temp.addString(mathExpress);
+				}
+				mathExpress = "";
+				auto begin = ss.tellg();
+				auto names = parseAccessorList(ss, 2, true);
+				if (!names)
+				{
+					ss.seekg(begin);
+					return {};
+				}
+
+				auto targetName = names.value()[0];
+				auto parameterName = names.value()[1];
+				auto targetIt = context.targetIDs.find(targetName);
+				auto parameterIt = context.parameterIDs.find(parameterName);
+				if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
+				{
+					ss.seekg(begin);
+					return {};
+				}
+
+				temp.addParameter(FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second }));
+			}
+			else
+			{
+				mathExpress += ss.get();
+			}
+
+			//ss.get();
+		}
+
+		if (mathExpress.size() > 0)
+		{
+			temp.addString(mathExpress);
 		}
 
 		/*auto names = parseAccessorList(ss, 2);
@@ -154,7 +194,10 @@ namespace SGA
 			return {};
 		}*/
 		//ss.seekg(begin);
-		return FunctionParameter::createParameterReference({ 0, 1 });
+		//auto temp = FunctionParameter::createExpression(ss.str()).getExpression();
+		
+		
+		return FunctionParameter::createExpression(/*ss.str()*/temp);
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
@@ -359,7 +402,7 @@ namespace SGA
 	}
 	
 
-	nonstd::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length) const
+	nonstd::optional<std::vector<std::string>> FunctionParser::parseAccessorList(std::istringstream& ss, size_t length, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		
@@ -398,7 +441,12 @@ namespace SGA
 			}
 			
 		}*/
-		if (!lastName.has_value() || ss.peek() == '.'   || (!isalpha(ss.peek()) && ss.peek() != ')' && ss.peek() != ',') /*|| (ss.peek()!=')' || ss.peek() != ',')*/)
+		if (!lastName.has_value() || ss.peek() == '.'  /*|| (ss.peek()!=')' || ss.peek() != ',')*/)
+		{
+			ss.seekg(begin);
+			return {};
+		}
+		else if (!allowExpressions && (!isalpha(ss.peek()) && ss.peek() != ')' && ss.peek() != ','))
 		{
 			ss.seekg(begin);
 			return {};
