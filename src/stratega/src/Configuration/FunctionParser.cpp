@@ -127,6 +127,7 @@ namespace SGA
 		}
 		else
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -135,11 +136,15 @@ namespace SGA
 		{
 			ss.get();
 
-			if (!std::isdigit(ss.peek()))
+			if (!std::isdigit(ss.peek())) {
+				ss.seekg(begin);
 				return{};
+			}
+				
 		}
 		else
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -150,6 +155,7 @@ namespace SGA
 		}
 		else
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -193,6 +199,7 @@ namespace SGA
 				if (mathExpress.size() > 0)
 				{
 					temp.addString(mathExpress);
+					
 				}
 				mathExpress = "";
 				auto begin = ss.tellg();
@@ -217,8 +224,21 @@ namespace SGA
 			}
 			else
 			{
-				mathExpress += ss.get();
-			}
+				nonstd::optional<FunctionParameter> param;
+				if (param = parseDice(ss))
+				{
+					if (mathExpress.size() > 0)
+					{
+						temp.addString(mathExpress);
+						mathExpress = "";
+					}
+					temp.addParameter(param.value());
+				}
+				else
+				{
+					mathExpress += ss.get();
+				}
+			}		
 
 			//ss.get();
 		}
