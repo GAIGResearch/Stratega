@@ -88,8 +88,9 @@ namespace SGA
 			case Type::Expression: 
 			{
 				ExpressionStruct test = boost::get<ExpressionStruct>(data);
-				std::string expres = test.getExpression(state, actionTargets);
+				std::string expres = test.getExpression(state, actionTargets);				
 				double value = cparse::calculator::calculate(expres.c_str()).asDouble();
+				std::cout << "Calculate expression: " << expres << " -> " << value;
 				return value;
 			}				
 				

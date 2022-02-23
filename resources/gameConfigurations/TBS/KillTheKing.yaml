@@ -89,7 +89,7 @@ Actions:
                 #    - "DifferentPlayer(Source, Target)"
                 #    - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "Attack(Target.Health, Source.AttackDamage*2+3)"
+            - "Attack(Target.Health, Source.AttackDamage*2+3*Source.AttackDamage)"
 
     #Move:
     #    Type: EntityAction

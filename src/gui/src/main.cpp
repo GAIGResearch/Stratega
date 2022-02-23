@@ -31,7 +31,7 @@ int main()
 	//}*/
 	////cparse::calculator temp;
 	////temp.compile(expressionTest.c_str());
-	std::cout << cparse::calculator::calculate(expressionTest.c_str()) << std::endl;
+//	std::cout << cparse::calculator::calculate(expressionTest.c_str()) << std::endl;
 
 	
 	auto agents = gameConfig->generateAgents();
