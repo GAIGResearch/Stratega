@@ -53,8 +53,8 @@ def configureDoxyfile(input_dir, output_dir):
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 breathe_projects = {}
 if read_the_docs_build:
-    install_and_import('stratega')
-    input_dir = '../Stratega'
+    #install_and_import('stratega')
+    input_dir = '../src/stratega'
     output_dir = 'build'
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)
