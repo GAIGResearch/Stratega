@@ -13,7 +13,7 @@
 import os
 import sys
 
-#import stratega python bindings
+import stratega
 #sys.path.append(os.path.abspath('../out/bindings'))
 #sys.path.append(os.path.abspath('../out'))
 
