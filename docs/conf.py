@@ -13,11 +13,10 @@
 import os
 import sys
 
-import stratega
 #sys.path.append(os.path.abspath('../out/bindings'))
 #sys.path.append(os.path.abspath('../out'))
-
-#print("imported paths", sys.path)
+sys.path.insert(0, os.path.abspath('..'))
+print("imported paths", sys.path)
 #
 #pypath = '../out/build'
 #for dir_name in os.listdir(pypath):
