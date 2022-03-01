@@ -89,7 +89,9 @@ Actions:
                 #    - "DifferentPlayer(Source, Target)"
                 #    - "InRange(Source, Target, Source.AttackRange)"
         Effects:
-            - "Attack(Target.Health, Source.AttackDamage*2+3*Source.AttackDamage)"
+            - "Attack(Target.Health, sqrt(Source.AttackDamage*2)+(3*Source.AttackDamage))"
+            #- "Attack(Target.Health, (Source.AttackDamage*2)+(3*Source.AttackDamage))"
+            #- "Attack(Target.Health, Source.AttackDamage*2+3*Source.AttackDamage)"
 
     #Move:
     #    Type: EntityAction
@@ -180,11 +182,11 @@ ForwardModel:
     #    NoHasKing:
     #    - "HasNoEntity(Source, King)"
     #
-    #Trigger:
-    #    - OnTick:
-    #        Type: Entity
-    #        Effects:
-    #            - "SetToMaximum(Source.MovementPoints)"
+    Trigger:
+        - OnTick:
+            Type: Entity
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"
 
 #Action categories
 #GameDescription:

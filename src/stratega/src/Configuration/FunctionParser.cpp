@@ -39,7 +39,7 @@ namespace SGA
 		auto copy = code;
 		copy.erase(std::remove_if(copy.begin(), copy.end(), [](char x) { return std::isspace(x); }), copy.end());
 		std::istringstream ss(copy);
-
+		std::cout << code << std::endl;
 		// Parse name
 		AbstractFunctionCall call;
 		if(auto functionName = parseText(ss))
@@ -54,23 +54,23 @@ namespace SGA
 			return {};
 		}
 		ss.get(); // Remove '('
-
+		std::string stringParameter="";
 		// Parse function parameters
 		while (ss.peek() != ')' && !ss.eof())
 		{
 			nonstd::optional<FunctionParameter> param;
-			if (((param = parseDice(ss))) ||
-				((param = parseConstant(ss))) ||
-				((param = parseEntityPlayerReference(ss, context))) ||
-				((param = parseEntityPlayerParameterReference(ss, context))) ||
-				((param = parseTimeReference(ss, context))) ||
-				((param = parseParameterReference(ss, context))) ||
-				((param = parseTargetReference(ss, context))) ||
-				((param = parseEntityTypeReference(ss, context))) ||
-				((param = parseTileTypeReference(ss, context))) ||
-				((param = parseBuffTypeReference(ss, context))) ||
-				((param = parseGameStateParameterReference(ss, context))) ||
-				((param = parseTechnologyTypeReference(ss, context))) ||				
+			if (((param = parseDice(ss, stringParameter, false))) ||
+				((param = parseConstant(ss, false))) ||
+				((param = parseEntityPlayerReference(ss, context, false))) ||
+				((param = parseEntityPlayerParameterReference(ss, context, stringParameter, false))) ||
+				((param = parseTimeReference(ss, context, false))) ||
+				((param = parseParameterReference(ss, context, stringParameter, false))) ||
+				((param = parseTargetReference(ss, context, false))) ||
+				((param = parseEntityTypeReference(ss, context, false))) ||
+				((param = parseTileTypeReference(ss, context, false))) ||
+				((param = parseBuffTypeReference(ss, context, false))) ||
+				((param = parseGameStateParameterReference(ss, context, stringParameter, false))) ||
+				((param = parseTechnologyTypeReference(ss, context, false))) ||
 				((param = parseExpression(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -88,7 +88,7 @@ namespace SGA
 		return call;
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseConstant(std::istringstream& ss) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseConstant(std::istringstream& ss, bool allowExpressions) const
 	{
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
@@ -102,18 +102,22 @@ namespace SGA
 			ss >> value;
 			if (isalpha(ss.peek()) && (ss.peek()!=')' && ss.peek()!=','))
 				return {};
+
+			std::cout << "Parsed constant";
+			std::cout << std::endl;
 			return FunctionParameter::createConstParameter(prefix == '-' ? -value : value);
 		}
 
 		return {};
 	}
 	
-	nonstd::optional<FunctionParameter> FunctionParser::parseDice(std::istringstream& ss) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseDice(std::istringstream& ss, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
 		{
+			parameterString += ss.peek();
 			ss.get(prefix);
 		}
 
@@ -123,10 +127,12 @@ namespace SGA
 		//Parse dice number
 		if (std::isdigit(ss.peek()))
 		{
-			ss >> diceNumber;			
+			ss >> diceNumber;
+			parameterString += diceFaceNumber;
 		}
 		else
 		{
+			parameterString = "";
 			ss.seekg(begin);
 			return {};
 		}
@@ -134,10 +140,12 @@ namespace SGA
 		//Remove d or D
 		if (std::isalpha(ss.peek()) && (ss.peek()=='d' || ss.peek()=='D'))
 		{
+			parameterString += ss.peek();
 			ss.get();
 
 			if (!std::isdigit(ss.peek())) {
 				ss.seekg(begin);
+				parameterString = "";
 				return{};
 			}
 				
@@ -145,6 +153,7 @@ namespace SGA
 		else
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 
@@ -152,23 +161,44 @@ namespace SGA
 		if (std::isdigit(ss.peek()))
 		{
 			ss >> diceFaceNumber;
+			parameterString += diceFaceNumber;
 		}
 		else
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+			
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				parameterString = "";
+				return {};
+			}
+		}
+		
+		std::cout << "Parsed dice anotation";
+		std::cout << std::endl;
 		return FunctionParameter::createDiceAnotation({ prefix == '-' ? -diceNumber : diceNumber ,diceFaceNumber});
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 2);
+		auto names = parseAccessorList(ss, 2, allowExpressions);
 		if(!names)
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 
@@ -179,9 +209,28 @@ namespace SGA
 		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
+		parameterString += targetName+"."+ parameterName;
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
 
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				parameterString = "";
+				return {};
+			}
+		}
+
+		std::cout << "Parsed parameter reference: "<< targetName<<"."<< parameterName;
+		std::cout << std::endl;
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
 	}
 	
@@ -189,94 +238,55 @@ namespace SGA
 	{
 		FunctionParameter::ExpressionStruct temp;
 		auto begin = ss.tellg();
+		std::cout << std::endl;
 
-		std::string mathExpress = "";
-		while (ss.peek()!=')' || ss.peek() == ',')
+		//Get expression string
+		std::string mathExpress = ss.str();
+		mathExpress = mathExpress.substr(mathExpress.find("("));
+		
+		 
+		mathExpress = "";
+		while (ss.peek() != EOF && ss.peek() != ',')
 		{
-			//Try parse parameters
-			if (isalpha(ss.peek()))
-			{
-				if (mathExpress.size() > 0)
-				{
-					temp.addString(mathExpress);
-					
-				}
-				mathExpress = "";
-				auto begin = ss.tellg();
-				auto names = parseAccessorList(ss, 2, true);
-				if (!names)
-				{
-					ss.seekg(begin);
-					break;
-				}
+			//mathExpress += ss.peek();
+			nonstd::optional<FunctionParameter> param;
 
-				auto targetName = names.value()[0];
-				auto parameterName = names.value()[1];
-				auto targetIt = context.targetIDs.find(targetName);
-				auto parameterIt = context.parameterIDs.find(parameterName);
-				if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
-				{
-					ss.seekg(begin);
-					break;
-				}
-
-				temp.addParameter(FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second }));
+			std::string parameterString = "";
+			
+			if (((param = parseDice(ss, parameterString, true))) ||
+				((param = parseEntityPlayerParameterReference(ss, context, parameterString, true))) ||
+				((param = parseParameterReference(ss, context, parameterString, true))) ||
+				((param = parseGameStateParameterReference(ss, context, parameterString, true))))
+			{				
+				mathExpress += parameterString;
+				temp.addParameter(param.value(), parameterString);
 			}
 			else
 			{
-				nonstd::optional<FunctionParameter> param;
-				if (param = parseDice(ss))
+				char nextChar = ss.get();;
+				if (ss.peek() == EOF && nextChar == ')')
 				{
-					if (mathExpress.size() > 0)
-					{
-						temp.addString(mathExpress);
-						mathExpress = "";
-					}
-					temp.addParameter(param.value());
+					//If the last character is ) dont add it
 				}
 				else
-				{
-					mathExpress += ss.get();
-				}
-			}		
-
-			//ss.get();
+					mathExpress += nextChar;						
+			}
 		}
 
-		if (mathExpress.size() > 0)
-		{
-			temp.addString(mathExpress);
-		}
-
-		/*auto names = parseAccessorList(ss, 2);
-		if(!names)
-		{
-			ss.seekg(begin);
-			return {};
-		}
-
-		auto targetName = names.value()[0];
-		auto parameterName = names.value()[1];
-		auto targetIt = context.targetIDs.find(targetName);
-		auto parameterIt = context.parameterIDs.find(parameterName);
-		if (targetIt == context.targetIDs.end() || parameterIt == context.parameterIDs.end())
-		{
-			ss.seekg(begin);
-			return {};
-		}*/
-		//ss.seekg(begin);
-		//auto temp = FunctionParameter::createExpression(ss.str()).getExpression();
-		
+		std::cout << "Parsed expression: " << mathExpress;
+		temp.setExpression(mathExpress);
+		std::cout << std::endl;
 		
 		return FunctionParameter::createExpression(/*ss.str()*/temp);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -293,11 +303,27 @@ namespace SGA
 		{
 			throw std::runtime_error("Unknown action-target: " + targetName);
 		}
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
 
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed entity player reference";
+		std::cout << std::endl;
 		return FunctionParameter::createEntityPlayerReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTimeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
@@ -320,15 +346,34 @@ namespace SGA
 			throw std::runtime_error("Unknown action-target: " + targetName);
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed time reference";
+		std::cout << std::endl;
 		return FunctionParameter::createTimeReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 3);
 		if(!names)
 		{
+			parameterString = "";
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -337,6 +382,7 @@ namespace SGA
 		auto parameterName = names.value()[2];
 		if(playerName != "Player")
 		{
+			parameterString = "";
 			ss.seekg(begin);
 			return {};
 		}
@@ -347,16 +393,35 @@ namespace SGA
 		{
 			throw std::runtime_error("Unknown parameter/action-target: " + targetName + ".Player." + parameterName);
 		}
+		parameterString += targetName + "." + playerName+"." + parameterName;
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
 
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				parameterString = "";
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed entity player parameter reference";
+		std::cout << std::endl;
 		return FunctionParameter::createEntityPlayerParameterReference({ parameterIt->second, targetIt->second });
 	}
 	
-	nonstd::optional<FunctionParameter> FunctionParser::parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 2);
 		if(!names)
 		{
+			parameterString = "";
 			return {};
 		}
 
@@ -364,6 +429,7 @@ namespace SGA
 		auto parameterName = names.value()[1];
 		if(stateName != "GameState"&& stateName != "Gamestate")
 		{
+			parameterString = "";
 			ss.seekg(begin);
 			return {};
 		}
@@ -373,11 +439,29 @@ namespace SGA
 		{
 			throw std::runtime_error("Unknown parameter/action-target: " + stateName + "." + parameterName);
 		}
+		parameterString += stateName + "." + parameterName;
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
 
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				parameterString = "";
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed gamestate parameter reference";
+		std::cout << std::endl;
 		return FunctionParameter::createGameStateParameterReference({ parameterIt->second, -1 });
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -393,10 +477,27 @@ namespace SGA
 			return {};
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed argument reference";
+		std::cout << std::endl;
 		return FunctionParameter::createArgumentReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -412,10 +513,27 @@ namespace SGA
 			return {};
 		}
 		
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed entity type reference";
+		std::cout << std::endl;
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -431,10 +549,27 @@ namespace SGA
 			return {};
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed tile type reference";
+		std::cout << std::endl;
 		return FunctionParameter::createTileTypeReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseBuffTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -450,10 +585,27 @@ namespace SGA
 			return {};
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed buff type reference";
+		std::cout << std::endl;
 		return FunctionParameter::createBuffTypeReference(targetIt->second);
 	}
 	
-	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
 		auto names = parseAccessorList(ss, 1);
@@ -469,6 +621,23 @@ namespace SGA
 			return {};
 		}
 
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				return {};
+			}
+		}
+
+		std::cout << "Parsed technology type reference";
+		std::cout << std::endl;
 		return FunctionParameter::createTechnologyTypeReference(targetIt->second);
 	}
 	

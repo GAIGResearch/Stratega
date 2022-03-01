@@ -7,7 +7,7 @@
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/BuffType.h>
 #include <boost/variant.hpp>
-
+#include <regex>
 namespace SGA
 {
 	struct GameState;
@@ -35,36 +35,30 @@ namespace SGA
 		struct ExpressionStruct
 		{
 		private:
-			std::vector<boost::variant<FunctionParameter, std::string>> dataVector;
-
+			std::unordered_map<std::string, FunctionParameter> variable;
+			std::string expression;
 		public:
-			void addParameter(FunctionParameter parameter)
+			void addParameter(FunctionParameter parameter, std::string newVariable)
 			{
-				dataVector.emplace_back(parameter);
+				variable.insert(std::make_pair(newVariable, parameter));
 			}
 
-			void addString(std::string string)
+			void setExpression(std::string string)
 			{
-				dataVector.emplace_back(string);
+				expression = string;
 			}
 
 			std::string getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 			{
-				std::string expression = "";
-				for (auto& point : dataVector)
+				std::string ex = expression;
+				std::cout << "Before change: " << ex<<std::endl;
+				for (auto& var : variable)
 				{
-					if (point.type() == typeid(FunctionParameter))
-					{
-						auto pr = boost::get<FunctionParameter>(point);
-						expression += std::to_string(pr.getConstant(state, actionTargets));
-					}
-					else
-					{
-						expression += boost::get<std::string>(point);
-					}
+					double temp = var.second.getConstant(state, actionTargets);
+					ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
 				}
-
-				return expression;
+				std::cout << "After change: " << ex << std::endl;
+				return ex;
 			}
 		};
 

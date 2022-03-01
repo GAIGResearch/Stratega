@@ -346,6 +346,10 @@ namespace SGA
 		switch (parameterType)
 		{
 			case Type::EntityPlayerReference:
+			{
+				auto entityID = actionTargets[boost::get<int>(data)].getEntityID();
+				return *state.getEntity(entityID);
+			}				
 			case Type::ArgumentReference:
 			{
 				auto entityID = actionTargets[boost::get<size_t>(data)].getEntityID();
