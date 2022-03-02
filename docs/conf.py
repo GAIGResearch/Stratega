@@ -16,7 +16,7 @@ import sys
 #sys.path.append(os.path.abspath('../out/bindings'))
 #sys.path.append(os.path.abspath('../out'))
 sys.path.insert(0, os.path.abspath('..'))
-print("imported paths", sys.path)
+#print("imported paths", sys.path)
 #
 #pypath = '../out/build'
 #for dir_name in os.listdir(pypath):
