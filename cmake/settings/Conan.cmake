@@ -4,7 +4,7 @@ macro(run_conan)
         message(
                 STATUS
                 "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.16.1/conan.cmake"
+        file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/0.17.0/conan.cmake"
                 "${CMAKE_BINARY_DIR}/conan.cmake")
     endif ()
 
