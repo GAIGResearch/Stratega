@@ -90,6 +90,7 @@ namespace SGA
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseConstant(std::istringstream& ss, bool allowExpressions) const
 	{
+		auto begin = ss.tellg();
 		char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
 		{
@@ -100,26 +101,44 @@ namespace SGA
 		{
 			double value;
 			ss >> value;
-			if (isalpha(ss.peek()) && (ss.peek()!=')' && ss.peek()!=','))
+			if (isalpha(ss.peek()) && (ss.peek() != ')' && ss.peek() != ','))
+			{
+				ss.seekg(begin);
 				return {};
+			}
+				
+			//Check if is not expression
+			if (ss.peek() == ')' || ss.peek() == ',')
+			{
+
+			}
+			else
+			{
+				if (!allowExpressions)
+				{
+					ss.seekg(begin);
+					return {};
+				}
+			}
 
 			std::cout << "Parsed constant";
 			std::cout << std::endl;
 			return FunctionParameter::createConstParameter(prefix == '-' ? -value : value);
 		}
 
+		ss.seekg(begin);
 		return {};
 	}
 	
 	nonstd::optional<FunctionParameter> FunctionParser::parseDice(std::istringstream& ss, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		char prefix = '+';
+		/*char prefix = '+';
 		if (ss.peek() == '+' || ss.peek() == '-')
 		{
 			parameterString += ss.peek();
 			ss.get(prefix);
-		}
+		}*/
 
 		int diceNumber = 0;
 		int diceFaceNumber = 0;
@@ -128,7 +147,7 @@ namespace SGA
 		if (std::isdigit(ss.peek()))
 		{
 			ss >> diceNumber;
-			parameterString += diceFaceNumber;
+			parameterString += std::to_string(diceNumber);
 		}
 		else
 		{
@@ -161,7 +180,7 @@ namespace SGA
 		if (std::isdigit(ss.peek()))
 		{
 			ss >> diceFaceNumber;
-			parameterString += diceFaceNumber;
+			parameterString += std::to_string(diceFaceNumber);
 		}
 		else
 		{
@@ -188,7 +207,7 @@ namespace SGA
 		
 		std::cout << "Parsed dice anotation";
 		std::cout << std::endl;
-		return FunctionParameter::createDiceAnotation({ prefix == '-' ? -diceNumber : diceNumber ,diceFaceNumber});
+		return FunctionParameter::createDiceAnotation({diceNumber ,diceFaceNumber});
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
@@ -329,6 +348,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 2);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -369,7 +389,7 @@ namespace SGA
 	nonstd::optional<FunctionParameter> FunctionParser::parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 3);
+		auto names = parseAccessorList(ss, 3, allowExpressions);
 		if(!names)
 		{
 			parameterString = "";
@@ -418,10 +438,11 @@ namespace SGA
 	nonstd::optional<FunctionParameter> FunctionParser::parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 2);
+		auto names = parseAccessorList(ss, 2, allowExpressions);
 		if(!names)
 		{
 			parameterString = "";
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -467,6 +488,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 1);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -503,6 +525,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 1);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -539,6 +562,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 1);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -575,6 +599,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 1);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 
@@ -611,6 +636,7 @@ namespace SGA
 		auto names = parseAccessorList(ss, 1);
 		if (!names)
 		{
+			ss.seekg(begin);
 			return {};
 		}
 	

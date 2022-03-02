@@ -9,31 +9,11 @@ int main()
 {
 	cparse_startup();
 
-	/*cparse::TokenMap vars;
-	vars["pi"] = 3.14;*/
-	//std::cout << cparse::calculator::calculate("-pi+1", vars) << std::endl; // 2.14
-	//std::cout << cparse::calculator::calculate("pi + 1", vars) << std::endl; // 0.14
-	//std::cout << cparse::calculator::calculate("pi-b == 3", vars) << std::endl; // 1 (true)
-	//std::cout << cparse::calculator::calculate("sqrt(4) + 3**2 == 11") << std::endl; // 1 (true)
-
 	std::mt19937 rngEngine(0);
 	//std::string configPath("../resources/gameConfigurations/RTS/BasicRTS.yaml");
-	std::string configPath("../resources/gameConfigurations/TBS/KillTheKing.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/ProtectTheBase.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
-	double temp = 5.5;
-	//std::string expressionTest = std::to_string(temp)+"*2";
-	std::string expressionTest = "4d12";
-	///*auto entity = gameConfig->entityTypes[0].instantiateEntity(0);
-	//for (auto& parameter : gameConfig->entityTypes[0].getParameters())
-	//{
-	//	vars[parameter.second.getName()] = parameter.second.getDefaultValue();
-	//}*/
-	////cparse::calculator temp;
-	////temp.compile(expressionTest.c_str());
-//	std::cout << cparse::calculator::calculate(expressionTest.c_str()) << std::endl;
-
-	
 	auto agents = gameConfig->generateAgents();
 	// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
 	std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
