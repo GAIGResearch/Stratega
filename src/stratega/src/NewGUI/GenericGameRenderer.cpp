@@ -102,18 +102,37 @@ namespace SGA
 
 		if (state.getGameType() == GameType::RTS)
 		{
-			auto it = futureActionsToPlay.begin();
-			//Assign entity actions if they are still valid
-			while (it != futureActionsToPlay.end())
-			{
-				if (!it->validate(fowState)) {
+			auto& entityActions = futureActionsToPlay.getEntityActionsNonConst();
 
-					it = futureActionsToPlay.erase(it);
+			auto it = entityActions.begin();
+			//Assign entity actions if they are still valid
+			while (it != entityActions.end())
+			{
+				if (!it->second.validate(fowState)) {
+
+					it = entityActions.erase(it);
 				}
 				else
 				{
-					temp.assignActionOrReplace(*it);
+					temp.assignActionOrReplace(it->second);
 					++it;
+				}
+			}
+			
+			auto& playerActions = futureActionsToPlay.getPlayerActionsNonConst();
+
+			auto it2 = playerActions.begin();
+			//Assign entity actions if they are still valid
+			while (it2 != playerActions.end())
+			{
+				if (!it2->second.validate(fowState)) {
+
+					it2 = playerActions.erase(it2);
+				}
+				else
+				{
+					temp.assignActionOrReplace(it2->second);
+					++it2;
 				}
 			}
 		}

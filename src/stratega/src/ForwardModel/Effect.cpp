@@ -287,7 +287,7 @@ namespace SGA
 			oldTargetPos.y = static_cast<double>(entity.getPath().m_straightPath[((entity.getPath().m_nstraightPath - 1) * 3) + 2]);
 
 			// Compute a new path if the entity doesn't have one or the new target is different from the old one
-			if (entity.getPath().isEmpty() || oldTargetPos.distance(targetPosition) > 0.00001)
+			if (entity.getPath().isEmpty() || oldTargetPos.distance(targetPosition) > 0.0001)
 			{
 				Path path = rtsFM->findPath(state, entity.getPosition(), targetPosition);
 				entity.setPath(path);

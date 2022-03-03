@@ -69,7 +69,7 @@ namespace SGA
 
 		//Actions to play
 		ActionAssignment temp;
-		std::vector<Action> futureActionsToPlay;
+		ActionAssignment futureActionsToPlay;
 
 		// Variables for input handling
 		float zoomValue;

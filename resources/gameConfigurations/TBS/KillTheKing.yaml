@@ -5,11 +5,11 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    #- OSLAAgent
-    - MCTSAgent:
-        FmCalls: 100
-        Budget: TIME
-        RolloutLength: 10
+    - OSLAAgent
+    #- MCTSAgent:
+    #    FmCalls: 100
+    #    Budget: TIME
+    #    RolloutLength: 10
 
 GameRenderer:
     Resolution:
