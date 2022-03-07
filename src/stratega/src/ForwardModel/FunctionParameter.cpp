@@ -559,7 +559,7 @@ namespace SGA
 
 	}
 
-	const std::unordered_map<ParameterID, double>& FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	const std::unordered_map<ParameterID, double> FunctionParameter::getCost(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
 	{
 		if (parameterType == Type::ArgumentReference)
 		{
@@ -576,10 +576,24 @@ namespace SGA
 		else if (parameterType == Type::TechnologyTypeReference)
 		{
 			return getTechnology(state, actionTargets).cost;
-		}
+		}		
 		else if (parameterType == Type::EntityTypeReference)
 		{
 			return getEntityType(state, actionTargets).getCosts();
+		}
+		else if (parameterType == Type::Expression)
+		{
+			std::unordered_map<ParameterID, double> newCost;
+			ExpressionStruct test = data.expression;
+			std::unordered_map<ParameterID, std::string> expressions = test.getExpressionCost(state, actionTargets);
+			for (auto& expression : expressions)
+			{
+				newCost[expression.first] = cparse::calculator::calculate(expression.second.c_str()).asDouble();
+			}
+			/*double value = cparse::calculator::calculate(expres.c_str()).asDouble();*/
+			//std::cout << "Calculate expression: " << expres << " -> " << value << std::endl;
+
+			return newCost;
 		}
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");

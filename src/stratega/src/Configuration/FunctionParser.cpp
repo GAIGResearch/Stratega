@@ -65,12 +65,12 @@ namespace SGA
 				((param = parseEntityPlayerParameterReference(ss, context, stringParameter, false))) ||
 				((param = parseTimeReference(ss, context, false))) ||
 				((param = parseParameterReference(ss, context, stringParameter, false))) ||
-				((param = parseTargetReference(ss, context, false))) ||
-				((param = parseEntityTypeReference(ss, context, false))) ||
+				((param = parseTargetReference(ss, context, stringParameter, false))) ||
+				((param = parseEntityTypeReference(ss, context, stringParameter, false))) ||
 				((param = parseTileTypeReference(ss, context, false))) ||
 				((param = parseBuffTypeReference(ss, context, false))) ||
 				((param = parseGameStateParameterReference(ss, context, stringParameter, false))) ||
-				((param = parseTechnologyTypeReference(ss, context, false))) ||
+				((param = parseTechnologyTypeReference(ss, context, stringParameter, false))) ||
 				((param = parseExpression(ss, context))))
 			{
 				call.parameters.emplace_back(param.value());
@@ -275,6 +275,9 @@ namespace SGA
 			if (((param = parseDice(ss, parameterString, true))) ||
 				((param = parseEntityPlayerParameterReference(ss, context, parameterString, true))) ||
 				((param = parseParameterReference(ss, context, parameterString, true))) ||
+				((param = parseTechnologyTypeReference(ss, context, parameterString, true))) ||
+				((param = parseEntityTypeReference(ss, context, parameterString, true))) ||
+				((param = parseTargetReference(ss, context, parameterString, true))) ||
 				((param = parseGameStateParameterReference(ss, context, parameterString, true))))
 			{				
 				mathExpress += parameterString;
@@ -482,13 +485,14 @@ namespace SGA
 		return FunctionParameter::createGameStateParameterReference({ parameterIt->second, -1 });
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTargetReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 1);
+		auto names = parseAccessorList(ss, 1, allowExpressions);
 		if (!names)
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 
@@ -496,9 +500,10 @@ namespace SGA
 		if (targetIt == context.targetIDs.end())
 		{
 			ss.seekg(begin); // Set back to start
+			parameterString = "";
 			return {};
 		}
-
+		parameterString = names.value()[0];
 		char nextCharacter = ss.peek();
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
@@ -510,6 +515,7 @@ namespace SGA
 			if (!allowExpressions)
 			{
 				ss.seekg(begin);
+				parameterString = "";
 				return {};
 			}
 		}
@@ -519,13 +525,14 @@ namespace SGA
 		return FunctionParameter::createArgumentReference(targetIt->second);
 	}
 
-	nonstd::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 1);
+		auto names = parseAccessorList(ss, 1, allowExpressions);
 		if (!names)
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 
@@ -533,9 +540,10 @@ namespace SGA
 		if (targetIt == context.entityTypeIDs.end())
 		{
 			ss.seekg(begin); // Set back to start
+			parameterString = "";
 			return {};
 		}
-		
+		parameterString = names.value()[0];
 		char nextCharacter = ss.peek();
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
@@ -547,6 +555,7 @@ namespace SGA
 			if (!allowExpressions)
 			{
 				ss.seekg(begin);
+				parameterString = "";
 				return {};
 			}
 		}
@@ -630,13 +639,14 @@ namespace SGA
 		return FunctionParameter::createBuffTypeReference(targetIt->second);
 	}
 	
-	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const
+	nonstd::optional<FunctionParameter> FunctionParser::parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
 	{
 		auto begin = ss.tellg();
-		auto names = parseAccessorList(ss, 1);
+		auto names = parseAccessorList(ss, 1, allowExpressions);
 		if (!names)
 		{
 			ss.seekg(begin);
+			parameterString = "";
 			return {};
 		}
 	
@@ -644,9 +654,10 @@ namespace SGA
 		if (targetIt == context.technologyTypeIDs.end())
 		{
 			ss.seekg(begin); // Set back to start
+			parameterString = "";
 			return {};
 		}
-
+		parameterString = names.value()[0];
 		char nextCharacter = ss.peek();
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
@@ -658,6 +669,7 @@ namespace SGA
 			if (!allowExpressions)
 			{
 				ss.seekg(begin);
+				parameterString = "";
 				return {};
 			}
 		}
