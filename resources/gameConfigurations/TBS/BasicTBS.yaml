@@ -31,7 +31,7 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Player:
-    Actions: [Research]
+    Actions: [Build, Research]
     #CanSpawn: Buildings
     Parameters:
         Gold: [0,500,1000]
@@ -67,66 +67,61 @@ Entities:
         #CanSpawn: [Worker]
         Cost:
             Prod: 10
+            Gold: 10
         Parameters:
             Health: 200
             StorageCapacity: 50
             Range: 6
 
-    #Barracks:
-    #    Sprite: ../../assets/Entities/barracks.png
-    #    LineOfSightRange: 3
-    #    RequiredTechnology: Discipline
-    #    Actions: [Spawn]
-    #    CanSpawn: [Warrior, Archer]
-    #    Cost:
-    #        Prod: 20
-    #    Parameters:
-    #        Health: 100
-    #        Range: 6
-    #
-    #MilitaryAcademy:
-    #    Sprite: ../../assets/Entities/military.png
-    #    LineOfSightRange: 3
-    #    RequiredTechnology: Mathematics
-    #    Actions: [Spawn]
-    #    CanSpawn: [Catapult]
-    #    Cost:
-    #        Prod: 40
-    #    Parameters:
-    #        Health: 100
-    #
-    #Foundry:
-    #    Sprite: ../../assets/Entities/foundry.png
-    #    LineOfSightRange: 2
-    #    RequiredTechnology: Metallurgy
-    #    Actions: []
-    #    Cost:
-    #        Prod: 50
-    #    Parameters:
-    #        Health: 50
-    #        
-    #Workshop:
-    #    Sprite: ../../assets/Entities/storage.png
-    #    LineOfSightRange: 2
-    #    RequiredTechnology: Apprenticeship
-    #    Actions: []
-    #    Cost:
-    #        Prod: 50
-    #    Parameters:
-    #        Health: 50
-    #
-    #Storage:
-    #    Sprite: ../../assets/Entities/castle.png
-    #    LineOfSightRange: 1
-    #    RequiredTechnology: Pottery
-    #    Actions: []
-    #    Cost:
-    #        Prod: 40
-    #    Parameters:
-    #        Cost: 40
-    #        Health: 50
-    #        StorageCapacity: 50
-    #
+    Barracks:
+        Sprite: ../../assets/Entities/barracks.png
+        LineOfSightRange: 3
+        RequiredTechnology: Discipline
+        Cost:
+            Prod: 20
+        Parameters:
+            Health: 100
+            Range: 6
+    
+    MilitaryAcademy:
+        Sprite: ../../assets/Entities/military.png
+        LineOfSightRange: 3
+        RequiredTechnology: Mathematics
+        Cost:
+            Prod: 40
+        Parameters:
+            Health: 100
+    
+    Foundry:
+        Sprite: ../../assets/Entities/foundry.png
+        LineOfSightRange: 2
+        RequiredTechnology: Metallurgy
+        Actions: []
+        Cost:
+            Prod: 50
+        Parameters:
+            Health: 50
+            
+    Workshop:
+        Sprite: ../../assets/Entities/storage.png
+        LineOfSightRange: 2
+        RequiredTechnology: Apprenticeship
+        Cost:
+            Prod: 50
+        Parameters:
+            Health: 50
+    
+    Storage:
+        Sprite: ../../assets/Entities/castle.png
+        LineOfSightRange: 1
+        RequiredTechnology: Pottery
+        Cost:
+            Prod: 40
+        Parameters:
+            Cost: 40
+            Health: 50
+            StorageCapacity: 50
+    
     #Worker:
     #    Sprite: ../../assets/Entities/unit_5.png
     #    LineOfSightRange: 3
@@ -196,9 +191,9 @@ Entities:
         Parameters:
             Gold: 200
 
-#EntityGroups:
+EntityGroups:
 #    #Units: [Worker, Warrior, Archer, Catapult]
-#    #Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+     Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
 #    #Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult]
 
 Actions:
@@ -305,30 +300,30 @@ Actions:
     #        - "ModifyResource(Source.Player.Score, 2)"
     #
     ##Build
-    #Build:
-    #    Type: PlayerAction
-    #    Cooldown: 1
-    #    Targets:
-    #        EntityTypeTarget:
-    #            Type: EntityType
-    #            ValidTargets: Buildings
-    #            Conditions:
-    #                - "CanAfford(Source, EntityTypeTarget)"
-    #                - "CanSpawn(Source, EntityTypeTarget)"
-    #
-    #        TargetPosition:
-    #            Type: Position
-    #            SamplingMethod:
-    #                Type: Neighbours
-    #                Options:
-    #                    Shape: AllPositions
-    #            Conditions:
-    #                - "IsWalkable(TargetPosition)"
-    #
-    #    Effects:
-    #        - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-    #        - "PayCost(Source, EntityTypeTarget)"
-    #        - "ModifyResource(Source.Score, 5)"
+    Build:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Buildings
+                Conditions:
+                    - "CanAfford(Source, EntityTypeTarget*2)"
+                    - "CanSpawn(Source, EntityTypeTarget)"
+    
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+    
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source, EntityTypeTarget*2)"
+            - "ModifyResource(Source.Score, 5)"
 
 TechnologyTrees:
     SingleTree:
