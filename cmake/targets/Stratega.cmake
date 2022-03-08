@@ -73,13 +73,24 @@ set(STRATEGA_SOURCE_FILES
         )
 if(NOT SGA_BUILD_HEADLESS)
    list(APPEND STRATEGA_SOURCE_FILES
-        GUI/AssetCache.cpp
-        GUI/EntityRenderer.cpp
-        GUI/RTSGameRenderer.cpp
-        GUI/TBSGameRenderer.cpp
-        GUI/TileMap.cpp
-        GUI/Widgets/ActionsController.cpp
-        GUI/Widgets/FogOfWarController.cpp
+        GUI/AssetCache.cpp        
+        GUI/TextureAtlas.cpp        
+        NewGUI/GridLayout.cpp
+        NewGUI/Widget.cpp
+        NewGUI/World.cpp
+        NewGUI/GridLayoutWidget.cpp
+        NewGUI/MouseInformationWidget.cpp
+        NewGUI/FOWControllerWidget.cpp
+        NewGUI/PlayerInformationWidget.cpp
+        NewGUI/GameStateInformationWidget.cpp
+        NewGUI/ActionsWidget.cpp
+        NewGUI/WorldControllerWidget.cpp
+        NewGUI/SGARenderTarget.cpp
+        NewGUI/SGADrawable.cpp
+
+        NewGUI/GenericGameRenderer.cpp
+        NewGUI/SpriteData.cpp
+        NewGUI/ResourceManager.cpp
         )
 message("Building GUI mode")
 else()
