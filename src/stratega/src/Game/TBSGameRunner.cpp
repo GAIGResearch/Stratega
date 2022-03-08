@@ -11,11 +11,11 @@ namespace SGA
 	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
 		AgentThread agentThread;
-		while(!currentState->isGameOver())
+		while (!currentState->isGameOver())
 		{
 			ActionAssignment nextAction;
 			auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
-			if(currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
+			if (currentAgent != nullptr) // Run the agent if the player is not controlled by the GUI
 			{
 				try
 				{
@@ -35,22 +35,22 @@ namespace SGA
 					nextAction = results.actions;
 
 					//Check computation time
-					if (shouldCheckComputationTime)					
+					if (shouldCheckComputationTime)
 						if (!checkComputationTime(results.computationTime))
 							nextAction = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-						
-				}				
+
+				}
 				catch (const std::exception& ex)
 				{
 					std::cout << "Agent error: " << ex.what() << std::endl;
 					return;
-				}				
+				}
 			}
 			else // Wait for the GUI to return an action
 			{
 				try
 				{
-					while (renderer->isWaiting() && !renderer->isGameEndRequested())
+					while (!renderer->isActionAvailable() && !renderer->isGameEndRequested())
 					{
 						renderer->render();
 					}
@@ -83,23 +83,10 @@ namespace SGA
 		{
 			AgentResults results;
 			ActionAssignment actionAssignment;
-			auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
-			results = runAgent(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
-
-			//Check if agent throw exception and rethrow it
-			if (results.error)
-				std::rethrow_exception(results.error);
-
-			actionAssignment = results.actions;
-			//Check computation time
-			if (shouldCheckComputationTime)
-				if (!checkComputationTime(results.computationTime))
-					actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
-
 			try
 			{
 				auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
-				results = runAgent(*currentAgent, *currentState, *forwardModel, *config ,budgetTimeMs);
+				results = runAgent(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
 
 				//Check if agent throw exception and rethrow it
 				if (results.error)
@@ -109,14 +96,14 @@ namespace SGA
 				//Check computation time
 				if (shouldCheckComputationTime)
 					if (!checkComputationTime(results.computationTime))
-						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));						
+						actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
 			}
 			catch (const std::exception& ex)
 			{
 				std::cout << "Agent error: " << ex.what() << std::endl;
 				return;
 			}
-		
+
 			forwardModel->advanceGameState(*currentState, actionAssignment);
 			observer.onGameStateAdvanced(*currentState, *forwardModel);
 		}
