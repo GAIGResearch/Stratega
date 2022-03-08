@@ -2,8 +2,6 @@
 
 uniform sampler2D texture;
 uniform float outlineThickness;
-uniform float alpha;
-uniform vec4  outlineColor;
 uniform vec2 textureSize;
 
 void main()
@@ -21,14 +19,7 @@ void main()
 
     // If one of the surrounding pixels is transparrent --> an edge is detected
     if (pixel.a <= 0.5 && surroundingAlphaSum > 0.1)
-    {
-        gl_FragColor = outlineColor;
-    }        
+        gl_FragColor = gl_Color;
     else
-    {
-        //if(pixel.a > 0)
-        pixel.a*=alpha;
         gl_FragColor = pixel;
-    }
-        
 }

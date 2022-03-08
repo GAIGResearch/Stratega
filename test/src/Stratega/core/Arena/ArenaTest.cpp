@@ -63,7 +63,7 @@ namespace SGA
         EXPECT_CALL(*mockArenaPtr, runGame(_, _))
             .Times(2);
 
-        std::mt19937 rngEngine(0);
+        boost::mt19937 rngEngine(0);
         CallbackFn callback = [&](const std::vector<int>& c) {mockArenaPtr->runGame(c, rngEngine); };       
 
         generateCombinations(2, 2, callback);
@@ -90,7 +90,7 @@ namespace SGA
 
     //    Arena arena(*mockGameConfigPtr,std::move(mockGameRunnerPtr));
 
-    //    std::mt19937 rngEngine(0);
+    //    boost::mt19937 rngEngine(0);
     //    arena.runGame({}, rngEngine);    
 
     //    //EXPECT_TRUE(Mock::VerifyAndClearExpectations(mockArenaPtr.get()));

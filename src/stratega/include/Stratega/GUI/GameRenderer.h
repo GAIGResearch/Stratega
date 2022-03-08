@@ -25,7 +25,8 @@ namespace SGA
 	/// </summary>
 	class GameRenderer
 	{
-	public:	
+	public:
+		
 		
 		virtual ~GameRenderer() = default;
 
@@ -67,13 +68,8 @@ namespace SGA
 		/// Close the sfml window.
 		/// </summary>
 		virtual void closeWindow() = 0;
-		/// <summary>
-		/// Returns a boolean indicating if the GUI have actions available to execute.
-		/// </summary>
-		/// <returns>True if the GUI has actions, otherwise false.</returns>
-		virtual bool isActionAvailable() = 0;
 
-		std::unordered_set<int> selectedEntities;
+		virtual bool isWaiting() const = 0;
 	};
 
 	/// <summary>

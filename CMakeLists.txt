@@ -45,9 +45,9 @@ option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
-option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
+option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." OFF)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" OFF)
 
 option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
@@ -151,6 +151,7 @@ if(NOT SGA_BUILD_HEADLESS)
    endif ()
 endif()
 
+find_package(Boost REQUIRED COMPONENTS random)
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 

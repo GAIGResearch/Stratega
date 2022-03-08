@@ -19,7 +19,8 @@ target_link_libraries(gui
         "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
         "$<$<PLATFORM_ID:Linux>:sfml-window>"
         )
-        
+
+
 
 set_target_properties(gui PROPERTIES
          LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/lib

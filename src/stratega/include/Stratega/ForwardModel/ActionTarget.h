@@ -61,6 +61,7 @@ namespace SGA
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;
+		Vector2f getPosition() const;
 		int getTechnologyID()const
 		{
 			return data.technologyID;

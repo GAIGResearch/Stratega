@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/ActionSpace.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
@@ -81,6 +81,9 @@ namespace SGA
 		/// <param name="playerID">ID of the players to generate available actions for.</param>
 		/// <returns>The list of available actions for player with ID 'playerID' in game state 'state'.</returns>
 		std::vector<Action> generateActions(const GameState& state, int playerID) const;
+
+		std::vector<Action> generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd = true) const;
+
 
 		/// <summary>
 		/// Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.

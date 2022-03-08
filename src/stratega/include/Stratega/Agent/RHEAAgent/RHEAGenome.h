@@ -4,7 +4,7 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
 
 #include <iostream>
-#include <random>
+#include <boost/random.hpp>
 #include <vector>
 
 namespace SGA {
@@ -28,7 +28,7 @@ namespace SGA {
 		std::vector<Action>& getActions() { return actions; };
 
 		//Mutates the current individual.
-		void mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator);
+		void mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, boost::mt19937& randomGenerator);
 
 		//Getter and setter for the fitness of this individual.
 		double getValue() const { return value; };
@@ -41,7 +41,7 @@ namespace SGA {
 		void toString() const;
 
 		//Crosses two individuals (parent1 and parent2) and returns a new one.
-		static RHEAGenome crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
+		static RHEAGenome crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, boost::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2);
 
 	private:
 

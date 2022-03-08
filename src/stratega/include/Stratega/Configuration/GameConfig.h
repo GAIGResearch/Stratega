@@ -98,7 +98,7 @@ namespace SGA
         virtual void createTileLookup(GameState& state) const
         {
             std::unordered_map<char, const TileType*> tileLookup;
-            // error: variable ‘defaultTile’ set but not used [-Werror=unused-but-set-variable]
+            // error: variable ‘defaultTile?set but not used [-Werror=unused-but-set-variable]
             //const auto* defaultTile = &state.getGameInfo()->getTileTypes().begin()->second;
             const auto& newTileTypes = state.getGameInfo()->getTileTypes();
             for (const auto& idTilePair : newTileTypes)
@@ -143,7 +143,7 @@ namespace SGA
             for (auto& entity : entityPlacements)
             {
                 state.addEntity(*entity.entityType, entity.ownerID, entity.position);
-            }            
+            }       
         }
 
         virtual void initBoard(GameState& state, std::vector<Tile>& tiles, const Grid2D<std::shared_ptr<TileType>>& board) const
