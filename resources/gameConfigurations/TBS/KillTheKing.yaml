@@ -74,6 +74,22 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "SpawnEntity(Source, Warrior, Target)"
+
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -85,61 +101,57 @@ Actions:
                     Type: Neighbours
                     Options:
                         Shape: AllPositions
-                #Conditions:
-                #    - "DifferentPlayer(Source, Target)"
-                #    - "InRange(Source, Target, Source.AttackRange)"
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
-            #- "Attack(Target.Health, (Source.AttackDamage*2)+2d4)"
-            #- "Attack(Target.Health, sqrt(Source.AttackDamage*2)+(3*Source.AttackDamage))"
-            #- "Attack(Target.Health, (Source.AttackDamage*2)+(3*Source.AttackDamage))"
-            #- "Attack(Target.Health, Source.AttackDamage*2+3*Source.AttackDamage)"
 
-    #Move:
-    #    Type: EntityAction
-    #    Preconditions:
-    #        - "ResourceGreaterEqual(Source.MovementPoints, 1)"
-    #    Targets:
-    #        Target:
-    #            Type: Position
-    #            SamplingMethod: 
-    #                Type: Dijkstra
-    #                Options:
-    #                    SearchSize: 3
-    #                    AllowDiagonals: false
-    #            #    Type: Neighbours
-    #            #    Options:
-    #            #        Shape: Circle
-    #            #        Size: 1
-    #            Conditions:
-    #                - "IsWalkable(Target)"
-    #    Effects:
-    #        - "Move(Source, Target)"
-    #        - "ModifyResource(Source.MovementPoints, -1)"
-    #
-    #Heal:
-    #    Type: EntityAction
-    #    Cooldown: 1
-    #    Targets:
-    #        Target:
-    #            Type: Entity
-    #            ValidTargets: All
-    #            SamplingMethod:
-    #                Type: Neighbours
-    #                Options:
-    #                    Shape: AllPositions
-    #            Conditions:
-    #                - "InRange(Source, Target, Source.HealRange)"
-    #    Effects:
-    #        - "ModifyResource(Target.Health, Source.HealAmount)"
-    #
-    #
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    Heal:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+
+    
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack]
+        Actions: [Attack, Move]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -155,8 +167,8 @@ Entities:
             AttackRange: 5
             AttackDamage: 10
             MovementPoints: 2
-    #    Actions: [Attack, Move]
-    #
+        Actions: [Attack, Move]
+
     Healer:
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
@@ -166,8 +178,8 @@ Entities:
             HealRange: 2
             HealAmount: 10
             MovementPoints: 5
-    #    Actions: [Heal, Move]
-    #
+        Actions: [Heal, Move]
+
     King:
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
@@ -177,13 +189,13 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-    #    Actions: [Attack, Move]
+        Actions: [Attack, Move, Spawn]
 
 ForwardModel:
-    #LoseConditions: #If true: Player -> cant play
-    #    NoHasKing:
-    #    - "HasNoEntity(Source, King)"
-    #
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "HasNoEntity(Source, King)"
+
     Trigger:
         - OnTick:
             Type: Entity
@@ -191,19 +203,19 @@ ForwardModel:
                 - "SetToMaximum(Source.MovementPoints)"
 
 #Action categories
-#GameDescription:
-#    Type: CombatGame
-#    Actions:
-#        Move: [Move]
-#        Heal: [Heal]
-#        Attack: [Attack]
-#    Entities:
-#        Unit: [King, Warrior, Archer, Healer]
-#        Fighter: [Warrior, Archer]
-#        NoFighter: [Healer]
-#        Melee: [Warrior]
-#        Ranged: [Archer]
-#
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Heal: [Heal]
+        Attack: [Attack]
+    Entities:
+        Unit: [King, Warrior, Archer, Healer]
+        Fighter: [Warrior, Archer]
+        NoFighter: [Healer]
+        Melee: [Warrior]
+        Ranged: [Archer]
+
 GameRunner:
     AgentInitializationTime:
         Enabled: false
