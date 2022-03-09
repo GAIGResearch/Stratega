@@ -24,7 +24,7 @@ namespace SGA
 				return score;
 			}
 
-			int our_unit_number = 0;
+			//int our_unit_number = 0;
 			int king_x = -1, king_y = -1;
 			double total_distance = 0.0, mean_distance = 0.0;
 
