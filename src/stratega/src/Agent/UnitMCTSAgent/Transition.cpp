@@ -2,13 +2,13 @@
 
 namespace SGA {
 
-int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity)
+int unitStateHash(ForwardModel& /*forwardModel*/, GameState /*state*/, Entity entity)
 {
    // get entity type
     int eID = entity.getEntityTypeID();//entity.typeID;
 
    // get entity position
-   int x = entity.x(), y = entity.y();
+   int x = static_cast<int>(entity.x()), y = static_cast<int>(entity.y());
    int base = 1000000;
 
    // return hash
@@ -28,8 +28,8 @@ int unitActionHash(Action action)
       auto& targets = action.getTargets();
 
       if(targets[1].getType() == ActionTarget::Type::Position) {
-         return moveBase + targets[1].getPosition().x * 100
-                + targets[1].getPosition().y;
+         return moveBase + static_cast<int>(targets[1].getPosition().x) * 100
+                + static_cast<int>(targets[1].getPosition().y);
       } else if(targets[1].getType() == ActionTarget::Type::EntityReference) {
          int eID = targets[1].getEntityID();
          return attackBase + eID;
@@ -46,10 +46,10 @@ Transition::Transition()
    reward_mapping = std::map< std::pair< int, int >, double >();
 }
 
-void Transition::addTransition(int stateHash, int actionHash, int nextStateHash, double reward)
+void Transition::addTransition(int stateHash, int actionHash, int nextStateHash, double /*reward*/)
 {
    transition_mapping[stateHash].push_back(std::make_pair(actionHash, nextStateHash));
-   std::pair<int, int> SApair = std::make_pair(stateHash, nextStateHash);
+   //std::pair<int, int> SApair = std::make_pair(stateHash, nextStateHash);
    // TODO
    // reward_mapping[SApair].push_back(reward);
 }
