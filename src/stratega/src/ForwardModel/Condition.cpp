@@ -405,8 +405,16 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters.find(static_cast<size_t>(param.getIndex()))->second < idCostPair.second)
-				return false;
+			auto it = parameters.find(static_cast<size_t>(param.getIndex()));
+			if (it != parameters.end())
+			{
+				if (it->second < idCostPair.second)
+					return false;
+			}
+			else
+			{
+				throw std::runtime_error("Parameter not found");
+			}
 		}
 
 		return true;
