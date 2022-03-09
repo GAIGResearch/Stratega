@@ -108,7 +108,7 @@ namespace SGA
 		{
 			auto it = parameters.find(paramIdx);
 			if (it != parameters.end())
-				return parameters.find(paramIdx)->second;
+				return it->second;
 			else
 				throw std::runtime_error("Parameter not found");
 		}
@@ -121,7 +121,7 @@ namespace SGA
 		{ 
 			auto it = parameters.find(paramIdx);
 			if (it != parameters.end())
-				return parameters.find(paramIdx)->second;
+				return it->second;
 			else
 				throw std::runtime_error("Parameter not found");
 		}
