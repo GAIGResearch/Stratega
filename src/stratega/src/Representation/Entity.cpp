@@ -43,7 +43,12 @@ namespace SGA
     {
        for(const auto& param : type->getParameters()) {
           if(param.second.getName() == paramName) {
-             return parameters.find(param.second.getIndex())->second;
+
+			  auto it = parameters.find(param.second.getIndex());
+			  if (it != parameters.end())
+				  return parameters.find(param.second.getIndex())->second;
+			  else
+				  throw std::runtime_error("Parameter not found");             
           }
        }
 	   return -1;
@@ -77,7 +82,15 @@ namespace SGA
 	{
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : type->getParameters())
-			params.emplace(param.second.getName(), parameters.find(param.second.getIndex())->second);
+		{
+			auto it = parameters.find(param.second.getIndex());
+			if (it != parameters.end())
+				params.emplace(param.second.getName(), parameters.find(param.second.getIndex())->second);
+			else
+				throw std::runtime_error("Parameter not found");			
+		}
+
+			
 		return params;
 	}
 

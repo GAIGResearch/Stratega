@@ -104,13 +104,27 @@ namespace SGA
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getRawParameterAt(int paramIdx) { return parameters.find(paramIdx)->second; }
+		double& getRawParameterAt(int paramIdx) 
+		{
+			auto it = parameters.find(paramIdx);
+			if (it != parameters.end())
+				return parameters.find(paramIdx)->second;
+			else
+				throw std::runtime_error("Parameter not found");
+		}
 
 		/// <summary>yer to a certain value
 		/// </summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getRawParameterAt(int paramIdx) const { return parameters.find(paramIdx)->second; }
+		const double& getRawParameterAt(int paramIdx) const
+		{ 
+			auto it = parameters.find(paramIdx);
+			if (it != parameters.end())
+				return parameters.find(paramIdx)->second;
+			else
+				throw std::runtime_error("Parameter not found");
+		}
 
 		/// <summary>
 		/// Gets a specific parameters value, by index 
