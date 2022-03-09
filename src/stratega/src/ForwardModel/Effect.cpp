@@ -517,7 +517,7 @@ namespace SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
+			parameters[param.getIndex()] -= idCostPair.second;
 		}
 	}
 

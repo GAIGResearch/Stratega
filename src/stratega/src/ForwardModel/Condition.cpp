@@ -405,7 +405,7 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			auto it = parameters.find(static_cast<size_t>(param.getIndex()));
+			auto it = parameters.find(param.getIndex());
 			if (it != parameters.end())
 			{
 				if (it->second < idCostPair.second)
