@@ -66,7 +66,7 @@ namespace SGA
 		nodeID = nodeID_;
 
 		int tmp_unitThisStep = unitThisStep_;
-		if (tmp_unitThisStep == static_cast<int>(unitIndex_.size()) {
+		if (tmp_unitThisStep == static_cast<int>(unitIndex_.size())) {
 			std::cout << "Initiating the node, Found: tmp_unitThisStep == unitIndex_.size()" << std::endl;
 		}
 
