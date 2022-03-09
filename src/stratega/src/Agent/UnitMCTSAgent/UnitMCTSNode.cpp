@@ -3,11 +3,11 @@
 
 namespace SGA
 {
-	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_) :
-		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(gameState), playerID)
+	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState newGameState, std::vector<int> unitIndex_, int unitThisStep_, int newPlayerID, int nodeID_) :
+		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(newGameState), newPlayerID)
 	{
 		nodeID = nodeID_;
-		if (gameState.isGameOver()) {
+		if (newGameState.isGameOver()) {
 			std::cout << "Initiating the node, Found: Game Over" << std::endl;
 			return;
 		}
@@ -26,7 +26,7 @@ namespace SGA
 
 
 		Entity* unit = nullptr;
-		auto allUnits = this->gameState.getPlayerEntities(playerID);
+		auto allUnits = this->gameState.getPlayerEntities(newPlayerID);
 		//std::cout << "Entity length: " << allUnits.size() << std::endl;
 
 		while (true) {
@@ -58,9 +58,9 @@ namespace SGA
 		nextStateHashVector = std::vector<int>();
 	}
 
-	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, 
-				const int childIndex, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_) :
-		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(gameState), parent, childIndex, playerID)
+	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState newGameState, UnitMCTSNode* parent,
+				const int newChildIndex, std::vector<int> unitIndex_, int unitThisStep_, int newPlayerID, int nodeID_) :
+		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(newGameState), parent, newChildIndex, newPlayerID)
 	{
 		unitIndex = unitIndex_;
 		nodeID = nodeID_;
@@ -178,10 +178,10 @@ namespace SGA
 			}
 		}*/
 		if (increase) {
-			nVisits += result;
+			nVisits += static_cast<int>(result);
 		}
 		else {
-			nVisits = result;
+			nVisits = static_cast<int>(result);
 		}
 	}
 
@@ -238,7 +238,7 @@ namespace SGA
 
 		int numIterations = 0;
 		bool stop = false;
-		int prevCallCount = params.REMAINING_FM_CALLS;
+		int prevCallCount = static_cast<int>(params.REMAINING_FM_CALLS);
 
 		// stop in case the set number of fmCalls has been reached
 		while (!stop) {
@@ -299,7 +299,7 @@ namespace SGA
 			}
 			else {
 				// meet a leaf child, return
-				if (cur->children.size() == 0)
+				if (static_cast<int>(cur->children.size()) == 0)
 				{
 					return cur;
 				}
@@ -330,7 +330,7 @@ namespace SGA
 		else { //the entity won't be dead
 			auto actionSpace_tmp =
 				forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
-			if (actionSpace_tmp.size() == 0) {
+			if (static_cast<int>(actionSpace_tmp.size()) == 0) {
 				unitNextStep = unitThisStep + 1;
 			}
 			else {
@@ -341,7 +341,7 @@ namespace SGA
 
 		// find next alived unit
 		if (!isTurnEnd) {
-			for (; unitNextStep < unitIndex.size(); unitNextStep++) {
+			for (; unitNextStep < static_cast<int>(unitIndex.size()); unitNextStep++) {
 				auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
 				if (u != nullptr) {
 					break;
@@ -350,7 +350,7 @@ namespace SGA
 		}
 
 		// all units moved, refresh the moving order by ending this turn, this could raize terminate state
-		if (unitNextStep == unitIndex.size())
+		if (unitNextStep == static_cast<int>(unitIndex.size()))
 		{
 			auto endA = Action::createEndAction(params.PLAYER_ID);
 			applyActionToGameState(forwardModel, gsCopy, endA, params);
@@ -380,7 +380,7 @@ namespace SGA
 		children.push_back(std::unique_ptr<UnitMCTSNode>(new UnitMCTSNode(forwardModel, std::move(gsCopy), this, new_childIndex,
 			unitIndex, unitNextStep, params.PLAYER_ID, params.global_nodeID)));
 		params.global_nodeID++;
-		children[children.size() - 1]->setDepth(nodeDepth + 1);
+		children[children.size() - static_cast<size_t>(1)]->setDepth(nodeDepth + 1);
 		if (nodeDepth + 1 > params.maxDepth)
 		{
 			params.maxDepth = nodeDepth + 1;
@@ -489,9 +489,9 @@ namespace SGA
 
 			while (!(rolloutFinished(gsCopy, rolloutDepth, params) || gsCopy.isGameOver())) {
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
-				if (actions.size() == 0)
+				if (static_cast<int>(actions.size()) == 0)
 					break;
-				boost::random::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
+				boost::random::uniform_int_distribution<size_t> randomDistribution(0, static_cast<int>(actions.size()) - 1);
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params);
 				rolloutDepth++;
 			}
@@ -567,7 +567,7 @@ namespace SGA
 		//cout << "Remaining budget: " << params.REMAINING_FM_CALLS << "\n";
 		//printTree();
 
-		std::vector<double> childValues(children.size(), 0);
+		std::vector<double> childValues(static_cast<int>(children.size()), 0);
 		for (size_t i = 0; i < children.size(); ++i)
 		{
 			UnitMCTSNode* child = children[i].get();
@@ -668,9 +668,9 @@ namespace SGA
 		//if (children.size() != 0)
 		if (childExpanded != 0)
 		{
-			v->push_back(children.size());
+			v->push_back(static_cast<int>(children.size()));
 		}
-		for (int i = 0; i < children.size(); i++)
+		for (int i = 0; i < static_cast<int>(children.size()); i++)
 		{
 			children[i]->get_branching_number(v, n);
 		}
