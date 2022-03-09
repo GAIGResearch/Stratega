@@ -16,7 +16,7 @@ namespace SGA {
         parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
     }
 
-    ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
+    ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
     {
        if(newRound) {
           newRound = false;
@@ -54,9 +54,9 @@ namespace SGA {
           needNextUnit = true;
        } else {
           auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
-          auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
+          actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
 
-          if(actionSpace_tmp.size() == 0) {
+          if(static_cast<int>(actionSpace_tmp.size()) == 0) {
              needNextUnit = true;
           } else {
           }
@@ -65,7 +65,7 @@ namespace SGA {
        // if need to roll, decide which is the next.
        if(needNextUnit) {
           int tmp_unitNextStep = unitThisStep + 1;
-          for(; tmp_unitNextStep < unitIndex.size(); tmp_unitNextStep++) {
+          for(; tmp_unitNextStep < static_cast<int>(unitIndex.size()); tmp_unitNextStep++) {
              if(eIDtoUnitArrayIndex.count(unitIndex[tmp_unitNextStep]))  // if alive
              {
                 break;
@@ -73,7 +73,7 @@ namespace SGA {
           }
 
           // execute EndTurn if there is no valid next unit.
-          if(tmp_unitNextStep == unitIndex.size()) {  // every unit moved, end the turn
+          if(tmp_unitNextStep == static_cast<int>(unitIndex.size())) {  // every unit moved, end the turn
 
              step++;  // for debugging
 
@@ -119,7 +119,7 @@ namespace SGA {
        // we just instantly return it
        // todo update condition to an and in case we can compare gameStates, since we currently cannot
        // reuse the tree after an endTurnAction
-       if(actionSpace.size() == 1) {
+       if(static_cast<int>(actionSpace.size()) == 1) {
           rootNode = nullptr;
           previousActionIndex = -1;
           step++;
@@ -135,7 +135,7 @@ namespace SGA {
              // rootNode = std::move(rootNode->children.at(previousActionIndex));
 
              int bestChildID = -1;
-             for(int i = 0; i < rootNode->children.size(); i++) {
+             for(int i = 0; i < static_cast<int>(rootNode->children.size()); i++) {
                 if(rootNode->children[i]->childIndex == previousActionIndex) {
                    bestChildID = i;
                 }
@@ -198,23 +198,23 @@ namespace SGA {
                 for(auto node1 : deep_layer) {  // each initial node
                    if(node1->isAbstracted)
                       continue;  // can be adjusted
-                   if(absNodes[i].size() == 0) {  // this depth has no node cluster
+                   if(static_cast<int>(absNodes[i].size()) == 0) {  // this depth has no node cluster
                       absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
 
                       // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
                       absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                         i * tmp_index + absNodes[i].size() - 1,
+                         i * tmp_index + static_cast<int>(absNodes[i].size()) - 1,
                          std::vector< double >{node1->value, float(node1->nVisits)}));
                       node1->isAbstracted = true;
-                      node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                      node1->absNodeID = i * 1000 + static_cast<int>(absNodes[i].size()) - 1;
                       continue;
                    }
 
                    bool foundExistGroup = false;
-                   for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                   for(int j = 0; j < static_cast<int>(absNodes[i].size()); j++)  // each abstract nodes: nodes cluster
                    {
                       bool match = true;
-                      for(int k = 0; k < absNodes[i][j].size();
+                      for(int k = 0; k < static_cast<int>(absNodes[i][j].size());
                           k++) {  // compare between new initial nodes to the abstracted Nodes
                          if(! isTwoNodeApproxmateHomomorphism(
                                forwardModel,
@@ -237,12 +237,12 @@ namespace SGA {
                    if(! foundExistGroup) {
                       absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
                       absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                         i * tmp_index + absNodes[i].size() - 1,
+                         i * tmp_index + static_cast<int>(absNodes[i].size()) - 1,
                          std::vector< double >{node1->value, float(node1->nVisits)}));
                       // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
                       // node1->value, double(node1->nVisits) };
                       node1->isAbstracted = true;
-                      node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                      node1->absNodeID = i * 1000 + static_cast<int>(absNodes[i].size()) - 1;
                       // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
                       // << std::endl;
                    }
@@ -291,10 +291,10 @@ namespace SGA {
           ///*
           rootNode->get_branching_number(&branching_number, &n_node);
 
-          if(branching_number.size() != 0) {
+          if(static_cast<int>(branching_number.size()) != 0) {
              mean_braching_factor = std::accumulate(
                                        branching_number.begin(), branching_number.end(), 0.0)
-                                    / branching_number.size();
+                                    / static_cast<int>(branching_number.size());
           }
           //*/
 
@@ -368,7 +368,7 @@ namespace SGA {
        std::vector< int > commonActionsVector = std::vector< int >();
 
        // reward checking
-       for(int i = 0; i < node1->actionHashVector.size(); i++) {
+       for(int i = 0; i < static_cast<int>(node1->actionHashVector.size()); i++) {
           double diff_this = 0.0;
           int a = node1->actionHashVector[i];
           if(node2->actionHashes.count(a)) {
@@ -386,7 +386,7 @@ namespace SGA {
           }
        }
 
-       for(int i = 0; i < node2->actionHashVector.size(); i++) {
+       for(int i = 0; i < static_cast<int>(node2->actionHashVector.size()); i++) {
           int a = node2->actionHashVector[i];
           if(! commonActions.count(a))
              continue;
@@ -411,14 +411,14 @@ namespace SGA {
        */
        // for all transition
        double transition_error = 0;
-       for(int i = 0; i < node1->nextStateHashVector.size(); i++) {
+       for(int i = 0; i < static_cast<int>(node1->nextStateHashVector.size()); i++) {
           int s_prime = node1->nextStateHashVector[i];  // s' next state
           if(! (node2->stateCounter.count(s_prime))) {  // get the same next state
              transition_error += 1.0;
           }
        }
 
-       for(int i = 0; i < node2->nextStateHashVector.size(); i++) {
+       for(int i = 0; i < static_cast<int>(node2->nextStateHashVector.size()); i++) {
           int s_prime = node2->nextStateHashVector[i];
           if(! (node1->stateCounter.count(s_prime))) {  // get the same next state
              transition_error += 1.0;
