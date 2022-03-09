@@ -22,7 +22,11 @@ Full documentation can be found here:
 
 # Gallery
 
-TBS
-![TBS](/images/tbsScreenshot.png)
-RTS
-![RTS](/images/rtsScreenshot.png)
+PushThemAll(TBS)
+![TBS](/images/tbsPushThemAll.gif)
+
+KillTheKing(TBS)
+![TBS](/images/tbsKillTheKing.gif)
+
+BasicRTS(RTS)
+![RTS](/images/rtsBasic.gif)
