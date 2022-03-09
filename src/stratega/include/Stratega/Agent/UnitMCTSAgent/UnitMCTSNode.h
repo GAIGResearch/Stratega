@@ -38,7 +38,7 @@ namespace SGA {
        protected:
           double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};
 
-          [[nodiscard]] bool isFullyExpanded() const {
+          bool isFullyExpanded() const override{
              return childExpanded >= static_cast<int>(actionSpace.size());
           }
 
