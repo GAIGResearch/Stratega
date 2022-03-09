@@ -78,12 +78,12 @@ namespace SGA {
         bool newRound = true;
 
         private:
-        bool initialized = false;
+        //bool initialized = false;
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;
         int previousActionIndex = -1;
         UnitMCTSParameters parameters_;
-        bool continuePreviousSearch = true;
-        int playerTurn = -1;
+        //bool continuePreviousSearch = true;
+        //int playerTurn = -1;
         int step = 1;
         std::vector< int > unitIndex;
         bool unitIndexInitialized = false;
