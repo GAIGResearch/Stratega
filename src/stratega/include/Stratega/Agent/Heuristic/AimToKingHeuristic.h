@@ -43,7 +43,7 @@ namespace SGA
 					//auto& entityType = gameState.gameInfo->getEntityType(entity.typeID);
 					auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					if (entityType.getName() == "King") {
-						king_x = static_cast<int>(entity.x()); static_cast<int>(king_y = entity.y());
+						king_x = static_cast<int>(entity.x()); king_y = static_cast<int>(entity.y());
 						//int paramID = 0;
 						//for (auto& parameter : entity.parameters)
 						opponent_king_hp = entity.getParameter("Health");
