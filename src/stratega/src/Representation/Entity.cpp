@@ -126,7 +126,6 @@ namespace SGA
 		std::cout << " [OwnerID: " << ownerID << "],";
 		std::cout << " [Position: " << position.x << "," << position.y << "]";
 
-		int parameterID = 0;
 		if (parameters.empty())
 		{
 			std::cout << std::endl;	
@@ -145,20 +144,20 @@ namespace SGA
 	void Entity::recomputeStats()
 	{
 		//Remove buffs applied but keep value clamped to min and max
-		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		for (size_t i = 0; i < parameters.size(); i++)
 		{
 			const auto& param = type->getParameterByIndex(static_cast<int>(i));
 			double maxParameter = param.getMaxValue();
 			double minParameter = param.getMinValue();
 
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 
 			//Keep parameter inside max and min
-			if (parameters[i] > maxParameter)
-				parameters[i] = maxParameter;
-			else if (parameters[i] < minParameter)
-				parameters[i] = minParameter;
+			if (parameters[static_cast<int>(i)] > maxParameter)
+				parameters[static_cast<int>(i)] = maxParameter;
+			else if (parameters[static_cast<int>(i)] < minParameter)
+				parameters[static_cast<int>(i)] = minParameter;
 
 		}
 
@@ -187,9 +186,9 @@ namespace SGA
 			maxParameter += multiplicationSum;
 
 			//Write new value with the different of the max parameters
-			parameters[i] += maxParameter - previousMaxParameter;
+			parameters[static_cast<int>(i)] += maxParameter - previousMaxParameter;
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 		}
 	}
 	int Entity::getInventorySize() const
