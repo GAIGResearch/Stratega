@@ -19,7 +19,7 @@ namespace SGA
 		int tmp_unitThisStep = unitThisStep_;
 
 		// should never show up
-		if (tmp_unitThisStep == unitIndex_.size()) {
+		if (tmp_unitThisStep == static_cast<int>(unitIndex_.size())) {
 			std::cout << "Initiating the node, Found: tmp_unitThisStep == unitIndex_.size()" << std::endl;
 
 		}
@@ -37,7 +37,7 @@ namespace SGA
 
 				// happens when all units are killed, should not happen
 				// could be met when the state is terminated? 8_21
-				if (tmp_unitThisStep == unitIndex_.size()) {
+				if (tmp_unitThisStep == static_cast<int>(unitIndex_.size())) {
 					std::cout << "All Unit killed init1" << std::endl;
 					return; // 8_21
 				}
@@ -66,7 +66,7 @@ namespace SGA
 		nodeID = nodeID_;
 
 		int tmp_unitThisStep = unitThisStep_;
-		if (tmp_unitThisStep == unitIndex_.size()) {
+		if (tmp_unitThisStep == static_cast<int>(unitIndex_.size()) {
 			std::cout << "Initiating the node, Found: tmp_unitThisStep == unitIndex_.size()" << std::endl;
 		}
 
@@ -79,7 +79,7 @@ namespace SGA
 				tmp_unitThisStep++;
 
 				// happens when all units are killed, should not happen
-				if (tmp_unitThisStep == unitIndex_.size()) {
+				if (tmp_unitThisStep == static_cast<int>(unitIndex_.size())) {
 					std::cout << "All Unit killed init 2" << std::endl;
 					return; //8_21
 				}
@@ -151,7 +151,7 @@ namespace SGA
 
 	int UnitMCTSNode::getVisitCount(std::map<int, std::vector<double> >* absNodeToStatistics) {
 		if (isAbstracted) {
-			absVisitCount = (*absNodeToStatistics)[absNodeID][1];
+			absVisitCount = static_cast<int>((*absNodeToStatistics)[absNodeID][1]);
 			return absVisitCount;
 		}
 		else {
@@ -238,7 +238,7 @@ namespace SGA
 
 		int numIterations = 0;
 		bool stop = false;
-		int prevCallCount = static_cast<int>(params.REMAINING_FM_CALLS);
+		//int prevCallCount = static_cast<int>(params.REMAINING_FM_CALLS);
 
 		// stop in case the set number of fmCalls has been reached
 		while (!stop) {
@@ -273,7 +273,7 @@ namespace SGA
 				stop = params.REMAINING_FM_CALLS <= 0 || numIterations == params.maxFMCalls;
 			}
 
-			prevCallCount = params.REMAINING_FM_CALLS;
+			//prevCallCount = params.REMAINING_FM_CALLS;
 		}
 	}
 
