@@ -29,4 +29,4 @@ KillTheKing(TBS)
 ![TBS](/images/tbsKillTheKing.gif)
 
 BasicRTS(RTS)
-![RTS](/images/rtsBasic.png)
+![RTS](/images/rtsBasic.gif)
