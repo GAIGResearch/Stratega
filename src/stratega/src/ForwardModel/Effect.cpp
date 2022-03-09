@@ -181,7 +181,7 @@ namespace SGA
 	{
 	}
 	
-	void Empty::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void Empty::execute(GameState& /*state*/, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& /*targets*/) const
 	{
 	}
 
