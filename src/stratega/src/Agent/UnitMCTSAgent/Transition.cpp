@@ -35,6 +35,7 @@ int unitActionHash(Action action)
          return attackBase + eID;
       } else {
          std::cout << "[actionHahs] action type unknown" << std::endl;
+         throw std::runtime_error("action type unknown");
       }
    }
 }
