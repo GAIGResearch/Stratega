@@ -39,7 +39,7 @@ namespace SGA {
           double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};
 
           [[nodiscard]] bool isFullyExpanded() const {
-             return childExpanded >= actionSpace.size();
+             return childExpanded >= static_cast<int>(actionSpace.size());
           }
 
        public:

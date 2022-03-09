@@ -9,10 +9,10 @@ namespace SGA
 		int unitNum = -1;
 	public:
 		AimToKingHeuristic(GameState& gameState) {
-			unitNum = gameState.getEntities().size();
+			unitNum = static_cast<int>(gameState.getEntities().size());
 		}
 
-		double evaluateGameState(const ForwardModel& forwardModel, GameState& gameState, const int playerID) override {
+		double evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& gameState, const int playerID) override {
 			double score = 0.0;
 
 			if (gameState.isGameOver())
@@ -43,10 +43,10 @@ namespace SGA
 					//auto& entityType = gameState.gameInfo->getEntityType(entity.typeID);
 					auto& entityType = gameState.getGameInfo()->getEntityType(entity.getEntityTypeID());
 					if (entityType.getName() == "King") {
-						king_x = entity.x(); king_y = entity.y();
-						int paramID = 0;
+						king_x = static_cast<int>(entity.x()); static_cast<int>(king_y = entity.y());
+						//int paramID = 0;
 						//for (auto& parameter : entity.parameters)
-						opponent_king_hp = opponent_king_hp = entity.getParameter("Health");
+						opponent_king_hp = entity.getParameter("Health");
 						/*
 						for (auto& parameter : entity.getParamValues())
 						{
@@ -70,7 +70,7 @@ namespace SGA
 			{
 				total_distance += abs(positions[entity].x - king_x) + abs(positions[entity].y - king_y);
 			}
-			mean_distance = total_distance / playerEntities.size();
+			mean_distance = total_distance / static_cast<double>(playerEntities.size());
 
 			double maximum_distance = 400.0;
 			score = 1.0 - mean_distance/ maximum_distance; // set to the mean of distance of our units to opponent units, divided by a constant 50 to make it slower than the gameOver score
@@ -80,8 +80,8 @@ namespace SGA
 			double Total_N_entities = 5.0;
 			//double Total_N_entities = unitNum;
 			Total_N_entities *= 4; // 4 for scaling
-			score += playerEntities.size() / Total_N_entities;
-			score -= opponentEntites.size() / Total_N_entities;
+			score += static_cast<double>(playerEntities.size()) / Total_N_entities;
+			score -= static_cast<double>(opponentEntites.size()) / Total_N_entities;
 
 			return (score+2.0)/4.0;
 		}
