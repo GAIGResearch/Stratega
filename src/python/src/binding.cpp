@@ -625,7 +625,7 @@ PYBIND11_MODULE(stratega, m)
 
 
 		.def("set_parameter", &SGA::Player::setParameter, py::arg("paramIdx"), py::arg("val"), " Sets the parameter of this player to a certain value")
-		.def("resize_parameters", &SGA::Player::resizeParameters, py::arg("cap"), " Sets a size for the vector of parameters of this player.")
+		//.def("resize_parameters", &SGA::Player::resizeParameters, py::arg("cap"), " Sets a size for the vector of parameters of this player.")
 		.def("remove_continuous_action", &SGA::Player::removeContinuousAction, py::arg("idx"), " Sets a size for the vector of parameters of this player.")
 		.def("add_continuous_action", &SGA::Player::addContinuousAction, py::arg("newAction"), " Adds a continuous action to the list of this player.")
 		.def("advance_continuous_action", &SGA::Player::advanceContinuousAction, py::arg("idx"), "Advances the tick counter of the continuous action with index 'idx'")

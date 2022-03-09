@@ -148,15 +148,16 @@ namespace SGA
 		/// <param name="val">Value to be set for the parameter.</param>
 		void setMinParameter(int paramIdx, double val) { minParameters[static_cast<size_t>(paramIdx)] = val; }
 
-		/// <summary>
-		/// Sets a size for the vector of parameters of this player.
-		/// </summary>
-		void resizeParameters(int cap)
-		{
-			/*parameters.resize(static_cast<size_t>(cap));*//*
-			maxParameters.resize(static_cast<size_t>(cap));
-			minParameters.resize(static_cast<size_t>(cap));*/
-		}
+		///// <summary>
+		///// Sets a size for the vector of parameters of this player.
+		///// </summary>
+		//void resizeParameters(int cap)
+		//{
+		//	/*parameters.resize(static_cast<size_t>(cap));*//*
+		//	maxParameters.resize(static_cast<size_t>(cap));
+		//	minParameters.resize(static_cast<size_t>(cap));*/
+		//}
+
 		/// <summary>
 		/// Removes a continuous action from the vector of continuous actions of this player.
 		/// </summary>
