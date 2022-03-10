@@ -5,6 +5,102 @@
 
 namespace SGA
 {
+	void ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
+	{
+		variable.insert(std::make_pair(newVariable, parameter));
+	}
+
+	void ExpressionStruct::setExpression(std::string string)
+	{
+		expression = string;
+	}
+
+	std::string ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	{
+		std::string ex = expression;
+		std::cout << "Before change: " << ex << std::endl;
+		for (auto& var : variable)
+		{
+			if (var.second.getType() == FunctionParameter::Type::Constant)
+			{
+				//Parse consant
+				double temp = var.second.getConstant(state, actionTargets);
+				ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
+			}
+		}
+		std::cout << "After change: " << ex << std::endl;
+		return ex;
+	}
+
+	std::unordered_map<ParameterID, std::string> ExpressionStruct::getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	{
+		std::string ex = expression;
+		std::unordered_map<ParameterID, std::string> expressions;
+		std::cout << "Initial cost change: " << expression << std::endl;
+
+		//Gett all the const expressions
+		for (auto& var : variable)
+		{
+			if (var.second.getType() == FunctionParameter::Type::ArgumentReference)
+			{
+				auto& actionTarget = var.second.getActionTarget(actionTargets);
+				//auto& actionTarget = actionTargets[var.second.data.argumentIndex];
+
+				if (actionTarget.getType() == ActionTarget::TechnologyReference)
+				{
+					//Parse cost
+					const auto& originalCost = var.second.getTechnology(state, actionTargets).cost;
+					std::cout << "While cost change: ";
+					for (const auto& parameter : originalCost)
+					{
+						std::string ex = expression;
+						ex = std::regex_replace(ex, std::regex(var.first), std::to_string(parameter.second));
+						expressions[parameter.first] = ex;
+						std::cout << "	" << ex << std::endl;
+					}
+					std::cout << std::endl;
+				}
+				else if (actionTarget.getType() == ActionTarget::EntityTypeReference)
+				{
+					//Parse cost
+					const auto& originalCost = var.second.getEntityType(state, actionTargets).getCosts();
+					std::cout << "While cost change: ";
+					for (const auto& parameter : originalCost)
+					{
+						std::string ex = expression;
+						ex = std::regex_replace(ex, std::regex(var.first), std::to_string(parameter.second));
+						expressions[parameter.first] = ex;
+						std::cout << "	" << ex << std::endl;
+					}
+					std::cout << std::endl;
+				}
+				else
+				{
+					throw std::runtime_error("Unknow action target in expression");
+				}
+			}
+		}
+
+		//Check if we have constants
+		for (auto& var : variable)
+		{
+			for (auto& currExpression : expressions)
+			{
+				if (var.second.getType() == FunctionParameter::Type::Constant || var.second.getType() == FunctionParameter::Type::ParameterReference)
+				{
+					std::cout << "While cost change: ";
+					//Parse consant
+					double temp = var.second.getConstant(state, actionTargets);
+					currExpression.second = std::regex_replace(currExpression.second, std::regex(var.first), std::to_string(temp));
+					std::cout << "	" << currExpression.second << std::endl;
+					std::cout << std::endl;
+				}
+			}
+		}
+
+		return expressions;
+	}
+
 	FunctionParameter FunctionParameter::createExpression(ExpressionStruct expression)
 	{
 		return FunctionParameter(Type::Expression, { expression });
