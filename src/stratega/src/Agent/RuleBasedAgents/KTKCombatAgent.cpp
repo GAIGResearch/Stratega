@@ -1,8 +1,8 @@
-#include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
+#include <Stratega/Agent/RuleBasedAgents/KTKCombatAgent.h>
 
 namespace SGA
 {
-	std::vector<Action> CombatAgent::filterUnitActions(std::vector<Action>& actions, Entity& unit) const
+	std::vector<Action> KTKCombatAgent::filterUnitActions(std::vector<Action>& actions, Entity& unit) const
 	{
 		std::vector<Action> filteredActions;
 		for (const auto& a : actions)
@@ -15,7 +15,7 @@ namespace SGA
 		return filteredActions;
 	}
 
-	std::vector<Action> CombatAgent::filterActionTypes(std::vector<Action>& actions, std::string type) const
+	std::vector<Action> KTKCombatAgent::filterActionTypes(std::vector<Action>& actions, std::string type) const
 	{
 		std::vector<Action> filteredActions;
 
@@ -29,7 +29,7 @@ namespace SGA
 		return filteredActions;
 	}
 
-	std::vector<Entity> CombatAgent::filterUnitsByReach(const std::vector<Entity>& targetUnits, const Vector2f& pos, GameState& /*currentState*/) const
+	std::vector<Entity> KTKCombatAgent::filterUnitsByReach(const std::vector<Entity>& targetUnits, const Vector2f& pos, GameState& /*currentState*/) const
 	{
 		std::vector<Entity> units;
 
@@ -47,7 +47,7 @@ namespace SGA
 		return units;
 	}
 
-	std::vector<Action> CombatAgent::filterMovesInRange(const std::vector<SGA::Action>& moves, Vector2f position, int range, GameState& gameState) const
+	std::vector<Action> KTKCombatAgent::filterMovesInRange(const std::vector<SGA::Action>& moves, Vector2f position, int range, GameState& gameState) const
 	{
 		std::vector<Action> filteredMoves;
 
@@ -60,7 +60,7 @@ namespace SGA
 		return filteredMoves;
 	}
 
-	int CombatAgent::getPotentialHealing(std::vector<Action>& actions, const Vector2f& pos, const std::vector<Entity>& potentialHealers, GameState& gameState) const
+	int KTKCombatAgent::getPotentialHealing(std::vector<Action>& actions, const Vector2f& pos, const std::vector<Entity>& potentialHealers, GameState& gameState) const
 	{
 		auto healers = filterUnitsByReach(potentialHealers, pos, gameState);
 		auto heal = 0;
@@ -84,7 +84,7 @@ namespace SGA
 		return heal;
 	}
 
-	bool CombatAgent::getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const
+	bool KTKCombatAgent::getMoveInRange(Entity& u, const Vector2f& pos, int range, const std::vector<Entity>& opponentUnits, std::vector<SGA::Action>& moves, Action& bucket, GameState& gameState) const
 	{
 		if (u.getPosition().manhattanDistance(pos) <= range)
 			return false;
@@ -129,7 +129,7 @@ namespace SGA
 
 	}
 
-	double CombatAgent::getPotentialDamage(const Vector2f& pos, const std::vector<Entity>& potentialAttackers, GameState& gameState) const
+	double KTKCombatAgent::getPotentialDamage(const Vector2f& pos, const std::vector<Entity>& potentialAttackers, GameState& gameState) const
 	{
 
 		auto attackers = filterUnitsByReach(potentialAttackers, pos, gameState);
@@ -143,7 +143,7 @@ namespace SGA
 		return damage;
 	}
 
-	double CombatAgent::getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity>& opponentUnits, GameState& gameState) const
+	double KTKCombatAgent::getAttackScore(std::vector<Action>& actions, const Entity& target, const Action& attack, const std::vector<Entity>& opponentUnits, GameState& gameState) const
 	{
 		Entity* attackTarget = attack.getTargets()[0].getEntity(gameState);
 		auto attackAmount = attackTarget->getParameter("AttackDamage");
@@ -167,7 +167,7 @@ namespace SGA
 		return 0;
 	}
 
-	double CombatAgent::getHealScore(std::vector<Action>& /*actions*/, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const
+	double KTKCombatAgent::getHealScore(std::vector<Action>& /*actions*/, const Entity& target, const Action& heal, const std::vector<Entity>& opponentUnits, GameState& gameState) const
 	{
 		Entity* healTarget = heal.getTargets()[0].getEntity(gameState);
 		auto healAmount = healTarget->getParameter("HealAmount");
@@ -200,8 +200,9 @@ namespace SGA
 		return 0;
 	}
 
-	ActionAssignment CombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
+	ActionAssignment KTKCombatAgent::playTurn(GameState& currentState, const ForwardModel& fm)
 	{
+		//std::cout << "start turn" << std::endl;
 		for (const auto& a : currentState.getGameInfo()->getActionTypes())
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.getName();
@@ -253,7 +254,6 @@ namespace SGA
 				highestScore = score;
 				bestAttackTarget = &opp;
 			}
-
 		}
 
 
@@ -275,6 +275,7 @@ namespace SGA
 		auto actions = fm.generateActions(currentState, getPlayerID());
 		Action nextAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
 		bool foundAction = false;
+
 		for (auto unit : myUnits)
 		{
 			auto subActions = filterUnitActions(actions, unit);
@@ -307,11 +308,12 @@ namespace SGA
 					continue; // No healerino opponents units
 
 				double targetHealth = targetUnit.getParameter("Health");
-				double maxHealth = (currentState.getGameInfo()->getEntityTypes()).at(targetUnit.getID()).getParamMax("Health");
+				double maxHealth = targetUnit.getEntityType().getParamMax("Health");
 				if (targetHealth >= maxHealth)
 					continue; // Stop healing units that are already full
 
 				auto score = getHealScore(actions, targetUnit, heal, opponentUnits, currentState);
+
 				if (score > highestScore)
 				{
 					highestScore = score;
@@ -339,16 +341,17 @@ namespace SGA
 		{
 			//std::cout << "Combat Agent " << "does something" << std::endl;
 		}
+		//std::cout << "end combat agent" << std::endl;
 
 		return ActionAssignment::fromSingleAction(nextAction);
 	}
 
-	void CombatAgent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
+	void KTKCombatAgent::init(GameState /*initialState*/, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
 	{
 		//Init stuff goes here.
 	}
 
-	ActionAssignment CombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
+	ActionAssignment KTKCombatAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
 		unitScores = UnitTypeEvaluator::getLinearSumEvaluation(state);
 		return playTurn(state, forwardModel);

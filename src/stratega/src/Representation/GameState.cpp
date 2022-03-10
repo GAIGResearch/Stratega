@@ -7,41 +7,41 @@
 
 DISABLE_WARNING_PUSH
 #if defined(__clang__)    
-	DISABLE_WARNING_NULL_DEREFERENCE
+DISABLE_WARNING_NULL_DEREFERENCE
 #elif defined(__GNUC__)
-	DISABLE_WARNING_NULL_DEREFERENCE
+DISABLE_WARNING_NULL_DEREFERENCE
 #endif
 
 namespace SGA
 {
 	GameState::GameState(Grid2D<Tile>&& newBoard, const std::unordered_map<int, TileType>& /*tileTypes*/) :
-		gameOver(false),				
+		gameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
-		tickLimit(-1),				
+		tickLimit(-1),
 		gameType(GameType::TBS),
 		fogOfWarTile(nullptr, 0, 0),
 		board(std::move(newBoard)),
-		players(),		
+		players(),
 		fogOfWarId(-1),
 		currentPlayer(0),
 		fogOfWarApplied(false)
-		
+
 	{
 	}
 
 	GameState::GameState() :
-		gameOver(false),				
+		gameOver(false),
 		winnerPlayerID(-1),
 		currentTick(1),
-		tickLimit(-1),		
+		tickLimit(-1),
 		gameType(GameType::TBS),
 		fogOfWarTile(nullptr, 0, 0),
-		board(0, 0, fogOfWarTile),		
+		board(0, 0, fogOfWarTile),
 		fogOfWarId(-1),
 		currentPlayer(0),
 		fogOfWarApplied(false)
-	{		
+	{
 	}
 
 	Entity* GameState::getEntity(int entityID)
@@ -63,7 +63,7 @@ namespace SGA
 				}
 			}
 			return nullptr;
-		}			
+		}
 		else
 			return &*iter;
 	}
@@ -99,7 +99,7 @@ namespace SGA
 		if (iter == entities.end())
 		{
 			return nullptr;
-		}			
+		}
 		else
 			return &*iter;
 	}
@@ -236,7 +236,7 @@ namespace SGA
 		return nullptr;
 	}
 
-	
+
 	std::vector<int> GameState::whoCanPlay() const
 	{
 		std::vector<int> playerIDs;
@@ -250,17 +250,17 @@ namespace SGA
 			{
 				playerIDs.emplace_back(p.getID());
 			}
-		}		
+		}
 		return playerIDs;
 	}
-	
+
 
 	bool GameState::canPlay(int playerID) const
 	{
 		return (currentPlayer == playerID || currentPlayer == -1);
 	}
-	
-	
+
+
 	std::vector<Entity> GameState::getPlayerEntities(int playerID, EntityCategory entityCategory) const
 	{
 		auto* player = getPlayer(playerID);
@@ -305,7 +305,7 @@ namespace SGA
 	{
 		if (hasPlayerParameter("Score"))
 			return static_cast<int>(getPlayerParameter(playerID, "Score"));
-		return 0; 
+		return 0;
 	}
 
 	double GameState::getPlayerParameter(int playerID, const std::string& paramName) const
@@ -323,7 +323,8 @@ namespace SGA
 			}
 			throw std::runtime_error("No parameter " + paramName + " associated to player ID " + std::to_string(playerID));
 
-		}else throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
+		}
+		else throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 	}
 
 	bool GameState::hasPlayerParameter(const std::string& paramName) const
@@ -346,7 +347,7 @@ namespace SGA
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
 		for (const auto& param : parameterTypes)
 			paramNames.emplace_back(param.second.getName());
-		
+
 		return paramNames;
 	}
 
@@ -360,7 +361,7 @@ namespace SGA
 		const auto parameterTypes = gameInfo->getPlayerParameterTypes();
 		for (const auto& param : parameterTypes)
 			params.emplace(param.second.getName(), p->getRawParameterAt(param.second.getIndex()));
-		
+
 		return params;
 	}
 
@@ -370,7 +371,7 @@ namespace SGA
 		Grid2D<bool> visibilityMap(board.getWidth(), board.getHeight());
 		for (auto entity : entities)
 		{
-			if(entity.getOwnerID() == playerID)
+			if (entity.getOwnerID() == playerID)
 			{
 				// Compute maximum sized rectangle around entity
 				auto leftX = std::max<int>(0, static_cast<int>(entity.x() - entity.getLineOfSightRange()));
@@ -411,7 +412,7 @@ namespace SGA
 		auto it = entities.begin();
 		while (it != entities.end())
 		{
-			if (!board.isInBounds(static_cast<int>(it->x()), static_cast<int>(it->y())) || 
+			if (!board.isInBounds(static_cast<int>(it->x()), static_cast<int>(it->y())) ||
 				!visibilityMap.get(static_cast<int>(it->x()), static_cast<int>(it->y())))
 			{
 				it = entities.erase(it);
@@ -438,7 +439,7 @@ namespace SGA
 
 		fogOfWarId = playerID;
 	}
-	
+
 	bool GameState::canExecuteAction(const Entity& entity, const ActionType& actionType) const
 	{
 		//Check preconditions
@@ -470,7 +471,7 @@ namespace SGA
 	std::vector<ActionType> GameState::getPlayerActionTypes(int playerID) const
 	{
 		const Player* p = getPlayer(playerID);
-		if(p == nullptr)
+		if (p == nullptr)
 			throw std::runtime_error("No player associated to ID " + std::to_string(playerID));
 
 		std::vector<ActionType> aTypes;
@@ -484,7 +485,7 @@ namespace SGA
 
 	const Entity* GameState::getEntityAt(const Vector2f& pos) const
 	{
-		for(const auto& entity : entities)
+		for (const auto& entity : entities)
 		{
 			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
 			{
@@ -544,7 +545,7 @@ namespace SGA
 
 	void GameState::initResearchTechs()
 	{
-		for(int i = 0; i < static_cast<int>(players.size()); ++i)
+		for (int i = 0; i < static_cast<int>(players.size()); ++i)
 			researchedTechnologies[i] = {};
 	}
 
@@ -577,14 +578,14 @@ namespace SGA
 
 	const Tile& GameState::getTileAt(const Vector2i& pos) const
 	{
-		if(isInBounds(pos))
+		if (isInBounds(pos))
 			return board[pos];
 		throw std::runtime_error("Access to board out of bounds: " + std::to_string(pos.x) + "," + std::to_string(pos.y));
 	}
 
 	const Tile& GameState::getTileAt(int x, int y) const
 	{
-		return getTileAt({x,y});
+		return getTileAt({ x,y });
 	}
 
 
@@ -599,8 +600,8 @@ namespace SGA
 		//Print entities
 		for (auto& entity : entities)
 		{
-			std::cout << "[OwnerID]" << entity.getOwnerID() << std::endl;			
-			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).getName() << " [entityID]: "<< entity.getID() << std::endl;
+			std::cout << "[OwnerID]" << entity.getOwnerID() << std::endl;
+			std::cout << "	[type]: " << gameInfo->getEntityType(entity.getEntityTypeID()).getName() << " [entityID]: " << entity.getID() << std::endl;
 		}
 	}
 
@@ -639,11 +640,11 @@ namespace SGA
 
 	void GameState::printBoard(int playerID) const
 	{
-		if(static_cast<size_t>(playerID) < players.size())
+		if (static_cast<size_t>(playerID) < players.size())
 		{
 			GameState stateWithFOG = *this;
-			
-			if(fogOfWarApplied)
+
+			if (fogOfWarApplied)
 				stateWithFOG.applyFogOfWar(playerID);
 
 			stateWithFOG.printBoard();
@@ -651,52 +652,52 @@ namespace SGA
 		else
 		{
 			std::cout << "Player not found" << std::endl;
-		}		
+		}
 	}
-	
+
 	void GameState::printEntityInfo(int entityID) const
 	{
 		const auto* entity = getEntityConst(entityID);
-		if (entity)  	
+		if (entity)
 			entity->printInfo();
-		else 			
+		else
 			std::cout << "Entity not found" << std::endl;
 	}
 
 	void GameState::printActionInfo(const Action& action) const
 	{
 		std::cout << "ActionInfo";
-		if(action.getActionFlag() == ActionFlag::AbortContinuousAction)
+		if (action.getActionFlag() == ActionFlag::AbortContinuousAction)
 		{
 			std::cout << "[AbortContinuousAction]" << std::endl;
 		}
 		else if (action.getActionFlag() == ActionFlag::EndTickAction)
 		{
-			std::cout << "[EndTick]"  << std::endl;
+			std::cout << "[EndTick]" << std::endl;
 		}
 		else
 		{
 			const ActionType& actionType = action.getActionType();
-			std::cout << "["<< actionType.getName() <<"]," ;
-			
+			std::cout << "[" << actionType.getName() << "],";
+
 			//Print source
 			if (actionType.getSourceType() == ActionSourceType::Player)
 				std::cout << " [SourceType Player: " << action.getOwnerID() << "],";
 			else
-			{				
+			{
 				int entityID = action.getSourceID();
 				auto& entityType = getEntityConst(entityID)->getEntityType();
-				
-				std::cout << " [SourceType Entity: "<<entityType.getName() <<" "<<entityID<<"],";
+
+				std::cout << " [SourceType Entity: " << entityType.getName() << " " << entityID << "],";
 			}
 
-			std::cout << " [ActionTargets" ;
+			std::cout << " [ActionTargets";
 			for (size_t i = 0; i < actionType.getTargets().size(); i++)
 			{
-				std::cout << "(Target: "<<actionType.getTargets()[i].first.getTypeString()<<", " << action.getTargets()[i + 1].getValueString(*this) << ")";
+				std::cout << "(Target: " << actionType.getTargets()[i].first.getTypeString() << ", " << action.getTargets()[i + 1].getValueString(*this) << ")";
 			}
-			std::cout << "]"<<std::endl;
+			std::cout << "]" << std::endl;
 		}
-		
+
 	}
 }

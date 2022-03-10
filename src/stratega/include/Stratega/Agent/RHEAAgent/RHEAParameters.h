@@ -4,6 +4,7 @@
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/AgentParameters.h>
 #include <yaml-cpp/yaml.h>
+#include <boost/random.hpp>
 
 namespace SGA {
 	struct RHEAParameters : AgentParameters {
@@ -21,7 +22,7 @@ namespace SGA {
 		size_t mutateBestN = 9;				// include Mutate_best additional copies of the shifted best individual in the next population
 
 		double epsilon = 1e-2;				// the amount of noise for randomly modifying an individuals value
-		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
+		boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
 		
 		void printDetails() const;
 	};

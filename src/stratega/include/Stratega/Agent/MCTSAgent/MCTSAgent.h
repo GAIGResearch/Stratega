@@ -7,7 +7,7 @@
 
 namespace SGA
 {
-	
+
 	class MCTSAgent : public Agent
 	{
 	public:

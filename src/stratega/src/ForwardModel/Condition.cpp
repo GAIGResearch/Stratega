@@ -162,7 +162,7 @@ namespace  SGA
 		const auto& source = sourceEntity.getEntity(state, targets);
 		const auto& target = targetEntity.getPosition(state, targets);
 		auto dist = distance.getConstant(state, targets);
-
+		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
 		return source.getPosition().distance(target) <= dist;
 	}
 
@@ -405,8 +405,16 @@ namespace  SGA
 		for (const auto& idCostPair : cost)
 		{
 			const auto& param = parameterLookUp.at(idCostPair.first);
-			if (parameters[static_cast<size_t>(param.getIndex())] < idCostPair.second)
-				return false;
+			auto it = parameters.find(param.getIndex());
+			if (it != parameters.end())
+			{
+				if (it->second < idCostPair.second)
+					return false;
+			}
+			else
+			{
+				throw std::runtime_error("Parameter not found");
+			}
 		}
 
 		return true;
