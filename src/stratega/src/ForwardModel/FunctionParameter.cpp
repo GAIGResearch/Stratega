@@ -5,17 +5,119 @@
 
 namespace SGA
 {
-	void ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
+	
+	FunctionParameter::Data::Data()
+	{
+		//not used
+	}
+
+	FunctionParameter::Data::Data(double data)
+	{
+		constValue = data;
+	}
+	FunctionParameter::Data::Data(ExpressionStruct newExpression)
+	{
+		new (&expression) auto(newExpression);
+	}
+	FunctionParameter::Data::Data(DiceAnotation newDiceAnotation)
+	{
+		diceAnotation = newDiceAnotation;
+	}
+	FunctionParameter::Data::Data(ParameterReference data)
+	{
+		parameterData = data;
+	}
+	FunctionParameter::Data::Data(ContinuousActionReference data)
+	{
+		continuousActionData = data;
+	}
+	FunctionParameter::Data::Data(Type type, int data)
+	{
+		switch (type)
+		{
+		case Type::ArgumentReference: argumentIndex = static_cast<size_t>(data); break;
+		case Type::EntityTypeReference: entityTypeID = data; break;
+		case Type::TileTypeReference: tileTypeID = data; break;
+		case Type::TechnologyTypeReference: technologyTypeID = data; break;
+		case Type::BuffTypeReference:   buffTypeID = data; break;
+		case Type::TimeReference:   argumentIndex = static_cast<size_t>(data); break;
+		case Type::EntityPlayerReference:   argumentIndex = static_cast<size_t>(data); break;
+		default:
+			throw std::runtime_error("Unknown Type");
+		}
+	}
+
+	FunctionParameter::Data::~Data()
+	{
+		//expression.~ExpressionStruct();
+	}
+
+	// Private since this class should only be constructed using the static methods
+	//FunctionParameter(const Type& newType, const boost::variant<double, int, ContinuousActionReference, size_t, ParameterReference, DiceAnotation, ExpressionStruct>& newData) : parameterType(newType), data(newData) {};
+	FunctionParameter::FunctionParameter(const Type& newType, const Data& newData) : parameterType(newType)/*, data(newData)*/
+	{
+		switch (parameterType)
+		{
+		case Type::Constant: data.constValue = newData.constValue; break;
+		case Type::EntityPlayerReference: data.argumentIndex = newData.argumentIndex; break;
+		case Type::EntityPlayerParameterReference: data.parameterData = newData.parameterData; break;
+		case Type::Expression:  new (&data.expression) auto(newData.expression); break;
+		case Type::ParameterReference: data.parameterData = newData.parameterData; break;
+		case Type::GameStateParameterReference: data.parameterData = newData.parameterData; break;
+		case Type::ArgumentReference: data.argumentIndex = newData.argumentIndex; break;
+		case Type::EntityTypeReference: data.entityTypeID = newData.entityTypeID; break;
+		case Type::TileTypeReference: data.tileTypeID = newData.tileTypeID; break;
+		case Type::TechnologyTypeReference: data.technologyTypeID = newData.technologyTypeID; break;
+		case Type::BuffTypeReference: data.buffTypeID = newData.buffTypeID; break;
+		case Type::TimeReference: data.argumentIndex = newData.argumentIndex; break;
+		case Type::DiceAnotation: data.diceAnotation = newData.diceAnotation; break;
+		default:
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	};
+
+	FunctionParameter::FunctionParameter(const FunctionParameter& other)
+	{
+		parameterType = other.parameterType;
+		switch (parameterType)
+		{
+		case Type::Constant: data.constValue = other.data.constValue; break;
+		case Type::EntityPlayerReference: data.argumentIndex = other.data.argumentIndex; break;
+		case Type::EntityPlayerParameterReference: data.parameterData = other.data.parameterData; break;
+		case Type::Expression:  new (&data.expression) auto(other.data.expression); break;
+		case Type::ParameterReference: data.parameterData = other.data.parameterData; break;
+		case Type::GameStateParameterReference: data.parameterData = other.data.parameterData; break;
+		case Type::ArgumentReference: data.argumentIndex = other.data.argumentIndex; break;
+		case Type::EntityTypeReference: data.entityTypeID = other.data.entityTypeID; break;
+		case Type::TileTypeReference: data.tileTypeID = other.data.tileTypeID; break;
+		case Type::TechnologyTypeReference: data.technologyTypeID = other.data.technologyTypeID; break;
+		case Type::BuffTypeReference: data.buffTypeID = other.data.buffTypeID; break;
+		case Type::TimeReference: data.argumentIndex = other.data.argumentIndex; break;
+		case Type::DiceAnotation: data.diceAnotation = other.data.diceAnotation; break;
+		default:
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+	/*FunctionParameter::FunctionParameter operator=(const FunctionParameter& other)
+	{
+		return *this;
+	}*/
+	FunctionParameter::~FunctionParameter()
+	{
+
+	}
+
+	void FunctionParameter::ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
 	{
 		variable.insert(std::make_pair(newVariable, parameter));
 	}
 
-	void ExpressionStruct::setExpression(std::string string)
+	void FunctionParameter::ExpressionStruct::setExpression(std::string string)
 	{
 		expression = string;
 	}
 
-	std::string ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	std::string FunctionParameter::ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 	{
 		std::string ex = expression;
 		std::cout << "Before change: " << ex << std::endl;
@@ -32,7 +134,7 @@ namespace SGA
 		return ex;
 	}
 
-	std::unordered_map<ParameterID, std::string> ExpressionStruct::getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	std::unordered_map<ParameterID, std::string> FunctionParameter::ExpressionStruct::getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 	{
 		std::string ex = expression;
 		std::unordered_map<ParameterID, std::string> expressions;
