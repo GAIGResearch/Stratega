@@ -1,4 +1,5 @@
 #include <Stratega/ForwardModel/FunctionParameter.h>
+#include <Stratega/ForwardModel/ExpressionStruct.h>
 #include <Stratega/Representation/GameState.h>
 
 #include <Stratega/Utils/cparse/shunting-yard.h>
@@ -98,35 +99,31 @@ namespace SGA
 			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 		}
 	}
-	/*FunctionParameter::FunctionParameter operator=(const FunctionParameter& other)
-	{
-		return *this;
-	}*/
 	FunctionParameter::~FunctionParameter()
 	{
 
 	}
 
-	void FunctionParameter::ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
+	void ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
 	{
-		variable.insert(std::make_pair(newVariable, parameter));
+		variable.insert(std::make_pair(newVariable, std::make_shared<FunctionParameter>(parameter)));
 	}
 
-	void FunctionParameter::ExpressionStruct::setExpression(std::string string)
+	void ExpressionStruct::setExpression(std::string string)
 	{
 		expression = string;
 	}
 
-	std::string FunctionParameter::ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	std::string ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 	{
 		std::string ex = expression;
 		std::cout << "Before change: " << ex << std::endl;
 		for (auto& var : variable)
 		{
-			if (var.second.getType() == FunctionParameter::Type::Constant)
+			if (var.second->getType() == FunctionParameter::Type::Constant)
 			{
 				//Parse consant
-				double temp = var.second.getConstant(state, actionTargets);
+				double temp = var.second->getConstant(state, actionTargets);
 				ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
 			}
 		}
@@ -134,7 +131,7 @@ namespace SGA
 		return ex;
 	}
 
-	std::unordered_map<ParameterID, std::string> FunctionParameter::ExpressionStruct::getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets)
+	std::unordered_map<ParameterID, std::string> ExpressionStruct::getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 	{
 		std::string ex = expression;
 		std::unordered_map<ParameterID, std::string> expressions;
@@ -143,15 +140,15 @@ namespace SGA
 		//Gett all the const expressions
 		for (auto& var : variable)
 		{
-			if (var.second.getType() == FunctionParameter::Type::ArgumentReference)
+			if (var.second->getType() == FunctionParameter::Type::ArgumentReference)
 			{
-				auto& actionTarget = var.second.getActionTarget(actionTargets);
+				auto& actionTarget = var.second->getActionTarget(actionTargets);
 				//auto& actionTarget = actionTargets[var.second.data.argumentIndex];
 
 				if (actionTarget.getType() == ActionTarget::TechnologyReference)
 				{
 					//Parse cost
-					const auto& originalCost = var.second.getTechnology(state, actionTargets).cost;
+					const auto& originalCost = var.second->getTechnology(state, actionTargets).cost;
 					std::cout << "While cost change: ";
 					for (const auto& parameter : originalCost)
 					{
@@ -165,7 +162,7 @@ namespace SGA
 				else if (actionTarget.getType() == ActionTarget::EntityTypeReference)
 				{
 					//Parse cost
-					const auto& originalCost = var.second.getEntityType(state, actionTargets).getCosts();
+					const auto& originalCost = var.second->getEntityType(state, actionTargets).getCosts();
 					std::cout << "While cost change: ";
 					for (const auto& parameter : originalCost)
 					{
@@ -188,11 +185,11 @@ namespace SGA
 		{
 			for (auto& currExpression : expressions)
 			{
-				if (var.second.getType() == FunctionParameter::Type::Constant || var.second.getType() == FunctionParameter::Type::ParameterReference)
+				if (var.second->getType() == FunctionParameter::Type::Constant || var.second->getType() == FunctionParameter::Type::ParameterReference)
 				{
 					std::cout << "While cost change: ";
 					//Parse consant
-					double temp = var.second.getConstant(state, actionTargets);
+					double temp = var.second->getConstant(state, actionTargets);
 					currExpression.second = std::regex_replace(currExpression.second, std::regex(var.first), std::to_string(temp));
 					std::cout << "	" << currExpression.second << std::endl;
 					std::cout << std::endl;

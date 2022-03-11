@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <Stratega/ForwardModel/ActionTarget.h>
+#include <Stratega/ForwardModel/ExpressionStruct.h>
 #include <Stratega/Representation/EntityType.h>
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/TechnologyTree.h>
@@ -10,8 +11,10 @@
 #include <regex>
 namespace SGA
 {
-	//struct ExpressionStruct
+	//struct ExpressionStruct;
 	//struct GameState;
+	
+	/*class FunctionParameter;*/
 	
 	
 
@@ -35,24 +38,7 @@ namespace SGA
 			DiceAnotation // 4d12
 		};		
 
-		struct ExpressionStruct
-		{
-			std::unordered_map<std::string, FunctionParameter> variable;
-			std::string expression;
-
-			void addParameter(FunctionParameter parameter, std::string newVariable);
-
-			void setExpression(std::string string);
-
-			std::string getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets);
-
-			std::unordered_map<ParameterID, std::string> getExpressionCost(const GameState& state, const std::vector<ActionTarget>& actionTargets);
-
-			~ExpressionStruct()
-			{
-				expression.~basic_string();
-			}
-		};
+		
 
 	private:
 		struct ParameterReference
