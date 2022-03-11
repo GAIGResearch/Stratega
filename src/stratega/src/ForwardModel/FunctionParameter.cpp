@@ -106,6 +106,7 @@ namespace SGA
 
 	void ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
 	{
+		std::cout << "Inserting parameter"<<std::endl;
 		variable.insert(std::make_pair(newVariable, std::make_shared<FunctionParameter>(parameter)));
 	}
 
@@ -120,11 +121,12 @@ namespace SGA
 		std::cout << "Before change: " << ex << std::endl;
 		for (auto& var : variable)
 		{
-			if (var.second->getType() == FunctionParameter::Type::Constant)
+			if (var.second->getType() == FunctionParameter::Type::Constant || var.second->getType() == FunctionParameter::Type::ParameterReference)
 			{
 				//Parse consant
 				double temp = var.second->getConstant(state, actionTargets);
 				ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
+				std::cout <<" "<< ex << std::endl;
 			}
 		}
 		std::cout << "After change: " << ex << std::endl;
