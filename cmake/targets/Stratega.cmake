@@ -12,6 +12,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/DoNothingAgent.cpp
         Agent/Heuristic/AbstractHeuristic.cpp
         Agent/Heuristic/MinimizeDistanceHeuristic.cpp
+        Agent/Heuristic/AimToKingHeuristic.cpp
         Agent/UnitMCTSAgent/Transition.cpp
         Agent/UnitMCTSAgent/UnitMCTSAgent.cpp
         Agent/UnitMCTSAgent/UnitMCTSNode.cpp
@@ -36,6 +37,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/TreeSearchAgents/BFSAgent.cpp
         Agent/TreeSearchAgents/DFSAgent.cpp
         Agent/TreeSearchAgents/TreeNode.cpp
+        Agent/MinimaxAgent.cpp
         Arena/Arena.cpp
         Configuration/FunctionParser.cpp
         Configuration/GameConfig.cpp
