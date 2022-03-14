@@ -106,7 +106,6 @@ namespace SGA
 
 	void ExpressionStruct::addParameter(FunctionParameter parameter, std::string newVariable)
 	{
-		std::cout << "Inserting parameter"<<std::endl;
 		variable.insert(std::make_pair(newVariable, std::make_shared<FunctionParameter>(parameter)));
 	}
 
@@ -118,7 +117,6 @@ namespace SGA
 	std::string ExpressionStruct::getExpression(const GameState& state, const std::vector<ActionTarget>& actionTargets)
 	{
 		std::string ex = expression;
-		std::cout << "Before change: " << ex << std::endl;
 		for (auto& var : variable)
 		{
 			if (var.second->getType() == FunctionParameter::Type::Constant || var.second->getType() == FunctionParameter::Type::ParameterReference)
@@ -126,10 +124,8 @@ namespace SGA
 				//Parse consant
 				double temp = var.second->getConstant(state, actionTargets);
 				ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
-				std::cout <<" "<< ex << std::endl;
 			}
 		}
-		std::cout << "After change: " << ex << std::endl;
 		return ex;
 	}
 
@@ -137,7 +133,6 @@ namespace SGA
 	{
 		std::string ex = expression;
 		std::unordered_map<ParameterID, std::string> expressions;
-		std::cout << "Initial cost change: " << expression << std::endl;
 
 		//Gett all the const expressions
 		for (auto& var : variable)
@@ -151,29 +146,23 @@ namespace SGA
 				{
 					//Parse cost
 					const auto& originalCost = var.second->getTechnology(state, actionTargets).cost;
-					std::cout << "While cost change: ";
 					for (const auto& parameter : originalCost)
 					{
 						std::string ex = expression;
 						ex = std::regex_replace(ex, std::regex(var.first), std::to_string(parameter.second));
 						expressions[parameter.first] = ex;
-						std::cout << "	" << ex << std::endl;
 					}
-					std::cout << std::endl;
 				}
 				else if (actionTarget.getType() == ActionTarget::EntityTypeReference)
 				{
 					//Parse cost
 					const auto& originalCost = var.second->getEntityType(state, actionTargets).getCosts();
-					std::cout << "While cost change: ";
 					for (const auto& parameter : originalCost)
 					{
 						std::string ex = expression;
 						ex = std::regex_replace(ex, std::regex(var.first), std::to_string(parameter.second));
 						expressions[parameter.first] = ex;
-						std::cout << "	" << ex << std::endl;
 					}
-					std::cout << std::endl;
 				}
 				else
 				{
@@ -189,12 +178,9 @@ namespace SGA
 			{
 				if (var.second->getType() == FunctionParameter::Type::Constant || var.second->getType() == FunctionParameter::Type::ParameterReference)
 				{
-					std::cout << "While cost change: ";
 					//Parse consant
 					double temp = var.second->getConstant(state, actionTargets);
 					currExpression.second = std::regex_replace(currExpression.second, std::regex(var.first), std::to_string(temp));
-					std::cout << "	" << currExpression.second << std::endl;
-					std::cout << std::endl;
 				}
 			}
 		}
@@ -292,7 +278,7 @@ namespace SGA
 			ExpressionStruct test = data.expression;
 			std::string expres = test.getExpression(state, actionTargets);				
 			double value = cparse::calculator::calculate(expres.c_str()).asDouble();
-			std::cout << "Calculate expression: " << expres << " -> " << value << std::endl;
+			//std::cout << "Calculate expression: " << expres << " -> " << value << std::endl;
 			return value;
 		}			
 		case Type::DiceAnotation: 
@@ -308,7 +294,7 @@ namespace SGA
 				result += distribution(rndEngine);
 			}
 	
-			std::cout << "Roll dice: " << test.diceNumber<<"d"<<test.diceFaceNumber << " -> " << result<<std::endl;
+			//std::cout << "Roll dice: " << test.diceNumber<<"d"<<test.diceFaceNumber << " -> " << result<<std::endl;
 			return result;
 		}
 		case Type::ParameterReference:

@@ -39,7 +39,7 @@ namespace SGA
 		auto copy = code;
 		copy.erase(std::remove_if(copy.begin(), copy.end(), [](char x) { return std::isspace(x); }), copy.end());
 		std::istringstream ss(copy);
-		std::cout << code << std::endl;
+		
 		// Parse name
 		AbstractFunctionCall call;
 		if(auto functionName = parseText(ss))
@@ -121,8 +121,6 @@ namespace SGA
 				}
 			}
 
-			std::cout << "Parsed constant";
-			std::cout << std::endl;
 			return FunctionParameter::createConstParameter(prefix == '-' ? -value : value);
 		}
 
@@ -205,8 +203,6 @@ namespace SGA
 			}
 		}
 		
-		std::cout << "Parsed dice anotation";
-		std::cout << std::endl;
 		return FunctionParameter::createDiceAnotation({diceNumber ,diceFaceNumber});
 	}
 
@@ -248,8 +244,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed parameter reference: "<< targetName<<"."<< parameterName;
-		std::cout << std::endl;
 		return FunctionParameter::createParameterReference({ parameterIt->second, targetIt->second });
 	}
 	
@@ -294,11 +288,7 @@ namespace SGA
 					mathExpress += nextChar;						
 			}
 		}
-
-		std::cout << "Parsed expression: " << mathExpress;
-		temp.setExpression(mathExpress);
-		std::cout << std::endl;
-		
+		temp.setExpression(mathExpress);		
 		return FunctionParameter::createExpression(/*ss.str()*/temp);
 	}
 
@@ -340,8 +330,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed entity player reference";
-		std::cout << std::endl;
 		return FunctionParameter::createEntityPlayerReference(targetIt->second);
 	}
 
@@ -384,8 +372,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed time reference";
-		std::cout << std::endl;
 		return FunctionParameter::createTimeReference(targetIt->second);
 	}
 
@@ -433,8 +419,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed entity player parameter reference";
-		std::cout << std::endl;
 		return FunctionParameter::createEntityPlayerParameterReference({ parameterIt->second, targetIt->second });
 	}
 	
@@ -480,8 +464,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed gamestate parameter reference";
-		std::cout << std::endl;
 		return FunctionParameter::createGameStateParameterReference({ parameterIt->second, -1 });
 	}
 
@@ -520,8 +502,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed argument reference";
-		std::cout << std::endl;
 		return FunctionParameter::createArgumentReference(targetIt->second);
 	}
 
@@ -560,8 +540,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed entity type reference";
-		std::cout << std::endl;
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
 	}
 
@@ -597,8 +575,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed tile type reference";
-		std::cout << std::endl;
 		return FunctionParameter::createTileTypeReference(targetIt->second);
 	}
 
@@ -634,8 +610,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed buff type reference";
-		std::cout << std::endl;
 		return FunctionParameter::createBuffTypeReference(targetIt->second);
 	}
 	
@@ -674,8 +648,6 @@ namespace SGA
 			}
 		}
 
-		std::cout << "Parsed technology type reference";
-		std::cout << std::endl;
 		return FunctionParameter::createTechnologyTypeReference(targetIt->second);
 	}
 	
