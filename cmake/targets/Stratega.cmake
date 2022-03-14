@@ -70,6 +70,12 @@ set(STRATEGA_SOURCE_FILES
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
+        Utils/cparse/catch.cpp
+        Utils/cparse/containers.cpp
+        Utils/cparse/functions.cpp
+        Utils/cparse/packToken.cpp
+        Utils/cparse/shunting-yard.cpp
+        Utils/cparse/builtin-features.cpp
         )
 if(NOT SGA_BUILD_HEADLESS)
    list(APPEND STRATEGA_SOURCE_FILES
@@ -116,9 +122,9 @@ function(target_link_libraries_system target)
   endforeach(lib)
 endfunction(target_link_libraries_system)
 
+target_link_libraries_system(Stratega CONAN_PKG::boost)
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
-target_link_libraries_system(Stratega CONAN_PKG::boost)
 
 if(CMAKE_SYSTEM_NAME MATCHES Linux)
 target_link_libraries(Stratega Threads::Threads)

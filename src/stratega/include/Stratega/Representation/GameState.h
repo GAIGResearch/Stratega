@@ -461,6 +461,7 @@ namespace SGA
 		/// </summary>
 		/// <returns></returns>
 		std::mt19937& getRndEngine() { return rngEngine; }
+		std::mt19937 getRndEngineCopy()const { return rngEngine; }
 
 
 		/***** PARAMETERS *****/

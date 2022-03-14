@@ -510,7 +510,7 @@ namespace SGA
 	void PayCostEffect::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
 	{
 		//Get cost of target, parameterlist to look up and the parameters of the source
-		const auto& cost = costParam.getCost(state, targets);
+		const auto cost = costParam.getCost(state, targets);
 		const auto& parameterLookUp = sourceParam.getParameterLookUp(state, targets);
 		auto& parameters = sourceParam.getParameterList(state, targets);
 
