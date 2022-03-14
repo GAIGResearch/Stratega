@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Representation/GameState.h>
@@ -43,27 +43,27 @@ namespace SGA
 		/// Shifts all individuals in the population to the left, by eliminating the first action (executed in the previous decision) 
 		/// and padding with a random valid action at the end.
 		/// </summary>
-		std::vector<RHEAGenome> shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> shiftPopulation(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator);
 		
 		/// <summary>
 		/// Initializes the population of RHEA.
 		/// </summary>
-		void initializePopulation(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void initializePopulation(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Executes the main iteration of the RHEA algorithm.
 		/// </summary>
-		void rheaLoop(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		void rheaLoop(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Creates a new generation of individuals.
 		/// </summary>
-		std::vector<RHEAGenome> nextGeneration(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		std::vector<RHEAGenome> nextGeneration(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator);
 		
 		/// <summary>
 		/// Creates a new individual for the next generation
 		/// </summary>
-		RHEAGenome getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, std::mt19937& randomGenerator);
+		RHEAGenome getNextGenerationIndividual(const ForwardModel& forwardModel, GameState& gameState, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Returns a selection of individuals for crossover.

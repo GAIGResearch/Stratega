@@ -32,17 +32,17 @@ namespace SGA
 		/// <summary>
 		/// List of parameter values. Use GameState.getPlayerParameter(...) functions to retrieve this.
 		/// </summary>
-		std::vector<double> parameters;
+		std::unordered_map<int, double> parameters;
 
 		/// <summary>
 		/// Values for the max parameters value of this entity. Indexed by ID. Use getMaxParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> maxParameters;
+		std::unordered_map<int, double> maxParameters;
 
 		/// <summary>
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
-		std::vector<double> minParameters;
+		std::unordered_map<int, double> minParameters;
 
 		/// <summary>
 		/// Actions that this player can execute in this game.
@@ -94,69 +94,84 @@ namespace SGA
 		/// <summary>
 		/// Returns the list of parameters, can't be modified.
 		/// </summary>
-		const std::vector<double>& getParameters() const { return parameters; }
+		const std::unordered_map<int, double>& getParameters() const { return parameters; }
 
 		/// <summary>
 		/// Returns the list of parameters of this player (can be modified)
 		/// </summary>
-		std::vector<double>& getParameters() { return parameters; }
+		std::unordered_map<int, double>& getParameters() { return parameters; }
 
 		/// <summary>
 		/// Returns a reference to a parameter value of this player.
 		/// </summary>
-		double& getRawParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+		double& getRawParameterAt(int paramIdx) 
+		{
+			auto it = parameters.find(paramIdx);
+			if (it != parameters.end())
+				return it->second;
+			else
+				throw std::runtime_error("Parameter not found");
+		}
 
 		/// <summary>yer to a certain value
 		/// </summary>
 		/// Returns a const value of a parameter of this player.
 		/// </summary>
-		const double& getRawParameterAt(int paramIdx) const { return parameters[static_cast<size_t>(paramIdx)]; }
+		const double& getRawParameterAt(int paramIdx) const
+		{ 
+			auto it = parameters.find(paramIdx);
+			if (it != parameters.end())
+				return it->second;
+			else
+				throw std::runtime_error("Parameter not found");
+		}
 
 		/// <summary>
 		/// Gets a specific parameters value, by index 
 		/// <summary>
 		/// <returns>The parameter value.</returns>
-		double getParameterAt(int paramIdx) { return parameters[static_cast<size_t>(paramIdx)]; }
+		double getParameterAt(int paramIdx) { return parameters[paramIdx]; }
 
 		/// <summary>
 		/// Gets a specific max parameters value, by index 
 		/// <summary>
 		/// <returns>The max parameter value.</returns>
-		double getMaxParameterAt(int paramIdx) { return maxParameters[static_cast<size_t>(paramIdx)]; }
+		double getMaxParameterAt(int paramIdx) { return maxParameters[paramIdx]; }
 
 		/// <summary>
 		/// Gets a specific min parameters value, by index 
 		/// <summary>
 		/// <returns>The min parameter value.</returns>
-		double getMinParameterAt(int paramIdx) { return minParameters[static_cast<size_t>(paramIdx)]; }
+		double getMinParameterAt(int paramIdx) { return minParameters[paramIdx]; }
 
 		/// <summary>
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setParameter(int paramIdx, double val) { parameters[static_cast<size_t>(paramIdx)] = val; }
+		void setParameter(int paramIdx, double val) { parameters[paramIdx] = val; }
 
 		/// <summary>
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setMaxParameter(int paramIdx, double val) { maxParameters[static_cast<size_t>(paramIdx)] = val; }
+		void setMaxParameter(int paramIdx, double val) { maxParameters[paramIdx] = val; }
 
 		/// <summary>
 		/// Sets the parameter of this play
 		/// <param name="paramIdx">Parameter index of this param.</param>
 		/// <param name="val">Value to be set for the parameter.</param>
-		void setMinParameter(int paramIdx, double val) { minParameters[static_cast<size_t>(paramIdx)] = val; }
+		void setMinParameter(int paramIdx, double val) { minParameters[paramIdx] = val; }
 
-		/// <summary>
-		/// Sets a size for the vector of parameters of this player.
-		/// </summary>
-		void resizeParameters(int cap)
-		{
-			parameters.resize(static_cast<size_t>(cap));
-			maxParameters.resize(static_cast<size_t>(cap));
-			minParameters.resize(static_cast<size_t>(cap));
-		}
+		///// <summary>
+		///// Sets a size for the vector of parameters of this player.
+		///// </summary>
+		//void resizeParameters(int cap)
+		//{
+		//	/*parameters.resize(static_cast<size_t>(cap));*//*
+		//	maxParameters.resize(static_cast<size_t>(cap));
+		//	minParameters.resize(static_cast<size_t>(cap));*/
+		//}
+
 		/// <summary>
 		/// Removes a continuous action from the vector of continuous actions of this player.
 		/// </summary>

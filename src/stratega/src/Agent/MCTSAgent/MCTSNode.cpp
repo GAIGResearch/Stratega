@@ -36,13 +36,26 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
 		// stop in case the budget is over.
+		MCTSNode* last_selected = nullptr;
+		int n_repeat_selection = 0;
 		while (!params.isBudgetOver()) {
+
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+			if (last_selected != nullptr) {
+				if (last_selected == selected)
+					n_repeat_selection++;
+				else
+					n_repeat_selection = 0;
+			}
+			last_selected = selected;
 			double delta = selected->rollOut(forwardModel, params, randomGenerator);
+
 			backUp(selected, delta);
-			params.currentIterations++; 
+			params.currentIterations++;
+			if (n_repeat_selection >= 20) // repeated selection
+				return;
 		}
 	}
 
@@ -54,7 +67,7 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		MCTSNode* cur = this;
 
@@ -72,7 +85,7 @@ namespace SGA
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& /*randomGenerator*/)
+	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& /*randomGenerator*/)
 	{
 		// roll the state
 		//todo remove unnecessary copy of gameState
@@ -85,7 +98,7 @@ namespace SGA
 		return children[static_cast<size_t>(childIndex)].get();
 	}
 
-	MCTSNode* MCTSNode::uct(MCTSParameters& params, std::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::uct(MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		//Find out if this node corresponds to a state where I can move.
 		bool amIMoving = gameState.canPlay(params.PLAYER_ID);
@@ -98,14 +111,14 @@ namespace SGA
 			//Compute the value of the child. First the exploitation value:
 			const double hvVal = child->value;
 			double childValue = hvVal / (child->nVisits + params.epsilon);
-			childValue = normalize(childValue, bounds[0], bounds[1]);
+			//childValue = normalize(childValue, bounds[0], bounds[1]);
 
 			//Then add the exploration factor multiplied by constant K.
 			double uctValue = childValue +
 				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
 
 			//Add a small noise to break ties randomly
-			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 			childValues[i] = uctValue;
 		}
 
@@ -143,7 +156,7 @@ namespace SGA
 				std::cout << "\t" << childValues[i] << "\n";
 			std::cout << "; selected: " << which << "\n";
 			std::cout << "; isFullyExpanded: " << isFullyExpanded() << "\n";
-			std::uniform_int_distribution<size_t> distrib(0, children.size() - 1);
+			boost::random::uniform_int_distribution<size_t> distrib(0, children.size() - 1);
 
 			which = static_cast<int>(distrib(randomGenerator));
 		}
@@ -152,7 +165,7 @@ namespace SGA
 	}
 
 	//Executes the rollout phase of MCTS
-	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator)
+	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		//... only if rollouts are enabled in the parameter settings.
 		if (params.rolloutsEnabled) {
@@ -163,24 +176,25 @@ namespace SGA
 
 			//If we must keep rolling.
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
-				
+
 				//Find my action space.
 				auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
 				if (actions.size() == 0)
 					break;
 
 				//Pick one action at random and apply it to the current game state. 
-				std::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
+				boost::random::uniform_int_distribution<size_t> randomDistribution(0, actions.size() - 1);
 				applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params, playerID);
 				thisDepth++;
 			}
 
 			//We evaluate the state at the end of the rollout using the heuristic specified in the parameter settings. 
 			//We then return this reward to the last node expanded in the tree.
-			return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			//return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
+			return params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		}
 
-		return normalize(params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID), 0, 1);
+		return params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
 	}
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
@@ -224,7 +238,7 @@ namespace SGA
 	}
 
 	//Returns the index of the most visited child of this node.
-	int MCTSNode::mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator)
+	int MCTSNode::mostVisitedAction(MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();
@@ -246,7 +260,7 @@ namespace SGA
 				double childValue = children[i]->nVisits;
 
 				//Add a small noise (<<1) to all values to break ties randomly
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -264,7 +278,7 @@ namespace SGA
 	}
 
 	//Selects the index of the child with the highest average reward value.
-	int MCTSNode::bestAction(MCTSParameters& params, std::mt19937& randomGenerator)
+	int MCTSNode::bestAction(MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
 		int selected = -1;
 		double bestValue = -std::numeric_limits<double>::max();
@@ -276,7 +290,7 @@ namespace SGA
 				double childValue = children[i]->value / (children[i]->nVisits + params.epsilon);
 
 				//Add a small random noise to break ties randomly
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));     
+				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
 				if (childValue > bestValue) {
 					bestValue = childValue;
 					selected = static_cast<int>(i);
@@ -329,14 +343,14 @@ namespace SGA
 		}
 		else
 		{
-			if (treesize % 500 == 0)
-				std::cout << "tree size: " << treesize << "\n";
+			//if (treesize % 500 == 0)
+			//	std::cout << "tree size: " << treesize << "\n";
 		}
 	}
 
 	void MCTSNode::print() const
 	{
-		std::cout << this->value / this->nVisits << "; "<< this->nVisits << "; " << children.size();
+		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size();
 	}
-	
+
 }

@@ -40,7 +40,7 @@ namespace SGA
 		/// <param name="entity">The entity that will be analyzed</param>
 		/// <returns>A boolean indicating if the player can execute the action type</returns>
 		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
-		
+
 		/// <summary>
 		/// Checks if a player can execute a given actionType
 		/// </summary>
@@ -83,7 +83,7 @@ namespace SGA
 		/// Initializes the research technologies to all players, to none.
 		/// </summary>
 		void initResearchTechs();
-		
+
 		/***** BOARD FUNCTIONS *****/
 
 		/// <summary>
@@ -241,13 +241,13 @@ namespace SGA
 		/// <returns>Player seeked for, or nullptr if it doesn't exist.</returns>
 		const Player* getPlayer(int playerID) const;
 		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
-		
+
 		/// <summary>
 		/// Returns a list with the ID of players that can play in this game state.
 		/// </summary>
 		/// <returns>A list with all IDs of player that can play now.</returns>
 		std::vector<int> whoCanPlay() const;
-		
+
 		/// <summary>
 		/// Indicates if the player with the provided ID can play in this game state.
 		/// </summary>
@@ -290,7 +290,7 @@ namespace SGA
 		/// <param name="paramName">Name of the parameter which want to be checked</param>
 		/// /// <returns>A bool indicating if player has that parameter</returns>
 		bool hasPlayerParameter(const std::string& paramName) const;
-		
+
 		/// <summary>
 		/// Returns a list will all the parameter names of the player of which ID is given
 		/// </summary>
@@ -321,12 +321,12 @@ namespace SGA
 		/// Print all the entities of the current state
 		/// </summary>
 		void printStateInfo() const;
-		
+
 		/// <summary>
 		// /Print view of the map of the current state
 		/// </summary>
 		void printBoard() const;
-		
+
 		/// <summary>
 		/// Print view of the map of the current state applying fog
 		/// <param name="playerID">The ID of the player to print information of.</param>
@@ -338,7 +338,7 @@ namespace SGA
 		/// <param name="playerID">ID of the entity to print information of.</param>
 		/// </summary>
 		void printEntityInfo(int entityID) const;
-		
+
 		/// <summary>
 		/// Print information of a specific action
 		/// </summary>
@@ -409,7 +409,7 @@ namespace SGA
 		/// Returns the current tick of the game.
 		/// </summary>
 		int getCurrentTick() const { return currentTick; }
-		
+
 		/// <summary>
 		/// Increments the current tick in the game by 1.
 		/// </summary>
@@ -419,7 +419,7 @@ namespace SGA
 		/// Returns the current game tick limit.
 		/// </summary>
 		int getTickLimit() const { return tickLimit; }
-		
+
 		/// <summary>
 		/// Sets the time limit of the game, measured in ticks.
 		/// </summary>
@@ -430,7 +430,7 @@ namespace SGA
 		/// Returns a pointer to the struct with static information about the game.
 		/// </summary>
 		std::shared_ptr<GameInfo> getGameInfo() const { return gameInfo; }
-		
+
 		/// <summary>
 		/// Sets the pointer to the game information struct.
 		/// </summary>
@@ -450,7 +450,7 @@ namespace SGA
 		/// Returns a pointer to the Navigation object used by the RTS engine for pathfinding. 
 		/// </summary>
 		std::shared_ptr<Navigation> getRTSNavigation() const { return navigation; }
-		
+
 		/// <summary>
 		/// Sets the pointer to the Navigation object used by the RTS engine for pathfinding. 
 		/// </summary>

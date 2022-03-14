@@ -12,6 +12,7 @@ sfml:graphics=True
 sfml:window=True
 sfml:audio=False
 sfml:network=False
+boost:shared=False
 
 [generators]
 cmake

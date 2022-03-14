@@ -177,6 +177,7 @@ namespace SGA
 		bool shouldCheckInitTime;
 		long initBudgetTimetMs;
 		long initDisqualificationBudgetTimeMs;
+
 	};
 
 	/// <summary>

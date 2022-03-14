@@ -19,7 +19,8 @@ namespace SGA
 		Heal,
 		Gather,
 		Spawn,
-		Research		
+		Research,
+		Empty
 	};
 
 	enum class EntityCategory
@@ -122,6 +123,7 @@ namespace SGA
 				case ActionCategory::Gather: return "Gather";
 				case ActionCategory::Spawn: return "Spawn";
 				case ActionCategory::Research: return "Research";
+				case ActionCategory::Empty: return "Empty";
 				default: return "Undefined";
 			}
 		}

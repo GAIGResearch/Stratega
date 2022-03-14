@@ -13,10 +13,9 @@
 import os
 import sys
 
-#import stratega python bindings
 #sys.path.append(os.path.abspath('../out/bindings'))
 #sys.path.append(os.path.abspath('../out'))
-
+sys.path.insert(0, os.path.abspath('..'))
 #print("imported paths", sys.path)
 #
 #pypath = '../out/build'
@@ -53,7 +52,8 @@ def configureDoxyfile(input_dir, output_dir):
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 breathe_projects = {}
 if read_the_docs_build:
-    input_dir = '../Stratega'
+    #install_and_import('stratega')
+    input_dir = '../src/stratega'
     output_dir = 'build'
     configureDoxyfile(input_dir, output_dir)
     subprocess.call('doxygen', shell=True)

@@ -28,14 +28,15 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber)
 				currentMapID++;
 			}
 			currentSeed = seed + i;
-			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
+
+			boost::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			//std::cout << "Using Seed: " << currentSeed << std::endl;
-			SGA::LoggingScope scope("Game " + std::to_string(gameCount));
-			SGA::logSingleValue("Map", std::to_string(currentMapID));
-			SGA::logSingleValue("Seed", std::to_string(currentSeed));
+            SGA::LoggingScope scope("Game " + std::to_string(gameCount));
+            SGA::logSingleValue("Map", std::to_string(currentMapID));
+            SGA::logSingleValue("Seed", std::to_string(currentSeed));
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
-			SGA::getDefaultLogger().flush();
+            SGA::getDefaultLogger().flush();
 		}
 	}
 	catch (const std::exception& ex)
@@ -62,7 +63,7 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber, 
 				currentMapID++;
 			}
 			currentSeed = seed + i;
-			std::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
+			boost::mt19937 rngEngine(static_cast<unsigned>(currentSeed));
 			std::cout << "Using Seed: " << currentSeed << std::endl;
 			CallbackFn callback = [&](const std::vector<int>& c) {runGame(c, rngEngine, agents); };
 			generateCombinations(config->agentParams.size(), static_cast<size_t>(playerCount), callback);
@@ -74,18 +75,20 @@ void Arena::runGames(int playerCount, int seed, int gamesNumber, int mapNumber, 
 	}
 }
 
-void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine)
+void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngEngine)
 {
 	// Initialize new Game
 	std::cout << "Initializing new game" << std::endl;
 	runner->reset(currentMapID);
 
 	// Assign agents
-	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	boost::random::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto allAgents = config->generateAgents();
 	std::vector<std::shared_ptr<SGA::Agent>> agents(agentAssignment.size());
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
-	for (size_t i = 0; i < agentAssignment.size(); i++)
+
+	boost::random::uniform_int_distribution<unsigned int> seedDist(0, boost::mt19937::max());
+	for(size_t i = 0; i < agentAssignment.size(); i++)
+
 	{
 		agents[i] = std::move(allAgents[static_cast<size_t>(agentAssignment[i])]);
 
@@ -96,15 +99,15 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
 		// Set seed of the agents for deterministic behaviour
-		unsigned int seed_one = seedDist(rngEngine);
-		//std::cout << seed_one << std::endl;
-		agents[i]->setSeed(seed_one);
+
+        unsigned int seed_one = seedDist(rngEngine);
+        agents[i]->setSeed(seed_one);
 	}
 
 	// Initialize logging
-	SGA::LoggingScope battleScope("Battle" + std::to_string(gameBattleCount++));
+    SGA::LoggingScope battleScope("Battle" + std::to_string(gameBattleCount++));
 
-	for (size_t i = 0; i < agentAssignment.size(); i++)
+	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
 	}
@@ -126,17 +129,17 @@ void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEng
 	//SGA::getDefaultLogger().flush();
 }
 
-void Arena::runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> newAgents)
+void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> newAgents)
 {
 	// Initialize new Game
 	std::cout << "Initializing new game" << std::endl;
 	runner->reset(currentMapID);
 
 	// Assign agents
-	std::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
+	boost::random::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 	auto allAgents = newAgents;
 	std::vector<std::shared_ptr<SGA::Agent>> agents(agentAssignment.size());
-	std::uniform_int_distribution<unsigned int> seedDist(0, std::mt19937::max());
+	boost::random::uniform_int_distribution<unsigned int> seedDist(0, boost::mt19937::max());
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
 		agents[i] = std::move(allAgents[static_cast<size_t>(agentAssignment[i])]);

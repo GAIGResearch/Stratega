@@ -6,7 +6,7 @@ namespace SGA
 	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
 		assert(actions.getAssignmentCount() == 1);
-		if(actions.getEntityActions().size()>0)
+		if (actions.getEntityActions().size() > 0)
 			advanceGameState(state, actions.getEntityActions().begin()->second);
 		else
 			advanceGameState(state, actions.getPlayerActions().begin()->second);
@@ -23,7 +23,7 @@ namespace SGA
 			return;
 		}*/
 	}
-	
+
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
 		if (action.getActionFlag() == ActionFlag::EndTickAction)
@@ -41,7 +41,7 @@ namespace SGA
 		//Remove flagged entities
 		auto& entities = state.getEntities();
 		auto it = entities.begin();
-		while(it != entities.end())
+		while (it != entities.end())
 		{
 			if (it->flagged())  it = entities.erase(it);
 			else 				it++;
@@ -98,7 +98,7 @@ namespace SGA
 				state.setWinnerID(winnerID);
 				return true;
 			}
-			
+
 			if (player.canPlay() && !checkPlayerLost(state, player.getID()))
 			{
 				winnerID = player.getID();

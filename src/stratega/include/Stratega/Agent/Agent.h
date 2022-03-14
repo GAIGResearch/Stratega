@@ -3,7 +3,7 @@
 #include <Stratega/ForwardModel/ActionAssignment.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
 #include <Stratega/Agent/AgentParameters.h>
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Utils/Timer.h>
 namespace SGA
 {
@@ -54,7 +54,7 @@ namespace SGA
 		/// Sets the seed for the random number generator of this agent.
 		/// </summary>
 		/// <param name="seed">Seed for the generator</param>
-		virtual void setSeed(std::mt19937::result_type seed = 0);
+		virtual void setSeed(boost::mt19937::result_type seed = 0);
 
 		/// <summary>
 		/// Returns the name of this agent.
@@ -71,7 +71,7 @@ namespace SGA
 		/// <summary>
 		/// Random number generator for this agent.
 		/// </summary>
-		std::mt19937 rngEngine;
+		boost::mt19937 rngEngine;
 
 
 	protected:
@@ -80,7 +80,7 @@ namespace SGA
 		/// Returns the random generator of this player. <See cref="SGA::Agent.setSeed()"/> for how to set the seed of this agent.
 		/// </summary>
 		/// <returns>The random number generator of this agent</returns>
-		std::mt19937& getRNGEngine();
+		boost::mt19937& getRNGEngine();
 
 		/// <summary>
 		/// Name of this agent. Useful for bindings.

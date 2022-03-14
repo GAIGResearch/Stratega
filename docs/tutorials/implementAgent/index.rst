@@ -191,7 +191,7 @@ which can be done by i) creating a uniform distribution from the vector; ii) pic
 .. code-block:: c++
 
     // Uniformly sample a action
-    std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+    boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
     auto actionIndex = actionDist(getRNGEngine());
     auto action = actions.at(actionIndex);
 
@@ -204,7 +204,7 @@ line completes the code for this function:
 .. code-block:: c++
     :linenos:
 
-    #include <random>
+    #include <boost/random.hpp>
     #include <Stratega/Agent/RandomAgent.h>
 
     namespace SGA
@@ -215,7 +215,7 @@ line completes the code for this function:
             auto actions = forwardModel.generateActions(state, getPlayerID());
             
             // Uniformly sample a action
-            std::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+            boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             auto actionIndex = actionDist(getRNGEngine());
             auto action = actions.at(actionIndex);
 	

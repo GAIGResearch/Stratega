@@ -133,9 +133,11 @@ namespace SGA
 						score += (healAmount / maxHeal) * static_cast<double>(actionRangePerc);
 						continue;
 					}
+					if (action.getName() == "Empty")
+					{ }
 					else
 					{
-						std::cout << "action unknown" << action.getName();
+						std::cout << "action unknown: " << action.getName() << std::endl;
 					}
 				}
 
