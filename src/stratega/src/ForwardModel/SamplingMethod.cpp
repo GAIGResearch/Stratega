@@ -81,6 +81,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 			{
 			case ShapeType::Square: return true;
 			case ShapeType::Circle: return Vector2f(x, y).distance(position) <= shapeSize;
+			case ShapeType::Cross: return x==position.x||y==position.y;
 			default: return false;
 			}
 		};
@@ -107,11 +108,31 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	std::vector<int> entitiesIDs;
+
+	auto isValidPos = [&](int x, int y)
+	{
+		if (gameState.getTileAt({ x, y }).getTileTypeID() == -1)
+			return false;
+
+		switch (shapeType)
+		{
+		case ShapeType::Square: return Vector2f(x, y).distance(position) <= shapeSize;
+		case ShapeType::Circle: return Vector2f(x, y).distance(position) <= shapeSize;
+		case ShapeType::Cross: return (x == position.x || y == position.y) && Vector2f(x, y).distance(position) <= shapeSize;
+		default: return false;
+		}
+	};
+
 	//Call base method
 	for (auto& entity : gameState.getEntities())
 	{
-		if (shapeType==ShapeType::AllPositions||entity.getPosition().distance(position) <= shapeSize)
+		if (shapeType==ShapeType::AllPositions)
 			entitiesIDs.emplace_back(entity.getID());
+		else
+		{
+			if (isValidPos(entity.getPosition().x, entity.getPosition().y))
+				entitiesIDs.emplace_back(entity.getID());
+		}
 	}
 	return entitiesIDs;
 }
@@ -123,7 +144,13 @@ bool SGA::Neighbours::validatePosition(const GameState& /*gameState*/, const Vec
 	case ShapeType::Square:			
 	{
 		return (sourcePosition.x >= targetPosition.x - shapeSize && sourcePosition.x <= targetPosition.x + shapeSize &&
-			sourcePosition.y>=targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize);
+			sourcePosition.y >= targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize);
+	}
+	case ShapeType::Cross:
+	{
+		return (sourcePosition.x >= targetPosition.x - shapeSize && sourcePosition.x <= targetPosition.x + shapeSize &&
+			sourcePosition.y>=targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize) && 
+			(sourcePosition.x==targetPosition.x|| sourcePosition.y == targetPosition.y);
 	}				
 	case ShapeType::Circle:
 	{

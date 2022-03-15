@@ -95,6 +95,15 @@ namespace SGA
 
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+	
+	class IsPlayerID : public Condition
+	{
+		FunctionParameter playerID;
+	public:
+		IsPlayerID(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 
 	class DifferentPlayer : public Condition
 	{
@@ -112,6 +121,17 @@ namespace SGA
 
 	public:
 		InRange(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class OutRange : public Condition
+	{
+		FunctionParameter sourceEntity;
+		FunctionParameter targetEntity;
+		FunctionParameter distance;
+
+	public:
+		OutRange(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 

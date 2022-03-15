@@ -2,7 +2,7 @@
 #include <vector>
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ActionTarget.h>
-
+#include <Stratega/ForwardModel/SamplingMethod.h>
 namespace SGA
 {
 	class ForwardModel;
@@ -94,6 +94,34 @@ namespace SGA
 		FunctionParameter targetParam;
 	public:
 		Push(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class PushAndHit : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+
+		//Hit
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+	public:
+		PushAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class PushAroundPositionAndHit : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+
+		//Hit
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+
+		std::unique_ptr<Neighbours> samplingMethod;
+	public:
+		PushAroundPositionAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 

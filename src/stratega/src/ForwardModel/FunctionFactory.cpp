@@ -16,6 +16,7 @@ namespace SGA
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<DifferentPlayer>("DifferentPlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<OutRange>("OutRange");
 		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
@@ -32,6 +33,7 @@ namespace SGA
 		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
 		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
 		factory.registerFunction<CanEquipObject>("CanEquipObject");
+		factory.registerFunction<IsPlayerID>("IsPlayerID");
 		
 		return factory;
 	}
@@ -65,6 +67,9 @@ namespace SGA
 		factory.registerFunction<UseObject>("UseObject");
 		factory.registerFunction<UseSlotObject>("UseSlotObject");
 		factory.registerFunction<DropObject>("DropObject");
+
+		factory.registerFunction<PushAndHit>("PushAndHit");
+		factory.registerFunction<PushAroundPositionAndHit>("PushAroundPositionAndHit");
 
 		factory.registerFunction<Empty>("Empty");
 

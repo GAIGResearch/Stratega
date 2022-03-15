@@ -38,6 +38,7 @@ namespace SGA
 		{
 			Circle,
 			Square,
+			Cross,
 			AllPositions
 		};
 		

@@ -116,7 +116,7 @@ namespace SGA
 		/// <summary>
 		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
 		/// </summary>
-		const Parameter& getParameterByName(std::string& name) const;
+		const Parameter& getParameterByName(const std::string& name) const;
 
 		/// <summary>
 		/// Checks if this entity type is allowed to execute an action type

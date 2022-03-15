@@ -259,6 +259,8 @@ namespace YAML
                 rhs = SGA::Neighbours::ShapeType::Circle;
             else if (value == "Square")
                 rhs = SGA::Neighbours::ShapeType::Square;
+            else if (value == "Cross")
+                rhs = SGA::Neighbours::ShapeType::Cross;
             else if (value == "AllPositions")
                 rhs = SGA::Neighbours::ShapeType::AllPositions;
             else

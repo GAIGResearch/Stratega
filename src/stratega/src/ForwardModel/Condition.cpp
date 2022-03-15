@@ -136,6 +136,19 @@ namespace  SGA
 		return sourceEntity.getOwnerID() == targetEntity.getOwnerID();
 	}
 
+	IsPlayerID::IsPlayerID(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
+		Condition(exp),
+		playerID(parameters.at(1))
+	{
+	}
+
+	bool IsPlayerID::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto targetPlayerID = playerID.getConstant(state, targets);
+
+		return targets[0].getPlayerID(state) == targetPlayerID;
+	}
+
 	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
 	{
 	}
@@ -164,6 +177,24 @@ namespace  SGA
 		auto dist = distance.getConstant(state, targets);
 		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
 		return source.getPosition().distance(target) <= dist;
+	}
+
+	OutRange::OutRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		:Condition(exp),
+		sourceEntity(parameters.at(0)),
+		targetEntity(parameters.at(1)),
+		distance(parameters.at(2))
+		
+	{
+	}
+
+	bool OutRange::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& source = sourceEntity.getEntity(state, targets);
+		const auto& target = targetEntity.getPosition(state, targets);
+		auto dist = distance.getConstant(state, targets);
+		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
+		return source.getPosition().distance(target) >= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
