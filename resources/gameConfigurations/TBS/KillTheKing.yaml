@@ -24,7 +24,7 @@ Agents:
     #    FmCalls: 20000
     #    RolloutLength: 20
     - KTKCombatAgent
-    - MiniMaxAgent
+    - MinimaxAgent
 
 GameRenderer:
     Resolution:
