@@ -79,6 +79,32 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class AttackWithArmorUnderCover : public Effect
+	{
+		FunctionParameter sourceReference;
+		FunctionParameter armorReference;
+		FunctionParameter healthReference;
+		FunctionParameter amountParameter;
+		FunctionParameter penaltyParameter;
+	public:
+		AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class AttackAroundWithArmor : public Effect
+	{
+		FunctionParameter sourceReference;
+		FunctionParameter targetPositionReference;
+		FunctionParameter armorReference;
+		FunctionParameter healthReference;
+		FunctionParameter amountParameter;
+
+		std::unique_ptr<Neighbours> samplingMethod;
+	public:
+		AttackAroundWithArmor(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class Empty :public Effect
 	{
 		FunctionParameter entityParam;
@@ -141,6 +167,15 @@ namespace SGA
 		FunctionParameter positionParam;
 	public:
 		DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class RemoveObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter objectParam;
+	public:
+		RemoveObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 

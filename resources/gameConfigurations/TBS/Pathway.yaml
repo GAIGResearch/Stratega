@@ -1,0 +1,249 @@
+GameConfig:
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: true
+
+Agents:
+    - HumanAgent
+    - OSLAAgent
+    #- MCTSAgent:
+    #    FmCalls: 100
+    #    Budget: TIME
+    #    RolloutLength: 10
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        FogOfWar: ../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
+    TileSpriteOrigin:
+        Width: 128
+        Height: 112
+    EntitySpriteOrigin:
+        Width: 256
+        Height: 360
+    TileSpriteSize:
+        Width: 256
+        Height: 144
+    EntitySpriteSize:
+        Width: 512
+        Height: 512
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  .  .  s1 .  .  .  s1 .  .  M
+        M  .  .  M  .  s1 .  M  .  .  M
+        M  .  .  M  M  M  M  M  .  .  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  .  .  F  F  .  .  .  .  .  W
+        M  .  .  F  F  F  .  .  .  .  W
+        M  M  .  .  F  F  F  .  .  M  W
+        M  .  .  .  .  F  F  F  .  .  W
+        M  .  .  .  .  .  F  F  .  .  W
+        M  .  .  .  .  .  .  .  .  .  W
+        M  .  .  M  M  M  M  M  .  .  M
+        M  .  .  M  .  s0 r  M  .  .  M
+        M  .  .  s0 .  m  g  s0 .  .  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M
+Actions:
+    LongShot:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Entities
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+        #Attack a entity removing firt armor and then health, and apply a 75% of penalty if it is behind cover
+            - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, Source.AttackDamage, 75)"
+
+    MeleeAttack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Entities
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+        Effects:
+            - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, Source.AttackDamage*2, 0)"
+    
+
+    ######Objects
+    UseMedKit:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:        
+            Object:
+                Type: Object
+                ValidTargets: MedKit
+            Target:
+                Type: Entity
+                ValidTargets: Entities
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
+        Effects:
+            - "ModifyResource(Target.Health, 20)"
+            - "RemoveObject(Source, Object)"
+    UseRepairKit:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Object:
+                Type: Object
+                ValidTargets: RepairKit
+            Target:
+                Type: Entity
+                ValidTargets: Entities
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
+        Effects:
+            - "ModifyResource(Target.Armor, 20)"
+            - "RemoveObject(Source, Object)"
+    
+    LaunchGrenade:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Object:
+                Type: Object
+                ValidTargets: Grenade
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 5
+                        AllowDiagonals: false
+        Effects:
+            - "AttackAroundWithArmor(Source, Target, Source.Armor, Source.Health, 20)"
+            - "RemoveObject(Source, Object)"
+    PickUp:
+        Type: EntityAction
+        Preconditions:
+            - "HasNotInventoryFull(Source)"
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Object
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, 2)"
+        Effects:
+            - "PickUp(Source, Target)"
+
+    ####Move actions
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 4
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+Objects:
+    MedKit:
+       Sprite: ../../assets/Entities/key.png
+       Symbol: m
+    Grenade:
+       Sprite: ../../assets/Entities/key.png
+       Symbol: g
+    RepairKit:
+       Sprite: ../../assets/Entities/key.png
+       Symbol: r
+
+EntityGroups:
+    Entities: [Soldier]
+    Object: [MedKit, RepairKit, Grenade]
+
+Entities:
+    Soldier:
+        Sprite: ../../assets/Entities/unit_2.png
+        Symbol: s
+        LineOfSightRange: 6
+        Actions: [LongShot, MeleeAttack, Move, UseMedKit, UseRepairKit, LaunchGrenade, PickUp]
+        Parameters:
+            Health: 40
+            Armor: 15
+            Bravery: 2
+
+            AttackRange: 4
+            AttackDamage: 20
+            MovementPoints: 1
+
+ForwardModel:
+    #LoseConditions: #If true: Player -> cant play
+    #    NoHasKing:
+    #    - "HasNoEntity(Source, King)"
+
+    Trigger:
+        - OnTick:
+            Type: Entity
+            ValidTargets: Entities
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"

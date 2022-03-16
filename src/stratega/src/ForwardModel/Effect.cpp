@@ -174,6 +174,119 @@ namespace SGA
 		if(targetResource <= 0)
 			entity.flagRemove();
 	}
+	
+	AttackWithArmorUnderCover::AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
+		sourceReference(parameters.at(0)),
+		armorReference(parameters.at(1)),
+		healthReference(parameters.at(2)),
+		amountParameter(parameters.at(3)),
+		penaltyParameter(parameters.at(4))
+	{
+
+	}
+	
+	void AttackWithArmorUnderCover::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& target = armorReference.getEntity(state, targets);
+		auto targetResource = armorReference.getRawParameterValue(state, targets);
+		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		auto amount = amountParameter.getConstant(state, targets);
+		auto penalty = penaltyParameter.getConstant(state, targets);
+		
+		//Compute if enemy is cover
+		//Checks if target entity has a wall direction of source
+		auto& entity = sourceReference.getEntity(state, targets);
+
+		auto pushDir = entity.getPosition() - target.getPosition();
+		pushDir = pushDir.normalized();
+		auto wallPositionCheck = target.getPosition() + pushDir;
+
+		const auto& tile = state.getTileAt(wallPositionCheck.x, wallPositionCheck.y);
+
+		if (!tile.isWalkable())
+		{
+			//It has a cover in front
+			amount -= amount * (penalty / 100);
+		}
+
+		//Remove armor
+        targetResource -= amount;
+		double amountRemaining = 0;
+		fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+		if (targetResource < 0)
+		{
+			amountRemaining = -targetResource;
+			targetResource = 0;			
+
+			//Lets remove the remaining to health
+			targetResource = healthReference.getRawParameterValue(state, targets);
+			parameterIndex = healthReference.getParameter(state, targets).getIndex();
+
+			targetResource -= amountRemaining;
+
+			fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+
+			if (targetResource <= 0)
+				target.flagRemove();
+		}
+	}
+	AttackAroundWithArmor::AttackAroundWithArmor(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
+		sourceReference(parameters.at(0)),
+		targetPositionReference(parameters.at(1)),
+		armorReference(parameters.at(2)),
+		healthReference(parameters.at(3)),
+		amountParameter(parameters.at(4)),
+		samplingMethod(std::move(std::make_unique<Neighbours>()))
+	{
+		samplingMethod->shapeType = Neighbours::ShapeType::Cross;
+		samplingMethod->shapeSize = 1;
+	}
+	
+	void AttackAroundWithArmor::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& armorParame = armorReference.getEntity(state, targets);
+		auto targetResource = armorReference.getRawParameterValue(state, targets);
+		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		auto amount = amountParameter.getConstant(state, targets);
+		
+		auto targetPosition = targetPositionReference.getPosition(state, targets);
+
+		//Get entities around position		
+		auto entities = samplingMethod->getEntities(state, targetPosition, {});
+
+		for (auto& entID : entities)
+		{
+			auto* target = state.getEntity(entID);
+
+			if (!target)
+				continue;
+
+			//Remove armor
+			targetResource = target->getParameter(armorReference.getParameter(state, targets).getName());
+
+			targetResource -= amount;
+			double amountRemaining = 0;
+			
+			fm.modifyEntityByParameterByName(*target, armorReference.getParameter(state, targets).getName(), targetResource);
+
+			if (targetResource < 0)
+			{
+				amountRemaining = -targetResource;
+				targetResource = 0;
+
+				//Lets remove the remaining to health
+				targetResource = target->getParameter(healthReference.getParameter(state, targets).getName());
+				targetResource -= amountRemaining;
+
+				fm.modifyEntityByParameterByName(*target, healthReference.getParameter(state, targets).getName(), targetResource);
+
+				if (targetResource <= 0)
+					target->flagRemove();
+			}
+		}		
+	}
 
 	Empty::Empty(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
@@ -379,6 +492,21 @@ namespace SGA
 
 		entity.removeObject(object.getID());
 		state.addEntity(object, -1, position);
+	}
+	
+	RemoveObject::RemoveObject(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), objectParam(parameters[1])
+	{
+
+	}
+
+	void RemoveObject::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		Entity object = objectParam.getObject(state, targets);
+
+		entity.removeObject(object.getID());
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
