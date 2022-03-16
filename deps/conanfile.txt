@@ -19,3 +19,6 @@ sfml:shared=True
 cmake
 cmake_find_package
 cmake_paths
+
+[imports]
+lib, *.dylib* -> ./bin
