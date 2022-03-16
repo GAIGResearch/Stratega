@@ -34,6 +34,8 @@ namespace SGA
 		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
 		factory.registerFunction<CanEquipObject>("CanEquipObject");
 		factory.registerFunction<IsPlayerID>("IsPlayerID");
+		factory.registerFunction<IsNotTick>("IsNotTick");
+		factory.registerFunction<IsTick>("IsTick");
 		
 		return factory;
 	}

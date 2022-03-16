@@ -160,7 +160,7 @@ Actions:
         Preconditions:
             - "IsPlayerID(Source, 1)"
             - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
-        Cooldown: 1
+        Cooldown: 0
         Targets:
             EntityTypeTarget:
                 Type: EntityType
@@ -324,9 +324,47 @@ EntityGroups:
     Movable: [Pusher, Archer, Bomber, Worm]
 
 ForwardModel:
-    #LoseConditions: #If true: Player -> cant play
-    #    HasNoCity:
-    #    #- "HasNoEntity(Source, City)"
+    LoseConditions: #If true: Player -> cant play
+        EnemyHasNoWorm:
+            - "IsPlayerID(Source, 1)"
+            - "HasNoEntity(Source, Worm)"
+            - "ResourceLowerEqual(Source.EnemySpawn, 0)"
+        EnemyHasPlaceAllEnemiesBegin:
+            - "IsPlayerID(Source, 1)"
+            - "IsTick(2)"
+            - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
+        EnemyHasPlaceAllEnemiesEnd:
+            - "IsPlayerID(Source, 1)"
+            - "IsTick(12)"
+            - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
+        PlayerHasPlaceAllPusherBegin:
+            - "IsPlayerID(Source, 0)"
+            - "IsTick(2)"
+            - "ResourceGreaterEqual(Source.PusherSpawn, 1)"
+        PlayerHasPlaceAllBomberBegin:
+            - "IsPlayerID(Source, 0)"
+            - "IsTick(2)"
+            - "ResourceGreaterEqual(Source.BomberSpawn, 1)"
+        PlayerHasPlaceAllArcherBegin:
+            - "IsPlayerID(Source, 0)"
+            - "IsTick(2)"
+            - "ResourceGreaterEqual(Source.ArcherSpawn, 1)"
+        PlayerHasNoEntities:
+            - "IsPlayerID(Source, 0)"
+            - "HasNoEntity(Source, Pusher)"
+            - "ResourceLowerEqual(Source.PusherSpawn, 0)"
+            - "HasNoEntity(Source, Bomber)"
+            - "ResourceLowerEqual(Source.BomberSpawn, 0)"
+            - "HasNoEntity(Source, Archer)"
+            - "ResourceLowerEqual(Source.ArcherSpawn, 0)"
+        PlayerHasNoCities:
+            - "IsPlayerID(Source, 0)"
+            - "HasNoEntity(Source, City)"
+        PlayerTickLimit:
+            - "IsPlayerID(Source, 0)"
+            - "IsTick(16)"
+        ##Check enemy and player spawned the enemies
+        ##If tick is higher than 15 the enemy win
     Trigger:
         - OnAdvance:
             Type: Entity
@@ -335,3 +373,11 @@ ForwardModel:
                 - "IsTileType(Source, Water)"
             Effects:
                 - "Remove(Source)"
+        - OnTick:
+            #Type: Entity, Player, State
+            Type: Player
+            Conditions:
+                - "IsTick(10)"
+                - "IsPlayerID(Source, 1)"
+            Effects:
+                - "ModifyResource(Source.EnemySpawn, +2)"

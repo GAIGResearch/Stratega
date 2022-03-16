@@ -260,6 +260,48 @@ namespace  SGA
 		}
 		
 	}
+
+	IsTick::IsTick(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		tickParam(parameters[0])
+	{
+	}
+
+	bool IsTick::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double tick = tickParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if(tick==currentTick)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}		
+	}
+
+	IsNotTick::IsNotTick(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		tickParam(parameters[0])
+	{
+	}
+
+	bool IsNotTick::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double tick = tickParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if(tick!=currentTick)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}		
+	}
 	
 	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Condition(exp),

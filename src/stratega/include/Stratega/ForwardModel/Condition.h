@@ -172,6 +172,24 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
+	class IsTick: public Condition
+	{
+		FunctionParameter tickParam;
+
+	public:
+		IsTick(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotTick : public Condition
+	{
+		FunctionParameter tickParam;
+
+	public:
+		IsNotTick(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
 	class IsResearched : public Condition
 	{
 		FunctionParameter playerParam;
