@@ -423,7 +423,17 @@ namespace SGA
 		{
 			auto* pushedEntity = state.getEntity(entID);
 
+			
+			
 			if (!pushedEntity||pushedEntity->getPosition()==targetPosition)
+				continue;
+
+			auto actionTypes = pushedEntity->getActionTypes(*state.getGameInfo());
+			auto it = find_if(actionTypes.begin(), actionTypes.end(), [&actionTypes](const ActionType& obj) {return obj.getName() == "Move"; });
+			
+			//Hardcoded way to check if entity can move
+			//Once we had to actions calling other actions we will remove this
+			if (it == actionTypes.end())
 				continue;
 
 			auto pushDir = pushedEntity->getPosition() - targetPosition;

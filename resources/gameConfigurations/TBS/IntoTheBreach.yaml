@@ -66,7 +66,7 @@ Tiles:
         Sprite: ../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
-        
+
 Board:
     GenerationType: Manual
     Layout: |-
@@ -78,8 +78,9 @@ Board:
         .  P  P  F  E  F  W  E
         .  P  P  .  .  c0 F  .
         c0 M  c0 M  W  W  W  W  
+
 Actions:
-#####Spawn actions
+###Spawn actions
     SpawnPusher:
         Type: PlayerAction
         Preconditions:
@@ -186,7 +187,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: All
+                ValidTargets: PlayerSpawnEntities
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -203,7 +204,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                #ValidTargets: Worm
+                ValidTargets: Worm
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -220,7 +221,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                #ValidTargets: Worm
+                ValidTargets: Worm
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -247,7 +248,7 @@ Actions:
                 #    - "DifferentPlayer(Source, Target)"
         Effects:
             - "PushAroundPositionAndHit(Source, Target, Source.Health, Source.AttackDamage)"
-    
+###Move
     Move:
         Type: EntityAction
         Cooldown: 1
@@ -268,7 +269,6 @@ Actions:
         Effects:
             - "Move(Source, Target)"
 
-    
 Entities:
     Pusher:
         Sprite: ../../assets/Entities/unit_2.png
@@ -309,7 +309,7 @@ Entities:
             Health: 2
             AttackRange: 5
             AttackDamage: 1
-        Actions: [Move]
+        Actions: [Move, Attack]
 
     City:
         Sprite: ../../assets/Entities/castle.png
