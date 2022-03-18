@@ -15,7 +15,7 @@ target_link_libraries(gui
         # other platforms use Conan's `sfml`
         # for mac we have to use the targets of `sfml`'s components individually
         #CONAN_PKG::sfml
-        "$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
+        #"$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
         
         "$<$<PLATFORM_ID:Darwin>:sfml-system>"
         "$<$<PLATFORM_ID:Darwin>:sfml-graphics>"
