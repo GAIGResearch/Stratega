@@ -259,7 +259,9 @@ namespace SGA
 		
 		 
 		mathExpress = "";
-		while (ss.peek() != EOF && ss.peek() != ',')
+		bool isInsideMethod = false;
+		bool shouldContinue = true;
+		while (shouldContinue)
 		{
 			//mathExpress += ss.peek();
 			nonstd::optional<FunctionParameter> param;
@@ -283,10 +285,32 @@ namespace SGA
 				if (ss.peek() == EOF && nextChar == ')')
 				{
 					//If the last character is ) dont add it
-				}
+					isInsideMethod = false;
+				}				
 				else
-					mathExpress += nextChar;						
+				{
+					if (nextChar == '(')
+					{
+						isInsideMethod = true;
+					}
+					else if (nextChar == ')')
+					{
+						isInsideMethod = false;
+					}
+
+					mathExpress += nextChar;
+				}								
 			}
+
+			if (ss.peek() == EOF)
+			{
+				shouldContinue = false;				
+			}
+			else
+			{
+				if ((ss.peek() == ',' && !isInsideMethod))
+					shouldContinue = false;
+			}				
 		}
 		temp.setExpression(mathExpress);		
 		return FunctionParameter::createExpression(/*ss.str()*/temp);

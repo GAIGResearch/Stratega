@@ -2,9 +2,13 @@
 #include <Stratega/Logging/Log.h>
 #include <Stratega/Arena/Arena.h>
 #include <Stratega/Arena/InputParser.h>
+#include <Stratega/Utils/cparse/shunting-yard.h>
+#include <Stratega/Utils/cparse/builtin-features.h>
 
 int main(int argc, char** argv)
 {
+	cparse_startup();
+
 	InputParser parser(argc, argv);
 	auto seed = parser.getCmdOption<unsigned int>("-seed", 0);
 	auto numberOfGames = parser.getCmdOption<unsigned int>("-gamesNumber", 1);

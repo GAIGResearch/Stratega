@@ -10,8 +10,8 @@ int main()
 	cparse_startup();
 
 	boost::mt19937 rngEngine(0);
-	//std::string configPath("../resources/gameConfigurations/TBS/Pathway.yaml");
-	std::string configPath("../resources/gameConfigurations/TBS/IntoTheBreach.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/Pathway.yaml");
+	//std::string configPath("../resources/gameConfigurations/TBS/IntoTheBreach.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	auto agents = gameConfig->generateAgents();
