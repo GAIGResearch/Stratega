@@ -127,13 +127,13 @@ if(NOT SGA_BUILD_HEADLESS)
     target_link_libraries_system(Stratega CONAN_PKG::imgui)
     target_link_libraries_system(Stratega imgui)
 
-    if(UNIX AND NOT APPLE)
+    #if(UNIX AND NOT APPLE)
         target_link_libraries_system(Stratega sfml-system)
         target_link_libraries_system(Stratega sfml-graphics)
         target_link_libraries_system(Stratega sfml-window)        
-    else()
-        target_link_libraries_system(Stratega CONAN_PKG::sfml)
-    endif()
+    #else()
+    #    target_link_libraries_system(Stratega CONAN_PKG::sfml)
+    #endif()
 endif()
 
 install(TARGETS
