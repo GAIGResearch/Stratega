@@ -7,6 +7,7 @@ GameConfig:
 Agents:
     - HumanAgent
     - BasicTBSAgent
+    
 
 GameRenderer:
     Resolution:
@@ -68,7 +69,7 @@ Entities:
         Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
-            Prod: 20
+            Prod: 10
         Parameters:
             Health: 100
             Range: 6
@@ -135,9 +136,9 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
-        RequiredTechnology: Bronze Working
+        # RequiredTechnology: Bronze Working # for simplify it a little bit
         Cost:
-            Prod: 5
+            Gold: 80
         Parameters:
             Armor: 20
             Speed: 1
@@ -325,13 +326,13 @@ TechnologyTrees:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 10
+                Prod: 5
             Time: 2
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]
             Cost:
-                Prod: 15
+                Prod: 10
             Time: 2
         Pottery:
             Description: Allows to construct a Storage.
@@ -384,14 +385,14 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
         M  .  .  .  .  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  F  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  g  .  .  .  .  .  W  W  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  .  .  .  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
+        M  .  .  g  .  .  .  .  .  .  M  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
         M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
         M  .  .  g  .  .  g  g  g  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
         M  M  M  g  .  .  .  .  g  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
-        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
-        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  .  .  .  .  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
         M  .  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  g  .  .  F  F  F  F  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  g  .  .  .  .  .  M
         M  M  M  g  .  .  .  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M

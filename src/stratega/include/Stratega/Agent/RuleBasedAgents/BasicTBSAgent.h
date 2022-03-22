@@ -24,12 +24,19 @@ class BasicTBSAgent: public Agent {
       void init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) override;
 
   private:
+	  // const
+	  const int researchMiningProduction=5, buildBarracksProduction=10, researchDiciplineProduction=10;
+	  const int spawnWarriorGold=80;
+
+
 	  bool initialized=false;
 	  int self_city_id, enemy_city_id;
       Vector2f self_city, enemy_city;
-	  std::vector<int> workers, nearbyAttackable, farAwarAttackable, goldVein;
+	  std::vector<int> workers, nearbyAttackable, farAwarAttackable, goldVein, barracks;
 	  std::vector<Vector2f> goldVeinPosition;
       double enemyAttackerRangeTolerate = 5.0;
+
+	  bool isResearchedMining=false, isResearchedDiscipline=false,isBuiltBarraks=false;
       
       BasicTBSAgent();
       std::vector< Entity > filterAttackableUnit();
@@ -40,7 +47,14 @@ class BasicTBSAgent: public Agent {
 	  double getGold(GameState state);
 	  double getScore(GameState state);
 
-	 int filterSpawnWorker(GameState state, std::vector<Action> actionSpace);
+	  int filterAction(GameState state, std::vector<Action> actionSpace, 
+		  std::string actionT, std::string targetName);
+
+	  int filterSpawnWorker(GameState state, std::vector<Action> actionSpace);
+	  int filterSpawnWarrior(GameState state, std::vector<Action> actionSpace);
+
+	  int moveAndAct(GameState state, std::vector<Action> actionSpace, 
+		  int targetEntityID, std::string actionT );
 
 
 };
