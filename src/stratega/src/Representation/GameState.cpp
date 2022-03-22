@@ -182,8 +182,18 @@ namespace SGA
 		auto instance = type.instantiateEntity(nextEntityID);
 		instance.setOwnerID(playerID);
 		instance.setPosition(position);
-		entities.emplace_back(std::move(instance));
 		nextEntityID++;
+
+		//Add initial objects
+		for (auto objectTypeID : type.getInitialObjectIDs())
+		{
+			auto newObject = gameInfo->getEntityType(objectTypeID).instantiateEntity(nextEntityID);
+			
+			instance.addObject(newObject);
+			nextEntityID++;
+		}
+
+		entities.emplace_back(std::move(instance));
 
 		return instance.getID();
 	}

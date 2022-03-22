@@ -86,7 +86,7 @@ namespace SGA
 		std::unordered_set<EntityTypeID> canEquipGroupEntityTypes;
 
 		//Object
-		
+		std::vector<int> initialObjectsIds;
 
 		std::vector<int> onTickObjectActionsIds;
 
@@ -256,6 +256,9 @@ namespace SGA
 
 		const std::vector<int>& getActionIDs() const { return actionIds; }
 		std::vector<int>& getActionIDs() { return actionIds; }
+		
+		const std::vector<int>& getInitialObjectIDs() const { return initialObjectsIds; }
+		std::vector<int>& getInitialObjectIDs() { return initialObjectsIds; }
 
 		const std::vector<int>& getOnTickActionIDs() const { return onTickActionIds; }
 		std::vector<int>& getOnTickActionIDs() { return onTickActionIds; }

@@ -85,6 +85,13 @@ namespace SGA
                 type.second.setRequiredTechID(name.empty() ? TechnologyTreeType::UNDEFINED_TECHNOLOGY_ID : config.technologyTreeCollection.getTechnologyTypeID(name));
                 // Hardcoded cost information
                 type.second.setCosts(parseCost(types[type.second.getName()]["Cost"], config));
+
+                //Parse initial objects
+                auto objects = types[type.second.getName()]["Objects"].as<std::vector<std::string>>(std::vector<std::string>());
+                for (const auto& objectName : objects)
+                {
+                    type.second.getInitialObjectIDs().emplace_back(config.getEntityID(objectName));
+                }
             }
         }
         void parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const;

@@ -290,9 +290,9 @@ namespace SGA
 				break;
 			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::Object: newTargets = generateObjectTargets(state, entity);
+			case TargetType::Object: newTargets = generateObjectTargets(state, entity, type.first.getGroupEntityTypes());
 				break;
-			case TargetType::SlotObject: newTargets = generateSlotObjectTargets(state, entity);
+			case TargetType::SlotObject: newTargets = generateSlotObjectTargets(state, entity, type.first.getGroupEntityTypes());
 				break;
 			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
 				break;
@@ -410,25 +410,27 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& /*gameState*/,  const Entity& source) const
+	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& gameState,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 
 		for (const auto& object : source.getInventory())
 		{
-			targets.emplace_back(ActionTarget::createObjectActionTarget(object.getID()));
+			if (entityTypeIDs.find(object.getEntityTypeID()) != entityTypeIDs.end())
+				targets.emplace_back(ActionTarget::createObjectActionTarget(object.getID()));
 		}
 		
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateSlotObjectTargets(const GameState& /*gameState*/,  const Entity& source) const
+	std::vector<ActionTarget> ActionSpace::generateSlotObjectTargets(const GameState& /*gameState*/,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 
 		for (const auto& object : source.getSlots())
 		{
-			targets.emplace_back(ActionTarget::createSlotObjectActionTarget(object.first.getID()));
+			if (entityTypeIDs.find(object.first.getEntityTypeID()) != entityTypeIDs.end())
+				targets.emplace_back(ActionTarget::createSlotObjectActionTarget(object.first.getID()));
 		}
 		
 		return targets;

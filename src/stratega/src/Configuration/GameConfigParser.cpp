@@ -518,6 +518,10 @@ namespace SGA
 
             targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
         }
+        else if (targetType == TargetType::Object || targetType == TargetType::SlotObject)
+        {
+            targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
+        }
         else if (targetType.getType() == TargetType::Technology)
         {
             auto techNode = node["ValidTargets"];

@@ -165,8 +165,10 @@ namespace SGA
 					case ActionTarget::Gamestate:
 						break;
 					case ActionTarget::Object:
+						actionInfo += targetType.getEntityType(*state).getName();
 						break;
 					case ActionTarget::SlotObject:
+						actionInfo += targetType.getEntityType(*state).getName();
 						break;
 					}
 				}
@@ -260,25 +262,39 @@ namespace SGA
 				}
 
 				//Avoid source entity
-				for (size_t i = 1; i < possibleAction.getTargets().size(); ++i)
+				const auto& targets = possibleAction.getTargets();
+				for (size_t i = 1; i < targets.size(); ++i)
 				{
-					if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
+					//Check assigned
+					if (i < selectedTargets.size() + 1)
 					{
-						auto position = possibleAction.getTargets()[i].getPosition(*state);
+						//Check if is different
+						if (selectedTargets[i - 1] != targets[i])
+						{
+							break;
+						}
+					}					
+					else
+					{
+						if (possibleAction.getTargets()[i].getType() == ActionTarget::EntityReference)
+						{
+							auto position = possibleAction.getTargets()[i].getPosition(*state);
 
-						sf::CircleShape possibleActionPositionShape(circleShapeSize);
-						possibleActionPositionShape.setFillColor(sf::Color::White);
-						possibleActionPositionShape.setOrigin(circleShapeSize*0.5f, circleShapeSize * 0.5f);
-						sf::Vector2f temp = world.toSFML(position);
+							sf::CircleShape possibleActionPositionShape(circleShapeSize);
+							possibleActionPositionShape.setFillColor(sf::Color::White);
+							possibleActionPositionShape.setOrigin(circleShapeSize * 0.5f, circleShapeSize * 0.5f);
+							sf::Vector2f temp = world.toSFML(position);
 
-						sf::Vector2f offset;
-						if (renderTarget.getRenderConfig().isIsometricGrid)
-							offset = sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
-						else
-							offset = sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
-						possibleActionPositionShape.setPosition(temp + offset);
+							sf::Vector2f offset;
+							if (renderTarget.getRenderConfig().isIsometricGrid)
+								offset = sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+							else
+								offset = sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+							possibleActionPositionShape.setPosition(temp + offset);
 
-						actionsShapes.emplace_back(possibleActionPositionShape);
+							actionsShapes.emplace_back(possibleActionPositionShape);
+							break;
+						}
 					}
 				}
 
@@ -485,12 +501,12 @@ namespace SGA
 		}
 		case TargetType::Object:
 		{
-			getObject(playerID, actionType, actionsToExecute);
+			getObject(targetType);
 			break;
 		}
 		case TargetType::SlotObject:
 		{
-			getSlotObject(playerID, actionType, actionsToExecute);
+			getSlotObject(targetType);
 			break;
 		}
 		}
@@ -670,7 +686,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	void ActionsWidget::getObject(const TargetType& actionTarget)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -680,6 +696,10 @@ namespace SGA
 				const auto& entity = state->getEntityConst(entityID);
 				for (auto& object : entity->getInventory())
 				{
+					if (actionTarget.getGroupEntityTypes().find(object.getEntityTypeID()) == actionTarget.getGroupEntityTypes().end())
+						continue;
+					//Filter valid action target
+					//actionTarget.get
 					ImGui::PushID(elementNumber);
 					if (ImGui::Button(object.getEntityType().getName().c_str(), ImVec2(0, 50)))
 					{
@@ -692,7 +712,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getSlotObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	void ActionsWidget::getSlotObject(const TargetType& actionTarget)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -702,6 +722,9 @@ namespace SGA
 				const auto& entity = state->getEntityConst(entityID);
 				for (const auto& object : entity->getSlots())
 				{
+					if (actionTarget.getGroupEntityTypes().find(object.first.getEntityTypeID()) == actionTarget.getGroupEntityTypes().end())
+						continue;
+
 					ImGui::PushID(elementNumber);
 					if (ImGui::Button(object.first.getEntityType().getName().c_str(), ImVec2(0, 50)))
 					{

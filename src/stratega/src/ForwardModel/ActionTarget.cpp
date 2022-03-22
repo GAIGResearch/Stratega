@@ -186,7 +186,7 @@ namespace SGA
 			const auto& type = state.getGameInfo()->getEntityType(data.entityTypeID);
 			return type;
 		}
-		else if(targetType == EntityReference)
+		else if(targetType == EntityReference || targetType == Object || targetType == SlotObject)
 		{
 			const auto& type = state.getEntityConst(data.entityID)->getEntityType();
 			return type;

@@ -27,16 +27,13 @@ namespace SGA
 		}
 
 		// Set parameter values
-		//lineOfSightRange = type->getLoSRange();
-		///*parameters.reserve(type->getParameters().size());*/
-		//maxParameters.reserve(type->getParameters().size());
-		//minParameters.reserve(type->getParameters().size());
+		lineOfSightRange = type->getLoSRange();
 		for (const auto& idParamPair : type->getParameters())
 		{
 			parameters[idParamPair.second.getIndex()]=idParamPair.second.getDefaultValue();
 			maxParameters[idParamPair.second.getIndex()]=idParamPair.second.getMaxValue();
 			minParameters[idParamPair.second.getIndex()]=idParamPair.second.getMinValue();
-		}
+		}		
 	}
 
 	double Entity::getParameter(const std::string& paramName) const
