@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.8)
 
-project(Stratega LANGUAGES CXX)
+project(Stratega LANGUAGES C CXX OBJCXX)
 
 # project set'tings
 set(CMAKE_CONFIG_FOLDER "cmake")
