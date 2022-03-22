@@ -35,9 +35,7 @@ namespace SGA {
         for(const auto& entity : gameState.getEntities()) {
             positions.emplace(
                 entity.getID(), entity.getPosition());  // entity.id, entity.position);
-            if(entity.getOwnerID()
-                != gameState
-                    .getCurrentTBSPlayer())  // if (entity.ownerID != gameState.currentPlayer)
+            if(entity.getOwnerID()!= gameState.getCurrentTBSPlayer())  // if (entity.ownerID != gameState.currentPlayer)
             {
                 opponentEntites.insert(entity.getID());
 
@@ -48,19 +46,9 @@ namespace SGA {
                 king_x = entity.x();
                 king_y = entity.y();
                 int paramID = 0;
-                // for (auto& parameter : entity.parameters)
-                opponent_king_hp = opponent_king_hp = entity.getParameter("Health");
-                /*
-                for (auto& parameter : entity.getParamValues())
-                {
-                        if (entityType.parameters.find(paramID++)->second.name == "Health")
-                        {
-                                opponent_king_hp = parameter;
-                                //std::cout << "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB "
-                <<parameter << std::endl;
-                        }
-                }
-                */
+                
+                opponent_king_hp = entity.getParameter("Health");
+               
                 }
             } else {
                 playerEntities.insert(entity.getID());

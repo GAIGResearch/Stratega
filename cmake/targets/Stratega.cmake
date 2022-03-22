@@ -30,6 +30,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/RuleBasedAgents/CombatAgent.cpp
         Agent/RuleBasedAgents/PusherAgent.cpp
         Agent/RuleBasedAgents/Direction.cpp
+        Agent/RuleBasedAgents/BasicTBSAgent.cpp
         Agent/ScriptedAgent.cpp
         Agent/StateAbstraction/StateFactory.cpp
         Agent/TreeSearchAgents/ActionAbstractionMCTSAgent.cpp

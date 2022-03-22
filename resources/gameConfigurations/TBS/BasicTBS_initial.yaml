@@ -2,11 +2,10 @@ GameConfig:
     Type: TBS
     ActionTimer: 10s
     RoundLimit: 100
-    FogOfWar: false
 
 Agents:
     - HumanAgent
-    - BasicTBSAgent
+    - OSLAAgent
 
 GameRenderer:
     Resolution:
@@ -121,7 +120,7 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
-            Prod: 3
+            Prod: 5
         Time: 5
         Parameters:
             ResourceCapacity: 10
@@ -137,7 +136,7 @@ Entities:
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
         Cost:
-            Prod: 5
+            Prod: 10
         Parameters:
             Armor: 20
             Speed: 1

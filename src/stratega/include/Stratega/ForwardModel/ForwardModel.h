@@ -84,6 +84,8 @@ namespace SGA
 
 		std::vector<Action> generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd = true) const;
 
+		std::vector<Action> generatePlayerActions(const GameState& state, int playerID, bool generateEnd = true) const;
+
 
 		/// <summary>
 		/// Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.

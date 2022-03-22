@@ -10,6 +10,7 @@
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/KTKCombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/PusherAgent.h>
+#include <Stratega/Agent/RuleBasedAgents/BasicTBSAgent.h>
 #include <Stratega/Agent/UnitMCTSAgent/UnitMCTSAgent.h>
 #include <Stratega/Agent/MinimaxAgent.h>
 
@@ -77,6 +78,7 @@ namespace SGA
         factory.registerAgent<KTKCombatAgent>("KTKCombatAgent");
 		factory.registerAgent<UnitMCTSAgent, UnitMCTSParameters>("UnitMCTSAgent");
         factory.registerAgent<MinimaxAgent>("MinimaxAgent");
+		factory.registerAgent<BasicTBSAgent>("BasicTBSAgent");
 		
 		return factory;
 	}
