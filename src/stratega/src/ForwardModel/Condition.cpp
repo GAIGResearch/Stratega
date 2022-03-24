@@ -149,16 +149,19 @@ namespace  SGA
 		return targets[0].getPlayerID(state) == targetPlayerID;
 	}
 
-	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		targetEntity(parameters.at(1))
 	{
 	}
 
 	bool DifferentPlayer::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto& sourceEntity = targets[0].getEntityConst(state);
-		auto& targetEntity = targets[1].getEntityConst(state);
+		//auto& targetEntity = targets[1].getEntityConst(state);
+		auto& target = targetEntity.getEntity(state, targets);
 
-		return sourceEntity.getOwnerID() != targetEntity.getOwnerID();
+		return sourceEntity.getOwnerID() != target.getOwnerID();
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -339,6 +342,21 @@ namespace  SGA
 		}
 
 		return !hasEntity;
+	}
+
+	HasNoEntities::HasNoEntities(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		playerParam(parameters[0])
+	{
+	}
+
+	bool HasNoEntities::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
+
+		return entities.size()<=0;
 	}
 	
 

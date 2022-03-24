@@ -36,6 +36,7 @@ namespace SGA
 		factory.registerFunction<IsPlayerID>("IsPlayerID");
 		factory.registerFunction<IsNotTick>("IsNotTick");
 		factory.registerFunction<IsTick>("IsTick");
+		factory.registerFunction<HasNoEntities>("HasNoEntities");
 		
 		return factory;
 	}

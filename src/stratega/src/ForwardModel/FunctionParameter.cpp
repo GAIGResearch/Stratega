@@ -407,6 +407,14 @@ namespace SGA
 			{
 				return true;
 			}
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Object)
+			{
+				return true;
+			}
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::SlotObject)
+			{
+				return true;
+			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				return false;

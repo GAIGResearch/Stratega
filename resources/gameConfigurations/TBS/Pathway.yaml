@@ -62,9 +62,9 @@ Board:
     GenerationType: Manual
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  .  .  .  .  .  .  .  M
-        M  .  .  s1 .  .  .  s1 .  .  M
-        M  .  .  M  .  s1 .  M  .  .  M
+        M  .  .  .  .  e1 .  .  .  .  M
+        M  .  .  e1 .  .  .  e1 .  .  M
+        M  e1 .  M  .  e1 .  M  .  e1 M
         M  .  .  M  M  M  M  M  .  .  M
         M  .  .  .  .  .  .  .  .  .  M
         M  .  .  F  F  .  .  .  .  .  W
@@ -74,8 +74,8 @@ Board:
         M  .  .  .  .  .  F  F  .  .  W
         M  .  .  .  .  .  .  .  .  .  W
         M  .  .  M  M  M  M  M  .  .  M
-        M  .  .  M  .  t0 .  M  .  .  M
-        M  .  .  .  .  .  .  s0 .  .  M
+        M  .  .  M  .  f0 .  M  .  .  M
+        M  .  .  .  h0 .  .  s0 .  .  M
         M  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M
 Actions:
@@ -99,12 +99,12 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    #- "DifferentPlayer(Source, Target)"
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Object.Range)"
         Effects:
-        #Attack a entity removing firt armor and then health, and apply a 75% of penalty if it is behind cover
+        #Attack a entity removing firt armor and then health, and apply a 75%/dexterity of penalty if it is behind cover
             - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin,Object.DamageMax), 75/Source.Dexterity)"
-            - "ModifyResource(Source.Ammo, -1)"
+            - "ModifyResource(Object.Ammo, -1)"
             - "ModifyResource(Source.AttackActions, -1)"
             - "ModifyResource(Source.AvailableActions, -1)"
 
@@ -126,10 +126,9 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    #- "DifferentPlayer(Source, Target)"
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Object.Range)"
         Effects:
-        #Attack a entity removing firt armor and then health, and apply a 75% of penalty if it is behind cover
             - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin,Object.DamageMax), 75)"
             - "ModifyResource(Source.AttackActions, -1)"
             - "ModifyResource(Source.AvailableActions, -1)"
@@ -152,7 +151,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    #- "DifferentPlayer(Source, Target)"
+                    - "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Object.Range)"
         Effects:
             - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin*2,Object.DamageMax*2), 75)"
@@ -166,13 +165,14 @@ Actions:
             - "ResourceGreaterEqual(Source.AvailableActions, 1)"
         Cooldown: 1
         Preconditions:
-            - "ResourceGreaterEqual(Source.Ammo, 1)"
+            - "ResourceGreaterEqual(Source.Reloads, 1)"
         Targets:
             Object:
                 Type: Object
                 ValidTargets: [AssaultRifle, Pistol]
         Effects:
             - "SetToMaximum(Object.Ammo)"
+            - "ModifyResource(Source.Reloads, -1)"
             - "ModifyResource(Source.MiscellaneousActions, -1)"
             - "ModifyResource(Source.AvailableActions, -1)"
 
@@ -268,21 +268,8 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.Agility)"
                     - "IsWalkable(Target)"
-                #SamplingMethod: 
-                #    Type: Dijkstra
-                #    Options:
-                #        SearchSize: 4
-                #        AllowDiagonals: false
-
-                #    Type: Neighbours
-                #    Options:
-                #        Shape: Circle
-                #        Size: 1
-                #Conditions:
-                #    - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MoveActions, -1)"
@@ -306,7 +293,6 @@ Actions:
                         Shape: Cross
                         Size: 10
                 Conditions:
-                    #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.Agility)"
                     - "IsWalkable(Target)"
         Effects:
@@ -330,8 +316,6 @@ Actions:
                     Options:
                         Shape: Square
                         Size: 1
-                Conditions:
-                    #- "DifferentPlayer(Source, Target)"
         Effects:     
             - "ApplyBuff(Target, Sprint, 2)"
             - "ModifyResource(Source.MiscellaneousActions, -1)"
@@ -403,7 +387,7 @@ Objects:
                 Repair: 20
 
 EntityGroups:
-    Entities: [Soldier, Temp]
+    Entities: [Soldier, Healer, Fixer, Enemy]
     Object: [MedKit, RepairKit, Grenade, AssaultRifle, Knife, Pistol]
 
 Entities:
@@ -424,7 +408,7 @@ Entities:
             Dexterity: 2 #Accuracy
             Agility	: 3  #Move distance
             
-            Ammo: 3
+            Reloads: 3
 
             #Actions
             AvailableActions: 2 #2 actions per turn
@@ -434,7 +418,7 @@ Entities:
 
     Healer:
         Sprite: ../../assets/Entities/unit_1.png
-        Symbol: s
+        Symbol: h
         LineOfSightRange: 6
         InventorySize: 4
         Actions: [LongAttack, MeleeAttack, Move, Sprint, ReloadWeapon, UseMedKit]
@@ -449,7 +433,7 @@ Entities:
             Dexterity: 3 #Accuracy
             Agility	: 4  #Move distance
             
-            Ammo: 2
+            Reloads: 2
 
             #Actions
             AvailableActions: 2 #2 actions per turn
@@ -459,7 +443,7 @@ Entities:
 
     Fixer:
         Sprite: ../../assets/Entities/unit_3.png
-        Symbol: s
+        Symbol: f
         LineOfSightRange: 6
         InventorySize: 4
         Actions: [LongAttack, MeleeAttack, Move, Bleed, Sprint, ReloadWeapon, UseRepairKit]
@@ -474,7 +458,32 @@ Entities:
             Dexterity: 3 #Accuracy
             Agility	: 4  #Move distance
             
-            Ammo: 2
+            Reloads: 2
+
+            #Actions
+            AvailableActions: 2 #2 actions per turn
+            MoveActions: 1 #Move or dash
+            AttackActions: 1
+            MiscellaneousActions: 1
+
+    Enemy:
+        Sprite: ../../assets/Entities/unit_4.png
+        Symbol: e
+        LineOfSightRange: 6
+        InventorySize: 4
+        #Actions: [LongAttack, MeleeAttack, Move]
+        #Initial list of object in inventory
+        Objects: [Pistol, Knife]
+        Parameters:
+            Health: 20
+            Armor: 10
+
+            #Stats
+            Willpower: 2 #Point for special actions
+            Dexterity: 3 #Accuracy
+            Agility	: 3  #Move distance
+            
+            Reloads: 2
 
             #Actions
             AvailableActions: 2 #2 actions per turn
@@ -484,9 +493,9 @@ Entities:
 
 
 ForwardModel:
-    #LoseConditions: #If true: Player -> cant play
-    #    NoHasKing:
-    #    - "HasNoEntity(Source, King)"
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "HasNoEntities(Source)"
 
     Trigger:
         - OnTick:

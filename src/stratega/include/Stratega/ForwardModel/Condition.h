@@ -107,6 +107,7 @@ namespace SGA
 
 	class DifferentPlayer : public Condition
 	{
+		FunctionParameter targetEntity;
 	public:
 		DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
@@ -229,6 +230,15 @@ namespace SGA
 		HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 
+	};
+
+	class HasNoEntities : public Condition
+	{
+		FunctionParameter playerParam;
+
+	public:
+		HasNoEntities(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class HasNoBuff : public Condition
