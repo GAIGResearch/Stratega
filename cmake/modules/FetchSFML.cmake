@@ -1,9 +1,10 @@
 include(FetchContent)
 
-set(SFML_VERSION 2.5.1)
+set(SFML_VERSION 2.6.0)
 FetchContent_Declare (
 	sfml
-	URL "https://github.com/SFML/SFML/archive/${SFML_VERSION}.zip"
+	#URL "https://github.com/SFML/SFML/archive/${SFML_VERSION}.zip"
+	URL "https://codeload.github.com/SFML/SFML/zip/refs/heads/2.6.x"
 )
 FetchContent_GetProperties(sfml)
 if(NOT sfml_POPULATED)
