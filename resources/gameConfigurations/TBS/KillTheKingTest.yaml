@@ -53,6 +53,23 @@ Tiles:
         IsWalkable: true
         
 Board:
+    Entities:
+        Entity1:
+            Type: Archer
+            Position: [1,1] # x, y
+            Owner: -1
+        Entity2:
+            Type: Archer
+            Position: [1,2] # x, y
+            Owner: -1
+        Entity3:
+            Type: Archer
+            Position: [1,3] # x, y
+            Owner: -1
+        Entity4:
+            Type: Archer
+            Position: [2,3] # x, y
+            Owner: -1
     GenerationType: Manual
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M

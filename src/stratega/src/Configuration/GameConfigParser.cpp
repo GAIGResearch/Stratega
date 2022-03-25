@@ -231,6 +231,60 @@ namespace SGA
                 config.selectedLevel = static_cast<int>(levelDefinitions.size()) - 1;
             }
 
+            //Additional Entity placements
+            auto entitiesNode = boardNode["Entities"];
+            std::vector<EntityPlacement> entityPlacements;
+            if (entitiesNode.IsDefined())
+            {
+                auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+                for (const auto& nameTypePair : types)
+                {
+                    if (!nameTypePair.second["Type"].IsDefined())
+                        throw std::runtime_error("Entity placement" + nameTypePair.first + "type not defined.");
+
+                    //Search entity type 
+                    for (const auto& idEntityPair : config.entityTypes)
+                    {
+                        if (idEntityPair.second.getName() == nameTypePair.second["Type"].as<std::string>())
+                        {
+                            //Get position
+                            if (nameTypePair.second["Position"].IsDefined())
+                            {
+                                EntityPlacement newEntity;
+                                auto position = nameTypePair.second["Position"].as<std::vector<int>>();
+                                //Check position is valid
+                                if(position.size()!=2)
+                                    throw std::runtime_error("Entity placement" + idEntityPair.second.getName() + "position wrong defined. Required format: [x,y]");
+                                newEntity.position = Vector2f(static_cast<float>(position[0]), static_cast<float>(position[1]));
+                                
+                                if (nameTypePair.second["Owner"].IsDefined())
+                                    newEntity.ownerID = nameTypePair.second["Owner"].as<int>();
+                                else
+                                    newEntity.ownerID = -1;
+
+                                newEntity.entityType = std::make_shared<EntityType>(idEntityPair.second);
+                                entityPlacements.emplace_back(newEntity);
+                            }
+                            else
+                            {
+                                throw std::runtime_error("Entity placement"+ idEntityPair.second.getName()+ "position not defined.");
+                            }
+                            
+                        }
+                    }                    
+                }
+            }
+
+            //Add entity placement to the parsed level definitions
+            if(entityPlacements.size()>0)
+                for (auto& definition : levelDefinitions)
+                {
+                    definition.second.entityPlacements.insert(definition.second.entityPlacements.end(), entityPlacements.begin(), entityPlacements.end());
+
+                   // std::copy(entityPlacements.begin(), entityPlacements.end(), std::back_inserter(definition.second.entityPlacements));
+                }
+           
+            //Assign level definition
             config.levelDefinitions = levelDefinitions;
         }
         else
