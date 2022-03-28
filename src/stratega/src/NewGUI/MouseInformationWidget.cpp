@@ -249,7 +249,7 @@ namespace SGA
 
 
 				ImGui::NextColumn();
-				ImGui::Text("Parameters: ");
+				ImGui::Text("Default parameters: ");
 
 				if(tileType.isWalkable())
 					ImGui::BulletText("Is walkable: true");
@@ -265,6 +265,19 @@ namespace SGA
 					ImGui::BulletText("Is default tile: true");
 				else
 					ImGui::BulletText("Is default tile: false");
+
+				ImGui::Text("Parameters: ");
+
+				for (const auto& parameter : tileType.getParameters())
+				{
+					//Double to string with 2 precision
+					std::stringstream stream;
+					stream << std::fixed << std::setprecision(2) << currentGameState->getTileAt(gridPosRounded).getParameter(parameter.second.getName());
+					std::string valueParameter = stream.str();
+
+					std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
+					ImGui::BulletText("%s", parameterInfo.c_str());
+				}
 
 				ImGui::End();
 			}

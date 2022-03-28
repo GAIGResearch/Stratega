@@ -40,6 +40,9 @@ Tiles:
         Symbol: .
         IsWalkable: true
         DefaultTile: true
+        Parameters:
+            Test: 40
+            Test2: 2
     Water:
         Sprite: ../../assets/Tiles/water.png
         Symbol: W
@@ -144,6 +147,21 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
+    Test:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Tile
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Test, Source.HealAmount)"
 
     
 Entities:

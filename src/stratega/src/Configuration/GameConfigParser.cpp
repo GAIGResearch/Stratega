@@ -159,6 +159,10 @@ namespace SGA
             type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
             type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
             type.setSymbol(nameConfigPair.second["Symbol"].as<char>('-'));
+
+            if (nameConfigPair.second["Parameters"].IsDefined())
+                parseParameterList(nameConfigPair.second["Parameters"], config, type.getParameters());
+
             config.tileTypes.emplace(type.getID(), std::move(type));
         }
     }

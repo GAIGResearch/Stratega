@@ -2,6 +2,20 @@
 #include <Stratega/Representation/TileType.h>
 namespace SGA
 {
+	Tile::Tile(const TileType* newTileType, int x, int y) :
+		type(newTileType),
+		blockSight(false),
+		walkable(true),
+		position(x, y)
+	{
+		if(newTileType!=NULL)
+			for (const auto& idParamPair : type->getParameters())
+			{
+				parameters[idParamPair.second.getIndex()] = idParamPair.second.getDefaultValue();
+				maxParameters[idParamPair.second.getIndex()] = idParamPair.second.getMaxValue();
+				minParameters[idParamPair.second.getIndex()] = idParamPair.second.getMinValue();
+			}
+	}
 	int Tile::getTileTypeID() const
 	{
 		int tileTypeID = -1;
