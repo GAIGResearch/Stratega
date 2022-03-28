@@ -140,7 +140,8 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             drawableEntity->moveTo(position);
-                            drawableEntity->appear();
+                            if(drawableEntity->isDissapearing())
+                                drawableEntity->appear();
                         }
                         else
                         {
@@ -150,7 +151,7 @@ namespace SGA
                     else
                     {
                         const auto& position = entity.getPosition();
-                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID(), 0));
 
                         if (enableInterpolationAnimations)
                         {
@@ -173,7 +174,8 @@ namespace SGA
                         if (enableInterpolationAnimations)
                         {
                             drawableEntity->moveTo(position);
-                            drawableEntity->appear();
+                            if (drawableEntity->isDissapearing())
+                                drawableEntity->appear();
                         }
                         else
                         {

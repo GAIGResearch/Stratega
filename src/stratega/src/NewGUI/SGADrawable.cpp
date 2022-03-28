@@ -23,9 +23,10 @@ namespace SGA
         
     }
 
-    SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID)
+    SGADrawableEntity::SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID, float newAlpha)
         : SGADrawable(newPosition, newZPosition), type(newType), entityID(newEntityID), playerID(newPlayerID), animation(AnimationType::None)
     {
+        alpha = newAlpha;
     }
 
     void SGADrawableEntity::update(float dt)
@@ -38,6 +39,7 @@ namespace SGA
             {
                 position = Interpolate(position, targetPosition, dt * 10);
                 isAnimating = true;
+                shouldRemove = false;
             }
             else
             {
@@ -70,11 +72,11 @@ namespace SGA
                 if (alpha > 0.95)
                     alpha = 1;
                 isAnimating = true;
-                shouldRemove = true;
+                shouldRemove = false;
             }
             else
             {
-                shouldRemove = true;
+                shouldRemove = false;
                 animation &= ~AnimationType::Appear;
             }
         }
