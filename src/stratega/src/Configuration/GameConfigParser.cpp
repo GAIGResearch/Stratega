@@ -574,12 +574,20 @@ namespace SGA
             targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
 
             auto tileNode = node["ValidTargets"];
-            if (tileNode.IsScalar() && tileNode.as<std::string>() == "All")
+            if (tileNode.IsScalar())
             {
-                for (const auto& tile : config.tileTypes)
+                if(tileNode.as<std::string>() == "All")
                 {
-                    targetType.getTileTypes().insert(tile.first);
+                    for (const auto& tile : config.tileTypes)
+                    {
+                        targetType.getTileTypes().insert(tile.first);
+                    }
                 }
+                else
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tileNode.as<std::string>()));
+                }
+                
             }
             else if (tileNode.IsSequence())
             {
