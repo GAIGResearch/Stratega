@@ -32,8 +32,9 @@ namespace SGA
 			TechnologyTypeReference, // References TechnologyTypes defined in the Game,
 			TimeReference, // References the Time for specific Entities or Technologies,
 			TileTypeReference, // References TileTypes defined in the Game. Like Plain, Forest...
-			BuffTypeReference, // References BuffTypes defined in the Game. Like Plain, Forest...
-			GameStateParameterReference, // References BuffTypes defined in the Game. Like Plain, Forest...
+			BuffTypeReference, // References BuffTypes defined in the Game.
+			GameStateParameterReference, //  References the parameter of an action-target
+			TileParameterReference, //  References the parameter of an action-target
 			Expression, //List of diferent string + function parameters (constant + parameter reference)
 			DiceAnotation // 4d12
 		};		
@@ -125,6 +126,7 @@ namespace SGA
 		static FunctionParameter createTimeReference(int argumentIndex);
 		static FunctionParameter createEntityPlayerParameterReference(ParameterReference ref);
 		static FunctionParameter createGameStateParameterReference(ParameterReference ref);
+		static FunctionParameter createTileParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
@@ -140,8 +142,10 @@ namespace SGA
 		double& getRawParameterValue(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Vector2f getPosition(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getEntity(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		Tile& getTile(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		Entity& getSlotObject(GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const Tile& getTile(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getSlotObject(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Entity& getEntity(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
@@ -164,6 +168,7 @@ namespace SGA
 		bool isPlayerParameter(const std::vector<ActionTarget>& actionTargets) const;
 		bool isEntityParameter(const std::vector<ActionTarget>& actionTargets) const;
 		bool isStateParameter(const std::vector<ActionTarget>& actionTargets) const;
+		bool isTileParameter(const std::vector<ActionTarget>& actionTargets) const;
 	};
 
 	

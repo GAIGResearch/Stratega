@@ -569,6 +569,28 @@ namespace SGA
         {
             targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
         }
+        else if (targetType.getType() == TargetType::Tile)
+        {
+            targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+
+            auto tileNode = node["ValidTargets"];
+            if (tileNode.IsScalar() && tileNode.as<std::string>() == "All")
+            {
+                for (const auto& tile : config.tileTypes)
+                {
+                    targetType.getTileTypes().insert(tile.first);
+                }
+            }
+            else if (tileNode.IsSequence())
+            {
+                auto tiles = tileNode.as<std::vector<std::string>>(std::vector<std::string>());
+                //Assigne tile IDs to the tiletypes map
+                for (auto& tile : tiles)
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tile));
+                }
+            }
+        }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
             if (targetType == TargetType::Entity)

@@ -229,7 +229,7 @@ namespace SGA
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Tile Information"/*, NULL, window_flags*/);
 
-				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAt(gridPosRounded).getTileTypeID());
+				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAtConst(gridPosRounded).getTileTypeID());
 
 				ImGui::Text("%s", tileType.getName().c_str());
 				ImGui::Columns(2, "mixed");
@@ -272,7 +272,7 @@ namespace SGA
 				{
 					//Double to string with 2 precision
 					std::stringstream stream;
-					stream << std::fixed << std::setprecision(2) << currentGameState->getTileAt(gridPosRounded).getParameter(parameter.second.getName());
+					stream << std::fixed << std::setprecision(2) << currentGameState->getTileAtConst(gridPosRounded).getParameter(parameter.second.getName());
 					std::string valueParameter = stream.str();
 
 					std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;

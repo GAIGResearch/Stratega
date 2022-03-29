@@ -53,8 +53,8 @@ namespace SGA
                 for (int y = 0; y < state.getBoardHeight(); ++y)
                 {
                     // get the current tile
-                    const auto& tile = state.getTileAt({ x, y });
-                    const auto& tileFOW =fowState.getTileAt({ x, y });
+                    const auto& tile = state.getTileAtConst({ x, y });
+                    const auto& tileFOW =fowState.getTileAtConst({ x, y });
                     const auto& tileType = state.getGameInfo()->getTileType(tile.getTileTypeID());
                     const auto& tileTypeFOW = fowState.getGameInfo()->getTileType(tileFOW.getTileTypeID());
                     Vector2f position(x, y);

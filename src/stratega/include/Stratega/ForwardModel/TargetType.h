@@ -20,7 +20,7 @@ namespace SGA
 
 	struct TargetType
 	{
-		enum Type { None, Position, EntityType, Entity, Technology, ContinuousAction, Object, SlotObject};
+		enum Type { None, Position, Tile, EntityType, Entity, Technology, ContinuousAction, Object, SlotObject};
 	
 
 
@@ -48,6 +48,12 @@ namespace SGA
 		/// </summary>
 		std::unordered_set<int> technologyTypes;
 
+		/// <summary>
+		/// Set of tile type IDs for this target
+		/// Specific variables for targetType=tile
+		/// </summary>
+		std::unordered_set<int> tileTypes;
+
 	public:
 
 		/// <summary>
@@ -67,6 +73,9 @@ namespace SGA
 				break;
 			case Position:
 				return "Position";
+			break;
+			case Tile:
+				return "Tile";
 			break;
 			case EntityType:
 				return "EntityType";
@@ -102,5 +111,7 @@ namespace SGA
 		const std::unordered_set<int>& getTechnologyTypes() const { return technologyTypes; }
 		std::unordered_set<int>& getTechnologyTypes() { return technologyTypes; }
 
+		const std::unordered_set<int>& getTileTypes() const { return tileTypes; }
+		std::unordered_set<int>& getTileTypes() { return tileTypes; }
 	};
 }

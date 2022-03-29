@@ -55,6 +55,15 @@ namespace SGA
 		/// </summary>
 		/// <returns>type ID of this tile</returns>
 		int getTileTypeID() const;
+
+		/// <summary>
+		/// Returns the tile type of this tile
+		/// </summary>
+		/// <returns>type of this tile</returns>
+		const TileType& getTileType() const
+		{
+			return *type;
+		}
 		
 		/// <summary>
 		/// Returns the name of this tile type

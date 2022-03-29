@@ -10,6 +10,7 @@ namespace SGA
 {
 	struct GameState;
 	struct Entity;
+	struct Tile;
 	struct Player;
 	struct EntityType;
 	typedef int EntityTypeID;
@@ -34,11 +35,13 @@ namespace SGA
 			ContinuousActionReference,
 			TileTypeReference,
 			Gamestate,
+			TileReference,
 			Object,
 			SlotObject
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
+		static ActionTarget createTileActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
 		static ActionTarget createObjectActionTarget(int entityID);
 		static ActionTarget createSlotObjectActionTarget(int entityID);
@@ -53,6 +56,7 @@ namespace SGA
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
 		Entity* getEntity(GameState& state) const;
+		Tile& getTile(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
@@ -93,6 +97,9 @@ namespace SGA
 				break;
 			case Position:
 				return "Position";
+				break;
+			case TileReference:
+				return "Tile";
 				break;
 			case PlayerReference:
 				return "PlayerReference";
@@ -180,6 +187,9 @@ namespace SGA
 					tileTypeID = data;
 					break;
 				case Position:
+					position = SGA::Vector2f(-1, -1);
+					break;
+				case TileReference:
 					position = SGA::Vector2f(-1, -1);
 					break;
 				default:

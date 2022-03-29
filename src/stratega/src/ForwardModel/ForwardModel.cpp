@@ -831,6 +831,18 @@ namespace SGA
 		const double max = entity.getMaxParameterAt(parameterIndex);
 		parameterValue = std::max(min, std::min(parameterValue, max));
 	}
+	
+	void ForwardModel::modifyTileParameterByIndex(Tile& tile, int parameterIndex, double newValue) const
+	{
+		//Get parameter
+		auto& parameterValue = tile.getRawParameterAt(parameterIndex);
+		//Modify it
+		parameterValue = newValue;
+		//Keep it in bounds min/max
+		const double min = tile.getMinParameterAt(parameterIndex);
+		const double max = tile.getMaxParameterAt(parameterIndex);
+		parameterValue = std::max(min, std::min(parameterValue, max));
+	}
 
 	void ForwardModel::modifyStateParameterByIndex(GameState& state, int parameterIndex, double newValue) const
 	{

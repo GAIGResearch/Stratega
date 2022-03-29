@@ -576,14 +576,26 @@ namespace SGA
 	}
 
 
-	const Tile& GameState::getTileAt(const Vector2i& pos) const
+	const Tile& GameState::getTileAtConst(const Vector2i& pos) const
 	{
 		if (isInBounds(pos))
 			return board[pos];
 		throw std::runtime_error("Access to board out of bounds: " + std::to_string(pos.x) + "," + std::to_string(pos.y));
 	}
 
-	const Tile& GameState::getTileAt(int x, int y) const
+	const Tile& GameState::getTileAtConst(int x, int y) const
+	{
+		return getTileAtConst({ x,y });
+	}
+
+	Tile& GameState::getTileAt(const Vector2i& pos)
+	{
+		if (isInBounds(pos))
+			return board[pos];
+		throw std::runtime_error("Access to board out of bounds: " + std::to_string(pos.x) + "," + std::to_string(pos.y));
+	}
+
+	Tile& GameState::getTileAt(int x, int y)
 	{
 		return getTileAt({ x,y });
 	}

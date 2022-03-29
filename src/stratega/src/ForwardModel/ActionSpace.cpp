@@ -286,6 +286,8 @@ namespace SGA
 			{
 			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.getSamplingMethod());
 				break;
+			case TargetType::Tile: newTargets = generateTileTargets(state, entity.getPosition(), type.first.getSamplingMethod());
+				break;
 			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
 				break;
 			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
@@ -319,6 +321,8 @@ namespace SGA
 			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.getSamplingMethod());
 				break;
 			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
+				break;
+			case TargetType::Tile: newTargets = generateTileTargets(state, type.first.getSamplingMethod());
 				break;
 			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
 				break;
@@ -354,6 +358,20 @@ namespace SGA
 		return targets;
 	}
 
+	std::vector<ActionTarget> ActionSpace::generateTileTargets(const GameState& gameState, const Vector2f& position, std::shared_ptr<SamplingMethod> samplingMethod) const
+	{
+		std::vector<ActionTarget> targets;
+
+		auto positions = samplingMethod->getPositions(gameState, position);
+
+		for (auto& element : positions)
+		{
+			targets.emplace_back(ActionTarget::createTileActionTarget(Vector2f(element.x, element.y)));
+		}
+
+		return targets;
+	}
+
 	std::vector<ActionTarget> ActionSpace::generatePositionTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
 	{
 		std::vector<ActionTarget> targets;
@@ -363,6 +381,19 @@ namespace SGA
 		for (auto& element : positions)
 		{
 			targets.emplace_back(ActionTarget::createPositionActionTarget(Vector2f(element.x, element.y)));
+		}
+		return targets;
+	}
+
+	std::vector<ActionTarget> ActionSpace::generateTileTargets(const GameState& gameState, std::shared_ptr<SamplingMethod> samplingMethod) const
+	{
+		std::vector<ActionTarget> targets;
+
+		auto positions = samplingMethod->getPositions(gameState);
+
+		for (auto& element : positions)
+		{
+			targets.emplace_back(ActionTarget::createTileActionTarget(Vector2f(element.x, element.y)));
 		}
 		return targets;
 	}

@@ -175,7 +175,7 @@ namespace  SGA
 	bool IsWalkable::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		Tile t = state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
 		return t.isWalkable() && state.getEntityAt(pos) == nullptr;
 	}
 
@@ -192,7 +192,7 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		Tile t = state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
 		return t.getTileTypeID()==tileType.getID();
 	}
 
