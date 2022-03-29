@@ -25,6 +25,7 @@ namespace SGA
 
 		//Let GUI know the widget is waiting for a position or entity to be assigned
 		bool waitingForPosition = false;
+		bool waitingForTile = false;
 		bool waitingForEntity = false;
 		ActionAssignment& actionAssignment;
 
@@ -58,6 +59,7 @@ namespace SGA
 
 			selectedEntities.clear();
 			waitingForPosition = false;
+			waitingForTile = false;
 			waitingForEntity = false;
 		}
 
@@ -88,6 +90,7 @@ namespace SGA
 		void getObject(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 		void getSlotObject(int playerID, const SGA::ActionType& actionType, std::vector<SGA::Action>& actionsToExecute);
 		void getPositionReference();
+		void getTileReference();
 		void getEntityReference();
 
 		//Verify action targets
@@ -102,6 +105,8 @@ namespace SGA
 
 		// Assign to the list of selected targets a position target
 		void assignPosition(SGA::Vector2f position);
+		// Assign to the list of selected targets a tile target
+		void assignTile(SGA::Vector2f position);
 		//Assign to the list of selected targets a entity
 		void assignEntity(int entity);
 
