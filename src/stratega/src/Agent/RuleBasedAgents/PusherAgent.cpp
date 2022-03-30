@@ -85,7 +85,7 @@ namespace SGA
 				for (auto& attack : attacks)
 				{
 					auto target = MoveTo(opponentPositon, attack.first);
-					if (state.isWalkable(target))
+					if (state.isWalkable(target) && state.isOccupied(target))
 					{
 						possibleTargets.emplace_back(target);
 						pushCount.emplace_back(attack.second);

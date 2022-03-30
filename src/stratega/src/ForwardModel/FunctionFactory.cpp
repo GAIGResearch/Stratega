@@ -32,6 +32,10 @@ namespace SGA
 		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
 		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
 		factory.registerFunction<CanEquipObject>("CanEquipObject");
+		factory.registerFunction<IsOccupiedGrid>("IsOccupiedGrid");
+		factory.registerFunction<IsOccupied>("IsOccupied");
+		factory.registerFunction<IsNotOccupiedGrid>("IsNotOccupiedGrid");
+		factory.registerFunction<IsNotOccupied>("IsNotOccupied");
 		
 		return factory;
 	}

@@ -74,6 +74,25 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
+    Spawn:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: [King, Warrior, Archer, Healer, Building]
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 3
+                Conditions:
+                    - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, EntityTypeTarget)"
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, Target)"
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -109,6 +128,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"
@@ -132,7 +152,7 @@ Actions:
     
 Entities:
     Warrior:
-        Grid: 0
+        Grid: 1
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
@@ -144,7 +164,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Grid: 0
+        Grid: 1
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
@@ -156,7 +176,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Grid: 0
+        Grid: 1
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
@@ -168,7 +188,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Grid: 0
+        Grid: 1
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
@@ -177,7 +197,17 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Spawn]
+    Building:
+        Grid: 0
+        Sprite: ../../assets/Entities/castle.png
+        Symbol: t
+        LineOfSightRange: 6
+        Parameters:
+            Health: 400
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 1
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
