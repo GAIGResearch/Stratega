@@ -213,6 +213,8 @@ namespace YAML
                 rhs = SGA::TargetType::Type::Object;
             else if (value == "SlotObject")
                 rhs = SGA::TargetType::Type::SlotObject;
+            else if (value == "Tile")
+                rhs = SGA::TargetType::Type::Tile;
             else
                 return false;
 

@@ -795,8 +795,8 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_board_height", &SGA::GameState::getBoardHeight,"Returns the height of the board.")
 		.def("get_board_width", &SGA::GameState::getBoardWidth,"Returns the width of the board.")
 
-		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
-		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
 		
 		////Entities
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")

@@ -280,7 +280,7 @@ namespace SGA
 
 	bool PusherAgent::canKill(const GameState& state, Vector2i pos) const
 	{
-		const auto tile = state.getTileAt({ pos.x,pos.y });
+		const auto tile = state.getTileAtConst({ pos.x,pos.y });
 
 		if (!tile.isWalkable())
 			return false;
@@ -301,8 +301,8 @@ namespace SGA
 			auto currPos = MoveTo(pos, pushDir);
 
 			// Check if it is a valid attack direction
-			auto& attackTile = state.getTileAt(attackPos.x, attackPos.y);
-			auto& pushTile = state.getTileAt(currPos.x, currPos.y);
+			auto& attackTile = state.getTileAtConst(attackPos.x, attackPos.y);
+			auto& pushTile = state.getTileAtConst(currPos.x, currPos.y);
 			if (!attackTile.isWalkable() || canKill(state, attackPos) || !pushTile.isWalkable())
 				continue;
 

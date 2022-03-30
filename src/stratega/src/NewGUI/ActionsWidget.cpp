@@ -164,6 +164,9 @@ namespace SGA
 						break;
 					case ActionTarget::Gamestate:
 						break;
+					case ActionTarget::TileReference:
+						actionInfo += /*targetType.getTileType(*state).getName() + */" x:" + std::to_string(static_cast<int>(targetType.getPosition(*state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(*state).y));
+						break;
 					case ActionTarget::Object:
 						break;
 					case ActionTarget::SlotObject:
@@ -191,7 +194,7 @@ namespace SGA
 		float circleShapeSize = static_cast<float>(renderTarget.getResourceManager().getTileSpriteSize().y) / 10.0f;
 		//Draw possible actions
 		std::vector<sf::CircleShape> actionsShapes;
-		if (waitingForPosition)
+		if (waitingForPosition||waitingForTile)
 		{
 			for (auto& possibleAction : actionsHumanPlayer)
 			{
@@ -213,7 +216,8 @@ namespace SGA
 
 				for (auto& actionTarget : possibleAction.getTargets())
 				{
-					if (actionTarget.getType() == ActionTarget::Position)
+					if (actionTarget.getType() == ActionTarget::Position
+						|| actionTarget.getType() == ActionTarget::TileReference)
 					{
 						auto position = actionTarget.getPosition(*state);
 
@@ -344,6 +348,11 @@ namespace SGA
 							auto gridPos = world.toStratega(pos);
 							assignPosition({ gridPos.x,gridPos.y });
 						}
+						else if (waitingForTile)
+						{
+							auto gridPos = world.toStratega(pos);
+							assignTile({ gridPos.x,gridPos.y });
+						}
 						else
 						{
 							selectedEntities.clear();
@@ -356,6 +365,11 @@ namespace SGA
 					{
 						auto gridPos = world.toStratega(pos);
 						assignPosition({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
+					}
+					else if (waitingForTile)
+					{
+						auto gridPos = world.toStratega(pos);
+						assignTile({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
 					}
 					else
 					{
@@ -395,6 +409,10 @@ namespace SGA
 			if (waitingForPosition)
 			{
 				assignPosition({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
+			}
+			else if (waitingForTile)
+			{
+				assignTile({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
 			}
 			else
 			{
@@ -468,6 +486,11 @@ namespace SGA
 		case TargetType::Position:
 		{
 			getPositionReference();
+			break;
+		}
+		case TargetType::Tile:
+		{
+			getTileReference();
 			break;
 		}
 		case TargetType::Entity:
@@ -822,6 +845,13 @@ namespace SGA
 		waitingForPosition = true;
 	}
 
+	void ActionsWidget::getTileReference()
+	{
+		ImGui::Text("Choose tile");
+		//Need to receive a new position from the gui
+		waitingForTile = true;
+	}
+
 	void ActionsWidget::getEntityReference()
 	{
 		ImGui::Text("Choose entity");
@@ -978,6 +1008,13 @@ namespace SGA
 	void ActionsWidget::assignPosition(Vector2f position)
 	{
 		auto positionTarget = SGA::ActionTarget::createPositionActionTarget(position);
+
+		selectedTargets.emplace_back(positionTarget);
+	}
+
+	void ActionsWidget::assignTile(Vector2f position)
+	{
+		auto positionTarget = SGA::ActionTarget::createTileActionTarget(position);
 
 		selectedTargets.emplace_back(positionTarget);
 	}

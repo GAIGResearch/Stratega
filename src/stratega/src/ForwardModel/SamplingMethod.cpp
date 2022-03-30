@@ -11,7 +11,7 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 
 	auto isValidPos = [&](int x, int y)
 	{
-		return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
+		return gameState.getTileAtConst({ x, y }).getTileTypeID() != -1;
 	}; 
 
 	for (int x = 0; x < gameState.getBoardWidth(); x++)
@@ -46,7 +46,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& /*gameState*/, const
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.getTileAt({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
+	return gameState.getTileAtConst({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -58,7 +58,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
+			return gameState.getTileAtConst({ x, y }).getTileTypeID() != -1;
 		};
 
 		for (int x = 0; x < gameState.getBoardWidth(); x++)
@@ -74,7 +74,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			if (gameState.getTileAt({ x, y }).getTileTypeID() == -1)
+			if (gameState.getTileAtConst({ x, y }).getTileTypeID() == -1)
 				return false;
 
 			switch (shapeType)
@@ -176,7 +176,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
-				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
+				if (gameState.getTileAtConst({ x, y }).getTileTypeID() == -1 || !gameState.getTileAtConst({ x, y }).isWalkable()
 					|| std::floor(totalCost + 1) > static_cast<float>(searchSize))
 					return false;		
 				else

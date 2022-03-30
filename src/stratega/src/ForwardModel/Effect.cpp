@@ -34,6 +34,11 @@ namespace SGA
 			auto& player = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
 		}
+		else if (resourceReference.isTileParameter(targets))
+		{
+			auto& tile = resourceReference.getTile(state, targets);
+			fm.modifyTileParameterByIndex(tile, parameterIndex, targetResource);
+		}
 		else
 		{
 			fm.modifyStateParameterByIndex(state, parameterIndex, targetResource);

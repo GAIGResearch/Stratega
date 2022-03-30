@@ -64,6 +64,7 @@ set(STRATEGA_SOURCE_FILES
         Representation/BuildContext.cpp
         Representation/Entity.cpp
         Representation/EntityType.cpp
+        Representation/TileType.cpp
         Representation/GameDescription.cpp
         Representation/GameInfo.cpp
         Representation/GameState.cpp

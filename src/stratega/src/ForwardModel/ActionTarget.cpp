@@ -9,6 +9,10 @@ namespace SGA
 	{
 		return ActionTarget(Position, Data{position });
 	}
+	ActionTarget ActionTarget::createTileActionTarget(Vector2f position)
+	{
+		return ActionTarget(TileReference, Data{position });
+	}
 
 	ActionTarget ActionTarget::createEntityActionTarget(int entityID)
 	{
@@ -96,7 +100,7 @@ namespace SGA
 
 	Vector2f ActionTarget::getPosition() const
 	{
-		if (targetType == Position)
+		if (targetType == Position || targetType == TileReference)
 		{
 			return data.position;
 		}
@@ -107,7 +111,7 @@ namespace SGA
 
 	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{
-		if (targetType == Position)
+		if (targetType == Position|| targetType == TileReference)
 		{
 			return data.position;
 		}
@@ -140,6 +144,20 @@ namespace SGA
 			auto* entity = state.getEntity(data.entityID);
 		
 			return entity;
+		}
+		else
+		{
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
+		}
+	}
+	
+	Tile& ActionTarget::getTile(GameState& state) const
+	{
+		if (targetType == Type::TileReference)
+		{
+			auto& tile = state.getTileAt({static_cast<int>(data.position.x), static_cast<int>(data.position.y) });
+		
+			return tile;
 		}
 		else
 		{
@@ -252,6 +270,19 @@ namespace SGA
 			return getEntityType(state).getName() +" "+std::to_string(getEntityID());
 			break;
 		case Position:
+		{
+			const auto position = getPosition(state);
+				
+			std::string posString;
+			std::string num_text = std::to_string(position.x);
+			std::string rounded = num_text.substr(0, num_text.find(".") + 3);
+			posString += num_text.substr(0, num_text.find(".") + 3);
+			posString += ",";
+			num_text = std::to_string(position.y);
+			posString += num_text.substr(0, num_text.find(".") + 3);
+			return posString;		
+		}
+		case TileReference:
 		{
 			const auto position = getPosition(state);
 				

@@ -159,6 +159,10 @@ namespace SGA
             type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
             type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
             type.setSymbol(nameConfigPair.second["Symbol"].as<char>('-'));
+
+            if (nameConfigPair.second["Parameters"].IsDefined())
+                parseParameterList(nameConfigPair.second["Parameters"], config, type.getParameters());
+
             config.tileTypes.emplace(type.getID(), std::move(type));
         }
     }
@@ -564,6 +568,36 @@ namespace SGA
         if (targetType.getType() == TargetType::Position)
         {
             targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+        }
+        else if (targetType.getType() == TargetType::Tile)
+        {
+            targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+
+            auto tileNode = node["ValidTargets"];
+            if (tileNode.IsScalar())
+            {
+                if(tileNode.as<std::string>() == "All")
+                {
+                    for (const auto& tile : config.tileTypes)
+                    {
+                        targetType.getTileTypes().insert(tile.first);
+                    }
+                }
+                else
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tileNode.as<std::string>()));
+                }
+                
+            }
+            else if (tileNode.IsSequence())
+            {
+                auto tiles = tileNode.as<std::vector<std::string>>(std::vector<std::string>());
+                //Assigne tile IDs to the tiletypes map
+                for (auto& tile : tiles)
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tile));
+                }
+            }
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {
