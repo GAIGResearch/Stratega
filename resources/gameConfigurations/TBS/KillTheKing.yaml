@@ -40,9 +40,6 @@ Tiles:
         Symbol: .
         IsWalkable: true
         DefaultTile: true
-        Parameters:
-            Test: 40
-            Test2: 2
     Water:
         Sprite: ../../assets/Tiles/water.png
         Symbol: W
@@ -62,37 +59,21 @@ Board:
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  . k1  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  a1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  a1 k1 h1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
         M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
         M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
         M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
         M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  k0 .  .  .  .  .  .  M
-        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 3
-                Conditions:
-                    - "IsWalkable(Target)"
-        Effects:
-            - "SpawnEntity(Source, Warrior, Target)"
-
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -147,21 +128,6 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
-    Test:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Tile
-                ValidTargets: Plain
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-                Conditions:
-                    - "InRange(Source, Target, Source.AttackRange)"
-        Effects:
-            - "ModifyResource(Target.Test, Source.AttackRange)"
 
     
 Entities:
@@ -207,10 +173,9 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move, Test]
+        Actions: [Attack, Move]
 
 ForwardModel:
-    LoseConditions: #If true: Player -> cant play
     LoseConditions: #If true: Player -> cant play
         NoHasKing:
         - "HasNoEntity(Source, King)"
@@ -244,5 +209,4 @@ GameRunner:
         Enabled: false
         BudgetTimeMs: 1000
         DisqualificationTimeMs: 70
-        MaxNumberWarnings: 5
         MaxNumberWarnings: 5
