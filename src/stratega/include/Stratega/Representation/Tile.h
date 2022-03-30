@@ -1,6 +1,7 @@
 #pragma once
 #include <Stratega/Representation/Vector2.h>
 #include <unordered_map>
+#include <vector>
 #pragma warning( disable : 4820)
 namespace SGA
 {
