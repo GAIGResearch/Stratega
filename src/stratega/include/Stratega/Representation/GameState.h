@@ -170,6 +170,12 @@ namespace SGA
 
 		const Entity* getEntityAtConst(const Vector2f& pos) const;
 
+		//Get all entities in different grid
+		std::vector<Entity*>& getEntitiesAround(Vector2f pos, float maxDistance = 0.0);
+		std::vector<Entity*>& getEntitiesAt(Vector2f pos);
+		std::vector<const Entity*>& getEntitiesAroundConst(Vector2f pos, float maxDistance = 0.0) const;
+		std::vector<const Entity*>& getEntitiesAtConst(Vector2f pos) const;
+
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
 		/// It searchs also the objects from the entities

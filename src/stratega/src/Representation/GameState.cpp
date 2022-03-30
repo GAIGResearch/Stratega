@@ -211,6 +211,32 @@ namespace SGA
 		return nullptr;
 	}
 
+	std::vector<Entity*>& GameState::getEntitiesAround(Vector2f pos, float maxDistance)
+	{
+		std::vector<Entity*> newEntities;
+		for (auto& entity : entities)
+		{
+			if (entity.getPosition() == pos)
+				newEntities.emplace_back(&entity);
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+				newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
+	std::vector<const Entity*>& GameState::getEntitiesAroundConst(Vector2f pos, float maxDistance) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const Entity& entity : entities)
+		{
+			if (entity.getPosition() == pos)
+				newEntities.emplace_back(&entity);
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+				newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
 	const Entity* GameState::getEntityAroundConst(const Vector2f& pos, float maxDistance) const
 	{
 		for (auto& entity : entities)
@@ -494,6 +520,32 @@ namespace SGA
 		}
 
 		return nullptr;
+	}
+
+	std::vector<const Entity*>& GameState::getEntitiesAtConst(Vector2f pos) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const auto& entity : entities)
+		{
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+			{
+				newEntities.emplace_back(&entity);
+			}
+		}
+		return newEntities;
+	}
+
+	std::vector<Entity*>& GameState::getEntitiesAt(Vector2f pos)
+	{
+		std::vector<Entity*> newEntities;
+		for (auto& entity : entities)
+		{
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+			{
+				newEntities.emplace_back(&entity);
+			}
+		}
+		return newEntities;
 	}
 
 	/* TECHNOLOGIES */
