@@ -198,7 +198,7 @@ namespace SGA
 		return instance.getID();
 	}
 
-	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
+	Entity* GameState::getEntityAround(Vector2f pos, float maxDistance)
 	{
 		for (auto& entity : entities)
 		{
@@ -211,7 +211,7 @@ namespace SGA
 		return nullptr;
 	}
 
-	const Entity* GameState::getEntityAtConst(const Vector2f& pos, float maxDistance) const
+	const Entity* GameState::getEntityAroundConst(const Vector2f& pos, float maxDistance) const
 	{
 		for (auto& entity : entities)
 		{
@@ -483,7 +483,7 @@ namespace SGA
 		return aTypes;
 	}
 
-	const Entity* GameState::getEntityAt(const Vector2f& pos) const
+	const Entity* GameState::getEntityAtConst(const Vector2f& pos) const
 	{
 		for (const auto& entity : entities)
 		{
@@ -555,7 +555,7 @@ namespace SGA
 	bool GameState::isWalkable(const Vector2i& position)
 	{
 		Tile& targetTile = board.get(position.x, position.y);
-		Entity* targetUnit = getEntity(Vector2f(position));
+		Entity* targetUnit = getEntityAround(Vector2f(position));
 
 		return targetUnit == nullptr && targetTile.isWalkable();
 	}

@@ -326,7 +326,7 @@ namespace SGA
 				// The user clicked somewhere
 				if (!selectedEntities.empty())
 				{
-					const auto* unit = state->getEntityAtConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
+					const auto* unit = state->getEntityAroundConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
 					if (unit)
 					{
@@ -425,7 +425,7 @@ namespace SGA
 
 			if (state->getGameType() == GameType::TBS)
 			{
-				auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
+				auto* selectedEntity = state->getEntityAtConst(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
 				if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
 				{
 					//Assign selected unit

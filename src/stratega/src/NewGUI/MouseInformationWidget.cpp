@@ -80,7 +80,7 @@ namespace SGA
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
-			auto* entity = currentGameState->getEntityAt(gridPos);
+			auto* entity = currentGameState->getEntityAtConst(gridPos);
 			
 			//Check if we have entities selected
 			if (selectedEntities.size() > 0)

@@ -165,9 +165,10 @@ namespace SGA
 		/// <param name="pos">Position in the board to look for an entity.</param>
 		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
 		/// <returns>A pointer to the entity in this location.</returns>
-		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
-		const Entity* getEntityAtConst(const Vector2f& pos, float maxDistance = 0.0) const;
-		const Entity* getEntityAt(const Vector2f& pos) const;
+		Entity* getEntityAround(Vector2f pos, float maxDistance = 0.0);
+		const Entity* getEntityAroundConst(const Vector2f& pos, float maxDistance = 0.0) const;
+
+		const Entity* getEntityAtConst(const Vector2f& pos) const;
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.

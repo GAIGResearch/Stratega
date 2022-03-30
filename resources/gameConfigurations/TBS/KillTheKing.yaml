@@ -132,6 +132,7 @@ Actions:
     
 Entities:
     Warrior:
+        Grid: 0
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
@@ -143,6 +144,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
+        Grid: 0
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
@@ -154,6 +156,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
+        Grid: 0
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
@@ -165,6 +168,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
+        Grid: 0
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6

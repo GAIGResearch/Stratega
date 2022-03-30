@@ -313,6 +313,7 @@ namespace SGA
             EntityType type;
             type.setName(nameTypePair.first);
             type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            type.setGrid(nameTypePair.second["Grid"].as<int>(0));
             type.setID(static_cast<int>(config.entityTypes.size()));
 
 
