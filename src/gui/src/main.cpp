@@ -11,7 +11,7 @@ int main()
 
 	boost::mt19937 rngEngine(0);
 	//std::string configPath("../resources/gameConfigurations/TBS/TheBattleOfStratega.yaml");
-	std::string configPath("../resources/gameConfigurations/TBS/Pathway.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/Ported/Pathway.yaml");
 	//std::string configPath("../resources/gameConfigurations/TBS/IntoTheBreach.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
