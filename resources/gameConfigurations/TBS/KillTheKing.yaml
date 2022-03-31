@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    - DoNothingAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
@@ -40,6 +40,9 @@ Tiles:
         Symbol: .
         IsWalkable: true
         DefaultTile: true
+        Parameters:
+            Test: 40
+            Test2: 2
     Water:
         Sprite: ../../assets/Tiles/water.png
         Symbol: W
@@ -105,7 +108,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    - "DifferentPlayer(Source, Target)"
+                    #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"

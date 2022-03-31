@@ -34,7 +34,7 @@ namespace SGA
 		/// <summary>
 		/// Grid level, as defined in the YAML file.
 		/// </summary>
-		int grid;
+		int grid=0;
 
 		/// <summary>
 		/// Symbol for this entity used in YAML for level placement.

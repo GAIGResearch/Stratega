@@ -103,6 +103,7 @@ Actions:
                         Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "SpawnEntity(Source, Warrior, Target)"
 
@@ -141,6 +142,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"

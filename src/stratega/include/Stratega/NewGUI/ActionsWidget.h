@@ -17,6 +17,10 @@ namespace SGA
 		//Current selected entities
 		std::unordered_set<int>& selectedEntities;
 
+		//Entities in same tile waiting to be selected
+		bool waitingToSelectPossibleEntitie = false;
+		std::unordered_set<int> possibleSelectedEntities;
+
 		//List of targets
 		std::vector<SGA::ActionTarget> selectedTargets;
 
@@ -58,9 +62,11 @@ namespace SGA
 				actionsHumanPlayer.clear();
 
 			selectedEntities.clear();
+			possibleSelectedEntities.clear();
 			waitingForPosition = false;
 			waitingForTile = false;
 			waitingForEntity = false;
+			waitingToSelectPossibleEntitie = false;
 		}
 
 		bool hasActionsTargetAvailable(const SGA::ActionType& actionType) const;

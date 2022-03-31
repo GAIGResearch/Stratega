@@ -67,6 +67,7 @@ Actions:
                         Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "SpawnEntity(Source, Miner, Target)"
             - "ModifyResource(Source.Gold, -50)"
@@ -86,6 +87,7 @@ Actions:
                         Size: 3
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "SpawnEntity(Source, Fighter, Target)"
             - "ModifyResource(Source.Gold, -100)"
@@ -126,6 +128,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
 
