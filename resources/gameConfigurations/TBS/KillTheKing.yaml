@@ -3,10 +3,6 @@ GameConfig:
     RoundLimit: 100
     FogOfWar: true
 
-Grids:
-    Buildings: [Building]
-    Units: [Warrior, Healer, King]    
-
 Agents:
     - HumanAgent
     - DoNothingAgent
@@ -44,9 +40,6 @@ Tiles:
         Symbol: .
         IsWalkable: true
         DefaultTile: true
-        Parameters:
-            Test: 40
-            Test2: 2
     Water:
         Sprite: ../../assets/Tiles/water.png
         Symbol: W
@@ -81,25 +74,6 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            EntityTypeTarget:
-                Type: EntityType
-                ValidTargets: [King, Warrior, Archer, Healer, Building]
-            Target:
-                Type: Position
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 3
-                Conditions:
-                    - "IsWalkable(Target)"
-                    - "IsNotOccupiedGrid(Target, EntityTypeTarget)"
-        Effects:
-            - "SpawnEntity(Source, EntityTypeTarget, Target)"
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -200,16 +174,7 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move, Spawn]
-    Building:
-        Sprite: ../../assets/Entities/castle.png
-        Symbol: t
-        LineOfSightRange: 6
-        Parameters:
-            Health: 400
-            AttackRange: 2
-            AttackDamage: 100
-            MovementPoints: 1
+        Actions: [Attack, Move]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
