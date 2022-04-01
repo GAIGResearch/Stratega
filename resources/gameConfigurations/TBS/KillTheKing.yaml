@@ -3,6 +3,10 @@ GameConfig:
     RoundLimit: 100
     FogOfWar: true
 
+Grids:
+    Buildings: [Building]
+    Units: [Warrior, Healer, King]    
+
 Agents:
     - HumanAgent
     - DoNothingAgent
@@ -155,7 +159,6 @@ Actions:
     
 Entities:
     Warrior:
-        Grid: 1
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
@@ -167,7 +170,6 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Grid: 1
         Sprite: ../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
@@ -179,7 +181,6 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Grid: 1
         Sprite: ../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
@@ -191,7 +192,6 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Grid: 1
         Sprite: ../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
@@ -202,7 +202,6 @@ Entities:
             MovementPoints: 1
         Actions: [Attack, Move, Spawn]
     Building:
-        Grid: 0
         Sprite: ../../assets/Entities/castle.png
         Symbol: t
         LineOfSightRange: 6
