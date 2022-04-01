@@ -241,29 +241,27 @@ namespace SGA
             std::vector<EntityPlacement> entityPlacements;
             if (entitiesNode.IsDefined())
             {
-                auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
-                for (const auto& nameTypePair : types)
-                {
-                    if (!nameTypePair.second["Type"].IsDefined())
-                        throw std::runtime_error("Entity placement" + nameTypePair.first + "type not defined.");
+                for (const auto& characterType : boardNode["Entities"]) {
+                    std::string key = characterType.first.as<std::string>();
+                    //cTypeList.push_back(characterType.second.as<CharacterType>());
 
                     //Search entity type 
                     for (const auto& idEntityPair : config.entityTypes)
                     {
-                        if (idEntityPair.second.getName() == nameTypePair.second["Type"].as<std::string>())
+                        if (idEntityPair.second.getName() == key)
                         {
                             //Get position
-                            if (nameTypePair.second["Position"].IsDefined())
+                            if (characterType.second["Position"].IsDefined())
                             {
                                 EntityPlacement newEntity;
-                                auto position = nameTypePair.second["Position"].as<std::vector<int>>();
+                                auto position = characterType.second["Position"].as<std::vector<int>>();
                                 //Check position is valid
-                                if(position.size()!=2)
+                                if (position.size() != 2)
                                     throw std::runtime_error("Entity placement" + idEntityPair.second.getName() + "position wrong defined. Required format: [x,y]");
                                 newEntity.position = Vector2f(static_cast<float>(position[0]), static_cast<float>(position[1]));
-                                
-                                if (nameTypePair.second["Owner"].IsDefined())
-                                    newEntity.ownerID = nameTypePair.second["Owner"].as<int>();
+
+                                if (characterType.second["Owner"].IsDefined())
+                                    newEntity.ownerID = characterType.second["Owner"].as<int>();
                                 else
                                     newEntity.ownerID = -1;
 
@@ -272,12 +270,19 @@ namespace SGA
                             }
                             else
                             {
-                                throw std::runtime_error("Entity placement"+ idEntityPair.second.getName()+ "position not defined.");
+                                throw std::runtime_error("Entity placement" + idEntityPair.second.getName() + "position not defined.");
                             }
-                            
+
                         }
-                    }                    
+                    }
+
                 }
+
+               /* auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+                for (const auto& nameTypePair : types)
+                {
+                                        
+                }*/
             }
 
             //Add entity placement to the parsed level definitions
