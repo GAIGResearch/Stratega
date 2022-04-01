@@ -60,11 +60,11 @@ namespace SGA
                     Vector2f position(x, y);
                     if (tileTypeFOW.getID()==-1&& fowSettings->renderFogOfWar)
                     {
-                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileTypeFOW));
+                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, -1, tileTypeFOW));
                     }
                     else
                     {
-                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, 0, tileType));
+                        drawableList.emplace_back(std::make_unique<SGADrawableTile>(position, -1, tileType));
                     }
                 }
             }
@@ -75,13 +75,13 @@ namespace SGA
                 for (auto& entity : fowState.getEntities())
                 {                
                     const auto& position = entity.getPosition();
-                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, entity.getEntityType().getGrid(), entity.getEntityType(), entity.getID(), entity.getOwnerID()));
                 }
             else
                 for (auto& entity : state.getEntities())
                 {
                     const auto& position = entity.getPosition();
-                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                    drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, entity.getEntityType().getGrid(), entity.getEntityType(), entity.getID(), entity.getOwnerID()));
                 }
         }
         void interpolateEntityDrawables(const GameState& state, const GameState& fowState)
@@ -151,7 +151,7 @@ namespace SGA
                     else
                     {
                         const auto& position = entity.getPosition();
-                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID(), 0));
+                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, entity.getEntityType().getGrid(), entity.getEntityType(), entity.getID(), entity.getOwnerID(), 0));
 
                         if (enableInterpolationAnimations)
                         {
@@ -185,7 +185,7 @@ namespace SGA
                     else
                     {
                         const auto& position = entity.getPosition();
-                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, 1, entity.getEntityType(), entity.getID(), entity.getOwnerID()));
+                        drawableList.emplace_back(std::make_unique<SGADrawableEntity>(position, entity.getEntityType().getGrid(), entity.getEntityType(), entity.getID(), entity.getOwnerID()));
 
                         if (enableInterpolationAnimations)
                         {

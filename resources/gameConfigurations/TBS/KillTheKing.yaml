@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    - DoNothingAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
@@ -86,7 +86,7 @@ Actions:
                     Options:
                         Shape: AllPositions
                 Conditions:
-                    - "DifferentPlayer(Source, Target)"
+                    #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
         Effects:
             - "Attack(Target.Health, Source.AttackDamage)"
@@ -109,6 +109,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"

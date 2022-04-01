@@ -85,7 +85,7 @@ namespace SGA
 				for (auto& attack : attacks)
 				{
 					auto target = MoveTo(opponentPositon, attack.first);
-					if (state.isWalkable(target))
+					if (state.isWalkable(target) && state.isOccupied(target))
 					{
 						possibleTargets.emplace_back(target);
 						pushCount.emplace_back(attack.second);
@@ -244,8 +244,8 @@ namespace SGA
 				// Only explore the new found tile if it's safe to move to, is not occupied by an opponent, and is walkable
 				if (state.isInBounds(targetPos) && 
 					!canKill(state, targetPos) &&
-					(state.getEntityAt({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y)}) == nullptr ||
-					state.getEntityAt({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y) })->getOwnerID() == state.getCurrentTBSPlayer()))
+					(state.getEntityAtConst({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y)}) == nullptr ||
+					state.getEntityAtConst({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y) })->getOwnerID() == state.getCurrentTBSPlayer()))
 				{
 					openList.push(targetPos);
 					previous[targetPos] = openList.front();

@@ -32,6 +32,11 @@ namespace SGA
 		std::string name;
 
 		/// <summary>
+		/// Grid level, as defined in the YAML file.
+		/// </summary>
+		int grid=0;
+
+		/// <summary>
 		/// Symbol for this entity used in YAML for level placement.
 		/// </summary>
 		char symbol;
@@ -201,6 +206,9 @@ namespace SGA
 
 		int getID() const { return id; }
 		void setID(int newID) { this->id = newID; }
+
+		int getGrid() const { return grid; }
+		void setGrid(int newGrid) { this->grid = newGrid; }
 
 		const std::string& getName() const { return name; }
 		void setName(std::string newName) { this->name = newName; }

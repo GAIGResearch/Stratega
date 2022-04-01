@@ -80,7 +80,7 @@ namespace SGA
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
-			auto* entity = currentGameState->getEntityAt(gridPos);
+			auto* entity = currentGameState->getEntityAtConst(gridPos);
 			
 			//Check if we have entities selected
 			if (selectedEntities.size() > 0)
@@ -266,18 +266,21 @@ namespace SGA
 				else
 					ImGui::BulletText("Is default tile: false");
 
-				ImGui::Text("Parameters: ");
-
-				for (const auto& parameter : tileType.getParameters())
+				if (tileType.getParameters().size() > 0)
 				{
-					//Double to string with 2 precision
-					std::stringstream stream;
-					stream << std::fixed << std::setprecision(2) << currentGameState->getTileAtConst(gridPosRounded).getParameter(parameter.second.getName());
-					std::string valueParameter = stream.str();
+					ImGui::Text("Parameters: ");
 
-					std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
-					ImGui::BulletText("%s", parameterInfo.c_str());
-				}
+					for (const auto& parameter : tileType.getParameters())
+					{
+						//Double to string with 2 precision
+						std::stringstream stream;
+						stream << std::fixed << std::setprecision(2) << currentGameState->getTileAtConst(gridPosRounded).getParameter(parameter.second.getName());
+						std::string valueParameter = stream.str();
+
+						std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
+						ImGui::BulletText("%s", parameterInfo.c_str());
+					}
+				}			
 
 				ImGui::End();
 			}

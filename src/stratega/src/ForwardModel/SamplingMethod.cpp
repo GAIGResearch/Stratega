@@ -258,7 +258,7 @@ std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Ve
 	
 	for (auto& pos : possiblePositions)
 	{
-		auto* entity = gameState.getEntityAt(Vector2f(pos.x, pos.y));
+		auto* entity = gameState.getEntityAtConst(Vector2f(pos.x, pos.y));
 		if(entity)
 		{
 			entities.emplace_back(entity->getID());

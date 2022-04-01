@@ -125,6 +125,7 @@ Actions:
                         Size: 1
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
 
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
@@ -166,6 +167,7 @@ Actions:
                         AllowDiagonals: false
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
 

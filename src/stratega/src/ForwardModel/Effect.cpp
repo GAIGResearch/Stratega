@@ -204,7 +204,7 @@ namespace SGA
 
 		auto pushDir = target.getPosition() - entity.getPosition();
 		auto newTargetPos = target.getPosition() + pushDir;
-		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }) && state.isOccupied(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
 		}
@@ -429,6 +429,7 @@ namespace SGA
 					Vector2i spawnPos{ static_cast<int>(sourceEntity.x()) + dx, static_cast<int>(sourceEntity.y()) + dy};
 					if (!state.isInBounds(spawnPos)) continue;
 					if (!state.isWalkable(spawnPos)) continue;
+					if (!state.isOccupied(spawnPos)) continue;
 
 					fm.spawnEntity(state, targetEntityType, sourceEntity.getOwnerID(), Vector2f(spawnPos.x, spawnPos.y));
 					return;
@@ -459,7 +460,7 @@ namespace SGA
 			do
 			{
 				spawnPos = { widthMax(state.getRndEngine())-1, heightMax(state.getRndEngine())-1 };
-			} while (!state.isWalkable(spawnPos) || !state.isInBounds(spawnPos));
+			} while (!state.isWalkable(spawnPos) ||!state.isOccupied(spawnPos) || !state.isInBounds(spawnPos));
 
 			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
 		}

@@ -19,6 +19,7 @@ namespace SGA
         //If the method received a maps path, it will load them from the path instead of the game yaml
         void parseBoardGenerator(const YAML::Node& boardNode, GameConfig& config) const;
         void parseEntities(const YAML::Node& entitiesNode, GameConfig& config) const;
+        void parseGrids(const YAML::Node& gridsNode, GameConfig& config) const;
         void parseObjects(const YAML::Node& objectsNode, GameConfig& config) const;
         void parseObjectsAdditionalInformation(const YAML::Node& objectsNode, GameConfig& config) const;
         void parseEntityGroups(const YAML::Node& entityGroupsNode, GameConfig& config) const;

@@ -198,7 +198,7 @@ namespace SGA
 		return instance.getID();
 	}
 
-	Entity* GameState::getEntity(Vector2f pos, float maxDistance)
+	Entity* GameState::getEntityAround(Vector2f pos, float maxDistance)
 	{
 		for (auto& entity : entities)
 		{
@@ -211,7 +211,61 @@ namespace SGA
 		return nullptr;
 	}
 
-	const Entity* GameState::getEntityAtConst(const Vector2f& pos, float maxDistance) const
+	std::vector<Entity*> GameState::getEntitiesAround(Vector2f pos, float maxDistance)
+	{
+		std::vector<Entity*> newEntities;
+		for (auto& entity : entities)
+		{
+			if (entity.getPosition() == pos)
+				newEntities.emplace_back(&entity);
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+				newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
+	std::vector<const Entity*> GameState::getEntitiesAroundConst(Vector2f pos, float maxDistance) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const Entity& entity : entities)
+		{
+			if (entity.getPosition() == pos)
+				newEntities.emplace_back(&entity);
+			else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+				newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
+	std::vector<Entity*> GameState::getEntitiesAround(Vector2f pos, int gridLevel, float maxDistance)
+	{
+		std::vector<Entity*> newEntities;
+		for (auto& entity : entities)
+		{
+			if(entity.getEntityType().getGrid()==gridLevel)
+				if (entity.getPosition() == pos)
+					newEntities.emplace_back(&entity);
+				else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+					newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
+	std::vector<const Entity*> GameState::getEntitiesAroundConst(Vector2f pos, int gridLevel, float maxDistance) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const Entity& entity : entities)
+		{
+			if (entity.getEntityType().getGrid() == gridLevel)
+				if (entity.getPosition() == pos)
+					newEntities.emplace_back(&entity);
+				else if (maxDistance > 0.0 && (entity.getPosition().distance(pos) <= maxDistance))
+					newEntities.emplace_back(&entity);
+		}
+		return newEntities;
+	}
+
+	const Entity* GameState::getEntityAroundConst(const Vector2f& pos, float maxDistance) const
 	{
 		for (auto& entity : entities)
 		{
@@ -483,7 +537,7 @@ namespace SGA
 		return aTypes;
 	}
 
-	const Entity* GameState::getEntityAt(const Vector2f& pos) const
+	/*const Entity* GameState::getEntityAtConst(const Vector2f& pos) const
 	{
 		for (const auto& entity : entities)
 		{
@@ -494,6 +548,60 @@ namespace SGA
 		}
 
 		return nullptr;
+	}*/
+
+	std::vector<const Entity*> GameState::getEntitiesAtConst(Vector2f pos) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const auto& entity : entities)
+		{
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+			{
+				newEntities.emplace_back(&entity);
+			}
+		}
+		return newEntities;
+	}
+
+	const Entity* GameState::getEntityAtConst(const Vector2f& pos) const
+	{
+		for (const auto& entity : entities)
+		{
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+			{
+				return &entity;
+			}
+		}
+
+		return nullptr;
+	}
+
+	std::vector<const Entity*> GameState::getEntitiesAtConst(Vector2f pos, int gridLevel) const
+	{
+		std::vector<const Entity*> newEntities;
+		for (const auto& entity : entities)
+		{
+			if(entity.getEntityType().getGrid()==gridLevel)
+				if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+				{
+					newEntities.emplace_back(&entity);
+				}
+		}
+		return newEntities;
+	}
+
+	std::vector<Entity*> GameState::getEntitiesAt(Vector2f pos, int gridLevel)
+	{
+		std::vector<Entity*> newEntities;
+		for (auto& entity : entities)
+		{
+			if (entity.getEntityType().getGrid() == gridLevel)
+				if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+				{
+					newEntities.emplace_back(&entity);
+				}
+		}
+		return newEntities;
 	}
 
 	/* TECHNOLOGIES */
@@ -555,9 +663,20 @@ namespace SGA
 	bool GameState::isWalkable(const Vector2i& position)
 	{
 		Tile& targetTile = board.get(position.x, position.y);
-		Entity* targetUnit = getEntity(Vector2f(position));
+		//Entity* targetUnit = getEntityAround(Vector2f(position));
 
-		return targetUnit == nullptr && targetTile.isWalkable();
+		return /*targetUnit == nullptr &&*/ targetTile.isWalkable();
+	}
+	
+	bool GameState::isOccupied(const Vector2i& position) const
+	{
+		auto targetsUnit = getEntitiesAroundConst(Vector2f(position));
+		return targetsUnit.size()==0;
+	}
+	bool GameState::isOccupied(const Vector2i& position, int gridLevel) const
+	{
+		auto targetsUnit = getEntitiesAroundConst(Vector2f(position), gridLevel);
+		return targetsUnit.size()==0;
 	}
 
 	bool GameState::isInBounds(const Vector2i& pos) const

@@ -70,7 +70,8 @@ namespace SGA
         // Order is important, only change if you are sure that a function doesn't depend on something parsed before it
         parseEntities(loadNode(configNode, "Entities", *config), *config);
         parseObjects(loadNode(configNode, "Objects", *config), *config);
-
+        if (loadNode(configNode, "Grids", *config).IsDefined())
+            parseGrids(loadNode(configNode, "Grids", *config), *config);
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
 
         parseAgents(loadNode(configNode, "Agents", *config), *config);
@@ -313,6 +314,7 @@ namespace SGA
             EntityType type;
             type.setName(nameTypePair.first);
             type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            /*type.setGrid(nameTypePair.second["Grid"].as<int>(0));*/
             type.setID(static_cast<int>(config.entityTypes.size()));
 
 
@@ -335,6 +337,27 @@ namespace SGA
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+    
+    void GameConfigParser::parseGrids(const YAML::Node& gridsNode, GameConfig& config) const
+    {
+        if (!gridsNode.IsDefined())
+        {
+            throw std::runtime_error("Cannot find definition for Entities");
+        }
+
+        auto grids = gridsNode.as<std::map<std::string, std::vector<std::string>>>();
+        int gridLevel = 0;
+        for (const auto& nameTypePair : grids)
+        {
+            for (const auto& entity : nameTypePair.second)
+            {
+                auto entityID = config.getEntityID(entity);
+                auto& entityType = config.entityTypes.at(entityID);
+                entityType.setGrid(gridLevel);
+            }
+            gridLevel++;
         }
     }
 
