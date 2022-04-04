@@ -19,7 +19,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -39,24 +39,24 @@ GameRenderer:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: true
     Ocean:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: O
         IsWalkable: true
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: true
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -98,7 +98,7 @@ Actions:
                     Type: Neighbours
                     Options:
                         Shape: Square
-                        Size: 1
+                        Size: 0
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, Plain)"
@@ -236,7 +236,7 @@ Actions:
             
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Move, Climb]
@@ -253,7 +253,7 @@ Entities:
             #Kills to level
             Kill: 3
     Defender:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Move, Climb]
@@ -271,7 +271,7 @@ Entities:
             #Kills to level
             Kill: 3
     Rider:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Cost:
@@ -290,23 +290,23 @@ Entities:
             Kill: 3
 
     Animals:
-        Sprite: ../../assets/Entities/animals.png
+        Sprite: ../../../assets/Entities/animals.png
         Symbol: a
         LineOfSightRange: 1
 
     Village:
-        Sprite: ../../assets/Entities/storage.png
+        Sprite: ../../../assets/Entities/storage.png
         Symbol: v
         LineOfSightRange: 1
 
     Port:
-        Sprite: ../../assets/Entities/masonry.png
+        Sprite: ../../../assets/Entities/masonry.png
         Symbol: p
         LineOfSightRange: 1
         RequiredTechnology: Sailing
 
     CityLevel1:
-        Sprite: ../../assets/Entities/tower.png
+        Sprite: ../../../assets/Entities/tower.png
         Symbol: c
         LineOfSightRange: 6
         Actions: [Spawn, BuildPort, Hunt, Upgrade2]
@@ -318,7 +318,7 @@ Entities:
 
             Border: 2
     CityLevel2:
-        Sprite: ../../assets/Entities/guardTower.png
+        Sprite: ../../../assets/Entities/guardTower.png
         Symbol: p
         LineOfSightRange: 6
         Actions: [Spawn, BuildPort, Hunt, Upgrade3]
@@ -330,7 +330,7 @@ Entities:
 
             Border: 3
     CityLevel3:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: p
         LineOfSightRange: 6
         Actions: [Spawn, BuildPort, Hunt]
@@ -346,6 +346,10 @@ EntityGroups:
     Buildings: [CityLevel1, CityLevel2, CityLevel3]
     Cities: [CityLevel1, CityLevel2, CityLevel3]
     Resources: [Animals]
+
+Grids:
+    BuildingsAndResources: [CityLevel1, CityLevel2, CityLevel3, Animals]
+    Units: [Warrior, Rider, Defender]
 
 TechnologyTrees:
     SingleTree:

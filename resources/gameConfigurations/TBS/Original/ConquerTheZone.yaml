@@ -17,7 +17,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -42,20 +42,20 @@ Player:
         Score: [0,0,200]
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -224,7 +224,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -234,7 +234,7 @@ Entities:
             AttackDamage: 100
             MovementPoints: 2
     Zone:
-        Sprite: ../../assets/Entities/wonder.png
+        Sprite: ../../../assets/Entities/wonder.png
         Symbol: z
         LineOfSightRange: 5
         OnTickActions: [CheckPlayer,CheckPlayerOwn , CheckControl, BoostAttackPower]
@@ -242,7 +242,7 @@ Entities:
             Control: [0,0,10]
 
     Base:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: b
         LineOfSightRange: 5
         Actions: [SpawnUnit]            

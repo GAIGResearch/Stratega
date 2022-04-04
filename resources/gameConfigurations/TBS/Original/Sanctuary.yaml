@@ -13,7 +13,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -38,14 +38,14 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
 
 Entities:
     Portal:
-        Sprite: ../../assets/Entities/treeHouse.png
+        Sprite: ../../../assets/Entities/treeHouse.png
         Symbol: c
         LineOfSightRange: 5
         CanSpawn: Units
@@ -54,7 +54,7 @@ Entities:
             Health: 100
 
     Fighter:
-        Sprite: ../../assets/Entities/unit_9.png
+        Sprite: ../../../assets/Entities/unit_9.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack, Capture]
@@ -67,7 +67,7 @@ Entities:
             SpawnPoints: 20
             
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack, Capture]
@@ -81,7 +81,7 @@ Entities:
             SpawnPoints: 10
             
     Wizard:
-        Sprite: ../../assets/Entities/unit_10.png
+        Sprite: ../../../assets/Entities/unit_10.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack, Capture]
@@ -95,11 +95,11 @@ Entities:
             SpawnPoints: 30
 
     Book:
-        Sprite: ../../assets/Entities/wonder.png
+        Sprite: ../../../assets/Entities/wonder.png
         Symbol: b
 
     Canister:
-        Sprite: ../../assets/Entities/floorRockTall.png 
+        Sprite: ../../../assets/Entities/floorRockTall.png 
         Symbol: M
         
 

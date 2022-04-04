@@ -883,7 +883,7 @@ namespace SGA
                 {
                     using namespace ghc::filesystem;
 
-                    path filePath = "../../assets/OutLine.frag";
+                    path filePath = "../../../assets/OutLine.frag";
                     // Convert path to an absolute path relative to the path of the configuration file
                     auto tmp = current_path();
                     current_path(canonical(path(config.yamlPath).parent_path()));
@@ -911,7 +911,7 @@ namespace SGA
                 {
                     using namespace ghc::filesystem;
 
-                    path filePath = "../../assets/arial.ttf";
+                    path filePath = "../../../assets/arial.ttf";
                     // Convert path to an absolute path relative to the path of the configuration file
                     auto tmp = current_path();
                     current_path(canonical(path(config.yamlPath).parent_path()));

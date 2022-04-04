@@ -16,7 +16,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -36,12 +36,12 @@ GameRenderer:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
@@ -163,7 +163,7 @@ Actions:
     
 Entities:
     Searcher:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: s
         LineOfSightRange: 2
         Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject]
@@ -181,7 +181,7 @@ Entities:
 
 Objects:
     Key:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: k
        CanEquip: [Searcher] #Who can equip the object in the slots
        SlotsUse: [Right hand] #empty == cant be equiped in any slot

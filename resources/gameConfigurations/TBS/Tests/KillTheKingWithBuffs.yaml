@@ -16,7 +16,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -48,20 +48,20 @@ Buffs: # Buff lists
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
 
@@ -197,7 +197,7 @@ Actions:
 
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -208,7 +208,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:            
@@ -219,7 +219,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:           
@@ -230,7 +230,7 @@ Entities:
         Actions: [Heal, Move, BoostHealth]
 
     King:
-        Sprite: ../../assets/Entities/unit_1.png
+        Sprite: ../../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:

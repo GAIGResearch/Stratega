@@ -20,7 +20,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -40,30 +40,30 @@ GameRenderer:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     PlayerPlain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: P
         IsWalkable: true
         DefaultTile: true
     EnemyPlain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: E
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: true
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
 
@@ -271,7 +271,7 @@ Actions:
 
 Entities:
     Pusher:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: p
         LineOfSightRange: 6
         Actions: [Move, Push]
@@ -281,7 +281,7 @@ Entities:
             AttackDamage: 1
 
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -291,7 +291,7 @@ Entities:
         Actions: [PushDistance, Move]
 
     Bomber:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         Symbol: b
         LineOfSightRange: 4
         Parameters:
@@ -302,7 +302,7 @@ Entities:
         Actions: [PushBomb, Move]
 
     Worm:
-        Sprite: ../../assets/Entities/unit_4.png
+        Sprite: ../../../assets/Entities/unit_4.png
         Symbol: w
         LineOfSightRange: 4
         Parameters:
@@ -312,7 +312,7 @@ Entities:
         Actions: [Move, Attack]
 
     City:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 6
         Parameters:

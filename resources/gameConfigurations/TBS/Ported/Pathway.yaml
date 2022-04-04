@@ -21,7 +21,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -41,20 +41,20 @@ GameRenderer:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
@@ -324,7 +324,7 @@ Actions:
 
 Objects:
     AssaultRifle:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: r
        Parameters:
             DamageMin: 20
@@ -332,21 +332,21 @@ Objects:
             Range: 5
             Ammo: 1
     Knife:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: k
        Parameters:
             DamageMin: 30
             DamageMax: 40
             Range: 1
     Knuckles:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: k
        Parameters:
             DamageMin: 10
             DamageMax: 20
             Range: 1
     Pistol:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: p
        Parameters:
             DamageMin: 15
@@ -355,33 +355,33 @@ Objects:
             Ammo: 2
 
     MediumArmor:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: m
        Parameters:
             Armor: 25
     HeavyArmor:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: h
        Parameters:
             Armor: 35
     LightArmor:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: l
        Parameters:
             Armor: 15
 
     MedKit:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: e
        Parameters:
             Heal: 25
     Grenade:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: g
        Parameters:
             Damage: 20
     RepairKit:
-       Sprite: ../../assets/Entities/key.png
+       Sprite: ../../../assets/Entities/key.png
        Symbol: r
        Parameters:
                 Repair: 20
@@ -392,7 +392,7 @@ EntityGroups:
 
 Entities:
     Soldier:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: s
         LineOfSightRange: 6
         InventorySize: 4
@@ -417,7 +417,7 @@ Entities:
             MiscellaneousActions: 1
 
     Healer:
-        Sprite: ../../assets/Entities/unit_1.png
+        Sprite: ../../../assets/Entities/unit_1.png
         Symbol: h
         LineOfSightRange: 6
         InventorySize: 4
@@ -442,7 +442,7 @@ Entities:
             MiscellaneousActions: 1
 
     Fixer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: f
         LineOfSightRange: 6
         InventorySize: 4
@@ -467,7 +467,7 @@ Entities:
             MiscellaneousActions: 1
 
     Enemy:
-        Sprite: ../../assets/Entities/unit_4.png
+        Sprite: ../../../assets/Entities/unit_4.png
         Symbol: e
         LineOfSightRange: 6
         InventorySize: 4
