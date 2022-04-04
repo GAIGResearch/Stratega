@@ -43,6 +43,7 @@ namespace SGA
             }
             else
             {
+                position = targetPosition;
                 animation &= ~AnimationType::Move;
             }
         }
