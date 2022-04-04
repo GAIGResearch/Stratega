@@ -145,6 +145,44 @@ namespace SGA
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class IsOccupied : public Condition
+	{
+		FunctionParameter targetPosition;
+
+	public:
+		IsOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsOccupiedGrid : public Condition
+	{
+		FunctionParameter targetPosition;
+		FunctionParameter gridLevel;
+
+	public:
+		IsOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotOccupied : public Condition
+	{
+		FunctionParameter targetPosition;
+
+	public:
+		IsNotOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotOccupiedGrid : public Condition
+	{
+		FunctionParameter targetPosition;
+		FunctionParameter gridLevel;
+
+	public:
+		IsNotOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class IsTile : public Condition
 	{
 		FunctionParameter targetPosition;

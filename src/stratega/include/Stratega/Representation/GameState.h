@@ -93,6 +93,9 @@ namespace SGA
 		/// <returns>A boolean indicating if the tile in the given position is walkable</returns>
 		bool isWalkable(const Vector2i& position);
 
+		bool isOccupied(const Vector2i& position) const;
+		bool isOccupied(const Vector2i& position, int gridLevel) const;
+
 		/// <summary>
 		/// Checks if position is inside of the tile map
 		/// </summary>
@@ -124,7 +127,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="pos">Position of the tile to retrieve</param>
 		/// <returns>The tile at 'pos'</returns>
-		const Tile& getTileAt(const Vector2i& pos) const;
+		const Tile& getTileAtConst(const Vector2i& pos) const;
 
 		/// <summary>
 		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
@@ -132,7 +135,22 @@ namespace SGA
 		/// <param name="x">X Position of the tile to retrieve</param>
 		/// <param name="y">Y Position of the tile to retrieve</param>
 		/// <returns>The tile at position (x,y)</returns>
-		const Tile& getTileAt(int x, int y) const;
+		const Tile& getTileAtConst(int x, int y) const;
+
+		/// <summary>
+		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="pos">Position of the tile to retrieve</param>
+		/// <returns>The tile at 'pos'</returns>
+		Tile& getTileAt(const Vector2i& pos);
+
+		/// <summary>
+		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="x">X Position of the tile to retrieve</param>
+		/// <param name="y">Y Position of the tile to retrieve</param>
+		/// <returns>The tile at position (x,y)</returns>
+		Tile& getTileAt(int x, int y);
 
 		/// <summary>
 		/// Initializes the board with the tiles passed by parameter. 
@@ -150,9 +168,22 @@ namespace SGA
 		/// <param name="pos">Position in the board to look for an entity.</param>
 		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
 		/// <returns>A pointer to the entity in this location.</returns>
-		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
-		const Entity* getEntityAtConst(const Vector2f& pos, float maxDistance = 0.0) const;
-		const Entity* getEntityAt(const Vector2f& pos) const;
+		Entity* getEntityAround(Vector2f pos, float maxDistance = 0.0);
+		const Entity* getEntityAroundConst(const Vector2f& pos, float maxDistance = 0.0) const;
+
+		const Entity* getEntityAtConst(const Vector2f& pos) const;
+		Entity* getEntityAt(const Vector2f& pos);
+
+		//Get all entities in different grid
+		std::vector<Entity*> getEntitiesAround(Vector2f pos, float maxDistance = 0.0);
+		std::vector<Entity*> getEntitiesAt(Vector2f pos);
+		std::vector<const Entity*> getEntitiesAroundConst(Vector2f pos, float maxDistance = 0.0) const;
+		std::vector<const Entity*> getEntitiesAtConst(Vector2f pos) const;
+
+		std::vector<Entity*> getEntitiesAround(Vector2f pos, int gridLevel, float maxDistance = 0.0);
+		std::vector<Entity*> getEntitiesAt(Vector2f pos, int gridLevel);
+		std::vector<const Entity*> getEntitiesAroundConst(Vector2f pos, int gridLevel, float maxDistance = 0.0) const;
+		std::vector<const Entity*> getEntitiesAtConst(Vector2f pos, int gridLevel) const;
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.

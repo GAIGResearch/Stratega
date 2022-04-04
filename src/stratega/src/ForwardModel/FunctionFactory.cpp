@@ -37,6 +37,10 @@ namespace SGA
 		factory.registerFunction<IsNotTick>("IsNotTick");
 		factory.registerFunction<IsTick>("IsTick");
 		factory.registerFunction<HasNoEntities>("HasNoEntities");
+		factory.registerFunction<IsOccupiedGrid>("IsOccupiedGrid");
+		factory.registerFunction<IsOccupied>("IsOccupied");
+		factory.registerFunction<IsNotOccupiedGrid>("IsNotOccupiedGrid");
+		factory.registerFunction<IsNotOccupied>("IsNotOccupied");
 		
 		return factory;
 	}

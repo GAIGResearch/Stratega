@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - OSLAAgent
+    - DoNothingAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
@@ -74,22 +74,6 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 3
-                Conditions:
-                    - "IsWalkable(Target)"
-        Effects:
-            - "SpawnEntity(Source, Warrior, Target)"
-
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -125,6 +109,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"
@@ -189,7 +174,7 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move, Spawn]
+        Actions: [Attack, Move]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play

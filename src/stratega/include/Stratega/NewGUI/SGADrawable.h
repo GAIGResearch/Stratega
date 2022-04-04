@@ -84,7 +84,7 @@ namespace SGA {
         const int playerID;
         Vector2f targetPosition;
         AnimationType animation;
-        SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID);
+        SGADrawableEntity(const Vector2f& newPosition, int newZPosition, const EntityType& newType, const int newEntityID, const int newPlayerID, float alpha = 0);
 
         void update(float dt) override;
         void render(SGARenderTarget& renderTarget) const override;
@@ -97,25 +97,39 @@ namespace SGA {
         }        
         void dissappear()
         {
+
+            if (animation & AnimationType::Appear)
+                animation &= ~AnimationType::Appear;
+
             if (alpha == 0)
                 return;
-            alpha = 1;
+
             isAnimating = true;
             shouldRemove = false;
             animation |= AnimationType::Dissappear;
-            if (animation & AnimationType::Appear)
-                animation &= ~AnimationType::Appear;
         }
         void appear()
         {
+            if (animation & AnimationType::Dissappear)
+            {
+                animation &= ~AnimationType::Dissappear;                
+            }                
+
             if (alpha == 1)
                 return;
-            alpha = 0;
+            
             isAnimating = true;
             animation |= AnimationType::Appear;
             shouldRemove = false;
-            if (animation & AnimationType::Dissappear)
-                animation &= ~AnimationType::Dissappear;
+        }
+
+        bool isAppearing()
+        {
+            return animation & AnimationType::Appear;
+        }
+        bool isDissapearing()
+        {
+            return animation & AnimationType::Dissappear;
         }
     };
 

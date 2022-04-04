@@ -45,7 +45,7 @@ namespace SGA
         fmPtr->spawnEntity(*gameState, *entityTypePtr, -1, position);
         
         ASSERT_TRUE(gameState->getEntity(0)!=nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) !=nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) !=nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 1);        
 
         EXPECT_THROW(gameState->getPlayerEntities(0).size(), std::runtime_error);
@@ -64,7 +64,7 @@ namespace SGA
         
 
         ASSERT_TRUE(gameState->getEntity(0)!=nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) !=nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) !=nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 1);
 
         auto mockPlayerPtr = std::shared_ptr<MockPlayer>(new MockPlayer(0, true));
@@ -95,7 +95,7 @@ namespace SGA
         fmPtr->spawnEntity(*gameState, *entityTypePtr, 0, position);                
 
         ASSERT_TRUE(gameState->getEntity(0)!=nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) !=nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) !=nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 1);
         
         ASSERT_EQ(gameState->getPlayerEntities(0).size(), 1);
@@ -114,7 +114,7 @@ namespace SGA
         fmPtr->advanceGameState(*gameState, ActionAssignment::createEndActionAssignment(0));
 
         ASSERT_TRUE(gameState->getEntity(0) == nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) == nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) == nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 0);
         ASSERT_EQ(gameState->getPlayerEntities(0).size(), 0);
         ASSERT_EQ(gameState->getPlayerEntities(1).size(), 0);
@@ -137,7 +137,7 @@ namespace SGA
         fmPtr->spawnEntity(*gameState, *entityTypePtr, 0, position);
         
         ASSERT_TRUE(gameState->getEntity(0)!=nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) !=nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) !=nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 1);
         ASSERT_EQ(gameState->getPlayerEntities(0).size(), 1);
         ASSERT_EQ(gameState->getPlayerEntities(1).size(), 0); 
@@ -151,7 +151,7 @@ namespace SGA
         fmPtr->advanceGameState(*gameState, ActionAssignment::createEndActionAssignment(0) );
 
         ASSERT_TRUE(gameState->getEntity(0) == nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) == nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) == nullptr);
         ASSERT_EQ(gameState->getEntities().size(), 0);
         ASSERT_EQ(gameState->getPlayerEntities(0).size(), 0);
         ASSERT_EQ(gameState->getPlayerEntities(1).size(), 0);   
@@ -165,7 +165,7 @@ namespace SGA
         
         //Check we dont override entities IDs
         ASSERT_TRUE(gameState->getEntity(0) == nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(position) == nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) == nullptr);
 
         ASSERT_EQ(gameState->getEntities().size(), 4);
         ASSERT_EQ(gameState->getPlayerEntities(0).size(), 4);
@@ -174,7 +174,7 @@ namespace SGA
         for (size_t i = 0; i < 4; i++)
         {
             ASSERT_TRUE(gameState->getEntity(i+1) != nullptr);
-            ASSERT_TRUE(gameState->getEntityAt({ 0,static_cast<double>(i) }) != nullptr);
+            ASSERT_TRUE(gameState->getEntityAtConst({ 0,static_cast<double>(i) }) != nullptr);
         }
     }
 
@@ -192,13 +192,13 @@ namespace SGA
 
         fmPtr->spawnEntity(*gameState, *entityTypePtr, 0, position);
 
-        ASSERT_TRUE(gameState->getEntityAt(position) != nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) != nullptr);
 
         auto* entity0 = gameState->getEntity(0);
 
         entity0->setPosition(newPosition);
         
-        ASSERT_TRUE(gameState->getEntityAt(position) == nullptr);
-        ASSERT_TRUE(gameState->getEntityAt(newPosition) != nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(position) == nullptr);
+        ASSERT_TRUE(gameState->getEntityAtConst(newPosition) != nullptr);
     }
 }

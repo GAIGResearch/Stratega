@@ -222,6 +222,34 @@ namespace SGA
 		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const;
 		
 		/// <summary>
+		/// Modify Tile parameter by name
+		/// </summary>
+		void modifyTileByParameterByName(Tile& tile, std::string& parameterName, double newValue) const
+		{
+			modifyTileParameterByIndex(tile, tile.getTileType().getParameterByName(parameterName).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		///  Modify Tile parameter by ID
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterID">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		void modifyTileParameterByID(Tile& tile, int parameterID, double newValue) const
+		{
+			modifyTileParameterByIndex(tile, tile.getTileType().getParameter(parameterID).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify Tile parameter by index
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterIndex">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyTileParameterByIndex(Tile& tile, int parameterIndex, double newValue) const;
+		
+		/// <summary>
 		/// Modify player parameter by name
 		/// </summary>
 		/// <param name="entity">Entity to search parameter from</param>

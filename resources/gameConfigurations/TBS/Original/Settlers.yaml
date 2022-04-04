@@ -312,6 +312,7 @@ Actions:
                        AllowDiagonals: false
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
 
@@ -411,6 +412,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
 
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
@@ -436,6 +438,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Ore)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -461,6 +464,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Gold)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -486,6 +490,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition,Animals)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -511,6 +516,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Plain)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -536,6 +542,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Clay)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -561,6 +568,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Forest)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -586,6 +594,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -610,6 +619,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -634,6 +644,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
         TriggerComplete:
             - "HasElapsedTick(2)"
         OnStart:

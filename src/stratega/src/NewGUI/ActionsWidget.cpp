@@ -164,6 +164,9 @@ namespace SGA
 						break;
 					case ActionTarget::Gamestate:
 						break;
+					case ActionTarget::TileReference:
+						actionInfo += /*targetType.getTileType(*state).getName() + */" x:" + std::to_string(static_cast<int>(targetType.getPosition(*state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(*state).y));
+						break;
 					case ActionTarget::Object:
 						actionInfo += targetType.getEntityType(*state).getName();
 						break;
@@ -193,7 +196,7 @@ namespace SGA
 		float circleShapeSize = static_cast<float>(renderTarget.getResourceManager().getTileSpriteSize().y) / 10.0f;
 		//Draw possible actions
 		std::vector<sf::CircleShape> actionsShapes;
-		if (waitingForPosition)
+		if (waitingForPosition||waitingForTile)
 		{
 			for (auto& possibleAction : actionsHumanPlayer)
 			{
@@ -215,7 +218,8 @@ namespace SGA
 
 				for (auto& actionTarget : possibleAction.getTargets())
 				{
-					if (actionTarget.getType() == ActionTarget::Position)
+					if (actionTarget.getType() == ActionTarget::Position
+						|| actionTarget.getType() == ActionTarget::TileReference)
 					{
 						auto position = actionTarget.getPosition(*state);
 
@@ -233,7 +237,7 @@ namespace SGA
 						actionsShapes.emplace_back(possibleActionPositionShape);
 					}
 				}
-
+				 
 				for (const auto& shape : actionsShapes)
 				{
 					window.draw(shape);
@@ -338,7 +342,7 @@ namespace SGA
 				// The user clicked somewhere
 				if (!selectedEntities.empty())
 				{
-					const auto* unit = state->getEntityAtConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
+					const auto* unit = state->getEntityAroundConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
 					if (unit)
 					{
@@ -352,6 +356,8 @@ namespace SGA
 							selectedEntities.clear();
 						}
 
+						possibleSelectedEntities.clear();
+						waitingToSelectPossibleEntitie = false;
 					}
 					else
 					{
@@ -359,6 +365,11 @@ namespace SGA
 						{
 							auto gridPos = world.toStratega(pos);
 							assignPosition({ gridPos.x,gridPos.y });
+						}
+						else if (waitingForTile)
+						{
+							auto gridPos = world.toStratega(pos);
+							assignTile({ gridPos.x,gridPos.y });
 						}
 						else
 						{
@@ -372,6 +383,11 @@ namespace SGA
 					{
 						auto gridPos = world.toStratega(pos);
 						assignPosition({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
+					}
+					else if (waitingForTile)
+					{
+						auto gridPos = world.toStratega(pos);
+						assignTile({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
 					}
 					else
 					{
@@ -412,6 +428,10 @@ namespace SGA
 			{
 				assignPosition({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
 			}
+			else if (waitingForTile)
+			{
+				assignTile({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
+			}
 			else
 			{
 				if (!waitingForEntity)
@@ -423,9 +443,11 @@ namespace SGA
 
 			if (state->getGameType() == GameType::TBS)
 			{
-				auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
-				if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
+				auto tileEntities = state->getEntitiesAtConst(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
+				if (tileEntities.size() == 1)
 				{
+					auto* selectedEntity = tileEntities[0];
+					//if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
 					//Assign selected unit
 					if (waitingForEntity)
 					{
@@ -437,6 +459,33 @@ namespace SGA
 						//if (selectedEntity->getOwnerID() == playerID)
 						selectedEntities.emplace(selectedEntity->getID());
 					}
+
+					possibleSelectedEntities.clear();
+					waitingToSelectPossibleEntitie = false;
+				}
+				else if(tileEntities.size()>1)
+				{
+					auto* selectedEntity = tileEntities[0];
+
+					waitingForEntity = false;
+					waitingToSelectPossibleEntitie = true;
+					for (auto possibleEntity : tileEntities)
+					{
+						possibleSelectedEntities.emplace(possibleEntity->getID());
+					}
+					//if (waitingForEntity)
+					//{
+					//	//assignEntity(selectedEntity->getID());
+					//	waitingForEntity = false;
+					//	waitingToSelectPossibleEntitie = true;
+					//}
+					//else
+					//{
+					//	//Pick up entity
+					//	//if (selectedEntity->getOwnerID() == playerID)
+					//	//selectedEntities.emplace(selectedEntity->getID());
+
+					//}
 				}
 				//else
 				//{
@@ -468,6 +517,20 @@ namespace SGA
 	void ActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
+
+		int elementNumber = 0;
+		for (auto entityID : possibleSelectedEntities)
+		{
+			ImGui::PushID(elementNumber);
+			if (ImGui::Button(state->getEntityConst(entityID)->getEntityType().getName().c_str(), ImVec2(50, 50)))
+			{
+				selectedEntities.emplace(entityID);
+				waitingToSelectPossibleEntitie = false;
+			}
+			if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+			ImGui::PopID();
+		}
+
 		auto& targetType = actionType.getTargets()[selectedTargets.size()].first;
 		switch (targetType.getType())
 		{
@@ -484,6 +547,11 @@ namespace SGA
 		case TargetType::Position:
 		{
 			getPositionReference();
+			break;
+		}
+		case TargetType::Tile:
+		{
+			getTileReference();
 			break;
 		}
 		case TargetType::Entity:
@@ -532,6 +600,9 @@ namespace SGA
 		if (playerID == -2)
 			return actionsToExecute;
 
+
+		
+
 		if (hasActionTypeSelected())
 		{
 			//Selected actiontype
@@ -546,6 +617,22 @@ namespace SGA
 			{
 				verifyActionTargets(playerID, actionsToExecute);
 			}
+		}
+		else if (waitingToSelectPossibleEntitie)
+		{
+			int elementNumber = 0;
+			for (auto entityID : possibleSelectedEntities)
+			{
+				ImGui::PushID(elementNumber);
+				if (ImGui::Button(state->getEntityConst(entityID)->getEntityType().getName().c_str(), ImVec2(50, 50)))
+				{
+					selectedEntities.emplace(entityID);
+					waitingToSelectPossibleEntitie = false;
+				}
+				if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+				ImGui::PopID();
+			}
+			return actionsToExecute;
 		}
 		else
 		{
@@ -845,9 +932,17 @@ namespace SGA
 		waitingForPosition = true;
 	}
 
+	void ActionsWidget::getTileReference()
+	{
+		ImGui::Text("Choose tile");
+		//Need to receive a new position from the gui
+		waitingForTile = true;
+	}
+
 	void ActionsWidget::getEntityReference()
 	{
 		ImGui::Text("Choose entity");
+		
 		//Need to receive a new position from the gui
 		waitingForEntity = true;
 	}
@@ -1005,10 +1100,19 @@ namespace SGA
 		selectedTargets.emplace_back(positionTarget);
 	}
 
+	void ActionsWidget::assignTile(Vector2f position)
+	{
+		auto positionTarget = SGA::ActionTarget::createTileActionTarget(position);
+
+		selectedTargets.emplace_back(positionTarget);
+	}
+
 	void ActionsWidget::assignEntity(int entity)
 	{
 		auto entityTarget = SGA::ActionTarget::createEntityActionTarget(entity);
 
 		selectedTargets.emplace_back(entityTarget);
+		possibleSelectedEntities.clear();
+		waitingToSelectPossibleEntitie = false;
 	}
 }

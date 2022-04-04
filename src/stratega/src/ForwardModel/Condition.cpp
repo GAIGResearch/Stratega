@@ -209,8 +209,83 @@ namespace  SGA
 	bool IsWalkable::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto pos = targetPosition.getPosition(state, targets);
-		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
-		return t.isWalkable() && state.getEntityAt(pos) == nullptr;
+		Tile t = state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		return t.isWalkable()/* && state.getEntityAtConst(pos) == nullptr*/;
+	}
+
+	IsOccupied::IsOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp), 
+		targetPosition(parameters[0])
+	{
+	}
+	
+	bool IsOccupied::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		
+		return state.getEntitiesAtConst(pos).size()!=0;
+	}
+	IsOccupiedGrid::IsOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp), 
+		targetPosition(parameters[0]),
+		gridLevel(parameters[1])
+	{
+	}
+	
+	bool IsOccupiedGrid::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		if (gridLevel.getType() == FunctionParameter::Type::Constant)
+		{
+			auto grid = gridLevel.getConstant(state, targets);
+
+			return state.getEntitiesAtConst(pos, grid).size() != 0;
+		}
+		else if (gridLevel.getType() == FunctionParameter::Type::EntityTypeReference || 
+			gridLevel.getType() == FunctionParameter::Type::ArgumentReference)
+		{
+			auto type = gridLevel.getEntityType(state, targets);
+
+			return state.getEntitiesAtConst(pos, type.getID()).size() != 0;
+		}
+	}
+
+	IsNotOccupied::IsNotOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp), 
+		targetPosition(parameters[0])
+	{
+	}
+	
+	bool IsNotOccupied::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		
+		return state.getEntitiesAtConst(pos).size()==0;
+	}
+
+	IsNotOccupiedGrid::IsNotOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Condition(exp), 
+		targetPosition(parameters[0]),
+		gridLevel(parameters[1])
+	{
+	}
+	
+	bool IsNotOccupiedGrid::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto pos = targetPosition.getPosition(state, targets);
+		if (gridLevel.getType() == FunctionParameter::Type::Constant)
+		{
+			auto grid = gridLevel.getConstant(state, targets);
+
+			return state.getEntitiesAtConst(pos, grid).size() == 0;
+		}
+		else if (gridLevel.getType() == FunctionParameter::Type::EntityTypeReference || 
+			gridLevel.getType() == FunctionParameter::Type::ArgumentReference)
+		{
+			auto type = gridLevel.getEntityType(state, targets);
+
+			return state.getEntitiesAtConst(pos, type.getGrid()).size() == 0;
+		}
 	}
 
 	IsTile::IsTile(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -226,7 +301,7 @@ namespace  SGA
 		auto pos = targetPosition.getPosition(state, targets);
 		const TileType& tileType = targetTile.getTileType(state, targets);
 		//Check if target tile is same as the tile
-		Tile t = state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		Tile t = state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
 		return t.getTileTypeID()==tileType.getID();
 	}
 

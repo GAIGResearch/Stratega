@@ -1,6 +1,6 @@
 #pragma once
 #include <Stratega/Representation/Tile.h>
-
+#include <Stratega/Representation/Parameter.h>
 namespace SGA
 {
 	struct TileType
@@ -39,6 +39,12 @@ namespace SGA
 		/// </summary>
 		bool defaultTile = false;
 
+		/// <summary>
+		/// Map of parameters of this tile. Key is an integer (ID of the parameter) and value is the paramter object.
+		/// The parameter defines the min, max and default value this parameter can take.
+		/// </summary>
+		std::unordered_map<ParameterID, Parameter> parameters;
+
 
 	public:
 
@@ -56,9 +62,32 @@ namespace SGA
 			return instance;
 		}
 
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
+		const Parameter& getParameter(ParameterID id) const;
+
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
+		const Parameter& getParameterByIndex(int index) const;
+
+		/// <summary>
+		/// Returns a <see cref="SGA::Parameter"/> reference that contains the parameter defintion
+		/// </summary>
+		const Parameter& getParameterByName(std::string& name) const;
+
+		/// <summary>
+		/// Returns the maximum value of a given parameter
+		/// </summary>
+		double getParamMax(std::string paramName) const;
+
+		/// <summary>
+		/// Returns the minimum value of a given parameter
+		/// </summary>
+		double getParamMin(std::string paramName) const;
+
 		/* Getters and setters for this type */
-
-
 		const std::string& getName() const { return name; }
 		void setName(const std::string& newName) { this->name = newName; }
 
@@ -77,6 +106,7 @@ namespace SGA
 		bool isDefaultTile() const { return defaultTile; }
 		void setDefaultTile(bool newDefaultTile) { this->defaultTile = newDefaultTile; }
 
-
+		const std::unordered_map<ParameterID, Parameter>& getParameters() const { return parameters; }
+		std::unordered_map<ParameterID, Parameter>& getParameters() { return parameters; }
 	};
 }

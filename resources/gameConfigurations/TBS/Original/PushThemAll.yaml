@@ -110,6 +110,7 @@ Actions:
                         AllowDiagonals: false
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"

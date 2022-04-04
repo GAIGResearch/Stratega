@@ -4,6 +4,8 @@
 #include <boost/random.hpp>
 #include <Stratega/Utils/cparse/shunting-yard.h>
 
+#include <Stratega/Utils/cparse/shunting-yard.h>
+
 namespace SGA
 {
 	
@@ -65,6 +67,7 @@ namespace SGA
 		case Type::Expression:  new (&data.expression) auto(newData.expression); break;
 		case Type::ParameterReference: data.parameterData = newData.parameterData; break;
 		case Type::GameStateParameterReference: data.parameterData = newData.parameterData; break;
+		case Type::TileParameterReference: data.parameterData = newData.parameterData; break;
 		case Type::ArgumentReference: data.argumentIndex = newData.argumentIndex; break;
 		case Type::EntityTypeReference: data.entityTypeID = newData.entityTypeID; break;
 		case Type::TileTypeReference: data.tileTypeID = newData.tileTypeID; break;
@@ -88,6 +91,7 @@ namespace SGA
 		case Type::Expression:  new (&data.expression) auto(other.data.expression); break;
 		case Type::ParameterReference: data.parameterData = other.data.parameterData; break;
 		case Type::GameStateParameterReference: data.parameterData = other.data.parameterData; break;
+		case Type::TileParameterReference: data.parameterData = other.data.parameterData; break;
 		case Type::ArgumentReference: data.argumentIndex = other.data.argumentIndex; break;
 		case Type::EntityTypeReference: data.entityTypeID = other.data.entityTypeID; break;
 		case Type::TileTypeReference: data.tileTypeID = other.data.tileTypeID; break;
@@ -233,6 +237,11 @@ namespace SGA
 		return FunctionParameter(Type::GameStateParameterReference, { ref });
 	}
 
+	FunctionParameter FunctionParameter::createTileParameterReference(ParameterReference ref)
+	{
+		return FunctionParameter(Type::TileParameterReference, { ref });
+	}
+
 	FunctionParameter FunctionParameter::createEntityTypeReference(int entityTypeID)
 	{
 		return FunctionParameter(Type::EntityTypeReference, { Type::EntityTypeReference, entityTypeID });
@@ -340,6 +349,14 @@ namespace SGA
 				const auto& param = entityType.getParameter(data.parameterData.parameterID);
 				return param;
 			}
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::TileReference)
+			{
+				auto& tile = getTile(state, actionTargets);
+
+				const auto& tileType = tile.getTileType();
+				const auto& param = tileType.getParameter(data.parameterData.parameterID);
+				return param;
+			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::PlayerReference)
 			{
 				const auto& param = state.getGameInfo()->getPlayerParameter(data.parameterData.parameterID);
@@ -385,6 +402,10 @@ namespace SGA
 			{
 				return false;
 			}
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::TileReference)
+			{
+				return false;
+			}
 
 		}
 		if (parameterType == Type::EntityPlayerParameterReference)
@@ -419,6 +440,10 @@ namespace SGA
 			{
 				return false;
 			}
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::TileReference)
+			{
+				return false;
+			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Gamestate)
 			{
 				return false;
@@ -445,6 +470,23 @@ namespace SGA
 			return false;
 		}
 		if (parameterType == Type::GameStateParameterReference)
+		{
+			return true;
+		}
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+	}
+	
+	bool FunctionParameter::isTileParameter(const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (parameterType == Type::ParameterReference)
+		{
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::TileReference)
+			{
+				return true;
+			}
+			return false;
+		}
+		if (parameterType == Type::TileParameterReference)
 		{
 			return true;
 		}
@@ -500,6 +542,11 @@ namespace SGA
 				auto& player = getPlayer(state, actionTargets);
 				return player.getRawParameterAt(param.getIndex());
 			}
+			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::TileReference)
+			{
+				auto& tile = getTile(state, actionTargets);
+				return tile.getRawParameterAt(param.getIndex());
+			}
 			else if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Gamestate)
 			{
 				return state.getRawParameterAt(param.getIndex());
@@ -513,6 +560,11 @@ namespace SGA
 			return player->getRawParameterAt(param.getIndex());
 		}
 		if (parameterType == Type::GameStateParameterReference)
+		{
+			const auto& param = getParameter(state, actionTargets);
+			return state.getRawParameterAt(param.getIndex());
+		}
+		if (parameterType == Type::TileParameterReference)
 		{
 			const auto& param = getParameter(state, actionTargets);
 			return state.getRawParameterAt(param.getIndex());
@@ -548,6 +600,44 @@ namespace SGA
 		{
 			auto entityID = actionTargets[data.parameterData.argumentIndex].getEntityID();
 			return *state.getEntity(entityID);
+		}
+		default:
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+
+	Tile& FunctionParameter::getTile(GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ArgumentReference:
+		{
+			auto pos = actionTargets[data.argumentIndex].getPosition();
+			return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y)});
+		}
+		case Type::ParameterReference:
+		{
+			auto pos = actionTargets[data.parameterData.argumentIndex].getPosition();
+			return state.getTileAt({ static_cast<int>(pos.x), static_cast<int>(pos.y) });
+		}
+		default:
+			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+		}
+	}
+
+	const Tile& FunctionParameter::getTile(const GameState& state, const std::vector<ActionTarget>& actionTargets) const
+	{
+		switch (parameterType)
+		{
+		case Type::ArgumentReference:
+		{
+			auto pos = actionTargets[data.argumentIndex].getPosition();
+			return state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y)});
+		}
+		case Type::ParameterReference:
+		{
+			auto pos = actionTargets[data.parameterData.argumentIndex].getPosition();
+			return state.getTileAtConst({ static_cast<int>(pos.x), static_cast<int>(pos.y)});
 		}
 		default:
 			throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");

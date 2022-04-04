@@ -85,7 +85,7 @@ namespace SGA
 				for (auto& attack : attacks)
 				{
 					auto target = MoveTo(opponentPositon, attack.first);
-					if (state.isWalkable(target))
+					if (state.isWalkable(target) && state.isOccupied(target))
 					{
 						possibleTargets.emplace_back(target);
 						pushCount.emplace_back(attack.second);
@@ -244,8 +244,8 @@ namespace SGA
 				// Only explore the new found tile if it's safe to move to, is not occupied by an opponent, and is walkable
 				if (state.isInBounds(targetPos) && 
 					!canKill(state, targetPos) &&
-					(state.getEntityAt({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y)}) == nullptr ||
-					state.getEntityAt({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y) })->getOwnerID() == state.getCurrentTBSPlayer()))
+					(state.getEntityAtConst({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y)}) == nullptr ||
+					state.getEntityAtConst({ static_cast<float>(targetPos.x),  static_cast<float>(targetPos.y) })->getOwnerID() == state.getCurrentTBSPlayer()))
 				{
 					openList.push(targetPos);
 					previous[targetPos] = openList.front();
@@ -280,7 +280,7 @@ namespace SGA
 
 	bool PusherAgent::canKill(const GameState& state, Vector2i pos) const
 	{
-		const auto tile = state.getTileAt({ pos.x,pos.y });
+		const auto tile = state.getTileAtConst({ pos.x,pos.y });
 
 		if (!tile.isWalkable())
 			return false;
@@ -301,8 +301,8 @@ namespace SGA
 			auto currPos = MoveTo(pos, pushDir);
 
 			// Check if it is a valid attack direction
-			auto& attackTile = state.getTileAt(attackPos.x, attackPos.y);
-			auto& pushTile = state.getTileAt(currPos.x, currPos.y);
+			auto& attackTile = state.getTileAtConst(attackPos.x, attackPos.y);
+			auto& pushTile = state.getTileAtConst(currPos.x, currPos.y);
 			if (!attackTile.isWalkable() || canKill(state, attackPos) || !pushTile.isWalkable())
 				continue;
 

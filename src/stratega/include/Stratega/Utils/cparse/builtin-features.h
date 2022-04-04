@@ -29,6 +29,7 @@ using namespace cparse;
 #include <Stratega/Utils/cparse/builtin-features/reservedWords.h>
 #include <Stratega/Utils/cparse/builtin-features/typeSpecificFunctions.h>
 #include <boost/random.hpp>
+
 /**
  * If STATIC_CPARSE_STARTUP is undefined
  * declare a startup function to initialize

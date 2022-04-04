@@ -70,7 +70,8 @@ namespace SGA
         // Order is important, only change if you are sure that a function doesn't depend on something parsed before it
         parseEntities(loadNode(configNode, "Entities", *config), *config);
         parseObjects(loadNode(configNode, "Objects", *config), *config);
-
+        if (loadNode(configNode, "Grids", *config).IsDefined())
+            parseGrids(loadNode(configNode, "Grids", *config), *config);
         parseEntityGroups(loadNode(configNode, "EntityGroups", *config), *config);
 
         parseAgents(loadNode(configNode, "Agents", *config), *config);
@@ -159,6 +160,10 @@ namespace SGA
             type.setBlockSight(nameConfigPair.second["BlocksSight"].as<bool>(type.blockSight()));
             type.setDefaultTile(nameConfigPair.second["DefaultTile"].as<bool>(false));
             type.setSymbol(nameConfigPair.second["Symbol"].as<char>('-'));
+
+            if (nameConfigPair.second["Parameters"].IsDefined())
+                parseParameterList(nameConfigPair.second["Parameters"], config, type.getParameters());
+
             config.tileTypes.emplace(type.getID(), std::move(type));
         }
     }
@@ -231,6 +236,65 @@ namespace SGA
                 config.selectedLevel = static_cast<int>(levelDefinitions.size()) - 1;
             }
 
+            //Additional Entity placements
+            auto entitiesNode = boardNode["Entities"];
+            std::vector<EntityPlacement> entityPlacements;
+            if (entitiesNode.IsDefined())
+            {
+                for (const auto& characterType : boardNode["Entities"]) {
+                    std::string key = characterType.first.as<std::string>();
+                    //cTypeList.push_back(characterType.second.as<CharacterType>());
+
+                    //Search entity type 
+                    for (const auto& idEntityPair : config.entityTypes)
+                    {
+                        if (idEntityPair.second.getName() == key)
+                        {
+                            //Get position
+                            if (characterType.second["Position"].IsDefined())
+                            {
+                                EntityPlacement newEntity;
+                                auto position = characterType.second["Position"].as<std::vector<int>>();
+                                //Check position is valid
+                                if (position.size() != 2)
+                                    throw std::runtime_error("Entity placement" + idEntityPair.second.getName() + "position wrong defined. Required format: [x,y]");
+                                newEntity.position = Vector2f(static_cast<float>(position[0]), static_cast<float>(position[1]));
+
+                                if (characterType.second["Owner"].IsDefined())
+                                    newEntity.ownerID = characterType.second["Owner"].as<int>();
+                                else
+                                    newEntity.ownerID = -1;
+
+                                newEntity.entityType = std::make_shared<EntityType>(idEntityPair.second);
+                                entityPlacements.emplace_back(newEntity);
+                            }
+                            else
+                            {
+                                throw std::runtime_error("Entity placement" + idEntityPair.second.getName() + "position not defined.");
+                            }
+
+                        }
+                    }
+
+                }
+
+               /* auto types = entitiesNode.as<std::map<std::string, YAML::Node>>();
+                for (const auto& nameTypePair : types)
+                {
+                                        
+                }*/
+            }
+
+            //Add entity placement to the parsed level definitions
+            if(entityPlacements.size()>0)
+                for (auto& definition : levelDefinitions)
+                {
+                    definition.second.entityPlacements.insert(definition.second.entityPlacements.end(), entityPlacements.begin(), entityPlacements.end());
+
+                   // std::copy(entityPlacements.begin(), entityPlacements.end(), std::back_inserter(definition.second.entityPlacements));
+                }
+           
+            //Assign level definition
             config.levelDefinitions = levelDefinitions;
         }
         else
@@ -255,6 +319,7 @@ namespace SGA
             EntityType type;
             type.setName(nameTypePair.first);
             type.setSymbol(nameTypePair.second["Symbol"].as<char>('\0'));
+            /*type.setGrid(nameTypePair.second["Grid"].as<int>(0));*/
             type.setID(static_cast<int>(config.entityTypes.size()));
 
 
@@ -277,6 +342,27 @@ namespace SGA
 
             //type.continuousActionTime = nameTypePair.second["Time"].as<int>(0);
             config.entityTypes.emplace(type.getID(), std::move(type));
+        }
+    }
+    
+    void GameConfigParser::parseGrids(const YAML::Node& gridsNode, GameConfig& config) const
+    {
+        if (!gridsNode.IsDefined())
+        {
+            throw std::runtime_error("Cannot find definition for Entities");
+        }
+
+        auto grids = gridsNode.as<std::map<std::string, std::vector<std::string>>>();
+        int gridLevel = 0;
+        for (const auto& nameTypePair : grids)
+        {
+            for (const auto& entity : nameTypePair.second)
+            {
+                auto entityID = config.getEntityID(entity);
+                auto& entityType = config.entityTypes.at(entityID);
+                entityType.setGrid(gridLevel);
+            }
+            gridLevel++;
         }
     }
 
@@ -510,6 +596,36 @@ namespace SGA
         if (targetType.getType() == TargetType::Position)
         {
             targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+        }
+        else if (targetType.getType() == TargetType::Tile)
+        {
+            targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
+
+            auto tileNode = node["ValidTargets"];
+            if (tileNode.IsScalar())
+            {
+                if(tileNode.as<std::string>() == "All")
+                {
+                    for (const auto& tile : config.tileTypes)
+                    {
+                        targetType.getTileTypes().insert(tile.first);
+                    }
+                }
+                else
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tileNode.as<std::string>()));
+                }
+                
+            }
+            else if (tileNode.IsSequence())
+            {
+                auto tiles = tileNode.as<std::vector<std::string>>(std::vector<std::string>());
+                //Assigne tile IDs to the tiletypes map
+                for (auto& tile : tiles)
+                {
+                    targetType.getTileTypes().insert(config.getTileID(tile));
+                }
+            }
         }
         else if (targetType == TargetType::Entity || targetType == TargetType::EntityType)
         {

@@ -795,14 +795,14 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_board_height", &SGA::GameState::getBoardHeight,"Returns the height of the board.")
 		.def("get_board_width", &SGA::GameState::getBoardWidth,"Returns the width of the board.")
 
-		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
-		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
 		
 		////Entities
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
-		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
+		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntityAround), py::return_value_policy::reference, "Get entity")
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity by id")
-		.def("get_entity_at", &SGA::GameState::getEntityAt, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
+		.def("get_entity_at", &SGA::GameState::getEntityAtConst, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
 		.def("get_only_entities", &SGA::GameState::getOnlyEntities, py::arg("entityID"), py::return_value_policy::reference, "Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID. It only search the entities in the gamestate without the objects of the inventories. ")
 		.def("get_object", &SGA::GameState::getObject, py::arg("entityID"), py::return_value_policy::reference, "Return object by its ID")
 		.def("get_slot_object", &SGA::GameState::getSlotObject, py::arg("entityID"), py::return_value_policy::reference, "Return slot object by its ID")

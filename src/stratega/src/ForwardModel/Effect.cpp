@@ -34,6 +34,11 @@ namespace SGA
 			auto& player = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(player, parameterIndex, targetResource);
 		}
+		else if (resourceReference.isTileParameter(targets))
+		{
+			auto& tile = resourceReference.getTile(state, targets);
+			fm.modifyTileParameterByIndex(tile, parameterIndex, targetResource);
+		}
 		else
 		{
 			fm.modifyStateParameterByIndex(state, parameterIndex, targetResource);
@@ -312,7 +317,7 @@ namespace SGA
 
 		auto pushDir = target.getPosition() - entity.getPosition();
 		auto newTargetPos = target.getPosition() + pushDir;
-		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }) && state.isOccupied(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
 		}
@@ -337,7 +342,7 @@ namespace SGA
 		pushDir = pushDir.normalized();
 		auto newTargetPos = target.getPosition() + pushDir;
 		
-		auto* hittedEntity = state.getEntity(newTargetPos);
+		auto* hittedEntity = state.getEntityAt(newTargetPos);
 		if (state.isInBounds(newTargetPos) && state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
@@ -402,7 +407,7 @@ namespace SGA
 		auto amount = amountParameter.getConstant(state, targets);
 
 		//Deal damage to entity in target position
-		auto* targetPositionEntity = state.getEntity(targetPosition);
+		auto* targetPositionEntity = state.getEntityAt(targetPosition);
 		std::string parameterName = resourceReference.getParameter(state, targets).getName();
 
 		if (targetPositionEntity)
@@ -440,7 +445,7 @@ namespace SGA
 			pushDir = pushDir.normalized();
 			auto newTargetPos = pushedEntity->getPosition() + pushDir;
 
-			auto* hittedEntity = state.getEntity(newTargetPos);
+			auto* hittedEntity = state.getEntityAt(newTargetPos);
 			if (state.isInBounds(newTargetPos) && state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 			{
 				pushedEntity->setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
@@ -702,6 +707,7 @@ namespace SGA
 					Vector2i spawnPos{ static_cast<int>(sourceEntity.x()) + dx, static_cast<int>(sourceEntity.y()) + dy};
 					if (!state.isInBounds(spawnPos)) continue;
 					if (!state.isWalkable(spawnPos)) continue;
+					if (!state.isOccupied(spawnPos)) continue;
 
 					fm.spawnEntity(state, targetEntityType, sourceEntity.getOwnerID(), Vector2f(spawnPos.x, spawnPos.y));
 					return;
@@ -732,7 +738,7 @@ namespace SGA
 			do
 			{
 				spawnPos = { widthMax(state.getRndEngine())-1, heightMax(state.getRndEngine())-1 };
-			} while (!state.isWalkable(spawnPos) || !state.isInBounds(spawnPos));
+			} while (!state.isWalkable(spawnPos) ||!state.isOccupied(spawnPos) || !state.isInBounds(spawnPos));
 
 			fm.spawnEntity(state, targetEntityType, -1, Vector2f(spawnPos.x, spawnPos.y));
 		}

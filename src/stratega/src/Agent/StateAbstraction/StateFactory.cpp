@@ -15,7 +15,7 @@ namespace SGA
 			{
 				for (int j = 0; j < tbsState.getBoardHeight(); j++)
 				{
-					const auto& tile = tbsState.getTileAt(Vector2i(i, j));
+					const auto& tile = tbsState.getTileAtConst(Vector2i(i, j));
 					mapDescription.push_back(tile.getTileTypeID());
 				}
 			}
