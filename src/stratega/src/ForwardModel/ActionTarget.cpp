@@ -34,6 +34,11 @@ namespace SGA
 		return ActionTarget(EntityTypeReference, Data{ EntityTypeReference, entityTypeID });
 	}
 
+	ActionTarget ActionTarget::createActionTypeActionTarget(int actionTypeID)
+	{
+		return ActionTarget(ActionTypeReference, Data{ ActionTypeReference, actionTypeID });
+	}
+
 	ActionTarget ActionTarget::createTileTypeActionTarget(EntityTypeID tileTypeID)
 	{
 		return ActionTarget(TileTypeReference, Data{ TileTypeReference, tileTypeID });
@@ -227,6 +232,18 @@ namespace SGA
 			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 		}
 	}
+	const ActionType& ActionTarget::getActionType(const GameState& state) const
+	{
+		if (targetType == ActionTypeReference)
+		{
+			const auto& type = state.getGameInfo()->getActionType(data.actionTypeID);
+			return type;
+		}
+		else
+		{
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
+		}
+	}
 
 	bool ActionTarget::isValid(const GameState& state) const
 	{
@@ -317,6 +334,9 @@ namespace SGA
 			break;
 		case TileTypeReference:
 			return getTileType(state).getName();
+			break;
+		case ActionTypeReference:
+			return getActionType(state).getName();
 			break;
 		default:
 			return "Not defined";

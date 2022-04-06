@@ -36,7 +36,8 @@ namespace SGA
 			GameStateParameterReference, //  References the parameter of an action-target
 			TileParameterReference, //  References the parameter of an action-target
 			Expression, //List of diferent string + function parameters (constant + parameter reference)
-			DiceAnotation // 4d12
+			DiceAnotation, // 4d12
+			ActionTypeReference // References ActionTypes defined in the Game.
 		};		
 
 		
@@ -94,6 +95,7 @@ namespace SGA
 			ParameterReference parameterData;
 			size_t argumentIndex;
 			int entityTypeID;
+			int actionTypeID;
 			int tileTypeID;
 			int technologyTypeID;
 			int buffTypeID;
@@ -128,6 +130,7 @@ namespace SGA
 		static FunctionParameter createGameStateParameterReference(ParameterReference ref);
 		static FunctionParameter createTileParameterReference(ParameterReference ref);
 		static FunctionParameter createEntityTypeReference(int entityTypeID);
+		static FunctionParameter createActionTypeReference(int acionTypeID);
 		static FunctionParameter createTileTypeReference(int tileTypeID);
 		static FunctionParameter createTechnologyTypeReference(int technologyTypeID);
 		static FunctionParameter createBuffTypeReference(int buffTypeID);
@@ -154,6 +157,7 @@ namespace SGA
 		const std::unordered_set<EntityTypeID>& getSpawnableEntities(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const Player& getPlayer(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const EntityType& getEntityType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
+		const ActionType& getActionType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		const BuffType& getBuffType(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;
 		
 		const TechnologyTreeNode& getTechnology(const GameState& state, const std::vector<ActionTarget>& actionTargets) const;

@@ -84,6 +84,7 @@ namespace SGA
 
 		std::vector<Action> generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd = true) const;
 
+		virtual void startGame(GameState& state) const;
 
 		/// <summary>
 		/// Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.
@@ -178,6 +179,12 @@ namespace SGA
 		void addOnAdvanceEffect(OnTickEffect& ote);
 
 		/// <summary>
+		/// Adds an OnGameStateEffect to the forward mode, which will be executed at the beginning of the game.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnStartEffect(OnTickEffect& ote);
+
+		/// <summary>
 		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
 		/// </summary>
 		/// <param name="ote">Effect to add.</param>
@@ -187,6 +194,16 @@ namespace SGA
 		/// Returns all effects that are exxecuted on every tick of the game.
 		/// </summary>
 		const std::vector<OnTickEffect>& getOnTickEffects() const { return onTickEffects; }
+
+		/// <summary>
+		/// Returns all effects that are executed on advance game.
+		/// </summary>
+		const std::vector<OnTickEffect>& getOnAdvanceEffects() const { return onAdvanceEffects; }
+
+		/// <summary>
+		/// Returns all effects that are exxecuted at game start.
+		/// </summary>
+		const std::vector<OnTickEffect>& getOnStartEffects() const { return onStartEffects; }
 
 		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
@@ -331,6 +348,11 @@ namespace SGA
 		std::vector<OnTickEffect> onAdvanceEffects;
 
 		/// <summary>
+		/// Effects applied after at the game start.
+		/// </summary>
+		std::vector<OnTickEffect> onStartEffects;
+
+		/// <summary>
 		/// Effects applied when a new entity is spawned in the game.
 		/// </summary>
 		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
@@ -398,7 +420,11 @@ namespace SGA
 		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
 
-		
+		/// <summary>
+		/// Executes the OnTrigger effects in the state provided
+		/// </summary>
+		/// <param name="state">State where the trigger events are to be executed.</param>
+		void executeOnStartEffects(GameState& state) const;		
 
 		/// <summary>
 		/// Executes the OnAdvance effects in the state provided

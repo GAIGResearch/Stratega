@@ -15,6 +15,7 @@ namespace SGA
 		virtual ~ActionSpace() = default;
 		
 		std::vector<Action> generateActions(const GameState& gameState, int player) const;
+		std::vector<Action> generateQueueActions(const GameState& gameState, int player) const;
 		std::vector<Action> generateUnitActions(const GameState& gameState, Entity& e, int playerID, bool generateEnd = true) const;
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const;
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Player& entity, const ActionType& action) const;

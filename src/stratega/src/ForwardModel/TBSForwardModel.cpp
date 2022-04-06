@@ -9,7 +9,13 @@ namespace SGA
 		if (actions.getEntityActions().size() > 0)
 			advanceGameState(state, actions.getEntityActions().begin()->second);
 		else
+		{
+			if (state.hasActionInQueue(actions.getPlayerActions().begin()->first))
+				if (state.getActionIDFromQueue(actions.getPlayerActions().begin()->first) == actions.getPlayerActions().begin()->second.getActionTypeID())
+					state.removeActionFromeQueue(actions.getPlayerActions().begin()->first);
 			advanceGameState(state, actions.getPlayerActions().begin()->second);
+		}
+			
 
 		//warning C4702: unreachable code
 		/*for(const auto& action : actions.getEntityActions())

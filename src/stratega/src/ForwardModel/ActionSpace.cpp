@@ -111,6 +111,48 @@ namespace SGA
 		return bucket;
 	}
 
+	std::vector<Action> ActionSpace::generateQueueActions(const GameState& gameState, int playerID) const
+	{
+		std::vector<Action> bucket;
+		
+		//Generate player actions
+		auto& player = *gameState.getPlayer(playerID);
+		auto& actionType = gameState.getGameInfo()->getActionType(gameState.getActionIDFromQueue(player.getID()));
+		
+
+		//Check if action is continuos
+		if (actionType.isContinuous())
+		{
+			//Check if entity is already executing it
+			for (auto& action : player.getContinuousActions())
+			{
+				if (action.getActionTypeID() == actionType.getID())
+				{
+					//Give the posibility to abort it
+					bucket.emplace_back(Action::createAbortPlayerAction(player.getID(), action.getContinuousActionID()));
+				}
+			}
+		}
+		// Check if this action can be executed
+
+		if (!gameState.canExecuteAction(player, actionType))
+			return bucket;
+
+		// Generate all actions
+		if (actionType.getTargets().size() == 0/*TargetType::None*/)
+		{
+			// Self-actions do not have a target, only a source
+			bucket.emplace_back(generateSelfAction(player, actionType));
+		}
+		else
+		{
+			auto targets = generateTargets(gameState, player, actionType);
+			generateActions(gameState, player, actionType, targets, bucket);
+		}
+
+		return bucket;
+	}
+
 	// <summary>
 	// Implemented for Unit-MCTS, creat action space for each unit.
 	// </summary>

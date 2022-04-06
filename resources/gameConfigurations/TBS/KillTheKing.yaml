@@ -55,6 +55,13 @@ Tiles:
         
 Board:
     GenerationType: Manual
+    Entities:
+        Warrior:
+            Position: [0,0]
+            Owner: 0
+        Warrior:
+            Position: [0,1]
+            Owner: 0
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
@@ -129,7 +136,22 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
-
+    Test:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+        Effects:
+            - "ModifyResource(Target.Health, 1000)"
+#Grids:
+#    Layer0: [Warrior]
+#    Layer1: [Archer]
     
 Entities:
     Warrior:
@@ -186,6 +208,10 @@ ForwardModel:
             Type: Entity
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+        - OnStart:
+            Type: Player
+            Effects:
+                - "PushAction(Source, Test)"
 
 #Action categories
 GameDescription:

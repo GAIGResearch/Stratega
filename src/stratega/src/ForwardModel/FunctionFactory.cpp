@@ -72,7 +72,8 @@ namespace SGA
 
 		factory.registerFunction<Empty>("Empty");
 
-		
+		factory.registerFunction<PushAction>("PushAction");
+				
 		return factory;
 	}
 }

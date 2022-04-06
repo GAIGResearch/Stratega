@@ -45,6 +45,22 @@ namespace SGA
 		}
 		
 	}
+	
+	PushAction::PushAction(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		source(parameters.at(0)),
+		actionType(parameters.at(1))
+	{
+
+	}
+	
+	void PushAction::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		auto player = source.getPlayer(state, targets);
+		auto action = actionType.getActionType(state, targets);
+
+		state.addActionToQueue(player.getID(), action);
+	}
 
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),

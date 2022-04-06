@@ -9,6 +9,7 @@
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/GameInfo.h>
 #include <memory>
+#include <queue>
 namespace SGA
 {
 	enum class GameType
@@ -563,7 +564,33 @@ namespace SGA
 			minParameters.resize(static_cast<size_t>(cap));
 		}
 
+		/***** ACTION QUEUE FUNCTIONS *****/
 
+		void addActionToQueue(int playerID, ActionType& newActionType)
+		{
+			actionQueues[playerID].push(newActionType.getID());
+		}
+
+		int getActionIDFromQueue(int playerID) const 
+		{
+			auto actionTypeID= actionQueues[playerID].front();
+			return actionTypeID;
+		}
+		
+		void removeActionFromeQueue(int playerID)
+		{
+			actionQueues[playerID].pop();
+		}
+
+		bool hasActionInQueue(int playerID) const
+		{			
+			return actionQueues[playerID].size()>0;
+		}
+
+		void resizeActionQueues(int playerNum)
+		{
+			actionQueues.resize(playerNum);
+		}
 	private:
 
 		/// <summary>
@@ -674,5 +701,9 @@ namespace SGA
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
 		std::vector<double> minParameters;
+
+
+		//ActionQueue
+		std::vector<std::queue<int>> actionQueues;
 	};
 }
