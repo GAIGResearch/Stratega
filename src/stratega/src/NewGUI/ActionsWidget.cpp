@@ -28,7 +28,7 @@ namespace SGA
 	{
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
-		window_flags += ImGuiWindowFlags_NoScrollbar;
+		//window_flags += ImGuiWindowFlags_NoScrollbar;
 		//window_flags += ImGuiWindowFlags_MenuBar;
 		//window_flags+= ImGuiWindowFlags_NoMove;
 		//window_flags += ImGuiWindowFlags_NoResize;
@@ -40,8 +40,8 @@ namespace SGA
 
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-		ImGui::SetNextWindowSize(ImVec2(0, 0));
+		//ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		//ImGui::SetNextWindowSize(ImVec2(100, 100));
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 

@@ -381,3 +381,8 @@ ForwardModel:
                 - "IsPlayerID(Source, 1)"
             Effects:
                 - "ModifyResource(Source.EnemySpawn, +2)"
+        - OnGameStart:
+            #Type: Entity, Player, State
+            Type: Player
+            Effects:
+                - "PushAction(Source, Spawn)"

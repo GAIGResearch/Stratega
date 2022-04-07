@@ -144,16 +144,26 @@ namespace SGA
 		double amount = amountParameter.getConstant(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		
-		if (!resourceReference.isPlayerParameter(targets))
+		if (resourceReference.isEntityParameter(targets))
 		{
 			auto& entitySource = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entitySource, parameterIndex, amount);
 		}
-		else
+		else if (resourceReference.isPlayerParameter(targets))
 		{
 			auto& playerSource = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(playerSource, parameterIndex, amount);
 		}
+		else if (resourceReference.isTileParameter(targets))
+		{
+			auto& tile = resourceReference.getTile(state, targets);
+			fm.modifyTileParameterByIndex(tile, parameterIndex, amount);
+		}
+		else
+		{
+			fm.modifyStateParameterByIndex(state, parameterIndex, amount);
+		}
+		
 	}
 	
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
