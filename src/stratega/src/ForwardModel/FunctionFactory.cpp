@@ -72,7 +72,7 @@ namespace SGA
 
 		factory.registerFunction<Empty>("Empty");
 
-		factory.registerFunction<PushAction>("PushAction");
+		factory.registerFunction<EnqueueAction>("EnqueueAction");
 				
 		return factory;
 	}

@@ -46,7 +46,7 @@ namespace SGA
 		
 	}
 	
-	PushAction::PushAction(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+	EnqueueAction::EnqueueAction(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp),
 		source(parameters.at(0)),
 		actionType(parameters.at(1))
@@ -54,12 +54,19 @@ namespace SGA
 
 	}
 	
-	void PushAction::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void EnqueueAction::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{
-		auto player = source.getPlayer(state, targets);
 		auto action = actionType.getActionType(state, targets);
-
-		state.addActionToQueue(player.getID(), action);
+		if (source.isPlayerReference(targets))
+		{
+			auto player = source.getPlayer(state, targets);
+			state.getActionQueues().addActionToPlayerQueue(ActionQueuePack::ActionSourceType::Player, player.getID(),player.getID(), action.getID());
+		}
+		else if (source.isEntityReference(targets))
+		{
+			auto entity = source.getEntity(state, targets);
+			state.getActionQueues().addActionToPlayerQueue(ActionQueuePack::ActionSourceType::Entity, entity.getOwnerID(), entity.getID(), action.getID());
+		}		
 	}
 
 	ApplyBuff::ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters) :

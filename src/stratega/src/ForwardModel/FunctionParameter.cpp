@@ -455,6 +455,34 @@ namespace SGA
 
 		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
 	}
+	
+	bool FunctionParameter::isPlayerReference(const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (parameterType == Type::ArgumentReference)
+		{
+			if (actionTargets[data.argumentIndex].getType() == ActionTarget::PlayerReference)
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+	}
+
+	bool FunctionParameter::isEntityReference(const std::vector<ActionTarget>& actionTargets) const
+	{
+		if (parameterType == Type::ArgumentReference)
+		{
+			if (actionTargets[data.argumentIndex].getType() == ActionTarget::EntityReference)
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+		throw std::runtime_error("Parameter type " + std::to_string(int(parameterType)) + " not recognised in function parameter.");
+	}
 
 	bool FunctionParameter::isStateParameter(const std::vector<ActionTarget>& actionTargets) const
 	{

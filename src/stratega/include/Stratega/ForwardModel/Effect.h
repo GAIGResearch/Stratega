@@ -34,12 +34,12 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class PushAction: public Effect
+	class EnqueueAction : public Effect
 	{
 		FunctionParameter source;
 		FunctionParameter actionType;
 	public:
-		PushAction(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		EnqueueAction(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 

@@ -115,40 +115,85 @@ namespace SGA
 	{
 		std::vector<Action> bucket;
 		
-		//Generate player actions
-		auto& player = *gameState.getPlayer(playerID);
-		auto& actionType = gameState.getGameInfo()->getActionType(gameState.getActionIDFromQueue(player.getID()));
-		
-
-		//Check if action is continuos
-		if (actionType.isContinuous())
+		if (gameState.getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType==ActionQueuePack::ActionSourceType::Player)
 		{
-			//Check if entity is already executing it
-			for (auto& action : player.getContinuousActions())
+			//Generate player actions
+			auto& player = *gameState.getPlayer(playerID);
+			auto& actionType = gameState.getGameInfo()->getActionType(gameState.getActionQueuesConst().getActionFromPlayerQueue(player.getID()).actionTypeID);
+
+
+			//Check if action is continuos
+			if (actionType.isContinuous())
 			{
-				if (action.getActionTypeID() == actionType.getID())
+				//Check if entity is already executing it
+				for (auto& action : player.getContinuousActions())
 				{
-					//Give the posibility to abort it
-					bucket.emplace_back(Action::createAbortPlayerAction(player.getID(), action.getContinuousActionID()));
+					if (action.getActionTypeID() == actionType.getID())
+					{
+						//Give the posibility to abort it
+						bucket.emplace_back(Action::createAbortPlayerAction(player.getID(), action.getContinuousActionID()));
+					}
 				}
 			}
-		}
-		// Check if this action can be executed
+			// Check if this action can be executed
 
-		if (!gameState.canExecuteAction(player, actionType))
-			return bucket;
+			if (!gameState.canExecuteAction(player, actionType))
+				return bucket;
 
-		// Generate all actions
-		if (actionType.getTargets().size() == 0/*TargetType::None*/)
-		{
-			// Self-actions do not have a target, only a source
-			bucket.emplace_back(generateSelfAction(player, actionType));
+			// Generate all actions
+			if (actionType.getTargets().size() == 0/*TargetType::None*/)
+			{
+				// Self-actions do not have a target, only a source
+				bucket.emplace_back(generateSelfAction(player, actionType));
+			}
+			else
+			{
+				auto targets = generateTargets(gameState, player, actionType);
+				generateActions(gameState, player, actionType, targets, bucket);
+			}
 		}
 		else
 		{
-			auto targets = generateTargets(gameState, player, actionType);
-			generateActions(gameState, player, actionType, targets, bucket);
-		}
+			int sourceEntityID = gameState.getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID;
+			if (gameState.getEntityConst(sourceEntityID))
+			{
+				auto& sourceEntity = *gameState.getEntityConst(sourceEntityID);
+				const auto& actionType = gameState.getGameInfo()->getActionType(gameState.getActionQueuesConst().getActionFromPlayerQueue(playerID).actionTypeID);
+
+				bool generateContinuousAction = true;
+				//Check if action is continuos
+				if (actionType.isContinuous())
+				{
+					//Check if entity is already executing it
+					for (const auto& action : sourceEntity.getContinuousActions())
+					{
+						if (action.getActionTypeID() == actionType.getID())
+						{
+							//This entity cant execute the action
+							generateContinuousAction = false;
+
+							//Give the posibility to abort it
+							bucket.emplace_back(Action::createAbortEntityAction(playerID, sourceEntity.getID(), action.getContinuousActionID()));
+						}
+					}
+				}
+
+				if (generateContinuousAction)
+				{
+					// Generate all actions
+					if (actionType.getTargets().size() == 0/*TargetType::None*/)
+					{
+						// Self-actions do not have a target, only a source
+						bucket.emplace_back(generateSelfAction(sourceEntity, actionType));
+					}
+					else
+					{
+						auto targets = generateTargets(gameState, sourceEntity, actionType);
+						generateActions(gameState, sourceEntity, actionType, targets, bucket);
+					}
+				}
+			}			
+		}		
 
 		return bucket;
 	}

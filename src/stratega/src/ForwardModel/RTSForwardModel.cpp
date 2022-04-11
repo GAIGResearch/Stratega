@@ -16,9 +16,6 @@ namespace SGA
 	{
 		for (const auto& action : actions.getPlayerActions())
 		{
-			if (state.hasActionInQueue(action.first))
-				if (state.getActionIDFromQueue(action.first) == action.second.getActionTypeID())
-					state.removeActionFromeQueue(action.first);
 			executeAction(state, action.second);
 		}
 

@@ -148,7 +148,20 @@ Actions:
                     Options:
                         Shape: AllPositions
         Effects:
-            - "ModifyResource(Target.Health, 1000)"
+            - "ModifyResource(Target.Health, -1000)"
+    TestTwo:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+        Effects:
+            - "ModifyResource(Target.Health, -1000)"
 #Grids:
 #    Layer0: [Warrior]
 #    Layer1: [Archer]
@@ -211,7 +224,22 @@ ForwardModel:
         - OnStart:
             Type: Player
             Effects:
-                - "PushAction(Source, Test)"
+                - "EnqueueAction(Source, Test)"
+        - OnStart:
+            Type: Entity
+            Effects:
+                - "EnqueueAction(Source, TestTwo)"
+        #- OnStart:
+        #    Type: Entity
+        #    ValidTargets: [Warrior, Healer]
+        #    Effects:
+        #        - "PushAction(Source, Test)"
+        #- OnStart:
+        #    Type: Entity
+        #    Conditions:
+        #        -IsPosition(2,1)
+        #    Effects:
+        #        - "PushAction(Source, Test)"
 
 #Action categories
 GameDescription:

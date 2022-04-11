@@ -173,6 +173,10 @@ namespace SGA
 		bool isEntityParameter(const std::vector<ActionTarget>& actionTargets) const;
 		bool isStateParameter(const std::vector<ActionTarget>& actionTargets) const;
 		bool isTileParameter(const std::vector<ActionTarget>& actionTargets) const;
+
+
+		bool isPlayerReference(const std::vector<ActionTarget>& actionTargets) const;
+		bool isEntityReference(const std::vector<ActionTarget>& actionTargets) const;
 	};
 
 	

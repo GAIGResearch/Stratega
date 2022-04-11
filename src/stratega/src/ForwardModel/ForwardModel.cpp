@@ -21,7 +21,7 @@ namespace SGA
 
 	void ForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
-		if (state.hasActionInQueue(playerID))
+		if (state.getActionQueuesConst().hasActionInPlayerQueue(playerID))
 		{
 			actionBucket = actionSpace->generateQueueActions(state, playerID);
 		}
