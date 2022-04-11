@@ -9,9 +9,9 @@ namespace SGA
 		if (actions.getEntityActions().size() > 0)
 		{
 			//Check entity has player
-			if (state.getEntity(actions.getEntityActions().begin()->first)->getOwnerID() != -1)
+			if (state.getEntity(actions.getEntityActions().begin()->second.getSourceID())->getOwnerID() != -1)
 			{
-				auto ownerID = state.getEntity(actions.getEntityActions().begin()->first)->getOwnerID();
+				auto ownerID = actions.getEntityActions().begin()->second.getOwnerID();
 				if (state.getActionQueues().hasActionInPlayerQueue(ownerID))
 					if (state.getActionQueues().getActionFromPlayerQueue(ownerID).actionTypeID == actions.getEntityActions().begin()->second.getActionTypeID())
 						state.getActionQueues().removeActionFromPlayerQueue(ownerID);
