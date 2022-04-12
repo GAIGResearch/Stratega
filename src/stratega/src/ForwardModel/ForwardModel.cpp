@@ -21,7 +21,17 @@ namespace SGA
 
 	void ForwardModel::generateActions(const GameState& state, int playerID, std::vector<Action>& actionBucket) const
 	{
-		actionBucket = actionSpace->generateActions(state, playerID);
+		if (state.getActionQueuesConst().hasActionInPlayerQueue(playerID))
+		{
+			actionBucket = actionSpace->generateQueueActions(state, playerID);
+		}
+		else		
+			actionBucket = actionSpace->generateActions(state, playerID);
+	}
+	
+	void ForwardModel::startGame(GameState& state) const
+	{
+		executeOnStartEffects(state);
 	}
 
 	bool ForwardModel::checkPlayerLost(const GameState& state, int playerID) const
@@ -471,6 +481,89 @@ namespace SGA
 			}
 		}
 	}
+	void ForwardModel::executeOnStartEffects(GameState& state) const
+	{
+		// Execute OnTick-trigger
+		for (const auto& onStartEffect : onStartEffects)
+		{
+			if (onStartEffect.type == SourceOnTickEffectType::Entity)
+			{
+				for (const auto& entity : state.getEntities())
+				{
+					if (onStartEffect.validTargets.find(entity.getEntityTypeID()) == onStartEffect.validTargets.end())
+						continue;
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createEntityActionTarget(entity.getID()));
+					auto isValid = true;
+					for (const auto& condition : onStartEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onStartEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else if (onStartEffect.type == SourceOnTickEffectType::Player)
+			{
+				for (const auto& player : state.getPlayers())
+				{
+					std::vector<ActionTarget> targets;
+					targets.emplace_back(ActionTarget::createPlayerActionTarget(player.getID()));
+					auto isValid = true;
+					for (const auto& condition : onStartEffect.conditions)
+					{
+						if (!condition->isFullfiled(state, targets))
+						{
+							isValid = false;
+							break;
+						}
+					}
+
+					if (isValid)
+					{
+						for (const auto& effect : onStartEffect.effects)
+						{
+							effect->execute(state, *this, targets);
+						}
+					}
+				}
+			}
+			else
+			{
+				//GameState source
+
+				std::vector<ActionTarget> targets;
+				targets.emplace_back(ActionTarget::createGameStateActionTarget());
+				auto isValid = true;
+				for (const auto& condition : onStartEffect.conditions)
+				{
+					if (!condition->isFullfiled(state, targets))
+					{
+						isValid = false;
+						break;
+					}
+				}
+
+				if (isValid)
+				{
+					for (const auto& effect : onStartEffect.effects)
+					{
+						effect->execute(state, *this, targets);
+					}
+				}
+			}
+		}
+	}
 
 	void ForwardModel::checkEntitiesContinuousActionIsComplete(GameState& state) const
 	{
@@ -813,6 +906,11 @@ namespace SGA
 	void ForwardModel::addOnAdvanceEffect(OnTickEffect& ote)
 	{
 		onAdvanceEffects.emplace_back(ote);
+	}
+	
+	void ForwardModel::addOnStartEffect(OnTickEffect& ote)
+	{
+		onStartEffects.emplace_back(ote);
 	}
 
 	void ForwardModel::addOnEntitySpawnEffect(OnEntitySpawnEffect& ose)

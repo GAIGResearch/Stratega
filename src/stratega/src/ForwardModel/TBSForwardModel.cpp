@@ -7,9 +7,28 @@ namespace SGA
 	{
 		assert(actions.getAssignmentCount() == 1);
 		if (actions.getEntityActions().size() > 0)
+		{
+			//Check entity has player
+			if (state.getEntity(actions.getEntityActions().begin()->second.getSourceID())->getOwnerID() != -1)
+			{
+				auto ownerID = actions.getEntityActions().begin()->second.getOwnerID();
+				if (state.getActionQueues().hasActionInPlayerQueue(ownerID))
+					if (state.getActionQueues().getActionFromPlayerQueue(ownerID).actionTypeID == actions.getEntityActions().begin()->second.getActionTypeID())
+						state.getActionQueues().removeActionFromPlayerQueue(ownerID);
+			}
+				
 			advanceGameState(state, actions.getEntityActions().begin()->second);
+		}			
 		else
+		{
+			if (state.getActionQueues().hasActionInPlayerQueue(actions.getPlayerActions().begin()->first))
+				if (state.getActionQueues().getActionFromPlayerQueue(actions.getPlayerActions().begin()->first).actionTypeID == actions.getPlayerActions().begin()->second.getActionTypeID())
+					state.getActionQueues().removeActionFromPlayerQueue(actions.getPlayerActions().begin()->first);
 			advanceGameState(state, actions.getPlayerActions().begin()->second);
+		}
+
+		//Validate action queue
+		state.getActionQueues().validateNextActions(state);
 
 		//warning C4702: unreachable code
 		/*for(const auto& action : actions.getEntityActions())

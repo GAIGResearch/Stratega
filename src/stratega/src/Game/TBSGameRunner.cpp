@@ -10,6 +10,8 @@ namespace SGA
 
 	void TBSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
+		
+
 		AgentThread agentThread;
 		while (!currentState->isGameOver())
 		{
@@ -79,6 +81,8 @@ namespace SGA
 
 	void TBSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)
 	{
+		//StartGame
+		forwardModel->startGame(*currentState);
 		while (!currentState->isGameOver())
 		{
 			AgentResults results;

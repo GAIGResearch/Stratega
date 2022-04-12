@@ -956,14 +956,19 @@ namespace SGA
 
 		auto* player = state->getPlayer(playerID);
 
-		if (player->canExecuteAction(actionTypeSelected))
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID) &&
+			state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Player &&
+			state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID == playerID)
+			if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+				actionsToExecute.emplace_back(newAction);
+		else if (player->canExecuteAction(actionTypeSelected))
 		{
 			if (state->getCurrentTick() - player->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
 				return;
 
 			if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
 				actionsToExecute.emplace_back(newAction);
-		}
+		} 
 	}
 
 	void ActionsWidget::verifyEntityActionTargets(int playerID, std::vector<Action>& actionsToExecute, const ActionType& actionType, Action& newAction)
@@ -983,18 +988,31 @@ namespace SGA
 			const EntityType& entityType = state->getEntityConst(entityID)->getEntityType();
 			const Entity* entity = state->getEntityConst(entityID);
 
+			if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID) &&
+				state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Entity &&
+				state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID == entityID)
+			{
+				if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+				{
+					actionsToExecute.emplace_back(newAction);
+				}
+			}
+			else if (entityType.canExecuteAction(actionTypeSelected))
+			{
+				// Check if this action can be executed		
+				if (state->getCurrentTick() - entity->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
+					continue;
 
-			if (!entityType.canExecuteAction(actionTypeSelected))
+				//The entity should be able to execute this action type
+				newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
+
+				if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+					actionsToExecute.emplace_back(newAction);
+
+			}
+			else
 				continue;
-			// Check if this action can be executed		
-			if (state->getCurrentTick() - entity->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
-				continue;
-
-			//The entity should be able to execute this action type
-			newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
-
-			if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
-				actionsToExecute.emplace_back(newAction);
+			
 		}
 	}
 
@@ -1025,7 +1043,7 @@ namespace SGA
 		if (!checkSelectedEntitiesAvailable())
 			getPlayerPossibleActionTypes(playerID, actionTypes);
 		else
-			getEntityPossibleActionTypes(actionTypes);
+			getEntityPossibleActionTypes(playerID,actionTypes);
 
 
 		//Show buttons
@@ -1046,25 +1064,48 @@ namespace SGA
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
-
-		for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
+		//Add action queue
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID))
 		{
-			actionTypes.insert(attachedActions.actionTypeID);
+			if (state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Player)
+			actionTypes.insert(state->getActionQueuesConst().getActionFromPlayerQueue(playerID).actionTypeID);
+		}
+		else
+		{
+			for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
+			{
+				actionTypes.insert(attachedActions.actionTypeID);
+			}
 		}
 	}
 
-	void ActionsWidget::getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes)
+	void ActionsWidget::getEntityPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
 
-		for (auto& entity : selectedEntities)
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID))
 		{
-			int entityTypeID = state->getEntityConst(entity)->getEntityTypeID();
-
-			for (const auto& actionID : state->getGameInfo()->getEntityType(entityTypeID).getActionIDs())
+			if (state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Entity)
 			{
-				actionTypes.insert(actionID);
+				int sourceID = state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID;
+				for (int entity : selectedEntities)
+				{
+					if (entity == sourceID)
+						actionTypes.insert(state->getActionQueuesConst().getActionFromPlayerQueue(playerID).actionTypeID);
+				}
+			}					
+		}
+		else
+		{
+			for (auto& entity : selectedEntities)
+			{
+				int entityTypeID = state->getEntityConst(entity)->getEntityTypeID();
+
+				for (const auto& actionID : state->getGameInfo()->getEntityType(entityTypeID).getActionIDs())
+				{
+					actionTypes.insert(actionID);
+				}
 			}
 		}
 	}

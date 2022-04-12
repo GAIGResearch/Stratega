@@ -10,6 +10,9 @@ namespace SGA
 	
 	void RTSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
+		////StartGame
+		//forwardModel->startGame(*currentState);
+
 		std::vector<AgentThread> threads(agents.size());
 		std::vector<AgentThread> results(agents.size());
 		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
@@ -84,6 +87,9 @@ namespace SGA
 
 	void RTSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)
 	{
+		////StartGame
+		//forwardModel->startGame(*currentState);
+
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver())
 		{

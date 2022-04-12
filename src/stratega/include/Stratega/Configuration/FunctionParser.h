@@ -18,6 +18,7 @@ namespace SGA
 		IDMap targetIDs;
 		IDMap parameterIDs;
 		IDMap entityTypeIDs;
+		IDMap actionTypeIDs;
 		IDMap tileTypeIDs;
 		IDMap buffTypeIDs;
 		IDMap technologyTypeIDs;
@@ -68,6 +69,7 @@ namespace SGA
 		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
 		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
 		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseActionTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
 		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
 		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
 		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
