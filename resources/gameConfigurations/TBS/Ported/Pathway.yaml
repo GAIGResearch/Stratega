@@ -1,7 +1,7 @@
 GameConfig:
     Type: TBS
     RoundLimit: 100
-    FogOfWar: true
+    FogOfWar: false
 
 Agents:
     - HumanAgent
@@ -45,6 +45,11 @@ Tiles:
         Symbol: .
         IsWalkable: true
         DefaultTile: true
+    PlayerPlain:
+        Sprite: ../../../assets/Tiles/plain.png
+        Symbol: P
+        IsWalkable: true
+        DefaultTile: false
     Water:
         Sprite: ../../../assets/Tiles/water.png
         Symbol: W
@@ -73,12 +78,75 @@ Board:
         M  .  .  .  .  F  F  F  .  .  W
         M  .  .  .  .  .  F  F  .  .  W
         M  .  .  .  .  .  .  .  .  .  W
-        M  .  .  M  M  M  M  M  .  .  M
-        M  .  .  M  .  f0 .  M  .  .  M
-        M  .  .  .  h0 .  .  s0 .  .  M
-        M  .  .  .  .  .  .  .  .  .  M
+        M  P  P  M  M  M  M  M  P  P  M
+        M  P  P  M  P  P  P  M  P  P  M
+        M  P  P  P  P  P  P  P  P  P  M
+        M  P  P  P  P  P  P  P  P  P  M
         M  M  M  M  M  M  M  M  M  M  M
 Actions:
+    SpawnSoldier:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Soldier
+                #Conditions:
+                #    - "CanSpawn(Source, EntityTypeTarget)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+    SpawnHealer:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Healer
+                #Conditions:
+                #    - "CanSpawn(Source, EntityTypeTarget)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+    SpawnFixer:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Fixer
+                #Conditions:
+                #    - "CanSpawn(Source, EntityTypeTarget)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
     LongAttack:
         Type: EntityAction
         Preconditions:
@@ -471,7 +539,7 @@ Entities:
         Symbol: e
         LineOfSightRange: 6
         InventorySize: 4
-        #Actions: [LongAttack, MeleeAttack, Move]
+        Actions: [LongAttack, MeleeAttack, Move]
         #Initial list of object in inventory
         Objects: [Pistol, Knife]
         Parameters:
@@ -498,6 +566,23 @@ ForwardModel:
         - "HasNoEntities(Source)"
 
     Trigger:
+        - OnStart:
+            Type: Player
+            Conditions:
+                - "IsPlayerID(Source, 0)"
+            Effects:
+                - "EnqueueAction(Source, SpawnSoldier)"
+                - "EnqueueAction(Source, SpawnHealer)"
+                - "EnqueueAction(Source, SpawnFixer)"
+        #- OnStart:
+        #    Type: Player
+        #    Conditions:
+        #        - "IsPlayerID(Source, 1)"
+        #    Effects:
+        #        - "EnqueueAction(Source, SpawnEnemy)"
+        #        - "EnqueueAction(Source, SpawnEnemy)"
+        #        - "EnqueueAction(Source, SpawnEnemy)"
+        #        - "EnqueueAction(Source, EndTurn)"
         - OnTick:
             Type: Entity
             ValidTargets: Entities
