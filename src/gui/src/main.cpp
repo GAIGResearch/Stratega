@@ -12,9 +12,9 @@ int main()
 	boost::mt19937 rngEngine(0);
 	//std::string configPath("../resources/gameConfigurations/TBS/TheBattleOfStratega.yaml");
 	//std::string configPath("../resources/gameConfigurations/TBS/Ported/TheBattleOfStratega.yaml");
-	std::string configPath("../resources/gameConfigurations/TBS/Tests/KillTheKingQueueTest.yaml");
+	//std::string configPath("../resources/gameConfigurations/TBS/Tests/KillTheKingQueueTest.yaml");
 	//std::string configPath("../resources/gameConfigurations/TBS/Ported/Pathway.yaml");
-	//std::string configPath("../resources/gameConfigurations/TBS/IntoTheBreach.yaml");
+	std::string configPath("../resources/gameConfigurations/TBS/Ported/IntoTheBreach.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 
 	auto agents = gameConfig->generateAgents();

@@ -146,13 +146,26 @@ namespace SGA
 		/// </summary>
 		/// <param name="playerID">ID of the player for which the End action is created</param>
 		/// <returns>Action that ends the current turn for the plater ID supplied</returns>
-		static Action createEndAction(int playerID)
+		static Action createEndAction(int playerID, const ActionType* newActionType=nullptr)
 		{
-			Action a(nullptr);
-			a.actionTypeFlags = ActionFlag::EndTickAction;
-			a.ownerID = playerID;
-			a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
-			return a;
+			if (newActionType)
+			{
+				Action a(newActionType);
+				a.actionTypeFlags = ActionFlag::EndTickAction;
+				a.ownerID = playerID;
+
+				a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
+				return a;
+			}
+			else
+			{
+				Action a(nullptr);
+				a.actionTypeFlags = ActionFlag::EndTickAction;
+				a.ownerID = playerID;
+
+				a.targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
+				return a;
+			}			
 		}
 
 		/// <summary>

@@ -120,7 +120,13 @@ namespace SGA
 			//Generate player actions
 			auto& player = *gameState.getPlayer(playerID);
 			auto& actionType = gameState.getGameInfo()->getActionType(gameState.getActionQueuesConst().getActionFromPlayerQueue(player.getID()).actionTypeID);
-
+			
+			//Generate EndTurnAction
+			if (actionType.isEndTick())
+			{
+				bucket.emplace_back(Action::createEndAction(playerID, &actionType));
+				return bucket;
+			}
 
 			//Check if action is continuos
 			if (actionType.isContinuous())

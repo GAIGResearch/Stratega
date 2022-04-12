@@ -935,6 +935,8 @@ namespace SGA
 
 		if (actionType.isContinuous())
 			newAction.setActionFlag(ActionFlag::ContinuousAction);
+		if (actionType.isEndTick())
+			newAction.setActionFlag(ActionFlag::EndTickAction);
 
 		if (selectedEntities.empty())
 			verifyPlayerActionTargets(playerID, actionsToExecute, actionType, newAction);

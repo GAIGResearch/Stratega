@@ -507,6 +507,17 @@ namespace SGA
         FunctionParser parser;
 
         auto context = ParseContext::fromGameConfig(config);
+
+        //Generate end turn action
+        ActionType type;
+        type.setID(static_cast<int>(config.actionTypes.size()));
+        type.setName("EndTurn");
+        context.targetIDs.emplace("Source", 0);
+        type.setSourceType(ActionSourceType::Player);
+        type.setEndTick(true);
+
+        config.actionTypes.emplace(type.getID(), std::move(type));
+
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;

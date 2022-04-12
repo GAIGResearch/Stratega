@@ -4,7 +4,6 @@ GameConfig:
     FogOfWar: false    
 
 Player:
-    Actions: [SpawnPusher, SpawnArcher, SpawnBomber, SpawnEnemy]
     Parameters:
         PusherSpawn: [0,1,1]
         ArcherSpawn: [0,1,1]
@@ -84,7 +83,6 @@ Actions:
     SpawnPusher:
         Type: PlayerAction
         Preconditions:
-            - "IsPlayerID(Source, 0)"
             - "ResourceGreaterEqual(Source.PusherSpawn, 1)"
         Cooldown: 1
         Targets:
@@ -102,6 +100,7 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "ModifyResource(Source.PusherSpawn, -1)"
@@ -109,7 +108,6 @@ Actions:
     SpawnArcher:
         Type: PlayerAction
         Preconditions:
-            - "IsPlayerID(Source, 0)"
             - "ResourceGreaterEqual(Source.ArcherSpawn, 1)"
         Cooldown: 1
         Targets:
@@ -127,6 +125,7 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "ModifyResource(Source.ArcherSpawn, -1)"
@@ -134,7 +133,6 @@ Actions:
     SpawnBomber:
         Type: PlayerAction
         Preconditions:
-            - "IsPlayerID(Source, 0)"
             - "ResourceGreaterEqual(Source.BomberSpawn, 1)"
         Cooldown: 1
         Targets:
@@ -152,6 +150,7 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, PlayerPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "ModifyResource(Source.BomberSpawn, -1)"
@@ -159,7 +158,6 @@ Actions:
     SpawnEnemy:
         Type: PlayerAction
         Preconditions:
-            - "IsPlayerID(Source, 1)"
             - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
         Cooldown: 0
         Targets:
@@ -177,6 +175,7 @@ Actions:
                 Conditions:
                     - "IsWalkable(TargetPosition)"
                     - "IsTileType(TargetPosition, EnemyPlain)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
         Effects:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "ModifyResource(Source.EnemySpawn, -1)"
@@ -266,6 +265,7 @@ Actions:
                 #        Size: 1
                 Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
         Effects:
             - "Move(Source, Target)"
 
@@ -366,6 +366,24 @@ ForwardModel:
         ##Check enemy and player spawned the enemies
         ##If tick is higher than 15 the enemy win
     Trigger:
+        - OnStart:
+            Type: Player
+            Conditions:
+                - "IsPlayerID(Source, 0)"
+            Effects:
+                - "EnqueueAction(Source, SpawnPusher)"
+                - "EnqueueAction(Source, SpawnArcher)"
+                - "EnqueueAction(Source, SpawnBomber)"
+                - "EnqueueAction(Source, EndTurn)"
+        - OnStart:
+            Type: Player
+            Conditions:
+                - "IsPlayerID(Source, 1)"
+            Effects:
+                - "EnqueueAction(Source, SpawnEnemy)"
+                - "EnqueueAction(Source, SpawnEnemy)"
+                - "EnqueueAction(Source, SpawnEnemy)"
+                - "EnqueueAction(Source, EndTurn)"
         - OnAdvance:
             Type: Entity
             ValidTargets: Movable
@@ -381,8 +399,3 @@ ForwardModel:
                 - "IsPlayerID(Source, 1)"
             Effects:
                 - "ModifyResource(Source.EnemySpawn, +2)"
-        - OnGameStart:
-            #Type: Entity, Player, State
-            Type: Player
-            Effects:
-                - "PushAction(Source, Spawn)"
