@@ -107,7 +107,7 @@ namespace SGA
 		//Get action type
 		void getActionType(int playerID);
 		void getPlayerPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes);
-		void getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes);
+		void getEntityPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes);
 
 		// Assign to the list of selected targets a position target
 		void assignPosition(SGA::Vector2f position);

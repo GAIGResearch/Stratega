@@ -8,6 +8,7 @@
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/GameInfo.h>
+#include <Stratega/Representation/ActionQueue.h>
 #include <memory>
 namespace SGA
 {
@@ -25,7 +26,6 @@ namespace SGA
 	{
 
 	public:
-
 		/***** CONSTRUCTORS *****/
 
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
@@ -564,7 +564,72 @@ namespace SGA
 			minParameters.resize(static_cast<size_t>(cap));
 		}
 
+		///***** ACTION QUEUE FUNCTIONS *****/
 
+		const ActionQueue& getActionQueuesConst() const
+		{
+			return actionQueue;
+		}
+		ActionQueue& getActionQueues()
+		{
+			return actionQueue;
+		}
+		////Player actions queue
+		//void addActionToPlayerQueue(int playerID, ActionType& newActionType)
+		//{
+		//	playerActionQueues[playerID].push(newActionType.getID());
+		//}
+
+		//int getActionIDFromPlayerQueue(int playerID) const 
+		//{
+		//	auto actionTypeID= playerActionQueues[playerID].front();
+		//	return actionTypeID;
+		//}
+		//
+		//void removeActionFromePlayerQueue(int playerID)
+		//{
+		//	playerActionQueues[playerID].pop();
+		//}
+
+		//bool hasActionInPlayerQueue(int playerID) const
+		//{			
+		//	return playerActionQueues[playerID].size()>0;
+		//}
+		//		
+		////Player entity actions queue
+		//void addActionToPlayerEntityQueue(int playerID, int entityID, ActionType& newActionType)
+		//{
+		//	playerEntityActionQueues[playerID].push({ entityID, newActionType.getID() });
+		//}
+
+		//int getActionIDFromPlayerEntityQueue(int playerID) const 
+		//{
+		//	auto actionTypePack= playerEntityActionQueues[playerID].front();
+		//	return actionTypePack.second;
+		//}
+
+		//int getEntityIDFromPlayerEntityQueue(int playerID) const 
+		//{
+		//	auto actionTypePack= playerEntityActionQueues[playerID].front();
+		//	return actionTypePack.first;
+		//}
+		//
+		//void removeActionFromePlayerEntityQueue(int playerID)
+		//{
+		//	playerEntityActionQueues[playerID].pop();
+		//}
+
+		//bool hasActionInPlayerEntityQueue(int playerID) const
+		//{			
+		//	return playerEntityActionQueues[playerID].size()>0;
+		//}
+		//
+		//
+		//void resizePlayerActionQueues(int playerNum)
+		//{
+		//	playerActionQueues.resize(playerNum);
+		//	playerEntityActionQueues.resize(playerNum);
+		//}
 	private:
 
 		/// <summary>
@@ -675,5 +740,15 @@ namespace SGA
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
 		std::vector<double> minParameters;
+
+		/// <summary>
+		/// Holds all the mandatory actions for each player
+		/// </summary>
+		ActionQueue actionQueue;
+
+		////Player ActionQueue
+		//std::vector<std::queue<int>> playerActionQueues;
+		////EntityActionQueue
+		//std::vector<std::queue<std::pair<int,int>>> playerEntityActionQueues;
 	};
 }

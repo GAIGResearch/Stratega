@@ -13,6 +13,11 @@ namespace SGA
 			context.entityTypeIDs.emplace(entityType.second.getName(), entityType.first);
 		}
 
+		for (const auto& actionType : config.actionTypes)
+		{
+			context.actionTypeIDs.emplace(actionType.second.getName(), actionType.first);
+		}
+
 		for (const auto& technologyTreeType : config.technologyTreeCollection.technologyTreeTypes)
 		{
 			for (const auto& technology : technologyTreeType.second.technologies)
@@ -67,6 +72,7 @@ namespace SGA
 				((param = parseParameterReference(ss, context, stringParameter, false))) ||
 				((param = parseTargetReference(ss, context, stringParameter, false))) ||
 				((param = parseEntityTypeReference(ss, context, stringParameter, false))) ||
+				((param = parseActionTypeReference(ss, context, stringParameter, false))) ||
 				((param = parseTileTypeReference(ss, context, false))) ||
 				((param = parseBuffTypeReference(ss, context, false))) ||
 				((param = parseGameStateParameterReference(ss, context, stringParameter, false))) ||
@@ -271,6 +277,7 @@ namespace SGA
 				((param = parseParameterReference(ss, context, parameterString, true))) ||
 				((param = parseTechnologyTypeReference(ss, context, parameterString, true))) ||
 				((param = parseEntityTypeReference(ss, context, parameterString, true))) ||
+				((param = parseActionTypeReference(ss, context, parameterString, true))) ||
 				((param = parseTargetReference(ss, context, parameterString, true))) ||
 				((param = parseGameStateParameterReference(ss, context, parameterString, true))))
 			{				
@@ -541,6 +548,45 @@ namespace SGA
 		}
 
 		return FunctionParameter::createEntityTypeReference(targetIt->second);
+	}
+	
+
+	nonstd::optional<FunctionParameter> FunctionParser::parseActionTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const
+	{
+		auto begin = ss.tellg();
+		auto names = parseAccessorList(ss, 1, allowExpressions);
+		if (!names)
+		{
+			ss.seekg(begin);
+			parameterString = "";
+			return {};
+		}
+
+		auto targetIt = context.actionTypeIDs.find(names.value()[0]);
+		if (targetIt == context.actionTypeIDs.end())
+		{
+			ss.seekg(begin); // Set back to start
+			parameterString = "";
+			return {};
+		}
+		parameterString = names.value()[0];
+		char nextCharacter = ss.peek();
+		//Check if is not expression
+		if (nextCharacter == ')' || nextCharacter == ',')
+		{
+
+		}
+		else
+		{
+			if (!allowExpressions)
+			{
+				ss.seekg(begin);
+				parameterString = "";
+				return {};
+			}
+		}
+
+		return FunctionParameter::createActionTypeReference(targetIt->second);
 	}
 
 	nonstd::optional<FunctionParameter> FunctionParser::parseTileTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const

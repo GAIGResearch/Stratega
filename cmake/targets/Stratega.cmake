@@ -68,6 +68,7 @@ set(STRATEGA_SOURCE_FILES
         Representation/GameDescription.cpp
         Representation/GameInfo.cpp
         Representation/GameState.cpp
+        Representation/ActionQueue.cpp
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
