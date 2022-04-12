@@ -5,9 +5,13 @@ GameConfig:
     FogOfWar: false
 
 Agents:
-    - HumanAgent
+#    - HumanAgent
+    - MCTSAgent:
+        Budget: FMCALLS
+        FmCalls: 20000
+        RolloutLength: 20
+        ContPreviousSearch: false
     - BasicTBSAgent
-    
 
 GameRenderer:
     Resolution:

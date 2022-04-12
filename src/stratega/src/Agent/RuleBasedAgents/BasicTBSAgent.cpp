@@ -71,7 +71,7 @@ namespace SGA {
 
 	ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
 		
-		std::cout<<"DEBUG start basicTBSAgent" <<std::endl;
+		// std::cout<<"DEBUG start basicTBSAgent" <<std::endl;
 		// get position of all entities
         std::map< int, Vector2f > positions;
         std::set< int > opponentEntites = std::set< int >();
@@ -81,21 +81,21 @@ namespace SGA {
         Entity* nearestEnemyAttacker = nullptr;
         for(auto& entity : state.getEntities()) {
 			auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
-            if(entity.getOwnerID() != state.getCurrentTBSPlayer())
+            if(entity.getOwnerID() != getPlayerID())
             {
                 opponentEntites.insert(entity.getID());
 
                 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
-				if(entityType.getName() == "Warrior" ){// as a preliminary version to save some computing time
+				if(entityType.getName() == "Warrior" ){
                    double distance = entity.getPosition().distance(self_city);
                    if (distance < nearestEnemyAttackerDistance) {
                       nearestEnemyAttackerDistance = distance;
                       nearestEnemyAttacker = &entity;
                    }
                 }
-            } else if(entity.getOwnerID() == state.getCurrentTBSPlayer()) {
+            } else if(entity.getOwnerID() == getPlayerID()) {
                 playerEntities.insert(entity.getID());
 				if(entityType.getName() == "Worker" ){
 					if((workers.size()==0) || std::find(workers.begin(), workers.end(), entity.getID())==workers.end()){
@@ -150,12 +150,11 @@ namespace SGA {
 		}
 		
 		//const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
-
 		
 		//Spawn worker
 		if( (workers.size()) < 1 && (getProduction(state) > 3)){
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
-									*(state.getEntity(self_city_id)), state.getCurrentTBSPlayer(), false);
+									*(state.getEntity(self_city_id)), getPlayerID(), false);
 			if (actionSpace_tmp.size() > 0){
 				int a_idx = filterSpawnWorker(state, actionSpace_tmp);
 
@@ -169,7 +168,7 @@ namespace SGA {
 		// worker go for mining
 		for(auto worker_id:workers){
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(worker_id)), 
-				                                                    state.getCurrentTBSPlayer(), false);
+				                                                    getPlayerID(), false);
 			//state.printActionInfo(actionSpace_tmp[0]);
 			// if can mine, mine
 			int optimal_a_idx = moveAndAct(state, actionSpace_tmp, goldVein[0], "Mine");
@@ -180,7 +179,7 @@ namespace SGA {
 		
 		double prod = getProduction(state), gold = getGold(state);
 
-		auto playerActionSpace = forwardModel.generatePlayerActions(state, state.getCurrentTBSPlayer(), false);
+		auto playerActionSpace = forwardModel.generatePlayerActions(state, getPlayerID(), false);
 
 		// do the research
 		if(!(isResearchedMining) && !(prod<researchMiningProduction)){
@@ -189,7 +188,7 @@ namespace SGA {
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Mining") {
 						isResearchedMining=true;
-						std::cout<<"--> RESEARCH Mining" << std::endl;
+						std::cout<<"--> RESEARCH Mining, player: "<< getPlayerID() << std::endl;
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -198,9 +197,11 @@ namespace SGA {
 
 		// Research Discipline
 		if(!(isResearchedDiscipline) && isResearchedMining && !(prod<researchDiciplineProduction)){
+			std::cout<<"try to research discipline" << std::endl;
 			for (int a_idx = 0; (!isResearchedDiscipline) && a_idx < playerActionSpace.size(); a_idx++) {
 				//state.printActionInfo(actionSpace_tmp[a_idx]);
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
+					std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) << std::endl;
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Discipline") {
 						isResearchedDiscipline=true;
 						std::cout<<"--> RESEARCH Dicipline" << std::endl;
@@ -228,9 +229,9 @@ namespace SGA {
 		
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
-			std::cout<<"try spawn warrior"<<std::endl;
+			// std::cout<<"try spawn warrior"<<std::endl;
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
-									*(state.getEntity(barracks[0])), state.getCurrentTBSPlayer(), false);
+									*(state.getEntity(barracks[0])), getPlayerID(), false);
 			if (actionSpace_tmp.size() > 0){
 				int a_idx = filterSpawnWarrior(state, actionSpace_tmp);
 				if (a_idx != -1){
@@ -249,10 +250,9 @@ namespace SGA {
 		
 		// send warrior to attack nenemy city
 		if (farAwarAttackable.size() > 0) {
-			std::cout<<"fejwioaf"<<std::endl;
 			for (auto attackerID: farAwarAttackable){
 				auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(attackerID)), 
-					                                                    state.getCurrentTBSPlayer(), false);
+					                                                    getPlayerID(), false);
 			
 				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, enemy_city_id, "Attack");
 				if (optimal_a_idx > 0) {
@@ -262,20 +262,24 @@ namespace SGA {
 		}
 		
 		std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << std::endl;
-		return ActionAssignment::fromSingleAction( Action::createEndAction(state.getCurrentTBSPlayer()));
+		std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << std::endl;
+		//std::cout <<"END THE TURN" << std::endl;
+		state.printBoard();
+		//return ActionAssignment::fromSingleAction( Action::createEndAction(state.getCurrentTBSPlayer()));
+		return ActionAssignment::fromSingleAction( Action::createEndAction(getPlayerID()));
 
     }
 
 	double BasicTBSAgent::getProduction(GameState state){
-		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Prod");
+		return state.getPlayerParameter(getPlayerID(), "Prod");
 	}
 
 	double BasicTBSAgent::getGold(GameState state){
-		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Gold");
+		return state.getPlayerParameter(getPlayerID(), "Gold");
 	}
 
 	double BasicTBSAgent::getScore(GameState state){
-		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Score");
+		return state.getPlayerParameter(getPlayerID(), "Score");
 	}
 
 	// only for spawn, build

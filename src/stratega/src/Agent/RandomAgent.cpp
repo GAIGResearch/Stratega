@@ -12,7 +12,7 @@ namespace SGA
 		boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 		auto actionIndex = actionDist(getRNGEngine());
 		auto action = actions.at(actionIndex);
-		std::cout << "	RandomActionIndex to execute: " << actionIndex<<" From: "<< actions.size() << std::endl;
+		// std::cout << "	RandomActionIndex to execute: " << actionIndex<<" From: "<< actions.size() << std::endl;
 		// Return Action
 		return ActionAssignment::fromSingleAction(action);
 	}

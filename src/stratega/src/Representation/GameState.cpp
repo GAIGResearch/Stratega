@@ -399,6 +399,12 @@ namespace SGA
 		return false;
 	}
 
+	bool GameState::isResearched(int playerID, const std::string& technologyName) {
+		// this function throw an error if the technologyName is incorrect
+		int techID = gameInfo->getTechnologyTypeID(technologyName);
+		return isResearched(playerID, techID);
+	}
+
 	void GameState::researchTechnology(int playerID, int technologyID)
 	{
 		//Get researched technologies of player

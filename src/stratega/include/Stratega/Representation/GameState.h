@@ -64,6 +64,14 @@ namespace SGA
 		bool isResearched(int playerID, int technologyID) const;
 
 		/// <summary>
+		/// Checks if given technology has been researched by a player, given the technology name
+		/// </summary>
+		/// <param name="playerID">ID of the player to check</param>
+		/// <param name="technologyName">name of the technology to check</param>
+		/// <returns>A boolean indicating if the player has researched the given technology</returns>
+		bool isResearched(int playerID, const std::string& technologyName);
+
+		/// <summary>
 		/// Checks if given technology can been researched by a player.
 		/// </summary>
 		/// <param name="playerID">ID of the player to check</param>
