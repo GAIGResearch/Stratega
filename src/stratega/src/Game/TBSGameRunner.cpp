@@ -83,18 +83,18 @@ namespace SGA
 		{
 			AgentResults results;
 			ActionAssignment actionAssignment;
-			auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
-			results = runAgent(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
+			//auto& currentAgent = agents[static_cast<size_t>(currentState->getCurrentTBSPlayer())];
+			//results = runAgent(*currentAgent, *currentState, *forwardModel, *config, budgetTimeMs);
 
-			//Check if agent throw exception and rethrow it
-			if (results.error)
-				std::rethrow_exception(results.error);
+			////Check if agent throw exception and rethrow it
+			//if (results.error)
+			//	std::rethrow_exception(results.error);
 
-			actionAssignment = results.actions;
-			//Check computation time
-			if (shouldCheckComputationTime)
-				if (!checkComputationTime(results.computationTime))
-					actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
+			//actionAssignment = results.actions;
+			////Check computation time
+			//if (shouldCheckComputationTime)
+			//	if (!checkComputationTime(results.computationTime))
+			//		actionAssignment = ActionAssignment::fromSingleAction(Action::createEndAction(currentAgent->getPlayerID()));
 
 			try
 			{
