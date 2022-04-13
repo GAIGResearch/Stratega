@@ -12,6 +12,9 @@ A turn-based strategy (TBS) game is a strategy game where players take turns whe
 .. toctree::
     :hidden:
 
+    pathway/index
+    intoTheBreach/index
+    theBattleOfStratega/index
     cityCapturing/index
     killTheKing/index
     noNameGame/index
@@ -48,6 +51,27 @@ Real-time strategy (RTS) games allow for all players to simultaneously play the 
       - Technology trees
       - Buffs
       - Objects
+    * - Pathway
+      - implemented
+      - -
+      - Combat
+      - yes
+      - yes
+      - yes
+    * - Into the breach
+      - implemented
+      - -
+      - Combat
+      - no
+      - no
+      - no
+    * - The battle of Stratega
+      - implemented
+      - -
+      - Combat
+      - yes
+      - no
+      - no
     * - CityCapturing
       - implemented
       - -

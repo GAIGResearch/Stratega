@@ -6,8 +6,8 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/BasicTBS.yaml
-    /gameConfigs/RTS/BasicRTS.yaml
+    /gameConfigs/TBS/Original/OBasicTBS.yaml
+    /gameConfigs/RTS/Original/BasicRTS.yaml
 
 .. only:: html
 
@@ -40,8 +40,20 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
@@ -50,33 +62,33 @@ YAML
         Actions: [Build, Research]
         CanSpawn: Buildings
         Parameters:
-            Gold: 0
-            Prod: 5
-            Score: 0
+            Gold: [0,0,1000]
+            Prod: [0,5,100]
+            Score: [0,0,1000]
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
 
     Entities:
         City:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             Actions: [Spawn]
@@ -89,7 +101,7 @@ YAML
                 Range: 6
 
         Barracks:
-            Sprite: ../../assets/Entities/barracks.png
+            Sprite: ../../../assets/Entities/barracks.png
             LineOfSightRange: 3
             RequiredTechnology: Discipline
             Actions: [Spawn]
@@ -101,7 +113,7 @@ YAML
                 Range: 6
 
         MilitaryAcademy:
-            Sprite: ../../assets/Entities/military.png
+            Sprite: ../../../assets/Entities/military.png
             LineOfSightRange: 3
             RequiredTechnology: Mathematics
             Actions: [Spawn]
@@ -112,7 +124,7 @@ YAML
                 Health: 100
 
         Foundry:
-            Sprite: ../../assets/Entities/foundry.png
+            Sprite: ../../../assets/Entities/foundry.png
             LineOfSightRange: 2
             RequiredTechnology: Metallurgy
             Actions: []
@@ -122,7 +134,7 @@ YAML
                 Health: 50
                 
         Workshop:
-            Sprite: ../../assets/Entities/storage.png
+            Sprite: ../../../assets/Entities/storage.png
             LineOfSightRange: 2
             RequiredTechnology: Apprenticeship
             Actions: []
@@ -132,7 +144,7 @@ YAML
                 Health: 50
 
         Storage:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             LineOfSightRange: 1
             RequiredTechnology: Pottery
             Actions: []
@@ -144,7 +156,7 @@ YAML
                 StorageCapacity: 50
 
         Worker:
-            Sprite: ../../assets/Entities/unit_5.png
+            Sprite: ../../../assets/Entities/unit_5.png
             LineOfSightRange: 3
             Actions: [Move, Mine]
             Cost:
@@ -159,7 +171,7 @@ YAML
                 Range: 3
                 
         Warrior:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Bronze Working
@@ -174,7 +186,7 @@ YAML
                 Health: 50
                 
         Archer:
-            Sprite: ../../assets/Entities/unit_3.png
+            Sprite: ../../../assets/Entities/unit_3.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Archery
@@ -190,7 +202,7 @@ YAML
                 Health: 30
                 
         Catapult:
-            Sprite: ../../assets/Entities/unit_4.png
+            Sprite: ../../../assets/Entities/unit_4.png
             LineOfSightRange: 3
             Actions: [Move, Attack]
             RequiredTechnology: Engineering
@@ -206,7 +218,7 @@ YAML
                 Health: 60
 
         GoldVein:
-            Sprite: ../../assets/Entities/gold_chest.png
+            Sprite: ../../../assets/Entities/gold_chest.png
             Symbol: g
             LineOfSightRange: 6
             Actions: []
@@ -315,6 +327,7 @@ YAML
                             Size: 2
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
 
             Effects:
                 - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
@@ -341,6 +354,7 @@ YAML
                             Shape: AllPositions
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
 
             Effects:
                 - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
@@ -432,18 +446,21 @@ YAML
 
         Trigger:
             - OnTick:
+                Type: Entity
                 ValidTargets: City
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
                     - "ModifyResource(Source.Player.Prod, 1)"
             - OnTick:
+                Type: Entity
                 ValidTargets: Workshop
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
                     - "ModifyResource(Source.Player.Prod, 2)"
             - OnTick:
+                Type: Entity
                 ValidTargets: Foundry
                 Conditions:
                     - "IsPlayerEntity(Source)"
