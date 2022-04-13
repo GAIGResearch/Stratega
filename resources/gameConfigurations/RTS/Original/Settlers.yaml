@@ -8,7 +8,7 @@ GameRenderer:
         Width: 1280
         Height: 800
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -23,8 +23,8 @@ GameRenderer:
         Width: 512
         Height: 512
     #Optional:
-    #Font: ../../assets/arial.ttf
-    #OutlineShader: ../../assets/OutLine.frag
+    #Font: ../../../assets/arial.ttf
+    #OutlineShader: ../../../assets/OutLine.frag
 
 Agents:
     - DoNothingAgent
@@ -43,43 +43,43 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
     Ore:
-        Sprite: ../../assets/Tiles/ore.png
+        Sprite: ../../../assets/Tiles/ore.png
         Symbol: O
         IsWalkable: true
     Animals:
-        Sprite: ../../assets/Tiles/animals.png
+        Sprite: ../../../assets/Tiles/animals.png
         Symbol: A
         IsWalkable: true
     Clay:
-        Sprite: ../../assets/Tiles/clay.png
+        Sprite: ../../../assets/Tiles/clay.png
         Symbol: C
         IsWalkable: true
     Gold:
-        Sprite: ../../assets/Tiles/gold.png
+        Sprite: ../../../assets/Tiles/gold.png
         Symbol: G
         IsWalkable: true
 
 Entities:
     City:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
@@ -90,7 +90,7 @@ Entities:
             Range: 6
 
     Wonder:
-        Sprite: ../../assets/Entities/wonder.png
+        Sprite: ../../../assets/Entities/wonder.png
         LineOfSightRange: 5
         Actions: []
         RequiredTechnology: Wonder
@@ -104,7 +104,7 @@ Entities:
             Range: 6
 
     University:
-        Sprite: ../../assets/Entities/university.png
+        Sprite: ../../../assets/Entities/university.png
         LineOfSightRange: 5
         RequiredTechnology: Education
         Actions: []
@@ -118,7 +118,7 @@ Entities:
             Range: 6
 
     Outpost:
-        Sprite: ../../assets/Entities/tower.png
+        Sprite: ../../../assets/Entities/tower.png
         LineOfSightRange: 8
         RequiredTechnology: BasicStructure
         Actions: []
@@ -133,7 +133,7 @@ Entities:
             Time: 200
 
     GuardTower:
-        Sprite: ../../assets/Entities/guardTower.png
+        Sprite: ../../../assets/Entities/guardTower.png
         LineOfSightRange: 4
         RequiredTechnology: GuardTower
         Actions: []
@@ -148,7 +148,7 @@ Entities:
             Time: 200
 
     Farm:
-        Sprite: ../../assets/Entities/farm.png
+        Sprite: ../../../assets/Entities/farm.png
         LineOfSightRange: 3
         Cost:
             Food: 50
@@ -160,7 +160,7 @@ Entities:
             Range: 6
 
     Masonry:
-        Sprite: ../../assets/Entities/masonry.png
+        Sprite: ../../../assets/Entities/masonry.png
         LineOfSightRange: 3
         Cost:
             Iron: 40
@@ -171,7 +171,7 @@ Entities:
             Range: 6
 
     Saw:
-        Sprite: ../../assets/Entities/saw.png
+        Sprite: ../../../assets/Entities/saw.png
         LineOfSightRange: 3
         Cost:
             Food: 50
@@ -183,7 +183,7 @@ Entities:
             Range: 6
 
     IronMine:
-        Sprite: ../../assets/Entities/mine.png
+        Sprite: ../../../assets/Entities/mine.png
         LineOfSightRange: 3
         Cost:
             Food: 50
@@ -195,7 +195,7 @@ Entities:
             Range: 6
 
     GoldMine:
-        Sprite: ../../assets/Entities/mine2.png
+        Sprite: ../../../assets/Entities/mine2.png
         LineOfSightRange: 3
         Cost:
             Food: 100
@@ -207,7 +207,7 @@ Entities:
             Range: 6
             
     Villager:
-        Sprite: ../../assets/Entities/unit_5.png
+        Sprite: ../../../assets/Entities/unit_5.png
         LineOfSightRange: 3
         Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
@@ -222,7 +222,7 @@ Entities:
             GoldMining: [0,0.1,1]
             
     Builder:
-        Sprite: ../../assets/Entities/unit_7.png
+        Sprite: ../../../assets/Entities/unit_7.png
         LineOfSightRange: 3
         CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
         Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
@@ -233,7 +233,7 @@ Entities:
             Range: 6
 
     Spy:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         LineOfSightRange: 5
         Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
@@ -245,7 +245,7 @@ Entities:
             Range: 6
 
     Architect:
-        Sprite: ../../assets/Entities/unit_8.png
+        Sprite: ../../../assets/Entities/unit_8.png
         LineOfSightRange: 3
         RequiredTechnology: Architecture
         CanSpawn: [Wonder]
