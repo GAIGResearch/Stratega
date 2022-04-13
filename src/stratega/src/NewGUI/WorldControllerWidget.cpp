@@ -15,6 +15,9 @@ namespace SGA
 	
 	void WorldControllerWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 30), ImGuiCond_FirstUseEver);
 		ImGui::Begin("World Controller");
 
 		ImGui::Checkbox("Draw Tiles", &world.drawTiles);

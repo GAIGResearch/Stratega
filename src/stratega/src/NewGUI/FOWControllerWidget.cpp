@@ -36,7 +36,10 @@ namespace SGA
 			renderFogOfWarBefore = fowSettings->renderFogOfWar;
 			selectionChanged = true;
 		}
-			
+
+		ImGui::SetNextWindowPos(ImVec2(20, 130), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Fog of war controller");
 		ImGui::Checkbox("Is Active", &fowSettings->renderFogOfWar);
 		if (ImGui::BeginCombo("FogType", nameLookup[fowSettings->renderType].c_str()))

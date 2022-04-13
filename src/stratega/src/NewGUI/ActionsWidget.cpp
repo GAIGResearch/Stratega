@@ -32,16 +32,18 @@ namespace SGA
 		//window_flags += ImGuiWindowFlags_MenuBar;
 		//window_flags+= ImGuiWindowFlags_NoMove;
 		//window_flags += ImGuiWindowFlags_NoResize;
-		window_flags += ImGuiWindowFlags_NoCollapse;
+		//window_flags += ImGuiWindowFlags_NoCollapse;
 		window_flags += ImGuiWindowFlags_NoNav;
 		//window_flags+= ImGuiWindowFlags_NoBackground;
 		window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-
+		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
 		//ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-		//ImGui::SetNextWindowSize(ImVec2(0, 0));
+		//ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.getSize().x), (static_cast<float>(window.getSize().y))), ImGuiCond_FirstUseEver, ImVec2(1.0f, 1.0f));
+
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
@@ -84,8 +86,10 @@ namespace SGA
 		ImGui::End();
 
 
-		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
+
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Available Actions");
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();

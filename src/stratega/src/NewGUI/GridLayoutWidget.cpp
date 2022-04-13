@@ -45,6 +45,9 @@ namespace SGA
 
 		renderTarget.drawVertices(vertices);
 
+		ImGui::SetNextWindowPos(ImVec2(20, 170), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Grid layout");
 		ImGui::Checkbox("Draw outbounds", &drawCompleteGrid);
 		ImGui::End();

@@ -43,6 +43,9 @@ namespace SGA
 			window.draw(selectedTile);
 		}		
 
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 70), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Mouse info");
 		std::string gridPosText = "Grid Position: (" + std::to_string(gridPos.x) + "," + std::to_string(gridPos.y) + ")";
 		auto strategaMousPos = world.toStrategaRounded(mousePos);
@@ -68,6 +71,10 @@ namespace SGA
 
 	void GridInformationWidget::render(SGARenderTarget& renderTarget)
 	{
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 90), ImGuiCond_FirstUseEver);
+
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Grid information");
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
@@ -108,7 +115,7 @@ namespace SGA
 				if(world.getEntity(entity->getID()))
 					world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(250, 0), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information", NULL, window_flags);
 
