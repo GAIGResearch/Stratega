@@ -6,8 +6,8 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/Settlers.yaml
-    /gameConfigs/RTS/Settlers.yaml
+    /gameConfigs/TBS/Original/Settlers.yaml
+    /gameConfigs/RTS/Original/Settlers.yaml
 
 .. only:: html
 
@@ -41,8 +41,20 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
@@ -51,25 +63,25 @@ YAML
         Actions: [Research]
         CanSpawn: Buildings
         Parameters:
-            Food: 100
-            Gold: 0
-            Iron: 50
-            Wood: 100
-            Bricks: 50
-            Research: 20
+            Food: [0,100,1000]
+            Gold: [0,0,2000]
+            Iron: [0,50,1000]
+            Wood: [0,100,1000]
+            Bricks: [0,50,1000]
+            Research: [0,20,1000]
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
@@ -78,25 +90,25 @@ YAML
             Symbol: F
             IsWalkable: true
         Ore:
-            Sprite: ../../assets/Tiles/ore.png
+            Sprite: ../../../assets/Tiles/ore.png
             Symbol: O
             IsWalkable: true
         Animals:
-            Sprite: ../../assets/Tiles/animals.png
+            Sprite: ../../../assets/Tiles/animals.png
             Symbol: A
             IsWalkable: true
         Clay:
-            Sprite: ../../assets/Tiles/clay.png
+            Sprite: ../../../assets/Tiles/clay.png
             Symbol: C
             IsWalkable: true
         Gold:
-            Sprite: ../../assets/Tiles/gold.png
+            Sprite: ../../../assets/Tiles/gold.png
             Symbol: G
             IsWalkable: true
 
     Entities:
         City:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             Actions: [Spawn]
@@ -107,7 +119,7 @@ YAML
                 Range: 6
 
         Wonder:
-            Sprite: ../../assets/Entities/wonder.png
+            Sprite: ../../../assets/Entities/wonder.png
             LineOfSightRange: 5
             Actions: []
             RequiredTechnology: Wonder
@@ -121,7 +133,7 @@ YAML
                 Range: 6
 
         University:
-            Sprite: ../../assets/Entities/university.png
+            Sprite: ../../../assets/Entities/university.png
             LineOfSightRange: 5
             RequiredTechnology: Education
             Actions: []
@@ -135,7 +147,7 @@ YAML
                 Range: 6
 
         Outpost:
-            Sprite: ../../assets/Entities/tower.png
+            Sprite: ../../../assets/Entities/tower.png
             LineOfSightRange: 8
             RequiredTechnology: BasicStructure
             Actions: []
@@ -150,7 +162,7 @@ YAML
                 Time: 2
 
         GuardTower:
-            Sprite: ../../assets/Entities/guardTower.png
+            Sprite: ../../../assets/Entities/guardTower.png
             LineOfSightRange: 4
             RequiredTechnology: GuardTower
             Actions: [Attack]
@@ -165,7 +177,7 @@ YAML
                 Time: 2
 
         Farm:
-            Sprite: ../../assets/Entities/farm.png
+            Sprite: ../../../assets/Entities/farm.png
             LineOfSightRange: 3
             Cost:
                 Iron: 15
@@ -176,7 +188,7 @@ YAML
                 Range: 6
 
         Masonry:
-            Sprite: ../../assets/Entities/masonry.png
+            Sprite: ../../../assets/Entities/masonry.png
             LineOfSightRange: 3
             Cost:
                 Food: 5
@@ -188,7 +200,7 @@ YAML
                 Range: 6
 
         Saw:
-            Sprite: ../../assets/Entities/saw.png
+            Sprite: ../../../assets/Entities/saw.png
             LineOfSightRange: 3
             Cost:
                 Food: 5
@@ -200,7 +212,7 @@ YAML
                 Range: 6
 
         IronMine:
-            Sprite: ../../assets/Entities/mine.png
+            Sprite: ../../../assets/Entities/mine.png
             LineOfSightRange: 3
             Cost:
                 Food: 5
@@ -212,7 +224,7 @@ YAML
                 Range: 6
 
         GoldMine:
-            Sprite: ../../assets/Entities/mine2.png
+            Sprite: ../../../assets/Entities/mine2.png
             LineOfSightRange: 3
             Cost:
                 Food: 20
@@ -224,7 +236,7 @@ YAML
                 Range: 6
                 
         Villager:
-            Sprite: ../../assets/Entities/unit_5.png
+            Sprite: ../../../assets/Entities/unit_5.png
             LineOfSightRange: 3
             Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
             Cost:
@@ -232,14 +244,14 @@ YAML
             Parameters:
                 Speed: 1
                 Range: 3
-                WoodCutting: 5
-                BrickMaking: 5
-                LivestockFarming: 5
-                IronMining: 5
-                GoldMining: 5
+                WoodCutting: [0,5,20]
+                BrickMaking: [0,5,20]
+                LivestockFarming: [0,5,20]
+                IronMining: [0,5,20]
+                GoldMining: [0,5,20]
                 
         Builder:
-            Sprite: ../../assets/Entities/unit_7.png
+            Sprite: ../../../assets/Entities/unit_7.png
             LineOfSightRange: 3
             CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
             Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
@@ -250,7 +262,7 @@ YAML
                 Range: 6
 
         Spy:
-            Sprite: ../../assets/Entities/unit_6.png
+            Sprite: ../../../assets/Entities/unit_6.png
             LineOfSightRange: 5
             Actions: [Move, Sabotage]
             RequiredTechnology: Sabotage
@@ -262,7 +274,7 @@ YAML
                 Range: 6
 
         Architect:
-            Sprite: ../../assets/Entities/unit_8.png
+            Sprite: ../../../assets/Entities/unit_8.png
             LineOfSightRange: 3
             RequiredTechnology: Architecture
             CanSpawn: [Wonder]
@@ -329,6 +341,7 @@ YAML
                         AllowDiagonals: false
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
 
@@ -428,6 +441,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
 
             Effects:
                 - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
@@ -453,6 +467,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition, Ore)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -478,6 +493,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition, Gold)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -503,6 +519,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition,Animals)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -528,6 +545,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition, Plain)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -553,6 +571,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition, Clay)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -578,6 +597,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
                         - "IsTileType(TargetPosition, Forest)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -603,6 +623,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
                 - "PayCost(Source.Player, EntityTypeTarget)"
@@ -627,6 +648,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
             Effects:
                 - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
                 - "PayCost(Source.Player, EntityTypeTarget)"
@@ -651,6 +673,7 @@ YAML
                             Size: 4
                     Conditions:
                         - "IsWalkable(TargetPosition)"
+                        - "IsNotOccupiedGrid(TargetPosition, Source)"
             TriggerComplete:
                 - "HasElapsedTick(2)"
             OnStart:
@@ -830,12 +853,14 @@ YAML
         Trigger:
     #Global resource compsumption
             - OnTick:
+                Type: Entity
                 ValidTargets: Buildings
                 Conditions:
                     - "IsPlayerEntity(Source)"
                 Effects:
                     - "ModifyResource(Source.Player.Food, -1)"
             - OnTick:
+                Type: Entity
                 ValidTargets: Units
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -843,6 +868,7 @@ YAML
                     - "ModifyResource(Source.Player.Food, -1)"
 
             - OnTick:
+                Type: Entity
                 ValidTargets: University
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -851,6 +877,7 @@ YAML
         #Upgrade villagers resuorce collection
             #Food
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -859,6 +886,7 @@ YAML
                     - "ChangeResource(Source.LivestockFarming, 10)"
 
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -867,6 +895,7 @@ YAML
                     - "ChangeResource(Source.LivestockFarming, 15)"
             #Wood
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -875,6 +904,7 @@ YAML
                     - "ChangeResource(Source.WoodCutting, 10)"
 
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -883,6 +913,7 @@ YAML
                     - "ChangeResource(Source.WoodCutting, 15)"
             #Ore
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"
@@ -891,6 +922,7 @@ YAML
                     - "ChangeResource(Source.IronMining, 12)"
             #Clay
             - OnTick:
+                Type: Entity
                 ValidTargets: Villager
                 Conditions:
                     - "IsPlayerEntity(Source)"

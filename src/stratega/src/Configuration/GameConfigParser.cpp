@@ -507,6 +507,17 @@ namespace SGA
         FunctionParser parser;
 
         auto context = ParseContext::fromGameConfig(config);
+
+        //Generate end turn action
+        ActionType type;
+        type.setID(static_cast<int>(config.actionTypes.size()));
+        type.setName("EndTurn");
+        context.targetIDs.emplace("Source", 0);
+        type.setSourceType(ActionSourceType::Player);
+        type.setEndTick(true);
+
+        config.actionTypes.emplace(type.getID(), std::move(type));
+
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {
             ActionType type;
@@ -632,6 +643,10 @@ namespace SGA
             if (targetType == TargetType::Entity)
                 targetType.setSamplingMethod(node["SamplingMethod"].as<std::shared_ptr<SamplingMethod>>());
 
+            targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
+        }
+        else if (targetType == TargetType::Object || targetType == TargetType::SlotObject)
+        {
             targetType.setGroupEntityTypes(parseEntityGroup(node["ValidTargets"], config));
         }
         else if (targetType.getType() == TargetType::Technology)
@@ -1015,7 +1030,7 @@ namespace SGA
                 {
                     using namespace ghc::filesystem;
 
-                    path filePath = "../../assets/OutLine.frag";
+                    path filePath = "../../../assets/OutLine.frag";
                     // Convert path to an absolute path relative to the path of the configuration file
                     auto tmp = current_path();
                     current_path(canonical(path(config.yamlPath).parent_path()));
@@ -1043,7 +1058,7 @@ namespace SGA
                 {
                     using namespace ghc::filesystem;
 
-                    path filePath = "../../assets/arial.ttf";
+                    path filePath = "../../../assets/arial.ttf";
                     // Convert path to an absolute path relative to the path of the configuration file
                     auto tmp = current_path();
                     current_path(canonical(path(config.yamlPath).parent_path()));

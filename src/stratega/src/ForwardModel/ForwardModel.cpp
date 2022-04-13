@@ -45,11 +45,15 @@ namespace SGA
 
 		for (auto& loseConditionType : loseConditions)
 		{
+			bool conditionsFullfilled = true;
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfiled(state, targets))
-					return true;
+				if (!loseCondition->isFullfiled(state, targets))
+					conditionsFullfilled = false;
 			}
+
+			if (conditionsFullfilled)
+				return true;
 		}
 
 		return false;

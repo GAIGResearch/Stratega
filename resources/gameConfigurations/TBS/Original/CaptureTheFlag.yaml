@@ -1,12 +1,15 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 10000
+    RoundLimit: 1000
     FogOfWar: true
+    Parameters:
+        FlagsCaptured: [0,0,10]
+        CurrentSpawnedFlagsNumber: [0,0,5]
 
 Buffs: # Buff lists
-    AttackBoostBuff:
-        AdditiveModifier: 
-            AttackDamage: 20
+    SlowBuff:
+        MultiplicationModifier:
+            MovementPoints: 0.5
 
 Agents:
     - HumanAgent
@@ -17,7 +20,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -37,63 +40,47 @@ GameRenderer:
 
 Player:
     Parameters:
-        Zones: [0,0,5]
-        SpawnedUnits: [0,0,5]
-        Score: [0,0,200]
+        SpawnedUnits: [0,1,10]
+        Flags: [0,0,100]
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  M  M  M  M
-        M  .  .  .  W  W  W  M
-        M  .  b1 .  .  .  W  M
-        M  .  .  w1 .  .  W  M
-        M  .  .  .  .  .  W  M
-        M  .  .  .  .  .  W  M
-        M  M  .  .  .  .  W  M
-        M  M  M  M  .  .  W  M
-        M  W  M  .  .  M  W  M
-        M  W  .  .  .  M  M  M
-        M  W  .  .  .  .  M  M
-        M  M  .  .  .  z  W  M
-        M  M  M  M  .  .  W  M
-        M  W  M  .  .  M  W  M
-        M  W  .  .  .  M  M  M
-        M  W  z  .  .  .  M  M
-        M  M  .  .  .  .  W  M
-        M  M  M  M  .  .  W  M
-        M  W  M  .  .  M  W  M
-        M  W  .  .  .  M  M  M
-        M  W  .  .  .  .  M  M
-        M  M  .  .  .  z  W  M
-        M  M  M  M  .  .  W  M
-        M  W  M  .  .  M  W  M
-        M  W  .  .  .  M  M  M
-        M  W  .  .  .  .  M  M
-        M  W  .  .  .  .  .  M
-        M  W  .  .  .  .  .  M
-        M  W  .  .  w0 .  .  M
-        M  W  .  .  .  b0 .  M
-        M  W  W  W  .  .  .  M
-        M  M  M  M  M  M  M  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  M  M  W  W  W  W  W  W  W  W  M
+        M  .  b1 .  .  .  .  M  .  .  .  .  .  .  .  W  M
+        M  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  W  M
+        M  .  .  .  .  .  .  .  .  .  .  .  W  W  .  W  M
+        M  .  .  .  .  .  W  W  .  .  .  .  W  W  .  W  M
+        M  M  .  .  .  .  W  W  .  .  .  .  .  .  .  W  M
+        M  M  M  M  .  .  .  W  W  W  .  .  .  .  .  W  M
+        M  W  M  .  .  .  .  W  W  W  W  .  .  .  M  W  M
+        M  W  .  .  .  .  .  .  .  W  W  W  .  .  M  M  M
+        M  W  .  .  .  .  .  .  .  .  W  W  .  .  .  M  M
+        M  W  .  .  W  W  .  .  .  .  .  .  .  .  .  .  M
+        M  W  .  .  W  W  .  .  .  .  .  .  .  .  .  .  M
+        M  W  .  .  .  .  .  .  .  M  .  .  .  w0 .  .  M
+        M  W  .  .  .  .  .  .  M  M  .  .  .  .  b0 .  M
+        M  W  W  W  W  W  W  W  W  M  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
     SpawnUnit:
         Type: EntityAction
@@ -155,105 +142,73 @@ Actions:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"
 
-    CheckPlayer:
+    Capture:
         Type: EntityAction
-        Targets:
-            Target:
-                Type: Entity
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Square
-                        Size: 1
-                ValidTargets: Warrior
-                Conditions:
-                    - "DifferentPlayer(Source, Target)"
-        Effects:
-            - "ModifyResource(Source.Control, +1)"
-
-    CheckPlayerOwn:
-        Type: EntityAction
-        Targets:
-            Target:
-                Type: Entity
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Square
-                        Size: 1
-                ValidTargets: Warrior
-                Conditions:
-                    - "SamePlayer(Source, Target)"
-        Effects:
-            - "ModifyResource(Source.Control, -1)"
-
-    CheckControl:
-        Type: EntityAction        
         Preconditions:
-            - "ResourceGreaterEqual(Source.Control, 10)"
+            - "ResourceLowerEqual(Source.Flags, 0)"
         Targets:
             Target:
                 Type: Entity
                 SamplingMethod: 
-                    Type: Neighbours
+                    Type: Dijkstra
                     Options:
-                        Shape: Square
-                        Size: 1
-                ValidTargets: Warrior
-                Conditions:
-                    - "DifferentPlayer(Source, Target)"
+                        SearchSize: 1
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
+                ValidTargets: Flag
         Effects:
-            - "ChangeOwner(Source, Target.Player)"
-            - "ChangeResource(Source.Control, 0)"
+            - "ModifyResource(GameState.CurrentSpawnedFlagsNumber, -1)"
+            - "ModifyResource(Source.Flags, +1)"
+            - "Remove(Target)"
 
-    BoostAttackPower:
+    Deposit:
         Type: EntityAction
         Cooldown: 1
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: [Warrior]
-                SamplingMethod:
+                ValidTargets: Base
+                SamplingMethod: 
                     Type: Neighbours
                     Options:
                         Shape: Square
-                        Size: 2
-                Conditions:
-                    - "HasNoBuff(Target, AttackBoostBuff)"
-                    - "SamePlayer(Source, Target)"
+                        Size: 1
         Effects:
-            - "ApplyBuff(Target, AttackBoostBuff, 5)"
+            - "Transfer(Source.Flags, Target.Player.Flags, Source.Flags)"
+
 
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, Capture, Deposit]
         Parameters:
             Health: 200
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 2
-    Zone:
-        Sprite: ../../assets/Entities/wonder.png
-        Symbol: z
+            Flags: [0,0,1]
+    Flag:
+        Sprite: ../../../assets/Entities/wonder.png
+        Symbol: f
         LineOfSightRange: 5
-        OnTickActions: [CheckPlayer,CheckPlayerOwn , CheckControl, BoostAttackPower]
-        Parameters:
-            Control: [0,0,10]
 
     Base:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: b
         LineOfSightRange: 5
-        Actions: [SpawnUnit]            
+        Actions: [SpawnUnit]
+            
 
 
 ForwardModel:
     WinConditions: #If true: Player -> win game
         Flags:
-        - "ResourceGreaterEqual(Source.Score, 200)"
+        - "ResourceGreaterEqual(Source.Flags, 5)"
 
     Trigger:
         - OnTick:
@@ -262,17 +217,22 @@ ForwardModel:
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
         - OnTick:
-            Type: Player
-            Effects:
-                - "ChangeResource(Source.Zones, 0)"
-        - OnTick:
             Type: Entity
-            ValidTargets: [Zone]
+            ValidTargets: [Warrior]
             Conditions:
-                - "IsNotNeutral(Source)"
+                - "ResourceGreaterEqual(Source.Flags, 1)"
+                - "HasNoBuff(Source, SlowBuff)"
             Effects:
-                - "ModifyResource(Source.Player.Zones, +1)"
-                - "ModifyResource(Source.Player.Score, +1)"
+                - "ApplyBuff(Source, SlowBuff, 1)"
+        - OnTick:
+            #Type: Entity, Player, State
+            Type: GameState
+            Conditions:
+                - "IsTickMultipleOf(10)"
+                - "ResourceLowerEqual(Source.CurrentSpawnedFlagsNumber, 0)"
+            Effects:
+                - "SpawnEntityRandomLocation(Flag)"
+                - "ModifyResource(Source.CurrentSpawnedFlagsNumber, +1)"
 
 
 GameRunner:

@@ -139,6 +139,37 @@ namespace SGA
 		//Check if action target is valid in the received gamestate
 		bool isValid(const GameState& state) const;		
 
+		bool operator!=(const ActionTarget& other)
+		{
+			if (targetType == other.targetType)
+			{
+				switch (targetType)
+				{
+				case EntityReference:
+					return data.entityID != other.data.entityID;
+				case SlotObject:
+					return data.entityID != other.data.entityID;
+				case Object:
+					return data.entityID != other.data.entityID;
+				case PlayerReference:
+					return data.playerID != other.data.playerID;
+				case EntityTypeReference:
+					return data.entityTypeID != other.data.entityTypeID;
+				case TechnologyReference:
+					return data.technologyID != other.data.technologyID;
+				case ContinuousActionReference:
+					return data.continuousActionID != other.data.continuousActionID;
+				case TileTypeReference:
+					return data.tileTypeID != other.data.tileTypeID;
+				case Position:
+					return data.position != other.data.position;
+				default:
+					break;
+				}
+			}
+			else
+				return true;
+		}
 	private:
 		union Data
 		{
@@ -203,6 +234,7 @@ namespace SGA
 					break;
 				}
 			}
+
 		};
 
 		Type targetType;

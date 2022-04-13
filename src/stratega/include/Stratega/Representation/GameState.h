@@ -172,6 +172,7 @@ namespace SGA
 		const Entity* getEntityAroundConst(const Vector2f& pos, float maxDistance = 0.0) const;
 
 		const Entity* getEntityAtConst(const Vector2f& pos) const;
+		Entity* getEntityAt(const Vector2f& pos);
 
 		//Get all entities in different grid
 		std::vector<Entity*> getEntitiesAround(Vector2f pos, float maxDistance = 0.0);

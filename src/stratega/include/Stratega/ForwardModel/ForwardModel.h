@@ -213,7 +213,7 @@ namespace SGA
 		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
 		/// </summary>
-		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue) const
+		void modifyEntityByParameterByName(Entity& entity, const std::string& parameterName, double newValue) const
 		{
 			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameterByName(parameterName).getIndex(), newValue);
 		}
@@ -273,7 +273,7 @@ namespace SGA
 		/// <param name="parameterName">Name of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		/// <param name="gameInfo">Game info object with the information of the current game</param>
-		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo) const
+		void modifyPlayerByParameterByName(Player& player, const std::string& parameterName, double newValue, GameInfo& gameInfo) const
 		{
 			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterName).getIndex(), newValue);
 		}

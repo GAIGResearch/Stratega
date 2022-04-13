@@ -5,71 +5,55 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    #- OSLAAgent
-    - MCTSAgent:
-        FmCalls: 100
-        Budget: TIME
-        RolloutLength: 10
+    - DoNothingAgent
+    #- MCTSAgent:
+    #    FmCalls: 100
+    #    Budget: TIME
+    #    RolloutLength: 10
 
 GameRenderer:
     Resolution:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Test2DTopDown/notVisible.png
-    GridIsIsometric: false
+        FogOfWar: ../../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
     TileSpriteOrigin:
-        Width: 0
-        Height: 0
+        Width: 128
+        Height: 112
     EntitySpriteOrigin:
-        Width: 0
-        Height: 0
+        Width: 256
+        Height: 360
     TileSpriteSize:
-        Width: 16
-        Height: 16
+        Width: 256
+        Height: 144
     EntitySpriteSize:
-        Width: 16
-        Height: 16
+        Width: 512
+        Height: 512
     #Optional:
     #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Test2DTopDown/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Test2DTopDown/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Test2DTopDown/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Test2DTopDown/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
         
 Board:
-    Entities:
-        Entity1:
-            Type: Archer
-            Position: [1,1] # x, y
-            Owner: -1
-        Entity2:
-            Type: Archer
-            Position: [1,2] # x, y
-            Owner: -1
-        Entity3:
-            Type: Archer
-            Position: [1,3] # x, y
-            Owner: -1
-        Entity4:
-            Type: Archer
-            Position: [2,3] # x, y
-            Owner: -1
     GenerationType: Manual
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
@@ -90,23 +74,6 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
-    Spawn:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Position
-                SamplingMethod: 
-                    Type: Neighbours
-                    Options:
-                        Shape: Circle
-                        Size: 3
-                Conditions:
-                    - "IsWalkable(Target)"
-                    - "IsNotOccupiedGrid(Target, Source)"
-        Effects:
-            - "SpawnEntity(Source, Warrior, Target)"
-
     Attack:
         Type: EntityAction
         Cooldown: 1
@@ -162,11 +129,39 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
-
+    Test:
+        Type: PlayerAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+        Effects:
+            - "ModifyResource(Target.Health, -1000)"
+    TestTwo:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+        Effects:
+            - "ModifyResource(Target.Health, -1000)"
+#Grids:
+#    Layer0: [Warrior]
+#    Layer1: [Archer]
     
 Entities:
     Warrior:
-        Sprite: ../../assets/Test2DTopDown/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
@@ -177,7 +172,7 @@ Entities:
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../assets/Test2DTopDown/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
         Parameters:
@@ -188,7 +183,7 @@ Entities:
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../assets/Test2DTopDown/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
         Parameters:
@@ -199,7 +194,7 @@ Entities:
         Actions: [Heal, Move]
 
     King:
-        Sprite: ../../assets/Test2DTopDown/unit_1.png
+        Sprite: ../../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
@@ -207,7 +202,7 @@ Entities:
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move, Spawn]
+        Actions: [Attack, Move]
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -219,6 +214,25 @@ ForwardModel:
             Type: Entity
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
+        - OnStart:
+            Type: Player
+            Effects:
+                - "EnqueueAction(Source, Test)"
+        - OnStart:
+            Type: Entity
+            Effects:
+                - "EnqueueAction(Source, TestTwo)"
+        #- OnStart:
+        #    Type: Entity
+        #    ValidTargets: [Warrior, Healer]
+        #    Effects:
+        #        - "PushAction(Source, Test)"
+        #- OnStart:
+        #    Type: Entity
+        #    Conditions:
+        #        -IsPosition(2,1)
+        #    Effects:
+        #        - "PushAction(Source, Test)"
 
 #Action categories
 GameDescription:

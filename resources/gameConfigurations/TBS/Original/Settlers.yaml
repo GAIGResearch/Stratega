@@ -1,14 +1,18 @@
 GameConfig:
-    Type: RTS
+    Type: TBS
     ActionTimer: 10s
-    RoundLimit: 10000
+    RoundLimit: 100
+
+Agents:
+    - DoNothingAgent
+    - HumanAgent
 
 GameRenderer:
     Resolution:
-        Width: 1280
-        Height: 800
+        Width: 800
+        Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -26,33 +30,29 @@ GameRenderer:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
 
-Agents:
-    - DoNothingAgent
-    - HumanAgent
-
 Player:
     Actions: [Research]
     CanSpawn: Buildings
     Parameters:
-        Food: [0,800,10000]
-        Gold: [0,0,10000]
-        Iron: [0,500,10000]
-        Wood: [0,500,10000]
-        Bricks: [0,500,10000]
-        Research: [0,200,10000]
+        Food: [0,100,1000]
+        Gold: [0,0,2000]
+        Iron: [0,50,1000]
+        Wood: [0,100,1000]
+        Bricks: [0,50,1000]
+        Research: [0,20,1000]
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
@@ -61,197 +61,197 @@ Tiles:
         Symbol: F
         IsWalkable: true
     Ore:
-        Sprite: ../../assets/Tiles/ore.png
+        Sprite: ../../../assets/Tiles/ore.png
         Symbol: O
         IsWalkable: true
     Animals:
-        Sprite: ../../assets/Tiles/animals.png
+        Sprite: ../../../assets/Tiles/animals.png
         Symbol: A
         IsWalkable: true
     Clay:
-        Sprite: ../../assets/Tiles/clay.png
+        Sprite: ../../../assets/Tiles/clay.png
         Symbol: C
         IsWalkable: true
     Gold:
-        Sprite: ../../assets/Tiles/gold.png
+        Sprite: ../../../assets/Tiles/gold.png
         Symbol: G
         IsWalkable: true
 
 Entities:
     City:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
         CanSpawn: [Villager, Builder, Spy, Architect]
         Cost:
         Parameters:
-            Health: 800
+            Health: 80
             Range: 6
 
     Wonder:
-        Sprite: ../../assets/Entities/wonder.png
+        Sprite: ../../../assets/Entities/wonder.png
         LineOfSightRange: 5
         Actions: []
         RequiredTechnology: Wonder
         Cost:
-            Wood: 2000
-            Iron: 2000
-            Food: 200
-            Bricks: 2000
+            Wood: 200
+            Iron: 200
+            Food: 50
+            Bricks: 200
         Parameters:
-            Health: 200
+            Health: 150
             Range: 6
 
     University:
-        Sprite: ../../assets/Entities/university.png
+        Sprite: ../../../assets/Entities/university.png
         LineOfSightRange: 5
         RequiredTechnology: Education
         Actions: []
         Cost:
-            Food: 50
-            Iron: 50  
-            Wood: 100
-            Bricks: 50
+            Food: 5
+            Iron: 20 
+            Wood: 20
+            Bricks: 30
         Parameters:
-            Health: 200
+            Health: 100
             Range: 6
 
     Outpost:
-        Sprite: ../../assets/Entities/tower.png
+        Sprite: ../../../assets/Entities/tower.png
         LineOfSightRange: 8
         RequiredTechnology: BasicStructure
         Actions: []
         Cost:
-            Food: 20
+            Food: 5
             Iron: 10
-            Wood: 50
+            Wood: 10
             Bricks: 20
         Parameters:
-            Health: 200
+            Health: 20
             Range: 7
-            Time: 200
+            Time: 2
 
     GuardTower:
-        Sprite: ../../assets/Entities/guardTower.png
+        Sprite: ../../../assets/Entities/guardTower.png
         LineOfSightRange: 4
         RequiredTechnology: GuardTower
-        Actions: []
+        Actions: [Attack]
         Cost:
-            Food: 30
+            Food: 5
             Iron: 20
-            Wood: 70
-            Bricks: 40
+            Wood: 30
+            Bricks: 30
         Parameters:
-            Health: 200
+            Health: 40
             Range: 6
-            Time: 200
+            Time: 2
 
     Farm:
-        Sprite: ../../assets/Entities/farm.png
+        Sprite: ../../../assets/Entities/farm.png
         LineOfSightRange: 3
         Cost:
-            Food: 50
-            Iron: 40
-            Wood: 50
-            Bricks: 60
+            Iron: 15
+            Wood: 15
+            Bricks: 15
         Parameters:
-            Health: 800
+            Health: 20
             Range: 6
 
     Masonry:
-        Sprite: ../../assets/Entities/masonry.png
+        Sprite: ../../../assets/Entities/masonry.png
         LineOfSightRange: 3
         Cost:
-            Iron: 40
-            Wood: 50
-            Bricks: 100
+            Food: 5
+            Iron: 15
+            Wood: 15
+            Bricks: 5
         Parameters:
-            Health: 800
+            Health: 40
             Range: 6
 
     Saw:
-        Sprite: ../../assets/Entities/saw.png
+        Sprite: ../../../assets/Entities/saw.png
         LineOfSightRange: 3
         Cost:
-            Food: 50
-            Iron: 40
-            Wood: 100
-            Bricks: 50
+            Food: 5
+            Iron: 15
+            Wood: 10
+            Bricks: 15
         Parameters:
-            Health: 800
+            Health: 40
             Range: 6
 
     IronMine:
-        Sprite: ../../assets/Entities/mine.png
+        Sprite: ../../../assets/Entities/mine.png
         LineOfSightRange: 3
         Cost:
-            Food: 50
-            Iron: 100
-            Wood: 50
-            Bricks: 50
+            Food: 5
+            Iron: 10
+            Wood: 20
+            Bricks: 10
         Parameters:
-            Health: 800
+            Health: 40
             Range: 6
 
     GoldMine:
-        Sprite: ../../assets/Entities/mine2.png
+        Sprite: ../../../assets/Entities/mine2.png
         LineOfSightRange: 3
         Cost:
-            Food: 100
-            Iron: 100
-            Wood: 100
-            Bricks: 100
+            Food: 20
+            Iron: 20
+            Wood: 20
+            Bricks: 20
         Parameters:
-            Health: 800
+            Health: 40
             Range: 6
             
     Villager:
-        Sprite: ../../assets/Entities/unit_5.png
+        Sprite: ../../../assets/Entities/unit_5.png
         LineOfSightRange: 3
         Actions: [Move, CutWood, MineIron, MineGold, FarmLivestock, MakeBrick]
         Cost:
-            Food: 50
+            Food: 5
         Parameters:
             Speed: 1
             Range: 3
-            WoodCutting: [0,0.05,1]
-            BrickMaking: [0,0.05,1]
-            LivestockFarming: [0,0.1,1]
-            IronMining: [0,0.05,1]
-            GoldMining: [0,0.1,1]
+            WoodCutting: [0,5,20]
+            BrickMaking: [0,5,20]
+            LivestockFarming: [0,5,20]
+            IronMining: [0,5,20]
+            GoldMining: [0,5,20]
             
     Builder:
-        Sprite: ../../assets/Entities/unit_7.png
+        Sprite: ../../../assets/Entities/unit_7.png
         LineOfSightRange: 3
         CanSpawn: [Farm, GoldMine, IronMine, Saw, Masonry, University, Outpost, GuardTower]
         Actions: [Move, BuildFarm, BuildGoldMine, BuildIronMine, BuildSaw, BuildMansory, BuildUniversity, BuildGuardTower, BuildOutpost]
         Cost:
-            Food: 60
+            Food: 8
         Parameters:
             Speed: 1
             Range: 6
 
     Spy:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         LineOfSightRange: 5
         Actions: [Move, Sabotage]
         RequiredTechnology: Sabotage
         Cost:
-            Food: 150
+            Food: 10
         Parameters:
             Health: 20
             Speed: 1
             Range: 6
 
     Architect:
-        Sprite: ../../assets/Entities/unit_8.png
+        Sprite: ../../../assets/Entities/unit_8.png
         LineOfSightRange: 3
         RequiredTechnology: Architecture
         CanSpawn: [Wonder]
         Actions: [Move, BuildWonder]
         Cost:
-            Food: 200
+            Food: 15
         Parameters:
             Speed: 1
             Range: 6
@@ -305,15 +305,11 @@ Actions:
         Targets:
             Target:
                 Type: Position
-                SamplingMethod: 
-                #    Type: Dijkstra
-                #    Options:
-                #        SearchSize: 2
-                #        AllowDiagonals: false
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-                        #Size: 1
+                SamplingMethod:
+                   Type: Dijkstra
+                   Options:
+                       SearchSize: 4
+                       AllowDiagonals: false
                 Conditions:
                     - "IsWalkable(Target)"
                     - "IsNotOccupiedGrid(Target, Source)"
@@ -442,6 +438,7 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
+                    - "IsNotOccupiedGrid(TargetPosition, Source)"
                     - "IsTileType(TargetPosition, Ore)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
@@ -467,8 +464,8 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-                    - "IsTileType(TargetPosition, Gold)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
+                    - "IsTileType(TargetPosition, Gold)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -493,8 +490,8 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-                    - "IsTileType(TargetPosition,Animals)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
+                    - "IsTileType(TargetPosition,Animals)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -519,8 +516,8 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-                    - "IsTileType(TargetPosition, Plain)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
+                    - "IsTileType(TargetPosition, Plain)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -545,8 +542,8 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-                    - "IsTileType(TargetPosition, Clay)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
+                    - "IsTileType(TargetPosition, Clay)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -571,8 +568,8 @@ Actions:
                         Size: 4
                 Conditions:
                     - "IsWalkable(TargetPosition)"
-                    - "IsTileType(TargetPosition, Forest)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
+                    - "IsTileType(TargetPosition, Forest)"
         Effects:
             - "SpawnEntityGrid(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source.Player, EntityTypeTarget)"
@@ -649,7 +646,7 @@ Actions:
                     - "IsWalkable(TargetPosition)"
                     - "IsNotOccupiedGrid(TargetPosition, Source)"
         TriggerComplete:
-            - "HasElapsedTick(200)"
+            - "HasElapsedTick(2)"
         OnStart:
             - "PayCost(Source.Player, EntityTypeTarget)"
         OnComplete:
@@ -679,92 +676,92 @@ TechnologyTrees:
             Description: Enables advance research
             Cost:
                 Research: 5
-            Time: 200
+            Time: 2
         Chemistry:
             Description: Enables sabotage technology tree
             Requirements: [Education]
             Cost:
                 Research: 10
-            Time: 500
+            Time: 5
         Architecture:
             Description: Enables architect spawn
             Requirements: [Education]
             Cost:
                 Research: 15
-            Time: 500
+            Time: 5
         BasicStructure:
             Description: Enable outpost
             Requirements: [Education]
             Cost:
                 Research: 15
-            Time: 500
+            Time: 5
         SiegeEngineers:
             Description:  Enables sabotage technology tree
             Requirements: [Architecture]
             Cost:
                 Research: 20
-            Time: 600
+            Time: 6
         Sabotage:
             Description:  Enables sabotage
             Requirements: [SiegeEngineers, Chemistry]
             Cost:
                 Research: 20
-            Time: 700
+            Time: 7
         GuardTower:
             Description:  Enables guard tower spawn
             Requirements: [Architecture, BasicStructure]
             Cost:
                 Research: 30
-            Time: 600
+            Time: 6
         Wonder:
             Description:  Enables wonder building
             Requirements: [Architecture, BasicStructure]
             Cost:
                 Research: 100
-            Time: 4000
+            Time: 4
 
     ResourceTree:
         BetterTools:
             Description: Enables resource technologies
             Cost:
                 Research: 5
-            Time: 200
+            Time: 2
         HeavyPlow:
             Description: Increase food production
             Requirements: [BetterTools]
             Cost:
                 Research: 20
-            Time: 400
+            Time: 4
         BowSaw:
             Description: Increase wood production
             Requirements: [BetterTools]
             Cost:
                 Research: 20
-            Time: 400
+            Time: 4
         OreShaftMining:
             Description: Increase ore production
             Requirements: [BetterTools]
             Cost:
                 Research: 25
-            Time: 400
+            Time: 4
         ClayShaftMining:
             Description:  Increase clay production
             Requirements: [BetterTools]
             Cost:
                 Research: 25
-            Time: 400
+            Time: 4
         CropRotation:
             Description:  Increase food production
             Requirements: [HeavyPlow]
             Cost:
                 Research: 30
-            Time: 600
+            Time: 6
         TwoManSaw:
             Description:  Enables guard tower spawn
             Requirements: [BowSaw]
             Cost:
                 Research: 30
-            Time: 600
+            Time: 6
 
 
 Board:
@@ -832,14 +829,14 @@ ForwardModel:
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Food, -0.04)"
+                - "ModifyResource(Source.Player.Food, -1)"
         - OnTick:
             Type: Entity
             ValidTargets: Units
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Food, -0.04)"
+                - "ModifyResource(Source.Player.Food, -1)"
 
         - OnTick:
             Type: Entity
@@ -847,8 +844,8 @@ ForwardModel:
             Conditions:
                 - "IsPlayerEntity(Source)"
             Effects:
-                - "ModifyResource(Source.Player.Research, +0.6)"
-    #Upgrade villagers resource collection
+                - "ModifyResource(Source.Player.Research, +2)"
+    #Upgrade villagers resuorce collection
         #Food
         - OnTick:
             Type: Entity
@@ -857,7 +854,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, HeavyPlow)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.11)"
+                - "ChangeResource(Source.LivestockFarming, 10)"
 
         - OnTick:
             Type: Entity
@@ -866,7 +863,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, CropRotation)"
             Effects:
-                - "ChangeResource(Source.LivestockFarming, 0.13)"
+                - "ChangeResource(Source.LivestockFarming, 15)"
         #Wood
         - OnTick:
             Type: Entity
@@ -875,7 +872,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, BowSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.06)"
+                - "ChangeResource(Source.WoodCutting, 10)"
 
         - OnTick:
             Type: Entity
@@ -884,7 +881,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, TwoManSaw)"
             Effects:
-                - "ChangeResource(Source.WoodCutting, 0.08)"
+                - "ChangeResource(Source.WoodCutting, 15)"
         #Ore
         - OnTick:
             Type: Entity
@@ -893,7 +890,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, OreShaftMining)"
             Effects:
-                - "ChangeResource(Source.IronMining, 0.08)"
+                - "ChangeResource(Source.IronMining, 12)"
         #Clay
         - OnTick:
             Type: Entity
@@ -902,7 +899,7 @@ ForwardModel:
                 - "IsPlayerEntity(Source)"
                 - "HasResearched(Source.Player, ClayShaftMining)"
             Effects:
-                - "ChangeResource(Source.BrickMaking, 0.08)"
+                - "ChangeResource(Source.BrickMaking, 12)"
 
 #Action categories
 GameDescription:

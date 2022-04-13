@@ -12,7 +12,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -36,20 +36,20 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
      
@@ -131,14 +131,14 @@ Actions:
 
 Entities:
     City:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         CanSpawn: Units
         Actions: [Spawn]
 
     Conquerer:
-        Sprite: ../../assets/Entities/unit_5.png
+        Sprite: ../../../assets/Entities/unit_5.png
         Symbol: s
         LineOfSightRange: 4
         Actions: [Move, Capture]
@@ -148,7 +148,7 @@ Entities:
             Gold: 6
 
     Fighter:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: f
         LineOfSightRange: 6
         Actions: [Move, Attack]

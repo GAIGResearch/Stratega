@@ -995,7 +995,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_action_type", &SGA::Action::getActionType, "Checks if this action is to be executed over an entity.")
 		.def("get_action_source_type", &SGA::Action::getActionSourceType, "Checks if this action is to be executed over an entity.")
 
-		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), "Generates an Action used by the game to end the tick/turn.")
+		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), py::arg("newActionType"), "Generates an Action used by the game to end the tick/turn.")
 		.def_static("create_abort_entity_action", &SGA::Action::createAbortEntityAction, "Generates an Action which the owner is a entity, used by the game to abort a continuous action.")
 		.def_static("create_abort_player_action", &SGA::Action::createAbortPlayerAction, "Generates an Action which the owner is a player, used by the game to abort a continuous action.")
 		
@@ -1509,15 +1509,15 @@ PYBIND11_MODULE(stratega, m)
 		
 	py::class_<SGA::TBSForwardModel, SGA::ForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
-
+	
 		.def("get_game_type", &SGA::TBSForwardModel::getGameType)
-
+	
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int>(&SGA::ForwardModel::generateActions, py::const_)," Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
-
+	
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes an action in a given SGA::GameState before updating the entities of the gamestate that should be removed and checking if the game is over.")
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes a list of actions.")
-
+	
 		.def("end_turn", &SGA::TBSForwardModel::endTurn, py::arg("state"),"End the turn of the current player and if all the player has played it ends the current game turn.")
 		.def("check_game_is_finished", &SGA::TBSForwardModel::checkGameIsFinished, py::arg("state")," Checks if the game is finished by current limit or because a player has won.")
 		;
@@ -1525,17 +1525,17 @@ PYBIND11_MODULE(stratega, m)
 	py::class_<SGA::RTSForwardModel, SGA::ForwardModel>(m, "RTSForwardModel")
 		.def(py::init<>())
 		.def("get_game_type", &SGA::RTSForwardModel::getGameType)
-
+	
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int>(&SGA::ForwardModel::generateActions, py::const_), " Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
-
+	
 		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::RTSForwardModel::advanceGameState, py::const_),"Moves all the entities and resolves collisions before and after executing an action in a given Gamestate")
 		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::ActionAssignment&>(&SGA::RTSForwardModel::advanceGameState, py::const_),"Moves all the entities and resolves collisions before and after executing an action in a given Gamestate")
-
+	
 		.def("move_entities", &SGA::RTSForwardModel::moveEntities, py::arg("state"), "Moves all the entities that have a current path and they did not reach their destination. If the entity has a path it moves the entity through all the path points one after theother until reaching the last one.")
 		.def("resolve_entity_collisions", &SGA::RTSForwardModel::resolveEntityCollisions, py::arg("state"),"Resolves collisions between entities in a basic way computing the penetration depth and pushing them way in the opposite direction.")
 		.def("resolve_environment_collisions", &SGA::RTSForwardModel::resolveEnvironmentCollisions, py::arg("state"),"Resolves collisions between entities and the tiles that are not walkable in a basic way computing the penetration depth and pushing them way in the opposite direction.")
-
+	
 		.def("find_path", &SGA::RTSForwardModel::findPath, py::arg("state"), py::arg("startPos"), py::arg("endPos"),"Returns a Path inside the Navmesh between the start and end positons.")
 		.def("check_game_is_finished", &SGA::RTSForwardModel::checkGameIsFinished, py::arg("state"),"Checks if the game is finished by current limit or because a player has won.")
 		;

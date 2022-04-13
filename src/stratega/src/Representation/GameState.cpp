@@ -182,8 +182,18 @@ namespace SGA
 		auto instance = type.instantiateEntity(nextEntityID);
 		instance.setOwnerID(playerID);
 		instance.setPosition(position);
-		entities.emplace_back(std::move(instance));
 		nextEntityID++;
+
+		//Add initial objects
+		for (auto objectTypeID : type.getInitialObjectIDs())
+		{
+			auto newObject = gameInfo->getEntityType(objectTypeID).instantiateEntity(nextEntityID);
+			
+			instance.addObject(newObject);
+			nextEntityID++;
+		}
+
+		entities.emplace_back(std::move(instance));
 
 		return instance.getID();
 	}
@@ -566,6 +576,19 @@ namespace SGA
 	const Entity* GameState::getEntityAtConst(const Vector2f& pos) const
 	{
 		for (const auto& entity : entities)
+		{
+			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
+			{
+				return &entity;
+			}
+		}
+
+		return nullptr;
+	}
+
+	Entity* GameState::getEntityAt(const Vector2f& pos)
+	{
+		for (auto& entity : entities)
 		{
 			if (static_cast<int>(pos.x) == static_cast<int>(entity.x()) && static_cast<int>(pos.y) == static_cast<int>(entity.y()))
 			{

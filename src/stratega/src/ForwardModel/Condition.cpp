@@ -136,16 +136,32 @@ namespace  SGA
 		return sourceEntity.getOwnerID() == targetEntity.getOwnerID();
 	}
 
-	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& /*parameters*/) : Condition(exp)
+	IsPlayerID::IsPlayerID(const std::string exp, const std::vector<FunctionParameter>& parameters) : 
+		Condition(exp),
+		playerID(parameters.at(1))
+	{
+	}
+
+	bool IsPlayerID::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		auto targetPlayerID = playerID.getConstant(state, targets);
+
+		return targets[0].getPlayerID(state) == targetPlayerID;
+	}
+
+	DifferentPlayer::DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		targetEntity(parameters.at(1))
 	{
 	}
 
 	bool DifferentPlayer::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
 	{
 		auto& sourceEntity = targets[0].getEntityConst(state);
-		auto& targetEntity = targets[1].getEntityConst(state);
+		//auto& targetEntity = targets[1].getEntityConst(state);
+		auto& target = targetEntity.getEntity(state, targets);
 
-		return sourceEntity.getOwnerID() != targetEntity.getOwnerID();
+		return sourceEntity.getOwnerID() != target.getOwnerID();
 	}
 
 	InRange::InRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -164,6 +180,24 @@ namespace  SGA
 		auto dist = distance.getConstant(state, targets);
 		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
 		return source.getPosition().distance(target) <= dist;
+	}
+
+	OutRange::OutRange(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		:Condition(exp),
+		sourceEntity(parameters.at(0)),
+		targetEntity(parameters.at(1)),
+		distance(parameters.at(2))
+		
+	{
+	}
+
+	bool OutRange::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& source = sourceEntity.getEntity(state, targets);
+		const auto& target = targetEntity.getPosition(state, targets);
+		auto dist = distance.getConstant(state, targets);
+		//std::cout << "	InRange: " << source.getPosition().distance(target) <<"<=" << dist<<std::endl;
+		return source.getPosition().distance(target) >= dist;
 	}
 
 	IsWalkable::IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters)
@@ -304,6 +338,48 @@ namespace  SGA
 		}
 		
 	}
+
+	IsTick::IsTick(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		tickParam(parameters[0])
+	{
+	}
+
+	bool IsTick::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double tick = tickParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if(tick==currentTick)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}		
+	}
+
+	IsNotTick::IsNotTick(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp), 
+		tickParam(parameters[0])
+	{
+	}
+
+	bool IsNotTick::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		double tick = tickParam.getConstant(state, targets);
+		auto currentTick = state.getCurrentTick();
+
+		if(tick!=currentTick)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}		
+	}
 	
 	IsResearched::IsResearched(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Condition(exp),
@@ -341,6 +417,21 @@ namespace  SGA
 		}
 
 		return !hasEntity;
+	}
+
+	HasNoEntities::HasNoEntities(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		playerParam(parameters[0])
+	{
+	}
+
+	bool HasNoEntities::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+
+		auto entities = state.getPlayerEntities(targetPlayer.getID());
+
+		return entities.size()<=0;
 	}
 	
 

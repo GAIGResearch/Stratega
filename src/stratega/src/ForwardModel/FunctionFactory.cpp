@@ -16,6 +16,7 @@ namespace SGA
 		factory.registerFunction<SamePlayer>("SamePlayer");
 		factory.registerFunction<DifferentPlayer>("DifferentPlayer");
 		factory.registerFunction<InRange>("InRange");
+		factory.registerFunction<OutRange>("OutRange");
 		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
@@ -32,6 +33,10 @@ namespace SGA
 		factory.registerFunction<HasInventoryFull>("HasInventoryFull");
 		factory.registerFunction<HasNotInventoryFull>("HasNotInventoryFull");
 		factory.registerFunction<CanEquipObject>("CanEquipObject");
+		factory.registerFunction<IsPlayerID>("IsPlayerID");
+		factory.registerFunction<IsNotTick>("IsNotTick");
+		factory.registerFunction<IsTick>("IsTick");
+		factory.registerFunction<HasNoEntities>("HasNoEntities");
 		factory.registerFunction<IsOccupiedGrid>("IsOccupiedGrid");
 		factory.registerFunction<IsOccupied>("IsOccupied");
 		factory.registerFunction<IsNotOccupiedGrid>("IsNotOccupiedGrid");
@@ -48,6 +53,7 @@ namespace SGA
 		factory.registerFunction<ChangeResource>("ChangeResource");
 		factory.registerFunction<ModifyResource>("ModifyResource");
 		factory.registerFunction<Attack>("Attack");
+		factory.registerFunction<AttackWithArmorUnderCover>("AttackWithArmorUnderCover");
 		factory.registerFunction<AttackProbability>("AttackProbability");
 		factory.registerFunction<Move>("Move");
 		factory.registerFunction<SpawnEntity>("SpawnEntity");
@@ -69,6 +75,12 @@ namespace SGA
 		factory.registerFunction<UseObject>("UseObject");
 		factory.registerFunction<UseSlotObject>("UseSlotObject");
 		factory.registerFunction<DropObject>("DropObject");
+		factory.registerFunction<RemoveObject>("RemoveObject");
+
+		factory.registerFunction<PushAndHit>("PushAndHit");
+		factory.registerFunction<PushAroundPositionAndHit>("PushAroundPositionAndHit");
+
+		factory.registerFunction<AttackAroundWithArmor>("AttackAroundWithArmor");
 
 		factory.registerFunction<Empty>("Empty");
 

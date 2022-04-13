@@ -167,16 +167,26 @@ namespace SGA
 		double amount = amountParameter.getConstant(state, targets);
 		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
 		
-		if (!resourceReference.isPlayerParameter(targets))
+		if (resourceReference.isEntityParameter(targets))
 		{
 			auto& entitySource = resourceReference.getEntity(state, targets);
 			fm.modifyEntityParameterByIndex(entitySource, parameterIndex, amount);
 		}
-		else
+		else if (resourceReference.isPlayerParameter(targets))
 		{
 			auto& playerSource = resourceReference.getPlayer(state, targets);
 			fm.modifyPlayerParameterByIndex(playerSource, parameterIndex, amount);
 		}
+		else if (resourceReference.isTileParameter(targets))
+		{
+			auto& tile = resourceReference.getTile(state, targets);
+			fm.modifyTileParameterByIndex(tile, parameterIndex, amount);
+		}
+		else
+		{
+			fm.modifyStateParameterByIndex(state, parameterIndex, amount);
+		}
+		
 	}
 	
 	Attack::Attack(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -201,6 +211,119 @@ namespace SGA
 
 		if(targetResource <= 0)
 			entity.flagRemove();
+	}
+	
+	AttackWithArmorUnderCover::AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
+		sourceReference(parameters.at(0)),
+		armorReference(parameters.at(1)),
+		healthReference(parameters.at(2)),
+		amountParameter(parameters.at(3)),
+		penaltyParameter(parameters.at(4))
+	{
+
+	}
+	
+	void AttackWithArmorUnderCover::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& target = armorReference.getEntity(state, targets);
+		auto targetResource = armorReference.getRawParameterValue(state, targets);
+		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		auto amount = amountParameter.getConstant(state, targets);
+		auto penalty = penaltyParameter.getConstant(state, targets);
+		
+		//Compute if enemy is cover
+		//Checks if target entity has a wall direction of source
+		auto& entity = sourceReference.getEntity(state, targets);
+
+		auto pushDir = entity.getPosition() - target.getPosition();
+		pushDir = pushDir.normalized();
+		auto wallPositionCheck = target.getPosition() + pushDir;
+
+		const auto& tile = state.getTileAt(wallPositionCheck.x, wallPositionCheck.y);
+
+		if (!tile.isWalkable())
+		{
+			//It has a cover in front
+			amount -= amount * (penalty / 100);
+		}
+
+		//Remove armor
+        targetResource -= amount;
+		double amountRemaining = 0;
+		fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+		if (targetResource < 0)
+		{
+			amountRemaining = -targetResource;
+			targetResource = 0;			
+
+			//Lets remove the remaining to health
+			targetResource = healthReference.getRawParameterValue(state, targets);
+			parameterIndex = healthReference.getParameter(state, targets).getIndex();
+
+			targetResource -= amountRemaining;
+
+			fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+
+			if (targetResource <= 0)
+				target.flagRemove();
+		}
+	}
+	AttackAroundWithArmor::AttackAroundWithArmor(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp), 
+		sourceReference(parameters.at(0)),
+		targetPositionReference(parameters.at(1)),
+		armorReference(parameters.at(2)),
+		healthReference(parameters.at(3)),
+		amountParameter(parameters.at(4)),
+		samplingMethod(std::move(std::make_unique<Neighbours>()))
+	{
+		samplingMethod->shapeType = Neighbours::ShapeType::Cross;
+		samplingMethod->shapeSize = 1;
+	}
+	
+	void AttackAroundWithArmor::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& armorParame = armorReference.getEntity(state, targets);
+		auto targetResource = armorReference.getRawParameterValue(state, targets);
+		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		auto amount = amountParameter.getConstant(state, targets);
+		
+		auto targetPosition = targetPositionReference.getPosition(state, targets);
+
+		//Get entities around position		
+		auto entities = samplingMethod->getEntities(state, targetPosition, {});
+
+		for (auto& entID : entities)
+		{
+			auto* target = state.getEntity(entID);
+
+			if (!target)
+				continue;
+
+			//Remove armor
+			targetResource = target->getParameter(armorReference.getParameter(state, targets).getName());
+
+			targetResource -= amount;
+			double amountRemaining = 0;
+			
+			fm.modifyEntityByParameterByName(*target, armorReference.getParameter(state, targets).getName(), targetResource);
+
+			if (targetResource < 0)
+			{
+				amountRemaining = -targetResource;
+				targetResource = 0;
+
+				//Lets remove the remaining to health
+				targetResource = target->getParameter(healthReference.getParameter(state, targets).getName());
+				targetResource -= amountRemaining;
+
+				fm.modifyEntityByParameterByName(*target, healthReference.getParameter(state, targets).getName(), targetResource);
+
+				if (targetResource <= 0)
+					target->flagRemove();
+			}
+		}		
 	}
 
 	Empty::Empty(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -230,6 +353,156 @@ namespace SGA
 		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }) && state.isOccupied(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
 			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+	
+	PushAndHit::PushAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]),
+		targetParam(parameters[1]),
+		resourceReference(parameters.at(2)),
+		amountParameter(parameters.at(3))
+	{
+
+	}
+	
+	void PushAndHit::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = target.getPosition() - entity.getPosition();
+		pushDir = pushDir.normalized();
+		auto newTargetPos = target.getPosition() + pushDir;
+		
+		auto* hittedEntity = state.getEntityAt(newTargetPos);
+		if (state.isInBounds(newTargetPos) && state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+
+		//Deals damage
+		auto targetResource = resourceReference.getRawParameterValue(state, targets);
+		int parameterIndex = resourceReference.getParameter(state, targets).getIndex();
+		auto amount = amountParameter.getConstant(state, targets);
+
+		//Remove to the parameter with buffs appliead the amount
+		targetResource -= amount;
+
+		fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+
+		if (targetResource <= 0)
+			target.flagRemove();
+
+		if (hittedEntity)
+		{
+			std::cout << "There is another entity";
+			//Deal damage to hitted entity
+			auto param = hittedEntity->getParameter(resourceReference.getParameter(state, targets).getName());
+
+			fm.modifyEntityByParameterByName(*hittedEntity, resourceReference.getParameter(state, targets).getName(), param - amount);
+
+			if (param - amount <= 0)
+				hittedEntity->flagRemove();
+
+			targetResource -= amount;
+
+			//And damage the target
+			fm.modifyEntityParameterByIndex(target, parameterIndex, targetResource);
+
+			if (targetResource <= 0)
+				target.flagRemove();
+		}
+
+		
+	}
+
+	PushAroundPositionAndHit::PushAroundPositionAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]),
+		targetParam(parameters[1]),
+		resourceReference(parameters.at(2)),
+		amountParameter(parameters.at(3)),
+		samplingMethod(std::move(std::make_unique<Neighbours>()))
+	{
+		samplingMethod->shapeType = Neighbours::ShapeType::Cross;
+		samplingMethod->shapeSize = 1;
+	}
+	
+	void PushAroundPositionAndHit::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto targetPosition = targetParam.getPosition(state, targets);
+
+		//Get entities around position		
+		auto entities= samplingMethod->getEntities(state, targetPosition, {});
+
+		auto amount = amountParameter.getConstant(state, targets);
+
+		//Deal damage to entity in target position
+		auto* targetPositionEntity = state.getEntityAt(targetPosition);
+		std::string parameterName = resourceReference.getParameter(state, targets).getName();
+
+		if (targetPositionEntity)
+		{
+			//Deals damage
+			auto currValue = targetPositionEntity->getParameter(parameterName);
+			
+			//Deal damage to hitted entity
+			auto param = targetPositionEntity->getParameter(resourceReference.getParameter(state, targets).getName());
+
+			fm.modifyEntityByParameterByName(*targetPositionEntity, resourceReference.getParameter(state, targets).getName(), param - amount);
+
+			if (param - amount <= 0)
+				targetPositionEntity->flagRemove();
+		}
+
+		for (auto& entID : entities)
+		{
+			auto* pushedEntity = state.getEntity(entID);
+
+			
+			
+			if (!pushedEntity||pushedEntity->getPosition()==targetPosition)
+				continue;
+
+			auto actionTypes = pushedEntity->getActionTypes(*state.getGameInfo());
+			auto it = find_if(actionTypes.begin(), actionTypes.end(), [&actionTypes](const ActionType& obj) {return obj.getName() == "Move"; });
+			
+			//Hardcoded way to check if entity can move
+			//Once we had to actions calling other actions we will remove this
+			if (it == actionTypes.end())
+				continue;
+
+			auto pushDir = pushedEntity->getPosition() - targetPosition;
+			pushDir = pushDir.normalized();
+			auto newTargetPos = pushedEntity->getPosition() + pushDir;
+
+			auto* hittedEntity = state.getEntityAt(newTargetPos);
+			if (state.isInBounds(newTargetPos) && state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+			{
+				pushedEntity->setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+			}
+
+			if (hittedEntity)
+			{
+				std::cout << "There is another entity";
+				//Deal damage to hitted entity
+				auto param = hittedEntity->getParameter(resourceReference.getParameter(state, targets).getName());
+
+				fm.modifyEntityByParameterByName(*hittedEntity, resourceReference.getParameter(state, targets).getName(), param - amount);
+
+				if (param - amount <= 0)
+					hittedEntity->flagRemove();
+
+				param = pushedEntity->getParameter(resourceReference.getParameter(state, targets).getName());
+
+				//And damage the target
+				fm.modifyEntityByParameterByName(*pushedEntity, resourceReference.getParameter(state, targets).getName(), param - amount);
+
+				if (param - amount <= 0)
+					pushedEntity->flagRemove();
+			}
 		}
 	}
 	
@@ -267,6 +540,21 @@ namespace SGA
 
 		entity.removeObject(object.getID());
 		state.addEntity(object, -1, position);
+	}
+	
+	RemoveObject::RemoveObject(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), objectParam(parameters[1])
+	{
+
+	}
+
+	void RemoveObject::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{
+		auto& entity = entityParam.getEntity(state, targets);
+		Entity object = objectParam.getObject(state, targets);
+
+		entity.removeObject(object.getID());
 	}
 
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :

@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/OpenTheDoor.yaml
+    /gameConfigs/TBS/Test/OpenTheDoor.yaml
 
 .. only:: html
 
@@ -41,7 +41,7 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
         GridIsIsometric: true
         TileSpriteOrigin:
             Width: 128
@@ -61,12 +61,12 @@ YAML
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
@@ -83,7 +83,7 @@ YAML
             M  .  M  .  .  .  .  .  M  .  M  .  M  .  M  .  .  .  .  .  M  .  M
             M  .  M  .  M  .  M  .  M  k  M  .  M  k  M  .  M  .  M  .  M  .  M
             M  .  M  .  M  .  M  .  M  M  M  .  M  M  M  .  M  .  M  .  M  .  M
-            M  .  .  .  M  d1 M  .  .  .  .  .  .  .  .  .  M  d0 M  .  k  s0 M
+            M  .  .  .  M  d1 M  .  .  .  .  .  .  .  .  .  M  d0 M  .  .  s0 M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
     Actions:
         Move:
@@ -100,6 +100,7 @@ YAML
                             AllowDiagonals: false
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
                 - "ModifyResource(Source.MovementPoints, -1)"
@@ -188,7 +189,7 @@ YAML
         
     Entities:
         Searcher:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: s
             LineOfSightRange: 2
             Actions: [Move, PickUp, EquipObject, UnEquipObject, UseSlotObject]
@@ -206,7 +207,7 @@ YAML
 
     Objects:
         Key:
-        Sprite: ../../assets/Entities/key.png
+        Sprite: ../../../assets/Entities/key.png
         Symbol: k
         CanEquip: [Searcher] #Who can equip the object in the slots
         SlotsUse: [Right hand] #empty == cant be equiped in any slot

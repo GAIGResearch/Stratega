@@ -8,7 +8,7 @@ GameRenderer:
         Width: 1280
         Height: 800
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -43,27 +43,27 @@ Player:
 
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
         BlocksSight: true
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
 
 Entities:
     City:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
         Actions: [Spawn]
@@ -76,7 +76,7 @@ Entities:
             Range: 6
 
     Barracks:
-        Sprite: ../../assets/Entities/barracks.png
+        Sprite: ../../../assets/Entities/barracks.png
         LineOfSightRange: 3
         RequiredTechnology: Discipline
         Actions: [Spawn]
@@ -88,7 +88,7 @@ Entities:
             Range: 6
 
     MilitaryAcademy:
-        Sprite: ../../assets/Entities/military.png
+        Sprite: ../../../assets/Entities/military.png
         LineOfSightRange: 3
         RequiredTechnology: Mathematics
         Actions: [Spawn]
@@ -99,7 +99,7 @@ Entities:
             Health: 500
 
     Foundry:
-        Sprite: ../../assets/Entities/foundry.png
+        Sprite: ../../../assets/Entities/foundry.png
         LineOfSightRange: 2
         RequiredTechnology: Metallurgy
         Actions: []
@@ -109,7 +109,7 @@ Entities:
             Health: 300
             
     Workshop:
-        Sprite: ../../assets/Entities/storage.png
+        Sprite: ../../../assets/Entities/storage.png
         LineOfSightRange: 2
         RequiredTechnology: Apprenticeship
         Actions: []
@@ -119,7 +119,7 @@ Entities:
             Health: 300
 
     Storage:
-        Sprite: ../../assets/Entities/castle.png
+        Sprite: ../../../assets/Entities/castle.png
         LineOfSightRange: 1
         RequiredTechnology: Pottery
         Actions: []
@@ -131,7 +131,7 @@ Entities:
             StorageCapacity: 50
 
     Worker:
-        Sprite: ../../assets/Entities/unit_5.png
+        Sprite: ../../../assets/Entities/unit_5.png
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
@@ -146,7 +146,7 @@ Entities:
             Range: 3
             
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Bronze Working
@@ -161,7 +161,7 @@ Entities:
             Health: 150
             
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Archery
@@ -177,7 +177,7 @@ Entities:
             Health: 100
             
     Catapult:
-        Sprite: ../../assets/Entities/unit_4.png
+        Sprite: ../../../assets/Entities/unit_4.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
         RequiredTechnology: Engineering
@@ -193,7 +193,7 @@ Entities:
             Health: 60
 
     GoldVein:
-        Sprite: ../../assets/Entities/gold_chest.png
+        Sprite: ../../../assets/Entities/gold_chest.png
         Symbol: g
         LineOfSightRange: 6
         Actions: []

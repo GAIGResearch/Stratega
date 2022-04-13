@@ -31,9 +31,10 @@ namespace SGA
 		
 		//Entity
 		virtual std::vector<ActionTarget> generateGroupTargets(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const;//Entity
-		virtual std::vector<ActionTarget> generateObjectTargets(const GameState& gameState, const Entity& source) const;
-		virtual std::vector<ActionTarget> generateSlotObjectTargets(const GameState& gameState, const Entity& source) const;
-		
+
+		virtual std::vector<ActionTarget> generateObjectTargets(const GameState& gameState, const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const;
+		virtual std::vector<ActionTarget> generateSlotObjectTargets(const GameState& gameState, const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const;
+
 		//Player
 		virtual std::vector<ActionTarget> generateGroupTargets(const GameState& gameState, const std::unordered_set<int>& entityTypeIDs, std::shared_ptr<SamplingMethod> samplingMethod) const;
 

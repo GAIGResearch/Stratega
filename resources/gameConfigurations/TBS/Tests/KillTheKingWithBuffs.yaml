@@ -16,7 +16,7 @@ GameRenderer:
         Width: 800
         Height: 600
     Default Assets:
-        FogOfWar: ../../assets/Tiles/notVisible.png
+        FogOfWar: ../../../assets/Tiles/notVisible.png
     GridIsIsometric: true
     TileSpriteOrigin:
         Width: 128
@@ -34,25 +34,37 @@ GameRenderer:
     #Font: ../../assets/arial.ttf
     #OutlineShader: ../../assets/OutLine.frag
 
+Buffs: # Buff lists
+    HealthBuff:
+        MultiplicationModifier:
+            Health: 1.5
+    HealthBoostBuff:
+        MultiplicationModifier:
+            Health: 1.1
+    AttackBoostBuff:
+        AdditiveModifier: 
+            AttackDamage: 20
+            AttackRange: 2
+
 Tiles:
     Plain:
-        Sprite: ../../assets/Tiles/plain.png
+        Sprite: ../../../assets/Tiles/plain.png
         Symbol: .
         IsWalkable: true
         DefaultTile: true
     Water:
-        Sprite: ../../assets/Tiles/water.png
+        Sprite: ../../../assets/Tiles/water.png
         Symbol: W
         IsWalkable: false
     Mountain:
-        Sprite: ../../assets/Tiles/rock.png
+        Sprite: ../../../assets/Tiles/rock.png
         Symbol: M
         IsWalkable: false
     Forest:
-        Sprite: ../../assets/Tiles/forest.png
+        Sprite: ../../../assets/Tiles/forest.png
         Symbol: F
         IsWalkable: true
-        
+
 Board:
     GenerationType: Manual
     Layout: |-
@@ -73,8 +85,44 @@ Board:
         M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+
 Actions:
-    Attack:
+
+    AddBuffAround:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "HasNoBuff(Target, HealthBuff)"
+        Effects:
+            - "ApplyBuff(Target, HealthBuff, 2)"
+
+    BoostAttackPower:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Archer]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.AttackRange)"
+                    - "HasNoBuff(Target, AttackBoostBuff)"
+        Effects:
+            - "ApplyBuff(Target, AttackBoostBuff, 5)"
+
+    BoostHealth:
         Type: EntityAction
         Cooldown: 1
         Targets:
@@ -85,6 +133,24 @@ Actions:
                     Type: Neighbours
                     Options:
                         Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+                    - "HasNoBuff(Target, HealthBoostBuff)"
+        Effects:
+            - "ApplyBuff(Target, HealthBoostBuff, 2)"
+
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
                 Conditions:
                     #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Target, Source.AttackRange)"
@@ -129,80 +195,54 @@ Actions:
                     - "InRange(Source, Target, Source.HealRange)"
         Effects:
             - "ModifyResource(Target.Health, Source.HealAmount)"
-    Test:
-        Type: PlayerAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: All
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-        Effects:
-            - "ModifyResource(Target.Health, -1000)"
-    TestTwo:
-        Type: EntityAction
-        Cooldown: 1
-        Targets:
-            Target:
-                Type: Entity
-                ValidTargets: All
-                SamplingMethod:
-                    Type: Neighbours
-                    Options:
-                        Shape: AllPositions
-        Effects:
-            - "ModifyResource(Target.Health, -1000)"
-#Grids:
-#    Layer0: [Warrior]
-#    Layer1: [Archer]
-    
+
 Entities:
     Warrior:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
         Actions: [Attack, Move]
-        Parameters:
-            Health: 200
-            AttackRange: 2
-            AttackDamage: 100
+        Parameters:           
+            AttackRange: 10
+            Health: [0,200,200]
+            AttackDamage: [0,100,100]
             MovementPoints: 2
 
     Archer:
-        Sprite: ../../assets/Entities/unit_3.png
+        Sprite: ../../../assets/Entities/unit_3.png
         Symbol: a
         LineOfSightRange: 10
-        Parameters:
-            Health: 100
+        Parameters:            
             AttackRange: 5
             AttackDamage: 10
+            Health: [0,100,100]
             MovementPoints: 2
         Actions: [Attack, Move]
 
     Healer:
-        Sprite: ../../assets/Entities/unit_6.png
+        Sprite: ../../../assets/Entities/unit_6.png
         Symbol: h
         LineOfSightRange: 4
-        Parameters:
-            Health: 40
+        Parameters:           
             HealRange: 2
+            Health: 40
             HealAmount: 10
             MovementPoints: 5
-        Actions: [Heal, Move]
+        Actions: [Heal, Move, BoostHealth]
 
     King:
-        Sprite: ../../assets/Entities/unit_1.png
+        Sprite: ../../../assets/Entities/unit_1.png
         Symbol: k
         LineOfSightRange: 6
         Parameters:
-            Health: 400
+            Health: [0,400,400]
             AttackRange: 2
             AttackDamage: 100
             MovementPoints: 1
-        Actions: [Attack, Move]
+        Actions: [Attack, Move, BoostAttackPower]
+        ##Each tick add a buff to the warrior entities around the king
+        OnTickActions: [AddBuffAround]
+            
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
@@ -214,25 +254,6 @@ ForwardModel:
             Type: Entity
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
-        - OnStart:
-            Type: Player
-            Effects:
-                - "EnqueueAction(Source, Test)"
-        - OnStart:
-            Type: Entity
-            Effects:
-                - "EnqueueAction(Source, TestTwo)"
-        #- OnStart:
-        #    Type: Entity
-        #    ValidTargets: [Warrior, Healer]
-        #    Effects:
-        #        - "PushAction(Source, Test)"
-        #- OnStart:
-        #    Type: Entity
-        #    Conditions:
-        #        -IsPosition(2,1)
-        #    Effects:
-        #        - "PushAction(Source, Test)"
 
 #Action categories
 GameDescription:

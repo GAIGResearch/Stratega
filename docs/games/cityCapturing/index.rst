@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/CityCapturing.yaml
+    /gameConfigs/TBS/Original/CityCapturing.yaml
 
 .. only:: html
 
@@ -39,32 +39,44 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
 
     Player:
         Parameters:
-            Gold: 5
+            Gold: [0,5,1000]
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
         
@@ -139,20 +151,21 @@ YAML
                             AllowDiagonals: false
                     Conditions:
                     - "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
 
 
     Entities:
         City:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             Symbol: c
             LineOfSightRange: 5
             CanSpawn: Units
             Actions: [Spawn]
 
         Conquerer:
-            Sprite: ../../assets/Entities/unit_5.png
+            Sprite: ../../../assets/Entities/unit_5.png
             Symbol: s
             LineOfSightRange: 4
             Actions: [Move, Capture]
@@ -162,7 +175,7 @@ YAML
                 Gold: 6
 
         Fighter:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: f
             LineOfSightRange: 6
             Actions: [Move, Attack]
@@ -237,6 +250,7 @@ YAML
 
         Trigger:
             - OnTick:
+                Type: Entity
                 ValidTargets: City
                 Conditions:
                     - "IsPlayerEntity(Source)"

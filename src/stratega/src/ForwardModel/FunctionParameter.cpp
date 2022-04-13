@@ -1,6 +1,8 @@
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ExpressionStruct.h>
 #include <Stratega/Representation/GameState.h>
+#include <boost/random.hpp>
+#include <Stratega/Utils/cparse/shunting-yard.h>
 
 #include <Stratega/Utils/cparse/shunting-yard.h>
 
@@ -301,7 +303,7 @@ namespace SGA
 			DiceAnotation test = data.diceAnotation;
 			auto rndEngine = state.getRndEngineCopy();
 			rndEngine.seed(std::chrono::system_clock::now().time_since_epoch().count());
-			std::uniform_int_distribution<int> distribution(1, test.diceFaceNumber);
+			boost::uniform_int<int> distribution(1, test.diceFaceNumber);
 			double result=0;
 	
 			for (size_t i = 0; i < test.diceNumber; i++)
@@ -346,7 +348,8 @@ namespace SGA
 	{
 		if (parameterType == Type::ParameterReference)
 		{
-			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference
+				|| actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Object)
 			{
 				auto& entity = getEntity(state, actionTargets);
 
@@ -430,6 +433,14 @@ namespace SGA
 		if (parameterType == Type::ParameterReference)
 		{
 			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
+			{
+				return true;
+			}
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Object)
+			{
+				return true;
+			}
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::SlotObject)
 			{
 				return true;
 			}
@@ -555,7 +566,8 @@ namespace SGA
 		if (parameterType == Type::ParameterReference)
 		{
 			const auto& param = getParameter(state, actionTargets);
-			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference)
+			if (actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::EntityReference ||
+				actionTargets[data.parameterData.argumentIndex].getType() == ActionTarget::Object)
 			{
 				//std::cout <<"		" << param.getName()<<" "<<std::endl;
 				auto& entity = getEntity(state, actionTargets);

@@ -60,7 +60,12 @@ namespace SGA
 		/// <summary>
 		/// Indicates if action is continuous: if the execution of this action extends beyond the tick it was started.
 		/// </summary>
-		bool continuous;
+		bool continuous = false;
+
+		/// <summary>
+		/// Indicates if action is endtick
+		/// </summary>
+		bool endTick=false;
 
 		/// <summary>
 		/// Continuous actions finish when certain conditions are met. This vector indicates those conditions.
@@ -128,6 +133,9 @@ namespace SGA
 
 		bool isContinuous() const { return continuous; }
 		void setContinuous(bool c) { continuous = c; }
+
+		bool isEndTick() const { return endTick; }
+		void setEndTick(bool e) { endTick = e; }
 
 
 		/* Getters for conditions, effects and targets */

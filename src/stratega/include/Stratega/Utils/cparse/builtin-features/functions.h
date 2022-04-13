@@ -1,7 +1,10 @@
 #include <cmath>
+#include <boost/random.hpp>
+#include <Stratega/ForwardModel/FunctionParameter.h>
+#include <regex>
 
 namespace builtin_functions {
-
+ 
 /* * * * * Built-in Functions: * * * * */
 
 packToken default_print(TokenMap scope) {
@@ -118,6 +121,17 @@ packToken default_type(TokenMap scope) {
     }
   default: return "unknown_type";
   }
+}
+
+packToken rand(TokenMap scope) {
+    int min = scope["min"].asInt();
+    int max = scope["max"].asInt();
+
+    boost::random::mt19937 rndEngine;
+    rndEngine.seed(std::chrono::system_clock::now().time_since_epoch().count());
+    boost::uniform_int<int> distribution(min, max);
+
+    return distribution(rndEngine);
 }
 
 packToken default_sqrt(TokenMap scope) {
@@ -249,7 +263,7 @@ struct Startup {
     global["eval"] = CppFunction(&default_eval, {"value"}, "eval");
     global["type"] = CppFunction(&default_type, {"value"}, "type");
     global["extend"] = CppFunction(&default_extend, {"value"}, "extend");
-
+    global["rand"] = CppFunction(&rand, { "min", "max"}, "int");
     // Default constructors:
     global["list"] = CppFunction(&default_list, "list");
     global["map"] = CppFunction(&default_map, "map");
