@@ -102,7 +102,7 @@ jobs:
     needs: [build_sdist, wheels]
     runs-on: ubuntu-20.04
     # upload pypi wheels if commit is tagged with "v"
-    if: github.event_name == 'push')
+    if: github.event_name == 'push'
     steps:
       - name: Collect sdist and wheels
         uses: actions/download-artifact@v2
