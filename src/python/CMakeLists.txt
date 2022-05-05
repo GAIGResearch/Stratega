@@ -4,7 +4,7 @@ set(BINDING_SOURCE_FILES
 
 list(TRANSFORM BINDING_SOURCE_FILES PREPEND "${SUBPROJ_PYBINDING_SRC_DIR}/")
 #find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
-find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+find_package(Python COMPONENTS Interpreter Development.Module)
 #find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 #set(PYBIND11_FINDPYTHON TRUE)
 if(DEFINED ${pybind11_SEARCH_PATH})
