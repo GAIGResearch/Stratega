@@ -5,7 +5,7 @@ GameConfig:
 
 Agents:
     - HumanAgent
-    - DoNothingAgent
+    - OSLAAgent
     #- MCTSAgent:
     #    FmCalls: 100
     #    Budget: TIME
