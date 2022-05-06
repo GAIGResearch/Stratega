@@ -1,13 +1,9 @@
-name: Python Wheel Builds
+name: Python Wheel Builds (TEST)
 
 on:
   push:
     branches:
-      - master
-      - dev
-    tags:
-      - '*'
-  pull_request:
+      - fix_python_wheels
 env:
     CIBW_SKIP: cp36-manylinux_x86_64 cp36-win_amd64 cp36-macosx_x86_64 pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
@@ -106,7 +102,7 @@ jobs:
     needs: [build_sdist, wheels]
     runs-on: ubuntu-20.04
     # upload pypi wheels if commit is tagged with "v"
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    if: github.event_name == 'push'
     steps:
       - name: Collect sdist and wheels
         uses: actions/download-artifact@v2
@@ -116,31 +112,7 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
-          password: ${{ secrets.PIPSTRATEGASECRET }}
+          password: ${{ secrets.PIPSTRATEGASECRETTEST }}
+          repository_url: https://test.pypi.org/legacy/
           packages_dir: wheelhouse/
           verbose: true
-
-  create_release:
-    name: Create release
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build_sdist, wheels]
-
-    steps:
-      - name: Collect sdist and wheels
-        uses: actions/download-artifact@v2
-        with:
-          name: wheels
-          path: wheelhouse
-
-      - name: Get release name
-        id: get_version
-        run: |
-          echo "::set-output name=version::${GITHUB_REF##refs/tags/v}"
-      - name: Upload sdist and wheels to release
-        uses: ncipollo/release-action@v1.8.8
-        with:
-          name: ${{ steps.get_version.outputs.version }}
-          draft: true
-          artifacts: wheelhouse/*
-          token: ${{ secrets.GITHUB_TOKEN }}

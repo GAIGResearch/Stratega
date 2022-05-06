@@ -3,7 +3,7 @@ zlib/1.2.12
 opengl/system
 sfml/2.5.1
 gtest/1.11.0
-pybind11/2.7.1
+pybind11/2.6.1
 recastnavigation/cci.20200511
 yaml-cpp/0.7.0
 imgui/1.84.2
