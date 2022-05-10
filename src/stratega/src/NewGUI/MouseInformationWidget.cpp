@@ -43,6 +43,9 @@ namespace SGA
 			window.draw(selectedTile);
 		}		
 
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 70), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Mouse info");
 		std::string gridPosText = "Grid Position: (" + std::to_string(gridPos.x) + "," + std::to_string(gridPos.y) + ")";
 		auto strategaMousPos = world.toStrategaRounded(mousePos);
@@ -68,6 +71,10 @@ namespace SGA
 
 	void GridInformationWidget::render(SGARenderTarget& renderTarget)
 	{
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 90), ImGuiCond_FirstUseEver);
+
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Grid information");
 		ImGui::Checkbox("Draw entity information", &drawEntityInformation);
 		ImGui::Checkbox("Draw tile information", &drawTileInformation);
@@ -80,7 +87,7 @@ namespace SGA
 
 			auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 			auto gridPos = world.toStratega(mousePos);
-			auto* entity = currentGameState->getEntityAt(gridPos);
+			auto* entity = currentGameState->getEntityAtConst(gridPos);
 			
 			//Check if we have entities selected
 			if (selectedEntities.size() > 0)
@@ -108,7 +115,7 @@ namespace SGA
 				if(world.getEntity(entity->getID()))
 					world.getEntity(entity->getID())->isHighlighted=true;
 
-				ImGui::SetNextWindowSize(ImVec2(250, 0), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Always);
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Entity Information", NULL, window_flags);
 
@@ -229,7 +236,7 @@ namespace SGA
 				ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(window.getSize().y)), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 				ImGui::Begin("Tile Information"/*, NULL, window_flags*/);
 
-				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAt(gridPosRounded).getTileTypeID());
+				auto& tileType = currentGameState->getGameInfo()->getTileType(currentGameState->getTileAtConst(gridPosRounded).getTileTypeID());
 
 				ImGui::Text("%s", tileType.getName().c_str());
 				ImGui::Columns(2, "mixed");
@@ -249,7 +256,7 @@ namespace SGA
 
 
 				ImGui::NextColumn();
-				ImGui::Text("Parameters: ");
+				ImGui::Text("Default parameters: ");
 
 				if(tileType.isWalkable())
 					ImGui::BulletText("Is walkable: true");
@@ -265,6 +272,22 @@ namespace SGA
 					ImGui::BulletText("Is default tile: true");
 				else
 					ImGui::BulletText("Is default tile: false");
+
+				if (tileType.getParameters().size() > 0)
+				{
+					ImGui::Text("Parameters: ");
+
+					for (const auto& parameter : tileType.getParameters())
+					{
+						//Double to string with 2 precision
+						std::stringstream stream;
+						stream << std::fixed << std::setprecision(2) << currentGameState->getTileAtConst(gridPosRounded).getParameter(parameter.second.getName());
+						std::string valueParameter = stream.str();
+
+						std::string parameterInfo = parameter.second.getName() + ": " + valueParameter;
+						ImGui::BulletText("%s", parameterInfo.c_str());
+					}
+				}			
 
 				ImGui::End();
 			}

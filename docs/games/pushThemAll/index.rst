@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/PushThemAll.yaml
+    /gameConfigs/TBS/Original/PushThemAll.yaml
 
 .. only:: html
 
@@ -42,32 +42,44 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
         Hole:
-            Sprite: ../../assets/Tiles/hole.png
+            Sprite: ../../../assets/Tiles/hole.png
             Symbol: H
             IsWalkable: true
             
@@ -123,13 +135,14 @@ YAML
                             AllowDiagonals: false
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
                 - "ModifyResource(Source.MovementPoints, -1)"
 
     Entities:
         Warrior:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: w
             LineOfSightRange: 6
             Actions: [Push, Move]

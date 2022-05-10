@@ -19,6 +19,9 @@ namespace SGA
 	
 	void GameStateInformationWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
+		ImGui::SetNextWindowPos(ImVec2(20, 110), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("State info");
 		std::string text = "Tick: " + std::to_string(state->getCurrentTick()) + "/"+ std::to_string(state->getTickLimit());
 		ImGui::Text("%s", text.c_str());

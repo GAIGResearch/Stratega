@@ -18,6 +18,7 @@ namespace SGA
 		IDMap targetIDs;
 		IDMap parameterIDs;
 		IDMap entityTypeIDs;
+		IDMap actionTypeIDs;
 		IDMap tileTypeIDs;
 		IDMap buffTypeIDs;
 		IDMap technologyTypeIDs;
@@ -59,21 +60,25 @@ namespace SGA
 
 	private:
 
-		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss) const;
-		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseDice(std::istringstream& ss, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseActionTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseExpression(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names
 		/// </summary>
-		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length) const;
+		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length, bool allowExpressions = false) const;
 		nonstd::optional<std::string> parseText(std::istringstream& ss) const;
+
 	};
 }

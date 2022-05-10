@@ -10,6 +10,7 @@ namespace SGA
 {
 	struct GameState;
 	struct Entity;
+	struct Tile;
 	struct Player;
 	struct EntityType;
 	typedef int EntityTypeID;
@@ -33,12 +34,15 @@ namespace SGA
 			TechnologyReference,
 			ContinuousActionReference,
 			TileTypeReference,
+			ActionTypeReference,
 			Gamestate,
+			TileReference,
 			Object,
 			SlotObject
 		};
 		
 		static ActionTarget createPositionActionTarget(Vector2f position);
+		static ActionTarget createTileActionTarget(Vector2f position);
 		static ActionTarget createEntityActionTarget(int entityID);
 		static ActionTarget createObjectActionTarget(int entityID);
 		static ActionTarget createSlotObjectActionTarget(int entityID);
@@ -48,19 +52,23 @@ namespace SGA
 		static ActionTarget createContinuousActionActionTarget(int continuousActionID);
 		static ActionTarget createEntityTypeActionTarget(EntityTypeID entityTypeID);
 		static ActionTarget createTileTypeActionTarget(TileTypeID entityTypeID);
+		static ActionTarget createActionTypeActionTarget(int actionTypeID);
 
 
 		//References		
 		const Entity& getEntityConst(const GameState& state) const;
 		Entity* getEntity(GameState& state) const;
+		Tile& getTile(GameState& state) const;
 		Player& getPlayer(GameState& state) const;
 		const Player& getPlayerConst(const GameState& state) const;
 		const EntityType& getEntityType(const GameState& state) const;
 		const TileType& getTileType(const GameState& state) const;
+		const ActionType& getActionType(const GameState& state) const;
 		const std::unordered_set<EntityTypeID>& getSpawnableEntities(const GameState& state) const;
 
 		//RAW Values
 		Vector2f getPosition(const GameState& state) const;
+		Vector2f getPosition() const;
 		int getTechnologyID()const
 		{
 			return data.technologyID;
@@ -92,6 +100,9 @@ namespace SGA
 				break;
 			case Position:
 				return "Position";
+				break;
+			case TileReference:
+				return "Tile";
 				break;
 			case PlayerReference:
 				return "PlayerReference";
@@ -128,6 +139,37 @@ namespace SGA
 		//Check if action target is valid in the received gamestate
 		bool isValid(const GameState& state) const;		
 
+		bool operator!=(const ActionTarget& other)
+		{
+			if (targetType == other.targetType)
+			{
+				switch (targetType)
+				{
+				case EntityReference:
+					return data.entityID != other.data.entityID;
+				case SlotObject:
+					return data.entityID != other.data.entityID;
+				case Object:
+					return data.entityID != other.data.entityID;
+				case PlayerReference:
+					return data.playerID != other.data.playerID;
+				case EntityTypeReference:
+					return data.entityTypeID != other.data.entityTypeID;
+				case TechnologyReference:
+					return data.technologyID != other.data.technologyID;
+				case ContinuousActionReference:
+					return data.continuousActionID != other.data.continuousActionID;
+				case TileTypeReference:
+					return data.tileTypeID != other.data.tileTypeID;
+				case Position:
+					return data.position != other.data.position;
+				default:
+					break;
+				}
+			}
+			else
+				return true;
+		}
 	private:
 		union Data
 		{
@@ -136,6 +178,7 @@ namespace SGA
 			int playerID;
 			EntityTypeID entityTypeID;
 			TileTypeID tileTypeID;
+			int actionTypeID;
 			int technologyID;
 			int continuousActionID;
 
@@ -169,6 +212,9 @@ namespace SGA
 				case EntityTypeReference:
 					entityTypeID = data;
 					break;
+				case ActionTypeReference:
+					actionTypeID = data;
+					break;
 				case TechnologyReference:
 					technologyID = data;
 					break;
@@ -181,10 +227,14 @@ namespace SGA
 				case Position:
 					position = SGA::Vector2f(-1, -1);
 					break;
+				case TileReference:
+					position = SGA::Vector2f(-1, -1);
+					break;
 				default:
 					break;
 				}
 			}
+
 		};
 
 		Type targetType;

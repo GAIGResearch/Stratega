@@ -3,7 +3,7 @@
 namespace SGA
 {
 	Agent::Agent(const std::string& name)
-		: playerID(-1), rngEngine(std::random_device{}()), agentName(name)
+		: playerID(-1), rngEngine(), agentName(name)
 	{
 	}
 
@@ -22,17 +22,15 @@ namespace SGA
 		this->playerID = newPlayerID;
 	}
 	
-	void Agent::setSeed(std::mt19937::result_type seed)
+	void Agent::setSeed(boost::mt19937::result_type seed)
 	{
 		rngEngine.seed(seed);
 	}
 
-	std::mt19937& Agent::getRNGEngine()
+	boost::mt19937& Agent::getRNGEngine()
 	{
 		return rngEngine;
 	}
-
-
 
 	std::vector<Action> Agent::filterActionsByTypeID(const std::vector<Action>& actions, int typeID) const
 	{

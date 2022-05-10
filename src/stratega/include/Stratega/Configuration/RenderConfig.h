@@ -9,8 +9,8 @@ namespace SGA
 
 	struct RenderConfig
 	{
-        std::string outlineShaderPath;
-        std::string fontPath;
+		std::string outlineShaderPath;
+		std::string fontPath;
 
 		bool isIsometricGrid;
 

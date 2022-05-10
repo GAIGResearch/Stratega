@@ -9,6 +9,10 @@ namespace SGA
 	{
 		return ActionTarget(Position, Data{position });
 	}
+	ActionTarget ActionTarget::createTileActionTarget(Vector2f position)
+	{
+		return ActionTarget(TileReference, Data{position });
+	}
 
 	ActionTarget ActionTarget::createEntityActionTarget(int entityID)
 	{
@@ -28,6 +32,11 @@ namespace SGA
 	ActionTarget ActionTarget::createEntityTypeActionTarget(EntityTypeID entityTypeID)
 	{
 		return ActionTarget(EntityTypeReference, Data{ EntityTypeReference, entityTypeID });
+	}
+
+	ActionTarget ActionTarget::createActionTypeActionTarget(int actionTypeID)
+	{
+		return ActionTarget(ActionTypeReference, Data{ ActionTypeReference, actionTypeID });
 	}
 
 	ActionTarget ActionTarget::createTileTypeActionTarget(EntityTypeID tileTypeID)
@@ -94,9 +103,20 @@ namespace SGA
 		throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
 	}
 
+	Vector2f ActionTarget::getPosition() const
+	{
+		if (targetType == Position || targetType == TileReference)
+		{
+			return data.position;
+		}
+		else {
+			throw std::runtime_error("Cannot call getPosition when targetType != Position");
+		}
+	}
+
 	Vector2f ActionTarget::getPosition(const GameState& state) const
 	{
-		if (targetType == Position)
+		if (targetType == Position|| targetType == TileReference)
 		{
 			return data.position;
 		}
@@ -129,6 +149,20 @@ namespace SGA
 			auto* entity = state.getEntity(data.entityID);
 		
 			return entity;
+		}
+		else
+		{
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
+		}
+	}
+	
+	Tile& ActionTarget::getTile(GameState& state) const
+	{
+		if (targetType == Type::TileReference)
+		{
+			auto& tile = state.getTileAt({static_cast<int>(data.position.x), static_cast<int>(data.position.y) });
+		
+			return tile;
 		}
 		else
 		{
@@ -175,7 +209,7 @@ namespace SGA
 			const auto& type = state.getGameInfo()->getEntityType(data.entityTypeID);
 			return type;
 		}
-		else if(targetType == EntityReference)
+		else if(targetType == EntityReference || targetType == Object || targetType == SlotObject)
 		{
 			const auto& type = state.getEntityConst(data.entityID)->getEntityType();
 			return type;
@@ -191,6 +225,18 @@ namespace SGA
 		if (targetType == TileTypeReference)
 		{
 			const auto& type = state.getGameInfo()->getTileType(data.entityTypeID);
+			return type;
+		}
+		else
+		{
+			throw std::runtime_error("Target type " + std::to_string(int(targetType)) + " not recognised in action target.");
+		}
+	}
+	const ActionType& ActionTarget::getActionType(const GameState& state) const
+	{
+		if (targetType == ActionTypeReference)
+		{
+			const auto& type = state.getGameInfo()->getActionType(data.actionTypeID);
 			return type;
 		}
 		else
@@ -251,6 +297,19 @@ namespace SGA
 			posString += ",";
 			num_text = std::to_string(position.y);
 			posString += num_text.substr(0, num_text.find(".") + 3);
+			return posString;		
+		}
+		case TileReference:
+		{
+			const auto position = getPosition(state);
+				
+			std::string posString;
+			std::string num_text = std::to_string(position.x);
+			std::string rounded = num_text.substr(0, num_text.find(".") + 3);
+			posString += num_text.substr(0, num_text.find(".") + 3);
+			posString += ",";
+			num_text = std::to_string(position.y);
+			posString += num_text.substr(0, num_text.find(".") + 3);
 			return posString;
 		}
 		break;
@@ -275,6 +334,9 @@ namespace SGA
 			break;
 		case TileTypeReference:
 			return getTileType(state).getName();
+			break;
+		case ActionTypeReference:
+			return getActionType(state).getName();
 			break;
 		default:
 			return "Not defined";

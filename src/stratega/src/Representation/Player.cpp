@@ -34,13 +34,13 @@ namespace SGA
 			double minParameter = param.getMinValue();
 
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 
 			//Keep parameter inside max and min
-			if (parameters[i] > maxParameter)
-				parameters[i] = maxParameter;
-			else if (parameters[i] < minParameter)
-				parameters[i] = minParameter;
+			if (parameters[static_cast<int>(i)] > maxParameter)
+				parameters[static_cast<int>(i)] = maxParameter;
+			else if (parameters[static_cast<int>(i)] < minParameter)
+				parameters[static_cast<int>(i)] = minParameter;
 
 		}
 
@@ -69,9 +69,9 @@ namespace SGA
 			maxParameter += multiplicationSum;
 
 			//Write new value with the different of the max parameters
-			parameters[i] += maxParameter - previousMaxParameter;
+			parameters[static_cast<int>(i)] += maxParameter - previousMaxParameter;
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 		}
 	}
 }

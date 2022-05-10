@@ -1,0 +1,1037 @@
+GameConfig:
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: true
+
+Agents:
+    - HumanAgent
+    - OSLAAgent
+
+Player:
+    Actions: [Research]
+    #CanSpawn: Buildings
+    Parameters:
+        Score: [0,0,10000]
+        Stars: [0,4,10000]
+        Cities: [0,1,10000]
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        FogOfWar: ../../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
+    TileSpriteOrigin:
+        Width: 128
+        Height: 112
+    EntitySpriteOrigin:
+        Width: 256
+        Height: 360
+    TileSpriteSize:
+        Width: 256
+        Height: 144
+    EntitySpriteSize:
+        Width: 512
+        Height: 512
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../../assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+    Water:
+        Sprite: ../../../assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+    Ocean:
+        Sprite: ../../../assets/Tiles/water.png
+        Symbol: O
+        IsWalkable: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+    Mountain:
+        Sprite: ../../../assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+    Forest:
+        Sprite: ../../../assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+    Crop:
+        Sprite: ../../../assets/Tiles/clay.png
+        Symbol: C
+        IsWalkable: true
+        Parameters:
+            Owner: [0,-1,1]
+            DiscoveredZero: [0,0,1]
+            DiscoveredOne: [0,0,1]
+
+Board:
+    GenerationType: Manual
+    Entities:
+        Iron:
+            Position: [1,9]
+        Iron:
+            Position: [1,10]
+        Iron:
+            Position: [7,2]
+        Iron:
+            Position: [8,2]
+        Iron:
+            Position: [8,3]
+        Iron:
+            Position: [8,15]
+        Iron:
+            Position: [5,10]
+        Fish:
+            Position: [4,10]
+        Fish:
+            Position: [4,11]
+        Fish:
+            Position: [6,7]
+        Fish:
+            Position: [5,7]
+        Fish:
+            Position: [1,2]
+        Fish:
+            Position: [0,2]
+    Layout: |-
+        .  .  .  .  .  a  .  .  a
+        .  .  a  M  .  u  C  c1 .
+        W  W  a  v  u  .  a  M  M
+        .  W  u  C  .  C  .  .  M
+        a  W  .  .  C  a  .  u  .
+        .  W  W  .  .  C  .  u  .
+        .  u  W  W  .  .  .  C  a
+        .  .  C  W  W  W  W  a  .
+        .  a  C  u  W  .  W  W  .
+        .  M  c0 .  W  .  v  W  W
+        .  M  a  .  W  M  C  .  .
+        a  .  .  W  W  .  .  C  .
+        .  C  v  W  u  .  .  C  .
+        W  W  W  W  .  C  u  a  .
+        .  .  v  C  .  .  u  .  .
+        .  a  M  C  u  .  v  u  M
+        .  a  M  .  .  .  .  M  M
+Actions:
+    Spawn:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Units
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+
+            TargetPosition:
+                Type: Position
+                SamplingMethod: 
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:                
+                    - "IsNotOccupiedGrid(Source, EntityTypeTarget)"
+                    - "IsWalkable(TargetPosition)"
+                    - "InRange(Source, TargetPosition, 0)"
+                    #- "IsTileType(TargetPosition, Plain)"
+
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, Source)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+    ConquerCity:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Village, CityLevel1, CityLevel2, CityLevel3]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, 0)"
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: CityLevel1
+        Effects:
+            - "Remove(Target)"
+            - "SpawnEntity(Source.Player, EntityTypeTarget, Source)"
+    BuildPort:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Sailing)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Port
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, Water)"
+                    - "InRange(Source, TargetPosition, Source.Border)"
+
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+    BuildMine:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Mining)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Mine
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+            Iron:
+                Type: Entity
+                ValidTargets: Iron
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Iron, Source.Border)"
+            #TargetPosition:
+            #    Type: Position
+            #    SamplingMethod:
+            #        Type: Neighbours
+            #        Options:
+            #            Shape: AllPositions
+            #    Conditions:
+            #        - "IsWalkable(TargetPosition)"
+            #        - "IsTileType(TargetPosition, Mountain)"
+            #        - "InRange(Source, TargetPosition, Source.Border)"
+
+        Effects:
+            - "Remove(Iron)"
+            - "SpawnEntity(Source, EntityTypeTarget, Iron)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ModifyResource(Source.Mines, +1)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+    BuildFoundry:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Smithery)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+            - "ResourceGreaterEqual(Source.Mines, 1)"
+            - "ResourceLowerEqual(Source.FoundryBuilt, 0)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Foundry
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+            Target:
+                Type: Entity
+                ValidTargets: Mine
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, Plain)"
+                    - "InRange(Target, TargetPosition, 1)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+        
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ChangeResource(Source.FoundryBuilt, 1)"
+            - "ModifyResource(Source.Population, Source.Mines*2)"
+    BuildWindmill:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Construction)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+            - "ResourceGreaterEqual(Source.Farms, 1)"
+            - "ResourceLowerEqual(Source.WindmillBuilt, 0)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Windmill
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+            Target:
+                Type: Entity
+                ValidTargets: Farm
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, Plain)"
+                    - "InRange(Target, TargetPosition, 1)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+        
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ChangeResource(Source.WindmillBuilt, 1)"
+            - "ModifyResource(Source.Population, Source.Farms)"
+    BuildFarm:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Farming)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: Farm
+                Conditions:
+                    - "CanSpawn(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
+            TargetPosition:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsWalkable(TargetPosition)"
+                    - "IsTileType(TargetPosition, Crop)"
+                    - "InRange(Source, TargetPosition, Source.Border)"
+                    - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+
+        Effects:
+            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+            - "ModifyResource(Source.Farms, +1)"
+    Destroy:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "HasResearched(Source.Player, Construction)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Removables
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "Remove(Target)"            
+            - "ModifyResource(Source.Player.Stars, -2)"
+
+#Harvest resources
+    Hunt:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Hunting)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Animals
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "Remove(Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+    Harvest:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Organization)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Fruit
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "Remove(Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+    Fish:
+        Type: EntityAction
+        Cooldown: 0
+        Preconditions:
+            - "HasResearched(Source.Player, Fishing)"
+            - "ResourceGreaterEqual(Source.Player.Stars, 2)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Fish
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "Remove(Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
+            - "ModifyResource(Source.Population, 1)"
+            - "ModifyResource(Source.Player.Stars, -2)"
+
+#Upgrade city
+    Upgrade2:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "ResourceGreaterEqual(Source.Population, Source.ToUpgrade)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: CityLevel2
+        Effects:
+            - "Remove(Source)"
+            - "SpawnEntity(Source.Player, EntityTypeTarget, Source)"
+    Upgrade3:
+        Type: EntityAction
+        Cooldown: 1
+        Preconditions:
+            - "ResourceGreaterEqual(Source.Population, Source.ToUpgrade)"
+        Targets:
+            EntityTypeTarget:
+                Type: EntityType
+                ValidTargets: CityLevel3
+        Effects:
+            - "Remove(Source)"
+            - "SpawnEntity(Source.Player, EntityTypeTarget, Source)"
+#Movement
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.Movement, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsNotOccupiedGrid(Target, Source)"
+                    - "IsWalkable(Target)"
+                    - "IsTileType(Target, Plain)"
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.Movement, -1)"
+            - "ChangeResource(Source.InBoat, 0)"
+    Sail:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.Movement, 1)"
+            - "ResourceGreaterEqual(Source.InBoat, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsNotOccupiedGrid(Target, Source)"
+                    - "IsWalkable(Target)"
+                    - "IsTileType(Target, Water)"
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.Movement, -1)"
+    PrepareSail:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.Movement, 1)"
+            #- "ResourceGreaterEqual(Source.InBoat, 1)"
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Port
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsNotOccupiedGrid(Target, Source)"
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.Movement, -1)"
+            - "ChangeResource(Source.InBoat, 1)"
+    Climb:
+        Type: EntityAction
+        Preconditions:
+            - "HasResearched(Source.Player, Climbing)"
+            - "ResourceGreaterEqual(Source.Movement, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "IsNotOccupiedGrid(Target, Source)"
+                    - "IsWalkable(Target)"
+                    - "IsTileType(Target, Mountain)"
+                    - "InRange(Source, Target, Source.Range)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.Movement, -1)"
+
+#Research
+    Research:
+        Type: PlayerAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Technology
+                ValidTargets: All  
+                Conditions:
+                    - "CanResearch(Source, Target)"
+                    - "CanAfford(Source, Target)"
+        Effects:
+            - "PayCost(Source, Target)"
+            - "Research(Source, Target)"
+            - "ModifyResource(Source.Score, 10)"
+
+#Discover around and gain score
+    AddOwnerAround:
+        Type: EntityAction
+        Preconditions:
+            - "IsPlayerID(Source, 0)"
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Tile
+                ValidTargets: All  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+                    - "ResourceLowerEqual(Target.Owner, -1)"
+        Effects:
+            - "ChangeResource(Target.Owner, 0)"
+            - "ModifyResource(Source.Player.Score, 5)"
+    AddOwnerAround1:
+        Type: EntityAction
+        Preconditions:
+            - "IsPlayerID(Source, 1)"
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Tile
+                ValidTargets: All  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+                    - "ResourceLowerEqual(Target.Owner, -1)"
+        Effects:
+            - "ChangeResource(Target.Owner, 1)"
+            - "ModifyResource(Source.Player.Score, 5)"
+    DiscoverAround1:
+        Type: EntityAction
+        Preconditions:
+            - "IsPlayerID(Source, 1)"
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Tile
+                ValidTargets: All  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, 3)"
+                    - "ResourceLowerEqual(Target.DiscoveredZero, 0)"
+        Effects:
+            - "ChangeResource(Target.DiscoveredZero, 1)"
+            - "ModifyResource(Source.Player.Score, 1)"
+    DiscoverAround:
+        Type: EntityAction
+        Preconditions:
+            - "IsPlayerID(Source, 0)"
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Tile
+                ValidTargets: All  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, 3)"
+                    - "ResourceLowerEqual(Target.DiscoveredOne, 0)"
+        Effects:
+            - "ChangeResource(Target.DiscoveredOne, 1)"
+            - "ModifyResource(Source.Player.Score, 1)"
+
+    
+    CheckFarmsAround:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Farm  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "ModifyResource(Source.Farms, 1)"
+    CheckMinesAround:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Mine  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "ModifyResource(Source.Mines, 1)"
+    CheckFoundriesAround:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Foundry  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "ModifyResource(Source.FoundryBuilt, 1)"
+    CheckWindmillsAround:
+        Type: EntityAction
+        Cooldown: 0
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: Windmill  
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.Border)"
+        Effects:
+            - "ModifyResource(Source.WindmillBuilt, 1)"
+Entities:
+    Warrior:
+        Sprite: ../../../assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 3
+        Actions: [Move, Climb, PrepareSail, Sail]
+        OnTickActions: [DiscoverAround, DiscoverAround1, ConquerCity]
+        Cost:
+            Stars: 2
+        Parameters:
+            Level: 0
+            Health: 10
+            Attack: 2
+            Defence: 2
+            Movement: [0,0,1]
+            Range: 1
+
+            #States
+            InBoat: [0,0,1]
+            #Kills to level
+            Kill: 3
+    Defender:
+        Sprite: ../../../assets/Entities/unit_3.png
+        Symbol: w
+        LineOfSightRange: 3
+        Actions: [Move, Climb, PrepareSail, Sail]
+        OnTickActions: [DiscoverAround, DiscoverAround1, ConquerCity]
+        RequiredTechnology: Shields
+        Cost:
+            Stars: 3
+        Parameters:
+            Level: 0
+            Health: 15
+            Attack: 1
+            Defence: 3
+            Movement: [0,0,1]
+            Range: 1
+
+            #States
+            InBoat: [0,0,1]
+            #Kills to level
+            Kill: 3
+    Rider:
+        Sprite: ../../../assets/Entities/unit_4.png
+        Symbol: w
+        LineOfSightRange: 3
+        Cost:
+            Stars: 4
+        Actions: [Move, Climb, PrepareSail, Sail]
+        OnTickActions: [DiscoverAround, DiscoverAround1, ConquerCity]
+        RequiredTechnology: Riding
+        Parameters:
+            Level: 0
+            Health: 10
+            Attack: 2
+            Defence: 1
+            Movement: [0,0,2]
+            Range: 1
+            
+            #States
+            InBoat: [0,0,1]
+            #Kills to level
+            Kill: 3
+    Swordsman:
+        Sprite: ../../../assets/Entities/unit_1.png
+        Symbol: w
+        LineOfSightRange: 3
+        Cost:
+            Stars: 4
+        Actions: [Move, Climb, PrepareSail, Sail]
+        OnTickActions: [DiscoverAround, DiscoverAround1, ConquerCity]
+        RequiredTechnology: Smithery
+        Parameters:
+            Level: 0
+            Health: 15
+            Attack: 3
+            Defence: 3
+            Movement: [0,0,1]
+            Range: 1
+            
+            #States
+            InBoat: [0,0,1]
+            #Kills to level
+            Kill: 3
+
+    Animals:
+        Sprite: ../../../assets/Entities/animals.png
+        Symbol: a
+        LineOfSightRange: 1
+    Fruit:
+        Sprite: ../../../assets/Entities/animals.png
+        Symbol: u
+        LineOfSightRange: 1
+    Farm:
+        Sprite: ../../../assets/Entities/farm.png
+        Symbol: r
+        LineOfSightRange: 1
+    Mine:
+        Sprite: ../../../assets/Entities/mine.png
+        Symbol: m
+        LineOfSightRange: 1
+    Foundry:
+        Sprite: ../../../assets/Entities/foundry.png
+        Symbol: f
+        LineOfSightRange: 1
+        RequiredTechnology: Smithery
+    Windmill:
+        Sprite: ../../../assets/Entities/storage.png
+        Symbol: w
+        LineOfSightRange: 1
+        RequiredTechnology: Construction
+    Fish:
+        Sprite: ../../../assets/Entities/animals.png
+        Symbol: f
+        LineOfSightRange: 1
+    Iron:
+        Sprite: ../../../assets/Entities/ore.png
+        Symbol: i
+        LineOfSightRange: 1
+
+    Village:
+        Sprite: ../../../assets/Entities/storage.png
+        Symbol: v
+        LineOfSightRange: 1
+
+    Port:
+        Sprite: ../../../assets/Entities/masonry.png
+        Symbol: p
+        LineOfSightRange: 1
+        RequiredTechnology: Sailing
+
+    CityLevel1:
+        Sprite: ../../../assets/Entities/tower.png
+        Symbol: c
+        LineOfSightRange: 3
+        Actions: [Spawn, BuildPort, BuildMine, BuildFarm, BuildFoundry, BuildWindmill, Hunt, Fish, Harvest, Destroy]
+        OnTickActions: [AddOwnerAround, AddOwnerAround1, Upgrade2, CheckFarmsAround, CheckMinesAround, CheckFoundriesAround, CheckWindmillsAround]
+        Parameters:
+            Level: 1
+            Production: 4
+            Population: [0,0,3]
+            ToUpgrade: 3
+
+            Border: 2
+            Mines: [0,0,10]
+            Farms: [0,0,10]
+            FoundryBuilt: [0,0,1]
+            WindmillBuilt: [0,0,1]
+    CityLevel2:
+        Sprite: ../../../assets/Entities/guardTower.png
+        Symbol: p
+        LineOfSightRange: 3
+        Actions: [Spawn, BuildPort, BuildMine, BuildFarm, BuildFoundry, BuildWindmill, Hunt, Fish, Harvest, Destroy]
+        OnTickActions: [AddOwnerAround,AddOwnerAround1, Upgrade3, CheckFarmsAround, CheckMinesAround, CheckFoundriesAround, CheckWindmillsAround]
+        Parameters:
+            Level: 2
+            Production: 5
+            Population: [0,0,4]
+            ToUpgrade: 4
+
+            Border: 3
+            Mines: [0,0,10]
+            Farms: [0,0,10]
+            FoundryBuilt: [0,0,1]
+            WindmillBuilt: [0,0,1]
+    CityLevel3:
+        Sprite: ../../../assets/Entities/castle.png
+        Symbol: p
+        LineOfSightRange: 3
+        Actions: [Spawn, BuildPort, BuildMine, BuildFarm, BuildFoundry, BuildWindmill, Hunt, Fish, Harvest, Destroy]
+        OnTickActions: [AddOwnerAround, AddOwnerAround1, CheckFarmsAround, CheckMinesAround, CheckFoundriesAround, CheckWindmillsAround]
+        Parameters:
+            Level: 2
+            Production: 5
+            Population: [0,0,5]
+            ToUpgrade: 5
+
+            Border: 4
+            Mines: [0,0,10]
+            Farms: [0,0,10]
+            FoundryBuilt: [0,0,1]
+            WindmillBuilt: [0,0,1]
+EntityGroups:
+    Units: [Warrior, Rider, Defender]
+    Buildings: [CityLevel1, CityLevel2, CityLevel3, Port, Mine, Foundry, Farm, Windmill]
+    Removables: [CityLevel1, Port, Mine, Foundry, Farm, Windmill]
+    Cities: [CityLevel1, CityLevel2, CityLevel3]
+    Resources: [Animals, Fish, Iron, Fruit]
+
+Grids:
+    BuildingsAndResources: [CityLevel1, CityLevel2, CityLevel3, Animals, Port, Fish, Fruit, Iron, Mine, Foundry, Farm]
+    Units: [Warrior, Rider, Defender]
+
+TechnologyTrees:
+    SingleTree:
+        Hunting:
+            Description: Enable animal hunting.
+            Cost:
+                Stars: 5
+            Time: 0
+        Riding:
+            Description: Enable riders.
+            Cost:
+                Stars: 5
+            Time: 0
+
+        Organization:
+            Description: Enable fruit harvesting.
+            Cost:
+                Stars: 5
+            Time: 0
+        Shields:
+            Description: Enable shield units.
+            Requirements: [Organization]
+            Cost:
+                Stars: 6
+            Time: 0
+        Farming:
+            Description: Enable farming.
+            Requirements: [Organization]
+            Cost:
+                Stars: 6
+            Time: 0
+        Construction:
+            Description: Enable windmill and Destroy.
+            Requirements: [Farming]
+            Cost:
+                Stars: 6
+            Time: 0
+
+        Climbing:
+            Description: Enable mountain movement and defense bonus.
+            Cost:
+                Stars: 5
+            Time: 0
+        Mining:
+            Description: Enable mine.
+            Requirements: [Climbing]
+            Cost:
+                Stars: 6
+            Time: 0
+        Meditation:
+            Description: Enable mountain temple and pacifist.
+            Requirements: [Climbing]
+            Cost:
+                Stars: 6
+            Time: 0
+        Philosophy:
+            Description: Enable Mind blender, Literacy and Genius.
+            Requirements: [Meditation]
+            Cost:
+                Stars: 7
+            Time: 0
+        Smithery:
+            Description: Enable Swordsman and Forge.
+            Requirements: [Mining]
+            Cost:
+                Stars: 7
+            Time: 0
+
+        Fishing:
+            Description: Enable fishing.
+            Cost:
+                Stars: 5
+            Time: 0
+        Whaling:
+            Description: Enable whale hunting.
+            Requirements: [Fishing]
+            Cost:
+                Stars: 6
+            Time: 0
+        Sailing:
+            Description: Enable ships, port and movement throught water.
+            Requirements: [Fishing]
+            Cost:
+                Stars: 6
+            Time: 0
+        Aquatism:
+            Description: Enable water temple, defense bonus and defence bonus.
+            Requirements: [Whaling]
+            Cost:
+                Stars: 7
+            Time: 0
+        Navigation:
+            Description: Enable battleship, ocean movement, explorer.
+            Requirements: [Sailing]
+            Cost:
+                Stars: 7
+            Time: 0
+ForwardModel:
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "ResourceLowerEqual(Source.Cities, 0)"
+
+    Trigger:
+        #Restart units movement
+        - OnTick:
+            Type: Entity
+            ValidTargets: Units
+            Effects:
+                - "SetToMaximum(Source.Movement)"
+        - OnTick:
+            Type: Entity
+            ValidTargets: Cities
+            Effects:
+                - "ModifyResource(Source.Player.Stars, Source.Production)"
+        - OnTick:
+            Type: Player
+            Effects:
+                - "ChangeResource(Source.Cities, 0)"
+        - OnTick:
+            Type: Entity
+            ValidTargets: [CityLevel1, CityLevel2, CityLevel3]
+            Effects:
+                - "ChangeResource(Source.Mines, 0)"
+                - "ChangeResource(Source.Farms, 0)"
+                - "ChangeResource(Source.WindmillBuilt, 0)"
+                - "ChangeResource(Source.FoundryBuilt, 0)"
+        - OnTick:
+            Type: Entity
+            ValidTargets: [CityLevel1, CityLevel2, CityLevel3]
+            Effects:
+                - "ChangeResource(Source.Player.Cities, 1)"
+

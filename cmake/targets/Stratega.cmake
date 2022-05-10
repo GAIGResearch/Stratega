@@ -12,6 +12,10 @@ set(STRATEGA_SOURCE_FILES
         Agent/DoNothingAgent.cpp
         Agent/Heuristic/AbstractHeuristic.cpp
         Agent/Heuristic/MinimizeDistanceHeuristic.cpp
+        Agent/UnitMCTSAgent/Transition.cpp
+        Agent/UnitMCTSAgent/UnitMCTSAgent.cpp
+        Agent/UnitMCTSAgent/UnitMCTSNode.cpp
+        Agent/UnitMCTSAgent/UnitMCTSParameters.cpp
         Agent/MCTSAgent/MCTSAgent.cpp
         Agent/MCTSAgent/MCTSNode.cpp
         Agent/MCTSAgent/MCTSParameters.cpp
@@ -21,6 +25,7 @@ set(STRATEGA_SOURCE_FILES
         Agent/RHEAAgent/RHEAAgent.cpp
         Agent/RHEAAgent/RHEAGenome.cpp
         Agent/RHEAAgent/RHEAParameters.cpp
+        Agent/RuleBasedAgents/KTKCombatAgent.cpp
         Agent/RuleBasedAgents/CombatAgent.cpp
         Agent/RuleBasedAgents/PusherAgent.cpp
         Agent/RuleBasedAgents/Direction.cpp
@@ -53,20 +58,26 @@ set(STRATEGA_SOURCE_FILES
         Game/RTSGameRunner.cpp
         Game/TBSGameRunner.cpp
         GUI/GameRenderer.cpp
-
-
         Logging/FileLogger.cpp
         Logging/Log.cpp
         Logging/LoggingScope.cpp
         Representation/BuildContext.cpp
         Representation/Entity.cpp
         Representation/EntityType.cpp
+        Representation/TileType.cpp
         Representation/GameDescription.cpp
         Representation/GameInfo.cpp
         Representation/GameState.cpp
+        Representation/ActionQueue.cpp
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
-        Representation/Tile.cpp       
+        Representation/Tile.cpp
+        Utils/cparse/catch.cpp
+        Utils/cparse/containers.cpp
+        Utils/cparse/functions.cpp
+        Utils/cparse/packToken.cpp
+        Utils/cparse/shunting-yard.cpp
+        Utils/cparse/builtin-features.cpp
         )
 if(NOT SGA_BUILD_HEADLESS)
    list(APPEND STRATEGA_SOURCE_FILES
@@ -97,13 +108,11 @@ endif()
 #Copy Assets folder
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-
 list(TRANSFORM STRATEGA_SOURCE_FILES PREPEND "${SUBPROJ_STRATEGA_SRC_DIR}/")
 
 add_library(Stratega STATIC ${STRATEGA_SOURCE_FILES})
 
 target_include_directories(Stratega PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
-
 
 function(target_link_libraries_system target)
   set(libs ${ARGN})
@@ -115,9 +124,9 @@ function(target_link_libraries_system target)
   endforeach(lib)
 endfunction(target_link_libraries_system)
 
+target_link_libraries_system(Stratega CONAN_PKG::boost)
 target_link_libraries_system(Stratega CONAN_PKG::yaml-cpp)
 target_link_libraries_system(Stratega CONAN_PKG::recastnavigation)
-
 
 if(CMAKE_SYSTEM_NAME MATCHES Linux)
 target_link_libraries(Stratega Threads::Threads)

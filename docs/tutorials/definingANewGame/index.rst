@@ -30,13 +30,28 @@ Next, we have to define the Game renderer configuration, with the resolution and
 
 .. code-block:: yaml
 
-   GameRenderer:
+    GameRenderer:
         Resolution:
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
             FogOfWar: ../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
   
 Next, we define that each player can store gold.
 We do this by assigning an additional parameter to the players which represents the currency.
@@ -98,6 +113,7 @@ Additionally, we assign the actions and the cost for spawning the fighter, which
             Actions: [Move, Attack]
             Parameters:
                 Health: 100
+                AttackDamage: 10
             Cost:
                 Gold: 3
 
@@ -177,7 +193,7 @@ Whenever an entity executes this action, it will spawn the fighter in a random s
 
 Next, we have the attack action.
 Note that the attack reduces an entities health by explicitly referencing the previously defined parameter.
-The effect "Attack" then reduces the parameter by 25 points, and if it falls below 0, removes the attacked entity from the game.
+The effect "Attack" then reduces the parameter by the value of the parameter AttackDamage plus a constant value of 5 points and a random number given from the dice anotation 2d10, and if it falls below 0, removes the attacked entity from the game.
 Since Stratega does not prevent you from defining an entity without health, make sure that it can never be targeted by an attack.
 Otherwise, the game has to be stopped by Stratega due to an unresolvable error.
 
@@ -193,7 +209,7 @@ Otherwise, the game has to be stopped by Stratega due to an unresolvable error.
                 Conditions: # Only target entities with a distance of 1 to whoever executes this action
                     - "InRange(Source, Target, 1)"
         Effects:
-            - "Attack(Target.Health, 25)"
+            - "Attack(Target.Health, Source.AttackDamage+5+2d10)"
 
 Now we are nearly done. Below you can find the complete list containing all actions, including the move action.
 This action does nothing new, except that it targets a position.
@@ -226,7 +242,7 @@ This action does nothing new, except that it targets a position.
                     Conditions: # Only target entities with a distance of 1 to whoever executes this action
                         - "InRange(Source, Target, 1)"
             Effects:
-                - "Attack(Target.Health, 25)"
+                - "Attack(Target.Health, Source.AttackDamage+5+2d10)"
 
 
         # Move Actions
@@ -279,6 +295,29 @@ Full yaml
         ActionTimer: 10s
         RoundLimit: 100
 
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            FogOfWar: ../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
+
     Agents:
         - RandomAgent
         - HumanAgent
@@ -329,7 +368,7 @@ Full yaml
                     Conditions:
                         - "InRange(Source, Target, 1)"
             Effects:
-                - "Attack(Target.Health, 25)"
+                - "Attack(Target.Health, Source.AttackDamage+5+2d10)"
 
 
         # Move Actions
@@ -363,6 +402,7 @@ Full yaml
             Actions: [Move, Attack]
             Parameters:
                 Health: 100
+                AttackDamage: 10
             Cost:
                 Gold: 3
 

@@ -1,4 +1,4 @@
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Agent/ScriptedAgent.h>
 #include <Stratega/ForwardModel/ForwardModel.h>
 

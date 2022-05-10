@@ -1,0 +1,619 @@
+###############
+Pathway
+###############
+
+Yaml paths:
+
+.. code-block:: c++
+
+    /gameConfigs/TBS/Ported/Pathway.yaml
+
+.. only:: html
+
+   .. figure:: ../../images/pathwayTBS.gif
+
+++++++++++++++++++++
+Description
+++++++++++++++++++++
+
+Based in Pathway developed by Robotality. Two player combat game with objects and special abilities. 
+
+++++++++++++++++++++
+YAML
+++++++++++++++++++++
+
+.. code-block:: yaml
+
+    GameConfig:
+        Type: TBS
+        RoundLimit: 100
+        FogOfWar: false
+
+    Agents:
+        - HumanAgent
+        - OSLAAgent
+        #- MCTSAgent:
+        #    FmCalls: 100
+        #    Budget: TIME
+        #    RolloutLength: 10
+
+    Buffs: # Buff lists
+        Sprint:
+            MultiplicationModifier:
+                Agility: 1.5
+
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
+
+    Tiles:
+        Plain:
+            Sprite: ../../../assets/Tiles/plain.png
+            Symbol: .
+            IsWalkable: true
+            DefaultTile: true
+        PlayerPlain:
+            Sprite: ../../../assets/Tiles/plain.png
+            Symbol: P
+            IsWalkable: true
+            DefaultTile: false
+        Water:
+            Sprite: ../../../assets/Tiles/water.png
+            Symbol: W
+            IsWalkable: false
+        Mountain:
+            Sprite: ../../../assets/Tiles/rock.png
+            Symbol: M
+            IsWalkable: false
+        Forest:
+            Sprite: ../../../assets/Tiles/forest.png
+            Symbol: F
+            IsWalkable: true
+            
+    Board:
+        GenerationType: Manual
+        Layout: |-
+            M  M  M  M  M  M  M  M  M  M  M
+            M  .  .  .  .  e1 .  .  .  .  M
+            M  .  .  e1 .  .  .  e1 .  .  M
+            M  e1 .  M  .  e1 .  M  .  e1 M
+            M  .  .  M  M  M  M  M  .  .  M
+            M  .  .  .  .  .  .  .  .  .  M
+            M  .  .  F  F  .  .  .  .  .  W
+            M  .  .  F  F  F  .  .  .  .  W
+            M  M  .  .  F  F  F  .  .  M  W
+            M  .  .  .  .  F  F  F  .  .  W
+            M  .  .  .  .  .  F  F  .  .  W
+            M  .  .  .  .  .  .  .  .  .  W
+            M  P  P  M  M  M  M  M  P  P  M
+            M  P  P  M  P  P  P  M  P  P  M
+            M  P  P  P  P  P  P  P  P  P  M
+            M  P  P  P  P  P  P  P  P  P  M
+            M  M  M  M  M  M  M  M  M  M  M
+    Actions:
+        SpawnSoldier:
+            Type: PlayerAction
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Soldier
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+        SpawnHealer:
+            Type: PlayerAction
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Healer
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+        SpawnFixer:
+            Type: PlayerAction
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Fixer
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+        LongAttack:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.AttackActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: [AssaultRifle, Pistol]
+                    Conditions:
+                        - "ResourceGreaterEqual(Object.Ammo, 1)"
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "DifferentPlayer(Source, Target)"
+                        - "InRange(Source, Target, Object.Range)"
+            Effects:
+            #Attack a entity removing firt armor and then health, and apply a 75%/dexterity of penalty if it is behind cover
+                - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin,Object.DamageMax), 75/Source.Dexterity)"
+                - "ModifyResource(Object.Ammo, -1)"
+                - "ModifyResource(Source.AttackActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+
+        MeleeAttack:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.AttackActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: [Knife]
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "DifferentPlayer(Source, Target)"
+                        - "InRange(Source, Target, Object.Range)"
+            Effects:
+                - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin,Object.DamageMax), 75)"
+                - "ModifyResource(Source.AttackActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+
+        Bleed:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.AttackActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: [Knife]
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "DifferentPlayer(Source, Target)"
+                        - "InRange(Source, Target, Object.Range)"
+            Effects:
+                - "AttackWithArmorUnderCover(Source, Target.Armor, Target.Health, rand(Object.DamageMin*2,Object.DamageMax*2), 75)"
+                - "ModifyResource(Source.AttackActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+                
+        ReloadWeapon:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.MiscellaneousActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Preconditions:
+                - "ResourceGreaterEqual(Source.Reloads, 1)"
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: [AssaultRifle, Pistol]
+            Effects:
+                - "SetToMaximum(Object.Ammo)"
+                - "ModifyResource(Source.Reloads, -1)"
+                - "ModifyResource(Source.MiscellaneousActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+
+        ######Objects
+        UseMedKit:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.Willpower, 1)"
+                - "ResourceGreaterEqual(Source.MiscellaneousActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:        
+                Object:
+                    Type: Object
+                    ValidTargets: MedKit
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 1
+            Effects:
+                - "ModifyResource(Target.Health, 20)"
+                - "RemoveObject(Source, Object)"
+                - "ModifyResource(Source.MiscellaneousActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+                - "ModifyResource(Source.Willpower, -1)"
+
+        UseRepairKit:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.Willpower, 1)"
+                - "ResourceGreaterEqual(Source.MiscellaneousActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: RepairKit
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 1
+            Effects:
+                - "ModifyResource(Target.Armor, 20)"
+                - "RemoveObject(Source, Object)"
+                - "ModifyResource(Source.MiscellaneousActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+                - "ModifyResource(Source.Willpower, -1)"
+        
+        LaunchGrenade:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.Willpower, 1)"
+                - "ResourceGreaterEqual(Source.AttackActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Cooldown: 1
+            Targets:
+                Object:
+                    Type: Object
+                    ValidTargets: Grenade
+                Target:
+                    Type: Position
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 5
+                            AllowDiagonals: false
+            Effects:
+                - "AttackAroundWithArmor(Source, Target, Source.Armor, Source.Health, 20)"
+                - "RemoveObject(Source, Object)"
+                - "ModifyResource(Source.AttackActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+                - "ModifyResource(Source.Willpower, -1)"
+
+        ####Move actions
+        Move:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.MoveActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Targets:
+                Target:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "InRange(Source, Target, Source.Agility)"
+                        - "IsWalkable(Target)"
+            Effects:
+                - "Move(Source, Target)"
+                - "ModifyResource(Source.MoveActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+        Dash:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.Willpower, 1)"
+                - "ResourceGreaterEqual(Source.MiscellaneousActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+            Targets:
+                Target:
+                    Type: Position
+                    SamplingMethod: 
+                    #    Type: Dijkstra
+                    #    Options:
+                    #        SearchSize: 4
+                    #        AllowDiagonals: false
+                        Type: Neighbours
+                        Options:
+                            Shape: Cross
+                            Size: 10
+                    Conditions:
+                        - "InRange(Source, Target, Source.Agility)"
+                        - "IsWalkable(Target)"
+            Effects:
+                - "Move(Source, Target)"
+                - "ModifyResource(Source.Willpower, -1)"
+                - "ModifyResource(Source.MiscellaneousActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+        Sprint:
+            Type: EntityAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.MiscellaneousActions, 1)"
+                - "ResourceGreaterEqual(Source.AvailableActions, 1)"
+                - "ResourceGreaterEqual(Source.Willpower, 1)"
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: Entities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Square
+                            Size: 1
+            Effects:     
+                - "ApplyBuff(Target, Sprint, 2)"
+                - "ModifyResource(Source.MiscellaneousActions, -1)"
+                - "ModifyResource(Source.AvailableActions, -1)"
+                - "ModifyResource(Source.Willpower, -1)"
+
+    Objects:
+        AssaultRifle:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: r
+        Parameters:
+                DamageMin: 20
+                DamageMax: 30
+                Range: 5
+                Ammo: 1
+        Knife:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: k
+        Parameters:
+                DamageMin: 30
+                DamageMax: 40
+                Range: 1
+        Knuckles:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: k
+        Parameters:
+                DamageMin: 10
+                DamageMax: 20
+                Range: 1
+        Pistol:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: p
+        Parameters:
+                DamageMin: 15
+                DamageMax: 20
+                Range: 3
+                Ammo: 2
+
+        MediumArmor:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: m
+        Parameters:
+                Armor: 25
+        HeavyArmor:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: h
+        Parameters:
+                Armor: 35
+        LightArmor:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: l
+        Parameters:
+                Armor: 15
+
+        MedKit:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: e
+        Parameters:
+                Heal: 25
+        Grenade:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: g
+        Parameters:
+                Damage: 20
+        RepairKit:
+        Sprite: ../../../assets/Entities/key.png
+        Symbol: r
+        Parameters:
+                    Repair: 20
+
+    EntityGroups:
+        Entities: [Soldier, Healer, Fixer, Enemy]
+        Object: [MedKit, RepairKit, Grenade, AssaultRifle, Knife, Pistol]
+
+    Entities:
+        Soldier:
+            Sprite: ../../../assets/Entities/unit_2.png
+            Symbol: s
+            LineOfSightRange: 6
+            InventorySize: 4
+            Actions: [LongAttack, MeleeAttack, Move, Sprint, Bleed, ReloadWeapon, LaunchGrenade]
+            #Initial list of object in inventory
+            Objects: [AssaultRifle, Knife, Grenade]
+            Parameters:
+                Health: 40
+                Armor: 15
+
+                #Stats
+                Willpower: 2 #Point for special actions
+                Dexterity: 2 #Accuracy
+                Agility	: 3  #Move distance
+                
+                Reloads: 3
+
+                #Actions
+                AvailableActions: 2 #2 actions per turn
+                MoveActions: 1 #Move or dash
+                AttackActions: 1
+                MiscellaneousActions: 1
+
+        Healer:
+            Sprite: ../../../assets/Entities/unit_1.png
+            Symbol: h
+            LineOfSightRange: 6
+            InventorySize: 4
+            Actions: [LongAttack, MeleeAttack, Move, Sprint, ReloadWeapon, UseMedKit]
+            #Initial list of object in inventory
+            Objects: [Pistol, Knuckles, MedKit]
+            Parameters:
+                Health: 30
+                Armor: 10
+
+                #Stats
+                Willpower: 3 #Point for special actions
+                Dexterity: 3 #Accuracy
+                Agility	: 4  #Move distance
+                
+                Reloads: 2
+
+                #Actions
+                AvailableActions: 2 #2 actions per turn
+                MoveActions: 1 #Move or dash
+                AttackActions: 1
+                MiscellaneousActions: 1
+
+        Fixer:
+            Sprite: ../../../assets/Entities/unit_3.png
+            Symbol: f
+            LineOfSightRange: 6
+            InventorySize: 4
+            Actions: [LongAttack, MeleeAttack, Move, Bleed, Sprint, ReloadWeapon, UseRepairKit]
+            #Initial list of object in inventory
+            Objects: [Pistol, Knife, RepairKit]
+            Parameters:
+                Health: 35
+                Armor: 10
+
+                #Stats
+                Willpower: 3 #Point for special actions
+                Dexterity: 3 #Accuracy
+                Agility	: 4  #Move distance
+                
+                Reloads: 2
+
+                #Actions
+                AvailableActions: 2 #2 actions per turn
+                MoveActions: 1 #Move or dash
+                AttackActions: 1
+                MiscellaneousActions: 1
+
+        Enemy:
+            Sprite: ../../../assets/Entities/unit_4.png
+            Symbol: e
+            LineOfSightRange: 6
+            InventorySize: 4
+            Actions: [LongAttack, MeleeAttack, Move]
+            #Initial list of object in inventory
+            Objects: [Pistol, Knife]
+            Parameters:
+                Health: 20
+                Armor: 10
+
+                #Stats
+                Willpower: 2 #Point for special actions
+                Dexterity: 3 #Accuracy
+                Agility	: 3  #Move distance
+                
+                Reloads: 2
+
+                #Actions
+                AvailableActions: 2 #2 actions per turn
+                MoveActions: 1 #Move or dash
+                AttackActions: 1
+                MiscellaneousActions: 1
+
+
+    ForwardModel:
+        LoseConditions: #If true: Player -> cant play
+            NoHasKing:
+            - "HasNoEntities(Source)"
+
+        Trigger:
+            - OnStart:
+                Type: Player
+                Conditions:
+                    - "IsPlayerID(Source, 0)"
+                Effects:
+                    - "EnqueueAction(Source, SpawnSoldier)"
+                    - "EnqueueAction(Source, SpawnHealer)"
+                    - "EnqueueAction(Source, SpawnFixer)"
+            #- OnStart:
+            #    Type: Player
+            #    Conditions:
+            #        - "IsPlayerID(Source, 1)"
+            #    Effects:
+            #        - "EnqueueAction(Source, SpawnEnemy)"
+            #        - "EnqueueAction(Source, SpawnEnemy)"
+            #        - "EnqueueAction(Source, SpawnEnemy)"
+            #        - "EnqueueAction(Source, EndTurn)"
+            - OnTick:
+                Type: Entity
+                ValidTargets: Entities
+                Effects:
+                    - "SetToMaximum(Source.AvailableActions)"
+                    - "SetToMaximum(Source.MoveActions)"
+                    - "SetToMaximum(Source.AttackActions)"
+                    - "SetToMaximum(Source.MiscellaneousActions)"

@@ -625,7 +625,7 @@ PYBIND11_MODULE(stratega, m)
 
 
 		.def("set_parameter", &SGA::Player::setParameter, py::arg("paramIdx"), py::arg("val"), " Sets the parameter of this player to a certain value")
-		.def("resize_parameters", &SGA::Player::resizeParameters, py::arg("cap"), " Sets a size for the vector of parameters of this player.")
+		//.def("resize_parameters", &SGA::Player::resizeParameters, py::arg("cap"), " Sets a size for the vector of parameters of this player.")
 		.def("remove_continuous_action", &SGA::Player::removeContinuousAction, py::arg("idx"), " Sets a size for the vector of parameters of this player.")
 		.def("add_continuous_action", &SGA::Player::addContinuousAction, py::arg("newAction"), " Adds a continuous action to the list of this player.")
 		.def("advance_continuous_action", &SGA::Player::advanceContinuousAction, py::arg("idx"), "Advances the tick counter of the continuous action with index 'idx'")
@@ -795,14 +795,14 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_board_height", &SGA::GameState::getBoardHeight,"Returns the height of the board.")
 		.def("get_board_width", &SGA::GameState::getBoardWidth,"Returns the width of the board.")
 
-		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
-		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAt, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<int, int>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.")
+		.def("get_tile_at", py::overload_cast<const SGA::Vector2i&>(&SGA::GameState::getTileAtConst, py::const_), "Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.")
 		
 		////Entities
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
-		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity")
+		.def("get_entity", py::overload_cast<SGA::Vector2f, float>(&SGA::GameState::getEntityAround), py::return_value_policy::reference, "Get entity")
 		.def("get_entity", py::overload_cast<int>(&SGA::GameState::getEntity), py::return_value_policy::reference, "Get entity by id")
-		.def("get_entity_at", &SGA::GameState::getEntityAt, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
+		.def("get_entity_at", &SGA::GameState::getEntityAtConst, py::arg("pos"), py::return_value_policy::reference, "Returns an entity at board position 'pos'. It'll return a nullptr if no entities at this position. ")
 		.def("get_only_entities", &SGA::GameState::getOnlyEntities, py::arg("entityID"), py::return_value_policy::reference, "Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID. It only search the entities in the gamestate without the objects of the inventories. ")
 		.def("get_object", &SGA::GameState::getObject, py::arg("entityID"), py::return_value_policy::reference, "Return object by its ID")
 		.def("get_slot_object", &SGA::GameState::getSlotObject, py::arg("entityID"), py::return_value_policy::reference, "Return slot object by its ID")
@@ -879,7 +879,7 @@ PYBIND11_MODULE(stratega, m)
 		;
 
 	//---- Random Engine ----
-	py::class_<std::mt19937>(m, "mt19937");
+	py::class_<boost::mt19937>(m, "mt19937");
 
 	
 
@@ -995,7 +995,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_action_type", &SGA::Action::getActionType, "Checks if this action is to be executed over an entity.")
 		.def("get_action_source_type", &SGA::Action::getActionSourceType, "Checks if this action is to be executed over an entity.")
 
-		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), "Generates an Action used by the game to end the tick/turn.")
+		.def_static("create_end_action", &SGA::Action::createEndAction, py::arg("playerID"), py::arg("newActionType"), "Generates an Action used by the game to end the tick/turn.")
 		.def_static("create_abort_entity_action", &SGA::Action::createAbortEntityAction, "Generates an Action which the owner is a entity, used by the game to abort a continuous action.")
 		.def_static("create_abort_player_action", &SGA::Action::createAbortPlayerAction, "Generates an Action which the owner is a player, used by the game to abort a continuous action.")
 		
@@ -1129,7 +1129,7 @@ PYBIND11_MODULE(stratega, m)
 		.def("get_tile_type", &SGA::ActionTarget::getTileType, py::arg("state"))
 		.def("get_spawneable_entities", &SGA::ActionTarget::getSpawnableEntities, py::arg("state"))
 
-		.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
+		//.def("get_position", &SGA::ActionTarget::getPosition, py::arg("state"))
 		.def("get_technology_id", &SGA::ActionTarget::getTechnologyID)
 		.def("get_player_id", py::overload_cast<const SGA::GameState&>(&SGA::ActionTarget::getPlayerID, py::const_))
 		.def("get_player_id", py::overload_cast<>(&SGA::ActionTarget::getPlayerID, py::const_))
@@ -1216,10 +1216,10 @@ PYBIND11_MODULE(stratega, m)
 					std::cout,                               // std::ostream&
 					py::module_::import("sys").attr("stdout") // Python output
 				);
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1258,9 +1258,9 @@ PYBIND11_MODULE(stratega, m)
 					}
 				}
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1299,9 +1299,9 @@ PYBIND11_MODULE(stratega, m)
 					}
 				}
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1325,9 +1325,9 @@ PYBIND11_MODULE(stratega, m)
 					py::module_::import("sys").attr("stdout") // Python output
 				);
 
-				std::mt19937 rngEngine(seed);
+				boost::mt19937 rngEngine(seed);
 				// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-				std::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+				boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
 				for (auto& agent : newAgents)
 				{
 					auto seed = seedDist(rngEngine);
@@ -1509,15 +1509,15 @@ PYBIND11_MODULE(stratega, m)
 		
 	py::class_<SGA::TBSForwardModel, SGA::ForwardModel>(m, "TBSForwardModel")
 		.def(py::init<>())
-
+	
 		.def("get_game_type", &SGA::TBSForwardModel::getGameType)
-
+	
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int>(&SGA::ForwardModel::generateActions, py::const_)," Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState& , int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
-
+	
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::Action&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes an action in a given SGA::GameState before updating the entities of the gamestate that should be removed and checking if the game is over.")
 		.def("advance_gamestate", py::overload_cast<SGA::GameState& , const SGA::ActionAssignment&>(&SGA::TBSForwardModel::advanceGameState, py::const_), "Executes a list of actions.")
-
+	
 		.def("end_turn", &SGA::TBSForwardModel::endTurn, py::arg("state"),"End the turn of the current player and if all the player has played it ends the current game turn.")
 		.def("check_game_is_finished", &SGA::TBSForwardModel::checkGameIsFinished, py::arg("state")," Checks if the game is finished by current limit or because a player has won.")
 		;
@@ -1525,17 +1525,17 @@ PYBIND11_MODULE(stratega, m)
 	py::class_<SGA::RTSForwardModel, SGA::ForwardModel>(m, "RTSForwardModel")
 		.def(py::init<>())
 		.def("get_game_type", &SGA::RTSForwardModel::getGameType)
-
+	
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int>(&SGA::ForwardModel::generateActions, py::const_), " Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.")
 		.def("generate_actions", py::overload_cast<const SGA::GameState&, int, std::vector<SGA::Action>&>(&SGA::ForwardModel::generateActions, py::const_), "Returns a list of available actions in the given gamestate by the received player")
-
+	
 		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::Action&>(&SGA::RTSForwardModel::advanceGameState, py::const_),"Moves all the entities and resolves collisions before and after executing an action in a given Gamestate")
 		.def("advance_gamestate", py::overload_cast<SGA::GameState&, const SGA::ActionAssignment&>(&SGA::RTSForwardModel::advanceGameState, py::const_),"Moves all the entities and resolves collisions before and after executing an action in a given Gamestate")
-
+	
 		.def("move_entities", &SGA::RTSForwardModel::moveEntities, py::arg("state"), "Moves all the entities that have a current path and they did not reach their destination. If the entity has a path it moves the entity through all the path points one after theother until reaching the last one.")
 		.def("resolve_entity_collisions", &SGA::RTSForwardModel::resolveEntityCollisions, py::arg("state"),"Resolves collisions between entities in a basic way computing the penetration depth and pushing them way in the opposite direction.")
 		.def("resolve_environment_collisions", &SGA::RTSForwardModel::resolveEnvironmentCollisions, py::arg("state"),"Resolves collisions between entities and the tiles that are not walkable in a basic way computing the penetration depth and pushing them way in the opposite direction.")
-
+	
 		.def("find_path", &SGA::RTSForwardModel::findPath, py::arg("state"), py::arg("startPos"), py::arg("endPos"),"Returns a Path inside the Navmesh between the start and end positons.")
 		.def("check_game_is_finished", &SGA::RTSForwardModel::checkGameIsFinished, py::arg("state"),"Checks if the game is finished by current limit or because a player has won.")
 		;

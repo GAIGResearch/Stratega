@@ -15,8 +15,8 @@ public:
 
 	virtual void runGames(int playerCount, int seed, int gamesNumber, int mapNumber=1);
 	virtual void runGames(int playerCount, int seed, int gamesNumber, int mapNumber, std::vector<std::shared_ptr<SGA::Agent>> agents);
-	virtual void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine);
-	virtual void runGame(const std::vector<int>& agentAssignment, std::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> agents);
+	virtual void runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngEngine);
+	virtual void runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngEngine, std::vector<std::shared_ptr<SGA::Agent>> agents);
 
 	virtual void onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardModel& forwardModel) override;
 	virtual void onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel) override;

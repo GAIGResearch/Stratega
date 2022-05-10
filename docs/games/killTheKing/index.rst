@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/KillTheKing.yaml
+    /gameConfigs/TBS/Original/KillTheKing.yaml
 
 .. only:: html
 
@@ -26,13 +26,13 @@ YAML
 .. code-block:: yaml
 
     GameConfig:
-        Type: TBS
-        RoundLimit: 100
-        FogOfWar: true
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: true
 
     Agents:
         - HumanAgent
-        - OSLAAgent
+        - DoNothingAgent
         #- MCTSAgent:
         #    FmCalls: 100
         #    Budget: TIME
@@ -43,31 +43,42 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
-
             
     Board:
         GenerationType: Manual
@@ -89,7 +100,6 @@ YAML
             M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
             M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
             M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-
     Actions:
         Attack:
             Type: EntityAction
@@ -103,7 +113,7 @@ YAML
                         Options:
                             Shape: AllPositions
                     Conditions:
-                        - "DifferentPlayer(Source, Target)"
+                        #- "DifferentPlayer(Source, Target)"
                         - "InRange(Source, Target, Source.AttackRange)"
             Effects:
                 - "Attack(Target.Health, Source.AttackDamage)"
@@ -126,6 +136,7 @@ YAML
                     #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
                 - "ModifyResource(Source.MovementPoints, -1)"
@@ -145,11 +156,13 @@ YAML
                         - "InRange(Source, Target, Source.HealRange)"
             Effects:
                 - "ModifyResource(Target.Health, Source.HealAmount)"
-
-
+    #Grids:
+    #    Layer0: [Warrior]
+    #    Layer1: [Archer]
+        
     Entities:
         Warrior:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: w
             LineOfSightRange: 6
             Actions: [Attack, Move]
@@ -160,7 +173,7 @@ YAML
                 MovementPoints: 2
 
         Archer:
-            Sprite: ../../assets/Entities/unit_3.png
+            Sprite: ../../../assets/Entities/unit_3.png
             Symbol: a
             LineOfSightRange: 10
             Parameters:
@@ -171,7 +184,7 @@ YAML
             Actions: [Attack, Move]
 
         Healer:
-            Sprite: ../../assets/Entities/unit_6.png
+            Sprite: ../../../assets/Entities/unit_6.png
             Symbol: h
             LineOfSightRange: 4
             Parameters:
@@ -182,7 +195,7 @@ YAML
             Actions: [Heal, Move]
 
         King:
-            Sprite: ../../assets/Entities/unit_1.png
+            Sprite: ../../../assets/Entities/unit_1.png
             Symbol: k
             LineOfSightRange: 6
             Parameters:
@@ -199,6 +212,7 @@ YAML
 
         Trigger:
             - OnTick:
+                Type: Entity
                 Effects:
                     - "SetToMaximum(Source.MovementPoints)"
 
