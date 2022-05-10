@@ -497,6 +497,67 @@ namespace SGA
         }
     }
 
+    void GameConfigParser::parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects) const
+    {
+        if (effectsNode.IsMap())
+        {
+            for (const auto& effect : effectsNode)
+            {
+                if (effect.second.IsMap())
+                {
+                    //std::cout << "IsMap"<<std::endl;
+                    //Check if is custom effect, conditional or random
+                    if (effect.first.as<std::string>() == "ConditionalEffect")
+                    {
+                        std::cout << "Parsing conditional effect" << std::endl;
+                        EffectPack conditionEffect;
+                        effects.emplace_back(std::make_shared<EffectPack>(conditionEffect));
+                    }
+                    else if (effect.first.as<std::string>() == "RandomEffect")
+                    {
+                        std::cout << "Parsing random effect" << std::endl;
+                        EffectPack randomEffect;
+                        effects.emplace_back(std::make_shared<EffectPack>(randomEffect));
+                    }
+                    else
+                    {
+                        std::cout << "Parsign effect: " << effect.first.as<std::string>() << std::endl;
+                        EffectPack targetEffect;
+
+                        if (effect.second["Effects"].IsDefined())
+                        {
+                            std::cout << "  Parsign list of effects" << std::endl;
+                            parseEffects(effect.second["Effects"], config, parser, context, targetEffect.effects);
+                        }
+                        effects.emplace_back(std::make_shared<EffectPack>(targetEffect));
+                    }
+                }
+                else if (effect.second.IsSequence())
+                {
+                    std::cout << "Parsing list of regular effects effects";
+                    auto effectsText = effect.second.as<std::vector<std::string>>(std::vector<std::string>());
+                    std::vector<std::shared_ptr<Effect>> bucket;
+                    parser.parseFunctions(effectsText, bucket, context);
+                    for (auto& effect : bucket)
+                    {
+                        effects.emplace_back(effect);
+                    }
+                }
+            }
+        }
+        else if (effectsNode.IsSequence())
+        {
+            //std::cout << "IsSequence"; //list of effects
+            std::cout << "Parsing sequence of regular effects";
+            auto effectsText = effectsNode.as<std::vector<std::string>>(std::vector<std::string>());
+            std::vector<std::shared_ptr<Effect>> bucket;
+            parser.parseFunctions(effectsText, bucket, context);
+            for (auto& effect : bucket)
+            {
+                effects.emplace_back(effect);
+            }
+        }
+    }
     void GameConfigParser::parseActions(const YAML::Node& actionsNode, GameConfig& config) const
     {
         if (!actionsNode.IsDefined())
@@ -550,8 +611,10 @@ namespace SGA
             parser.parseFunctions(preconditions, type.getPreconditions(), context);
 
             // Parse effects
-            auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
-            parser.parseFunctions(effects, type.getEffects(), context);
+            /*auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
+            parser.parseFunctions(effects, type.getEffects(), context);*/
+            std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
+            parseEffects(nameTypePair.second["Effects"], config, parser,context, effects);
 
             type.setContinuous(false);
 

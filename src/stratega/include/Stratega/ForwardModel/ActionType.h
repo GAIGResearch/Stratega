@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <boost/variant.hpp>
 
 namespace SGA
 {
@@ -76,6 +77,9 @@ namespace SGA
 		/// List of effects this action causes when executed. This list is populated only for non continuous actions.
 		/// </summary>
 		std::vector<std::shared_ptr<Effect>> effects;
+
+		//List of effect packs
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects2;
 
 		/// <summary>
 		/// For continuous actions, list of effects that are applied when this action starts.

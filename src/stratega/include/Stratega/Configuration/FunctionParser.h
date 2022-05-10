@@ -54,6 +54,26 @@ namespace SGA
 				bucket.emplace_back(std::move(instance));
 			}
 		}
+
+		template<typename Function>
+		void parseSingleFunctions(const std::string& code, std::vector<std::shared_ptr<Function>>& bucket, const ParseContext& context) const
+		{
+			/*for (const auto& code : functionCalls)
+			{*/
+				auto abstractFn = parseAbstractFunction(code, context);
+				if (!abstractFn.has_value())
+				{
+					throw std::runtime_error("Could not parse '" + code + "'");
+				}
+
+				auto instance = FunctionFactory<Function>::get().createFunction(code, abstractFn->functionName, abstractFn->parameters);
+				if (instance == nullptr)
+				{
+					throw std::runtime_error("Tried calling unknown function " + abstractFn->functionName + ": '" + code + "'");
+				}
+				bucket.emplace_back(std::move(instance));
+			/*}*/
+		}
 		
 		// Parses: functionName(param1, param2)
 		nonstd::optional<AbstractFunctionCall> parseAbstractFunction(const std::string& code, const ParseContext& context) const;

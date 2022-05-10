@@ -3,9 +3,28 @@
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ActionTarget.h>
 #include <Stratega/ForwardModel/SamplingMethod.h>
+#include <boost/variant.hpp>
 namespace SGA
 {
 	class ForwardModel;
+	class Effect;
+	class TargetType;
+	class Condition;
+	
+	class EffectPack
+	{
+	public:
+		/// <summary>
+		/// List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>.
+		/// These are tier 2 conditions (i.e. situational), to be checked during action generation.
+		/// </summary>
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
+
+		/// <summary>
+		/// List of effects this action causes when executed.
+		/// </summary>
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
+	};
 	
 	class Effect
 	{

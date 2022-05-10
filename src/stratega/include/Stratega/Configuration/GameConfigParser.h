@@ -96,7 +96,7 @@ namespace SGA
             }
         }
         void parseBuffs(const YAML::Node& buffsNode, GameConfig& config) const;
-
+        void parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects) const;
 
     private:
         YAML::Node loadNode(const YAML::Node& origin, std::string node, GameConfig& config) const
