@@ -156,6 +156,9 @@ namespace SGA
 		const std::vector<std::shared_ptr<Effect>>& getEffects() const { return effects; }
 		std::vector<std::shared_ptr<Effect>>& getEffects() { return effects; }
 
+		const std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& getEffects2() const { return effects2; }
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& getEffects2() { return effects2; }
+
 		const std::vector<std::shared_ptr<Effect>>& getOnStart() const { return OnStart; }
 		std::vector<std::shared_ptr<Effect>>& getOnStart() { return OnStart; }
 

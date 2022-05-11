@@ -8,6 +8,57 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
+	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets)
+	{
+		std::vector<SGA::ActionTarget> effectTargets = targets;
+		auto tempTargets = fm.getActionSpace()->generateTargets(state, *targets[0].getEntity(state), actionTargets);
+		std::cout << "Executing effects from effect pack" << std::endl;
+		std::vector<std::vector<ActionTarget>> lists;
+		for (auto& target : targets)
+		{
+			std::vector<ActionTarget> test;
+			test.emplace_back(target);
+			lists.emplace_back(test);
+		}
+		for (auto& target : tempTargets)
+		{
+			lists.emplace_back(target);
+		}
+		
+		
+		auto temp=fm.getActionSpace()->productActionTargets(lists);
+
+	
+		
+		for (auto& targets : temp)
+		{
+			bool isValidAction = true;
+			//check each sigle target list if the condition is true
+			for (auto& target : actionTargets)
+			{
+				for (const auto& condition : target.second)
+				{
+					if (!condition->isFullfiled(state, targets))
+					{
+						isValidAction = false;
+						break;
+					}
+				}
+			}
+				
+			if(isValidAction)
+				for (const auto& effect : effects)
+				{
+					if (effect.which() == 0)
+						boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+					else
+					{
+						boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+					}
+				}
+		}		
+	}
+
 	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :		
 		Effect(exp),
 		resourceReference(parameters.at(0)),
@@ -206,11 +257,13 @@ namespace SGA
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
-
+		std::cout << "Attacked " << targetResource << std::endl;
 		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
 		if(targetResource <= 0)
 			entity.flagRemove();
+
+		
 	}
 	
 	AttackWithArmorUnderCover::AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters) :

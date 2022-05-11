@@ -497,7 +497,7 @@ namespace SGA
         }
     }
 
-    void GameConfigParser::parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects) const
+    void GameConfigParser::parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects, std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& targets) const
     {
         if (effectsNode.IsMap())
         {
@@ -523,11 +523,31 @@ namespace SGA
                     {
                         std::cout << "Parsign effect: " << effect.first.as<std::string>() << std::endl;
                         EffectPack targetEffect;
+                        /*for (auto& prevTarget : targets)
+                        {
+                            targetEffect.actionTargets.emplace_back(prevTarget);
+                        }*/
+                        if (effect.second["Targets"].IsDefined())
+                            for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
+                            {
+                                std::cout << "Parsign target: " << target.first << std::endl;
+                                TargetType newTarget;
+                                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
+                                newTarget = parseTargetType(target.second, config);
+
+                                std::vector<std::shared_ptr<Condition>> targetConditionsList;
+                                //// Parse target conditions
+                                auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                                parser.parseFunctions(targetConditions, targetConditionsList, context);
+                                targetEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
+                            }
+
+                        
 
                         if (effect.second["Effects"].IsDefined())
                         {
                             std::cout << "  Parsign list of effects" << std::endl;
-                            parseEffects(effect.second["Effects"], config, parser, context, targetEffect.effects);
+                            parseEffects(effect.second["Effects"], config, parser, context, targetEffect.effects, targetEffect.actionTargets);
                         }
                         effects.emplace_back(std::make_shared<EffectPack>(targetEffect));
                     }
@@ -614,7 +634,8 @@ namespace SGA
             /*auto effects = nameTypePair.second["Effects"].as<std::vector<std::string>>(std::vector<std::string>());
             parser.parseFunctions(effects, type.getEffects(), context);*/
             std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
-            parseEffects(nameTypePair.second["Effects"], config, parser,context, effects);
+            parseEffects(nameTypePair.second["Effects"], config, parser,context, effects, type.getTargets());
+            type.getEffects2() = effects;
 
             type.setContinuous(false);
 

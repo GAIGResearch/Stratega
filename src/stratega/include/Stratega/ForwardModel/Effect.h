@@ -24,6 +24,8 @@ namespace SGA
 		/// List of effects this action causes when executed.
 		/// </summary>
 		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
+
+		void execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets);
 	};
 	
 	class Effect
