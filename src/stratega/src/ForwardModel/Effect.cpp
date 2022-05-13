@@ -46,16 +46,22 @@ namespace SGA
 				}
 			}
 				
-			if(isValidAction)
-				for (const auto& effect : effects)
+			if (isValidAction)
+			{
+				if (effectPackType == EffectPackType::Regular)
 				{
-					if (effect.which() == 0)
-						boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
-					else
+					for (const auto& effect : effects)
 					{
-						boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+						if (effect.which() == 0)
+							boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+						else
+						{
+							boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+						}
 					}
 				}
+				
+			}				
 		}		
 	}
 

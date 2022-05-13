@@ -194,32 +194,43 @@ Actions:
                             - "InRange(Position, Targettwo, Source.AttackRange)"
                 Effects:
                     - "Attack(Targettwo.Health, Source.AttackDamage)"
-
             Effect2: #Single effect with sampled entities
-                #Targets:
-                #    Target:
-                #        Type: Entity
-                #        ValidTargets: All
-                #        SamplingMethod:
-                #            Type: Neighbours
-                #            Options:
-                #                Shape: AllPositions
-                #Conditions:
-                #    - "InRange(Position, Target, Source.AttackRange)"
                 Effects:
                     Effect3: #Single effect with sampled entities
                         Targets:
-                            Target:
+                            Targettwo:
                                 Type: Entity
                                 ValidTargets: All
                                 SamplingMethod:
                                     Type: Neighbours
                                     Options:
                                         Shape: AllPositions
-                            Conditions:
-                                - "InRange(Position, Target, Source.AttackRangeArea)"
+                                Conditions:
+                                    - "InRange(Position, Targettwo, Source.AttackRange)"
                         Effects:
-                            - "Attack(Target.Health, Source.AttackDamage)"
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+            ConditionalEffect: #Set of effects associated to a conditions:
+                Targets:
+                    TargetThree:
+                        Type: Entity
+                        ValidTargets: All
+                        SamplingMethod:
+                            Type: Neighbours
+                            Options:
+                                Shape: AllPositions
+                        Conditions:
+                            - "InRange(Position, TargetThree, Source.AttackRange)"
+                Conditions:
+                    Condition1:
+                        Conditions:
+                            - "InRange(Position, TargetThree, Source.AttackRange)"
+                        Effects:
+                            - "Attack(TargetThree.Health, Source.AttackDamage)"
+                    #Condition2:
+                    #    Conditions:
+                    #        - "InRange(Source, Target, Source.AttackRange)"
+                    #    Effects:
+                    #        - "Attack(Target.Health, Source.AttackDamage)"
     
 Entities:
     Warrior:

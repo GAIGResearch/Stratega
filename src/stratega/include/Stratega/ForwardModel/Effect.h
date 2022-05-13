@@ -2,18 +2,39 @@
 #include <vector>
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ActionTarget.h>
+#include <Stratega/ForwardModel/TargetType.h>
 #include <Stratega/ForwardModel/SamplingMethod.h>
 #include <boost/variant.hpp>
 namespace SGA
 {
 	class ForwardModel;
 	class Effect;
-	class TargetType;
 	class Condition;
 	
 	class EffectPack
 	{
 	public:
+		enum EffectPackType
+		{
+			Regular,
+			Conditional,
+			Random
+		};
+
+		EffectPackType effectPackType;
+
+		EffectPack(EffectPackType type):
+			effectPackType(type)
+		{
+			
+		}/*
+		EffectPack()
+		{
+			
+		}*/
+
+		EffectPack() = delete;
+
 		/// <summary>
 		/// List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>.
 		/// These are tier 2 conditions (i.e. situational), to be checked during action generation.
