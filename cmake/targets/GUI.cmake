@@ -25,6 +25,10 @@ target_link_libraries(gui
         "$<$<PLATFORM_ID:Linux>:sfml-system>"
         "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
         "$<$<PLATFORM_ID:Linux>:sfml-window>"
+
+        sfml-system
+        sfml-graphics
+        sfml-window
         )
         
 

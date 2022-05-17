@@ -1,5 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.8)
 
+#project(Stratega LANGUAGES C CXX)
 project(Stratega LANGUAGES C CXX OBJCXX OBJC)
 
 # project set'tings
@@ -52,9 +53,9 @@ option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
-option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
+option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." OFF)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" OFF)
 
 option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
@@ -124,16 +125,17 @@ include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
 # configure conan and fetch all dependencies
 if(NOT SGA_BUILD_HEADLESS)   
-   if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
-    # We will have to fetch it manually in this case and add it to our project.
-    include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
-    message(STATUS "running on Linux FetchSFML")
-   elseif (CMAKE_SYSTEM_NAME MATCHES Darwin)
-    #MacOS
+   #if (CMAKE_SYSTEM_NAME MATCHES Linux)
+   # # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
+   # # We will have to fetch it manually in this case and add it to our project.
+   # include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
+   # message(STATUS "running on Linux FetchSFML")
+   #elseif (CMAKE_SYSTEM_NAME MATCHES Darwin)
+   # #MacOS
+   #set(BUILD_SHARED_LIBS ON)
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
     message(STATUS "running on Mac FetchSFML")
-   endif ()
+   #endif ()
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 else()
     add_compile_definitions(BUILD_HEADLESS)
@@ -156,11 +158,13 @@ find_package(Threads)
 if(NOT SGA_BUILD_HEADLESS)
    find_package(imgui REQUIRED)
    find_package(OpenGL REQUIRED)
-   if (CMAKE_SYSTEM_NAME MATCHES Linux OR CMAKE_SYSTEM_NAME MATCHES Darwin)
+   #if (CMAKE_SYSTEM_NAME MATCHES Linux OR CMAKE_SYSTEM_NAME MATCHES Darwin)
        add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
-   else ()
-       find_package(SFML COMPONENTS system window graphics REQUIRED)
-   endif ()
+       #find_package(SFML COMPONENTS system window graphics REQUIRED)
+       #find_package(SFML 2.6 COMPONENTS system window graphics REQUIRED)
+   #else ()
+       #find_package(SFML COMPONENTS system window graphics REQUIRED)
+   #endif ()
 endif()
 
 find_package(yaml-cpp REQUIRED)

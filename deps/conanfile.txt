@@ -1,19 +1,11 @@
 [requires]
 opengl/system
-sfml/2.5.1
 gtest/1.11.0
 pybind11/2.7.1
 recastnavigation/cci.20200511
 yaml-cpp/0.7.0
 imgui/1.84.2
 doxygen/1.9.2
-
-[options]
-sfml:graphics=True
-sfml:window=True
-sfml:audio=False
-sfml:network=False
-sfml:shared=True
 
 [generators]
 cmake

@@ -7,12 +7,6 @@ yaml-cpp/0.7.0
 imgui/1.84.2
 doxygen/1.9.2
 
-[options]
-sfml:graphics=True
-sfml:window=True
-sfml:audio=False
-sfml:network=False
-
 [generators]
 cmake
 cmake_find_package

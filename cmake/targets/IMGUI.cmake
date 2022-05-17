@@ -24,5 +24,9 @@ target_link_libraries(imgui
         "$<$<PLATFORM_ID:Darwin>:sfml-system>"
         "$<$<PLATFORM_ID:Darwin>:sfml-graphics>"
         "$<$<PLATFORM_ID:Darwin>:sfml-window>"
+
+        sfml-system
+        sfml-graphics
+        sfml-window
         #CONAN_PKG::opengl        
         )
