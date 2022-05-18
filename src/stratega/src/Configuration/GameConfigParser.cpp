@@ -505,14 +505,13 @@ namespace SGA
             {
                 if (effect.second.IsMap())
                 {
-                    //std::cout << "IsMap"<<std::endl;
                     //Check if is custom effect, conditional or random
                     if (effect.first.as<std::string>() == "ConditionalEffect")
                     {
-                        std::cout << "Parsing conditional effect" << std::endl;
+                        //std::cout << "Parsing conditional effect" << std::endl;
                         EffectPack conditionEffect= EffectPack(EffectPack::EffectPackType::Conditional);
 
-                        std::cout << "  Parsign list of effects in condition" << std::endl;
+                        //std::cout << "  Parsign list of effects in condition" << std::endl;
                         //Parse condition of condiion pack
                         std::vector<std::shared_ptr<Condition>> conditionConditionsList;
                         auto effectConditions = effect.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
@@ -522,20 +521,17 @@ namespace SGA
                         parseEffects(effect.second["Effects"], config, parser, context, conditionEffects, conditionEffect.actionTargets);
 
                         conditionEffect.conditionEffects = { conditionConditionsList, conditionEffects };
-                        /*else 
-                        {
-                            throw(std::runtime_error("Conditions not defined in ConditionalEffect"));
-                        }*/
+
                         effects.emplace_back(std::make_shared<EffectPack>(conditionEffect));
                     }
                     else if (effect.first.as<std::string>() == "RandomEffect")
                     {
-                        std::cout << "Parsing random effect" << std::endl;
+                        //std::cout << "Parsing random effect" << std::endl;
                         EffectPack randomEffect = EffectPack(EffectPack::EffectPackType::Random);
                        
                         for (auto& target : effect.second.as<std::map<float, YAML::Node>>())
                         {
-                            std::cout << "  Parsign list of random" << std::endl;
+                            //std::cout << "  Parsign list of random" << std::endl;
                             std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> conditionEffects;
                             parseEffects(target.second, config, parser, context, conditionEffects, randomEffect.actionTargets);
 
@@ -543,20 +539,17 @@ namespace SGA
                             pair = { target.first, conditionEffects };
                             randomEffect.randomEffects.emplace_back(pair);
                         }
-                        /*else
-                        {
-                            throw(std::runtime_error("Effects not defined in RandomEffect"));
-                        }*/
+
                         effects.emplace_back(std::make_shared<EffectPack>(randomEffect));
                     }
                     else if (effect.first.as<std::string>() == "SampleEffect")
                     {
-                        std::cout << "Parsign effect: " << effect.first.as<std::string>() << std::endl;
+                        //std::cout << "Parsign effect: " << effect.first.as<std::string>() << std::endl;
                         EffectPack targetEffect = EffectPack(EffectPack::EffectPackType::Sample);
                         if (effect.second["Targets"].IsDefined())
                             for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
                             {
-                                std::cout << "Parsign target: " << target.first << std::endl;
+                                //std::cout << "Parsign target: " << target.first << std::endl;
                                 TargetType newTarget;
                                 context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
                                 newTarget = parseTargetType(target.second, config);
@@ -570,19 +563,19 @@ namespace SGA
 
                         if (effect.second["Effects"].IsDefined())
                         {
-                            std::cout << "  Parsign list of effects" << std::endl;
+                            //std::cout << "  Parsign list of effects" << std::endl;
                             parseEffects(effect.second["Effects"], config, parser, context, targetEffect.effects, targetEffect.actionTargets);
                         }
                         else
                         {
-                            throw(std::runtime_error("Effects not defined in RegularEffect"));
+                            throw(std::runtime_error("Effects not defined in SampleEffect"));
                         }
                         effects.emplace_back(std::make_shared<EffectPack>(targetEffect));
                     }
                 }
                 else if (effect.second.IsSequence())
                 {
-                    std::cout << "Parsing list of regular effects effects";
+                    //std::cout << "Parsing list of regular effects effects";
                     auto effectsText = effect.second.as<std::vector<std::string>>(std::vector<std::string>());
                     std::vector<std::shared_ptr<Effect>> bucket;
                     parser.parseFunctions(effectsText, bucket, context);
@@ -595,8 +588,6 @@ namespace SGA
         }
         else if (effectsNode.IsSequence())
         {
-            //std::cout << "IsSequence"; //list of effects
-            std::cout << "Parsing sequence of regular effects";
             auto effectsText = effectsNode.as<std::vector<std::string>>(std::vector<std::string>());
             std::vector<std::shared_ptr<Effect>> bucket;
             parser.parseFunctions(effectsText, bucket, context);

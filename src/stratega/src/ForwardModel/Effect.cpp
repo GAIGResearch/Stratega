@@ -10,27 +10,32 @@ namespace SGA
 {
 	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets)
 	{
-		std::vector<SGA::ActionTarget> effectTargets = targets;
-		auto tempTargets = fm.getActionSpace()->generateTargets(state, *targets[0].getEntity(state), actionTargets);
-		std::cout << "Executing effects from effect pack" << std::endl;
-		std::vector<std::vector<ActionTarget>> lists;
+		std::vector<std::vector<ActionTarget>> generatedTargets;
+
+		if(targets[0].getType()==ActionTarget::EntityReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, *targets[0].getEntity(state), actionTargets);
+		else if(targets[0].getType()==ActionTarget::PlayerReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, targets[0].getPlayer(state), actionTargets);
+
+
+		std::vector<std::vector<ActionTarget>> actionTargetLists;
 		for (auto& target : targets)
 		{
-			std::vector<ActionTarget> test;
-			test.emplace_back(target);
-			lists.emplace_back(test);
+			std::vector<ActionTarget> actionTargetTemp;
+			actionTargetTemp.emplace_back(target);
+			actionTargetLists.emplace_back(actionTargetTemp);
 		}
-		for (auto& target : tempTargets)
+		for (auto& target : generatedTargets)
 		{
-			lists.emplace_back(target);
+			actionTargetLists.emplace_back(target);
 		}
 		
 		
-		auto temp=fm.getActionSpace()->productActionTargets(lists);
+		auto actionTargetsResult=fm.getActionSpace()->productActionTargets(actionTargetLists);
 
 	
 		
-		for (auto& targets : temp)
+		for (auto& targets : actionTargetsResult)
 		{
 			bool isValidAction = true;
 			//check each sigle target list if the condition is true
@@ -95,7 +100,7 @@ namespace SGA
 					//Get a float random from 0->1
 					boost::random::uniform_real_distribution<float> distribution(0, 1);
 					float rndNumber = distribution(rndEngine);
-					std::cout << "Random number: " << rndNumber << std::endl;
+					//std::cout << "Random number: " << rndNumber << std::endl;
 
 					for (const auto& randomPair : randomEffects)
 					{
@@ -315,7 +320,7 @@ namespace SGA
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
-		std::cout << "Attacked " << targetResource << std::endl;
+		//std::cout << "Attacked " << targetResource << std::endl;
 		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
 		if(targetResource <= 0)

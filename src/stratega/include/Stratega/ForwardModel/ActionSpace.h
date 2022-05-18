@@ -18,8 +18,9 @@ namespace SGA
 		std::vector<Action> generateQueueActions(const GameState& gameState, int player) const;
 		std::vector<Action> generateUnitActions(const GameState& gameState, Entity& e, int playerID, bool generateEnd = true) const;
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Entity& entity, const ActionType& action) const;
-		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Player& entity, const ActionType& action) const;
+		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Player& player, const ActionType& action) const;
 		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Entity& entity, const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& sourceTargets) const;
+		std::vector<std::vector<ActionTarget>> generateTargets(const GameState& state, const Player& player, const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& sourceTargets) const;
 		virtual std::vector<ActionTarget> generateEntityTypeTargets(const GameState& gameState, const std::unordered_set<EntityTypeID>& entityTypeIDs) const;
 
 		//Entity
