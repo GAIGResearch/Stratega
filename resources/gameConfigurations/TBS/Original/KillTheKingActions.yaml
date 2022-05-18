@@ -70,27 +70,6 @@ Board:
         M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
 Actions:
-    #SampleEffect: #Single effect with sampled entities
-    #    Type: Entity
-    #    ValidTargets: All
-    #    SamplingMethod:
-    #        Type: Neighbours
-    #        Options:
-    #            Shape: AllPositions
-    #    Conditions:
-    #        - "InRange(Position, Targettwo, Source.AttackRange)"
-    #    Effects:
-    #        RandomEffect:
-    #            0.1 :
-    #                - Attack
-    #            0.5 :
-    #                - Attack
-    #        ConditionalEffect:
-    #            Conditions :
-    #                - IsEntity
-    #            Effects:
-    #                - Attack
-
     Move:
         Type: EntityAction
         Preconditions:
@@ -129,61 +108,9 @@ Actions:
                     #- "DifferentPlayer(Source, Target)"
                     - "InRange(Source, Position, Source.AttackRange)"
         Effects:
-            #Effect1: #Single effect with sampled entities
-            #    Targets:
-            #        Targettwo:
-            #            Type: Entity
-            #            ValidTargets: All
-            #            SamplingMethod:
-            #                Type: Neighbours
-            #                Options:
-            #                    Shape: AllPositions
-            #            Conditions:
-            #                - "InRange(Position, Targettwo, Source.AttackRange)"
-            #    Effects:
-            #        - "Attack(Targettwo.Health, Source.AttackDamage)"
-            #Effect2: #Single effect with sampled entities
-            #    Effects:
-            #        Effect3: #Single effect with sampled entities
-            #            Targets:
-            #                Targettwo:
-            #                    Type: Entity
-            #                    ValidTargets: All
-            #                    SamplingMethod:
-            #                        Type: Neighbours
-            #                        Options:
-            #                            Shape: AllPositions
-            #                    Conditions:
-            #                        - "InRange(Position, Targettwo, Source.AttackRange)"
-            #            Effects:
-            #                - "Attack(Targettwo.Health, Source.AttackDamage)"
-            #ConditionalEffect: #Set of effects associated to a conditions:
-            #    Targets:
-            #        TargetThree:
-            #            Type: Entity
-            #            ValidTargets: All
-            #            SamplingMethod:
-            #                Type: Neighbours
-            #                Options:
-            #                    Shape: AllPositions
-            #            Conditions:
-            #                - "InRange(Position, TargetThree, Source.AttackRange)"
-            #    Conditions:
-            #        Condition1:
-            #            Conditions:
-            #                - "DifferentPlayer(Source, TargetThree)"
-            #                #- "InRange(Position, TargetThree, Source.AttackRange)"
-            #            Effects:
-            #                - "Attack(TargetThree.Health, Source.AttackDamage)"
-            #        #Condition2:
-            #        #    Conditions:
-            #        #        - "InRange(Source, Target, Source.AttackRange)"
-            #        #    Effects:
-            #        #        - "Attack(Target.Health, Source.AttackDamage)"
-            #
-            RandomEffect: #Set of effects associated to a probability
+            SampleEffect: #Single effect with sampled entities
                 Targets:
-                    TargetThree:
+                    Targettwo:
                         Type: Entity
                         ValidTargets: All
                         SamplingMethod:
@@ -191,13 +118,20 @@ Actions:
                             Options:
                                 Shape: AllPositions
                         Conditions:
-                            - "InRange(Position, TargetThree, Source.AttackRange)"
+                            - "InRange(Position, Targettwo, Source.AttackRange)"
                 Effects:
-                    0.1: 
-                        - "Attack(TargetThree.Health, Source.AttackDamage)"
-                    0.5: 
-                        - "Attack(TargetThree.Health, Source.AttackDamage)"
-            
+                    #- "Attack(Targettwo.Health, Source.AttackDamage)"
+                    RandomEffect: #Set of effects associated to a probability
+                        0.1: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                        0.9: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                    ConditionalEffect: #Set of effects associated to a conditions:
+                        Conditions:
+                            - "DifferentPlayer(Source, Targettwo)"
+                            #- "InRange(Position, Targettwo, Source.AttackRange)"
+                        Effects:
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
 Entities:
     Warrior:
         Sprite: ../../../assets/Entities/unit_2.png

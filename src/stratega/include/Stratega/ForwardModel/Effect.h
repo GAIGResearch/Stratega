@@ -16,7 +16,7 @@ namespace SGA
 	public:
 		enum EffectPackType
 		{
-			Regular,
+			Sample,
 			Conditional,
 			Random
 		};
@@ -46,7 +46,7 @@ namespace SGA
 		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
 
 		//Condition effectPacks
-		std::vector< std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> conditionEffects;
+		std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>> conditionEffects;
 
 		//Random effectPacks
 		std::vector<std::pair<float, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> randomEffects;

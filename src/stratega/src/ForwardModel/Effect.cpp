@@ -48,7 +48,7 @@ namespace SGA
 				
 			if (isValidAction)
 			{
-				if (effectPackType == EffectPackType::Regular)
+				if (effectPackType == EffectPackType::Sample)
 				{
 					for (const auto& effect : effects)
 					{
@@ -65,29 +65,27 @@ namespace SGA
 					//Execute conditions
 					//Execute effects
 
-					for (const auto& conditionPair : conditionEffects)
+					bool isConditionFullfilled = true;
+					for (const auto& conditionPair : conditionEffects.first)
 					{
-						bool isConditionFullfilled = true;
-						for (const auto& conditionPair : conditionPair.first)
+						if (!conditionPair->isFullfiled(state, targets))
 						{
-							if (!conditionPair->isFullfiled(state, targets))
+							isConditionFullfilled = false;
+							break;
+						}
+					}
+
+					if(isConditionFullfilled)
+						for (const auto& effect : conditionEffects.second)
+						{
+							if (effect.which() == 0)
+								boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+							else
 							{
-								isConditionFullfilled = false;
-								break;
+								boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
 							}
 						}
-
-						if(isConditionFullfilled)
-							for (const auto& effect : conditionPair.second)
-							{
-								if (effect.which() == 0)
-									boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
-								else
-								{
-									boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
-								}
-							}
-					}
+					
 				}
 				else if (effectPackType == EffectPackType::Random)
 				{
