@@ -60,7 +60,61 @@ namespace SGA
 						}
 					}
 				}
-				
+				else if (effectPackType == EffectPackType::Conditional)
+				{
+					//Execute conditions
+					//Execute effects
+
+					for (const auto& conditionPair : conditionEffects)
+					{
+						bool isConditionFullfilled = true;
+						for (const auto& conditionPair : conditionPair.first)
+						{
+							if (!conditionPair->isFullfiled(state, targets))
+							{
+								isConditionFullfilled = false;
+								break;
+							}
+						}
+
+						if(isConditionFullfilled)
+							for (const auto& effect : conditionPair.second)
+							{
+								if (effect.which() == 0)
+									boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+								else
+								{
+									boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+								}
+							}
+					}
+				}
+				else if (effectPackType == EffectPackType::Random)
+				{
+					//Execute conditions
+					//Execute effects
+					auto rndEngine = state.getRndEngine();
+					//Get a float random from 0->1
+					boost::random::uniform_real_distribution<float> distribution(0, 1);
+					float rndNumber = distribution(rndEngine);
+					std::cout << "Random number: " << rndNumber << std::endl;
+
+					for (const auto& randomPair : randomEffects)
+					{
+						if (randomPair.first <= rndNumber)
+						{
+							for (const auto& effect : randomPair.second)
+							{
+								if (effect.which() == 0)
+									boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+								else
+								{
+									boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+								}
+							}
+						}
+					}
+				}
 			}				
 		}		
 	}

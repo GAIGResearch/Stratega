@@ -41,11 +41,17 @@ namespace SGA
 		/// </summary>
 		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
 
-		/// <summary>
-		/// List of effects this action causes when executed.
-		/// </summary>
+
+		//Regular effect packs
 		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
 
+		//Condition effectPacks
+		std::vector< std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> conditionEffects;
+
+		//Random effectPacks
+		std::vector<std::pair<float, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> randomEffects;
+
+		//Execute method
 		void execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets);
 	};
 	

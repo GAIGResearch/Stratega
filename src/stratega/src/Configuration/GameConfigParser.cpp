@@ -511,66 +511,110 @@ namespace SGA
                     {
                         std::cout << "Parsing conditional effect" << std::endl;
                         EffectPack conditionEffect= EffectPack(EffectPack::EffectPackType::Conditional);
-                        //if (effect.second["Targets"].IsDefined())
-                        //    for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
-                        //    {
-                        //        std::cout << "Parsign target: " << target.first << std::endl;
-                        //        TargetType newTarget;
-                        //        context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
-                        //        newTarget = parseTargetType(target.second, config);
+                        if (effect.second["Targets"].IsDefined())
+                            for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
+                            {
+                                std::cout << "Parsign target: " << target.first << std::endl;
+                                TargetType newTarget;
+                                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
+                                newTarget = parseTargetType(target.second, config);
 
-                        //        std::vector<std::shared_ptr<Condition>> targetConditionsList;
-                        //        //// Parse target conditions
-                        //        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                        //        parser.parseFunctions(targetConditions, targetConditionsList, context);
-                        //        conditionEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
-                        //    }
+                                std::vector<std::shared_ptr<Condition>> targetConditionsList;
+                                //// Parse target conditions
+                                auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                                parser.parseFunctions(targetConditions, targetConditionsList, context);
+                                conditionEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
+                            }
+                        if (effect.second["Conditions"].IsDefined()) 
+                        {
+                            auto conditionsNode = effect.second["Conditions"];
+                            for (auto& target : conditionsNode.as<std::map<std::string, YAML::Node>>())
+                            {
+                                std::cout << "  Parsign list of effects in condition" << std::endl;
+                                //Parse condition of condiion pack
+                                std::vector<std::shared_ptr<Condition>> conditionConditionsList;
+                                auto effectConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                                parser.parseFunctions(effectConditions, conditionConditionsList, context);
+                                //Parse effects of condition pack
+                                std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> conditionEffects;
+                                parseEffects(target.second["Effects"], config, parser, context, conditionEffects, conditionEffect.actionTargets);
+
+                                std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>> pair;
+                                pair = { conditionConditionsList, conditionEffects };
+                                conditionEffect.conditionEffects.emplace_back(pair);
+                            }
+                        }
+                        else 
+                        {
+                            throw(std::runtime_error("Conditions not defined in ConditionalEffect"));
+                        }
                         effects.emplace_back(std::make_shared<EffectPack>(conditionEffect));
                     }
                     else if (effect.first.as<std::string>() == "RandomEffect")
                     {
                         std::cout << "Parsing random effect" << std::endl;
                         EffectPack randomEffect = EffectPack(EffectPack::EffectPackType::Random);
-                        //if (effect.second["Targets"].IsDefined())
-                        //    for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
-                        //    {
-                        //        std::cout << "Parsign target: " << target.first << std::endl;
-                        //        TargetType newTarget;
-                        //        context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
-                        //        newTarget = parseTargetType(target.second, config);
+                        if (effect.second["Targets"].IsDefined())
+                            for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
+                            {
+                                std::cout << "Parsign target: " << target.first << std::endl;
+                                TargetType newTarget;
+                                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
+                                newTarget = parseTargetType(target.second, config);
 
-                        //        std::vector<std::shared_ptr<Condition>> targetConditionsList;
-                        //        //// Parse target conditions
-                        //        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                        //        parser.parseFunctions(targetConditions, targetConditionsList, context);
-                        //        randomEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
-                        //    }
+                                std::vector<std::shared_ptr<Condition>> targetConditionsList;
+                                //// Parse target conditions
+                                auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                                parser.parseFunctions(targetConditions, targetConditionsList, context);
+                                randomEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
+                            }
+                        if (effect.second["Effects"].IsDefined())
+                        {
+                            auto effectsNode = effect.second["Effects"];
+                            for (auto& target : effectsNode.as<std::map<float, YAML::Node>>())
+                            {
+                                std::cout << "  Parsign list of random" << std::endl;
+                                std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> conditionEffects;
+                                parseEffects(target.second, config, parser, context, conditionEffects, randomEffect.actionTargets);
 
+                                std::pair<float, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>> pair;
+                                pair = { target.first, conditionEffects };
+                                randomEffect.randomEffects.emplace_back(pair);
+                            }
+                        }
+                        else
+                        {
+                            throw(std::runtime_error("Effects not defined in RandomEffect"));
+                        }
                         effects.emplace_back(std::make_shared<EffectPack>(randomEffect));
                     }
                     else
                     {
                         std::cout << "Parsign effect: " << effect.first.as<std::string>() << std::endl;
                         EffectPack targetEffect = EffectPack(EffectPack::EffectPackType::Regular);
-                        //if (effect.second["Targets"].IsDefined())
-                        //    for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
-                        //    {
-                        //        std::cout << "Parsign target: " << target.first << std::endl;
-                        //        TargetType newTarget;
-                        //        context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
-                        //        newTarget = parseTargetType(target.second, config);
+                        if (effect.second["Targets"].IsDefined())
+                            for (auto& target : effect.second["Targets"].as<std::map<std::string, YAML::Node>>())
+                            {
+                                std::cout << "Parsign target: " << target.first << std::endl;
+                                TargetType newTarget;
+                                context.targetIDs.emplace(target.first, static_cast<int>(context.targetIDs.size()));
+                                newTarget = parseTargetType(target.second, config);
 
-                        //        std::vector<std::shared_ptr<Condition>> targetConditionsList;
-                        //        //// Parse target conditions
-                        //        auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
-                        //        parser.parseFunctions(targetConditions, targetConditionsList, context);
-                        //        targetEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
-                        //    }                        
+                                std::vector<std::shared_ptr<Condition>> targetConditionsList;
+                                //// Parse target conditions
+                                auto targetConditions = target.second["Conditions"].as<std::vector<std::string>>(std::vector<std::string>());
+                                parser.parseFunctions(targetConditions, targetConditionsList, context);
+                                targetEffect.actionTargets.emplace_back(newTarget, targetConditionsList);
+                            }                        
 
                         if (effect.second["Effects"].IsDefined())
                         {
                             std::cout << "  Parsign list of effects" << std::endl;
                             parseEffects(effect.second["Effects"], config, parser, context, targetEffect.effects, targetEffect.actionTargets);
+                        }
+                        else
+                        {
+                            throw(std::runtime_error("Effects not defined in RegularEffect"));
                         }
                         effects.emplace_back(std::make_shared<EffectPack>(targetEffect));
                     }
