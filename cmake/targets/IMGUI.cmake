@@ -11,8 +11,8 @@ target_link_libraries(imgui
         CONAN_PKG::imgui
         # other platforms use Conan's `sfml`
         "$<$<PLATFORM_ID:Linux>:OpenGL>"
-        OpenGL
-        #"$<$<PLATFORM_ID:Windows>:CONAN_PKG::opengl>"
+        #OpenGL
+        "$<$<PLATFORM_ID:Windows>:CONAN_PKG::opengl>"
         #"$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
         #CONAN_PKG::sfml
         #"$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::opengl>"

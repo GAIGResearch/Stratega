@@ -14,7 +14,7 @@ macro(run_conan)
             https://api.bintray.com/conan/bincrafters/public-conan)
 
     conan_cmake_run(
-            ARCH armv8
+            #ARCH armv8
             CONANFILE ${DEPENDENCY_DIR}/${CONANFILE}
             CONAN_COMMAND ${CONAN_PATH}
             ${CONAN_EXTRA_REQUIRES}
