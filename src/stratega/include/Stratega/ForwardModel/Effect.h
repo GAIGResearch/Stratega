@@ -2,18 +2,66 @@
 #include <vector>
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ActionTarget.h>
-
+#include <Stratega/ForwardModel/TargetType.h>
+#include <Stratega/ForwardModel/SamplingMethod.h>
+#include <boost/variant.hpp>
 namespace SGA
 {
 	class ForwardModel;
+	class Effect;
+	class Condition;
+	
+	class EffectPack
+	{
+	public:
+		enum EffectPackType
+		{
+			Sample,
+			Conditional,
+			Random
+		};
 
+		EffectPackType effectPackType;
+
+		EffectPack(EffectPackType type):
+			effectPackType(type)
+		{
+			
+		}/*
+		EffectPack()
+		{
+			
+		}*/
+
+		EffectPack() = delete;
+
+		/// <summary>
+		/// List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>.
+		/// These are tier 2 conditions (i.e. situational), to be checked during action generation.
+		/// </summary>
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
+
+
+		//Regular effect packs
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
+
+		//Condition effectPacks
+		std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>> conditionEffects;
+
+		//Random effectPacks
+		std::vector<std::pair<float, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> randomEffects;
+
+		//Execute method
+		void execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets);
+	};
+	
 	class Effect
 	{
 	public:
 		virtual ~Effect() = default;
 
 		virtual void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const = 0;
-
+		
 		const std::string expr() const { return expression; };
 
 	protected:
@@ -25,7 +73,7 @@ namespace SGA
 
 	};
 
-	class ModifyResource : public Effect
+	class ModifyResource: public Effect
 	{
 		FunctionParameter resourceReference;
 		FunctionParameter amountParameter;
@@ -34,20 +82,29 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class ApplyBuff : public Effect
+	class EnqueueAction : public Effect
+	{
+		FunctionParameter source;
+		FunctionParameter actionType;
+	public:
+		EnqueueAction(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class ApplyBuff: public Effect
 	{
 		FunctionParameter buffReference;
 		FunctionParameter buffTicks;
-		FunctionParameter entityParam;
+        FunctionParameter entityParam;
 	public:
 		ApplyBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
-	class RemoveBuff : public Effect
+	class RemoveBuff: public Effect
 	{
 		FunctionParameter buffReference;
-		FunctionParameter entityParam;
+        FunctionParameter entityParam;
 	public:
 		RemoveBuff(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
@@ -55,7 +112,7 @@ namespace SGA
 
 	class RemoveAllBuffs : public Effect
 	{
-		FunctionParameter entityParam;
+        FunctionParameter entityParam;
 	public:
 		RemoveAllBuffs(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
@@ -79,12 +136,75 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+	class AttackWithArmorUnderCover : public Effect
+	{
+		FunctionParameter sourceReference;
+		FunctionParameter armorReference;
+		FunctionParameter healthReference;
+		FunctionParameter amountParameter;
+		FunctionParameter penaltyParameter;
+	public:
+		AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class AttackAroundWithArmor : public Effect
+	{
+		FunctionParameter sourceReference;
+		FunctionParameter targetPositionReference;
+		FunctionParameter armorReference;
+		FunctionParameter healthReference;
+		FunctionParameter amountParameter;
+
+		std::unique_ptr<Neighbours> samplingMethod;
+	public:
+		AttackAroundWithArmor(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class Empty :public Effect
+	{
+		FunctionParameter entityParam;
+		//FunctionParameter targetPositionParam;
+	public:
+		Empty(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class Push : public Effect
 	{
 		FunctionParameter entityParam;
 		FunctionParameter targetParam;
 	public:
 		Push(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class PushAndHit : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+
+		//Hit
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+	public:
+		PushAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class PushAroundPositionAndHit : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+
+		//Hit
+		FunctionParameter resourceReference;
+		FunctionParameter amountParameter;
+
+		std::unique_ptr<Neighbours> samplingMethod;
+	public:
+		PushAroundPositionAndHit(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
@@ -106,6 +226,15 @@ namespace SGA
 		DropObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
+	
+	class RemoveObject : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter objectParam;
+	public:
+		RemoveObject(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
 
 	class AttackProbability : public Effect
 	{
@@ -116,7 +245,7 @@ namespace SGA
 		AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
-
+	
 	class Move : public Effect
 	{
 		FunctionParameter entityParam;
@@ -174,7 +303,7 @@ namespace SGA
 	class SetToMaximum : public Effect
 	{
 		FunctionParameter targetResource;
-
+		
 	public:
 		SetToMaximum(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
@@ -209,7 +338,7 @@ namespace SGA
 		RemoveEntityEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
-
+	
 	class ResearchTechnology : public Effect
 	{
 		FunctionParameter playerParam;

@@ -86,6 +86,8 @@ namespace SGA
 						agents[i]->setPlayerID(static_cast<int>(i));
 					}
 				}
+				//StartGame
+				forwardModel->startGame(*currentState);
 
 				initializeAgents(agents);
 				observer->onGameStarted(*currentState, *forwardModel);
@@ -130,6 +132,8 @@ namespace SGA
 						agents[i]->setPlayerID(i);
 					}
 				}
+				//StartGame
+				forwardModel->startGame(*currentState);
 
 				initializeAgents(agents);
 				ensureRendererInitialized(resolution);
@@ -177,6 +181,7 @@ namespace SGA
 		bool shouldCheckInitTime;
 		long initBudgetTimetMs;
 		long initDisqualificationBudgetTimeMs;
+
 	};
 
 	/// <summary>

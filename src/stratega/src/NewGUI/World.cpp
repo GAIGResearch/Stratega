@@ -56,14 +56,39 @@ namespace SGA
 
     void World::sortDrawables()
     {
-        //Oder by y
+        //Sort drawables
         std::sort(drawableList.begin(), drawableList.end(), [](const std::unique_ptr<SGADrawable>& lhs, const std::unique_ptr<SGADrawable>& rhs)
         {
+            //Sort by layer
             if (lhs->zPosition != rhs->zPosition)
                 return (lhs->zPosition < rhs->zPosition);
 
-            return std::tie(lhs->position.y, lhs->position.x) < std::tie(rhs->position.y, rhs->position.x);      
+            //Sort by x and y
+            if (lhs->position.x < rhs->position.x && lhs->position.y < rhs->position.y)
+                return true;
+            else if (lhs->position.x > rhs->position.x && lhs->position.y > rhs->position.y)
+                return false;
+            else
+            {
+                if (lhs->position.x == rhs->position.x)
+                    return lhs->position.y < rhs->position.y;                  
+                else if (lhs->position.y == rhs->position.y)
+                    return lhs->position.x < rhs->position.x;               
+                else
+                    return lhs->position.x < rhs->position.x;
+            }
 
+           /* if (lhs->zPosition != rhs->zPosition)
+                return (lhs->zPosition < rhs->zPosition);
+
+            if (lhs->position.x < rhs->position.x && lhs->position.y < rhs->position.y)
+                return true;*/
+
+            return false;
+            //return std::tie(lhs->position.y, lhs->position.x) < std::tie(rhs->position.y, rhs->position.x);   
+
+            /*if (dynamic_cast<SGADrawableEntity*>(lhs.get()) && dynamic_cast<SGADrawableEntity*>(rhs.get()))
+                std::cout << "temp4";*/
         });
     } 
     
@@ -108,7 +133,7 @@ namespace SGA
     {
         //std::cout << "DT: " << dt << std::endl;
         animatingNumber = 0;
-
+        sortDrawables();
         for (auto& drawable : drawableList)
         {
             auto* drawableEntity = dynamic_cast<SGADrawableEntity*>(drawable.get());

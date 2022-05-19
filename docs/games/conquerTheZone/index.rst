@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/ConquerTheZone.yaml
+    /gameConfigs/TBS/Original/ConquerTheZone.yaml
 
 .. only:: html
 
@@ -43,8 +43,20 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
@@ -56,20 +68,20 @@ YAML
             Score: [0,0,200]
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
             
@@ -124,6 +136,7 @@ YAML
                             Size: 3
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "SpawnEntity(Source, Warrior, Target)"
                 - "ModifyResource(Source.Player.SpawnedUnits, +1)"
@@ -134,7 +147,7 @@ YAML
             Targets:
                 Target:
                     Type: Entity
-                    ValidTargets: All
+                    ValidTargets: Warrior
                     SamplingMethod:
                         Type: Neighbours
                         Options:
@@ -163,6 +176,7 @@ YAML
                     #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
                 - "ModifyResource(Source.MovementPoints, -1)"
@@ -238,7 +252,7 @@ YAML
 
     Entities:
         Warrior:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: w
             LineOfSightRange: 6
             Actions: [Attack, Move]
@@ -248,7 +262,7 @@ YAML
                 AttackDamage: 100
                 MovementPoints: 2
         Zone:
-            Sprite: ../../assets/Entities/wonder.png
+            Sprite: ../../../assets/Entities/wonder.png
             Symbol: z
             LineOfSightRange: 5
             OnTickActions: [CheckPlayer,CheckPlayerOwn , CheckControl, BoostAttackPower]
@@ -256,7 +270,7 @@ YAML
                 Control: [0,0,10]
 
         Base:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             Symbol: b
             LineOfSightRange: 5
             Actions: [SpawnUnit]            

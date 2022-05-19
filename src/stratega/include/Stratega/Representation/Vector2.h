@@ -73,7 +73,12 @@ namespace SGA
 			
 			//Check if result is different to 0
 			if (magnitudeValue <= 0) return *this;
-			return (*this) / magnitudeValue;
+
+			auto normalizedVector = (*this);
+			normalizedVector.x /= magnitudeValue;
+			normalizedVector.y /= magnitudeValue;
+
+			return normalizedVector;
 		}
 		double distance(const Vector2f& other) const { auto dx = other.x - x; auto dy = other.y - y; return std::sqrt(dx * dx + dy * dy); }
 		double manhattanDistance(const Vector2f& other) const { return std::abs(other.x - x) + std::abs(other.y - y); }

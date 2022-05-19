@@ -18,6 +18,7 @@ namespace SGA
 		IDMap targetIDs;
 		IDMap parameterIDs;
 		IDMap entityTypeIDs;
+		IDMap actionTypeIDs;
 		IDMap tileTypeIDs;
 		IDMap buffTypeIDs;
 		IDMap technologyTypeIDs;
@@ -53,27 +54,51 @@ namespace SGA
 				bucket.emplace_back(std::move(instance));
 			}
 		}
+
+		template<typename Function>
+		void parseSingleFunctions(const std::string& code, std::vector<std::shared_ptr<Function>>& bucket, const ParseContext& context) const
+		{
+			/*for (const auto& code : functionCalls)
+			{*/
+				auto abstractFn = parseAbstractFunction(code, context);
+				if (!abstractFn.has_value())
+				{
+					throw std::runtime_error("Could not parse '" + code + "'");
+				}
+
+				auto instance = FunctionFactory<Function>::get().createFunction(code, abstractFn->functionName, abstractFn->parameters);
+				if (instance == nullptr)
+				{
+					throw std::runtime_error("Tried calling unknown function " + abstractFn->functionName + ": '" + code + "'");
+				}
+				bucket.emplace_back(std::move(instance));
+			/*}*/
+		}
 		
 		// Parses: functionName(param1, param2)
 		nonstd::optional<AbstractFunctionCall> parseAbstractFunction(const std::string& code, const ParseContext& context) const;
 
 	private:
 
-		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss) const;
-		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context) const;
-		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context) const;
+		nonstd::optional<FunctionParameter> parseConstant(std::istringstream& ss, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseDice(std::istringstream& ss, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseGameStateParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerParameterReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTargetReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityPlayerReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTimeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseEntityTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseActionTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTileTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseBuffTypeReference(std::istringstream& ss, const ParseContext& context, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseTechnologyTypeReference(std::istringstream& ss, const ParseContext& context, std::string& parameterString, bool allowExpressions) const;
+		nonstd::optional<FunctionParameter> parseExpression(std::istringstream& ss, const ParseContext& context) const;
 		/// <summary>
 		/// Parses constructs in the form of Name1.Name2.Name3 and returns the names
 		/// </summary>
-		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length) const;
+		nonstd::optional<std::vector<std::string>> parseAccessorList(std::istringstream& ss, size_t length, bool allowExpressions = false) const;
 		nonstd::optional<std::string> parseText(std::istringstream& ss) const;
+
 	};
 }

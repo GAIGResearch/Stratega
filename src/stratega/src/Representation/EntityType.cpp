@@ -21,7 +21,7 @@ const SGA::Parameter& SGA::EntityType::getParameterByIndex(int index) const
 	throw std::runtime_error("No parameter associated to index " + std::to_string(id) + " in entity type " + name);
 }
 
-const SGA::Parameter& SGA::EntityType::getParameterByName(std::string& paramName) const
+const SGA::Parameter& SGA::EntityType::getParameterByName(const std::string& paramName) const
 {
 	for (const auto& parameter : parameters)
 	{

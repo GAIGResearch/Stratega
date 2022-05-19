@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <boost/variant.hpp>
 
 namespace SGA
 {
@@ -60,7 +61,12 @@ namespace SGA
 		/// <summary>
 		/// Indicates if action is continuous: if the execution of this action extends beyond the tick it was started.
 		/// </summary>
-		bool continuous;
+		bool continuous = false;
+
+		/// <summary>
+		/// Indicates if action is endtick
+		/// </summary>
+		bool endTick=false;
 
 		/// <summary>
 		/// Continuous actions finish when certain conditions are met. This vector indicates those conditions.
@@ -71,6 +77,9 @@ namespace SGA
 		/// List of effects this action causes when executed. This list is populated only for non continuous actions.
 		/// </summary>
 		std::vector<std::shared_ptr<Effect>> effects;
+
+		//List of effect packs
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects2;
 
 		/// <summary>
 		/// For continuous actions, list of effects that are applied when this action starts.
@@ -129,6 +138,9 @@ namespace SGA
 		bool isContinuous() const { return continuous; }
 		void setContinuous(bool c) { continuous = c; }
 
+		bool isEndTick() const { return endTick; }
+		void setEndTick(bool e) { endTick = e; }
+
 
 		/* Getters for conditions, effects and targets */
 
@@ -143,6 +155,9 @@ namespace SGA
 
 		const std::vector<std::shared_ptr<Effect>>& getEffects() const { return effects; }
 		std::vector<std::shared_ptr<Effect>>& getEffects() { return effects; }
+
+		const std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& getEffects2() const { return effects2; }
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& getEffects2() { return effects2; }
 
 		const std::vector<std::shared_ptr<Effect>>& getOnStart() const { return OnStart; }
 		std::vector<std::shared_ptr<Effect>>& getOnStart() { return OnStart; }

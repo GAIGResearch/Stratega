@@ -1,5 +1,5 @@
 #pragma once
-#include <random>
+#include <boost/random.hpp>
 #include <Stratega/Representation/GameState.h>
 #include <Stratega/ForwardModel/ActionSpace.h>
 #include <Stratega/ForwardModel/ActionAssignment.h>
@@ -81,6 +81,10 @@ namespace SGA
 		/// <param name="playerID">ID of the players to generate available actions for.</param>
 		/// <returns>The list of available actions for player with ID 'playerID' in game state 'state'.</returns>
 		std::vector<Action> generateActions(const GameState& state, int playerID) const;
+
+		std::vector<Action> generateUnitActions(const GameState& state, Entity e, int playerID, bool generateEnd = true) const;
+
+		virtual void startGame(GameState& state) const;
 
 		/// <summary>
 		/// Generates actions in the given gamestate by the received player and fills the action vector passed by parameter.
@@ -175,6 +179,12 @@ namespace SGA
 		void addOnAdvanceEffect(OnTickEffect& ote);
 
 		/// <summary>
+		/// Adds an OnGameStateEffect to the forward mode, which will be executed at the beginning of the game.
+		/// </summary>
+		/// <param name="ote">Effect to add.</param>
+		void addOnStartEffect(OnTickEffect& ote);
+
+		/// <summary>
 		/// Adds an OnEntitySpawnEffect to the forward mode, which will be executed every time an entity is spawned.
 		/// </summary>
 		/// <param name="ote">Effect to add.</param>
@@ -186,6 +196,16 @@ namespace SGA
 		const std::vector<OnTickEffect>& getOnTickEffects() const { return onTickEffects; }
 
 		/// <summary>
+		/// Returns all effects that are executed on advance game.
+		/// </summary>
+		const std::vector<OnTickEffect>& getOnAdvanceEffects() const { return onAdvanceEffects; }
+
+		/// <summary>
+		/// Returns all effects that are exxecuted at game start.
+		/// </summary>
+		const std::vector<OnTickEffect>& getOnStartEffects() const { return onStartEffects; }
+
+		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
 		/// </summary>
 		const std::vector<OnEntitySpawnEffect>& getOnEntitySpawnEffects() const { return onEntitySpawnEffects; }
@@ -193,7 +213,7 @@ namespace SGA
 		/// <summary>
 		/// Returns all effects that are exxecuted every time an entity is spawned in the game.
 		/// </summary>
-		void modifyEntityByParameterByName(Entity& entity, std::string& parameterName, double newValue) const
+		void modifyEntityByParameterByName(Entity& entity, const std::string& parameterName, double newValue) const
 		{
 			modifyEntityParameterByIndex(entity, entity.getEntityType().getParameterByName(parameterName).getIndex(), newValue);
 		}
@@ -219,13 +239,41 @@ namespace SGA
 		void modifyEntityParameterByIndex(Entity& entity, int parameterIndex, double newValue) const;
 		
 		/// <summary>
+		/// Modify Tile parameter by name
+		/// </summary>
+		void modifyTileByParameterByName(Tile& tile, std::string& parameterName, double newValue) const
+		{
+			modifyTileParameterByIndex(tile, tile.getTileType().getParameterByName(parameterName).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		///  Modify Tile parameter by ID
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterID">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		void modifyTileParameterByID(Tile& tile, int parameterID, double newValue) const
+		{
+			modifyTileParameterByIndex(tile, tile.getTileType().getParameter(parameterID).getIndex(), newValue);
+		}
+		
+		/// <summary>
+		/// Modify Tile parameter by index
+		/// </summary>
+		/// <param name="entity">Entity to search parameter from</param>
+		/// <param name="parameterIndex">Index of the parameter</param>
+		/// <param name="newValue">New value of the parameter</param>
+		/// <param name="gameInfo">Game info object with the information of the current game</param>
+		void modifyTileParameterByIndex(Tile& tile, int parameterIndex, double newValue) const;
+		
+		/// <summary>
 		/// Modify player parameter by name
 		/// </summary>
 		/// <param name="entity">Entity to search parameter from</param>
 		/// <param name="parameterName">Name of the parameter</param>
 		/// <param name="newValue">New value of the parameter</param>
 		/// <param name="gameInfo">Game info object with the information of the current game</param>
-		void modifyPlayerByParameterByName(Player& player, std::string& parameterName, double newValue, GameInfo& gameInfo) const
+		void modifyPlayerByParameterByName(Player& player, const std::string& parameterName, double newValue, GameInfo& gameInfo) const
 		{
 			modifyPlayerParameterByIndex(player, gameInfo.getPlayerParameter(parameterName).getIndex(), newValue);
 		}
@@ -300,6 +348,11 @@ namespace SGA
 		std::vector<OnTickEffect> onAdvanceEffects;
 
 		/// <summary>
+		/// Effects applied after at the game start.
+		/// </summary>
+		std::vector<OnTickEffect> onStartEffects;
+
+		/// <summary>
 		/// Effects applied when a new entity is spawned in the game.
 		/// </summary>
 		std::vector<OnEntitySpawnEffect> onEntitySpawnEffects;
@@ -367,7 +420,11 @@ namespace SGA
 		/// <param name="state">State where the trigger events are to be executed.</param>
 		void executeOnTriggerEffects(GameState& state) const;
 
-		
+		/// <summary>
+		/// Executes the OnTrigger effects in the state provided
+		/// </summary>
+		/// <param name="state">State where the trigger events are to be executed.</param>
+		void executeOnStartEffects(GameState& state) const;		
 
 		/// <summary>
 		/// Executes the OnAdvance effects in the state provided

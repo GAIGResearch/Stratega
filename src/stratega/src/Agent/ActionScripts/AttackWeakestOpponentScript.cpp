@@ -12,7 +12,9 @@ namespace SGA
 		{
 			if (param.second.getName() == "Health")
 			{
-				return entity.getParamValues()[static_cast<size_t>(param.second.getIndex())];
+				auto it = entity.getParamValues().find(param.second.getIndex());
+				if(it != entity.getParamValues().end())
+					return it->second;
 			}
 		}
 		return 0;

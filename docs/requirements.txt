@@ -1,3 +1,3 @@
-stratega
+stratega>=0.0.15
 breathe
 sphinx-tabs

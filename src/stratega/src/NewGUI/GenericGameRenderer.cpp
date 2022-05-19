@@ -208,6 +208,9 @@ namespace SGA
 		}
 
 		//Components window
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 10), ImGuiCond_FirstUseEver);
 		ImGui::Begin("Widgets controller");
 		for (auto& widget : widgets)
 		{

@@ -9,7 +9,7 @@ on:
       - '*'
   pull_request:
 env:
-    CIBW_SKIP: pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64
+    CIBW_SKIP: pp39-win_amd64 pp39-macosx_x86_64 pp39-manylinux_x86_64 pp38-win_amd64 pp38-macosx_x86_64 pp38-manylinux_x86_64 cp36-manylinux_x86_64 cp36-win_amd64 cp36-macosx_x86_64 pp37-win_amd64 pp37-macosx_x86_64 pp37-manylinux_x86_64 pp37-win_amd64
     CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
     CIBW_MANYLINUX_PYPY_X86_64_IMAGE: quay.io/pypa/manylinux_2_24_x86_64:latest
 jobs:
@@ -79,7 +79,7 @@ jobs:
           echo "CIBW_BUILD=*-${{ matrix.cibw-arch }}" >> $GITHUB_ENV
           CIBW_ENVIRONMENT_COMMON="CMAKE_BUILD_PARALLEL_LEVEL=2"
           echo "CIBW_ENVIRONMENT=$CIBW_ENVIRONMENT_COMMON" >> $GITHUB_ENV
-          echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON  PIP_ONLY_BINARY='numpy' CFLAGS='-fPIC' CXXFLAGS='-fPIC'">> $GITHUB_ENV
+          echo "CIBW_ENVIRONMENT_LINUX=$CIBW_ENVIRONMENT_COMMON CFLAGS='-fPIC' CXXFLAGS='-fPIC'">> $GITHUB_ENV
           echo "CIBW_ENVIRONMENT_MACOS=$CIBW_ENVIRONMENT_COMMON MACOSX_DEPLOYMENT_TARGET=10.15 CMAKE_OSX_ARCHITECTURES=\"$CMAKE_OSX_ARCHITECTURES\"" >> $GITHUB_ENV
           CIBW_BEFORE_ALL_COMMON=""
           echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV

@@ -8,6 +8,7 @@
 #include <Stratega/Representation/Player.h>
 #include <Stratega/Representation/TileType.h>
 #include <Stratega/Representation/GameInfo.h>
+#include <Stratega/Representation/ActionQueue.h>
 #include <memory>
 namespace SGA
 {
@@ -25,7 +26,6 @@ namespace SGA
 	{
 
 	public:
-
 		/***** CONSTRUCTORS *****/
 
 		GameState(Grid2D<Tile>&& board, const std::unordered_map<int, TileType>& tileTypes);
@@ -40,7 +40,7 @@ namespace SGA
 		/// <param name="entity">The entity that will be analyzed</param>
 		/// <returns>A boolean indicating if the player can execute the action type</returns>
 		bool canExecuteAction(const Entity& entity, const ActionType& actionType) const;
-		
+
 		/// <summary>
 		/// Checks if a player can execute a given actionType
 		/// </summary>
@@ -83,7 +83,7 @@ namespace SGA
 		/// Initializes the research technologies to all players, to none.
 		/// </summary>
 		void initResearchTechs();
-		
+
 		/***** BOARD FUNCTIONS *****/
 
 		/// <summary>
@@ -92,6 +92,9 @@ namespace SGA
 		/// <param name="position">The position of the tile map</param>
 		/// <returns>A boolean indicating if the tile in the given position is walkable</returns>
 		bool isWalkable(const Vector2i& position);
+
+		bool isOccupied(const Vector2i& position) const;
+		bool isOccupied(const Vector2i& position, int gridLevel) const;
 
 		/// <summary>
 		/// Checks if position is inside of the tile map
@@ -124,7 +127,7 @@ namespace SGA
 		/// </summary>
 		/// <param name="pos">Position of the tile to retrieve</param>
 		/// <returns>The tile at 'pos'</returns>
-		const Tile& getTileAt(const Vector2i& pos) const;
+		const Tile& getTileAtConst(const Vector2i& pos) const;
 
 		/// <summary>
 		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
@@ -132,7 +135,22 @@ namespace SGA
 		/// <param name="x">X Position of the tile to retrieve</param>
 		/// <param name="y">Y Position of the tile to retrieve</param>
 		/// <returns>The tile at position (x,y)</returns>
-		const Tile& getTileAt(int x, int y) const;
+		const Tile& getTileAtConst(int x, int y) const;
+
+		/// <summary>
+		/// Returns the tile at the position indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="pos">Position of the tile to retrieve</param>
+		/// <returns>The tile at 'pos'</returns>
+		Tile& getTileAt(const Vector2i& pos);
+
+		/// <summary>
+		/// Returns the tile at the position (x,y) indicated in the parameter. Can throw an exception if out of bounds.
+		/// </summary>
+		/// <param name="x">X Position of the tile to retrieve</param>
+		/// <param name="y">Y Position of the tile to retrieve</param>
+		/// <returns>The tile at position (x,y)</returns>
+		Tile& getTileAt(int x, int y);
 
 		/// <summary>
 		/// Initializes the board with the tiles passed by parameter. 
@@ -150,9 +168,22 @@ namespace SGA
 		/// <param name="pos">Position in the board to look for an entity.</param>
 		/// <param name="maxDistance">If provided, considers units at a distance less or equal this value to the position provided.</param>
 		/// <returns>A pointer to the entity in this location.</returns>
-		Entity* getEntity(Vector2f pos, float maxDistance = 0.0);
-		const Entity* getEntityAtConst(const Vector2f& pos, float maxDistance = 0.0) const;
-		const Entity* getEntityAt(const Vector2f& pos) const;
+		Entity* getEntityAround(Vector2f pos, float maxDistance = 0.0);
+		const Entity* getEntityAroundConst(const Vector2f& pos, float maxDistance = 0.0) const;
+
+		const Entity* getEntityAtConst(const Vector2f& pos) const;
+		Entity* getEntityAt(const Vector2f& pos);
+
+		//Get all entities in different grid
+		std::vector<Entity*> getEntitiesAround(Vector2f pos, float maxDistance = 0.0);
+		std::vector<Entity*> getEntitiesAt(Vector2f pos);
+		std::vector<const Entity*> getEntitiesAroundConst(Vector2f pos, float maxDistance = 0.0) const;
+		std::vector<const Entity*> getEntitiesAtConst(Vector2f pos) const;
+
+		std::vector<Entity*> getEntitiesAround(Vector2f pos, int gridLevel, float maxDistance = 0.0);
+		std::vector<Entity*> getEntitiesAt(Vector2f pos, int gridLevel);
+		std::vector<const Entity*> getEntitiesAroundConst(Vector2f pos, int gridLevel, float maxDistance = 0.0) const;
+		std::vector<const Entity*> getEntitiesAtConst(Vector2f pos, int gridLevel) const;
 
 		/// <summary>
 		/// Returns an entity by its ID. It'll return nullptr if no entity exists associated to the given ID.
@@ -241,13 +272,13 @@ namespace SGA
 		/// <returns>Player seeked for, or nullptr if it doesn't exist.</returns>
 		const Player* getPlayer(int playerID) const;
 		Player* getPlayer(int playerID) { return const_cast<Player*>(const_cast<const GameState*>(this)->getPlayer(playerID)); }
-		
+
 		/// <summary>
 		/// Returns a list with the ID of players that can play in this game state.
 		/// </summary>
 		/// <returns>A list with all IDs of player that can play now.</returns>
 		std::vector<int> whoCanPlay() const;
-		
+
 		/// <summary>
 		/// Indicates if the player with the provided ID can play in this game state.
 		/// </summary>
@@ -290,7 +321,7 @@ namespace SGA
 		/// <param name="paramName">Name of the parameter which want to be checked</param>
 		/// /// <returns>A bool indicating if player has that parameter</returns>
 		bool hasPlayerParameter(const std::string& paramName) const;
-		
+
 		/// <summary>
 		/// Returns a list will all the parameter names of the player of which ID is given
 		/// </summary>
@@ -321,12 +352,12 @@ namespace SGA
 		/// Print all the entities of the current state
 		/// </summary>
 		void printStateInfo() const;
-		
+
 		/// <summary>
 		// /Print view of the map of the current state
 		/// </summary>
 		void printBoard() const;
-		
+
 		/// <summary>
 		/// Print view of the map of the current state applying fog
 		/// <param name="playerID">The ID of the player to print information of.</param>
@@ -338,7 +369,7 @@ namespace SGA
 		/// <param name="playerID">ID of the entity to print information of.</param>
 		/// </summary>
 		void printEntityInfo(int entityID) const;
-		
+
 		/// <summary>
 		/// Print information of a specific action
 		/// </summary>
@@ -409,7 +440,7 @@ namespace SGA
 		/// Returns the current tick of the game.
 		/// </summary>
 		int getCurrentTick() const { return currentTick; }
-		
+
 		/// <summary>
 		/// Increments the current tick in the game by 1.
 		/// </summary>
@@ -419,7 +450,7 @@ namespace SGA
 		/// Returns the current game tick limit.
 		/// </summary>
 		int getTickLimit() const { return tickLimit; }
-		
+
 		/// <summary>
 		/// Sets the time limit of the game, measured in ticks.
 		/// </summary>
@@ -430,7 +461,7 @@ namespace SGA
 		/// Returns a pointer to the struct with static information about the game.
 		/// </summary>
 		std::shared_ptr<GameInfo> getGameInfo() const { return gameInfo; }
-		
+
 		/// <summary>
 		/// Sets the pointer to the game information struct.
 		/// </summary>
@@ -450,7 +481,7 @@ namespace SGA
 		/// Returns a pointer to the Navigation object used by the RTS engine for pathfinding. 
 		/// </summary>
 		std::shared_ptr<Navigation> getRTSNavigation() const { return navigation; }
-		
+
 		/// <summary>
 		/// Sets the pointer to the Navigation object used by the RTS engine for pathfinding. 
 		/// </summary>
@@ -461,6 +492,7 @@ namespace SGA
 		/// </summary>
 		/// <returns></returns>
 		std::mt19937& getRndEngine() { return rngEngine; }
+		std::mt19937 getRndEngineCopy()const { return rngEngine; }
 
 
 		/***** PARAMETERS *****/
@@ -532,7 +564,72 @@ namespace SGA
 			minParameters.resize(static_cast<size_t>(cap));
 		}
 
+		///***** ACTION QUEUE FUNCTIONS *****/
 
+		const ActionQueue& getActionQueuesConst() const
+		{
+			return actionQueue;
+		}
+		ActionQueue& getActionQueues()
+		{
+			return actionQueue;
+		}
+		////Player actions queue
+		//void addActionToPlayerQueue(int playerID, ActionType& newActionType)
+		//{
+		//	playerActionQueues[playerID].push(newActionType.getID());
+		//}
+
+		//int getActionIDFromPlayerQueue(int playerID) const 
+		//{
+		//	auto actionTypeID= playerActionQueues[playerID].front();
+		//	return actionTypeID;
+		//}
+		//
+		//void removeActionFromePlayerQueue(int playerID)
+		//{
+		//	playerActionQueues[playerID].pop();
+		//}
+
+		//bool hasActionInPlayerQueue(int playerID) const
+		//{			
+		//	return playerActionQueues[playerID].size()>0;
+		//}
+		//		
+		////Player entity actions queue
+		//void addActionToPlayerEntityQueue(int playerID, int entityID, ActionType& newActionType)
+		//{
+		//	playerEntityActionQueues[playerID].push({ entityID, newActionType.getID() });
+		//}
+
+		//int getActionIDFromPlayerEntityQueue(int playerID) const 
+		//{
+		//	auto actionTypePack= playerEntityActionQueues[playerID].front();
+		//	return actionTypePack.second;
+		//}
+
+		//int getEntityIDFromPlayerEntityQueue(int playerID) const 
+		//{
+		//	auto actionTypePack= playerEntityActionQueues[playerID].front();
+		//	return actionTypePack.first;
+		//}
+		//
+		//void removeActionFromePlayerEntityQueue(int playerID)
+		//{
+		//	playerEntityActionQueues[playerID].pop();
+		//}
+
+		//bool hasActionInPlayerEntityQueue(int playerID) const
+		//{			
+		//	return playerEntityActionQueues[playerID].size()>0;
+		//}
+		//
+		//
+		//void resizePlayerActionQueues(int playerNum)
+		//{
+		//	playerActionQueues.resize(playerNum);
+		//	playerEntityActionQueues.resize(playerNum);
+		//}
 	private:
 
 		/// <summary>
@@ -643,5 +740,15 @@ namespace SGA
 		/// Values for the min parameters value of this entity. Indexed by ID. Use getMinParameter(...) functions to access these.
 		/// </summary>
 		std::vector<double> minParameters;
+
+		/// <summary>
+		/// Holds all the mandatory actions for each player
+		/// </summary>
+		ActionQueue actionQueue;
+
+		////Player ActionQueue
+		//std::vector<std::queue<int>> playerActionQueues;
+		////EntityActionQueue
+		//std::vector<std::queue<std::pair<int,int>>> playerEntityActionQueues;
 	};
 }

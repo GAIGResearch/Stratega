@@ -229,7 +229,7 @@ set in the parameters. For instance, the main loop of MCTS, in 'MCTSNode.cpp', u
 .. code-block:: c++
     :linenos:
 
-    void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator) {
+    void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
         // stop in case the budget is over.
         while (!params.isBudgetOver()) {
             MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);

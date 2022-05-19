@@ -45,7 +45,7 @@ namespace SGA {
     }
 
 
-    void RHEAGenome::mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator)
+    void RHEAGenome::mutate(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, boost::mt19937& randomGenerator)
     {
         //Retrieve the action space for this state.
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -54,7 +54,7 @@ namespace SGA {
         unsigned long long actIdx = 0;
         while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.individualLength)
         {
-            std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
+            boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.mutationRate;
 
             // replace with random portfolio in case of mutate or no portfolio available
@@ -91,7 +91,7 @@ namespace SGA {
     }
 
 
-    RHEAGenome RHEAGenome::crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, std::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
+    RHEAGenome RHEAGenome::crossover(const ForwardModel& forwardModel, GameState gameState, RHEAParameters& params, boost::mt19937& randomGenerator, RHEAGenome& parent1, RHEAGenome& parent2)
     {
         // create a new individual and its own gameState copy
         auto actionSpace = forwardModel.generateActions(gameState, params.PLAYER_ID);
@@ -105,7 +105,7 @@ namespace SGA {
         while (!gameState.isGameOver() && actionSpace.size() > 0 && actIdx < params.individualLength)
         {
             // if mutate do a random mutation else apply uniform crossover
-            std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);
+            boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);
             const bool mutate = doubleDistribution_(randomGenerator) < params.mutationRate;
 
             // mutation = randomly select a new action for gameStateCopy

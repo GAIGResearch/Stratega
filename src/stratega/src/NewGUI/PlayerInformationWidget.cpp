@@ -19,9 +19,12 @@ namespace SGA
 	
 	void PlayerInformationWidget::render(SGARenderTarget& /*renderTarget*/)
 	{
-		ImGui::SetNextWindowSize(ImVec2(100, 150), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_FirstUseEver);
-		ImGui::Begin("PlayerParameters");
+
+
+		ImGui::SetNextWindowSize(ImVec2(200, 0), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 50), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
+		ImGui::Begin("Player parameters");
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
 

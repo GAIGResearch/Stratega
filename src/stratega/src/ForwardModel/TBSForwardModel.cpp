@@ -6,10 +6,29 @@ namespace SGA
 	void TBSForwardModel::advanceGameState(GameState& state, const ActionAssignment& actions) const
 	{
 		assert(actions.getAssignmentCount() == 1);
-		if(actions.getEntityActions().size()>0)
+		if (actions.getEntityActions().size() > 0)
+		{
+			//Check entity has player
+			if (state.getEntity(actions.getEntityActions().begin()->second.getSourceID())->getOwnerID() != -1)
+			{
+				auto ownerID = actions.getEntityActions().begin()->second.getOwnerID();
+				if (state.getActionQueues().hasActionInPlayerQueue(ownerID))
+					if (state.getActionQueues().getActionFromPlayerQueue(ownerID).actionTypeID == actions.getEntityActions().begin()->second.getActionTypeID())
+						state.getActionQueues().removeActionFromPlayerQueue(ownerID);
+			}
+				
 			advanceGameState(state, actions.getEntityActions().begin()->second);
+		}			
 		else
+		{
+			if (state.getActionQueues().hasActionInPlayerQueue(actions.getPlayerActions().begin()->first))
+				if (state.getActionQueues().getActionFromPlayerQueue(actions.getPlayerActions().begin()->first).actionTypeID == actions.getPlayerActions().begin()->second.getActionTypeID())
+					state.getActionQueues().removeActionFromPlayerQueue(actions.getPlayerActions().begin()->first);
 			advanceGameState(state, actions.getPlayerActions().begin()->second);
+		}
+
+		//Validate action queue
+		state.getActionQueues().validateNextActions(state);
 
 		//warning C4702: unreachable code
 		/*for(const auto& action : actions.getEntityActions())
@@ -23,7 +42,7 @@ namespace SGA
 			return;
 		}*/
 	}
-	
+
 	void TBSForwardModel::advanceGameState(GameState& state, const Action& action) const
 	{
 		if (action.getActionFlag() == ActionFlag::EndTickAction)
@@ -41,7 +60,7 @@ namespace SGA
 		//Remove flagged entities
 		auto& entities = state.getEntities();
 		auto it = entities.begin();
-		while(it != entities.end())
+		while (it != entities.end())
 		{
 			if (it->flagged())  it = entities.erase(it);
 			else 				it++;
@@ -98,7 +117,7 @@ namespace SGA
 				state.setWinnerID(winnerID);
 				return true;
 			}
-			
+
 			if (player.canPlay() && !checkPlayerLost(state, player.getID()))
 			{
 				winnerID = player.getID();

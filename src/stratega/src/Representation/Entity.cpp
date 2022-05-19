@@ -28,22 +28,24 @@ namespace SGA
 
 		// Set parameter values
 		lineOfSightRange = type->getLoSRange();
-		parameters.reserve(type->getParameters().size());
-		maxParameters.reserve(type->getParameters().size());
-		minParameters.reserve(type->getParameters().size());
 		for (const auto& idParamPair : type->getParameters())
 		{
-			parameters.emplace_back(idParamPair.second.getDefaultValue());
-			maxParameters.emplace_back(idParamPair.second.getMaxValue());
-			minParameters.emplace_back(idParamPair.second.getMinValue());
-		}
+			parameters[idParamPair.second.getIndex()]=idParamPair.second.getDefaultValue();
+			maxParameters[idParamPair.second.getIndex()]=idParamPair.second.getMaxValue();
+			minParameters[idParamPair.second.getIndex()]=idParamPair.second.getMinValue();
+		}		
 	}
 
 	double Entity::getParameter(const std::string& paramName) const
     {
        for(const auto& param : type->getParameters()) {
           if(param.second.getName() == paramName) {
-             return parameters[param.second.getIndex()];
+
+			  auto it = parameters.find(param.second.getIndex());
+			  if (it != parameters.end())
+				  return it->second;
+			  else
+				  throw std::runtime_error("Parameter not found");             
           }
        }
 	   return -1;
@@ -77,7 +79,15 @@ namespace SGA
 	{
 		std::unordered_map<std::string, double> params;
 		for (const auto& param : type->getParameters())
-			params.emplace(param.second.getName(), parameters[param.second.getIndex()]);
+		{
+			auto it = parameters.find(param.second.getIndex());
+			if (it != parameters.end())
+				params.emplace(param.second.getName(), it->second);
+			else
+				throw std::runtime_error("Parameter not found");			
+		}
+
+			
 		return params;
 	}
 
@@ -126,7 +136,6 @@ namespace SGA
 		std::cout << " [OwnerID: " << ownerID << "],";
 		std::cout << " [Position: " << position.x << "," << position.y << "]";
 
-		int parameterID = 0;
 		if (parameters.empty())
 		{
 			std::cout << std::endl;	
@@ -134,9 +143,9 @@ namespace SGA
 		}
 
 		std::cout << ", [Parameters: ";
-		for (auto& parameter : parameters)
+		for (auto& parameterType : type->getParameters())
 		{
-			std::cout << "(" << type->getParameters().find(parameterID++)->second.getName() << ": " << parameter << ")";
+			std::cout << "(" << parameterType.second.getName() << ": " << getParameter(parameterType.second.getName()) << ")";
 		}
 
 		std::cout << "]" << std::endl;
@@ -145,20 +154,20 @@ namespace SGA
 	void Entity::recomputeStats()
 	{
 		//Remove buffs applied but keep value clamped to min and max
-		for (size_t i = 0; i < (size_t)parameters.size(); i++)
+		for (size_t i = 0; i < parameters.size(); i++)
 		{
 			const auto& param = type->getParameterByIndex(static_cast<int>(i));
 			double maxParameter = param.getMaxValue();
 			double minParameter = param.getMinValue();
 
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 
 			//Keep parameter inside max and min
-			if (parameters[i] > maxParameter)
-				parameters[i] = maxParameter;
-			else if (parameters[i] < minParameter)
-				parameters[i] = minParameter;
+			if (parameters[static_cast<int>(i)] > maxParameter)
+				parameters[static_cast<int>(i)] = maxParameter;
+			else if (parameters[static_cast<int>(i)] < minParameter)
+				parameters[static_cast<int>(i)] = minParameter;
 
 		}
 
@@ -187,9 +196,9 @@ namespace SGA
 			maxParameter += multiplicationSum;
 
 			//Write new value with the different of the max parameters
-			parameters[i] += maxParameter - previousMaxParameter;
+			parameters[static_cast<int>(i)] += maxParameter - previousMaxParameter;
 			//Update the max value
-			maxParameters[i] = maxParameter;
+			maxParameters[static_cast<int>(i)] = maxParameter;
 		}
 	}
 	int Entity::getInventorySize() const

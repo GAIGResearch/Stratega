@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.18)
 
 #project(Stratega LANGUAGES C CXX)
 project(Stratega LANGUAGES C CXX OBJCXX OBJC)
@@ -141,7 +141,7 @@ else()
     add_compile_definitions(BUILD_HEADLESS)
     set(ENABLE_STRATEGA_BINDINGS OFF)
 endif()
-
+#include(${CMAKE_CONFIG_FOLDER}/modules/FetchCParse.cmake)
 include(${CMAKE_CONFIG_FOLDER}/settings/Conan.cmake)
 run_conan()
 include(${PROJECT_BINARY_DIR}/conanbuildinfo.cmake)
@@ -167,6 +167,7 @@ if(NOT SGA_BUILD_HEADLESS)
    #endif ()
 endif()
 
+find_package(Boost REQUIRED COMPONENTS random)
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 

@@ -6,7 +6,7 @@ Yaml paths:
 
 .. code-block:: c++
 
-    /gameConfigs/TBS/ProtectTheBase.yaml
+    /gameConfigs/TBS/Original/ProtectTheBase.yaml
 
 .. only:: html
 
@@ -39,29 +39,41 @@ YAML
             Width: 800
             Height: 600
         Default Assets:
-            Selected: ../../assets/Tiles/selected.png
-            FogOfWar: ../../assets/Tiles/notVisible.png
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
         #Optional:
         #Font: ../../assets/arial.ttf
         #OutlineShader: ../../assets/OutLine.frag
 
     Tiles:
         Plain:
-            Sprite: ../../assets/Tiles/plain.png
+            Sprite: ../../../assets/Tiles/plain.png
             Symbol: .
             IsWalkable: true
             DefaultTile: true
         Water:
-            Sprite: ../../assets/Tiles/water.png
+            Sprite: ../../../assets/Tiles/water.png
             Symbol: W
             IsWalkable: false
         Mountain:
-            Sprite: ../../assets/Tiles/rock.png
+            Sprite: ../../../assets/Tiles/rock.png
             Symbol: M
             IsWalkable: false
             BlocksSight: true
         Forest:
-            Sprite: ../../assets/Tiles/forest.png
+            Sprite: ../../../assets/Tiles/forest.png
             Symbol: F
             IsWalkable: true
         
@@ -82,6 +94,7 @@ YAML
                             Size: 3
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "SpawnEntity(Source, Miner, Target)"
                 - "ModifyResource(Source.Gold, -50)"
@@ -101,6 +114,7 @@ YAML
                             Size: 3
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "SpawnEntity(Source, Fighter, Target)"
                 - "ModifyResource(Source.Gold, -100)"
@@ -141,6 +155,7 @@ YAML
                     #        Size: 1
                     Conditions:
                         - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
             Effects:
                 - "Move(Source, Target)"
 
@@ -179,25 +194,25 @@ YAML
 
     Entities:
         Base:
-            Sprite: ../../assets/Entities/castle.png
+            Sprite: ../../../assets/Entities/castle.png
             Symbol: b
             LineOfSightRange: 5
             Actions: [SpawnMiner, SpawnFighter]
             Parameters:
-                Gold: 500
+                Gold: [0,500,5000]
                 Health: 100
 
         Miner:
-            Sprite: ../../assets/Entities/unit_5.png
+            Sprite: ../../../assets/Entities/unit_5.png
             Symbol: m
             LineOfSightRange: 4
             Actions: [Move, Mine, Deposit]
             Parameters:
-                Gold: 0
+                Gold: [0,0,1000]
                 Health: 20
 
         Fighter:
-            Sprite: ../../assets/Entities/unit_2.png
+            Sprite: ../../../assets/Entities/unit_2.png
             Symbol: f
             LineOfSightRange: 6
             Parameters:
@@ -206,12 +221,12 @@ YAML
             Actions: [Move, Attack]
 
         GoldVein:
-            Sprite: ../../assets/Entities/gold_chest.png
+            Sprite: ../../../assets/Entities/gold_chest.png
             Symbol: g
             LineOfSightRange: 6
             Actions: []
             Parameters:
-                Gold: 200
+                Gold: [0,200,1000]
 
     EntityGroups:
         Attackable: [Base, Fighter, Miner]

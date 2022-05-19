@@ -7,12 +7,12 @@
 #include <sstream>
 namespace SGA
 {
-	ActionsWidget::ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, ActionAssignment& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID):
+	ActionsWidget::ActionsWidget(const std::string widgetName, sf::RenderWindow& newWindow, World& newWorld, ForwardModel* newFM, ActionAssignment& newActionAssignment, ActionAssignment& newFutureActionsToPlay, std::unordered_set<int>& newSelectedEntities, int& newPlayerID) :
 		SGAWidget(widgetName, newWindow, newWorld, newFM),
 		state(nullptr),
 		selectedEntities(newSelectedEntities),
 		actionAssignment(newActionAssignment),
-		futureActionsToPlay(newFutureActionsToPlay),		
+		futureActionsToPlay(newFutureActionsToPlay),
 		currentPlayerID(newPlayerID)
 	{
 	}
@@ -20,28 +20,30 @@ namespace SGA
 	void ActionsWidget::update(const GameState& newState)
 	{
 		this->state = &newState;
-		if(currentPlayerID !=-2)
-		actionsHumanPlayer = fm->generateActions(newState, currentPlayerID);
+		if (currentPlayerID != -2)
+			actionsHumanPlayer = fm->generateActions(newState, currentPlayerID);
 	}
 
 	void ActionsWidget::render(SGARenderTarget& renderTarget)
 	{
 		ImGuiWindowFlags window_flags = 0;
 		window_flags += ImGuiWindowFlags_NoTitleBar;
-		window_flags += ImGuiWindowFlags_NoScrollbar;
+		//window_flags += ImGuiWindowFlags_NoScrollbar;
 		//window_flags += ImGuiWindowFlags_MenuBar;
 		//window_flags+= ImGuiWindowFlags_NoMove;
 		//window_flags += ImGuiWindowFlags_NoResize;
-		window_flags += ImGuiWindowFlags_NoCollapse;
+		//window_flags += ImGuiWindowFlags_NoCollapse;
 		window_flags += ImGuiWindowFlags_NoNav;
 		//window_flags+= ImGuiWindowFlags_NoBackground;
 		window_flags += ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-
+		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
 		// We specify a default position/size in case there's no data in the .ini file.
 		// We only do it to make the demo applications a little more welcoming, but typically this isn't required.
-		ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-		ImGui::SetNextWindowSize(ImVec2(0, 0));
+		//ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+		//ImGui::SetNextWindowPos(ImVec2((static_cast<float>(window.getSize().x) / 2.f), (static_cast<float>(window.getSize().y) / 1.1f)), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+		ImGui::SetNextWindowPos(ImVec2(static_cast<float>(window.getSize().x), (static_cast<float>(window.getSize().y))), ImGuiCond_FirstUseEver, ImVec2(1.0f, 1.0f));
+
 
 		ImGui::Begin("Bottom Bar", NULL, window_flags);
 
@@ -53,7 +55,7 @@ namespace SGA
 		if (currentPlayerID != -1)
 		{
 			auto actionsToExecute = getWidgetResult(currentPlayerID);
-			if (state->getGameType()==GameType::TBS)
+			if (state->getGameType() == GameType::TBS)
 			{
 				if (!actionsToExecute.empty())
 				{
@@ -77,15 +79,17 @@ namespace SGA
 					}
 				}
 			}
-			
+
 		}
 
 		ImGui::Separator();
 		ImGui::End();
 
 
-		ImGui::SetNextWindowSize(ImVec2(200, 150), ImGuiCond_FirstUseEver);
-		ImGui::SetNextWindowPos(ImVec2(20, 400), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(200, 300), ImGuiCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(20, 150), ImGuiCond_FirstUseEver);
+
+		ImGui::SetNextWindowCollapsed(true, ImGuiCond_FirstUseEver);
 		ImGui::Begin("Available Actions");
 		ImGui::BeginChild("Scrolling");
 		ImGui::BeginGroup();
@@ -164,6 +168,9 @@ namespace SGA
 						break;
 					case ActionTarget::Gamestate:
 						break;
+					case ActionTarget::TileReference:
+						actionInfo += /*targetType.getTileType(*state).getName() + */" x:" + std::to_string(static_cast<int>(targetType.getPosition(*state).x)) + ",y:" + std::to_string(static_cast<int>(targetType.getPosition(*state).y));
+						break;
 					case ActionTarget::Object:
 						break;
 					case ActionTarget::SlotObject:
@@ -191,7 +198,7 @@ namespace SGA
 		float circleShapeSize = static_cast<float>(renderTarget.getResourceManager().getTileSpriteSize().y) / 10.0f;
 		//Draw possible actions
 		std::vector<sf::CircleShape> actionsShapes;
-		if (waitingForPosition)
+		if (waitingForPosition || waitingForTile)
 		{
 			for (auto& possibleAction : actionsHumanPlayer)
 			{
@@ -213,19 +220,20 @@ namespace SGA
 
 				for (auto& actionTarget : possibleAction.getTargets())
 				{
-					if (actionTarget.getType() == ActionTarget::Position)
+					if (actionTarget.getType() == ActionTarget::Position
+						|| actionTarget.getType() == ActionTarget::TileReference)
 					{
 						auto position = actionTarget.getPosition(*state);
 
 						sf::CircleShape possibleActionPositionShape(circleShapeSize);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
-						possibleActionPositionShape.setOrigin(circleShapeSize*0.5f, circleShapeSize*0.5f);
+						possibleActionPositionShape.setOrigin(circleShapeSize * 0.5f, circleShapeSize * 0.5f);
 						sf::Vector2f temp = world.toSFML(position);
 						sf::Vector2f offset;
-						if(renderTarget.getRenderConfig().isIsometricGrid)
-							offset= sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+						if (renderTarget.getRenderConfig().isIsometricGrid)
+							offset = sf::Vector2f{ 0, static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
 						else
-							offset= sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
+							offset = sf::Vector2f{ static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.x / 2), static_cast<float>(renderTarget.getRenderConfig().tileSpriteSize.y / 2) };
 						possibleActionPositionShape.setPosition(temp + offset);
 
 						actionsShapes.emplace_back(possibleActionPositionShape);
@@ -268,7 +276,7 @@ namespace SGA
 
 						sf::CircleShape possibleActionPositionShape(circleShapeSize);
 						possibleActionPositionShape.setFillColor(sf::Color::White);
-						possibleActionPositionShape.setOrigin(circleShapeSize*0.5f, circleShapeSize * 0.5f);
+						possibleActionPositionShape.setOrigin(circleShapeSize * 0.5f, circleShapeSize * 0.5f);
 						sf::Vector2f temp = world.toSFML(position);
 
 						sf::Vector2f offset;
@@ -308,7 +316,7 @@ namespace SGA
 
 	void ActionsWidget::mouseButtonReleased(const sf::Event& event)
 	{
-		if (event.mouseButton.button == sf::Mouse::Left && state->getGameType()==GameType::RTS)
+		if (event.mouseButton.button == sf::Mouse::Left && state->getGameType() == GameType::RTS)
 		{
 			dragging = false;
 
@@ -322,7 +330,7 @@ namespace SGA
 				// The user clicked somewhere
 				if (!selectedEntities.empty())
 				{
-					const auto* unit = state->getEntityAtConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
+					const auto* unit = state->getEntityAroundConst(SGA::Vector2f(worldPos.x, worldPos.y), 0.5);
 
 					if (unit)
 					{
@@ -336,6 +344,8 @@ namespace SGA
 							selectedEntities.clear();
 						}
 
+						possibleSelectedEntities.clear();
+						waitingToSelectPossibleEntitie = false;
 					}
 					else
 					{
@@ -343,6 +353,11 @@ namespace SGA
 						{
 							auto gridPos = world.toStratega(pos);
 							assignPosition({ gridPos.x,gridPos.y });
+						}
+						else if (waitingForTile)
+						{
+							auto gridPos = world.toStratega(pos);
+							assignTile({ gridPos.x,gridPos.y });
 						}
 						else
 						{
@@ -356,6 +371,11 @@ namespace SGA
 					{
 						auto gridPos = world.toStratega(pos);
 						assignPosition({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
+					}
+					else if (waitingForTile)
+					{
+						auto gridPos = world.toStratega(pos);
+						assignTile({ static_cast<float>(gridPos.x),static_cast<float>(gridPos.y) });
 					}
 					else
 					{
@@ -396,6 +416,10 @@ namespace SGA
 			{
 				assignPosition({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
 			}
+			else if (waitingForTile)
+			{
+				assignTile({ static_cast<float>(pos.x),static_cast<float>(pos.y) });
+			}
 			else
 			{
 				if (!waitingForEntity)
@@ -407,9 +431,11 @@ namespace SGA
 
 			if (state->getGameType() == GameType::TBS)
 			{
-				auto* selectedEntity = state->getEntityAt(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
-				if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
+				auto tileEntities = state->getEntitiesAtConst(Vector2f(static_cast<float>(pos.x), static_cast<float>(pos.y)));
+				if (tileEntities.size() == 1)
 				{
+					auto* selectedEntity = tileEntities[0];
+					//if (selectedEntity /*&& playerID==0 *//*&& ((fowSettings.renderFogOfWar && (pointOfViewPlayerID == fowSettings.selectedPlayerID)) || !fowSettings.renderFogOfWar)*/)
 					//Assign selected unit
 					if (waitingForEntity)
 					{
@@ -421,6 +447,33 @@ namespace SGA
 						//if (selectedEntity->getOwnerID() == playerID)
 						selectedEntities.emplace(selectedEntity->getID());
 					}
+
+					possibleSelectedEntities.clear();
+					waitingToSelectPossibleEntitie = false;
+				}
+				else if (tileEntities.size() > 1)
+				{
+					auto* selectedEntity = tileEntities[0];
+
+					waitingForEntity = false;
+					waitingToSelectPossibleEntitie = true;
+					for (auto possibleEntity : tileEntities)
+					{
+						possibleSelectedEntities.emplace(possibleEntity->getID());
+					}
+					//if (waitingForEntity)
+					//{
+					//	//assignEntity(selectedEntity->getID());
+					//	waitingForEntity = false;
+					//	waitingToSelectPossibleEntitie = true;
+					//}
+					//else
+					//{
+					//	//Pick up entity
+					//	//if (selectedEntity->getOwnerID() == playerID)
+					//	//selectedEntities.emplace(selectedEntity->getID());
+
+					//}
 				}
 				//else
 				//{
@@ -434,14 +487,14 @@ namespace SGA
 				oldMousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 				dragging = true;
 			}
-			
+
 		}
-		if (event.mouseButton.button == sf::Mouse::Right && state->getGameType()==GameType::TBS)
+		if (event.mouseButton.button == sf::Mouse::Right && state->getGameType() == GameType::TBS)
 		{
 			//selectedAction = Action::createEndAction(pointOfViewPlayerID);
 			actionAssignment.clear();
 			actionAssignment = actionAssignment.createEndActionAssignment(state->getCurrentTBSPlayer());
-		}		
+		}
 	}
 
 	bool ActionsWidget::hasActionsTargetAvailable(const SGA::ActionType& actionType) const
@@ -452,6 +505,20 @@ namespace SGA
 	void ActionsWidget::getActionTarget(int playerID, const ActionType& actionType, std::vector<Action>& actionsToExecute)
 	{
 		//Draw target
+
+		int elementNumber = 0;
+		for (auto entityID : possibleSelectedEntities)
+		{
+			ImGui::PushID(elementNumber);
+			if (ImGui::Button(state->getEntityConst(entityID)->getEntityType().getName().c_str(), ImVec2(50, 50)))
+			{
+				selectedEntities.emplace(entityID);
+				waitingToSelectPossibleEntitie = false;
+			}
+			if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+			ImGui::PopID();
+		}
+
 		auto& targetType = actionType.getTargets()[selectedTargets.size()].first;
 		switch (targetType.getType())
 		{
@@ -470,6 +537,11 @@ namespace SGA
 			getPositionReference();
 			break;
 		}
+		case TargetType::Tile:
+		{
+			getTileReference();
+			break;
+		}
 		case TargetType::Entity:
 		{
 			getEntityReference();
@@ -485,12 +557,12 @@ namespace SGA
 		}
 		case TargetType::Object:
 		{
-			getObject(playerID, actionType, actionsToExecute);
+			getObject(targetType);
 			break;
 		}
 		case TargetType::SlotObject:
 		{
-			getSlotObject(playerID, actionType, actionsToExecute);
+			getSlotObject(targetType);
 			break;
 		}
 		}
@@ -516,6 +588,9 @@ namespace SGA
 		if (playerID == -2)
 			return actionsToExecute;
 
+
+
+
 		if (hasActionTypeSelected())
 		{
 			//Selected actiontype
@@ -530,6 +605,22 @@ namespace SGA
 			{
 				verifyActionTargets(playerID, actionsToExecute);
 			}
+		}
+		else if (waitingToSelectPossibleEntitie)
+		{
+			int elementNumber = 0;
+			for (auto entityID : possibleSelectedEntities)
+			{
+				ImGui::PushID(elementNumber);
+				if (ImGui::Button(state->getEntityConst(entityID)->getEntityType().getName().c_str(), ImVec2(50, 50)))
+				{
+					selectedEntities.emplace(entityID);
+					waitingToSelectPossibleEntitie = false;
+				}
+				if ((elementNumber++ % 4) < 3) ImGui::SameLine();
+				ImGui::PopID();
+			}
+			return actionsToExecute;
 		}
 		else
 		{
@@ -670,7 +761,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	void ActionsWidget::getObject(const TargetType& /*actionType*/)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -692,7 +783,7 @@ namespace SGA
 		}
 	}
 
-	void ActionsWidget::getSlotObject(int /*playerID*/, const ActionType& /*actionType*/, std::vector<Action>& /*actionsToExecute*/)
+	void ActionsWidget::getSlotObject( const TargetType& /*actionType*/)
 	{
 		if (hasEntitiesSelected())
 		{
@@ -822,9 +913,17 @@ namespace SGA
 		waitingForPosition = true;
 	}
 
+	void ActionsWidget::getTileReference()
+	{
+		ImGui::Text("Choose tile");
+		//Need to receive a new position from the gui
+		waitingForTile = true;
+	}
+
 	void ActionsWidget::getEntityReference()
 	{
 		ImGui::Text("Choose entity");
+
 		//Need to receive a new position from the gui
 		waitingForEntity = true;
 	}
@@ -840,6 +939,8 @@ namespace SGA
 
 		if (actionType.isContinuous())
 			newAction.setActionFlag(ActionFlag::ContinuousAction);
+		if (actionType.isEndTick())
+			newAction.setActionFlag(ActionFlag::EndTickAction);
 
 		if (selectedEntities.empty())
 			verifyPlayerActionTargets(playerID, actionsToExecute, actionType, newAction);
@@ -861,7 +962,14 @@ namespace SGA
 
 		auto* player = state->getPlayer(playerID);
 
-		if (player->canExecuteAction(actionTypeSelected))
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID) &&
+			state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Player &&
+			state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID == playerID)
+		{
+			if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+				actionsToExecute.emplace_back(newAction);
+		}	
+		else if (player->canExecuteAction(actionTypeSelected))
 		{
 			if (state->getCurrentTick() - player->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
 				return;
@@ -888,18 +996,33 @@ namespace SGA
 			const EntityType& entityType = state->getEntityConst(entityID)->getEntityType();
 			const Entity* entity = state->getEntityConst(entityID);
 
+			if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID) &&
+				state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Entity &&
+				state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID == entityID)
+			{
+				newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
 
-			if (!entityType.canExecuteAction(actionTypeSelected))
+				if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+				{
+					actionsToExecute.emplace_back(newAction);
+				}
+			}
+			else if (entityType.canExecuteAction(actionTypeSelected))
+			{
+				// Check if this action can be executed		
+				if (state->getCurrentTick() - entity->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
+					continue;
+
+				//The entity should be able to execute this action type
+				newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
+
+				if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
+					actionsToExecute.emplace_back(newAction);
+
+			}
+			else
 				continue;
-			// Check if this action can be executed		
-			if (state->getCurrentTick() - entity->getActionInfo(actionTypeSelected).lastExecutedTick < actionType.getCooldown())
-				continue;
 
-			//The entity should be able to execute this action type
-			newAction.getTargets()[0] = ActionTarget::createEntityActionTarget(entityID);
-
-			if (ActionTarget::isValidWithTargets(*state, actionType, newAction.getTargets()))
-				actionsToExecute.emplace_back(newAction);
 		}
 	}
 
@@ -930,7 +1053,7 @@ namespace SGA
 		if (!checkSelectedEntitiesAvailable())
 			getPlayerPossibleActionTypes(playerID, actionTypes);
 		else
-			getEntityPossibleActionTypes(actionTypes);
+			getEntityPossibleActionTypes(playerID, actionTypes);
 
 
 		//Show buttons
@@ -951,25 +1074,48 @@ namespace SGA
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
-
-		for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
+		//Add action queue
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID))
 		{
-			actionTypes.insert(attachedActions.actionTypeID);
+			if (state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Player)
+				actionTypes.insert(state->getActionQueuesConst().getActionFromPlayerQueue(playerID).actionTypeID);
+		}
+		else
+		{
+			for (auto& attachedActions : state->getPlayer(playerID)->getAttachedActions())
+			{
+				actionTypes.insert(attachedActions.actionTypeID);
+			}
 		}
 	}
 
-	void ActionsWidget::getEntityPossibleActionTypes(std::unordered_set<int>& actionTypes)
+	void ActionsWidget::getEntityPossibleActionTypes(int playerID, std::unordered_set<int>& actionTypes)
 	{
 		//Display actionTypes
 		ImGui::Text("Select action type");
 
-		for (auto& entity : selectedEntities)
+		if (state->getActionQueuesConst().hasActionInPlayerQueue(playerID))
 		{
-			int entityTypeID = state->getEntityConst(entity)->getEntityTypeID();
-
-			for (const auto& actionID : state->getGameInfo()->getEntityType(entityTypeID).getActionIDs())
+			if (state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceType == ActionQueuePack::ActionSourceType::Entity)
 			{
-				actionTypes.insert(actionID);
+				int sourceID = state->getActionQueuesConst().getActionFromPlayerQueue(playerID).sourceID;
+				for (int entity : selectedEntities)
+				{
+					if (entity == sourceID)
+						actionTypes.insert(state->getActionQueuesConst().getActionFromPlayerQueue(playerID).actionTypeID);
+				}
+			}
+		}
+		else
+		{
+			for (auto& entity : selectedEntities)
+			{
+				int entityTypeID = state->getEntityConst(entity)->getEntityTypeID();
+
+				for (const auto& actionID : state->getGameInfo()->getEntityType(entityTypeID).getActionIDs())
+				{
+					actionTypes.insert(actionID);
+				}
 			}
 		}
 	}
@@ -982,10 +1128,19 @@ namespace SGA
 		selectedTargets.emplace_back(positionTarget);
 	}
 
+	void ActionsWidget::assignTile(Vector2f position)
+	{
+		auto positionTarget = SGA::ActionTarget::createTileActionTarget(position);
+
+		selectedTargets.emplace_back(positionTarget);
+	}
+
 	void ActionsWidget::assignEntity(int entity)
 	{
 		auto entityTarget = SGA::ActionTarget::createEntityActionTarget(entity);
 
 		selectedTargets.emplace_back(entityTarget);
+		possibleSelectedEntities.clear();
+		waitingToSelectPossibleEntitie = false;
 	}
 }

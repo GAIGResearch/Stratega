@@ -12,11 +12,11 @@ namespace SGA {
 
 	protected:
 		int nVisits = 0;			//number of visits to this node.
-		double bounds[2] = {0, 1};	//Reward bounds in this node.
-				
+		double bounds[2] = { 0, 1 };	//Reward bounds in this node.
+
 
 	public:
-		
+
 		/// <summary>
 		/// Initializes the node.
 		/// </summary>
@@ -25,22 +25,22 @@ namespace SGA {
 		/// <summary>
 		/// MCTS Tree Policy phase.
 		/// </summary>
-		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// MCTS Expansion phase.
 		/// </summary>
-		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Chooses a child node with the highest UCB value.
 		/// </summary>
-		MCTSNode* uct(MCTSParameters& params, std::mt19937& randomGenerator);
+		MCTSNode* uct(MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// MCTS Rollout phase.
 		/// </summary>
-		double rollOut(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
+		double rollOut(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
 		/// Indicates if a rollout should be completed.
@@ -55,14 +55,14 @@ namespace SGA {
 		/// <summary>
 		/// Returns the best action found by the tree.
 		/// </summary>
-		int bestAction(MCTSParameters& params, std::mt19937& randomGenerator);
+		int bestAction(MCTSParameters& params, boost::mt19937& randomGenerator);
 
 		// helper function: normalizes a value between a range aMin - aMax.
 		static double normalize(double aValue, double aMin, double aMax);
 
 		// helper function: adds a small random noise to a value and returns it.
 		static double noise(double input, double epsilon, double random);
-		
+
 		// setter for the depth of this node and all nodes in the sub-tree this is root of.
 		void setDepth(int depth);
 
@@ -80,13 +80,13 @@ namespace SGA {
 		/// <summary>
 		/// Function for the main iteration of the MCTS algorithm
 		/// </summary>
-		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, std::mt19937& randomGenerator);
-		
+		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+
 		/// <summary>
 		/// Returns the index of the most visited action of this node.
 		/// </summary>
-		int mostVisitedAction(MCTSParameters& params, std::mt19937& randomGenerator);
-		
+		int mostVisitedAction(MCTSParameters& params, boost::mt19937& randomGenerator);
+
 		/// <summary>
 		/// Prints information of this node.
 		/// </summary>
@@ -96,6 +96,6 @@ namespace SGA {
 
 		// Creates a new node to be inserted in the tree.
 		MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex, int ownerID);
-		
+
 	};
 }

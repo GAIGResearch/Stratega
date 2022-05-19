@@ -11,7 +11,8 @@ namespace SGA
 
 	private:
 		double noise(const double input, const double epsilon, const double random);
-		std::uniform_real_distribution<double> doubleDistribution_ = std::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
+		boost::uniform_real<double> doubleDistribution_ = boost::uniform_real<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
+
 		double epsilon = 1e-2; //Small number to avoid /0
 	};
 }

@@ -1,0 +1,427 @@
+###############
+Into the breach
+###############
+
+Yaml paths:
+
+.. code-block:: c++
+
+    /gameConfigs/TBS/Ported/IntoTheBreach.yaml
+
+.. only:: html
+
+   .. figure:: ../../images/intoTheBreachTBS.gif
+
+++++++++++++++++++++
+Description
+++++++++++++++++++++
+
+Based in the game developed by Subset Games. Civilian buildings power your mechs. Defend them from the enemies and watch your fire!
+
+++++++++++++++++++++
+YAML
+++++++++++++++++++++
+
+.. code-block:: yaml
+
+    GameConfig:
+        Type: TBS
+        RoundLimit: 100
+        FogOfWar: false    
+
+    Player:
+        Parameters:
+            PusherSpawn: [0,1,1]
+            ArcherSpawn: [0,1,1]
+            BomberSpawn: [0,1,1]
+            EnemySpawn: [0,3,3]
+
+    Agents:
+        - HumanAgent #ID: 0
+        - RandomAgent #ID: 1
+
+    GameRenderer:
+        Resolution:
+            Width: 800
+            Height: 600
+        Default Assets:
+            FogOfWar: ../../../assets/Tiles/notVisible.png
+        GridIsIsometric: true
+        TileSpriteOrigin:
+            Width: 128
+            Height: 112
+        EntitySpriteOrigin:
+            Width: 256
+            Height: 360
+        TileSpriteSize:
+            Width: 256
+            Height: 144
+        EntitySpriteSize:
+            Width: 512
+            Height: 512
+        #Optional:
+        #Font: ../../assets/arial.ttf
+        #OutlineShader: ../../assets/OutLine.frag
+
+    Tiles:
+        Plain:
+            Sprite: ../../../assets/Tiles/plain.png
+            Symbol: .
+            IsWalkable: true
+            DefaultTile: true
+        PlayerPlain:
+            Sprite: ../../../assets/Tiles/plain.png
+            Symbol: P
+            IsWalkable: true
+            DefaultTile: true
+        EnemyPlain:
+            Sprite: ../../../assets/Tiles/plain.png
+            Symbol: E
+            IsWalkable: true
+            DefaultTile: true
+        Water:
+            Sprite: ../../../assets/Tiles/water.png
+            Symbol: W
+            IsWalkable: true
+        Mountain:
+            Sprite: ../../../assets/Tiles/rock.png
+            Symbol: M
+            IsWalkable: false
+        Forest:
+            Sprite: ../../../assets/Tiles/forest.png
+            Symbol: F
+            IsWalkable: true
+
+    Board:
+        GenerationType: Manual
+        Layout: |-
+            .  P  P  F  .  F  .  W
+            F  c0 c0 E  E  .  E  W
+            .  F  P  F  .  E  .  F
+            P  P  P  F  F  .  .  E
+            .  P  .  .  F  E  .  E
+            .  P  P  F  E  F  W  E
+            .  P  P  .  .  c0 F  .
+            c0 M  c0 M  W  W  W  W  
+
+    Actions:
+    ###Spawn actions
+        SpawnPusher:
+            Type: PlayerAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.PusherSpawn, 1)"
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Pusher
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+                - "ModifyResource(Source.PusherSpawn, -1)"
+
+        SpawnArcher:
+            Type: PlayerAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.ArcherSpawn, 1)"
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Archer
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+                - "ModifyResource(Source.ArcherSpawn, -1)"
+
+        SpawnBomber:
+            Type: PlayerAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.BomberSpawn, 1)"
+            Cooldown: 1
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Bomber
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, PlayerPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+                - "ModifyResource(Source.BomberSpawn, -1)"
+
+        SpawnEnemy:
+            Type: PlayerAction
+            Preconditions:
+                - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
+            Cooldown: 0
+            Targets:
+                EntityTypeTarget:
+                    Type: EntityType
+                    ValidTargets: Worm
+                    #Conditions:
+                    #    - "CanSpawn(Source, EntityTypeTarget)"
+                TargetPosition:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "IsWalkable(TargetPosition)"
+                        - "IsTileType(TargetPosition, EnemyPlain)"
+                        - "IsNotOccupiedGrid(TargetPosition, EntityTypeTarget)"
+            Effects:
+                - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
+                - "ModifyResource(Source.EnemySpawn, -1)"
+    ###Attack actions
+        Attack:
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: PlayerSpawnEntities
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: AllPositions
+                    Conditions:
+                        - "DifferentPlayer(Source, Target)"
+                        - "InRange(Source, Target, Source.AttackRange)"
+            Effects:
+                - "Attack(Target.Health, Source.AttackDamage)"
+
+        Push: #Push enemy and if it hits another entity, deal damage also to the other entity
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: Worm
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Cross
+                            Size: 1
+                    #Conditions:
+                    #    - "DifferentPlayer(Source, Target)"
+            Effects:
+                - "PushAndHit(Source, Target, Target.Health, Source.AttackDamage)"
+
+        PushDistance: #Push enemy and if it hits another entity, deal damage also to the other entity
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Entity
+                    ValidTargets: Worm
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Cross
+                            Size: 3
+                    Conditions:
+                    #    - "DifferentPlayer(Source, Target)"
+            Effects:
+                - "PushAndHit(Source, Target, Target.Health, Source.AttackDamage)"
+
+        PushBomb: #Push all enemies around a location and if any pushed entity hits another entity, deal damage also to the other entity
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Position
+                    SamplingMethod:
+                        Type: Neighbours
+                        Options:
+                            Shape: Cross
+                            Size: 4
+                    Conditions:
+                        - "OutRange(Source, Target, Source.MinAttackRange)" #Min attack distance
+                    #    - "DifferentPlayer(Source, Target)"
+            Effects:
+                - "PushAroundPositionAndHit(Source, Target, Source.Health, Source.AttackDamage)"
+    ###Move
+        Move:
+            Type: EntityAction
+            Cooldown: 1
+            Targets:
+                Target:
+                    Type: Position
+                    SamplingMethod: 
+                        Type: Dijkstra
+                        Options:
+                            SearchSize: 2
+                            AllowDiagonals: false
+                    #    Type: Neighbours
+                    #    Options:
+                    #        Shape: Circle
+                    #        Size: 1
+                    Conditions:
+                        - "IsWalkable(Target)"
+                        - "IsNotOccupiedGrid(Target, Source)"
+            Effects:
+                - "Move(Source, Target)"
+
+    Entities:
+        Pusher:
+            Sprite: ../../../assets/Entities/unit_2.png
+            Symbol: p
+            LineOfSightRange: 6
+            Actions: [Move, Push]
+            Parameters:
+                Health: 3
+                AttackRange: 2
+                AttackDamage: 1
+
+        Archer:
+            Sprite: ../../../assets/Entities/unit_3.png
+            Symbol: a
+            LineOfSightRange: 10
+            Parameters:
+                Health: 2
+                AttackRange: 3
+                AttackDamage: 1
+            Actions: [PushDistance, Move]
+
+        Bomber:
+            Sprite: ../../../assets/Entities/unit_6.png
+            Symbol: b
+            LineOfSightRange: 4
+            Parameters:
+                Health: 2
+                AttackRange: 5            
+                MinAttackRange: 2
+                AttackDamage: 1
+            Actions: [PushBomb, Move]
+
+        Worm:
+            Sprite: ../../../assets/Entities/unit_4.png
+            Symbol: w
+            LineOfSightRange: 4
+            Parameters:
+                Health: 2
+                AttackRange: 5
+                AttackDamage: 1
+            Actions: [Move, Attack]
+
+        City:
+            Sprite: ../../../assets/Entities/castle.png
+            Symbol: c
+            LineOfSightRange: 6
+            Parameters:
+                Health: 2
+
+    EntityGroups:
+        PlayerSpawnEntities: [Pusher, Archer, Bomber]
+        PlayerSpawnEntities: [Pusher, Archer, Bomber, City]
+        Movable: [Pusher, Archer, Bomber, Worm]
+
+    ForwardModel:
+        LoseConditions: #If true: Player -> cant play
+            EnemyHasNoWorm:
+                - "IsPlayerID(Source, 1)"
+                - "HasNoEntity(Source, Worm)"
+                - "ResourceLowerEqual(Source.EnemySpawn, 0)"
+            EnemyHasPlaceAllEnemiesBegin:
+                - "IsPlayerID(Source, 1)"
+                - "IsTick(2)"
+                - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
+            EnemyHasPlaceAllEnemiesEnd:
+                - "IsPlayerID(Source, 1)"
+                - "IsTick(12)"
+                - "ResourceGreaterEqual(Source.EnemySpawn, 1)"
+            PlayerHasPlaceAllPusherBegin:
+                - "IsPlayerID(Source, 0)"
+                - "IsTick(2)"
+                - "ResourceGreaterEqual(Source.PusherSpawn, 1)"
+            PlayerHasPlaceAllBomberBegin:
+                - "IsPlayerID(Source, 0)"
+                - "IsTick(2)"
+                - "ResourceGreaterEqual(Source.BomberSpawn, 1)"
+            PlayerHasPlaceAllArcherBegin:
+                - "IsPlayerID(Source, 0)"
+                - "IsTick(2)"
+                - "ResourceGreaterEqual(Source.ArcherSpawn, 1)"
+            PlayerHasNoEntities:
+                - "IsPlayerID(Source, 0)"
+                - "HasNoEntity(Source, Pusher)"
+                - "ResourceLowerEqual(Source.PusherSpawn, 0)"
+                - "HasNoEntity(Source, Bomber)"
+                - "ResourceLowerEqual(Source.BomberSpawn, 0)"
+                - "HasNoEntity(Source, Archer)"
+                - "ResourceLowerEqual(Source.ArcherSpawn, 0)"
+            PlayerHasNoCities:
+                - "IsPlayerID(Source, 0)"
+                - "HasNoEntity(Source, City)"
+            PlayerTickLimit:
+                - "IsPlayerID(Source, 0)"
+                - "IsTick(16)"
+            ##Check enemy and player spawned the enemies
+            ##If tick is higher than 15 the enemy win
+        Trigger:
+            - OnStart:
+                Type: Player
+                Conditions:
+                    - "IsPlayerID(Source, 0)"
+                Effects:
+                    - "EnqueueAction(Source, SpawnPusher)"
+                    - "EnqueueAction(Source, SpawnArcher)"
+                    - "EnqueueAction(Source, SpawnBomber)"
+                    - "EnqueueAction(Source, EndTurn)"
+            - OnStart:
+                Type: Player
+                Conditions:
+                    - "IsPlayerID(Source, 1)"
+                Effects:
+                    - "EnqueueAction(Source, SpawnEnemy)"
+                    - "EnqueueAction(Source, SpawnEnemy)"
+                    - "EnqueueAction(Source, SpawnEnemy)"
+                    - "EnqueueAction(Source, EndTurn)"
+            - OnAdvance:
+                Type: Entity
+                ValidTargets: Movable
+                Conditions:
+                    - "IsTileType(Source, Water)"
+                Effects:
+                    - "Remove(Source)"
+            - OnTick:
+                #Type: Entity, Player, State
+                Type: Player
+                Conditions:
+                    - "IsTick(10)"
+                    - "IsPlayerID(Source, 1)"
+                Effects:
+                    - "ModifyResource(Source.EnemySpawn, +2)"

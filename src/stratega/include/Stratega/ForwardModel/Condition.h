@@ -95,9 +95,19 @@ namespace SGA
 
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+	
+	class IsPlayerID : public Condition
+	{
+		FunctionParameter playerID;
+	public:
+		IsPlayerID(const std::string exp, const std::vector<FunctionParameter>& parameters);
+
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 
 	class DifferentPlayer : public Condition
 	{
+		FunctionParameter targetEntity;
 	public:
 		DifferentPlayer(const std::string exp, const std::vector<FunctionParameter>& parameters);
 
@@ -114,6 +124,17 @@ namespace SGA
 		InRange(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+	
+	class OutRange : public Condition
+	{
+		FunctionParameter sourceEntity;
+		FunctionParameter targetEntity;
+		FunctionParameter distance;
+
+	public:
+		OutRange(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 
 	class IsWalkable : public Condition
 	{
@@ -121,6 +142,44 @@ namespace SGA
 
 	public:
 		IsWalkable(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsOccupied : public Condition
+	{
+		FunctionParameter targetPosition;
+
+	public:
+		IsOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsOccupiedGrid : public Condition
+	{
+		FunctionParameter targetPosition;
+		FunctionParameter gridLevel;
+
+	public:
+		IsOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotOccupied : public Condition
+	{
+		FunctionParameter targetPosition;
+
+	public:
+		IsNotOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotOccupiedGrid : public Condition
+	{
+		FunctionParameter targetPosition;
+		FunctionParameter gridLevel;
+
+	public:
+		IsNotOccupiedGrid(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
@@ -149,6 +208,24 @@ namespace SGA
 
 	public:
 		IsTickMultipleOf(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+	
+	class IsTick: public Condition
+	{
+		FunctionParameter tickParam;
+
+	public:
+		IsTick(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsNotTick : public Condition
+	{
+		FunctionParameter tickParam;
+
+	public:
+		IsNotTick(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 	
@@ -191,6 +268,15 @@ namespace SGA
 		HasNoEntity(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 
+	};
+
+	class HasNoEntities : public Condition
+	{
+		FunctionParameter playerParam;
+
+	public:
+		HasNoEntities(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
 
 	class HasNoBuff : public Condition

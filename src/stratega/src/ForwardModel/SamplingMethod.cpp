@@ -11,7 +11,7 @@ std::vector<SGA::Vector2i> SGA::SamplingMethod::getPositions(const GameState& ga
 
 	auto isValidPos = [&](int x, int y)
 	{
-		return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
+		return gameState.getTileAtConst({ x, y }).getTileTypeID() != -1;
 	}; 
 
 	for (int x = 0; x < gameState.getBoardWidth(); x++)
@@ -46,7 +46,7 @@ bool SGA::SamplingMethod::validatePosition(const GameState& /*gameState*/, const
 
 bool SGA::SamplingMethod::validatePosition(const GameState& gameState, const Vector2f& targetPosition) const
 {
-	return gameState.getTileAt({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
+	return gameState.getTileAtConst({ static_cast<int>(targetPosition.x), static_cast<int>(targetPosition.y)}).getTileTypeID() != -1;
 }
 
 std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameState, const Vector2f& position) const
@@ -58,7 +58,7 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			return gameState.getTileAt({ x, y }).getTileTypeID() != -1;
+			return gameState.getTileAtConst({ x, y }).getTileTypeID() != -1;
 		};
 
 		for (int x = 0; x < gameState.getBoardWidth(); x++)
@@ -74,13 +74,14 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 	{
 		auto isValidPos = [&](int x, int y)
 		{
-			if (gameState.getTileAt({ x, y }).getTileTypeID() == -1)
+			if (gameState.getTileAtConst({ x, y }).getTileTypeID() == -1)
 				return false;
 
 			switch (shapeType)
 			{
 			case ShapeType::Square: return true;
 			case ShapeType::Circle: return Vector2f(x, y).distance(position) <= shapeSize;
+			case ShapeType::Cross: return x==position.x||y==position.y;
 			default: return false;
 			}
 		};
@@ -107,11 +108,31 @@ std::vector<SGA::Vector2i> SGA::Neighbours::getPositions(const GameState& gameSt
 std::vector<int> SGA::Neighbours::getEntities(const GameState& gameState, const Vector2f& position, const std::unordered_set<int>& /*entityTypeIDs*/) const
 {
 	std::vector<int> entitiesIDs;
+
+	auto isValidPos = [&](int x, int y)
+	{
+		if (gameState.getTileAtConst({ x, y }).getTileTypeID() == -1)
+			return false;
+
+		switch (shapeType)
+		{
+		case ShapeType::Square: return Vector2f(x, y).distance(position) <= shapeSize;
+		case ShapeType::Circle: return Vector2f(x, y).distance(position) <= shapeSize;
+		case ShapeType::Cross: return (x == position.x || y == position.y) && Vector2f(x, y).distance(position) <= shapeSize;
+		default: return false;
+		}
+	};
+
 	//Call base method
 	for (auto& entity : gameState.getEntities())
 	{
-		if (shapeType==ShapeType::AllPositions||entity.getPosition().distance(position) <= shapeSize)
+		if (shapeType==ShapeType::AllPositions)
 			entitiesIDs.emplace_back(entity.getID());
+		else
+		{
+			if (isValidPos(entity.getPosition().x, entity.getPosition().y))
+				entitiesIDs.emplace_back(entity.getID());
+		}
 	}
 	return entitiesIDs;
 }
@@ -123,7 +144,13 @@ bool SGA::Neighbours::validatePosition(const GameState& /*gameState*/, const Vec
 	case ShapeType::Square:			
 	{
 		return (sourcePosition.x >= targetPosition.x - shapeSize && sourcePosition.x <= targetPosition.x + shapeSize &&
-			sourcePosition.y>=targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize);
+			sourcePosition.y >= targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize);
+	}
+	case ShapeType::Cross:
+	{
+		return (sourcePosition.x >= targetPosition.x - shapeSize && sourcePosition.x <= targetPosition.x + shapeSize &&
+			sourcePosition.y>=targetPosition.y - shapeSize && sourcePosition.y <= targetPosition.y + shapeSize) && 
+			(sourcePosition.x==targetPosition.x|| sourcePosition.y == targetPosition.y);
 	}				
 	case ShapeType::Circle:
 	{
@@ -176,7 +203,7 @@ std::vector<SGA::Vector2i> SGA::Dijkstra::getPositions(const GameState& gameStat
 
 			auto isValidPos = [&](int x, int y, float totalCost)
 			{
-				if (gameState.getTileAt({ x, y }).getTileTypeID() == -1 || !gameState.getTileAt({ x, y }).isWalkable()
+				if (gameState.getTileAtConst({ x, y }).getTileTypeID() == -1 || !gameState.getTileAtConst({ x, y }).isWalkable()
 					|| std::floor(totalCost + 1) > static_cast<float>(searchSize))
 					return false;		
 				else
@@ -258,7 +285,7 @@ std::vector<int> SGA::Dijkstra::getEntities(const GameState& gameState, const Ve
 	
 	for (auto& pos : possiblePositions)
 	{
-		auto* entity = gameState.getEntityAt(Vector2f(pos.x, pos.y));
+		auto* entity = gameState.getEntityAtConst(Vector2f(pos.x, pos.y));
 		if(entity)
 		{
 			entities.emplace_back(entity->getID());

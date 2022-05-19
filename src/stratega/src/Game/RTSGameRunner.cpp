@@ -1,5 +1,6 @@
 #include <Stratega/Game/RTSGameRunner.h>
 #include <Stratega/Game/AgentThread.h>
+
 namespace SGA
 {
 	RTSGameRunner::RTSGameRunner(const GameConfig& newConfig)
@@ -9,6 +10,9 @@ namespace SGA
 	
 	void RTSGameRunner::playInternal(std::vector<Agent*>& agents, int /*humanIndex*/)
 	{
+		////StartGame
+		//forwardModel->startGame(*currentState);
+
 		std::vector<AgentThread> threads(agents.size());
 		std::vector<AgentThread> results(agents.size());
 		while (!currentState->isGameOver() && !renderer->isGameEndRequested())
@@ -27,7 +31,7 @@ namespace SGA
 			// Render
 			auto startTime = std::chrono::high_resolution_clock::now();
 			while (std::chrono::high_resolution_clock::now() - startTime < std::chrono::milliseconds(config->budgetTimeMs))
-			{				
+			{
 				renderer->render();
 			}
 
@@ -83,6 +87,9 @@ namespace SGA
 
 	void RTSGameRunner::runInternal(std::vector<Agent*>& agents, GameObserver& observer)
 	{
+		////StartGame
+		//forwardModel->startGame(*currentState);
+
 		std::vector<AgentThread> threads(agents.size());
 		while (!currentState->isGameOver())
 		{
