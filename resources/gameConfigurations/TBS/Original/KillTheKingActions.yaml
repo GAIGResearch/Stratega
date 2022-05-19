@@ -1,0 +1,153 @@
+GameConfig:
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: true
+
+Agents:
+    - HumanAgent
+    - DoNothingAgent
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        FogOfWar: ../../../assets/Tiles/notVisible.png
+    GridIsIsometric: true
+    TileSpriteOrigin:
+        Width: 128
+        Height: 112
+    EntitySpriteOrigin:
+        Width: 256
+        Height: 360
+    TileSpriteSize:
+        Width: 256
+        Height: 144
+    EntitySpriteSize:
+        Width: 512
+        Height: 512
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../../assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../../assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../../assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../../assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  w1 w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 w0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+Actions:
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                    Type: Dijkstra
+                    Options:
+                        SearchSize: 3
+                        AllowDiagonals: false
+                #    Type: Neighbours
+                #    Options:
+                #        Shape: Circle
+                #        Size: 1
+                Conditions:
+                    #- "IsWalkable(Target)"
+                    - "IsNotOccupiedGrid(Target, Source)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Position:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Position, Source.AttackRange)"
+        Effects:
+            SampleEffect: #Single effect with sampled entities
+                Targets:
+                    Targettwo:
+                        Type: Entity
+                        ValidTargets: All
+                        SamplingMethod:
+                            Type: Neighbours
+                            Options:
+                                Shape: AllPositions
+                        Conditions:
+                            - "InRange(Position, Targettwo, Source.AttackRange)"
+                Effects:
+                    #- "Attack(Targettwo.Health, Source.AttackDamage)"
+                    RandomEffect: #Set of effects associated to a probability
+                        0.1: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                        0.9: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                    ConditionalEffect: #Set of effects associated to a conditions:
+                        Conditions:
+                            - "DifferentPlayer(Source, Targettwo)"
+                            #- "InRange(Position, Targettwo, Source.AttackRange)"
+                        Effects:
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+Entities:
+    Warrior:
+        Sprite: ../../../assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 6
+        Actions: [Attack, Move]
+        #Actions: [Attack]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 2
+
+ForwardModel:
+    Trigger:
+        - OnTick:
+            Type: Entity
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"

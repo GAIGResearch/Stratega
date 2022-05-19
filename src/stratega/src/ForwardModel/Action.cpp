@@ -7,9 +7,16 @@ namespace SGA
 	void Action::execute(GameState& state, const ForwardModel& fm) const
 	{
 		const auto& type = state.getGameInfo()->getActionTypes().at(getActionTypeID());
-		for (const auto& effect : type.getEffects())
+		/*for (const auto& effect : type.getEffects())
 		{
 			effect->execute(state,fm, targets);
+		}*/
+		for (const auto& effect : type.getEffects2())
+		{
+			if(effect.which()==0)
+				boost::get<std::shared_ptr<Effect>>(effect)->execute(state,fm, targets);
+			else
+				boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
 		}
 	}
 
