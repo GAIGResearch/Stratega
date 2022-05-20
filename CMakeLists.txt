@@ -6,11 +6,13 @@
 
 #Uncomment if building for Apple
 project(Stratega LANGUAGES C CXX OBJCXX OBJC)
-set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+
 enable_language(OBJC)
 enable_language(OBJCXX)
 
-#set (CMAKE_OSX_ARCHITECTURES "arm64")
+#Uncomment if building for Apple with M1 arch arm64
+set (CMAKE_OSX_ARCHITECTURES "arm64")
+
 #set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 # project set'tings
