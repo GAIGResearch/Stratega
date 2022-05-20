@@ -2,15 +2,13 @@
 
 
 
-project(Stratega LANGUAGES C CXX)
+#project(Stratega LANGUAGES C CXX)
 
-#Uncomment if building for M1 Apple
-#project(Stratega LANGUAGES C CXX OBJCXX OBJC)
-#set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-#if(APPLE)
-#    enable_language(OBJC)
-#    enable_language(OBJCXX)
-#endif()
+#Uncomment if building for Apple
+project(Stratega LANGUAGES C CXX OBJCXX OBJC)
+set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+enable_language(OBJC)
+enable_language(OBJCXX)
 
 #set (CMAKE_OSX_ARCHITECTURES "arm64")
 #set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
