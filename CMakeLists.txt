@@ -7,6 +7,10 @@ project(Stratega LANGUAGES C CXX)
 #Uncomment if building for M1 Apple
 #project(Stratega LANGUAGES C CXX OBJCXX OBJC)
 #set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
+#if(APPLE)
+#    enable_language(OBJC)
+#    enable_language(OBJCXX)
+#endif()
 
 #set (CMAKE_OSX_ARCHITECTURES "arm64")
 #set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
@@ -178,10 +182,7 @@ find_package(Boost REQUIRED COMPONENTS random)
 find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
-if(APPLE)
-    enable_language(OBJC)
-    enable_language(OBJCXX)
-endif()
+
 
 # define the targets of the project
 if(NOT SGA_BUILD_HEADLESS)
