@@ -1,12 +1,12 @@
 ﻿cmake_minimum_required(VERSION 3.18)
 
-#
-if(CMAKE_SYSTEM_NAME MATCHES Darwin)
-    project(Stratega LANGUAGES C CXX OBJCXX OBJC)
-    set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-else ()
-    project(Stratega LANGUAGES C CXX)
-endif()
+
+
+project(Stratega LANGUAGES C CXX)
+
+#Uncomment if building for M1 Apple
+#project(Stratega LANGUAGES C CXX OBJCXX OBJC)
+#set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 #set (CMAKE_OSX_ARCHITECTURES "arm64")
 #set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
@@ -46,7 +46,7 @@ set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
 set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
 
 # options
-option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" ON)
+option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
 option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" OFF)
 option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
