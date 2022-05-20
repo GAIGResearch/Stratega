@@ -1,14 +1,13 @@
 ﻿cmake_minimum_required(VERSION 3.18)
-#project(Stratega LANGUAGES C CXX)
+project(Stratega LANGUAGES C CXX)
 
 #Uncomment if building for Apple
-project(Stratega LANGUAGES C CXX OBJCXX OBJC)
-enable_language(OBJC)
-enable_language(OBJCXX)
+#project(Stratega LANGUAGES C CXX OBJCXX OBJC)
+#enable_language(OBJC)
+#enable_language(OBJCXX)
 
 #Uncomment if building for Apple with M1 arch arm64
 #set (CMAKE_OSX_ARCHITECTURES "arm64")
-#set (CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 # project set'tings
 set(CMAKE_CONFIG_FOLDER "cmake")
@@ -45,7 +44,7 @@ set(SUBPROJ_GUI_DIR "${PROJ_SOURCES_DIR}/gui")
 set(SUBPROJ_GUI_SRC_DIR "${SUBPROJ_GUI_DIR}/src")
 
 # options
-option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" ON)
+option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" OFF)
 option(ENABLE_BUILD_DOCS "Enable building the docs. Requires doxygen to be installed on the system" OFF)
 option(ENABLE_BUILD_WITH_TIME_TRACE "Enable -ftime-trace to generate time tracing .json files on clang" OFF)
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
@@ -59,9 +58,9 @@ option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
-option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." OFF)
+option(ENABLE_STRATEGA_BINDINGS "Enable to build the bindings to other languages." ON)
 option(ENABLE_TESTING "Enable Test Builds" ON)
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" OFF)
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA_BINDINGS is enabled, this option will be disabled automatically)" ON)
 
 option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
