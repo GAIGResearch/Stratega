@@ -8,18 +8,18 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets)
+	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targetsVector)
 	{
 		std::vector<std::vector<ActionTarget>> generatedTargets;
 
-		if(targets[0].getType()==ActionTarget::EntityReference)
-			generatedTargets = fm.getActionSpace()->generateTargets(state, *targets[0].getEntity(state), actionTargets);
-		else if(targets[0].getType()==ActionTarget::PlayerReference)
-			generatedTargets = fm.getActionSpace()->generateTargets(state, targets[0].getPlayer(state), actionTargets);
+		if(targetsVector[0].getType()==ActionTarget::EntityReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, *targetsVector[0].getEntity(state), actionTargets);
+		else if(targetsVector[0].getType()==ActionTarget::PlayerReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, targetsVector[0].getPlayer(state), actionTargets);
 
 
 		std::vector<std::vector<ActionTarget>> actionTargetLists;
-		for (auto& target : targets)
+		for (auto& target : targetsVector)
 		{
 			std::vector<ActionTarget> actionTargetTemp;
 			actionTargetTemp.emplace_back(target);
