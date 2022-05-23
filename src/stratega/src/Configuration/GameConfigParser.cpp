@@ -579,9 +579,9 @@ namespace SGA
                     auto effectsText = effect.second.as<std::vector<std::string>>(std::vector<std::string>());
                     std::vector<std::shared_ptr<Effect>> bucket;
                     parser.parseFunctions(effectsText, bucket, context);
-                    for (auto& effect : bucket)
+                    for (auto& effectTemp : bucket)
                     {
-                        effects.emplace_back(effect);
+                        effects.emplace_back(effectTemp);
                     }
                 }
             }
@@ -609,14 +609,14 @@ namespace SGA
         auto context = ParseContext::fromGameConfig(config);
 
         //Generate end turn action
-        ActionType type;
-        type.setID(static_cast<int>(config.actionTypes.size()));
-        type.setName("EndTurn");
+        ActionType actionType;
+        actionType.setID(static_cast<int>(config.actionTypes.size()));
+        actionType.setName("EndTurn");
         context.targetIDs.emplace("Source", 0);
-        type.setSourceType(ActionSourceType::Player);
-        type.setEndTick(true);
+        actionType.setSourceType(ActionSourceType::Player);
+        actionType.setEndTick(true);
 
-        config.actionTypes.emplace(type.getID(), std::move(type));
+        config.actionTypes.emplace(actionType.getID(), std::move(actionType));
 
         for (const auto& nameTypePair : actionsNode.as<std::map<std::string, YAML::Node>>())
         {

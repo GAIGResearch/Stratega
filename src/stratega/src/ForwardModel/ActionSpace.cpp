@@ -605,7 +605,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& gameState,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& /*gameState*/,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 

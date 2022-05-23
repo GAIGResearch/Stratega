@@ -256,7 +256,7 @@ namespace SGA
 	nonstd::optional<FunctionParameter> FunctionParser::parseExpression(std::istringstream& ss, const ParseContext& context) const
 	{
 		ExpressionStruct temp;
-		auto begin = ss.tellg();
+		//auto begin = ss.tellg();
 		std::cout << std::endl;
 
 		//Get expression string

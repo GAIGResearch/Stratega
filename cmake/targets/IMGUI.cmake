@@ -6,6 +6,7 @@ list(TRANSFORM IMGUI_SOURCE_FILES PREPEND "${imgui-sfml_SOURCE_DIR}/")
 
 add_library(imgui STATIC ${IMGUI_SOURCE_FILES})
 target_include_directories(imgui PUBLIC ${imgui-sfml_SOURCE_DIR})
+
 target_link_libraries(imgui
         PRIVATE
         CONAN_PKG::imgui
