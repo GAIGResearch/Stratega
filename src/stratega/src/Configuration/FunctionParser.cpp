@@ -146,7 +146,7 @@ namespace SGA
 
 		int diceNumber = 0;
 		int diceFaceNumber = 0;
-		char c = ss.peek();
+		//char c = static_cast<char>(ss.peek());
 		//Parse dice number
 		if (std::isdigit(ss.peek()))
 		{
@@ -163,7 +163,7 @@ namespace SGA
 		//Remove d or D
 		if (std::isalpha(ss.peek()) && (ss.peek()=='d' || ss.peek()=='D'))
 		{
-			parameterString += ss.peek();
+			parameterString += static_cast<char>(ss.peek());
 			ss.get();
 
 			if (!std::isdigit(ss.peek())) {
@@ -193,7 +193,7 @@ namespace SGA
 			return {};
 		}
 
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -234,7 +234,7 @@ namespace SGA
 			return {};
 		}
 		parameterString += targetName+"."+ parameterName;
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -286,7 +286,7 @@ namespace SGA
 			}
 			else
 			{
-				char nextChar = ss.get();;
+				char nextChar = static_cast<char>(ss.get());
 				if (ss.peek() == EOF && nextChar == ')')
 				{
 					//If the last character is ) dont add it
@@ -322,7 +322,7 @@ namespace SGA
 		{
 			throw std::runtime_error("Unknown action-target: " + targetName);
 		}
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -364,7 +364,7 @@ namespace SGA
 			throw std::runtime_error("Unknown action-target: " + targetName);
 		}
 
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -410,7 +410,7 @@ namespace SGA
 			throw std::runtime_error("Unknown parameter/action-target: " + targetName + ".Player." + parameterName);
 		}
 		parameterString += targetName + "." + playerName+"." + parameterName;
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -455,7 +455,7 @@ namespace SGA
 			throw std::runtime_error("Unknown parameter/action-target: " + stateName + "." + parameterName);
 		}
 		parameterString += stateName + "." + parameterName;
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -493,7 +493,7 @@ namespace SGA
 			return {};
 		}
 		parameterString = names.value()[0];
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -531,7 +531,7 @@ namespace SGA
 			return {};
 		}
 		parameterString = names.value()[0];
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -570,7 +570,7 @@ namespace SGA
 			return {};
 		}
 		parameterString = names.value()[0];
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -606,7 +606,7 @@ namespace SGA
 			return {};
 		}
 
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -641,7 +641,7 @@ namespace SGA
 			return {};
 		}
 
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{
@@ -678,7 +678,7 @@ namespace SGA
 			return {};
 		}
 		parameterString = names.value()[0];
-		char nextCharacter = ss.peek();
+		char nextCharacter = static_cast<char>(ss.peek());
 		//Check if is not expression
 		if (nextCharacter == ')' || nextCharacter == ',')
 		{

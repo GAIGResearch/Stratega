@@ -65,7 +65,7 @@ namespace SGA
             state.setGameType(gameType);
             state.setTickLimit(tickLimit);
             state.setCurrentTBSPlayer(gameType == SGA::GameType::RTS ? -1 : 0);
-            state.getActionQueues().resizePlayerActionQueues(getNumberOfPlayers());
+            state.getActionQueues().resizePlayerActionQueues(static_cast<int>(getNumberOfPlayers()));
         }
 
         virtual void generateGameInfo(GameState& state)const
