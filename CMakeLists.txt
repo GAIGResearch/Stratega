@@ -1,6 +1,13 @@
 ﻿cmake_minimum_required(VERSION 3.18)
+project(Stratega LANGUAGES C CXX)
 
-project(Stratega LANGUAGES CXX)
+#Uncomment if building for Apple
+#project(Stratega LANGUAGES C CXX OBJCXX OBJC)
+#enable_language(OBJC)
+#enable_language(OBJCXX)
+
+#Uncomment if building for Apple with M1 arch arm64
+#set (CMAKE_OSX_ARCHITECTURES "arm64")
 
 # project set'tings
 set(CMAKE_CONFIG_FOLDER "cmake")
@@ -8,9 +15,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
     set(CONANFILE conanfile_linux.txt)
+    message(STATUS "running on Linux conanfile_linux")
+elseif (CMAKE_SYSTEM_NAME MATCHES Darwin)
+    set(CONANFILE conanfile_mac.txt)
+    message(STATUS "running on Mac conanfile_mac")
 else ()
     set(CONANFILE conanfile.txt)
+    message(STATUS "running on Windows conanfile")
 endif ()
+
 set(DEPENDENCY_DIR "deps")
 set(PROJ_CXX_STD_FEATURE cxx_std_14)
 set(PROJ_CXX_STANDARD C++14)
@@ -118,10 +131,16 @@ include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 # configure conan and fetch all dependencies
 if(NOT SGA_BUILD_HEADLESS)   
    if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
-    # We will have to fetch it manually in this case and add it to our project.
+   # # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
+   # # We will have to fetch it manually in this case and add it to our project.
+   include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
+   message(STATUS "running on Linux FetchSFML")
+   elseif (CMAKE_SYSTEM_NAME MATCHES Darwin)
+   # #MacOS
+   #set(BUILD_SHARED_LIBS ON)
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
-    endif ()
+    message(STATUS "running on Mac FetchSFML")
+   endif ()
     include(${CMAKE_CONFIG_FOLDER}/modules/FetchIMGUI-SFML.cmake)
 else()
     add_compile_definitions(BUILD_HEADLESS)
@@ -144,8 +163,10 @@ find_package(Threads)
 if(NOT SGA_BUILD_HEADLESS)
    find_package(imgui REQUIRED)
    find_package(OpenGL REQUIRED)
-   if (CMAKE_SYSTEM_NAME MATCHES Linux)
+   if (CMAKE_SYSTEM_NAME MATCHES Linux OR CMAKE_SYSTEM_NAME MATCHES Darwin)
        add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
+       #find_package(SFML COMPONENTS system window graphics REQUIRED)
+       #find_package(SFML 2.6 COMPONENTS system window graphics REQUIRED)
    else ()
        find_package(SFML COMPONENTS system window graphics REQUIRED)
    endif ()
@@ -156,10 +177,11 @@ find_package(yaml-cpp REQUIRED)
 find_package(recastnavigation REQUIRED)
 
 
+
 # define the targets of the project
 if(NOT SGA_BUILD_HEADLESS)
    include(${CMAKE_CONFIG_FOLDER}/targets/IMGUI.cmake)
-    include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
+   include(${CMAKE_CONFIG_FOLDER}/targets/GUI.cmake)
 endif()
 
 include(${CMAKE_CONFIG_FOLDER}/targets/Arena.cmake)

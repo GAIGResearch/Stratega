@@ -8,18 +8,18 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
-	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets)
+	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targetsVector)
 	{
 		std::vector<std::vector<ActionTarget>> generatedTargets;
 
-		if(targets[0].getType()==ActionTarget::EntityReference)
-			generatedTargets = fm.getActionSpace()->generateTargets(state, *targets[0].getEntity(state), actionTargets);
-		else if(targets[0].getType()==ActionTarget::PlayerReference)
-			generatedTargets = fm.getActionSpace()->generateTargets(state, targets[0].getPlayer(state), actionTargets);
+		if(targetsVector[0].getType()==ActionTarget::EntityReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, *targetsVector[0].getEntity(state), actionTargets);
+		else if(targetsVector[0].getType()==ActionTarget::PlayerReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, targetsVector[0].getPlayer(state), actionTargets);
 
 
 		std::vector<std::vector<ActionTarget>> actionTargetLists;
-		for (auto& target : targets)
+		for (auto& target : targetsVector)
 		{
 			std::vector<ActionTarget> actionTargetTemp;
 			actionTargetTemp.emplace_back(target);
@@ -168,7 +168,7 @@ namespace SGA
 
 	}
 	
-	void EnqueueAction::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void EnqueueAction::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
 	{
 		auto action = actionType.getActionType(state, targets);
 		if (source.isPlayerReference(targets))
@@ -356,7 +356,7 @@ namespace SGA
 		pushDir = pushDir.normalized();
 		auto wallPositionCheck = target.getPosition() + pushDir;
 
-		const auto& tile = state.getTileAt(wallPositionCheck.x, wallPositionCheck.y);
+		const auto& tile = state.getTileAt(static_cast<int>(wallPositionCheck.x), static_cast<int>(wallPositionCheck.y));
 
 		if (!tile.isWalkable())
 		{
@@ -400,9 +400,9 @@ namespace SGA
 	
 	void AttackAroundWithArmor::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
-		auto& armorParame = armorReference.getEntity(state, targets);
+		//auto& armorParame = armorReference.getEntity(state, targets);
 		auto targetResource = armorReference.getRawParameterValue(state, targets);
-		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		//int parameterIndex = armorReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		
 		auto targetPosition = targetPositionReference.getPosition(state, targets);
@@ -547,7 +547,7 @@ namespace SGA
 	
 	void PushAroundPositionAndHit::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
-		auto& entity = entityParam.getEntity(state, targets);
+		//auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetParam.getPosition(state, targets);
 
 		//Get entities around position		
@@ -562,7 +562,7 @@ namespace SGA
 		if (targetPositionEntity)
 		{
 			//Deals damage
-			auto currValue = targetPositionEntity->getParameter(parameterName);
+			//auto currValue = targetPositionEntity->getParameter(parameterName);
 			
 			//Deal damage to hitted entity
 			auto param = targetPositionEntity->getParameter(resourceReference.getParameter(state, targets).getName());

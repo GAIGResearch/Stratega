@@ -13,11 +13,22 @@ target_link_libraries(gui
         Stratega
         PRIVATE
         # other platforms use Conan's `sfml`
-        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
+        # for mac we have to use the targets of `sfml`'s components individually
+        #CONAN_PKG::sfml
+        "$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
+        
+        "$<$<PLATFORM_ID:Darwin>:sfml-system>"
+        "$<$<PLATFORM_ID:Darwin>:sfml-graphics>"
+        "$<$<PLATFORM_ID:Darwin>:sfml-window>"
+        
         # for linux we have to use the targets of `sfml`'s components individually
         "$<$<PLATFORM_ID:Linux>:sfml-system>"
         "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
         "$<$<PLATFORM_ID:Linux>:sfml-window>"
+
+        #sfml-system
+        #sfml-graphics
+        #sfml-window
         )
 
 

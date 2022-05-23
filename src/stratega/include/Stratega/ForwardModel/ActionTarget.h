@@ -166,6 +166,7 @@ namespace SGA
 				default:
 					break;
 				}
+				return false;
 			}
 			else
 				return true;

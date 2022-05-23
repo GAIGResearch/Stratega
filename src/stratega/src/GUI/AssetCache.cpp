@@ -1,6 +1,6 @@
 #include <string>
 #include <Stratega/GUI/AssetCache.h>
-
+#include  <stdexcept>
 
 void AssetCache::loadTexture(std::string name, std::string fileName) {
 	sf::Texture tex;

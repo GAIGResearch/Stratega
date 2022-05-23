@@ -114,7 +114,7 @@ namespace SGA
 		
 	public:
 		FunctionParameter(const FunctionParameter& other);
-		FunctionParameter operator=(const FunctionParameter& other)
+		FunctionParameter operator=(const FunctionParameter& /*other*/)
 		{
 			return *this;
 		}

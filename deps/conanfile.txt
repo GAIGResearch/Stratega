@@ -52,3 +52,6 @@ boost:without_wave=True
 cmake
 cmake_find_package
 cmake_paths
+
+[imports]
+lib, *.dylib* -> ./bin
