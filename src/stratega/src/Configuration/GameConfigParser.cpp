@@ -497,7 +497,7 @@ namespace SGA
         }
     }
 
-    void GameConfigParser::parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects, std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& targets) const
+    void GameConfigParser::parseEffects(const YAML::Node& effectsNode, GameConfig& config, FunctionParser& parser, ParseContext& context, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>& effects, std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& /*targets*/) const
     {
         if (effectsNode.IsMap())
         {

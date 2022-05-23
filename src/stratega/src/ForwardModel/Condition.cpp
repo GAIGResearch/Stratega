@@ -239,15 +239,17 @@ namespace  SGA
 		{
 			auto grid = gridLevel.getConstant(state, targets);
 
-			return state.getEntitiesAtConst(pos, grid).size() != 0;
+			return state.getEntitiesAtConst(pos, static_cast<int>(grid)).size() != 0;
 		}
-		else if (gridLevel.getType() == FunctionParameter::Type::EntityTypeReference || 
+		else if (gridLevel.getType() == FunctionParameter::Type::EntityTypeReference ||
 			gridLevel.getType() == FunctionParameter::Type::ArgumentReference)
 		{
 			auto type = gridLevel.getEntityType(state, targets);
 
 			return state.getEntitiesAtConst(pos, type.getID()).size() != 0;
 		}
+		else
+			return false;
 	}
 
 	IsNotOccupied::IsNotOccupied(const std::string exp, const std::vector<FunctionParameter>& parameters)
