@@ -1,46 +1,11 @@
-#pragma once
-#include <pybind11/pybind11.h>
-#include <pybind11/stl_bind.h>
-#include <pybind11/stl.h>
-#include <pybind11/complex.h>
-#include <pybind11/functional.h>
-#include <pybind11/chrono.h>
-#include <pybind11/iostream.h>
-
-#include <Stratega/Logging/FileLogger.h>
-#include <Stratega/Representation/Vector2.h>
-#include <Stratega/Representation/Entity.h>
-#include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Tile.h>
-#include <Stratega/Representation/Grid2D.h>
-#include <Stratega/Representation/GameState.h>
-#include <Stratega/Configuration/GameConfigParser.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Game/GameRunner.h>
-#include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Game/AgentThread.h>
-#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
-#include <Stratega/Arena/Arena.h>
-#include <Stratega/Representation/Buff.h>
-#include <Stratega/Representation/BuffType.h>
-#include <fstream>
-#include <sstream>
-
-#include <Stratega/Logging/Log.h>
-#include <limits>
-#include <Stratega/Utils/Timer.h>
-#include <Stratega/Utils/filesystem.hpp>
-#undef max
-
-namespace py = pybind11;
+#include "headers.h"
 
 namespace stratega
 {
 	void game(py::module_& m)
 	{
 		// ---- GameType ----
-		py::enum_<SGA::GameType>(m, "GameType")
+		py::enum_<SGA::GameType>(m, "GameType", "Enum that contains all the basic game types")
 			.value("TBS", SGA::GameType::TBS)
 			.value("RTS", SGA::GameType::RTS)
 			.export_values();
@@ -48,7 +13,7 @@ namespace stratega
 		
 
 		// ---- GameConfig ----
-		py::class_<SGA::GameConfig>(m, "GameConfig")
+		py::class_<SGA::GameConfig>(m, "GameConfig", "Contains the current configuration of a game. It can generate the gamestate with the actual configuration.")
 			.def_readwrite("game_type", &SGA::GameConfig::gameType)
 
 			.def_readwrite("tick_limit", &SGA::GameConfig::tickLimit)
@@ -101,7 +66,7 @@ namespace stratega
 			.def("get_technology_id", &SGA::GameConfig::getTechnologyID, py::arg("name"))
 			;
 		// ---- GameInfo ----
-		py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo")
+		py::class_<SGA::GameInfo, std::shared_ptr<SGA::GameInfo>>(m, "GameInfo"," Contains all the type information used by the game. It have different methods to get the different types: parameter, entity, action... The agent can access to the yaml path where the game configuration is defined.")
 
 			.def("get_entity_type", &SGA::GameInfo::getEntityType, py::arg("entityTypeID"), "Returns the entity type.")
 			.def("get_tile_type", &SGA::GameInfo::getTileType, py::arg("tileTypeID"), "Returns the tile type.")
@@ -141,7 +106,7 @@ namespace stratega
 			;
 
 		// ---- EntityPlacement ----	
-		py::class_<SGA::EntityPlacement>(m, "EntityPlacement")
+		py::class_<SGA::EntityPlacement>(m, "EntityPlacement","Contains the information of a entity placement")
 			.def(py::init<>())
 			.def_readwrite("ownerID", &SGA::EntityPlacement::ownerID)
 			.def_readwrite("position", &SGA::EntityPlacement::position)
@@ -149,7 +114,7 @@ namespace stratega
 			;
 
 		// ---- LevelDefinition ----	
-		py::class_<SGA::LevelDefinition>(m, "LevelDefinition")
+		py::class_<SGA::LevelDefinition>(m, "LevelDefinition", "Contains the definition of a level, this include the string and the default  entity placaments.")
 			.def(py::init<std::vector<SGA::EntityPlacement>, SGA::Grid2D<std::shared_ptr<SGA::TileType>>>(), py::arg("entityPlacements"), py::arg("board"))
 			.def_readwrite("name", &SGA::LevelDefinition::name)
 			.def_readwrite("board_string", &SGA::LevelDefinition::boardString)

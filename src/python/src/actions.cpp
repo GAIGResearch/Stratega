@@ -1,45 +1,10 @@
-#pragma once
-#include <pybind11/pybind11.h>
-#include <pybind11/stl_bind.h>
-#include <pybind11/stl.h>
-#include <pybind11/complex.h>
-#include <pybind11/functional.h>
-#include <pybind11/chrono.h>
-#include <pybind11/iostream.h>
-
-#include <Stratega/Logging/FileLogger.h>
-#include <Stratega/Representation/Vector2.h>
-#include <Stratega/Representation/Entity.h>
-#include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Tile.h>
-#include <Stratega/Representation/Grid2D.h>
-#include <Stratega/Representation/GameState.h>
-#include <Stratega/Configuration/GameConfigParser.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Game/GameRunner.h>
-#include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Game/AgentThread.h>
-#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
-#include <Stratega/Arena/Arena.h>
-#include <Stratega/Representation/Buff.h>
-#include <Stratega/Representation/BuffType.h>
-#include <fstream>
-#include <sstream>
-
-#include <Stratega/Logging/Log.h>
-#include <limits>
-#include <Stratega/Utils/Timer.h>
-#include <Stratega/Utils/filesystem.hpp>
-#undef max
-
-namespace py = pybind11;
+#include "headers.h"
 
 namespace stratega
 {
 	void actions(py::module_& m)
 	{
-		py::class_<std::vector<SGA::Action>>(m, "ActionList")
+		py::class_<std::vector<SGA::Action>>(m, "ActionList","Lists of actions,  Contains the main information of an action as the action type id that is linked to an ActionType")
 			.def(py::init<>())
 			.def("__copy__", [](const std::vector<SGA::Action>& self) {
 			return std::vector<SGA::Action>(self);
@@ -75,7 +40,7 @@ namespace stratega
 			.def_readwrite("last_executed_tick", &SGA::ActionInfo::lastExecutedTick);
 
 		// ---- Action ----	
-		py::class_<SGA::Action>(m, "Action")
+		py::class_<SGA::Action>(m, "Action", "Contains the main information of an action as the action type id that is linked to an ActionType")
 			.def("__copy__", [](const SGA::Action& self) {
 			return SGA::Action(self);
 		})
@@ -126,13 +91,13 @@ namespace stratega
 			;
 
 		// --- ActionSourceType ---
-		py::enum_<SGA::ActionSourceType>(m, "ActionSourceType")
+		py::enum_<SGA::ActionSourceType>(m, "ActionSourceType", "Used to know who is the source of an action, it can be a entity or a player.")
 			.value("Entity", SGA::ActionSourceType::Entity)
 			.value("Building", SGA::ActionSourceType::Player)
 			.export_values();
 
 		// --- ActionSourceTypeEnum ---
-		py::enum_<SGA::TargetType::Type>(m, "TargetTypeEnum")
+		py::enum_<SGA::TargetType::Type>(m, "TargetTypeEnum", "Target type: None, Position, Tile, EntityType, Entity, Technology, ContinuousAction, Object, SlotObject")
 			.value("None", SGA::TargetType::Type::None)
 			.value("Position", SGA::TargetType::Type::Position)
 			.value("EntityType", SGA::TargetType::Type::EntityType)
@@ -144,7 +109,7 @@ namespace stratega
 			.export_values();
 
 		// ---- TargetType ----	
-		py::class_<SGA::TargetType>(m, "TargetType")
+		py::class_<SGA::TargetType>(m, "TargetType", "Target type: None, Position, Tile, EntityType, Entity, Technology, ContinuousAction, Object, SlotObject")
 			.def(py::init<>())
 
 			.def("get_type_string", &SGA::TargetType::getTypeString)
@@ -172,7 +137,7 @@ namespace stratega
 
 
 		// --- ActionTargetEnum ---
-		py::enum_<SGA::ActionTarget::Type>(m, "ActionTargetEnum")
+		py::enum_<SGA::ActionTarget::Type>(m, "ActionTargetEnum", "Used by Action to reference any possible type of target available in Stratega.")
 			.value("Position", SGA::ActionTarget::Type::Position)
 			.value("EntityReference", SGA::ActionTarget::Type::EntityReference)
 			.value("PlayerReference", SGA::ActionTarget::Type::PlayerReference)
@@ -186,7 +151,7 @@ namespace stratega
 			.export_values();
 
 		// ---- ActionTarget ----	
-		py::class_<SGA::ActionTarget>(m, "ActionTarget")
+		py::class_<SGA::ActionTarget>(m, "ActionTarget", "Used by Action to reference any possible type of target available in Stratega.")
 			.def_static("create_position_action_target", &SGA::ActionTarget::createPositionActionTarget, py::arg("position"))
 			.def_static("create_entity_action_target", &SGA::ActionTarget::createEntityActionTarget, py::arg("entityID"))
 			.def_static("create_object_target", &SGA::ActionTarget::createObjectActionTarget, py::arg("entityID"))
@@ -221,7 +186,7 @@ namespace stratega
 			;
 
 		// ---- Action Assignment ----
-		py::class_<SGA::ActionAssignment>(m, "ActionAssignment")
+		py::class_<SGA::ActionAssignment>(m, "ActionAssignment", "A collection of action-assignments to entities and players in a game.")
 			.def("__copy__", [](const SGA::ActionAssignment& self) {
 			return SGA::ActionAssignment(self);
 		})

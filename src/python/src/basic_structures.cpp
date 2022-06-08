@@ -1,39 +1,4 @@
-#pragma once
-#include <pybind11/pybind11.h>
-#include <pybind11/stl_bind.h>
-#include <pybind11/stl.h>
-#include <pybind11/complex.h>
-#include <pybind11/functional.h>
-#include <pybind11/chrono.h>
-#include <pybind11/iostream.h>
-
-#include <Stratega/Logging/FileLogger.h>
-#include <Stratega/Representation/Vector2.h>
-#include <Stratega/Representation/Entity.h>
-#include <Stratega/Representation/Player.h>
-#include <Stratega/Representation/Tile.h>
-#include <Stratega/Representation/Grid2D.h>
-#include <Stratega/Representation/GameState.h>
-#include <Stratega/Configuration/GameConfigParser.h>
-#include <Stratega/ForwardModel/TBSForwardModel.h>
-#include <Stratega/ForwardModel/RTSForwardModel.h>
-#include <Stratega/Game/GameRunner.h>
-#include <Stratega/Agent/AgentFactory.h>
-#include <Stratega/Game/AgentThread.h>
-#include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
-#include <Stratega/Arena/Arena.h>
-#include <Stratega/Representation/Buff.h>
-#include <Stratega/Representation/BuffType.h>
-#include <fstream>
-#include <sstream>
-
-#include <Stratega/Logging/Log.h>
-#include <limits>
-#include <Stratega/Utils/Timer.h>
-#include <Stratega/Utils/filesystem.hpp>
-#undef max
-
-namespace py = pybind11;
+#include "headers.h"
 
 class PyCondition : public SGA::Condition {
 public:
@@ -212,14 +177,8 @@ namespace stratega
 		py::bind_vector<std::vector<SGA::BuffType>>(m, "BuffsTypesList");
 		py::bind_map<std::unordered_map<int, SGA::BuffType>>(m, "BuffTypesMap");
 
-
-
-
-
-
-
 		// ---- SamplingMethod ----	
-		py::class_<SGA::SamplingMethod, PySamplingMethod, std::shared_ptr<SGA::SamplingMethod>>(m, "SamplingMethod")
+		py::class_<SGA::SamplingMethod, PySamplingMethod, std::shared_ptr<SGA::SamplingMethod>>(m, "SamplingMethod", "Contais the definition of the sampling method used to sample the targets.")
 			.def(py::init<>())
 			.def_readwrite("name", &SGA::SamplingMethod::name)
 			.def("get_positions", py::overload_cast<const SGA::GameState&, const SGA::Vector2f&>(&SGA::SamplingMethod::getPositions, py::const_))
@@ -231,20 +190,20 @@ namespace stratega
 			;
 
 		// ---- Condition ----	
-		py::class_<SGA::Condition, PyCondition, std::shared_ptr<SGA::Condition>>(m, "Condition")
+		py::class_<SGA::Condition, PyCondition, std::shared_ptr<SGA::Condition>>(m, "Condition", "An abstract class used to check a condition in a gamestate")
 			.def("is_fullfiled", &SGA::Condition::isFullfiled, py::arg("state"), py::arg("targets"))
 			.def("expr", &SGA::Condition::expr)
 			;
 
 		// ---- Effect ----	
-		py::class_<SGA::Effect, PyEffect, std::shared_ptr<SGA::Effect>>(m, "Effect")
+		py::class_<SGA::Effect, PyEffect, std::shared_ptr<SGA::Effect>>(m, "Effect", "An abstract class used to modify the gamestate")
 			.def("execute", &SGA::Effect::execute, py::arg("state"), py::arg("fm"), py::arg("targets"))
 			.def("expr", &SGA::Effect::expr)
 			;
 
 
 		// ---- GameRunner ----
-		py::class_<SGA::GameRunner>(m, "GameRunner")
+		py::class_<SGA::GameRunner>(m, "GameRunner", "An abstract class that provides a simplified interface to play games with a given SGA::GameConfig.")
 			.def("play",
 				[](SGA::GameRunner& a, std::vector<std::shared_ptr<SGA::Agent>> newAgents, SGA::Vector2i& resolution, int seed = 0)
 		{
@@ -387,7 +346,7 @@ namespace stratega
 			;
 
 		// ---- Agent ----
-		py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent")
+		py::class_<SGA::Agent, PyAgent, std::shared_ptr<SGA::Agent>/* <--- trampoline*/>(m, "Agent", "Abstract class from which all agents should inherit.")
 			.def(py::init<std::string>(), py::arg("name") = "PythonAgent")
 			//.def_readwrite("agent_name",&SGA::Agent::agentName)
 			.def("computeAction", &SGA::Agent::computeAction, "Function for deciding the next action to execute. Must be overriden for an agent to work. Returns an ActionAssignment")
@@ -395,7 +354,7 @@ namespace stratega
 			.def("get_player_id", &SGA::Agent::getPlayerID);
 
 		// ---- Arena ----
-		py::class_<Arena>(m, "Arena")
+		py::class_<Arena>(m, "Arena","The Arena provides an easy way to test the performance between different Agents in different environments.")
 			.def("run_games", py::overload_cast<int, int, int, int>(&Arena::runGames))
 			.def("run_games",
 				[](Arena& a, int playerCount, int seed, int gamesNumber, int mapNumber, py::list agents)
