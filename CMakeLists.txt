@@ -56,7 +56,7 @@ option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA
 option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
 # If you are building for MacOS with M1,this option should be ON
-option(SGA_BUILD_SFML_FROM_SOURCE "Compile SFML 2.6.x" OFF)
+option(SGA_BUILD_SFML_FROM_SOURCE "Compile SFML 2.6.x" ON)
 
 
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
