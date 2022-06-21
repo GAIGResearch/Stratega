@@ -56,17 +56,14 @@ option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors (If ENABLE_STRATEGA
 option(SGA_BUILD_HEADLESS "Compile Stratega in headless mode" OFF)
 
 # If you are building for MacOS with M1,this option should be ON
-option(SGA_BUILD_SFML_FROM_SOURCE "Compile SFML 2.6.x" ON)
+option(SGA_BUILD_SFML_FROM_SOURCE "Compile SFML 2.6.x" OFF)
 
 
+# On linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
+# We will have to fetch it manually in this case and add it to our project.
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
-    if (NOT SGA_BUILD_SFML_FROM_SOURCE)
-        set(CONANFILE conanfile_linux_sfml.txt)
-        message(STATUS "running on Linux conanfile_linux_sfml")
-    else()
-        set(CONANFILE conanfile_linux.txt)
-        message(STATUS "running on Linux conanfile_linux")
-    endif()
+    set(CONANFILE conanfile_linux.txt)
+    message(STATUS "running on Linux conanfile_linux")
 elseif (CMAKE_SYSTEM_NAME MATCHES Darwin)
     
     if (NOT SGA_BUILD_SFML_FROM_SOURCE)
@@ -153,7 +150,9 @@ include(${CMAKE_CONFIG_FOLDER}/settings/StaticAnalyzers.cmake)
 
 # configure conan and fetch all dependencies
 if(NOT SGA_BUILD_HEADLESS)   
-    if (SGA_BUILD_SFML_FROM_SOURCE)
+    # on linux SFML is not (yet) available from conan due to a missing lib dependency in their recipe.
+    # We will have to fetch it manually in this case and add it to our project.
+    if (SGA_BUILD_SFML_FROM_SOURCE OR CMAKE_SYSTEM_NAME MATCHES Linux)
         include(${CMAKE_CONFIG_FOLDER}/modules/FetchSFML.cmake)
         message(STATUS "FetchSFML 2.6.x")
         #if (CMAKE_SYSTEM_NAME MATCHES Linux)
@@ -191,7 +190,7 @@ find_package(Threads)
 if(NOT SGA_BUILD_HEADLESS)
    find_package(imgui REQUIRED)
    find_package(OpenGL REQUIRED)
-   if (SGA_BUILD_SFML_FROM_SOURCE)
+   if (SGA_BUILD_SFML_FROM_SOURCE OR CMAKE_SYSTEM_NAME MATCHES Linux)
        add_subdirectory(${sfml_SOURCE_DIR} ${sfml_BINARY_DIR} EXCLUDE_FROM_ALL)
        #find_package(SFML COMPONENTS system window graphics REQUIRED)
        #find_package(SFML 2.6 COMPONENTS system window graphics REQUIRED)
