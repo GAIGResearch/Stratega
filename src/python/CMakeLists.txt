@@ -1,4 +1,19 @@
 set(BINDING_SOURCE_FILES
+        actions.cpp
+	    basic_structures.cpp
+	    buff.cpp
+	    default_methods.cpp
+	    entity.cpp
+	    forwardmodel.cpp
+	    game.cpp
+	    gamestate.cpp
+	    heuristic.cpp
+	    misc.cpp
+	    parameter.cpp
+	    player.cpp
+	    technology.cpp
+	    tile.cpp
+	    vector2.cpp
         binding.cpp
         )
 

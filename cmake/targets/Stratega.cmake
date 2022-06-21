@@ -137,7 +137,7 @@ if(NOT SGA_BUILD_HEADLESS)
     target_link_libraries_system(Stratega imgui)
 
     #if(UNIX AND NOT APPLE)
-    if(UNIX OR APPLE)
+    if(SGA_BUILD_SFML_FROM_SOURCE OR CMAKE_SYSTEM_NAME MATCHES Linux)
         target_link_libraries_system(Stratega sfml-system)
         target_link_libraries_system(Stratega sfml-graphics)
         target_link_libraries_system(Stratega sfml-window)        
