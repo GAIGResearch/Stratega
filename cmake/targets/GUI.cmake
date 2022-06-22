@@ -5,7 +5,6 @@ set(GUI_SOURCE_FILES
 list(TRANSFORM GUI_SOURCE_FILES PREPEND "${SUBPROJ_GUI_SRC_DIR}/")
 
 add_executable (gui ${GUI_SOURCE_FILES})
-
 target_include_directories(gui PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
 
