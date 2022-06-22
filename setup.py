@@ -126,7 +126,7 @@ with open(path.join(python_directory, "README.md")) as f:
 
 setup(
     name='Stratega',
-    version='0.2.0',
+    version='0.3.0',
     author='Diego Perez-Liebana, Alexander Dockhorn, Jorge Hurtado Grueso, Dominik Jeurissen',
     description='Stratega python bindings',
     long_description=long_description,
