@@ -5,20 +5,49 @@ set(GUI_SOURCE_FILES
 list(TRANSFORM GUI_SOURCE_FILES PREPEND "${SUBPROJ_GUI_SRC_DIR}/")
 
 add_executable (gui ${GUI_SOURCE_FILES})
-
 target_include_directories(gui PUBLIC ${SUBPROJ_STRATEGA_INCLUDE_DIR})
 
-target_link_libraries(gui
-        PUBLIC
-        Stratega
-        PRIVATE
-        # other platforms use Conan's `sfml`
-        "$<$<NOT:$<PLATFORM_ID:Linux>>:CONAN_PKG::sfml>"
-        # for linux we have to use the targets of `sfml`'s components individually
-        "$<$<PLATFORM_ID:Linux>:sfml-system>"
-        "$<$<PLATFORM_ID:Linux>:sfml-graphics>"
-        "$<$<PLATFORM_ID:Linux>:sfml-window>"
-        )
+
+if(SGA_BUILD_SFML_FROM_SOURCE OR CMAKE_SYSTEM_NAME MATCHES Linux)
+   target_link_libraries(gui
+    PUBLIC
+    Stratega
+    PRIVATE
+    # other platforms use Conan's `sfml`
+    # for mac we have to use the targets of `sfml`'s components individually
+    #"$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
+
+    sfml-system
+    sfml-graphics
+    sfml-window
+
+    ## for linux we have to use the targets of `sfml`'s components individually
+    #"$<$<PLATFORM_ID:Linux>:sfml-system>"
+    #"$<$<PLATFORM_ID:Linux>:sfml-graphics>"
+    #"$<$<PLATFORM_ID:Linux>:sfml-window>"
+    )
+else()
+    target_link_libraries(gui
+    PUBLIC
+    Stratega
+    PRIVATE
+    # other platforms use Conan's `sfml`
+    # for mac we have to use the targets of `sfml`'s components individually
+    #"$<$<PLATFORM_ID:Windows>:CONAN_PKG::sfml>"
+    #
+    #"$<$<PLATFORM_ID:Darwin>:sfml-system>"
+    #"$<$<PLATFORM_ID:Darwin>:sfml-graphics>"
+    #"$<$<PLATFORM_ID:Darwin>:sfml-window>"
+    #
+    ## for linux we have to use the targets of `sfml`'s components individually
+    #"$<$<PLATFORM_ID:Linux>:sfml-system>"
+    #"$<$<PLATFORM_ID:Linux>:sfml-graphics>"
+    #"$<$<PLATFORM_ID:Linux>:sfml-window>"
+
+    CONAN_PKG::sfml
+    )
+endif()
+
 
 
 

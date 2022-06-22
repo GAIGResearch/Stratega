@@ -8,6 +8,120 @@
 #pragma warning(disable: 5045)
 namespace SGA
 {
+	void EffectPack::execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targetsVector)
+	{
+		std::vector<std::vector<ActionTarget>> generatedTargets;
+
+		if(targetsVector[0].getType()==ActionTarget::EntityReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, *targetsVector[0].getEntity(state), actionTargets);
+		else if(targetsVector[0].getType()==ActionTarget::PlayerReference)
+			generatedTargets = fm.getActionSpace()->generateTargets(state, targetsVector[0].getPlayer(state), actionTargets);
+
+
+		std::vector<std::vector<ActionTarget>> actionTargetLists;
+		for (auto& target : targetsVector)
+		{
+			std::vector<ActionTarget> actionTargetTemp;
+			actionTargetTemp.emplace_back(target);
+			actionTargetLists.emplace_back(actionTargetTemp);
+		}
+		for (auto& target : generatedTargets)
+		{
+			actionTargetLists.emplace_back(target);
+		}
+		
+		
+		auto actionTargetsResult=fm.getActionSpace()->productActionTargets(actionTargetLists);
+
+	
+		
+		for (auto& targets : actionTargetsResult)
+		{
+			bool isValidAction = true;
+			//check each sigle target list if the condition is true
+			for (auto& target : actionTargets)
+			{
+				for (const auto& condition : target.second)
+				{
+					if (!condition->isFullfiled(state, targets))
+					{
+						isValidAction = false;
+						break;
+					}
+				}
+			}
+				
+			if (isValidAction)
+			{
+				if (effectPackType == EffectPackType::Sample)
+				{
+					for (const auto& effect : effects)
+					{
+						if (effect.which() == 0)
+							boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+						else
+						{
+							boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+						}
+					}
+				}
+				else if (effectPackType == EffectPackType::Conditional)
+				{
+					//Execute conditions
+					//Execute effects
+
+					bool isConditionFullfilled = true;
+					for (const auto& conditionPair : conditionEffects.first)
+					{
+						if (!conditionPair->isFullfiled(state, targets))
+						{
+							isConditionFullfilled = false;
+							break;
+						}
+					}
+
+					if(isConditionFullfilled)
+						for (const auto& effect : conditionEffects.second)
+						{
+							if (effect.which() == 0)
+								boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+							else
+							{
+								boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+							}
+						}
+					
+				}
+				else if (effectPackType == EffectPackType::Random)
+				{
+					//Execute conditions
+					//Execute effects
+					auto rndEngine = state.getRndEngine();
+					//Get a float random from 0->1
+					boost::random::uniform_real_distribution<float> distribution(0, 1);
+					float rndNumber = distribution(rndEngine);
+					//std::cout << "Random number: " << rndNumber << std::endl;
+
+					for (const auto& randomPair : randomEffects)
+					{
+						if (randomPair.first <= rndNumber)
+						{
+							for (const auto& effect : randomPair.second)
+							{
+								if (effect.which() == 0)
+									boost::get<std::shared_ptr<Effect>>(effect)->execute(state, fm, targets);
+								else
+								{
+									boost::get<std::shared_ptr<EffectPack>>(effect)->execute(state, fm, targets);
+								}
+							}
+						}
+					}
+				}
+			}				
+		}		
+	}
+
 	ModifyResource::ModifyResource(const std::string exp, const std::vector<FunctionParameter>& parameters) :		
 		Effect(exp),
 		resourceReference(parameters.at(0)),
@@ -54,7 +168,7 @@ namespace SGA
 
 	}
 	
-	void EnqueueAction::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	void EnqueueAction::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
 	{
 		auto action = actionType.getActionType(state, targets);
 		if (source.isPlayerReference(targets))
@@ -206,11 +320,13 @@ namespace SGA
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
-
+		//std::cout << "Attacked " << targetResource << std::endl;
 		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
 		if(targetResource <= 0)
 			entity.flagRemove();
+
+		
 	}
 	
 	AttackWithArmorUnderCover::AttackWithArmorUnderCover(const std::string exp, const std::vector<FunctionParameter>& parameters) :
@@ -240,7 +356,7 @@ namespace SGA
 		pushDir = pushDir.normalized();
 		auto wallPositionCheck = target.getPosition() + pushDir;
 
-		const auto& tile = state.getTileAt(wallPositionCheck.x, wallPositionCheck.y);
+		const auto& tile = state.getTileAt(static_cast<int>(wallPositionCheck.x), static_cast<int>(wallPositionCheck.y));
 
 		if (!tile.isWalkable())
 		{
@@ -284,9 +400,9 @@ namespace SGA
 	
 	void AttackAroundWithArmor::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
-		auto& armorParame = armorReference.getEntity(state, targets);
+		//auto& armorParame = armorReference.getEntity(state, targets);
 		auto targetResource = armorReference.getRawParameterValue(state, targets);
-		int parameterIndex = armorReference.getParameter(state, targets).getIndex();
+		//int parameterIndex = armorReference.getParameter(state, targets).getIndex();
 		auto amount = amountParameter.getConstant(state, targets);
 		
 		auto targetPosition = targetPositionReference.getPosition(state, targets);
@@ -431,7 +547,7 @@ namespace SGA
 	
 	void PushAroundPositionAndHit::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
 	{		
-		auto& entity = entityParam.getEntity(state, targets);
+		//auto& entity = entityParam.getEntity(state, targets);
 		auto targetPosition = targetParam.getPosition(state, targets);
 
 		//Get entities around position		
@@ -446,7 +562,7 @@ namespace SGA
 		if (targetPositionEntity)
 		{
 			//Deals damage
-			auto currValue = targetPositionEntity->getParameter(parameterName);
+			//auto currValue = targetPositionEntity->getParameter(parameterName);
 			
 			//Deal damage to hitted entity
 			auto param = targetPositionEntity->getParameter(resourceReference.getParameter(state, targets).getName());

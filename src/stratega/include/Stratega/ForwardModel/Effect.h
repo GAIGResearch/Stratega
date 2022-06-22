@@ -2,10 +2,58 @@
 #include <vector>
 #include <Stratega/ForwardModel/FunctionParameter.h>
 #include <Stratega/ForwardModel/ActionTarget.h>
+#include <Stratega/ForwardModel/TargetType.h>
 #include <Stratega/ForwardModel/SamplingMethod.h>
+#include <boost/variant.hpp>
 namespace SGA
 {
 	class ForwardModel;
+	class Effect;
+	class Condition;
+	
+	class EffectPack
+	{
+	public:
+		enum EffectPackType
+		{
+			Sample,
+			Conditional,
+			Random
+		};
+
+		EffectPackType effectPackType;
+
+		EffectPack(EffectPackType type):
+			effectPackType(type)
+		{
+			
+		}/*
+		EffectPack()
+		{
+			
+		}*/
+
+		EffectPack() = delete;
+
+		/// <summary>
+		/// List of target types of this action with their conditions. Each target is a pair <target, list<conditions>>.
+		/// These are tier 2 conditions (i.e. situational), to be checked during action generation.
+		/// </summary>
+		std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>> actionTargets;
+
+
+		//Regular effect packs
+		std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>> effects;
+
+		//Condition effectPacks
+		std::pair<std::vector<std::shared_ptr<Condition>>, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>> conditionEffects;
+
+		//Random effectPacks
+		std::vector<std::pair<float, std::vector<boost::variant<std::shared_ptr<Effect>, std::shared_ptr<EffectPack>>>>> randomEffects;
+
+		//Execute method
+		void execute(SGA::GameState& state, const SGA::ForwardModel& fm, const std::vector<SGA::ActionTarget>& targets);
+	};
 	
 	class Effect
 	{

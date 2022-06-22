@@ -269,7 +269,7 @@ namespace SGA
 		return bucket;
 	}
 
-	auto productActionTargets(const std::vector<std::vector<ActionTarget>>& lists)
+	std::vector<std::vector<ActionTarget>> ActionSpace::productActionTargets(const std::vector<std::vector<ActionTarget>>& lists) const
 	{
 		std::vector<std::vector<ActionTarget>> result;
 
@@ -402,11 +402,80 @@ namespace SGA
 		return targets;
 	}
 
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Entity& entity, const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& sourceTargets) const
+	{
+		std::vector<std::vector<ActionTarget>> targets;
+
+		for (auto& type : sourceTargets)
+		{
+			std::vector<ActionTarget> newTargets;
+			switch (type.first.getType())
+			{
+			case TargetType::Position: newTargets = generatePositionTargets(state, entity.getPosition(), type.first.getSamplingMethod());
+				break;
+			case TargetType::Tile: newTargets = generateTileTargets(state, entity.getPosition(), type.first.getTileTypes(), type.first.getSamplingMethod());
+				break;
+			case TargetType::Entity: newTargets = generateGroupTargets(state, entity.getPosition(), type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
+				break;
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
+				break;
+			case TargetType::Object: newTargets = generateObjectTargets(state, entity, type.first.getGroupEntityTypes());
+				break;
+			case TargetType::SlotObject: newTargets = generateSlotObjectTargets(state, entity, type.first.getGroupEntityTypes());
+				break;
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
+				break;
+			case TargetType::ContinuousAction: newTargets = generateContinuousActionTargets(state, entity);
+				break;
+			case TargetType::None: return {};
+			}
+
+			targets.emplace_back(newTargets);
+		}
+
+		return targets;
+	}
+
 	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Player& /*entity*/, const ActionType& action) const
 	{
 		std::vector<std::vector<ActionTarget>> targets;
 
 		for (auto& type : action.getTargets())
+		{
+			std::vector<ActionTarget> newTargets;
+			switch (type.first.getType())
+			{
+			case TargetType::Position: newTargets = generatePositionTargets(state, type.first.getSamplingMethod());
+				break;
+			case TargetType::Entity: newTargets = generateGroupTargets(state, type.first.getGroupEntityTypes(), type.first.getSamplingMethod());
+				break;
+			case TargetType::Tile: newTargets = generateTileTargets(state,type.first.getTileTypes(), type.first.getSamplingMethod());
+				break;
+			case TargetType::EntityType: newTargets = generateEntityTypeTargets(state, type.first.getGroupEntityTypes());
+				break;
+			case TargetType::Technology: newTargets = generateTechnologyTargets(state, type.first.getTechnologyTypes());
+				break;
+			case TargetType::None: return {};
+				break;
+			case TargetType::SlotObject: return {};
+				break;
+			case TargetType::Object: return {};
+				break;
+			case TargetType::ContinuousAction: return {};
+				break;
+			}
+
+			targets.emplace_back(newTargets);
+		}
+
+		return targets;
+	}
+	
+	std::vector<std::vector<ActionTarget>> ActionSpace::generateTargets(const GameState& state, const Player& /*player*/, const std::vector<std::pair<TargetType, std::vector<std::shared_ptr<Condition>>>>& sourceTargets) const
+	{
+		std::vector<std::vector<ActionTarget>> targets;
+
+		for (auto& type : sourceTargets)
 		{
 			std::vector<ActionTarget> newTargets;
 			switch (type.first.getType())
@@ -536,7 +605,7 @@ namespace SGA
 		return targets;
 	}
 
-	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& gameState,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
+	std::vector<ActionTarget> ActionSpace::generateObjectTargets(const GameState& /*gameState*/,  const Entity& source, const std::unordered_set<EntityTypeID>& entityTypeIDs) const
 	{
 		std::vector<ActionTarget> targets;
 

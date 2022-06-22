@@ -11,6 +11,7 @@ doxygen/1.9.2
 boost/1.78.0
 
 [options]
+boost:shared=False
 sfml:graphics=True
 sfml:window=True
 sfml:audio=False
@@ -52,3 +53,6 @@ boost:without_wave=True
 cmake
 cmake_find_package
 cmake_paths
+
+[imports]
+lib, *.dylib* -> ./bin

@@ -1,6 +1,6 @@
 include(FetchContent)
 
-set(IMGUI-SFML_VERSION 2.3)
+set(IMGUI-SFML_VERSION 2.5)
 FetchContent_Declare (
 		imgui-sfml
 		URL "https://github.com/eliasdaler/imgui-sfml/archive/refs/tags/v${IMGUI-SFML_VERSION}.zip"
