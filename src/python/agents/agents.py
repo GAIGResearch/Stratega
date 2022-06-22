@@ -87,7 +87,7 @@ class OSLAPythonAgent(stratega.Agent):
 
 
 def run_arena():
-    config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
+    config = stratega.load_config("resources/gameConfigurations/TBS/Original/KillTheKing.yaml")
 
     number_of_games=1
     player_count=2
@@ -111,7 +111,7 @@ def run_arena():
 
 def play_gui():
     # local python module resources
-    config = stratega.load_config("resources/gameConfigurations/TBS/KillTheKing.yaml")
+    config = stratega.load_config("resources/gameConfigurations/TBS/Original/KillTheKing.yaml")
 
     runner = stratega.create_runner(config)
 
