@@ -201,7 +201,7 @@ YAML
                 MovementPoints: 2
 
         Door:
-            Sprite: ../../assets/Entities/wonder.png
+            Sprite: ../../../assets/Entities/wonder.png
             Symbol: d
             LineOfSightRange: 2
 

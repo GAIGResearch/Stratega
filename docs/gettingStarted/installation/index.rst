@@ -55,6 +55,7 @@ Stratega is compiled using CMake. Luckily Visual Studio already provides a simpl
 Mac OS
 ++++++++++++++++++++++++++++++++
 
+
 #. First lets clone the repository and change the directory to Stratega.
 
     .. code-block:: bash
@@ -67,12 +68,30 @@ Mac OS
     .. code-block:: bash
 
         git checkout dev  
+    
+#. Go to the main CMakeLists.txt in the root folder, comment like 2 and uncomment lines 5,6,7
+
+    .. code-block:: bash
+
+            #project(Stratega LANGUAGES C CXX)
+
+            #Uncomment if building for Apple
+            project(Stratega LANGUAGES C CXX OBJCXX OBJC)
+            enable_language(OBJC)
+            enable_language(OBJCXX)
+
+#. In the same CMakeLists.txt change option BUILD_SHARED_LIBS (Line 38) to ON
+
+    .. code-block:: bash
+
+            # options
+            option(BUILD_SHARED_LIBS "Enable compilation of shared libraries" ON)
 
 #. Lets configure cmake by running the following code.
 
     .. code-block:: bash
 
-        cmake . -B out
+        cmake . -B out -DCMAKE_BUILD_TYPE=Release
 
 #. Finally change the directory to the output and build the project with
 
@@ -80,6 +99,21 @@ Mac OS
 
         cd out
         make
+
+#. After the generation you will need to copy all the dlls(dylib files in  mac) from the output folder /_deps/sfml-build/lib to  /usr/local/lib folder
+
+#. Copy the content of /_deps/sfml-build/include to /usr/local/include.
+
+#. Copy the framework files from your output folder/_deps/sfml-src/extlibs/libs-osx/Frameworks to /Library/Frameworks (need root access)
+
+#. Now you can execute the gui/arena 
+
+
+If you have a Mac with the new M1 arm architecture there is two steps that you will need to do additionaly before configure the cmake:
+
+#. Go to cmake/targets/settings/conan.cmake, open the file and uncomment line 18 (ARCH armv8)
+
+#. Go to the main CMakeLists.txt in the root folder and switch on the option SGA_BUILD_SFML_FROM_SOURCE (The new SFML 2.6.x version allows the M1 compilation).
 
 +++++
 Linux
