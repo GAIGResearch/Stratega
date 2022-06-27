@@ -50,6 +50,47 @@ Action
         OnComplete:
             - "Research(Source, Target)"
 
+    #Inbuilt effects Sample effect/ random effect and conditional effect
+    #Check predefined game TBS/Tests/KillTheKingActions.yaml for more information
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Position:
+                Type: Position
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    #- "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Position, Source.AttackRange)"
+        Effects:
+            SampleEffect: #Single effect with sampled entities
+                Targets:
+                    Targettwo:
+                        Type: Entity
+                        ValidTargets: All
+                        SamplingMethod:
+                            Type: Neighbours
+                            Options:
+                                Shape: AllPositions
+                        Conditions:
+                            - "InRange(Position, Targettwo, Source.AttackRange)"
+                Effects:
+                    #- "Attack(Targettwo.Health, Source.AttackDamage)"
+                    RandomEffect: #Set of effects associated to a probability
+                        0.1: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                        0.9: 
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+                    ConditionalEffect: #Set of effects associated to a conditions:
+                        Conditions:
+                            - "DifferentPlayer(Source, Targettwo)"
+                            #- "InRange(Position, Targettwo, Source.AttackRange)"
+                        Effects:
+                            - "Attack(Targettwo.Health, Source.AttackDamage)"
+
 
 :Properties:
 
@@ -115,3 +156,11 @@ Action
      - ``list``
      - 
      - List of effects executed if the Continuous action is aborted.
+
+
+Optionally there is a list of effects that can be used instead the ones defined in effects factory.
+
+- Sample effect: Sample effects with specific targets.
+- Random effect: Execute effects associated to a probability.
+- conditional effect: Execute effects associated to a condition.
+
