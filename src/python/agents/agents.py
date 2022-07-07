@@ -27,7 +27,7 @@ class RandomPythonAgent(stratega.Agent):
 
         print("run RandomAgent")
         actions=forward_model.generate_actions(state, self.get_player_id())
-        action=actions.__getitem__(random.randint(0, actions.count()-1))
+        action=actions.__getitem__(random.randint(0, actions.__len__()-1))
 
         action_assignment=stratega.ActionAssignment.from_single_action(action)
 
@@ -101,7 +101,7 @@ def run_arena():
     if not maps_path:
         #arena.run_games(player_count,seed, number_of_games,1)
         #run with python agents
-        arena.run_games(player_count, seed, number_of_games,1,[RandomPythonAgent(), OSLAPythonAgent()])
+        arena.run_games(player_count, seed, number_of_games,1,[RandomPythonAgent(), DoNothingPythonAgent()])
     else:
         config.level_definitions= stratega.load_levels_from_yaml(maps_path, config)
         map_number=len(config.level_definitions)
