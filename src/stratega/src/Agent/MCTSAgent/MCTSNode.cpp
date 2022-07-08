@@ -41,7 +41,7 @@ namespace SGA
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
 		while (!params.isBudgetOver()) {
-
+			//std::cout<<"before selection" <<std::endl;
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
 			if (last_selected != nullptr) {
 				if (last_selected == selected)
@@ -50,13 +50,20 @@ namespace SGA
 					n_repeat_selection = 0;
 			}
 			last_selected = selected;
+			//std::cout<<"before rollout" <<std::endl;
 			double delta = selected->rollOut(forwardModel, params, randomGenerator);
 
+			//std::cout<<"before backup" <<std::endl;
 			backUp(selected, delta);
 			params.currentIterations++;
 			if (n_repeat_selection >= 20) // repeated selection
+			{
+				//std::cout<<"repeated selection, ends searching" << std::endl;
 				return;
+			}
+			//std::cout<<"An iteration done" <<std::endl;
 		}
+		//std::cout<<"End search"<<std::endl;
 	}
 
 	/// <summary>
@@ -167,12 +174,16 @@ namespace SGA
 	//Executes the rollout phase of MCTS
 	double MCTSNode::rollOut(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
-		//... only if rollouts are enabled in the parameter settings.
 		if (params.rolloutsEnabled) {
 
 			//Create a copy and mark our depth on the tree.
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
+
+			// [BUGfixed] for FMCALLS budget: selected state is a terminal state that cost no budget
+			if (gsCopy.isGameOver() && params.budgetType == Budget::FMCALLS) {
+				params.currentFMCalls ++;
+			}
 
 			//If we must keep rolling.
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {

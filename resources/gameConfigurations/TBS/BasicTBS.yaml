@@ -7,11 +7,29 @@ GameConfig:
 Agents:
 #    - HumanAgent
     - MCTSAgent:
-        Budget: FMCALLS
-        FmCalls: 20000
+        Budget: ITERATIONS
+        Iterations: 500
         RolloutLength: 20
         ContPreviousSearch: false
-    - BasicTBSAgent
+#    - BasicTBSAgent
+    - RandomAgent
+
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  c1 .  .  .  M  .  .  .  .  .  M
+        M  .  .  .  .  .  M  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  g  .  .  F  W
+        M  .  .  .  .  .  .  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
+        M  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  .  .  .  .  M
+        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M
 
 GameRenderer:
     Resolution:
@@ -140,7 +158,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         LineOfSightRange: 3
         Actions: [Move, Attack]
-        # RequiredTechnology: Bronze Working # for simplify it a little bit
+        # RequiredTechnology: BronzeWorking # for simplify it a little bit
         Cost:
             Gold: 80
         Parameters:
@@ -189,7 +207,9 @@ Entities:
         LineOfSightRange: 6
         Actions: []
         Parameters:
-            Gold: 200
+            Gold: 80
+            PlayerAMined: [0,0,1000]
+            PlayerBMined: 0
 
 EntityGroups:
     Units: [Worker, Warrior, Archer, Catapult]
@@ -272,6 +292,7 @@ Actions:
                     - "ResourceGreaterEqual(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
+            - "RecordMinedGold(Source.Player, Target.PlayerAMined, Target.PlayerBMined, 40)"
 
     #Spawn
     Spawn:
@@ -290,7 +311,7 @@ Actions:
                     Type: Neighbours
                     Options:
                         Shape: Circle
-                        Size: 2
+                        Size: 1
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
@@ -356,7 +377,7 @@ TechnologyTrees:
             Cost:
                 Gold: 20
             Time: 5
-        Bronze Working:
+        BronzeWorking:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
@@ -381,29 +402,18 @@ TechnologyTrees:
                 Gold: 30
             Time: 5
             
-
-Board:
-    GenerationType: Manual
-    Layout: |-
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  .  .  F  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  .  .  .  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  g  .  .  .  .  .  .  M  .  .  .  .  .  .  c1 .  .  .  .  M  M  .  .  .  .  .  M  M  M
-        M  .  .  g  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
-        M  .  .  g  .  .  g  g  g  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
-        M  M  M  g  .  .  .  .  g  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
-        M  .  .  .  .  .  .  .  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
-        M  .  .  .  .  .  .  M  M  M  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
-        M  M  M  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
-        M  .  .  .  g  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  .  g  .  .  F  F  F  F  .  .  .  .  .  .  .  c0 .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  M  M  g  .  .  .  F  F  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  g  .  .  .  .  .  .  .  M
-        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
                    
 ForwardModel:
+    WinConditions:
+        TechnologyVictory:
+        - "IsResearched(Source, Archery)"
+        - "IsResearched(Source, BronzeWorking)"
+        - "IsResearched(Source, Metallurgy)"
+        - "IsResearched(Source, Engineering)"
+        ResourceVictory:
+        - "IsGoldExhausted(Source)"
+        - "IsMinedMore(Source)"
+
     LoseConditions: #If true: Player -> cant play
         HasNoCity:
         - "HasNoEntity(Source, City)"

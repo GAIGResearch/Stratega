@@ -405,6 +405,48 @@ namespace SGA
 		return isResearched(playerID, techID);
 	}
 
+	bool GameState::IsGoldExhausted() const {
+		// return true when all gold in the map has been collected
+		for (auto& entity : entities) {
+			auto& entityType = getGameInfo()->getEntityType(entity.getEntityTypeID());
+			if (entityType.getName() == "GoldVein") {
+				if (entity.getParameter("Gold")  != 0 ) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	bool GameState::isMinedMore(int playerID) const {
+		double playerMinedGold[2] = {0.0, 0.0};
+
+		for (auto& entity : entities) {
+			auto& entityType = getGameInfo()->getEntityType(entity.getEntityTypeID());
+			if (entityType.getName() == "GoldVein") {
+				playerMinedGold[0] += entity.getParameter("PlayerAMined");
+				playerMinedGold[1] += entity.getParameter("PlayerBMined");
+			}
+		}
+		
+		bool playerAWin = false;
+		if (playerMinedGold[0] == playerMinedGold[1]) {
+			return false;
+		}
+		else if (playerMinedGold[0] > playerMinedGold[1]){
+			playerAWin = true;
+		}
+		if (playerID == 0) {
+			return playerAWin;
+		}
+		else if (playerID == 1) {
+			return !playerAWin;
+		}
+		else {
+			std::cout<<"[ERROR]: parameter is neither 0 nor 1"<<std::endl;
+		}
+	}
+
 	void GameState::researchTechnology(int playerID, int technologyID)
 	{
 		//Get researched technologies of player

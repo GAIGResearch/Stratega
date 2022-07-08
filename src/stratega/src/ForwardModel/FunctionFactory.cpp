@@ -19,7 +19,7 @@ namespace SGA
 		factory.registerFunction<IsTile>("IsTileType");
 		factory.registerFunction<IsWalkable>("IsWalkable");
 		factory.registerFunction<IsPlayerEntity>("IsPlayerEntity");
-		factory.registerFunction<IsResearched>("HasResearched");
+		factory.registerFunction<IsResearched>("IsResearched");
 		factory.registerFunction<CanResearch>("CanResearch");
 		factory.registerFunction<CanSpawnCondition>("CanSpawn");
 		factory.registerFunction<CanAfford>("CanAfford");
@@ -29,6 +29,8 @@ namespace SGA
 		factory.registerFunction<IsTickMultipleOf>("IsTickMultipleOf");
 		factory.registerFunction<IsNeutral>("IsNeutral");
 		factory.registerFunction<IsNotNeutral>("IsNotNeutral");
+		factory.registerFunction<IsGoldExhausted>("IsGoldExhausted");
+		factory.registerFunction<IsMinedMore>("IsMinedMore");
 		
 		return factory;
 	}
@@ -56,6 +58,7 @@ namespace SGA
 		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
 		factory.registerFunction<Push>("Push");
 		factory.registerFunction<Empty>("Empty");
+		factory.registerFunction<RecordMinedGold>("RecordMinedGold");
 		
 		return factory;
 	}

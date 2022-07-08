@@ -484,4 +484,42 @@ namespace SGA
 			parameters[static_cast<size_t>(param.getIndex())] -= idCostPair.second;
 		}
 	}
+
+
+	RecordMinedGold::RecordMinedGold(const std::string exp, const std::vector<FunctionParameter>& parameters)
+		: Effect(exp), 
+		playerParam(parameters[0]), 
+		target0Param(parameters[1]),
+		target1Param(parameters[2]),
+		amountParam(parameters[3])
+	{
+	}
+
+	void RecordMinedGold::execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& Miner = playerParam.getPlayer(state, targets);
+		auto player0MinedValue = target0Param.getRawParameterValue(state, targets);
+		auto player1MinedValue = target1Param.getRawParameterValue(state, targets);
+		auto amount = amountParam.getConstant(state, targets);
+		auto& entity = target0Param.getEntity(state, targets);
+		
+		int playerID = Miner.getID();
+		//std::cout<<"RecordMined: " << playerID << " ; " << player0MinedValue + amount << " ; " << player1MinedValue+amount<< std::endl;
+		if (playerID == 0) {
+			player0MinedValue += amount;
+			int player0MinedIndex = target0Param.getParameter(state, targets).getIndex();
+		
+			fm.modifyEntityParameterByIndex(entity, player0MinedIndex, 
+											player0MinedValue);
+			 
+			//std::cout<< "PlayerAMined: " << entity.getParameter("PlayerAMined") << " ; " << entity.getMinParameterAt(player0MinedIndex)<< std::endl;
+		}
+		else {
+			player1MinedValue += amount;
+			int player1MinedIndex = target1Param.getParameter(state, targets).getIndex();
+
+			fm.modifyEntityParameterByIndex(entity, player1MinedIndex, 
+											player1MinedValue);
+		}
+	}
 }

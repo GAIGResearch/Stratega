@@ -216,4 +216,22 @@ namespace SGA
 		CanAfford(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class IsGoldExhausted : public Condition
+	{
+		FunctionParameter playerParam;
+
+	public:
+		IsGoldExhausted(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
+
+	class IsMinedMore : public Condition
+	{
+		FunctionParameter playerParam;
+		
+	public:
+		IsMinedMore(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		bool isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const override;
+	};
 }

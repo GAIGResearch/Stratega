@@ -1,6 +1,7 @@
 #include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/BasicTBSHeuristic.h>
+#include <Stratega/Agent/Heuristic/BasicTBSResourceHeuristic.h>
 
 namespace SGA
 {
@@ -14,7 +15,9 @@ namespace SGA
                 parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
         */
 		//parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
-		parameters_.heuristic = std::make_unique<BasicTBSHeuristic>(parameters_.PLAYER_ID, initialState);
+		//parameters_.heuristic = std::make_unique<BasicTBSHeuristic>(parameters_.PLAYER_ID, initialState);
+		
+		parameters_.heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
@@ -23,6 +26,7 @@ namespace SGA
 
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
+		//std::cout<<"Start MCTS" << std::endl;
         //Initialize the budget for this action call.
         parameters_.resetCounters(timer);
         //parameters_.printDetails();
@@ -30,14 +34,22 @@ namespace SGA
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
-
+		//std::cout <<"MCTS Agent starts" << std::endl;
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
         // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-        if (actionSpace.size() == 1 || !parameters_.continuePreviousSearch)
+		if (actionSpace.size() == 1)
         {
+			//std::cout<<"1" <<std::endl;
             rootNode = nullptr;
             previousActionIndex = -1;
+			//std::cout<<"Action space size: " << actionSpace.size() <<"  " << std::endl;
+			
+			if (actionSpace.at(0).getActionFlag() == ActionFlag::EndTickAction) {
+				std::cout<<"Turn Number: "<< parameters_.step << std::endl;
+				parameters_.step++;
+			}
+			//std::cout<<"ends pint 1 MCTS" <<std::endl;
             return ActionAssignment::fromSingleAction(actionSpace.at(0));
         }
         else
@@ -46,9 +58,8 @@ namespace SGA
             if (parameters_.continuePreviousSearch && previousActionIndex != -1
                 && rootNode->children.size() > 0)
             {
-                // in case of deterministic games we know which move has been done by us
-                // reuse the tree from the previous iteration
-
+				//std::cout<<"2" <<std::endl;
+                // in deterministic games we reuse the tree by root on one level 1 node
                 rootNode = std::move(rootNode->children.at(static_cast<size_t>(previousActionIndex)));
                 rootNode->parentNode = nullptr;	// release parent
                 rootNode->setDepth(0);
@@ -57,10 +68,13 @@ namespace SGA
             {
                 // start a new tree
                 rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state, getPlayerID());
+
             }
 
-            //Do search!
+
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+
+			//std::cout<<"done search" <<std::endl;
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestActionIndex));
@@ -68,8 +82,12 @@ namespace SGA
             // return best action
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             if (bestAction.getActionFlag() == ActionFlag::EndTickAction) {
+				std::cout<<"Turn Number: "<< parameters_.step << std::endl;
+				state.printBoard();
                 parameters_.step++;
             }
+
+			//rootNode->printTree();
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }

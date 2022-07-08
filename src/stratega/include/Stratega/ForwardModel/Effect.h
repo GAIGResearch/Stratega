@@ -219,4 +219,19 @@ namespace SGA
 		PayCostEffect(const std::string exp, const std::vector<FunctionParameter>& parameters);
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
+
+	class RecordMinedGold : public Effect
+	{
+		/*Use it only for GoldVein with specific parameters
+		* record how much gold the player1/player2 has mined from this GoldVein
+		*/
+		FunctionParameter playerParam;
+		FunctionParameter target0Param;
+		FunctionParameter target1Param;
+		FunctionParameter amountParam;
+
+	public:
+		RecordMinedGold(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
 }

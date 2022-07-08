@@ -390,5 +390,30 @@ namespace  SGA
 		return true;
 	}
 
+	IsGoldExhausted::IsGoldExhausted(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		playerParam(parameters[0]) // this parameter is redundant
+	{
+	}
+
+	bool IsGoldExhausted::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		//const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		return state.IsGoldExhausted();
+	}
+
+	IsMinedMore::IsMinedMore(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Condition(exp),
+		playerParam(parameters[0])
+	{
+	}
+
+	bool IsMinedMore::isFullfiled(const GameState& state, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& targetPlayer = playerParam.getPlayer(state, targets);
+		
+		return state.isMinedMore(targetPlayer.getID());
+	}
+
 
 }

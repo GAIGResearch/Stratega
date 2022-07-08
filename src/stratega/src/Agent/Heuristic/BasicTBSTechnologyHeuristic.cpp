@@ -1,10 +1,10 @@
-#include <Stratega/Agent/Heuristic/BasicTBSHeuristic.h>
+#include <Stratega/Agent/Heuristic/BasicTBSTechnologyHeuristic.h>
 
 
 namespace SGA {
 
-	BasicTBSHeuristic::BasicTBSHeuristic(int playerID, GameState initialState) {
-		//std::cout<< "Initialize BasicTBSHeuristic" << std::endl;
+	BasicTBSTechnologyHeuristic::BasicTBSTechnologyHeuristic(int playerID, GameState initialState) {
+		//std::cout<< "Initialize BasicTBSTechnologyHeuristic" << std::endl;
 		initialized = true;
 
 		for(const auto& entity : initialState.getEntities()) {
@@ -31,11 +31,12 @@ namespace SGA {
                }
             }
         }
+		//initialState.isResearched(playerID, "");
 		//std::cout<< "Ends Initialize BasicTBSHeuristic" << std::endl;
 		return;
 	}
 
-	void BasicTBSHeuristic::updateStateInfo(GameState& state, const int playerID) {
+	void BasicTBSTechnologyHeuristic::updateStateInfo(GameState& state, const int playerID) {
 		//std::cout<< "Enter updateStateInfo" << std::endl;
 		isResearchedMining = state.isResearched(playerID, "Mining");
 		isResearchedDicipline = state.isResearched(playerID, "Discipline");
@@ -59,8 +60,11 @@ namespace SGA {
 		//std::cout<< "Ends updateStateInfo" << std::endl;
 		return;
 	}
-
-	double BasicTBSHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID) {
+	/*
+	* 1) Check the status of technology, reward for each new technology
+	* 2) Defend player's base.
+	*/
+	double BasicTBSTechnologyHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID) {
 		//std::cout<< "Starts evaluateGameState" << std::endl;
 		if (!initialized) {
 			std::cout<<"[ERROR]: Class Heuristic is not initialized!" << std::endl;
@@ -99,15 +103,15 @@ namespace SGA {
 	}
 
 
-	double BasicTBSHeuristic::getProduction(GameState state){
+	double BasicTBSTechnologyHeuristic::getProduction(GameState state){
 		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Prod");
 	}
 
-	double BasicTBSHeuristic::getGold(GameState state){
+	double BasicTBSTechnologyHeuristic::getGold(GameState state){
 		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Gold");
 	}
 
-	double BasicTBSHeuristic::getEntityHealth(GameState state, Vector2f position) {
+	double BasicTBSTechnologyHeuristic::getEntityHealth(GameState state, Vector2f position) {
 		auto target_entity = state.getEntityAt(position);
 		double paramsValue = target_entity->getParameter("Health");
 		if (paramsValue >= 0.0) {

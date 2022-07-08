@@ -14,6 +14,8 @@ set(STRATEGA_SOURCE_FILES
         Agent/Heuristic/MinimizeDistanceHeuristic.cpp
         Agent/Heuristic/AimToKingHeuristic.cpp
 		Agent/Heuristic/BasicTBSHeuristic.cpp
+		Agent/Heuristic/BasicTBSResourceHeuristic.cpp
+		Agent/Heuristic/BasicTBSTechnologyHeuristic.cpp
         Agent/UnitMCTSAgent/Transition.cpp
         Agent/UnitMCTSAgent/UnitMCTSAgent.cpp
         Agent/UnitMCTSAgent/UnitMCTSNode.cpp

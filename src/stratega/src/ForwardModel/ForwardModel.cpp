@@ -1,4 +1,6 @@
 #include <Stratega/ForwardModel/ForwardModel.h>
+#include <Stratega/Logging/Log.h>
+
 #pragma warning(disable: 5045)
 namespace SGA
 {
@@ -42,7 +44,10 @@ namespace SGA
 			for (auto& loseCondition : loseConditionType)
 			{
 				if (loseCondition->isFullfiled(state, targets))
+				{
+					SGA::logValue("WinType", loseCondition->expr());
 					return true;
+				}
 			}
 		}
 
@@ -68,6 +73,7 @@ namespace SGA
 			{
 				if (!winCondition->isFullfiled(state, targets))
 				{
+					SGA::logValue("WinType", winCondition->expr());
 					playerWon = false;
 					break;
 				}

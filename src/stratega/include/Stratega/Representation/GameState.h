@@ -91,6 +91,9 @@ namespace SGA
 		/// Initializes the research technologies to all players, to none.
 		/// </summary>
 		void initResearchTechs();
+
+		bool IsGoldExhausted() const;
+		bool isMinedMore(int playerID) const;
 		
 		/***** BOARD FUNCTIONS *****/
 
