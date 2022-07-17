@@ -118,7 +118,6 @@ namespace SGA
 	{
 		std::vector<Action> bucket;
 
-		//std::cout << "generating Unit Action" << std::endl;
 		auto& sourceEntity = e;
 
 		//Generate entities actions
@@ -127,7 +126,7 @@ namespace SGA
 			auto& actionType = gameState.getGameInfo()->getActionType(actionInfo.actionTypeID);
 
 			bool generateContinuousAction = true;
-			//Check if action is continuos
+			//Check if action is continuous
 			if (actionType.isContinuous())
 			{
 				//Check if entity is already executing it

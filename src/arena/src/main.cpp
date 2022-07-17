@@ -6,15 +6,16 @@
 int main(int argc, char** argv)
 {
 	InputParser parser(argc, argv);
-	auto seed = parser.getCmdOption<unsigned int>("-seed", 13837);
+	auto seed = parser.getCmdOption<unsigned int>("-seed", 4692271);
 	auto numberOfGames = parser.getCmdOption<unsigned int>("-gamesNumber", 1);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
-    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS.yaml");
+    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS.yaml");
+	auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
 	//Optional
-	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/BasicTBSMaps.yaml");
-	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
+	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/BasicTBSMaps.yaml");
+	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
 
 	if(configPath.empty())
 	{

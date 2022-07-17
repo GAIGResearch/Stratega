@@ -65,7 +65,7 @@ namespace SGA {
           // helper functions
           static double normalize(double aValue, double aMin, double aMax);
           static double noise(double input, double epsilon, double random);
-          int applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, UnitMCTSParameters& params) const;
+          int applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, UnitMCTSParameters& params, boost::mt19937& randomGenerator) const;
           void setDepth(int depth);
 
           void eliminateAbstraction();

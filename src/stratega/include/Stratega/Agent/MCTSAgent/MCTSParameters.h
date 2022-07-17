@@ -48,7 +48,7 @@ namespace YAML
             rhs.K = node["K"].as<double>(rhs.K);
             rhs.rolloutLength= node["RolloutLength"].as<int>(rhs.rolloutLength);
             rhs.rolloutsEnabled = node["EnableRollouts"].as<bool>(rhs.rolloutsEnabled);
-            rhs.continuePreviousSearch = node["ContPreviousSearch"].as<bool>(rhs.continuePreviousSearch);
+            rhs.continuePreviousSearch = node["ContinuePreviousSearch"].as<bool>(rhs.continuePreviousSearch);
             return true;
         }
     };

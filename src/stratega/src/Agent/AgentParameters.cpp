@@ -52,9 +52,10 @@ namespace SGA {
 
 	void AgentParameters::decode(const YAML::Node& node)
 	{
-		maxFMCalls = node["FmCalls"].as<int>(maxFMCalls);
-		maxIterations = node["Iterations"].as<int>(maxIterations);
-		percTimeBudget = node["PercTime"].as<double>(percTimeBudget);
+		maxFMCalls             = node["MaxFmCalls"].as<int>(maxFMCalls);
+		maxIterations          = node["Iterations"].as<int>(maxIterations);
+		percTimeBudget         = node["PercTime"].as<double>(percTimeBudget);
+
 		if (node["Budget"].as<std::string>("") == "TIME")
 			budgetType = SGA::Budget::TIME;
 		else if (node["Budget"].as<std::string>("") == "FMCALLS")

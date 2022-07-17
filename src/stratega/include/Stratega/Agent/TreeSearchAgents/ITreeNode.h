@@ -94,7 +94,7 @@ namespace SGA
 
 					// print the value of the node
 					node->print();
-					std::cout << actionName << std::endl;
+					std::cout << actionName;// << std::endl;
 
 					// enter the next tree level - left and right branch
 					for (size_t i = 0; i < node->children.size(); ++i)
@@ -105,6 +105,7 @@ namespace SGA
 				}
 				else
 				{
+					//std::cout<<"Children Empty!" << std::endl;
 					std::cout << prefix;
 
 					if (isLast)
@@ -112,7 +113,9 @@ namespace SGA
 					else
 						std::cout << "|-- ";
 
-					std::cout << node->children.size() << "; " << actionName << std::endl;
+					node->print();
+					//std::cout << node->children.size() << "; " << actionName << std::endl;
+					std::cout << actionName;// << std::endl;
 				}
 			}
 		}

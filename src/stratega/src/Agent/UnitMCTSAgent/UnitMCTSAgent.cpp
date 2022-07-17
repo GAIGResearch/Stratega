@@ -7,6 +7,7 @@ namespace SGA {
     void UnitMCTSAgent::init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/)
     {
         parameters_.PLAYER_ID = getPlayerID();
+		parameters_.OPPONENT_ID = 1- parameters_.PLAYER_ID;
         //if (parameters_.heuristic == nullptr)
         //    parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
 
@@ -14,6 +15,7 @@ namespace SGA {
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
         parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
+		parameters_.printDetails();
     }
 
     ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
@@ -24,16 +26,17 @@ namespace SGA {
        parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
        auto units = state.getPlayerEntities(getPlayerID()); 
 
-       /* initialize the order of unit moving, call at the first step store the entities*/
+       // initialize the order of unit moving
        if(unitIndexInitialized == false) {
           for(auto unit : units) {
              unitIndex.push_back(unit.getID());
-             // state.printEntityInfo(unit->id);
+             // state.printEntityInfo(unit.getID());
           }
           unitIndexInitialized = true;
        }
 
-       std::map< int, int > eIDtoUnitArrayIndex = {};  // each step, the unit array's index would change because the unit dies
+	   // each step, the unit array's index would change because the unit dies
+       std::map< int, int > eIDtoUnitArrayIndex = {};  
 
        int tmp_counter1 = 0;
        for(auto u : units) {
@@ -56,11 +59,20 @@ namespace SGA {
           auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
           auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
 
+		  //std::cout<<"cc\n";
+		  //for (auto a : actionSpace_tmp) {
+		  //  state.printActionInfo(a);
+		  //}
+		  //std::cout<<"ccd\n";
+
+
           if(actionSpace_tmp.size() == 0) {
              needNextUnit = true;
           } else {
           }
        }
+
+	   //std::cout << "Do we need the next unit? " << needNextUnit << std::endl;
 
        // if need to roll, decide which is the next.
        if(needNextUnit) {
@@ -77,21 +89,18 @@ namespace SGA {
 
              step++;  // for debugging
 
-             // std::cout << "[UnitMCTS]: execute EndAction because all units moved" << std::endl;
              Action endAction = Action::createEndAction(getPlayerID());
              unitThisStep = 0;
              unitNextStep = 1;
              newRound = true;
 
              // state.printBoard();
+			 // std::cout<<"execute EndTurn if there is no valid next unit."<<std::endl;
              return ActionAssignment::fromSingleAction(endAction);
           }
 
           unitThisStep = tmp_unitNextStep;
        }
-
-       // std::cout << "[UnitMCTS]: unitIndex this step " << unitIndex[unitThisStep] << std::endl;
-       // //std::cout << "*** 0" << std::endl;
 
        parameters_.REMAINING_FM_CALLS = parameters_.maxFMCalls;
 
@@ -109,14 +118,9 @@ namespace SGA {
        // generate actions and update unitThisStep
        // const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
        std::vector< Action > actionSpace = forwardModel.generateUnitActions(
-          state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), true);
-
-       // std::cout << "[DEBUG13]: actionSpace size " << actionSpace.size() << std::endl;
-
-       parameters_.PLAYER_ID = getPlayerID();  // used for MCTSNode.
-
-       // if there is just one action and we don't spent the time on continuing our search
-       // we just instantly return it
+          state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
+       
+       // return the only action
        // todo update condition to an and in case we can compare gameStates, since we currently cannot
        // reuse the tree after an endTurnAction
        if(actionSpace.size() == 1) {
@@ -152,7 +156,7 @@ namespace SGA {
              rootNode = std::make_unique< UnitMCTSNode >(
                 *processedForwardModel, state, unitIndex, unitThisStep, getPlayerID(), 0);
 
-          }  // params.printDetails();  //std::cout << "*** 3" << std::endl;
+          }
 
           // [Homomorphism] do batches
           int tmp_batch_used = 0;
@@ -166,10 +170,6 @@ namespace SGA {
                 &absNodeToStatistics);
           }
 
-          // if (parameters_.DO_STATE_ABSTRACTION) {
-          //    std::cout << "parameters_.REMAINING_FM_CALLS: "<<  parameters_.REMAINING_FM_CALLS <<
-          //    std::endl;
-          //}
 
           int n_abs_iteration = 0;
           bool stop_abstraction = false;
@@ -186,7 +186,7 @@ namespace SGA {
                 &depthToNodes,
                 &absNodeToStatistics);
 
-             if(! stop_abstraction && tmp_batch_used % 2 == 0) {
+             if(false && ! stop_abstraction && tmp_batch_used % 2 == 0) {
                 deleteAbstraction();  // initialize the array empty again,
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
              }
@@ -268,13 +268,8 @@ namespace SGA {
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
              }
           }
-          // if (parameters_.DO_STATE_ABSTRACTION) {
-          //    std::cout << "[DEBUG 276]: " << tmp_batch_used << "  " << parameters_.REMAINING_FM_CALLS
-          //    << std::endl;
-          //}
 
-          auto bestActionIndex = rootNode->mostVisitedAction(
-             parameters_, getRNGEngine());  // get and store best action
+          auto bestActionIndex = rootNode->mostVisitedAction( parameters_, getRNGEngine() );  // get and store best action
 
           /*if (bestActionIndex == actionSpace.size()-1) { // this action is an endTurn, reinitialize
               //unitThisStep = 0;
@@ -283,12 +278,19 @@ namespace SGA {
 
           auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 
+		  /*
+		  for (auto a : rootNode->getActionSpace(forwardModel, getPlayerID())) {
+		    state.printActionInfo(a);
+		  }
+		  state.printActionInfo(bestAction);
+		  //*/
+
           // calculate the branching factor
           std::vector< int > branching_number = {};
           int n_node = 0;
           double mean_braching_factor = 0.0;
 
-          ///*
+          /*
           rootNode->get_branching_number(&branching_number, &n_node);
 
           if(branching_number.size() != 0) {
@@ -296,7 +298,7 @@ namespace SGA {
                                        branching_number.begin(), branching_number.end(), 0.0)
                                     / branching_number.size();
           }
-          //*/
+          */
 
           if(false && step % 20 == 0) {
              if(parameters_.DO_STATE_ABSTRACTION)
@@ -323,7 +325,10 @@ namespace SGA {
           // state.printActionInfo(bestAction);
           // std::cout << unitActionHash(bestAction) << std::endl;
           // std::cout << " End printActionInfo " << std::endl;
-          // rootNode->printTree();
+		  //state.printBoard();
+          //rootNode->printTree();
+		  //double score  = parameters_.heuristic->evaluateGameState(forwardModel, state,parameters_.PLAYER_ID );
+		  //std::cout<<score << "\n";
 
           /*for (int i = 0; i < 10; i++) { // depth
 
@@ -349,11 +354,13 @@ namespace SGA {
           */
 
           if(bestAction.getActionFlag() == ActionFlag::EndTickAction) {
-             // std::cout << "----> ends round ----->" << std::endl;
-             // state.printBoard();
              newRound = true;
           }
-          stepInit();  // reinitialize homomorphism
+
+		  if (parameters_.DO_STATE_ABSTRACTION) {
+			  stepInit();  // reinitialize homomorphism
+		  }
+		  //system("pause");
           return ActionAssignment::fromSingleAction(bestAction);
        }
     }

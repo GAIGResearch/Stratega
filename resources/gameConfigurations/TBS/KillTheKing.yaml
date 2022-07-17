@@ -7,24 +7,30 @@ GameConfig:
 Agents:
     #- HumanAgent
     #- OSLAAgent
-    #- UnitMCTSAgent:
-    #    DO_STATE_ABSTRACTION: true
-    #    Budget: FMCALLS
-    #    fmCalls: 20000
-    #    RolloutLength: 20
-    #    CONTINUE_PREVIOUS_SEARCH: false
-    #    ABS_BATCH: 16
-    #- UnitMCTSAgent:
-    #    Budget: FMCALLS
-    #    fmCalls: 20000
-    #    RolloutLength: 20
-    #    CONTINUE_PREVIOUS_SEARCH: false
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: true
+        MaxFmCalls: 20000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        AbstractionBatch: 12
+        K: 0.1
+    - UnitMCTSAgent:
+        DoStateAbstraction: false
+        Budget: FMCALLS
+        MaxFmCalls: 20000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        K: 0.1
     #- MCTSAgent:
     #    Budget: FMCALLS
-    #    FmCalls: 20000
+    #    MaxFmCalls: 20000
     #    RolloutLength: 20
-    - KTKCombatAgent
-    - MinimaxAgent
+    #    ContinuePreviousSearch: false
+    #    K: 0.1
+    #- KTKCombatAgent
+    #- MinimaxAgent
+    #- DoNothingAgent
 
 GameRenderer:
     Resolution:
@@ -203,7 +209,7 @@ GameDescription:
         Move: [Move]
         Heal: [Heal]
         Attack: [Attack]
-        Empty: [Empty]
+#        Empty: [Empty]
     Entities:
         Unit: [King, Warrior, Archer, Healer]
         Fighter: [Warrior, Archer]

@@ -50,7 +50,6 @@ namespace SGA
 		//Check game is finished
 		state.setGameOver(checkGameIsFinished(state));
 
-
 	}
 
 	std::vector<Action> TBSForwardModel::generateActions(const GameState& state) const
