@@ -10,7 +10,7 @@ Agents:
         Budget: ITERATIONS
         Iterations: 700
         RolloutLength: 10
-        ContPreviousSearch: false
+        ContinuePreviousSearch: false
 #    - BasicTBSAgent
 #    - RandomAgent
     - DoNothingAgent

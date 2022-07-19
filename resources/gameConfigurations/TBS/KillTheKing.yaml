@@ -8,23 +8,27 @@ Agents:
     #- HumanAgent
     #- OSLAAgent
     #- UnitMCTSAgent:
-    #    DO_STATE_ABSTRACTION: true
     #    Budget: FMCALLS
-    #    fmCalls: 20000
-    #    RolloutLength: 20
-    #    CONTINUE_PREVIOUS_SEARCH: false
-    #    ABS_BATCH: 16
-    #- UnitMCTSAgent:
-    #    Budget: FMCALLS
-    #    fmCalls: 20000
-    #    RolloutLength: 20
-    #    CONTINUE_PREVIOUS_SEARCH: false
+    #    DoStateAbstraction: true
+    #    MaxFmCalls: 20000
+    #    RolloutLength: 40
+    #    ContinuePreviousSearch: false
+    #    AbstractionBatch: 12
+    #    K: 0.1
+    - UnitMCTSAgent:
+        DoStateAbstraction: false
+        Budget: FMCALLS
+        MaxFmCalls: 20000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        K: 0.1
     #- MCTSAgent:
     #    Budget: FMCALLS
-    #    FmCalls: 20000
+    #    MaxFmCalls: 20000
     #    RolloutLength: 20
     - KTKCombatAgent
-    - MinimaxAgent
+    # - MinimaxAgent
+    # - DoNothingAgent
 
 GameRenderer:
     Resolution:

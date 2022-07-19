@@ -21,7 +21,6 @@ namespace SGA
 	/// </summary>to
 	void MCTSNode::initializeNode()
 	{
-		// initialize node statistics
 		if (parentNode) {
 			nodeDepth = parentNode->nodeDepth + 1;
 			increaseTreeSize();

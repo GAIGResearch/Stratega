@@ -39,6 +39,6 @@ namespace SGA
 
 	void TreeNode::print() const
 	{	
-		std::cout << children.size();
+		std::cout << "[Children Size]: " << children.size();
 	}
 }

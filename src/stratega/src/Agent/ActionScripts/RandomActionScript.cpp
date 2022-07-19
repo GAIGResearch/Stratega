@@ -5,10 +5,13 @@ namespace SGA
 {
 	Action RandomActionScript::getAction(const GameState& /*gameState*/, std::vector<Action>& actionSpace, int playerID) const
 	{
-		if(actionSpace.size() > 0)
+		/*
+        if (actionSpace.size() > 0)
 			return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 		else 
 			return Action::createEndAction(playerID);	
+        */
+        return actionSpace[static_cast<size_t>(rand() % static_cast<int>(actionSpace.size()))];
 	}
 	
 	Action RandomActionScript::getActionForUnit(const GameState& /*gameState*/, std::vector<Action>& actionSpace, int playerID, int /*unitID*/) const

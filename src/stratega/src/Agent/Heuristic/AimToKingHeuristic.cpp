@@ -35,7 +35,8 @@ namespace SGA {
         for(const auto& entity : gameState.getEntities()) {
             positions.emplace(
                 entity.getID(), entity.getPosition());  // entity.id, entity.position);
-            if(entity.getOwnerID()!= gameState.getCurrentTBSPlayer())  // if (entity.ownerID != gameState.currentPlayer)
+            //if(entity.getOwnerID()!= gameState.getCurrentTBSPlayer())  // if (entity.ownerID != gameState.currentPlayer)
+            if(entity.getOwnerID()!= playerID)
             {
                 opponentEntites.insert(entity.getID());
 
