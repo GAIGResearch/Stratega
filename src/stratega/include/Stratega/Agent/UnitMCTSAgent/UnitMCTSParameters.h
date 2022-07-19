@@ -36,6 +36,9 @@ namespace SGA {
         int n_batch_stop = 2;
         int absBatch = 10000;
 
+		// random node clusterring
+		bool random_abstraction = false;
+
         // for state abstraction according to the value;
         std::vector< double > approx_Q = {};
         std::vector< int > depth_list = {};
@@ -67,6 +70,12 @@ namespace YAML {
             rhs.CONTINUE_PREVIOUS_SEARCH     = node["ContinuePreviousSearch"].as< bool >(
                 rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
+			rhs.batch_size                   = node["BatchSize"].as< int >(rhs.batch_size);
+			rhs.random_abstraction           = node["RandomAbstraction"].as< bool >(rhs.random_abstraction);
+
+			if (rhs.random_abstraction && (!rhs.DO_STATE_ABSTRACTION)) {
+				std::cout<<"[Warning]: RandomAbstraction is set to true. However, DoStateAbstraction is set to false!"<<"\n";
+			}
             return true;
         }
     };

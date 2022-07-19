@@ -15,5 +15,7 @@ void UnitMCTSParameters::printDetails() const
    std::cout << "\tEPSILON = "              << EPSILON << "\n";
    std::cout << "\tCONTINUE_PREVIOUSE_SEARCH = " << CONTINUE_PREVIOUS_SEARCH << "\n";
    std::cout << "\tDO_STATE_ABSTRACTION = " << DO_STATE_ABSTRACTION << "\n";
+   std::cout << "\tBATCH_SIZE = "           << batch_size <<"\n";
+   std::cout << "\tRANDOM_ABSTRACTION = "   << random_abstraction <<"\n";
 }
 }  // namespace SGA
