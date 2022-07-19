@@ -319,6 +319,8 @@ namespace SGA
 		/// </summary>
 		void printActionInfo(const Action& action) const;
 
+		std::string getActionInfo(const Action& action) const;
+
 		/// <summary>
 		/// Increments the ID for the next continuous action.
 		/// </summary>

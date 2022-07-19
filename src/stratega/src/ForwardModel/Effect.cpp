@@ -501,25 +501,26 @@ namespace SGA
 		auto player0MinedValue = target0Param.getRawParameterValue(state, targets);
 		auto player1MinedValue = target1Param.getRawParameterValue(state, targets);
 		auto amount = amountParam.getConstant(state, targets);
-		auto& entity = target0Param.getEntity(state, targets);
+		auto& entity1 = target0Param.getEntity(state, targets);
+		auto& entity2 = target1Param.getEntity(state, targets);
 		
 		int playerID = Miner.getID();
-		//std::cout<<"RecordMined: " << playerID << " ; " << player0MinedValue + amount << " ; " << player1MinedValue+amount<< std::endl;
+		
 		if (playerID == 0) {
 			player0MinedValue += amount;
 			int player0MinedIndex = target0Param.getParameter(state, targets).getIndex();
 		
-			fm.modifyEntityParameterByIndex(entity, player0MinedIndex, 
+			fm.modifyEntityParameterByIndex(entity1, player0MinedIndex, 
 											player0MinedValue);
-			 
-			//std::cout<< "PlayerAMined: " << entity.getParameter("PlayerAMined") << " ; " << entity.getMinParameterAt(player0MinedIndex)<< std::endl;
+			//std::cout<< "PlayerAMined: " << entity1.getParameter("PlayerAMined") << " ; " << entity1.getMinParameterAt(player0MinedIndex)<< std::endl;
 		}
 		else {
 			player1MinedValue += amount;
 			int player1MinedIndex = target1Param.getParameter(state, targets).getIndex();
 
-			fm.modifyEntityParameterByIndex(entity, player1MinedIndex, 
+			fm.modifyEntityParameterByIndex(entity2, player1MinedIndex, 
 											player1MinedValue);
+			//std::cout<< "PlayerBMined: " << entity2.getParameter("PlayerBMined") << " ; " << entity2.getMinParameterAt(player1MinedIndex)<< std::endl;
 		}
 	}
 }

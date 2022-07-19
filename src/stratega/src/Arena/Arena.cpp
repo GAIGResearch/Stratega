@@ -91,7 +91,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngE
 
 		//Check if agent is Human
 		if (!agents[i])
-			throw std::runtime_error("Human agents cant play Arena");
+			throw std::runtime_error("Agent Name Incorrect/ Human agents cant play Arena");
 
 		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
@@ -142,7 +142,7 @@ void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngE
 
 		//Check if agent is Human
 		if (!agents[i])
-			throw std::runtime_error("Human agents cant play Arena");
+			throw std::runtime_error("Agent Name Incorrect/ Human agents cant play Arena");
 
 		std::cout << "Player " << i << " is controlled by " << agents[i]->getName() << std::endl;
 
@@ -199,10 +199,15 @@ void Arena::onGameStateAdvanced(const SGA::GameState& state, const SGA::ForwardM
 	}
 }
 
-void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& /*forwardModel*/)
+void Arena::onGameFinished(const SGA::GameState& finalState, const SGA::ForwardModel& forwardModel)
 {
 	if (finalState.getGameType() == SGA::GameType::TBS)
 	{
+		if (finalState.getWinnerID() != -1) {
+			forwardModel.checkPlayerWonLog(finalState, finalState.getWinnerID());
+			//SGA::logValue("WinCondition", winCon);
+			forwardModel.checkPlayerLostLog(finalState, finalState.getWinnerID());
+		}
 		SGA::logSingleValue("WinnerID", finalState.getWinnerID());
 		SGA::logSingleValue("Turns", finalState.getCurrentTick() + 1);
 	}

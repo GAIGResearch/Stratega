@@ -5,15 +5,23 @@ namespace SGA
 {
 	ActionAssignment RandomAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
+		//std::cout<<"start random Agent" << std::endl;
 		// Generate all available actions
 		auto actions = forwardModel.generateActions(state, getPlayerID());
 		// Uniformly sample a action
-
+		
+		/*for (auto a : actions) {
+			state.printActionInfo(a);
+		}
+		std::cout<<"End action space"<<std::endl;
+		*/
 		boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
 		auto actionIndex = actionDist(getRNGEngine());
 		auto action = actions.at(actionIndex);
-		// std::cout << "	RandomActionIndex to execute: " << actionIndex<<" From: "<< actions.size() << std::endl;
+		//std::cout<<"chosen action: ";
+		state.printActionInfo(action);
 		// Return Action
+
 		return ActionAssignment::fromSingleAction(action);
 	}
 }

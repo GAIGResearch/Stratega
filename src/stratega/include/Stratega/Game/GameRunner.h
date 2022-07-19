@@ -90,6 +90,7 @@ namespace SGA
 				initializeAgents(agents);
 				observer->onGameStarted(*currentState, *forwardModel);
 				runInternal(agents, *observer);
+	
 				observer->onGameFinished(*currentState, *forwardModel);
 			}
 			catch (const std::exception& ex)

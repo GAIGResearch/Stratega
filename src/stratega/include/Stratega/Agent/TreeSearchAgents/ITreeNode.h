@@ -94,13 +94,18 @@ namespace SGA
 
 					// print the value of the node
 					node->print();
-					std::cout << actionName << std::endl;
+					std::cout << " " << actionName << std::endl;
 
 					// enter the next tree level - left and right branch
 					for (size_t i = 0; i < node->children.size(); ++i)
 					{
-						printTree(prefix + (isLast ? "   " : "|  "), node->children[i].get(), i == (node->children.size() - 1),
-							"");
+
+						const std::string action_str = node->gameState.getActionInfo(node->actionSpace.at(i));
+
+						printTree(prefix + (isLast ? "   " : "|  "), 
+									node->children[i].get(), 
+									i == (node->children.size() - 1),
+									action_str);
 					}
 				}
 				else

@@ -5,15 +5,14 @@ GameConfig:
     FogOfWar: false
 
 Agents:
-#    - HumanAgent
-    - MCTSAgent:
-        Budget: ITERATIONS
-        Iterations: 700
-        RolloutLength: 10
-        ContPreviousSearch: false
+    - HumanAgent
+#    - MCTSAgent:
+#        Budget: ITERATIONS
+#        Iterations: 3000
+#        RolloutLength: 4
+#        ContPreviousSearch: false
 #    - BasicTBSAgent
-#    - RandomAgent
-    - DoNothingAgent
+    - RandomAgent
 
 Board:
     GenerationType: Manual
@@ -23,9 +22,9 @@ Board:
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
+        M  .  .  .  .  .  .  .  g  .  .  F  W
         M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  F  F  F  .  .  .  .  .  .  .  M
         M  .  c0 F  F  .  .  .  .  .  .  .  M
@@ -210,7 +209,7 @@ Entities:
         Parameters:
             Gold: 80
             PlayerAMined: [0,0,1000]
-            PlayerBMined: [0,0,1000]
+            PlayerBMined: 0
 
 EntityGroups:
     Units: [Worker, Warrior, Archer, Catapult]

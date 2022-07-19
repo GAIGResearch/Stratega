@@ -115,6 +115,8 @@ namespace SGA
 		/// <returns>True of the player lost.</returns>
 		bool checkPlayerLost(const GameState& state, int playerID) const;
 
+		void checkPlayerLostLog(const GameState& state, int playerID) const;
+
 		/// <summary>
 		/// Returns if a player won the game by attending to the winning conditions defined in the rules.
 		/// </summary>
@@ -122,6 +124,8 @@ namespace SGA
 		/// <param name="playerID">ID of the player to be checked.</param>
 		/// <returns>True if the player won</returns>
 		bool checkPlayerWon(const GameState& state, int playerID) const;
+
+		void checkPlayerWonLog(const GameState& state, int playerID) const;
 
 		/// <summary>
 		/// Spawns an entity in the game with the default spawn entity method. A list of On Spawn effects are 

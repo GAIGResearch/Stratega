@@ -7,8 +7,10 @@ namespace SGA {
 		/*
 		* count all gold in the map
 		*/
-
 		initialized = true;
+		goldVeinPosition = std::vector<Vector2f>();
+		int BOARD_WIDTH = initialState.getBoardWidth();
+		maximumBoardDistance = std::sqrt(2*BOARD_WIDTH*BOARD_WIDTH);
 		
 		for(const auto& entity : initialState.getEntities()) {
 			bool foundEnemyCity = false, foundSelfCity = false;
@@ -36,6 +38,10 @@ namespace SGA {
 
 			if (entityType.getName() == "GoldVein") {
 				totalGold += entity.getParameter("Gold");
+				
+				goldVeinPosition.push_back(entity.getPosition());
+				//std::cout<<"goldVein pos: "<< entity.getPosition().x <<  " " << entity.getPosition().y <<std::endl;
+				currentTargetGoldVeinIdx = 0;
 			}
         }
 		
@@ -71,33 +77,90 @@ namespace SGA {
 
 	double BasicTBSResourceHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID) {
 		/*
-		* encourage spawning worker: r_existWorker = 0.2
-		* encorage mining the gold: r_gold = minedGold/totalGold*0.8
+		* proportion of spawning worker reward: r_existWorker = 0.2
+		* proportion of mining the gold: r_gold = minedGold/totalGold*0.8
 		*/
-		
+		return evaluateGameState(forwardModel, state, playerID, false);
+	}
+
+	double BasicTBSResourceHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, 
+		const int playerID, bool isDebug) {
+		/*
+		* proportion of spawning worker reward: r_existWorker = 0.2
+		* proportion of mining the gold: r_gold = minedGold/totalGold*0.8
+		*/
+
+		// if there is no goldVein in the map
+		if (goldVeinPosition.size() == 0) {
+			return 0.0;
+		}
+
+		// if game over
+		if (state.isGameOver()) {
+			if (state.getWinnerID() == playerID) {
+				return 1.0;
+			}
+			else {
+				return 0.0;
+			}
+		}
+
+		// target another goldVein for mining
+		for (int i = 0; i < goldVeinPosition.size(); i++) {
+			auto entity = state.getEntityAt(goldVeinPosition[currentTargetGoldVeinIdx]);
+			double remainingGold = entity->getParameter("Gold");
+			if (remainingGold != 0.0) {
+				currentTargetGoldVeinIdx = i;
+				break;
+			}
+		}
 		
 		auto entities = state.getEntities();
 		double reward = 0.0, minedGold=0.0;
+		std::vector<double> workerDistance = std::vector<double>();
+		double totalWorkerDistance = 0.0;
+		double r_worker_distance = 0.0;
 
 		bool tmp_isWorkerExists=false;
+		double min_dis = maximumBoardDistance;
+		double tmp_dis = 0.0;
 		for (auto entity : entities) {
 			auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
-			if (entityType.getName() == "Worker") {
-				tmp_isWorkerExists=true;
+			if(entity.getOwnerID() == playerID){
+				
+				if (entityType.getName() == "Worker") {
+					tmp_isWorkerExists=true;
+					tmp_dis = entity.getPosition().distance(goldVeinPosition[currentTargetGoldVeinIdx]);
+					if (tmp_dis < min_dis) {
+						min_dis = tmp_dis;
+					}
+					//workerDistance.push_back();
+				}
+			}
+			if (entityType.getName() == "GoldVein") {
+				if (playerID == 0) {
+					minedGold += entity.getParameter("PlayerAMined");
+				}
+				else {
+					minedGold += entity.getParameter("PlayerBMined");
+				}
 			}
 		}
-		minedGold = getGold(state);
 		
 
 		if (tmp_isWorkerExists) {
-			reward += R_WORKER;
+			r_worker_distance = (1.0-min_dis/maximumBoardDistance);
+			reward += R_WORKER_P;
 		}
-		reward += R_GOLDPROPORTION * (minedGold/totalGold);
 
+		reward += R_DISTANCE_P * r_worker_distance;
+		reward += R_GOLDPROPORTION_P * (minedGold/totalGold);
+
+		if (isDebug) {
+			std::cout<< "r_worker_distance: "<< r_worker_distance << ", mined/total " << minedGold/totalGold << std::endl;
+		}
 		return reward;
-		
 	}
-
 
 	double BasicTBSResourceHeuristic::getProduction(GameState state){
 		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Prod");

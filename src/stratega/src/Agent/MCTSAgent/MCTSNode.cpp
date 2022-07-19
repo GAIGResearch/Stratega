@@ -51,7 +51,15 @@ namespace SGA
 			}
 			last_selected = selected;
 			//std::cout<<"before rollout" <<std::endl;
-			double delta = selected->rollOut(forwardModel, params, randomGenerator);
+			double delta = 0.0;
+			int n_rollout = 1;
+			/*for (int i = 0; i < n_rollout; i++) {
+				delta += selected->rollOut(forwardModel, params, randomGenerator);
+			}
+			delta/= n_rollout;
+			*/
+			delta = selected->rollOut(forwardModel, params, randomGenerator);
+			//double delta = selected->rollOut(forwardModel, params, randomGenerator);
 
 			//std::cout<<"before backup" <<std::endl;
 			backUp(selected, delta);

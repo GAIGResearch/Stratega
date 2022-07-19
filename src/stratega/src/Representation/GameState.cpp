@@ -613,4 +613,44 @@ namespace SGA
 		}
 		
 	}
+
+	std::string GameState::getActionInfo(const Action& action) const
+	{
+		std::string str = "ActionInfo";
+		if(action.getActionFlag() == ActionFlag::AbortContinuousAction)
+		{
+			str += " [AbortContinuousAction]";
+		}
+		else if (action.getActionFlag() == ActionFlag::EndTickAction)
+		{
+			str += " [EndTick]";
+		}
+		else
+		{
+			const ActionType& actionType = action.getActionType();
+			str+= "[" + actionType.getName()+"]," ;
+
+			//Print source
+			if (actionType.getSourceType() == ActionSourceType::Player)
+				str+= " [SourceType Player: "+ std::to_string(action.getOwnerID()) + " ]," ;
+			else
+			{				
+				int entityID = action.getSourceID();
+				auto& entityType = getEntityConst(entityID)->getEntityType();
+				
+				str+= " [SourceType Entity: "+ entityType.getName() +" " + std::to_string(entityID) + "],";
+			}
+
+			str += " [ActionTargets" ;
+
+			for (size_t i = 0; i < actionType.getTargets().size(); i++)
+			{
+				str += "(Target: " + actionType.getTargets()[i].first.getTypeString() + ", " +
+					action.getTargets()[i + 1].getValueString(*this) + ")";
+
+			}
+			str += "]";
+		}
+		return str;
+	}
 }

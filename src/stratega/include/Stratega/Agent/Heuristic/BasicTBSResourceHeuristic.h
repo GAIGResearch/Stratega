@@ -5,21 +5,30 @@ namespace SGA
 {
 	class BasicTBSResourceHeuristic : public StateHeuristic
 	{
+		/*Rewards given when
+		* 1) worker exists
+		* 2) mined gold increases
+		*/
 	private:
 		bool initialized = false, ableToAttack=false, isResearchedMining=false, isResearchedDicipline=false,
 			isBuiltBarracks=false;
 
-		const double R_WORKER = 0.2, R_GOLDPROPORTION=0.8;
+		const double R_WORKER_P = 0.1, R_DISTANCE_P=0.2, R_GOLDPROPORTION_P=0.7;
+		double maximumBoardDistance = 1000000.0;
 		double totalGold = 0.0;
 
 		int self_city_id=-1, enemy_city_id=-1;
 		Vector2f self_city, enemy_city;
 		double city_max_health=-1.0;
 
+		std::vector<Vector2f> goldVeinPosition;
+		int currentTargetGoldVeinIdx=-1;
+
 	public:
 		BasicTBSResourceHeuristic(int playerID, GameState initialState);
 		void updateStateInfo(GameState& gameState, const int playerID);
 		double evaluateGameState( const ForwardModel& forwardModel, GameState& gameState, const int playerID);
+		double evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug=false);
 
 		double getProduction(GameState state);
 		double getGold(GameState state);
