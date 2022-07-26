@@ -94,7 +94,8 @@ namespace SGA
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
-		return children[static_cast<size_t>(childIndex)].get();
+		childIndex ++;
+		return children[static_cast<size_t>(children.size()-1)].get();
 	}
 
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, boost::mt19937& randomGenerator)
