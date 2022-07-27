@@ -4,6 +4,7 @@
 namespace SGA {
 
 	void BasicTBSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) {
+
 		initialized = true; // This function is called by GameRunner
 		workers = std::vector<int>();
 		nearbyAttackable = std::vector<int>();
@@ -15,7 +16,7 @@ namespace SGA {
 		bool foundEnemyCity = false, foundSelfCity=false;
 		// store the position of self base and enermy base;
         for(const auto& entity : initialState.getEntities()) {
-			
+
             auto& entityType = initialState.getGameInfo()->getEntityType(entity.getEntityTypeID());
             //std::cout<<entityType.getName() <<std::endl;
             if(entity.getOwnerID() != getPlayerID() ) 
@@ -62,19 +63,24 @@ namespace SGA {
         return;
     }
 
-	
 	ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
-		
-		// std::cout<<"DEBUG start basicTBSAgent" <<"\n";
-		// get position of all entities
+        if (dis(getRNGEngine()) > 0.6) {
+            auto actions = forwardModel.generateActions(state, getPlayerID());
+            boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+            auto actionIndex = actionDist(getRNGEngine());
+            auto action = actions.at(actionIndex);
+            return ActionAssignment::fromSingleAction(action);
+        }
+        // std::cout<<"DEBUG start basicTBSAgent" <<"\n";
+        // get position of all entities
         std::map< int, Vector2f > positions;
         std::set< int > opponentEntites = std::set< int >();
         std::set< int > playerEntities = std::set< int >();
-		
+
         double nearestEnemyAttackerDistance = 1000000.0;
         Entity* nearestEnemyAttacker = nullptr;
         for(auto& entity : state.getEntities()) {
-			auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
+            auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
             if(entity.getOwnerID() != getPlayerID())
             {
                 opponentEntites.insert(entity.getID());
@@ -82,7 +88,7 @@ namespace SGA {
                 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
-				if(entityType.getName() == "Warrior" ){
+                if(entityType.getName() == "Warrior" ){
                    double distance = entity.getPosition().distance(self_city);
                    if (distance < nearestEnemyAttackerDistance) {
                       nearestEnemyAttackerDistance = distance;
@@ -115,11 +121,8 @@ namespace SGA {
 
 					}
 				}
-				
 			}
-            else { // not owned entity such as goldVein
-				//
-			}
+            else {} // not owned entity such as goldVein
         }
 
 		// maintain entity vectors, delete dead unit;
@@ -220,7 +223,6 @@ namespace SGA {
 			}
 		}
 
-		
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
 			// std::cout<<"try spawn warrior"<<std::endl;
@@ -241,13 +243,12 @@ namespace SGA {
 			}
 		}
 
-		
 		// send warrior to attack nenemy city
 		if (farAwarAttackable.size() > 0) {
 			for (auto attackerID: farAwarAttackable){
 				auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(attackerID)), 
 					                                                    getPlayerID(), false);
-			
+
 				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, enemy_city_id, "Attack");
 				if (optimal_a_idx > 0) {
 
@@ -256,15 +257,13 @@ namespace SGA {
 			}
 		}
 		
-		//std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << std::endl;
-		//std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << std::endl;
-		//std::cout <<"END THE TURN" << std::endl;
+		//std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << "\n";
+		//std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << "\n";
+		//std::cout <<"END THE TURN" << "\n";
 		//state.printBoard();
 		//return ActionAssignment::fromSingleAction( Action::createEndAction(state.getCurrentTBSPlayer()));
 
-
 		return ActionAssignment::fromSingleAction( Action::createEndAction(getPlayerID()));
-
     }
 
     bool BasicTBSAgent::existAttackableEnemyNearby(double nearestEnemyAttackerDistance){

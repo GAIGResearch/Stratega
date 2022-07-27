@@ -279,7 +279,6 @@ Actions:
             - "Research(Source, Target)"
             - "ModifyResource(Source.Score, 10)"
 
-    
     Mine:
         Type: EntityAction
         Cooldown: 1

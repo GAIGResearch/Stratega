@@ -1,23 +1,10 @@
 #pragma once
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
-#include <Stratega/Agent/Heuristic/TwoKingdomsDefenceHeuristic.h>
 
 namespace SGA
 {
-	class BasicTBSTechnologyHeuristic : public StateHeuristic
+	class TwoKingdomsDefenceHeuristic : public StateHeuristic
 	{
-		// encourage greater:
-		//   ableGenerateAttackable
-		//   selfAttackPower
-		//   Resource
-		// avoid greater:
-		//   enemyAttackPower
-
-
-		//enermycityhp: 50%
-		//can attack: 30%
-		//enough gold for warrior:
-		//
 	private:
 		bool initialized = false, selfHasWarrior=false, enemyHasWarrior=false, isBuiltBarracks=false,
 			isResearchedMining=false, 
@@ -41,12 +28,9 @@ namespace SGA
         double enemyWarriorHealth = 50.0;
         bool selfHasWorker = false;
         double min_dis = 10000.0; // the minimum distance between self workers to target gold vein.
-        double minedGold = 0.0;
-
-        std::shared_ptr<TwoKingdomsDefenceHeuristic> defenceHeuristic;
 
 	public:
-		BasicTBSTechnologyHeuristic(int playerID, GameState initialState);
+		TwoKingdomsDefenceHeuristic(int playerID, GameState initialState);
 		//void initialize(int playerID, GameState state);
 		void updateStateInfo(GameState& gameState, const int playerID);
 		double evaluateGameState( const ForwardModel& forwardModel, GameState& gameState, const int playerID);

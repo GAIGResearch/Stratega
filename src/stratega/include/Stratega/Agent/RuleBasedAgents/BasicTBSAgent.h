@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/random.hpp>
 #include <Stratega/Agent/Agent.h>
 #include <Stratega/Agent/Heuristic/UnitEvaluator.h>
 #include <map>
@@ -37,7 +38,9 @@ class BasicTBSAgent: public Agent {
       double enemyAttackerRangeTolerate = 5.0;
 
 	  bool isResearchedMining=false, isResearchedDiscipline=false,isBuiltBarraks=false;
-      
+
+      boost::random::uniform_real_distribution<> dis = boost::random::uniform_real_distribution<> (0.0, 1.0);
+
       BasicTBSAgent();
       std::vector< Entity > filterAttackableUnit();
 

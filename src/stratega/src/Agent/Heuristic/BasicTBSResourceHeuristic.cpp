@@ -8,6 +8,8 @@ namespace SGA {
         * count all gold in the map
         */
         initialized = true;
+        defenceHeuristic = std::make_unique<TwoKingdomsDefenceHeuristic>(playerID, initialState);
+
         goldVeinPosition = std::vector<Vector2f>();
         int BOARD_WIDTH = initialState.getBoardWidth();
         maximumBoardDistance = std::sqrt(2*BOARD_WIDTH*BOARD_WIDTH);
@@ -50,6 +52,8 @@ namespace SGA {
     }
 
     void BasicTBSResourceHeuristic::updateStateInfo(GameState& state, const int playerID) {
+        defenceHeuristic->updateStateInfo(state, playerID);
+
         isResearchedMining = state.isResearched(playerID, "Mining");
         isResearchedDicipline = state.isResearched(playerID, "Dicipline");
 
@@ -179,68 +183,13 @@ namespace SGA {
 		reward += R_GOLDPROPORTION_P * (minedGold/totalGold);
 
 		if (isDebug) {
-			std::cout<< "r_worker_distance: "<< r_worker_distance << ", mined/total " << minedGold/totalGold << std::endl;
+			std::cout<< "r_worker_distance: "<< r_worker_distance << ", mined/total " << minedGold/totalGold << "\n";
 		}
-		return reward;
+        double w1 = 1.0;
+        double w2=1.0-w1;
+        double defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID);
+		return w1*reward + w2*defenceR;
 	}
-
-    double BasicTBSResourceHeuristic::defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug) {
-        double ret = 50;
-
-        if (isResearchedMining) {
-            ret += 5.0;
-            if (isResearchedDicipline) {
-                ret += 10;
-            }
-        }
-
-        if (isBuiltBarracks) {
-            ret += 10.0;
-        }
-        if (selfHasWorker) {
-            ret+=5.0;
-        }
-
-        // have attackable unit.
-        if (selfHasWarrior) {
-            ret += 10.0;
-            if (selfWarriorCityDistance <= 5.0) {
-                ret += 5.0;
-            }
-        }
-        else { // maximum possible reward is 8 (less than spawn warrior that is 10
-            ret += 4*(1.0- min_dis/maximumBoardDistance);
-
-            if (getGold(state) >= 80) {
-                ret += 4;
-            }
-            else {
-                ret += 4 * (getGold(state)/80.0);
-            }
-        }
-
-        if (enemyHasWarrior) {
-            ret -= 10;
-
-            if (enemyWarriorCityDistance <= 5.0) {
-                ret -= 35 * (enemyWarriorHealth/FULL_HEALTH);
-                if (!selfHasWarrior) {
-                    ret -= 5;
-                }
-
-            }
-        }
-
-        if (isDebug) {
-            std::cout<< " Mining: " << isResearchedMining << " Discipline: "<< isResearchedDicipline << " barracks: "<< isBuiltBarracks << "\n"
-            << " selfHasWorker: " << selfHasWorker << " Gold: " << getGold(state) << " /80\n"
-            << " selfHasWarrior: "<<  selfHasWarrior <<" enemyHasWarrior: "<<  enemyHasWarrior <<" enemyWarriorCityDistance: "<<  enemyWarriorCityDistance 
-            << " enemy warrior health penalty: "<< 35 * (enemyWarriorHealth / FULL_HEALTH) << "\n"
-            << " defence reward: " << ret/100.0 << "\n";
-        }
-
-        return ret/100.0;
-    }
 
 	double BasicTBSResourceHeuristic::getProduction(GameState state){
 		return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Prod");

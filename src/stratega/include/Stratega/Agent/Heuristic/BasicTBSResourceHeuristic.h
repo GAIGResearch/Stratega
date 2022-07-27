@@ -1,5 +1,6 @@
 #pragma once
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
+#include <Stratega/Agent/Heuristic/TwoKingdomsDefenceHeuristic.h>
 
 namespace SGA
 {
@@ -29,13 +30,13 @@ namespace SGA
         double selfWarriorCityDistance=1000, min_dis=1000, enemyWarriorCityDistance=1000;
         double enemyWarriorHealth=50, FULL_HEALTH=50;
 
+        std::shared_ptr<TwoKingdomsDefenceHeuristic> defenceHeuristic;
+
 	public:
 		BasicTBSResourceHeuristic(int playerID, GameState initialState);
 		void updateStateInfo(GameState& gameState, const int playerID);
 		double evaluateGameState( const ForwardModel& forwardModel, GameState& gameState, const int playerID);
 		double evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug=false);
-
-        double defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug);
 
 		double getProduction(GameState state);
 		double getGold(GameState state);

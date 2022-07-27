@@ -5,7 +5,8 @@ namespace SGA {
 
     BasicTBSCombatHeuristic::BasicTBSCombatHeuristic(int playerID, GameState initialState) {
 
-		initialized = true;
+        initialized = true;
+        defenceHeuristic = std::make_unique<TwoKingdomsDefenceHeuristic>(playerID, initialState);
 
         int BOARD_WIDTH = initialState.getBoardWidth();
         maximumBoardDistance = std::sqrt(2*BOARD_WIDTH*BOARD_WIDTH);
@@ -47,7 +48,8 @@ namespace SGA {
 	}
 
 	void BasicTBSCombatHeuristic::updateStateInfo(GameState& state, const int playerID) {
-        //std::cout<< "Enter updateStateInfo" << std::endl;
+        defenceHeuristic->updateStateInfo(state, playerID);
+
         isResearchedMining = state.isResearched(playerID, "Mining");
         isResearchedDicipline = state.isResearched(playerID, "Discipline");
         auto entities = state.getEntities();
@@ -67,9 +69,6 @@ namespace SGA {
                 break;
             }
         }
-
-
-        //std::cout<< "start fewnfuidf78y094\n";
 
 
         for (auto entity : entities) {
@@ -215,73 +214,11 @@ namespace SGA {
         //std::cout<< "Ends evaluateGameState" << std::endl;
         reward /= 100.0;
 
-        auto defenceR = defenceReward(forwardModel, state, playerID, false);
+        double w1=0.4, w2=0.6;
+        auto defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID, false);
 
-        return 0.4*reward + 0.6*defenceR;
+        return w1*reward + w2*defenceR;
     }
-
-    double BasicTBSCombatHeuristic::defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug) {
-        double ret = 50;
-        // golden reaches 80? for warrior spawning
-        // technology of Discpline developed? for warrior spawning
-        // barrack
-
-        if (isResearchedMining) {
-            ret += 5.0;
-            if (isResearchedDicipline) {
-                ret += 10;
-            }
-        }
-
-        if (isBuiltBarracks) {
-            ret += 10.0;
-        }
-
-        if (selfHasWorker) {
-            ret+=5.0;
-        }
-
-        // have attackable unit.
-        if (selfHasWarrior) {
-            ret += 10.0;
-            if (selfWarriorCityDistance <= 5.0) {
-                ret += 5.0;
-            }
-        }
-        else { // maximum possible reward is 8 (less than spawn warrior that is 10
-            ret += 4*(1.0- min_dis/maximumBoardDistance);
-
-            if (getGold(state) >= 80) {
-                ret += 4;
-            }
-            else {
-                ret += 4 * (getGold(state)/80.0);
-            }
-        }
-
-        if (enemyHasWarrior) {
-            ret -= 10;
-
-            if (enemyWarriorCityDistance <= 5.0) {
-                ret -= 35 * (enemyWarriorHealth/FULL_HEALTH);
-                if (!selfHasWarrior) {
-                    ret -= 5;
-                }
-
-            }
-        }
-
-        if (isDebug) {
-            std::cout<< " Mining: " << isResearchedMining << " Discipline: "<< isResearchedDicipline << " barracks: "<< isBuiltBarracks << "\n"
-            << " selfHasWorker: " << selfHasWorker << " Gold: " << getGold(state) << " /80\n"
-            << " selfHasWarrior: "<<  selfHasWarrior <<" enemyHasWarrior: "<<  enemyHasWarrior <<" enemyWarriorCityDistance: "<<  enemyWarriorCityDistance 
-            << " enemy warrior health penalty: "<< 35 * (enemyWarriorHealth / FULL_HEALTH) << "\n"
-            << " defence reward: " << ret/100.0 << "\n";
-        }
-
-        return ret/100.0;
-    }
-
 
     double BasicTBSCombatHeuristic::getProduction(GameState state){
         return state.getPlayerParameter(state.getCurrentTBSPlayer(), "Prod");

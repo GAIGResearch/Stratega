@@ -1,5 +1,6 @@
 #pragma once
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
+#include <Stratega/Agent/Heuristic/TwoKingdomsDefenceHeuristic.h>
 
 namespace SGA
 {
@@ -36,6 +37,8 @@ namespace SGA
         double totalGold = 0.0;
         int currentTargetGoldVeinIdx = -1;
 
+        std::shared_ptr<TwoKingdomsDefenceHeuristic> defenceHeuristic;
+
 	public:
 		BasicTBSCombatHeuristic(int playerID, GameState initialState);
 		//void initialize(int playerID, GameState state);
@@ -47,8 +50,6 @@ namespace SGA
 		double getGold(GameState state);
 
 		double getEntityHealth(GameState state, Vector2f position);
-
-        double defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug);
 
 		std::string getName() const override { return "TwoKindomsCombatHeurisitc"; }
 	};
