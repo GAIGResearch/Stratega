@@ -8,8 +8,8 @@ Agents:
 #    - HumanAgent
     - MCTSAgent:
         Budget: ITERATIONS
-        Iterations: 700
-        RolloutLength: 10
+        Iterations: 600
+        RolloutLength: 40
         ContinuePreviousSearch: false
 #    - BasicTBSAgent
 #    - RandomAgent
@@ -20,15 +20,15 @@ Board:
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
         M  .  .  M  .  .  .  .  .  .  .  .  M
-        M  .  c1 .  .  .  M  .  .  .  .  .  M
+        M  .  c1 .  .  .  M  .  .  g  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
+        M  .  g  .  .  .  .  .  .  .  .  F  W
         M  .  .  .  .  .  .  .  M  .  .  F  W
         M  .  .  M  M  M  .  .  M  .  g  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  c0 F  F  .  .  .  .  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
 
@@ -87,12 +87,13 @@ Entities:
 
     Barracks:
         Sprite: ../../assets/Entities/barracks.png
+        Symbol: b
         LineOfSightRange: 3
         RequiredTechnology: Discipline
         Actions: [Spawn]
         CanSpawn: [Warrior, Archer]
         Cost:
-            Prod: 10
+            Prod: 5
         Parameters:
             Health: 100
             Range: 6
@@ -142,6 +143,7 @@ Entities:
 
     Worker:
         Sprite: ../../assets/Entities/unit_5.png
+        Symbol: w
         LineOfSightRange: 3
         Actions: [Move, Mine]
         Cost:
@@ -157,6 +159,7 @@ Entities:
             
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
+        Symbol: o
         LineOfSightRange: 3
         Actions: [Move, Attack]
         # RequiredTechnology: BronzeWorking # for simplify it a little bit
@@ -166,7 +169,7 @@ Entities:
             Armor: 20
             Speed: 1
             Range: 3
-            WeaponStrength: 25
+            WeaponStrength: 50
             Morale: 10
             Health: 50
             

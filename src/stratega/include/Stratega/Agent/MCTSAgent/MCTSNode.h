@@ -7,12 +7,12 @@ namespace SGA {
 	class MCTSNode : public ITreeNode<MCTSNode>
 	{
 	public:
-		int nodeDepth = 0;			//Depth of this node in the tree.
-		int treesize = 1;			//Reference to the number of nodes in the tree behind this node..
+		int nodeDepth = 0;                      //Depth of this node in the tree.
+		int treesize = 1;                       //Reference to the number of nodes in the tree behind this node..
 
 	protected:
-		int nVisits = 0;			//number of visits to this node.
-		double bounds[2] = { 0, 1 };	//Reward bounds in this node.
+		int nVisits = 0;                        //number of visits to this node.
+		double bounds[2] = { 0, 1 };            //Reward bounds in this node.
 
 
 	public:
@@ -94,7 +94,10 @@ namespace SGA {
 
 	private:
 
-		// Creates a new node to be inserted in the tree.
+		/* Creates a new node to be inserted in the tree.
+        *  parameters:
+        *    childIndex: the index of this node among the children of its parent node
+        */ 
 		MCTSNode(ForwardModel& forwardModel, GameState gameState, MCTSNode* parent, int childIndex, int ownerID);
 
 	};

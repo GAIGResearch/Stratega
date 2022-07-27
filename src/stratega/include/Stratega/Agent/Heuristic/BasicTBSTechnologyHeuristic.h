@@ -18,7 +18,7 @@ namespace SGA
 		//enough gold for warrior:
 		//
 	private:
-		bool initialized = false, ableToAttack=false, isBuiltBarracks=false,
+		bool initialized = false, selfHasWarrior=false, enemyHasWarrior=false, isBuiltBarracks=false,
 			isResearchedMining=false, 
 			isResearchedDicipline=false, isResearchedPotery=false, isResearchedMathematics=false, 
 			isResearchedBronzeWorking=false, isResearchedArchery=false, isResearchedApprenticeship=false, 
@@ -34,6 +34,12 @@ namespace SGA
 
 		const double R_WORKER_P = 0.1, R_DISTANCE_P=0.2, R_GOLDPROPORTION_P=0.7;
 		const double R_MINE_P = 0.2, R_TECH_P = 0.8;
+        double FULL_HEALTH = 50.0;
+
+        double selfWarriorCityDistance = 100000.0, enemyWarriorCityDistance = 100000.0;
+        double enemyWarriorHealth = 50.0;
+        bool selfHasWorker = false;
+        double min_dis = 10000.0; // the minimum distance between self workers to target gold vein.
 
 	public:
 		BasicTBSTechnologyHeuristic(int playerID, GameState initialState);
@@ -47,6 +53,8 @@ namespace SGA
 
 		double getEntityHealth(GameState state, Vector2f position);
 
-		std::string getName() const override { return "AimToKingHeuristic"; }
+        double defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug);
+
+		std::string getName() const override { return "TwoKingdomsTechnologyHeuristic"; }
 	};
 }

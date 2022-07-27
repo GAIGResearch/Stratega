@@ -36,11 +36,12 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
-		// stop in case the budget is over.
+
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
+
 		while (!params.isBudgetOver()) {
-			//std::cout<<"before selection" <<std::endl;
+			//std::cout<<"before selection\n";
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
 			if (last_selected != nullptr) {
 				if (last_selected == selected)
@@ -49,7 +50,7 @@ namespace SGA
 					n_repeat_selection = 0;
 			}
 			last_selected = selected;
-			//std::cout<<"before rollout" <<std::endl;
+
 			double delta = 0.0;
 			int n_rollout = 1;
 			/*for (int i = 0; i < n_rollout; i++) {
@@ -57,20 +58,23 @@ namespace SGA
 			}
 			delta/= n_rollout;
 			*/
+            //std::cout<<"before rollout\n";
 			delta = selected->rollOut(forwardModel, params, randomGenerator);
-			//double delta = selected->rollOut(forwardModel, params, randomGenerator);
 
-			//std::cout<<"before backup" <<std::endl;
+            //std::cout<<"before backup\n";
 			backUp(selected, delta);
+
+            //std::cout<< selected->nVisits << "\n";
+
 			params.currentIterations++;
 			if (n_repeat_selection >= 20) // repeated selection
 			{
-				//std::cout<<"repeated selection, ends searching" << std::endl;
+				std::cout<<"repeated selection, ends searching" << std::endl;
 				return;
 			}
-			//std::cout<<"An iteration done" <<std::endl;
+
 		}
-		//std::cout<<"End search"<<std::endl;
+
 	}
 
 	/// <summary>
@@ -101,7 +105,7 @@ namespace SGA
 
 	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& /*randomGenerator*/)
 	{
-		// roll the state
+
 		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
 		auto action = actionSpace.at(children.size());
@@ -109,8 +113,12 @@ namespace SGA
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
-		return children[static_cast<size_t>(childIndex)].get();
-	}
+        //std::cout<< "[CS]: " << children.size() <<  " childIndex: "<< childIndex<<"\n";
+
+        childIndex ++ ;
+        //printTree();
+        return children[static_cast<size_t>(children.size()-1)].get();
+    }
 
 	MCTSNode* MCTSNode::uct(MCTSParameters& params, boost::mt19937& randomGenerator)
 	{
@@ -206,8 +214,6 @@ namespace SGA
 				thisDepth++;
 			}
 
-			//We evaluate the state at the end of the rollout using the heuristic specified in the parameter settings. 
-			//We then return this reward to the last node expanded in the tree.
 			//return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
 			return params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		}
@@ -217,10 +223,9 @@ namespace SGA
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
 	{
-		if (depth >= params.rolloutLength)      //rollout end condition.
+		if (depth >= params.rolloutLength)
 			return true;
 
-		//end of game
 		return rollerState.isGameOver();
 	}
 

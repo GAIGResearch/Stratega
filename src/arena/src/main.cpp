@@ -13,14 +13,14 @@ int main(int argc, char** argv)
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
     auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS.yaml");
 	//Optional
-	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/BasicTBSMaps.yaml");
+	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/TwoKingdomsMaps.yaml");
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "");
 
 	if(configPath.empty())
 	{
 		std::cout << "You have to provide the argument -configPath" << std::endl;
 		return 0;
-	}	
+	}
 	
 	// Read Config
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 		//Run combinations per map
 		const int mapNumber = static_cast<int>(gameConfig->levelDefinitions.size());
 		arena.runGames(playerCount, seed, numberOfGames, mapNumber);
-	}	
+	}
 	
 	return 0;
 }

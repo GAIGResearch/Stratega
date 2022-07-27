@@ -13,7 +13,7 @@ namespace SGA
 		GameState gameState;
 		NodeType* parentNode = nullptr;
 		std::vector<std::unique_ptr<NodeType>> children;
-		int childIndex = 0;
+		int childIndex = 0;                                     // child index of this node among parents children
 		double value = 0;
 		int ownerID; //ID of the player that owns the tree this node belongs to.
 
@@ -94,12 +94,11 @@ namespace SGA
 
 					// print the value of the node
 					node->print();
-					std::cout << " " << actionName;// << std::endl;
+					std::cout << " " << actionName << "\n";// << std::endl;
 
 					// enter the next tree level - left and right branch
 					for (size_t i = 0; i < node->children.size(); ++i)
 					{
-
 						const std::string action_str = node->gameState.getActionInfo(node->actionSpace.at(i));
 
 						printTree(prefix + (isLast ? "   " : "|  "), 
@@ -115,12 +114,11 @@ namespace SGA
 					if (isLast)
 						std::cout << "\\-- ";
 					else
-						std::cout << "|-- ";
+                        std::cout << "|-- ";
 
                     node->print();
-                    std::cout<< actionName;
 
-					std::cout << node->children.size() << "; " << actionName << std::endl;
+					std::cout << " [CS]: " << node->children.size() << "; " << actionName << "\n";
 				}
 			}
 		}

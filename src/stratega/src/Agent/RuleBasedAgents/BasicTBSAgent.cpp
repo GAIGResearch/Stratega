@@ -17,61 +17,55 @@ namespace SGA {
         for(const auto& entity : initialState.getEntities()) {
 			
             auto& entityType = initialState.getGameInfo()->getEntityType(entity.getEntityTypeID());
-			//std::cout<<entityType.getName() <<std::endl;
+            //std::cout<<entityType.getName() <<std::endl;
             if(entity.getOwnerID() != getPlayerID() ) 
             {
                 if(entityType.getName() == "City" && (!foundEnemyCity)) {
-					foundEnemyCity = true; //save some time
-					enemy_city_id = entity.getID();
+                    foundEnemyCity = true; //save some time
+                    enemy_city_id = entity.getID();
                     enemy_city.x= entity.x();
                     enemy_city.y = entity.y();
                     int paramID = 0;
                 }
             } else if(entity.getOwnerID() == getPlayerID()){
                if(entityType.getName() == "City" && (!foundSelfCity)) {
-				    foundSelfCity = true;
-					self_city_id = entity.getID();
+                    foundSelfCity = true;
+                    self_city_id = entity.getID();
                     self_city.x = entity.x();
                     self_city.y = entity.y();
                }
             } else {
-				
-			}
+
+            }
         }
 
-		// make the nearest goldvein as the head of vector
-		for(const auto& entity : initialState.getEntities()) { 
-			auto& entityType = initialState.getGameInfo()->getEntityType(entity.getEntityTypeID());
-			if(entityType.getName() == "GoldVein"){
-				if (goldVein.size() > 0){
-					double dis_oldGoldVein = initialState.getEntity(goldVein[0])->getPosition().distance(initialState.getEntity(self_city_id)->getPosition());
-					double dis_newGoldVein = entity.getPosition().distance(initialState.getEntity(self_city_id)->getPosition());
-					if(dis_newGoldVein > dis_oldGoldVein ){
-						goldVein.push_back(entity.getID());
-					} else {
+        // make the nearest goldvein as the head of vector
+        for(const auto& entity : initialState.getEntities()) { 
+            auto& entityType = initialState.getGameInfo()->getEntityType(entity.getEntityTypeID());
+            if(entityType.getName() == "GoldVein"){
+                if (goldVein.size() > 0){
+                    double dis_oldGoldVein = initialState.getEntity(goldVein[0])->getPosition().distance(initialState.getEntity(self_city_id)->getPosition());
+                    double dis_newGoldVein = entity.getPosition().distance(initialState.getEntity(self_city_id)->getPosition());
+                    if(dis_newGoldVein > dis_oldGoldVein ){
+                        goldVein.push_back(entity.getID());
+                    } else {
                         goldVein.insert(goldVein.begin(), entity.getID());
-					}
-				}
-				else {
-					goldVein.push_back(entity.getID());
-				}
-			}
-		}
+                    }
+                }
+                else {
+                    goldVein.push_back(entity.getID());
+                }
+            }
+        }
 
-		//std::sort(goldVein.begin(), goldVein.end(), )
-		return;
-	}
+        //std::sort(goldVein.begin(), goldVein.end(), )
+        return;
+    }
 
-	bool BasicTBSAgent::existAttackableEnemyNearby(double nearestEnemyAttackerDistance){
-		if(nearestEnemyAttackerDistance < enemyAttackerRangeTolerate) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
 		
-		// std::cout<<"DEBUG start basicTBSAgent" <<std::endl;
+		// std::cout<<"DEBUG start basicTBSAgent" <<"\n";
 		// get position of all entities
         std::map< int, Vector2f > positions;
         std::set< int > opponentEntites = std::set< int >();
@@ -197,14 +191,14 @@ namespace SGA {
 
 		// Research Discipline
 		if(!(isResearchedDiscipline) && isResearchedMining && !(prod<researchDiciplineProduction)){
-			std::cout<<"try to research discipline" << std::endl;
+			std::cout<<"[TwoKingdom Combat Agent]: try to research discipline\n";
 			for (int a_idx = 0; (!isResearchedDiscipline) && a_idx < playerActionSpace.size(); a_idx++) {
 				//state.printActionInfo(actionSpace_tmp[a_idx]);
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
-					std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) << std::endl;
+					std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) <<"\n";
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Discipline") {
 						isResearchedDiscipline=true;
-						std::cout<<"--> RESEARCH Dicipline" << std::endl;
+						std::cout<<"--> RESEARCH Dicipline\n";
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -214,12 +208,12 @@ namespace SGA {
 		// build barracks
 		if (isResearchedMining && isResearchedDiscipline && !(isBuiltBarraks) && !(prod<buildBarracksProduction)) { 
 			for (int a_idx = 0; a_idx < playerActionSpace.size(); a_idx++) {
-				state.printActionInfo(playerActionSpace[a_idx]);
+				// state.printActionInfo(playerActionSpace[a_idx]);
 				if (playerActionSpace[a_idx].getActionType().getName() == "Build") {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Barracks") {
 						isBuiltBarraks=true;
 
-						std::cout<<"--> BUILD Barracks" << std::endl;
+						std::cout<<"--> BUILD Barracks\n";
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -235,7 +229,7 @@ namespace SGA {
 			if (actionSpace_tmp.size() > 0){
 				int a_idx = filterSpawnWarrior(state, actionSpace_tmp);
 				if (a_idx != -1){
-					std::cout<<"SPAWN WARRIOR"<<std::endl;
+					std::cout<<"SPAWN WARRIOR\n";
 					return ActionAssignment::fromSingleAction(actionSpace_tmp[a_idx]);
 				}
 			}
@@ -256,19 +250,30 @@ namespace SGA {
 			
 				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, enemy_city_id, "Attack");
 				if (optimal_a_idx > 0) {
+
 					return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 				}
 			}
 		}
 		
-		std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << std::endl;
-		std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << std::endl;
+		//std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << std::endl;
+		//std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << std::endl;
 		//std::cout <<"END THE TURN" << std::endl;
-		state.printBoard();
+		//state.printBoard();
 		//return ActionAssignment::fromSingleAction( Action::createEndAction(state.getCurrentTBSPlayer()));
+
+
 		return ActionAssignment::fromSingleAction( Action::createEndAction(getPlayerID()));
 
     }
+
+    bool BasicTBSAgent::existAttackableEnemyNearby(double nearestEnemyAttackerDistance){
+        if(nearestEnemyAttackerDistance < enemyAttackerRangeTolerate) {
+            return true;
+        }
+        return false;
+    }
+
 
 	double BasicTBSAgent::getProduction(GameState state){
 		return state.getPlayerParameter(getPlayerID(), "Prod");
@@ -285,7 +290,7 @@ namespace SGA {
 	// only for spawn, build
 	int BasicTBSAgent::filterAction(GameState state, std::vector<Action> actionSpace, std::string actionT, std::string targetName) {
 		if (actionT != "Spawn" && actionT != "Build") {
-			std::cout<<"[ERROR] filterAction suppors argument actionT in [Spawn, Build]" << std::endl;
+			std::cout<<"[ERROR] filterAction suppors argument actionT in [Spawn, Build]\n";
 		}
 		for(int a_idx = 0 ; a_idx < actionSpace.size(); a_idx++ ){
 			const ActionType& actionType = actionSpace[a_idx].getActionType();
@@ -311,7 +316,7 @@ namespace SGA {
 	// controll a unit to a target unit and action toward that target
 	int BasicTBSAgent::moveAndAct(GameState state, std::vector<Action> actionSpace, int targetEntityID, std::string actionT ) {
 		if (actionT != "Attack" && actionT != "Mine") {
-			std::cout<<"[ERROR] moveAndAct suppors argument actionT in [Attack, Mine]" << std::endl;
+			std::cout<<"[ERROR] moveAndAct suppors argument actionT in [Attack, Mine]\n";
 		}
 		double minimumDistanceToTarget = 1000000.0;
 		int optimal_a_idx = -1;

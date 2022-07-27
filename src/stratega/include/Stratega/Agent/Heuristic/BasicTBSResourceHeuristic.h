@@ -24,16 +24,23 @@ namespace SGA
 		std::vector<Vector2f> goldVeinPosition;
 		int currentTargetGoldVeinIdx=-1;
 
+        // defence
+        bool selfHasWorker=false, selfHasWarrior=false, enemyHasWarrior=false;
+        double selfWarriorCityDistance=1000, min_dis=1000, enemyWarriorCityDistance=1000;
+        double enemyWarriorHealth=50, FULL_HEALTH=50;
+
 	public:
 		BasicTBSResourceHeuristic(int playerID, GameState initialState);
 		void updateStateInfo(GameState& gameState, const int playerID);
 		double evaluateGameState( const ForwardModel& forwardModel, GameState& gameState, const int playerID);
 		double evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug=false);
 
+        double defenceReward(const ForwardModel& forwardModel, GameState& state, const int playerID, bool isDebug);
+
 		double getProduction(GameState state);
 		double getGold(GameState state);
 		double getEntityHealth(GameState state, Vector2f position);
 
-		std::string getName() const override { return "BasicTBSResourceHeuristic"; }
+		std::string getName() const override { return "TwoKingdomsResourceHeuristic"; }
 	};
 }
