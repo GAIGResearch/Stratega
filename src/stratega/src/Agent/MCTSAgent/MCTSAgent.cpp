@@ -93,7 +93,13 @@ namespace SGA
                 std::cout<<"Start Search" <<"\n";
             }
 
-            rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+            if (!parameters_.doAbstraction) {
+                rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+            }
+            else {
+                 rootNode->searchMCTSBatch(*processedForwardModel, parameters_, getRNGEngine());
+                 //doAbstraction
+            }
 
             if (DEBUG) {
                 std::cout<<"Ends Search" <<"\n";

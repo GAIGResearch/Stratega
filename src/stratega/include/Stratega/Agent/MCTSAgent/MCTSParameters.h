@@ -23,7 +23,9 @@ namespace SGA {
 
         boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
 
+        // For abstraction
         bool doAbstraction = false;
+        int absBatchSize = 20;
 
         /// <summary>
         /// Prints the details of this parameters object.

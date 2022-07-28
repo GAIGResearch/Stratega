@@ -35,7 +35,7 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
 
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
@@ -72,8 +72,49 @@ namespace SGA
 				std::cout<<"repeated selection, ends searching" << std::endl;
 				return;
 			}
+		}// end while
 
-		}
+	}
+
+    	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
+
+		MCTSNode* last_selected = nullptr;
+		int n_repeat_selection = 0;
+        int itr_counter = 0;
+		while (!params.isBudgetOver() && itr_counter< params.absBatchSize) {
+            itr_counter++;
+			//std::cout<<"before selection\n";
+			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+			if (last_selected != nullptr) {
+				if (last_selected == selected)
+					n_repeat_selection++;
+				else
+					n_repeat_selection = 0;
+			}
+			last_selected = selected;
+
+			double delta = 0.0;
+			int n_rollout = 1;
+			/*for (int i = 0; i < n_rollout; i++) {
+				delta += selected->rollOut(forwardModel, params, randomGenerator);
+			}
+			delta/= n_rollout;
+			*/
+            //std::cout<<"before rollout\n";
+			delta = selected->rollOut(forwardModel, params, randomGenerator);
+
+            //std::cout<<"before backup\n";
+			backUp(selected, delta);
+
+            //std::cout<< selected->nVisits << "\n";
+
+			params.currentIterations++;
+			if (n_repeat_selection >= 20) // repeated selection
+			{
+				std::cout<<"repeated selection, ends searching" << std::endl;
+				return;
+			}
+		}// end while
 
 	}
 

@@ -19,13 +19,12 @@ namespace SGA {
 
           int nodeID = -1;
 
+          // MDP homomorphism
           std::map<int, double> actionToReward;
           std::map<int, int> stateCounter;
           std::vector<int> actionHashVector;
           std::map<int, int> actionHashes;
           std::vector<int> nextStateHashVector;
-
-          // MDP homomorphism
           double absValue = 0.0;
           int absVisitCount = 0;
 
@@ -33,7 +32,6 @@ namespace SGA {
           int absNodeID = -1;
 
           int n_search_iteration= 0; // this is for abstraction
-
 
        protected:
           double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};

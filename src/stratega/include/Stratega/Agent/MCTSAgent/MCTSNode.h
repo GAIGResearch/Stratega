@@ -92,6 +92,9 @@ namespace SGA {
 		/// </summary>
 		void print() const override;
 
+        // functions for abstraction
+        void searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+
 	private:
 
 		/* Creates a new node to be inserted in the tree.
