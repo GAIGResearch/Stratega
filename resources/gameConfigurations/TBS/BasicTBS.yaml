@@ -8,12 +8,12 @@ Agents:
 #    - HumanAgent
     - MCTSAgent:
         Budget: ITERATIONS
-        Iterations: 600
-        RolloutLength: 40
+        Iterations: 500
+        RolloutLength: 30
         ContinuePreviousSearch: false
-#    - BasicTBSAgent
+    - BasicTBSAgent
 #    - RandomAgent
-    - DoNothingAgent
+#    - DoNothingAgent
 
 Board:
     GenerationType: Manual

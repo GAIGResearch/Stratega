@@ -54,25 +54,17 @@ namespace SGA {
     void BasicTBSResourceHeuristic::updateStateInfo(GameState& state, const int playerID) {
         defenceHeuristic->updateStateInfo(state, playerID);
 
-        isResearchedMining = state.isResearched(playerID, "Mining");
-        isResearchedDicipline = state.isResearched(playerID, "Dicipline");
-
         auto entities = state.getEntities();
         selfHasWorker = false;
-        isBuiltBarracks = false;
         selfHasWarrior = false, enemyHasWarrior = false;
         enemyWarriorCityDistance = maximumBoardDistance;
 
-
-        bool tmp_isBuiltBarracks=false;
         for (auto entity : entities) {
             auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
             auto entityName = entityType.getName();
             if (entity.getOwnerID() == playerID) {
                 
-                if (entityName == "Barracks") {
-                    isBuiltBarracks=true;
-                } else if (entityName == "Warrior" || entityName == "Archer") {
+                if (entityName == "Warrior" || entityName == "Archer") {
                     selfHasWarrior = true;
                     int tmp_selfWarriorCityDistance = entity.getPosition().distance(self_city);
                     if (selfWarriorCityDistance > tmp_selfWarriorCityDistance) {
@@ -84,22 +76,11 @@ namespace SGA {
                 }
             }
             else {
-                auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
-                if (entityName == "Warrior" || entityName == "Archer") {
-                    enemyHasWarrior = true;
-                    int tmp_enemyWarriorCityDistance = entity.getPosition().distance(self_city);
-                    if (enemyWarriorCityDistance > tmp_enemyWarriorCityDistance) {
-                        enemyWarriorCityDistance = tmp_enemyWarriorCityDistance;
-                        if (enemyWarriorCityDistance <= 5.0) {
-                            enemyWarriorHealth = entity.getParameter("Health");
-                        }
-                    }
-                } 
             }
 
-        }
-		return;
-	}
+        } // end for
+        return;
+    }
 
 	double BasicTBSResourceHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID) {
 		/*
@@ -186,7 +167,7 @@ namespace SGA {
 			std::cout<< "r_worker_distance: "<< r_worker_distance << ", mined/total " << minedGold/totalGold << "\n";
 		}
         double w1 = 1.0;
-        double w2=1.0-w1;
+        double w2 = 1.0-w1;
         double defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID);
 		return w1*reward + w2*defenceR;
 	}

@@ -163,9 +163,7 @@ namespace SGA {
             return 0.0;
         }
 
-        auto entities = state.getEntities();
         double mineReward = 0.0;
-
         double r_worker_distance = 0.0;
 
         if (selfHasWorker) {
@@ -212,12 +210,12 @@ namespace SGA {
         reward /= 100.0;
         reward *= R_TECH_P;
         if (isDebug) {
-            std::cout<<"minedGold/totalGold: "<< minedGold << "/ " <<totalGold << ", mineR: " << mineReward << " tehcR: " << reward;
-            std::cout<<" " <<isResearchedBronzeWorking << " " << isResearchedArchery << " " << isResearchedApprenticeship << "-"<< isResearchedMetallurgy << " " << isResearchedEngineering;
-            std::cout<<std::endl;
+            std::cout<<"minedGold/totalGold: "<< minedGold << "/ " <<totalGold << ", mineR: " << mineReward << " tehcR: " << reward
+                <<" " <<isResearchedBronzeWorking << " " << isResearchedArchery << " " << isResearchedApprenticeship << "-"<< isResearchedMetallurgy << " " << isResearchedEngineering
+                << "\n";
         }
         double w1 = 1.0, w2 = 0.0;
-        double defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID, isDebug);
+        double defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID, false);
 
         return w1*(reward+mineReward) + w2*defenceR;
     }

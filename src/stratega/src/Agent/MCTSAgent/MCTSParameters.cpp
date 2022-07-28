@@ -13,5 +13,6 @@ namespace SGA {
         std::cout << "\tRollouts enabled: " << (rolloutsEnabled ? "True" : "False") << "\n";
         std::cout << "\tEpsilon = " << epsilon << "\n";
         std::cout << "\tContinue Previous Search = " << continuePreviousSearch << "\n";
+        std::cout << "\tDo Abstraction = " << doAbstraction << "\n";
     }
 }

@@ -13,15 +13,17 @@ namespace SGA {
 
         MCTSParameters() {}
 
-        int step = 0; //for debug
+        int step = 0;                           //for debug
 
         double K = sqrt(2);                     //Balance constant for tree policy (UCT)
         int rolloutLength = 3;                  //Lenght of the complete playout.
         bool rolloutsEnabled = true;            //If the simulation/rollout phase should be executed or not.
         bool continuePreviousSearch = true;     //Indicates if tree should be kept between two consecutive decision making steps.
+        double epsilon = 1e-2;                  //Small number to avoid /0
 
         boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);  //Uniform distribution of real numbers in [0,1]
-        double epsilon = 1e-2;                  //Small number to avoid /0
+
+        bool doAbstraction = false;
 
         /// <summary>
         /// Prints the details of this parameters object.
@@ -49,6 +51,7 @@ namespace YAML
             rhs.rolloutLength= node["RolloutLength"].as<int>(rhs.rolloutLength);
             rhs.rolloutsEnabled = node["EnableRollouts"].as<bool>(rhs.rolloutsEnabled);
             rhs.continuePreviousSearch = node["ContinuePreviousSearch"].as<bool>(rhs.continuePreviousSearch);
+            rhs.doAbstraction = node["DoAbstraction"].as<bool>(rhs.doAbstraction);
             return true;
         }
     };

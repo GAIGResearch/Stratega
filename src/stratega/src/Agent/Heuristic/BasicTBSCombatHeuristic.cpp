@@ -70,7 +70,6 @@ namespace SGA {
             }
         }
 
-
         for (auto entity : entities) {
             auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
             auto entityName = entityType.getName();

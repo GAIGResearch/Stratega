@@ -17,14 +17,14 @@ namespace SGA
         //parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
         //parameters_.heuristic = std::make_unique<BasicTBSHeuristic>(parameters_.PLAYER_ID, initialState);
 
-        parameters_.heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
-        //parameters_.heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
+        //parameters_.heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
+        parameters_.heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
         // this one is used to get the score of states for debugging;
         // there is some printing function called inside this function, that's why this extra instance is needed
-        debug_heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
-        //debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
+        //debug_heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
+        debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
         //debug_heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
         if (parameters_.budgetType == Budget::UNDEFINED)
@@ -58,15 +58,15 @@ namespace SGA
 
             rootNode = nullptr;
             previousActionIndex = -1;
-			//std::cout<<"Action space size: " << actionSpace.size() <<"  " << std::endl;
+            //std::cout<<"Action space size: " << actionSpace.size() <<"  " << std::endl;
 
-			if (actionSpace.at(0).getActionFlag() == ActionFlag::EndTickAction) {
-				state.printBoard();
-				double tmp_r = debug_heuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
-				std::cout<<"Turn Number: "<< parameters_.step << ", r: "<< tmp_r << "\n";
-				parameters_.step++;
-			}
-			//std::cout<<"ends pint 1 MCTS" <<std::endl;
+            if (actionSpace.at(0).getActionFlag() == ActionFlag::EndTickAction) {
+                //state.printBoard();
+                //double tmp_r = debug_heuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
+                //std::cout<<"Turn Number: "<< parameters_.step << ", r: "<< tmp_r << "\n";
+                parameters_.step++;
+            }
+            //std::cout<<"ends pint 1 MCTS" <<std::endl;
             return ActionAssignment::fromSingleAction(actionSpace.at(0));
         }
         else
@@ -106,16 +106,16 @@ namespace SGA
             // return best action
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction) ? -1 : bestActionIndex;
             if (bestAction.getActionFlag() == ActionFlag::EndTickAction) {
-				
-				state.printBoard();
-				double tmp_r = debug_heuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
-				std::cout<<"mcts cp2, Turn Number: "<< parameters_.step << ", r: "<< tmp_r << std::endl;
+
+                //state.printBoard();
+                //double tmp_r = debug_heuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
+                //std::cout<<"mcts cp2, Turn Number: "<< parameters_.step << ", r: "<< tmp_r << std::endl;
                 parameters_.step++;
             }
 
-			//rootNode->printTree();
-			state.printActionInfo(bestAction);
-			//std::cout<<"End MCTS" << std::endl;
+            //rootNode->printTree();
+            //state.printActionInfo(bestAction);
+            //std::cout<<"End MCTS" << std::endl;
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }

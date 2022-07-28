@@ -3,7 +3,7 @@
 
 namespace SGA {
 
-	void BasicTBSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) {
+    void BasicTBSAgent::init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) {
 
 		initialized = true; // This function is called by GameRunner
 		workers = std::vector<int>();
@@ -63,8 +63,8 @@ namespace SGA {
         return;
     }
 
-	ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
-        if (dis(getRNGEngine()) > 0.6) {
+    ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
+        if (dis(getRNGEngine()) > 0.87) {
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             auto actionIndex = actionDist(getRNGEngine());
@@ -85,7 +85,6 @@ namespace SGA {
             {
                 opponentEntites.insert(entity.getID());
 
-                
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
                 if(entityType.getName() == "Warrior" ){
@@ -97,71 +96,70 @@ namespace SGA {
                 }
             } else if(entity.getOwnerID() == getPlayerID()) {
                 playerEntities.insert(entity.getID());
-				if(entityType.getName() == "Worker" ){
-					if((workers.size()==0) || std::find(workers.begin(), workers.end(), entity.getID())==workers.end()){
-						workers.push_back( entity.getID());
-					}
-				}else if(entityType.getName() == "Barracks" ){
-					if((barracks.size()==0) || std::find(barracks.begin(), barracks.end(), entity.getID())==barracks.end()){
-						barracks.push_back( entity.getID());
-					}
-				}
-				else if (entityType.getName() == "Warrior") {
-					if( std::find(farAwarAttackable.begin(), 
-							      farAwarAttackable.end(), 
-					              entity.getID()) == farAwarAttackable.end()) {
-						if (farAwarAttackable.size() < 2) {
-							farAwarAttackable.push_back(entity.getID());
-						}
-						else if (std::find(nearbyAttackable.begin(), 
-							      nearbyAttackable.end(), 
-					              entity.getID()) == nearbyAttackable.end()) {
-							nearbyAttackable.push_back(entity.getID());
-						}
+                if(entityType.getName() == "Worker" ){
+                    if((workers.size()==0) || std::find(workers.begin(), workers.end(), entity.getID())==workers.end()){
+                        workers.push_back( entity.getID());
+                    }
+                }else if(entityType.getName() == "Barracks" ){
+                    if((barracks.size()==0) || std::find(barracks.begin(), barracks.end(), entity.getID())==barracks.end()){
+                        barracks.push_back( entity.getID());
+                    }
+                }
+                else if (entityType.getName() == "Warrior") {
+                    if( std::find(farAwarAttackable.begin(), 
+                                    farAwarAttackable.end(), 
+                                    entity.getID()) == farAwarAttackable.end()) {
+                        if (farAwarAttackable.size() < 2) {
+                            farAwarAttackable.push_back(entity.getID());
+                        }
+                        else if (std::find(nearbyAttackable.begin(), 
+                                    nearbyAttackable.end(), 
+                                    entity.getID()) == nearbyAttackable.end()) {
+                            nearbyAttackable.push_back(entity.getID());
+                        }
 
-					}
-				}
-			}
+                    }
+                }
+            }
             else {} // not owned entity such as goldVein
         }
 
-		// maintain entity vectors, delete dead unit;
-		for (int e_id = farAwarAttackable.size()-1 ; e_id >=0; e_id--){
-			if(std::find(playerEntities.begin(), playerEntities.end(), farAwarAttackable[e_id]) == playerEntities.end()){
-				farAwarAttackable.erase(farAwarAttackable.begin()+e_id);
-			}
-		}
-		for (int e_id = nearbyAttackable.size()-1 ; e_id >=0; e_id--){
-			if(std::find(playerEntities.begin(), playerEntities.end(), nearbyAttackable[e_id]) == playerEntities.end()){
-				nearbyAttackable.erase(nearbyAttackable.begin()+e_id);
-			}
-		}
-		for (int e_id = workers.size()-1 ; e_id >=0; e_id--){
-			if(std::find(playerEntities.begin(), playerEntities.end(), workers[e_id]) == playerEntities.end()){
-				workers.erase(workers.begin()+e_id);
-			}
-		}
-		for(int e_id = goldVeinPosition.size()-1 ; false && e_id >=0; e_id--){
-			//TODO@if gold resource is exhausted, remove this goldVein from the vectors;
-			// for now, it seems not many operation depends on gold, can implement it later
-		}
-		
-		//const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
-		
-		//Spawn worker
-		if( (workers.size()) < 1 && (getProduction(state) > 3)){
-			auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
-									*(state.getEntity(self_city_id)), getPlayerID(), false);
-			if (actionSpace_tmp.size() > 0){
-				int a_idx = filterSpawnWorker(state, actionSpace_tmp);
+        // maintain entity vectors, delete dead unit;
+        for (int e_id = farAwarAttackable.size()-1 ; e_id >=0; e_id--){
+            if(std::find(playerEntities.begin(), playerEntities.end(), farAwarAttackable[e_id]) == playerEntities.end()){
+                farAwarAttackable.erase(farAwarAttackable.begin()+e_id);
+            }
+        }
+        for (int e_id = nearbyAttackable.size()-1 ; e_id >=0; e_id--){
+            if(std::find(playerEntities.begin(), playerEntities.end(), nearbyAttackable[e_id]) == playerEntities.end()){
+                nearbyAttackable.erase(nearbyAttackable.begin()+e_id);
+            }
+        }
+        for (int e_id = workers.size()-1 ; e_id >=0; e_id--){
+            if(std::find(playerEntities.begin(), playerEntities.end(), workers[e_id]) == playerEntities.end()){
+                workers.erase(workers.begin()+e_id);
+            }
+        }
+        for(int e_id = goldVeinPosition.size()-1 ; false && e_id >=0; e_id--){
+            //TODO@if gold resource is exhausted, remove this goldVein from the vectors;
+            // for now, it seems not many operation depends on gold, can implement it later
+        }
 
-				if (a_idx != -1){
+        //const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
 
-					return ActionAssignment::fromSingleAction(actionSpace_tmp[a_idx]);
-				}
-			}
-		}
-		
+        //Spawn worker
+        if( (workers.size()) < 1 && (getProduction(state) > 3)){
+            auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
+                                    *(state.getEntity(self_city_id)), getPlayerID(), false);
+            if (actionSpace_tmp.size() > 0){
+                int a_idx = filterSpawnWorker(state, actionSpace_tmp);
+
+                if (a_idx != -1){
+                    return ActionAssignment::fromSingleAction(actionSpace_tmp[a_idx]);
+                }
+            }
+        }
+
 		// worker go for mining
 		for(auto worker_id:workers){
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(worker_id)), 
@@ -173,7 +171,7 @@ namespace SGA {
 				return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 			}
 		}
-		
+
 		double prod = getProduction(state), gold = getGold(state);
 
 		auto playerActionSpace = forwardModel.generatePlayerActions(state, getPlayerID(), false);
@@ -185,7 +183,7 @@ namespace SGA {
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Mining") {
 						isResearchedMining=true;
-						std::cout<<"--> RESEARCH Mining, player: "<< getPlayerID() << std::endl;
+						//std::cout<<"--> RESEARCH Mining, player: "<< getPlayerID() << std::endl;
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -194,14 +192,14 @@ namespace SGA {
 
 		// Research Discipline
 		if(!(isResearchedDiscipline) && isResearchedMining && !(prod<researchDiciplineProduction)){
-			std::cout<<"[TwoKingdom Combat Agent]: try to research discipline\n";
+			//std::cout<<"[TwoKingdom Combat Agent]: try to research discipline\n";
 			for (int a_idx = 0; (!isResearchedDiscipline) && a_idx < playerActionSpace.size(); a_idx++) {
 				//state.printActionInfo(actionSpace_tmp[a_idx]);
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
-					std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) <<"\n";
+					//std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) <<"\n";
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Discipline") {
 						isResearchedDiscipline=true;
-						std::cout<<"--> RESEARCH Dicipline\n";
+						//std::cout<<"--> RESEARCH Dicipline\n";
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -216,7 +214,7 @@ namespace SGA {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Barracks") {
 						isBuiltBarraks=true;
 
-						std::cout<<"--> BUILD Barracks\n";
+						//std::cout<<"--> BUILD Barracks\n";
 						return ActionAssignment::fromSingleAction(playerActionSpace[a_idx]);
 					}
 				}
@@ -231,7 +229,7 @@ namespace SGA {
 			if (actionSpace_tmp.size() > 0){
 				int a_idx = filterSpawnWarrior(state, actionSpace_tmp);
 				if (a_idx != -1){
-					std::cout<<"SPAWN WARRIOR\n";
+					//std::cout<<"SPAWN WARRIOR\n";
 					return ActionAssignment::fromSingleAction(actionSpace_tmp[a_idx]);
 				}
 			}

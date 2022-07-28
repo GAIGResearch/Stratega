@@ -38,8 +38,8 @@ namespace SGA
 		std::unique_ptr<MCTSNode> rootNode = nullptr;		//Root node of MCTS.
 		int previousActionIndex = -1;						//Indicates the index of the action executed in the previous compute call.
 		MCTSParameters parameters_;							//Configuration of MCTS.
-        std::shared_ptr<BasicTBSResourceHeuristic> debug_heuristic = nullptr;
-        //std::shared_ptr<BasicTBSTechnologyHeuristic> debug_heuristic = nullptr;
+        //std::shared_ptr<BasicTBSResourceHeuristic> debug_heuristic = nullptr;
+        std::shared_ptr<BasicTBSTechnologyHeuristic> debug_heuristic = nullptr;
         //std::shared_ptr<BasicTBSCombatHeuristic> debug_heuristic = nullptr;
 	};
 }
