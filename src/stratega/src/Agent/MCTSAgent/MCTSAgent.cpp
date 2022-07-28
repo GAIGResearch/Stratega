@@ -24,7 +24,7 @@ namespace SGA
         // this one is used to get the score of states for debugging;
         // there is some printing function called inside this function, that's why this extra instance is needed
         //debug_heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
-        debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
+        //debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
         //debug_heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
         if (parameters_.budgetType == Budget::UNDEFINED)

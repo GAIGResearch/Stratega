@@ -142,6 +142,7 @@ namespace SGA {
     double BasicTBSTechnologyHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state,
         const int playerID, bool isDebug) {
         //std::cout<<"End Technology Heuristic"<<"\n";
+        double w1 = 1.0, w2 = 0.0;
 
         if (!initialized) {
             std::cout<<"[ERROR]: The Heuristic instance is not initialized!" << std::endl;
@@ -214,7 +215,7 @@ namespace SGA {
                 <<" " <<isResearchedBronzeWorking << " " << isResearchedArchery << " " << isResearchedApprenticeship << "-"<< isResearchedMetallurgy << " " << isResearchedEngineering
                 << "\n";
         }
-        double w1 = 1.0, w2 = 0.0;
+
         double defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID, false);
 
         return w1*(reward+mineReward) + w2*defenceR;
