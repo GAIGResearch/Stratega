@@ -353,7 +353,7 @@ namespace SGA
 				next_state_hash = SGA::unitStateHash(forwardModel, gsCopy, *unit_nextState);
 			}
 
-			int action_hash = 0;
+			int action_hash = new_childIndex;
 			params.global_transition.addTransition(state_hash, action_hash, next_state_hash, reward);
 			actionToReward.insert(std::pair<int, double>(action_hash, reward));
 			stateCounter.insert(std::pair<int, int>(next_state_hash, 1));

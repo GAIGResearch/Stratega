@@ -15,7 +15,7 @@ Agents:
         ContinuePreviousSearch: false
         AbstractionBatch: 12
         BatchSize: 20
-        RandomAbstraction: true
+        RandomAbstraction: false
         K: 0.1
     #- UnitMCTSAgent:
     #    Budget: FMCALLS
@@ -27,20 +27,20 @@ Agents:
     #    BatchSize: 20
     #    RandomAbstraction: true
     #    K: 0.1
-    #- UnitMCTSAgent:
-    #    DoStateAbstraction: false
-    #    Budget: FMCALLS
-    #    MaxFmCalls: 20000
-    #    RolloutLength: 40
-    #    ContinuePreviousSearch: false
-    #    K: 0.1
+    - UnitMCTSAgent:
+        DoStateAbstraction: false
+        Budget: FMCALLS
+        MaxFmCalls: 30000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        K: 0.1
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 20000
     #    RolloutLength: 20
     #    ContinuePreviousSearch: false
     #    K: 0.1
-    - KTKCombatAgent
+    #- KTKCombatAgent
     #- MinimaxAgent
     #- DoNothingAgent
 

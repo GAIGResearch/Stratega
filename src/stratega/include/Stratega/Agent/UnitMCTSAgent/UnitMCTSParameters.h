@@ -19,7 +19,7 @@ namespace SGA {
 
         bool DO_STATE_ABSTRACTION = false;
 
-        double R_THRESHOLD = 0.1; //0.1, 0.08
+        double R_THRESHOLD = 0.2; //0.1, 0.08
         double T_THRESHOLD = 0.3;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
