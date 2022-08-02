@@ -64,7 +64,9 @@ namespace SGA {
     }
 
     ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
+        //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
         if (dis(getRNGEngine()) > 0.87) {
+
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             auto actionIndex = actionDist(getRNGEngine());
@@ -124,6 +126,7 @@ namespace SGA {
             else {} // not owned entity such as goldVein
         }
 
+
         // maintain entity vectors, delete dead unit;
         for (int e_id = farAwarAttackable.size()-1 ; e_id >=0; e_id--){
             if(std::find(playerEntities.begin(), playerEntities.end(), farAwarAttackable[e_id]) == playerEntities.end()){
@@ -155,10 +158,12 @@ namespace SGA {
                 int a_idx = filterSpawnWorker(state, actionSpace_tmp);
 
                 if (a_idx != -1){
+                    //std::cout<<"spawn worker\n";
                     return ActionAssignment::fromSingleAction(actionSpace_tmp[a_idx]);
                 }
             }
         }
+
 
 		// worker go for mining
 		for(auto worker_id:workers){
@@ -168,6 +173,7 @@ namespace SGA {
 			// if can mine, mine
 			int optimal_a_idx = moveAndAct(state, actionSpace_tmp, goldVein[0], "Mine");
 			if (optimal_a_idx > 0) {
+                //std::cout<<"return mining\n";
 				return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 			}
 		}
@@ -175,6 +181,7 @@ namespace SGA {
 		double prod = getProduction(state), gold = getGold(state);
 
 		auto playerActionSpace = forwardModel.generatePlayerActions(state, getPlayerID(), false);
+
 
 		// do the research
 		if(!(isResearchedMining) && !(prod<researchMiningProduction)){
@@ -205,11 +212,16 @@ namespace SGA {
 				}
 			}
 		}
-		
+
 		// build barracks
 		if (isResearchedMining && isResearchedDiscipline && !(isBuiltBarraks) && !(prod<buildBarracksProduction)) { 
+
+
 			for (int a_idx = 0; a_idx < playerActionSpace.size(); a_idx++) {
-				// state.printActionInfo(playerActionSpace[a_idx]);
+                if (playerActionSpace[a_idx].getActionFlag() == ActionFlag::AbortContinuousAction) {
+                    continue;
+                }
+
 				if (playerActionSpace[a_idx].getActionType().getName() == "Build") {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Barracks") {
 						isBuiltBarraks=true;
@@ -220,6 +232,7 @@ namespace SGA {
 				}
 			}
 		}
+
 
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {

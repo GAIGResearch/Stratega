@@ -6,29 +6,39 @@ GameConfig:
 
 Agents:
 #    - HumanAgent
-    - MCTSAgent:
-        Budget: ITERATIONS
-        Iterations: 500
+#    - MCTSAgent:
+#        Budget: ITERATIONS
+#        Iterations: 500
+#        RolloutLength: 30
+#        ContinuePreviousSearch: false
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: false
+        MaxFmCalls: 10000
         RolloutLength: 30
         ContinuePreviousSearch: false
-    - BasicTBSAgent
-#    - RandomAgent
+        AbstractionBatch: 12
+        BatchSize: 20
+        K: 0.1
+#    - BasicTBSAgent
+    - RandomAgent
 #    - DoNothingAgent
+#    - RandomAgent
 
 Board:
     GenerationType: Manual
     Layout: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
-        M  .  c1 .  .  .  M  .  .  g  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
+        M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  .  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  g  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
 
@@ -44,12 +54,13 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Player:
-    Actions: [Build, Research]
+    Actions: [Build, Research, PlayerEmpty]
     CanSpawn: Buildings
     Parameters:
         Gold: [0,0,1000]
         Prod: [0,5,100]
         Score: [0,0,1000]
+        MovementPoints: [0,5,5]
 
 Tiles:
     Plain:
@@ -76,7 +87,7 @@ Entities:
         Sprite: ../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
-        Actions: [Spawn]
+        Actions: [Spawn, Empty]
         CanSpawn: [Worker]
         Cost:
             Prod: 10
@@ -84,30 +95,33 @@ Entities:
             Health: 200
             StorageCapacity: 50
             Range: 6
+            MovementPoints: [0,1,1]
 
     Barracks:
         Sprite: ../../assets/Entities/barracks.png
         Symbol: b
         LineOfSightRange: 3
         RequiredTechnology: Discipline
-        Actions: [Spawn]
+        Actions: [Spawn, Empty]
         CanSpawn: [Warrior, Archer]
         Cost:
             Prod: 5
         Parameters:
             Health: 100
             Range: 6
+            MovementPoints: [0,1,1]
 
     MilitaryAcademy:
         Sprite: ../../assets/Entities/military.png
         LineOfSightRange: 3
         RequiredTechnology: Mathematics
-        Actions: [Spawn]
+        Actions: [Spawn, Empty]
         CanSpawn: [Catapult]
         Cost:
             Prod: 40
         Parameters:
             Health: 100
+            MovementPoints: [0,1,1]
 
     Foundry:
         Sprite: ../../assets/Entities/foundry.png
@@ -118,6 +132,7 @@ Entities:
             Prod: 50
         Parameters:
             Health: 50
+            MovementPoints: [0,1,1]
             
     Workshop:
         Sprite: ../../assets/Entities/storage.png
@@ -128,6 +143,7 @@ Entities:
             Prod: 50
         Parameters:
             Health: 50
+            MovementPoints: [0,1,1]
 
     Storage:
         Sprite: ../../assets/Entities/castle.png
@@ -140,12 +156,13 @@ Entities:
             Cost: 40
             Health: 50
             StorageCapacity: 50
+            MovementPoints: [0,1,1]
 
     Worker:
         Sprite: ../../assets/Entities/unit_5.png
         Symbol: w
         LineOfSightRange: 3
-        Actions: [Move, Mine]
+        Actions: [Move, Mine, Empty]
         Cost:
             Prod: 5
         Time: 5
@@ -156,12 +173,13 @@ Entities:
             WeaponStrength: 5
             Health: 50
             Range: 3
+            MovementPoints: [0,1,1]
             
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: o
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: [Move, Attack, Empty]
         # RequiredTechnology: BronzeWorking # for simplify it a little bit
         Cost:
             Gold: 80
@@ -172,11 +190,12 @@ Entities:
             WeaponStrength: 50
             Morale: 10
             Health: 50
-            
+            MovementPoints: [0,1,1]
+
     Archer:
         Sprite: ../../assets/Entities/unit_3.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: [Move, Attack, Empty]
         RequiredTechnology: Archery
         Cost:
             Prod: 15
@@ -188,11 +207,12 @@ Entities:
             ReloadTime: 2
             Morale: 10
             Health: 30
-            
+            MovementPoints: [0,1,1]
+
     Catapult:
         Sprite: ../../assets/Entities/unit_4.png
         LineOfSightRange: 3
-        Actions: [Move, Attack]
+        Actions: [Move, Attack, Empty]
         RequiredTechnology: Engineering
         Cost:
             Prod: 20
@@ -204,6 +224,7 @@ Entities:
             ReloadTime: 3
             Morale: 5
             Health: 60
+            MovementPoints: [0,1,1]
 
     GoldVein:
         Sprite: ../../assets/Entities/gold_chest.png
@@ -214,6 +235,7 @@ Entities:
             Gold: 80
             PlayerAMined: [0,0,1000]
             PlayerBMined: [0,0,1000]
+            MovementPoints: [0,1,1]
 
 EntityGroups:
     Units: [Worker, Warrior, Archer, Catapult]
@@ -239,9 +261,10 @@ Actions:
         Effects:
             - "Attack(Target.Health, Source.WeaponStrength)"
 
-    # Move Actions
     Move:
         Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Cooldown: 1
         Targets:
             Target:
@@ -259,11 +282,13 @@ Actions:
                     - "IsWalkable(Target)"
         Effects:
             - "Move(Source, Target)"
+            - "SetToMinimum(Source.MovementPoints)"
 
-    #Research
     Research:
         Type: PlayerAction
         Cooldown: 0
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Targets:
             Target:
                 Type: Technology
@@ -278,6 +303,7 @@ Actions:
         OnComplete:
             - "Research(Source, Target)"
             - "ModifyResource(Source.Score, 10)"
+            - "ModifyResource(Source.MovementPoints, -1)"
 
     Mine:
         Type: EntityAction
@@ -326,6 +352,8 @@ Actions:
     #Build
     Build:
         Type: PlayerAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Cooldown: 1
         Targets:
             EntityTypeTarget:
@@ -348,6 +376,21 @@ Actions:
             - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
             - "PayCost(Source, EntityTypeTarget)"
             - "ModifyResource(Source.Score, 5)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    Empty:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Effects:
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    PlayerEmpty:
+        Type: PlayerAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Effects:
+            - "SetToMinimum(Source.MovementPoints)"
 
 TechnologyTrees:
     SingleTree:
@@ -445,6 +488,14 @@ ForwardModel:
             Effects:
                 - "ModifyResource(Source.Player.Gold, -2)"
                 - "ModifyResource(Source.Player.Prod, 4)"
+        - OnTick:
+            Type: Entity
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"
+        - OnTick:
+            Type: Player
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"
 
 #Game Description
 GameDescription:

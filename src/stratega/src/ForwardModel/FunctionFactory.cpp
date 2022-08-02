@@ -48,6 +48,7 @@ namespace SGA
 		factory.registerFunction<SpawnEntity>("SpawnEntity");
 		factory.registerFunction<SpawnEntityGrid>("SpawnEntityGrid");
 		factory.registerFunction<SetToMaximum>("SetToMaximum");
+        factory.registerFunction<SetToMinimum>("SetToMinimum");
 		factory.registerFunction<TransferEffect>("Transfer");
 		factory.registerFunction<ChangeOwnerEffect>("ChangeOwner");
 		factory.registerFunction<RemoveEntityEffect>("Remove");

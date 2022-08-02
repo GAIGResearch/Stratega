@@ -3,6 +3,9 @@
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
+#include <Stratega/Agent/Heuristic/BasicTBSTechnologyHeuristic.h>
+#include <Stratega/Agent/Heuristic/BasicTBSResourceHeuristic.h>
+#include <Stratega/Agent/Heuristic/BasicTBSCombatHeuristic.h>
 #include <Stratega/Agent/UnitMCTSAgent/Transition.h>
 #include <boost/random.hpp>
 #include <yaml-cpp/yaml.h>
@@ -48,6 +51,11 @@ namespace SGA {
         // std::make_unique<MinimizeDistanceHeuristic>();
 
         std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();
+
+        /*
+        * Use an independent heuristic for MDP homomorphism.
+        */
+        std::shared_ptr<StateHeuristic> abstractionHeuristic;
 
         void printDetails() const;
     };

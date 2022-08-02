@@ -10,10 +10,7 @@ namespace SGA
     {
         parameters_.PLAYER_ID = getPlayerID();
         // The heuristic is set here because some heuristics have parameters depending on the game state. e.g. num_units
-        /*
-            if (parameters_.heuristic == nullptr)
-                parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
-        */
+
         //parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
         //parameters_.heuristic = std::make_unique<BasicTBSHeuristic>(parameters_.PLAYER_ID, initialState);
 
@@ -27,12 +24,29 @@ namespace SGA
         //debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
         //debug_heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
+        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
-        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+
+
+        stepInit();
 
         parameters_.printDetails();
     }
+
+    void MCTSAgent::stepInit()
+        {
+            depthToNodes = std::map< int, std::vector< MCTSNode* > >();
+
+            absNodes = std::vector< std::vector< std::vector< MCTSNode* > > >();
+            for(int i = 0; i < 100; i++) {
+                absNodes.push_back(std::vector< std::vector< MCTSNode* > >());
+            }
+
+            absNodeToStatistics = std::map< int, std::vector< double > >();
+            treeNodetoAbsNode = std::map< int, int >();
+        }
 
 
     ActionAssignment MCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
@@ -87,17 +101,18 @@ namespace SGA
             {
                 // start a new tree
                 rootNode = std::make_unique<MCTSNode>(*processedForwardModel, state, getPlayerID());
-
+                rootNode->nodeDepth=0;
             }
+
             if (DEBUG) {
                 std::cout<<"Start Search" <<"\n";
             }
 
             if (!parameters_.doAbstraction) {
-                rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+                rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine(), &depthToNodes, &absNodeToStatistics);
             }
             else {
-                 rootNode->searchMCTSBatch(*processedForwardModel, parameters_, getRNGEngine());
+                 rootNode->searchMCTSBatch(*processedForwardModel, parameters_, getRNGEngine(), &depthToNodes, &absNodeToStatistics);
                  //doAbstraction
             }
 

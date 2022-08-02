@@ -170,6 +170,15 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+    class SetToMinimum : public Effect
+	{
+		FunctionParameter targetResource;
+		
+	public:
+		SetToMinimum(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class TransferEffect : public Effect
 	{
 		FunctionParameter sourceParam;

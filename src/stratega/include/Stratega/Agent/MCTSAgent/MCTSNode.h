@@ -8,7 +8,19 @@ namespace SGA {
 	{
 	public:
 		int nodeDepth = 0;                      //Depth of this node in the tree.
-		int treesize = 1;                       //Reference to the number of nodes in the tree behind this node..
+		int treesize = 1;                       //Reference to the number of nodes in the tree behind this node.
+
+        // MDP homomorphism
+        std::map<int, double> actionToReward;
+        std::map<int, int> stateCounter;
+        std::vector<int> actionHashVector;
+        std::map<int, int> actionHashes;
+        std::vector<int> nextStateHashVector;
+        // MDP homomorphism
+        double absValue = 0.0;
+        int absVisitCount = 0;
+        bool isAbstracted = false;
+        int absNodeID = -1;                     //Each abstract state (node) has a unique ID
 
 	protected:
 		int nVisits = 0;                        //number of visits to this node.
@@ -25,17 +37,20 @@ namespace SGA {
 		/// <summary>
 		/// MCTS Tree Policy phase.
 		/// </summary>
-		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+		MCTSNode* treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
 
 		/// <summary>
 		/// MCTS Expansion phase.
 		/// </summary>
-		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+		MCTSNode* expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<MCTSNode*> >* depthToNodes);
 
 		/// <summary>
 		/// Chooses a child node with the highest UCB value.
 		/// </summary>
-		MCTSNode* uct(MCTSParameters& params, boost::mt19937& randomGenerator);
+		MCTSNode* uct(MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<double> >* absNodeToStatistics);
 
 		/// <summary>
 		/// MCTS Rollout phase.
@@ -50,7 +65,8 @@ namespace SGA {
 		/// <summary>
 		/// MCTS Back-propagation phase.
 		/// </summary>
-		static void backUp(MCTSNode* node, double result);
+		static void backUp(MCTSNode* node, double result,
+            std::map<int, std::vector<double> >* absNodeToStatistics);
 
 		/// <summary>
 		/// Returns the best action found by the tree.
@@ -80,7 +96,8 @@ namespace SGA {
 		/// <summary>
 		/// Function for the main iteration of the MCTS algorithm
 		/// </summary>
-		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+		void searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
 
 		/// <summary>
 		/// Returns the index of the most visited action of this node.
@@ -93,7 +110,13 @@ namespace SGA {
 		void print() const override;
 
         // functions for abstraction
-        void searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator);
+        void searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
+        double getValue(std::map<int, std::vector<double>>* absNodeToStatistics);
+        void setValue(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase);
+        int getVisitCount(std::map<int, std::vector<double> >* absNodeToStatistics);
+        void setVisitCount(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase);
+        void eliminateAbstraction();
 
 	private:
 

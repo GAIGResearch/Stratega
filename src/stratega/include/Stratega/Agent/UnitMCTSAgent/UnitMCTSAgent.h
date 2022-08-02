@@ -9,6 +9,19 @@ namespace SGA {
 
     class UnitMCTSAgent: public Agent {
     public:
+
+        std::map< int, std::vector< UnitMCTSNode* > > depthToNodes;
+
+        std::vector< std::vector< std::vector< UnitMCTSNode* > > >
+            absNodes;  // first dimension: depth, second dimension: absnode Index, second
+        std::map< int, std::vector< double > >
+            absNodeToStatistics;  // 1st, 2nd, and 3rd dimension of absNodes as key, pair of <value,
+                                // visitCount> as value
+        int global_absNodeIndex = 0;
+        std::map< int, int > treeNodetoAbsNode;
+
+        bool newRound = true;
+
         void init(GameState initialState, const ForwardModel& /*forwardModel*/, Timer /*timer*/);
 
         explicit UnitMCTSAgent(const std::string& name, UnitMCTSParameters&& params) : Agent{ name }, parameters_(std::move(params))
@@ -19,16 +32,8 @@ namespace SGA {
             // parameters_.OPPONENT_MODEL = nullptr;		// the opponent model has not been correctly
             // set in the NTBEA evaluation
             unitIndex = std::vector< int >();
-            depthToNodes = std::map< int, std::vector< UnitMCTSNode* > >();
 
-            absNodes = std::vector< std::vector< std::vector< UnitMCTSNode* > > >();
-            for(int i = 0; i < 100; i++) {
-                absNodes.push_back(std::vector< std::vector< UnitMCTSNode* > >());
-            }
-
-            absNodeToStatistics = std::map< int, std::vector< double > >();
-
-            treeNodetoAbsNode = std::map< int, int >();
+            stepInit();
         }
 
         void stepInit()
@@ -65,29 +70,26 @@ namespace SGA {
             double reward_threshold,
             double transition_threshold);
 
-        std::map< int, std::vector< UnitMCTSNode* > > depthToNodes;
+        std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
 
-        std::vector< std::vector< std::vector< UnitMCTSNode* > > >
-            absNodes;  // first dimension: depth, second dimension: absnode Index, second
-        std::map< int, std::vector< double > >
-            absNodeToStatistics;  // 1st, 2nd, and 3rd dimension of absNodes as key, pair of <value,
-                                // visitCount> as value
-        int global_absNodeIndex = 0;
-        std::map< int, int > treeNodetoAbsNode;
-
-        bool newRound = true;
-
-        private:
-        bool initialized = false;
+private:
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;
-        int previousActionIndex = -1;
         UnitMCTSParameters parameters_;
+
+        bool initialized = false;
+        int previousActionIndex = -1;
         bool continuePreviousSearch = true;
         int playerTurn = -1;
         int step = 1;
-        std::vector< int > unitIndex;
+
         bool unitIndexInitialized = false;
         int unitThisStep = 0;  // this is an array index of unitIndex
         int unitNextStep = 0;
+
+        /*
+        * at the beginning of each round, the unit informatino is stored
+        */
+        std::vector< int > unitIndex;
+
     };
 }  // namespace SGA

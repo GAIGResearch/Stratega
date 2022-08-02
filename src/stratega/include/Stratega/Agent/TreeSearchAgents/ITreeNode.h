@@ -94,7 +94,7 @@ namespace SGA
 
 					// print the value of the node
 					node->print();
-					std::cout << " " << actionName << "\n";// << std::endl;
+					//std::cout << " " << actionName << "\n";// << std::endl;
 
 					// enter the next tree level - left and right branch
 					for (size_t i = 0; i < node->children.size(); ++i)
@@ -118,7 +118,7 @@ namespace SGA
 
                     node->print();
 
-					std::cout << " [CS]: " << node->children.size() << "; " << actionName << "\n";
+					//std::cout << " [CS]: " << node->children.size() << "; " << actionName << "\n";
 				}
 			}
 		}

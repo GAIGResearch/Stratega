@@ -284,6 +284,20 @@ namespace SGA
 		paramValue = param.getMaxValue();
 	}
 
+    SetToMinimum::SetToMinimum(const std::string exp, const std::vector<FunctionParameter>& parameters)
+	: Effect(exp), 
+	targetResource(parameters[0])
+	{
+	}
+
+	void SetToMinimum::execute(GameState& state, const ForwardModel&, const std::vector<ActionTarget>& targets) const
+	{
+		const auto& param = targetResource.getParameter(state, targets);
+		auto& paramValue = targetResource.getRawParameterValue(state, targets);
+
+		paramValue = param.getMinValue();
+	}
+
 	TransferEffect::TransferEffect(const std::string exp, const std::vector<FunctionParameter>& parameters)
 		: Effect(exp), 
 		sourceParam(parameters[0]), targetParam(parameters[1]), amountParam(parameters[2])

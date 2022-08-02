@@ -35,14 +35,15 @@ namespace SGA
 	/// </summary>
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
-	void MCTSNode::searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
+	void MCTSNode::searchMCTSBatch(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+        std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics) {
 
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
 
 		while (!params.isBudgetOver()) {
 			//std::cout<<"before selection\n";
-			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator, depthToNodes, absNodeToStatistics);
 			if (last_selected != nullptr) {
 				if (last_selected == selected)
 					n_repeat_selection++;
@@ -62,7 +63,7 @@ namespace SGA
 			delta = selected->rollOut(forwardModel, params, randomGenerator);
 
             //std::cout<<"before backup\n";
-			backUp(selected, delta);
+			backUp(selected, delta, absNodeToStatistics);
 
             //std::cout<< selected->nVisits << "\n";
 
@@ -76,7 +77,8 @@ namespace SGA
 
 	}
 
-    	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator) {
+    	void MCTSNode::searchMCTS(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+            std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics) {
 
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
@@ -84,7 +86,7 @@ namespace SGA
 		while (!params.isBudgetOver() && itr_counter< params.absBatchSize) {
             itr_counter++;
 			//std::cout<<"before selection\n";
-			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
+			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator, depthToNodes, absNodeToStatistics);
 			if (last_selected != nullptr) {
 				if (last_selected == selected)
 					n_repeat_selection++;
@@ -104,7 +106,7 @@ namespace SGA
 			delta = selected->rollOut(forwardModel, params, randomGenerator);
 
             //std::cout<<"before backup\n";
-			backUp(selected, delta);
+			backUp(selected, delta, absNodeToStatistics);
 
             //std::cout<< selected->nVisits << "\n";
 
@@ -126,7 +128,8 @@ namespace SGA
 	/// <param name="params">parameters of the search</param>
 	/// <param name="randomGenerator"></param>
 	/// <returns></returns>
-	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::treePolicy(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& randomGenerator,
+        std::map<int, std::vector<MCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics)
 	{
 		MCTSNode* cur = this;
 
@@ -134,17 +137,18 @@ namespace SGA
 		{
 			//If not fully expanded, add a new child
 			if (!cur->isFullyExpanded()) {
-				return (cur->expand(forwardModel, params, randomGenerator));
+				return (cur->expand(forwardModel, params, randomGenerator, depthToNodes));
 			}
 			else {
 				//otherwise apply UCT to navigate the tree.
-				cur = cur->uct(params, randomGenerator);
+				cur = cur->uct(params, randomGenerator, absNodeToStatistics);
 			}
 		}
 		return cur;
 	}
 
-	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& /*randomGenerator*/)
+	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& /*randomGenerator*/,
+        std::map<int, std::vector<MCTSNode*> >* depthToNodes)
 	{
 
 		//todo remove unnecessary copy of gameState
@@ -154,14 +158,15 @@ namespace SGA
 
 		// generate child node and add it to the tree
 		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
-        //std::cout<< "[CS]: " << children.size() <<  " childIndex: "<< childIndex<<"\n";
+        children[children.size()-1]->nodeDepth=nodeDepth+1;
 
         childIndex ++ ;
         //printTree();
         return children[static_cast<size_t>(children.size()-1)].get();
     }
 
-	MCTSNode* MCTSNode::uct(MCTSParameters& params, boost::mt19937& randomGenerator)
+	MCTSNode* MCTSNode::uct(MCTSParameters& params, boost::mt19937& randomGenerator,
+        std::map<int, std::vector<double> >* absNodeToStatistics)
 	{
 		//Find out if this node corresponds to a state where I can move.
 		bool amIMoving = gameState.canPlay(params.PLAYER_ID);
@@ -172,13 +177,19 @@ namespace SGA
 			MCTSNode* child = children[i].get();
 
 			//Compute the value of the child. First the exploitation value:
-			const double hvVal = child->value;
-			double childValue = hvVal / (child->nVisits + params.epsilon);
+			//const double hvVal = child->value;
+			//double childValue = hvVal / (child->nVisits + params.epsilon);
+            const double hvVal = child->getValue(absNodeToStatistics);
+            double childVisitCount = child->getVisitCount(absNodeToStatistics);
+			double childValue = hvVal / (childVisitCount + params.epsilon);
 			//childValue = normalize(childValue, bounds[0], bounds[1]);
 
 			//Then add the exploration factor multiplied by constant K.
-			double uctValue = childValue +
-				params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
+			//double uctValue = childValue +
+			//	params.K * sqrt(log(this->nVisits + 1) / (child->nVisits + params.epsilon));
+
+            double uctValue = childValue +
+				params.K * sqrt(log(getVisitCount(absNodeToStatistics) + 1) / (childVisitCount + params.epsilon));
 
 			//Add a small noise to break ties randomly
 			uctValue = noise(uctValue, params.epsilon, params.doubleDistribution_(randomGenerator));
@@ -284,13 +295,16 @@ namespace SGA
 	}
 
 	//Backpropagation in MCTS. Update number of visits, accummulated reward value and node reward bounds.
-	void MCTSNode::backUp(MCTSNode* node, const double result)
+	void MCTSNode::backUp(MCTSNode* node, const double result,
+        std::map<int, std::vector<double> >* absNodeToStatistics)
 	{
 		MCTSNode* n = node;
 		while (n != nullptr)
 		{
-			n->nVisits++;
-			n->value += result;
+			//n->nVisits++;
+            n->setVisitCount(1, absNodeToStatistics, true);
+			//n->value += result;
+            n->setValue(result, absNodeToStatistics, true);
 			if (result < n->bounds[0]) {
 				n->bounds[0] = result;
 			}
@@ -314,14 +328,17 @@ namespace SGA
 
 			if (children[i] != nullptr)
 			{
+                double childValue = children[i]->nVisits;
 				if (first == -1)
-					first = children[i]->nVisits;
-				else if (first != children[i]->nVisits)
+					//first = children[i]->nVisits;
+                    first = childValue;
+				//else if (first != children[i]->nVisits)
+                else if (first != childValue)
 				{
 					allEqual = false;
 				}
 
-				double childValue = children[i]->nVisits;
+				//double childValue = children[i]->nVisits;
 
 				//Add a small noise (<<1) to all values to break ties randomly
 				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
@@ -360,12 +377,11 @@ namespace SGA
 					selected = static_cast<int>(i);
 				}
 			}
-		}
+		}// end for
 
 		if (selected == -1)
 		{
 			//This shouldn't happen, just pick the first action.
-			//cout << "Unexpected selection!" << "\n";
 			selected = 0;
 		}
 
@@ -412,9 +428,79 @@ namespace SGA
 		}
 	}
 
-	void MCTSNode::print() const
-	{
-		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size();
+    // functions for abstraction
+    double MCTSNode::getValue(std::map<int, std::vector<double>>* absNodeToStatistics) {
+        if (isAbstracted) {
+            absValue = (*absNodeToStatistics)[absNodeID][0];
+            return absValue;
+        }
+        else {
+            return value;
+        }
+    }
+
+    void MCTSNode::setValue(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase){
+        if (isAbstracted) {
+            if (increase) {
+                (*absNodeToStatistics)[absNodeID][0] += result;
+            }
+            else {
+                (*absNodeToStatistics)[absNodeID][0] = result;
+            }
+        }
+
+        // also modify the original
+        if (increase) {
+            value += result;
+        }
+        else {
+            value = result;
+        }
+    }
+
+    int MCTSNode::getVisitCount(std::map<int, std::vector<double> >* absNodeToStatistics) {
+		if (isAbstracted) {
+			absVisitCount = (*absNodeToStatistics)[absNodeID][1];
+			return absVisitCount;
+		}
+		else {
+			return nVisits;
+		}
 	}
+
+    void MCTSNode::setVisitCount(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase) {
+        if (isAbstracted) {
+            if (increase) {
+                (*absNodeToStatistics)[absNodeID][1] += result;
+            }
+            else {
+                (*absNodeToStatistics)[absNodeID][1] = result;
+            }
+        }
+
+        // also modified the original
+        if (increase) {
+            nVisits += result;
+        }
+        else {
+            nVisits = result;
+        }
+    }
+
+    void MCTSNode::eliminateAbstraction()
+    {
+        if (isAbstracted) {
+            isAbstracted = false;
+        }
+        for (int i = 0; i < children.size(); i++)
+        {
+            children[i]->eliminateAbstraction();
+        }
+    }
+
+    void MCTSNode::print() const
+    {
+        std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size();
+    }
 
 }

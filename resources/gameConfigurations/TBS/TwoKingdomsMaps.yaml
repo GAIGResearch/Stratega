@@ -1,143 +1,143 @@
 Maps:
     Map1: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
 
     Map2: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map3: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map4: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map5: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map6: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
 
     Map7: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map8: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map9: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M
     Map10: |-
         M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  .  .  .  .  M
+        M  .  .  M  .  .  .  .  g  .  .  g  M
         M  .  c1 .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  M  .  .  .  .  .  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  g  .  .  F  W
-        M  .  .  .  .  .  .  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  g  .  W
+        M  .  g  .  .  .  .  .  .  .  F  g  W
+        M  .  .  .  .  .  g  .  M  .  .  F  W
+        M  .  .  M  M  M  .  .  M  .  .  .  W
         M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  .  .  .  .  M
-        M  .  c0 F  F  .  .  .  .  .  .  .  M
+        M  .  F  F  F  .  .  .  M  .  .  .  M
+        M  .  c0 F  F  .  .  M  g  .  .  g  M
         M  .  .  .  .  .  .  .  .  .  .  .  M
         M  M  M  M  M  M  M  M  M  M  M  M  M

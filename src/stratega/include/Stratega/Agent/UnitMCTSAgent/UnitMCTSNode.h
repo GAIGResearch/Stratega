@@ -72,7 +72,8 @@ namespace SGA {
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_);
 
           //void setRootGameState(shared_ptr<TreeNode> root);
-          void searchMCTS(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator, std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
+          void searchMCTS(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator, 
+              std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes, std::map<int, std::vector<double> >* absNodeToStatistics);
           int mostVisitedAction(UnitMCTSParameters& params, boost::mt19937& randomGenerator);
           void print() const override;
           void get_branching_number(std::vector<int>* v, int* n);

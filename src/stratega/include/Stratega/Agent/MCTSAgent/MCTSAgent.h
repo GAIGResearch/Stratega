@@ -41,5 +41,42 @@ namespace SGA
         //std::shared_ptr<BasicTBSResourceHeuristic> debug_heuristic = nullptr;
         std::shared_ptr<BasicTBSTechnologyHeuristic> debug_heuristic = nullptr;
         //std::shared_ptr<BasicTBSCombatHeuristic> debug_heuristic = nullptr;
-	};
+
+        // variables for abstraction
+        std::map< int, std::vector< MCTSNode* > > depthToNodes;
+
+        // first dimension: depth, second dimension: absnode Index, second
+        std::vector< std::vector< std::vector< MCTSNode* > > > absNodes;
+
+        /*1st, 2nd, and 3rd dimension of absNodes as key, pair of <value,
+        * visitCount> as value
+        */
+        std::map< int, std::vector< double > > absNodeToStatistics;
+
+        int global_absNodeIndex = 0;
+        std::map< int, int > treeNodetoAbsNode;
+
+        // functions for abstraction
+        void stepInit();
+
+        void deleteAbstraction()
+        {
+            // initialize the abstraction-related data as empty
+            absNodes = std::vector< std::vector< std::vector< MCTSNode* > > >();
+            for(int i = 0; i < 100; i++) {
+                absNodes.push_back(std::vector< std::vector< MCTSNode* > >());
+            }
+
+            absNodeToStatistics = std::map< int, std::vector< double > >();
+            treeNodetoAbsNode = std::map< int, int >();
+        }
+
+        bool isTwoNodeApproxmateHomomorphism(
+            const ForwardModel& forwardModel,
+            MCTSNode* node1,
+            MCTSNode* node2,
+            double reward_threshold,
+            double transition_threshold);
+    };
+
 }

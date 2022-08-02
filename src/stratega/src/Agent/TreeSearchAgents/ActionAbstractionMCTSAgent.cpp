@@ -35,7 +35,7 @@ namespace SGA
             }
 
             //params.printDetails();
-            rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+            rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine(), nullptr, nullptr);
             //rootNode->printTree();
 
             // get and store best action
