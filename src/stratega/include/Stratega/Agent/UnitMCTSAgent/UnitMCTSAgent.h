@@ -69,6 +69,10 @@ namespace SGA {
             UnitMCTSNode* node2,
             double reward_threshold,
             double transition_threshold);
+        bool isHomomorphismMultiObjective(
+            const ForwardModel& forwardModel,
+            UnitMCTSNode* node1,
+            UnitMCTSNode* node2);
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
 

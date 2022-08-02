@@ -21,6 +21,9 @@ namespace SGA {
 
           // MDP homomorphism
           std::map<int, double> actionToReward;
+          std::map<int, double> actionToTechnologyReward;
+          std::map<int, double> actionToResourceReward;
+          std::map<int, double> actionToCombatReward;
           std::map<int, int> stateCounter;
           std::vector<int> actionHashVector;
           std::map<int, int> actionHashes;

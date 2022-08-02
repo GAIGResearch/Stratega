@@ -15,5 +15,15 @@ void UnitMCTSParameters::printDetails() const
     std::cout << "\tEPSILON = "              << EPSILON << "\n";
     std::cout << "\tCONTINUE_PREVIOUSE_SEARCH = " << CONTINUE_PREVIOUS_SEARCH << "\n";
     std::cout << "\tDO_STATE_ABSTRACTION = " << DO_STATE_ABSTRACTION << "\n";
+    if (DO_STATE_ABSTRACTION) {
+        std::cout << "\tABSTRACTION_HEURISTIC = " << abstractionHeuristic->getName() << "\n";
+        if (IS_MULTI_OBJECTIVE) {
+            std::cout << "\tDO_MULTI_OBJECTIVE = true, err_Combat: "<< COMBAT_R_THRESHOLD << " err_Tech: " << TECHNOLOGY_R_THRESHOLD << "\n";
+        }
+        else {
+            std::cout << "\tR_THRESHOLD = "<< R_THRESHOLD << " T_THRESHOLD = " << T_THRESHOLD << "\n";
+        }
+    }
+    
 }
 }  // namespace SGA

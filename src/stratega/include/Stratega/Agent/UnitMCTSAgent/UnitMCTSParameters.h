@@ -3,6 +3,7 @@
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
+#include <Stratega/Agent/Heuristic/TwoKingdomsAbstractionHeuristic.h>
 #include <Stratega/Agent/Heuristic/BasicTBSTechnologyHeuristic.h>
 #include <Stratega/Agent/Heuristic/BasicTBSResourceHeuristic.h>
 #include <Stratega/Agent/Heuristic/BasicTBSCombatHeuristic.h>
@@ -23,8 +24,11 @@ namespace SGA {
 
         bool DO_STATE_ABSTRACTION = false;
 
-        double R_THRESHOLD = 0.1; //0.1, 0.08
+        double R_THRESHOLD = 0.2; //0.1, 0.08
         double T_THRESHOLD = 0.3;
+        double TECHNOLOGY_R_THRESHOLD = 0.2;
+        double COMBAT_R_THRESHOLD = 0.5;
+        //double RESOURCE_R_THRESHOLD = 0.0;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
         double REMAINING_FM_CALLS = -1;
@@ -39,6 +43,8 @@ namespace SGA {
         int batch_size = 20;
         int n_batch_stop = 2;
         int absBatch = 10000;
+
+        bool IS_MULTI_OBJECTIVE = false;
 
         // for state abstraction according to the value;
         std::vector< double > approx_Q = {};
@@ -55,7 +61,8 @@ namespace SGA {
         /*
         * Use an independent heuristic for MDP homomorphism.
         */
-        std::shared_ptr<StateHeuristic> abstractionHeuristic;
+        std::shared_ptr<TwoKingdomsAbstractionHeuristic> abstractionHeuristic;
+        //std::shared_ptr<BasicTBSTechnologyHeuristic> abstractionHeuristic;
 
         void printDetails() const;
     };
@@ -76,6 +83,7 @@ namespace YAML {
             rhs.CONTINUE_PREVIOUS_SEARCH     = node["ContinuePreviousSearch"].as< bool >(
                 rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
+            rhs.IS_MULTI_OBJECTIVE           = node["IsMultiObjective"].as< int >(rhs.absBatch);
             return true;
         }
     };

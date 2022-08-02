@@ -59,6 +59,9 @@ namespace SGA
         // for state abstraction
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
+        actionToCombatReward = std::map<int, double>();
+        actionToResourceReward = std::map<int, double>();
+        actionToTechnologyReward = std::map<int, double>();
 		stateCounter = std::map<int, int>();
 		actionHashVector = std::vector<int>();
 		nextStateHashVector = std::vector<int>();
@@ -108,6 +111,9 @@ namespace SGA
 
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
+        actionToCombatReward = std::map<int, double>();
+        actionToResourceReward = std::map<int, double>();
+        actionToTechnologyReward = std::map<int, double>();
 		stateCounter = std::map<int, int>();
 		actionHashVector = std::vector<int>();
 		nextStateHashVector = std::vector<int>();
@@ -380,25 +386,43 @@ namespace SGA
         }
         //std::cout<<"sfeagate\n";
 
-		// homomorphism collecting transitions
-		// addTransition(int stateHash, int actionHash, int nextStateHash, double reward);
-		if(params.DO_STATE_ABSTRACTION){
-			double reward = params.abstractionHeuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
-			int eID = unitIndex[unitThisStep];
-			int state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID));
+        // homomorphism collecting transitions
+        // addTransition(int stateHash, int actionHash, int nextStateHash, double reward);
+        if(params.DO_STATE_ABSTRACTION){
+            int action_hash = new_childIndex;
 
-			auto unit_nextState = gameState.getEntity(eID);
+            double reward = params.abstractionHeuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
+            int eID = unitThisStep;
+            int state_hash = -1;
+            if (eID != -1) {
+                eID = unitIndex[unitThisStep];
+                state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID));
+            }
+
             int next_state_hash = -1;
-            std::cout<<"DDDDDDD\n";
-			if (unit_nextState != nullptr) // this unit could be dead next step
-			{
-				next_state_hash = SGA::unitStateHash(forwardModel, gsCopy, *unit_nextState);
-			}
-            std::cout<<"GGGGGG\n";
+            if (eID != -1) {
+                auto unit_nextState = gameState.getEntity(eID);
 
-		    int action_hash = new_childIndex;
+                //std::cout<<"DDDDDDD\n";
+                if (unit_nextState != nullptr) // this unit could be dead next step
+                    {
+                        next_state_hash = SGA::unitStateHash(forwardModel, gsCopy, *unit_nextState);
+                    }
+            }
+
 			params.global_transition.addTransition(state_hash, action_hash, next_state_hash, reward);
-			actionToReward.insert(std::pair<int, double>(action_hash, reward));
+            if (params.IS_MULTI_OBJECTIVE) {
+                double combatReward = params.abstractionHeuristic->getCombatReward(forwardModel, gsCopy, params.PLAYER_ID);
+                double technologyReward = params.abstractionHeuristic->getTechnologyReward(forwardModel, gsCopy, params.PLAYER_ID);
+                //double resourceReward = params.abstractionHeuristic->getResourceReward(forwardModel, gsCopy, params.PLAYER_ID);
+                actionToCombatReward.insert(std::pair<int, double>(action_hash, combatReward));
+                //actionToResourceReward.insert(std::pair<int, double>(action_hash, resourceReward));
+                actionToTechnologyReward.insert(std::pair<int, double>(action_hash, technologyReward));
+            }
+            else {
+                actionToReward.insert(std::pair<int, double>(action_hash, reward));
+            }
+			
 			stateCounter.insert(std::pair<int, int>(next_state_hash, 1));
 			actionHashes.insert(std::pair<int, int>(action_hash, 1));
 			actionHashVector.push_back(action_hash);
@@ -422,7 +446,6 @@ namespace SGA
 			}
 			((*depthToNodes)[nodeDepth + 1]).push_back(children[new_childIndex].get());
 		}
-
 
 		return children[new_childIndex].get();
 	}

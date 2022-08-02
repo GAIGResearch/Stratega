@@ -17,9 +17,12 @@ namespace SGA {
         //parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSResourceHeuristic >(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSTechnologyHeuristic >(parameters_.PLAYER_ID, initialState);
-        parameters_.heuristic = std::make_unique< BasicTBSCombatHeuristic >(parameters_.PLAYER_ID, initialState);
+        //parameters_.heuristic = std::make_unique< BasicTBSCombatHeuristic >(parameters_.PLAYER_ID, initialState);
+        parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState);
 
-        parameters_.abstractionHeuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
+        parameters_.abstractionHeuristic = std::make_unique<TwoKingdomsAbstractionHeuristic>(parameters_.PLAYER_ID, initialState,
+                                            0.0, 1.0, 0.0); // wCombat, wTechnology, wResource
+        //parameters_.abstractionHeuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState); 
 
         parameters_.printDetails();
     }
@@ -142,15 +145,26 @@ namespace SGA {
                         bool match = true;
                         for(int k = 0; k < absNodes[i][j].size();
                             k++) {  // compare between new initial nodes to the abstracted Nodes
-                            if(! isTwoNodeApproxmateHomomorphism(
-                                forwardModel,
-                                node1,
-                                absNodes[i][j][k],
-                                parameters_.R_THRESHOLD,
-                                parameters_.T_THRESHOLD)) {
-                            match = false;
+                            if (!parameters_.IS_MULTI_OBJECTIVE) {
+                                if( !isTwoNodeApproxmateHomomorphism(
+                                    forwardModel,
+                                    node1,
+                                    absNodes[i][j][k],
+                                    parameters_.R_THRESHOLD,
+                                    parameters_.T_THRESHOLD)) {
+                                match = false;
+                                }
                             }
-                        }
+                            else {
+                                if( !isHomomorphismMultiObjective(
+                                    forwardModel,
+                                    node1,
+                                    absNodes[i][j][k])) {
+                                match = false;
+                                }
+                            }
+
+                        } // end for
                         if(match) {
                             node1->isAbstracted = true;
                             node1->absNodeID = i * tmp_index + j;
@@ -383,15 +397,17 @@ namespace SGA {
         // reward checking
         for(int i = 0; i < node1->actionHashVector.size(); i++) {
             double diff_this = 0.0;
+
             int a = node1->actionHashVector[i];
             if(node2->actionHashes.count(a)) {
                 commonActions.insert(std::pair< int, int >(a, 1));
                 commonActionsVector.push_back(a);
+                
                 diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+
             } else {
                 diff_this = abs(
-                node1
-                    ->actionToReward[a]);  // not common action. how many common actions in general [9/3]
+                node1->actionToReward[a]);  // not common action. how many common actions in general [9/3]
                 // different setting. multiply [0-1]
             }
             if(diff_this > max_reward_difference) {
@@ -439,6 +455,112 @@ namespace SGA {
         }
 
         if(transition_error > transition_threshold) {
+            return false;
+        }
+
+        // one of the two condition make the merging happen. 9/3
+        return true;
+    }
+
+    bool UnitMCTSAgent::isHomomorphismMultiObjective(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2){
+
+        auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
+        auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
+        double max_technology_reward_difference = 0.0, max_combat_reward_difference = 0.0, max_resource_reward_difference =0.0;
+        std::map< int, int > commonActions = std::map< int, int >();
+        std::vector< int > commonActionsVector = std::vector< int >();
+
+        // reward checking
+        for(int i = 0; i < node1->actionHashVector.size(); i++) {
+            //double diff_this = 0.0;
+            double diff_technology = 0.0;
+            double diff_resource = 0.0;
+            double diff_combat = 0.0;
+
+            int a = node1->actionHashVector[i];
+            if(node2->actionHashes.count(a)) {
+                commonActions.insert(std::pair< int, int >(a, 1));
+                commonActionsVector.push_back(a);
+                //diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+                diff_technology = abs(node1->actionToTechnologyReward[a] - node2->actionToTechnologyReward[a]);
+                diff_resource = abs(node1->actionToResourceReward[a] - node2->actionToResourceReward[a]);
+                diff_combat = abs(node1->actionToCombatReward[a] - node2->actionToCombatReward[a]);
+            } else {
+                //diff_this = abs(node1->actionToReward[a]);  // not common action. how many common actions in general [9/3]
+                // different setting. multiply [0-1]
+                diff_technology = abs(node1->actionToTechnologyReward[a]);
+                diff_resource = abs(node1->actionToResourceReward[a]);
+                diff_combat = abs(node1->actionToCombatReward[a]);
+            }
+            if(diff_technology > max_technology_reward_difference) {
+                max_technology_reward_difference = diff_technology;
+            }
+            if(diff_resource > max_resource_reward_difference) {
+                max_resource_reward_difference = diff_resource;
+            }
+            if(diff_combat > max_combat_reward_difference) {
+                max_combat_reward_difference = diff_combat;
+            }
+        }
+
+        for(int i = 0; i < node2->actionHashVector.size(); i++) {
+            int a = node2->actionHashVector[i];
+            if(! commonActions.count(a))
+                continue;
+
+            double diff_technology = 0.0;
+            double diff_resource = 0.0;
+            double diff_combat = 0.0;
+
+            if(node1->actionHashes.count(a)) {
+                //diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+                diff_technology = abs(node1->actionToTechnologyReward[a] - node2->actionToTechnologyReward[a]);
+                diff_resource = abs(node1->actionToResourceReward[a] - node2->actionToResourceReward[a]);
+                diff_combat = abs(node1->actionToCombatReward[a] - node2->actionToCombatReward[a]);
+            } else {
+                //diff_this = abs(node2->actionToReward[a]);
+                diff_technology = abs(node2->actionToTechnologyReward[a]);
+                diff_resource = abs(node2->actionToResourceReward[a]);
+                diff_combat = abs(node2->actionToCombatReward[a]);
+            }
+
+            if(diff_technology > max_technology_reward_difference) {
+                max_technology_reward_difference = diff_technology;
+            }
+            if(diff_resource > max_resource_reward_difference) {
+                max_resource_reward_difference = diff_resource;
+            }
+            if(diff_combat > max_combat_reward_difference) {
+                max_combat_reward_difference = diff_combat;
+            }
+        }
+        if(max_technology_reward_difference > parameters_.TECHNOLOGY_R_THRESHOLD && 
+            //max_resource_reward_difference > parameters_.RESOURCE_R_THRESHOLD &&
+            max_combat_reward_difference > parameters_.COMBAT_R_THRESHOLD) {
+            return false;
+        }
+
+        /*
+        A   1, 2
+        B   2, 3
+        */
+        // for all transition
+        double transition_error = 0;
+        for(int i = 0; i < node1->nextStateHashVector.size(); i++) {
+            int s_prime = node1->nextStateHashVector[i];  // s' next state
+            if(! (node2->stateCounter.count(s_prime))) {  // get the same next state
+                transition_error += 1.0;
+            }
+        }
+
+        for(int i = 0; i < node2->nextStateHashVector.size(); i++) {
+            int s_prime = node2->nextStateHashVector[i];
+            if(! (node1->stateCounter.count(s_prime))) {  // get the same next state
+                transition_error += 1.0;
+            }
+        }
+
+        if(transition_error > parameters_.T_THRESHOLD) {
             return false;
         }
 
