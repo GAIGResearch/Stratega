@@ -102,6 +102,7 @@ namespace SGA {
 
             int n_abs_iteration = 0;
             bool stop_abstraction = false;
+            bool is_abstraction_eliminated = false;
 
             while(parameters_.DO_STATE_ABSTRACTION) {
                 if(parameters_.REMAINING_FM_CALLS <= 0)
@@ -116,8 +117,8 @@ namespace SGA {
                 &absNodeToStatistics);
 
                 if(false && ! stop_abstraction && tmp_batch_used % 2 == 0) {
-                deleteAbstraction();  // initialize the array empty again,
-                rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+                    deleteAbstraction();  // initialize the array empty again,
+                    rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
                 }
 
                 // do abstraction
@@ -197,15 +198,28 @@ namespace SGA {
 
                 // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
-                rootNode->eliminateAbstraction();
-                // deleteAbstraction();
-                break;
+                    rootNode->eliminateAbstraction();
+                    // for IJCAI paper
+                    /*
+                    if(!stop_abstraction){
+                        printBoundStatistics();
+                    }
+                    */
+                    break;
                 }
 
-                if(tmp_batch_used >= parameters_.absBatch) {
-                stop_abstraction = true;
-                deleteAbstraction();  // initialize the array empty again,
-                rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+                if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
+                    std::cout<<"Abstraction eliminated!\n";
+                    /*
+                    if(true){
+                        printBoundStatistics();
+                    }
+                    */
+
+                    stop_abstraction = true;
+                    deleteAbstraction();  // initialize the array empty again,
+                    rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+
                 }
             }
 
@@ -256,12 +270,13 @@ namespace SGA {
                 previousActionIndex = -1;
 
             // std::cout << "-> UnitMCTS Action Took: ";
-            // state.printActionInfo(bestAction);
+            //state.printActionInfo(bestAction);
             // std::cout << unitActionHash(bestAction) << std::endl;
             // std::cout << " End printActionInfo " << std::endl;
             //rootNode->printTree();
 
-            /*for (int i = 0; i < 10; i++) { // depth
+            /*
+            for (int i = 0; i < 10; i++) { // depth
 
                 std::cout << absNodes[i].size() << " : ";
 
@@ -382,7 +397,7 @@ namespace SGA {
         std::vector< Action > actionSpace = forwardModel.generateUnitActions(
                 state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
         return actionSpace;
-        }
+    }
 
         // actual reward, what if using the approximate Q? combination of heuristic score [stage1]
     bool UnitMCTSAgent::isTwoNodeApproxmateHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, 
@@ -485,7 +500,9 @@ namespace SGA {
                 diff_technology = abs(node1->actionToTechnologyReward[a] - node2->actionToTechnologyReward[a]);
                 diff_resource = abs(node1->actionToResourceReward[a] - node2->actionToResourceReward[a]);
                 diff_combat = abs(node1->actionToCombatReward[a] - node2->actionToCombatReward[a]);
-            } else {
+            } 
+            // node2 has no same action
+            else {
                 //diff_this = abs(node1->actionToReward[a]);  // not common action. how many common actions in general [9/3]
                 // different setting. multiply [0-1]
                 diff_technology = abs(node1->actionToTechnologyReward[a]);
@@ -534,9 +551,19 @@ namespace SGA {
                 max_combat_reward_difference = diff_combat;
             }
         }
-        if(max_technology_reward_difference > parameters_.TECHNOLOGY_R_THRESHOLD && 
+        //std::cout<< "tech_diff: "<< max_technology_reward_difference << ", combat_diff : "<< max_combat_reward_difference<< "\n";
+        if(max_technology_reward_difference > parameters_.TECHNOLOGY_R_THRESHOLD || 
             //max_resource_reward_difference > parameters_.RESOURCE_R_THRESHOLD &&
             max_combat_reward_difference > parameters_.COMBAT_R_THRESHOLD) {
+            
+            /*if (max_technology_reward_difference > parameters_.TECHNOLOGY_R_THRESHOLD && max_combat_reward_difference > parameters_.COMBAT_R_THRESHOLD) {
+                std::cout<<"Rejected by both, tech_diff: "<< max_technology_reward_difference << ", combat_diff: "<< max_combat_reward_difference<< "\n";
+            }
+            else if(max_technology_reward_difference > parameters_.TECHNOLOGY_R_THRESHOLD) {
+                std::cout<<"Rejected by TECHNOLOGY_R_THRESHOLD, tech_diff: " << max_technology_reward_difference << ", combat_diff: "<< max_combat_reward_difference<< "\n";
+            } else if(max_combat_reward_difference > parameters_.COMBAT_R_THRESHOLD) {
+                std::cout<<"Rejected by COMBAT_R_THRESHOLD, tech_diff: " << max_technology_reward_difference << ", combat_diff: "<< max_combat_reward_difference<< "\n";
+            }*/
             return false;
         }
 
@@ -559,8 +586,9 @@ namespace SGA {
                 transition_error += 1.0;
             }
         }
-
+        //std::cout<< "transition_error: "<<transition_error<<"\n";
         if(transition_error > parameters_.T_THRESHOLD) {
+            //std::cout<<"Rejected by transition! err: "<< transition_error<< "\n";
             return false;
         }
 
@@ -568,6 +596,35 @@ namespace SGA {
         return true;
     }
 
+    void UnitMCTSAgent::printBoundStatistics() {
+        double nD_min = 1000000.0;
+        double h_size = 0;
+        double a_size = 0;
+        double node_number = 0;
+        for (int i = 0; i < 10; i++) { // depth
+            //if (absNodes[i].size() == 0) {
+            //    break;
+            //}
+
+            for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                int nD_tmp = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                if (nD_tmp < nD_min) {
+                    nD_min = nD_tmp;
+                }
+                h_size ++;
+                for (int k = 0; k < absNodes[i][j].size(); k++) {
+                    node_number++;
+                    a_size += absNodes[i][j][k]->children.size();
+                }
+            }
+            //if(node_number !=0.0)
+            //    a_size /= node_number;
+            //std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
+        }//end for
+        if(node_number !=0.0)
+            a_size /= node_number;
+        std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
+    }
     /* For games there is no player actions
     std::vector< Action > UnitMCTSAgent::switchUnit(GameState state, const ForwardModel& forwardModel) {
         auto units = state.getPlayerEntities(getPlayerID()); 

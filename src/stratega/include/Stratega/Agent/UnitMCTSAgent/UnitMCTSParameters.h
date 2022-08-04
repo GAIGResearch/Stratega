@@ -25,9 +25,9 @@ namespace SGA {
         bool DO_STATE_ABSTRACTION = false;
 
         double R_THRESHOLD = 0.2; //0.1, 0.08
-        double T_THRESHOLD = 0.3;
-        double TECHNOLOGY_R_THRESHOLD = 0.2;
-        double COMBAT_R_THRESHOLD = 0.5;
+        double T_THRESHOLD = 0.5; // {0.5, 1.5, 2.5, 3.5}
+        double TECHNOLOGY_R_THRESHOLD = 0.4;
+        double COMBAT_R_THRESHOLD = 0.3;
         //double RESOURCE_R_THRESHOLD = 0.0;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
@@ -84,6 +84,8 @@ namespace YAML {
                 rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
             rhs.IS_MULTI_OBJECTIVE           = node["IsMultiObjective"].as< int >(rhs.absBatch);
+            rhs.TECHNOLOGY_R_THRESHOLD       = node["TechnologyRThreshold"].as< double >(rhs.TECHNOLOGY_R_THRESHOLD);
+            rhs.COMBAT_R_THRESHOLD           = node["CombatRThreshold"].as< double >(rhs.COMBAT_R_THRESHOLD);
             return true;
         }
     };

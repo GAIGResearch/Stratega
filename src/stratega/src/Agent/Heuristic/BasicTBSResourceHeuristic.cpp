@@ -114,9 +114,9 @@ namespace SGA {
 
 		// target another goldVein for mining
 		for (int i = 0; i < goldVeinPosition.size(); i++) {
-			auto entity = state.getEntityAt(goldVeinPosition[currentTargetGoldVeinIdx]);
+			auto entity = state.getEntityAt(goldVeinPosition[i]);
 			double remainingGold = entity->getParameter("Gold");
-			if (remainingGold != 0.0) {
+			if (remainingGold > 0.0) {
 				currentTargetGoldVeinIdx = i;
 				break;
 			}

@@ -75,6 +75,7 @@ namespace SGA {
             UnitMCTSNode* node2);
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
+        void printBoundStatistics();
 
 private:
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;

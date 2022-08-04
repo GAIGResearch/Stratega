@@ -33,6 +33,6 @@ namespace SGA
 
 		double getEntityHealth(GameState state, Vector2f position);
 
-		std::string getName() const override { return "TwoKingdomsTechnologyHeuristic"; }
+		std::string getName() const override { return "TwoKingdomsAbstractionHeuristic"; }
 	};
 }

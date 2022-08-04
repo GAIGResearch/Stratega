@@ -53,9 +53,20 @@ namespace SGA {
     void TwoKingdomsDefenceHeuristic::updateStateInfo(GameState& state, const int playerID) {
         //std::cout<< "Enter updateStateInfo" << std::endl;
         selfWarriorCityDistance = 100000.0;
+        min_dis = 100000.0;
 
         isResearchedMining = state.isResearched(playerID, "Mining");
         isResearchedDicipline = state.isResearched(playerID, "Discipline");
+
+        currentTargetGoldVeinIdx = -1;
+        for (int i = 0; i < goldVeinPosition.size(); i++) {
+            auto entity = state.getEntityAt(goldVeinPosition[i]);
+            double remainingGold = entity->getParameter("Gold");
+            if (remainingGold != 0.0) {
+                currentTargetGoldVeinIdx = i;
+                break;
+            }
+        }
 
         auto entities = state.getEntities();
         selfHasWorker = false;
@@ -77,6 +88,10 @@ namespace SGA {
                     }
                     if (entityName == "Worker") {
                         selfHasWorker = true;
+                        double tmp_dis = entity.getPosition().distance(goldVeinPosition[currentTargetGoldVeinIdx]);
+                        if (tmp_dis < min_dis) {
+                            min_dis = tmp_dis;
+                        }
                     }
                 }
             }
@@ -91,7 +106,7 @@ namespace SGA {
                             enemyWarriorHealth = entity.getParameter("Health");
                         }
                     }
-                } 
+                }
             }
 
         }
@@ -139,7 +154,9 @@ namespace SGA {
             }
         }
         else { // maximum possible reward is 8 (less than spawn warrior that is 10
-            ret += 4*(1.0- min_dis/maximumBoardDistance);
+            if (selfHasWorker) {
+                ret += 4*(1.0- min_dis/maximumBoardDistance);
+            }
 
             if (getGold(state) >= 80) {
                 ret += 4;

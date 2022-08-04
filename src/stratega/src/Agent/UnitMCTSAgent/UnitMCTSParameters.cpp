@@ -17,6 +17,8 @@ void UnitMCTSParameters::printDetails() const
     std::cout << "\tDO_STATE_ABSTRACTION = " << DO_STATE_ABSTRACTION << "\n";
     if (DO_STATE_ABSTRACTION) {
         std::cout << "\tABSTRACTION_HEURISTIC = " << abstractionHeuristic->getName() << "\n";
+        std::cout << "\tABSTRACTION_BATCH = " << absBatch << "\n";
+        std::cout << "\terr_Transition: " << T_THRESHOLD << "\n";
         if (IS_MULTI_OBJECTIVE) {
             std::cout << "\tDO_MULTI_OBJECTIVE = true, err_Combat: "<< COMBAT_R_THRESHOLD << " err_Tech: " << TECHNOLOGY_R_THRESHOLD << "\n";
         }

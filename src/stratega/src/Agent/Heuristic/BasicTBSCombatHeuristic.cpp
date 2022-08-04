@@ -216,7 +216,10 @@ namespace SGA {
         double w1=0.4, w2=0.6;
         auto defenceR = defenceHeuristic->evaluateGameState(forwardModel, state, playerID, false);
 
-        return w1*reward + w2*defenceR;
+        //return w1*reward + w2*defenceR;
+        double r = w1*reward + w2*defenceR;
+        //std::cout<<r << "\t" << reward << "\t" << defenceR << "\n";
+        return r;
     }
 
     double BasicTBSCombatHeuristic::getProduction(GameState state){
