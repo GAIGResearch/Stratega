@@ -96,5 +96,13 @@ private:
         */
         std::vector< int > unitIndex;
 
+        /*
+        * recording quantities to calculate loss bound
+        */
+        std::vector<double> nD_min_list, h_size_list, a_size_list;
+        bool isPrintedLossBound = false;
+        const int nLossBoundStep = 20;
+
+
     };
 }  // namespace SGA

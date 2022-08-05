@@ -24,6 +24,12 @@ namespace SGA {
                                             0.0, 1.0, 0.0); // wCombat, wTechnology, wResource
         //parameters_.abstractionHeuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState); 
 
+        nD_min_list = std::vector<double> ();
+        h_size_list = std::vector<double> ();
+        a_size_list = std::vector<double> ();
+
+        isPrintedLossBound = false;
+
         parameters_.printDetails();
     }
 
@@ -204,17 +210,17 @@ namespace SGA {
                     if(!stop_abstraction){
                         printBoundStatistics();
                     }
-                    */
+                    //*/
                     break;
                 }
 
                 if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
-                    std::cout<<"Abstraction eliminated!\n";
+                    //std::cout<<"Abstraction eliminated!\n";
                     /*
                     if(true){
                         printBoundStatistics();
                     }
-                    */
+                    //*/
 
                     stop_abstraction = true;
                     deleteAbstraction();  // initialize the array empty again,
@@ -597,6 +603,7 @@ namespace SGA {
     }
 
     void UnitMCTSAgent::printBoundStatistics() {
+        if(isPrintedLossBound)return;
         double nD_min = 1000000.0;
         double h_size = 0;
         double a_size = 0;
@@ -613,8 +620,11 @@ namespace SGA {
                 }
                 h_size ++;
                 for (int k = 0; k < absNodes[i][j].size(); k++) {
-                    node_number++;
-                    a_size += absNodes[i][j][k]->children.size();
+                    if (absNodes[i][j][k]->children.size() > 0) {
+                        node_number++;
+                        a_size += absNodes[i][j][k]->children.size();
+                    }
+                    
                 }
             }
             //if(node_number !=0.0)
@@ -623,7 +633,17 @@ namespace SGA {
         }//end for
         if(node_number !=0.0)
             a_size /= node_number;
-        std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
+        //std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
+        nD_min_list.push_back(nD_min);
+        h_size_list.push_back(h_size);
+        a_size_list.push_back(a_size);
+        if (nD_min_list.size() == nLossBoundStep) {
+            isPrintedLossBound = true;
+            double avg_nD_min = std::accumulate(nD_min_list.begin(), nD_min_list.end(), 0.0)/ nD_min_list.size();
+            double h_size_min = std::accumulate(h_size_list.begin(), h_size_list.end(), 0.0)/ h_size_list.size();
+            double a_size_min = std::accumulate(a_size_list.begin(), a_size_list.end(), 0.0)/ a_size_list.size();
+            std::cout <<"nD: "<< avg_nD_min  << "\th_size: " << h_size_min <<"\ta_size: " << a_size_min << "\n";
+        }
     }
     /* For games there is no player actions
     std::vector< Action > UnitMCTSAgent::switchUnit(GameState state, const ForwardModel& forwardModel) {
