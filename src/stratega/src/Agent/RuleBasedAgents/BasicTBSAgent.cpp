@@ -63,7 +63,7 @@ namespace SGA {
 
     ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
         enemy_city_id = -1;
-
+        self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
         if (dis(getRNGEngine()) > 0.87) {
 
@@ -127,6 +127,10 @@ namespace SGA {
                         }
 
                     }
+                }else if(entityType.getName() == "City") {
+                    self_city_id = entity.getID();
+                    self_city.x = entity.x();
+                    self_city.y = entity.y();
                 }
             }
             else {} // not owned entity such as goldVein
@@ -158,7 +162,7 @@ namespace SGA {
         //const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
 
         //Spawn worker
-        if( (workers.size()) < 1 && (getProduction(state) > 3)){
+        if( (workers.size()) < 1 && (getProduction(state) > 3) && self_city_id!= -1){
             auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
                                     *(state.getEntity(self_city_id)), getPlayerID(), false);
             if (actionSpace_tmp.size() > 0){
