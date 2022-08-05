@@ -26,7 +26,7 @@ namespace SGA {
                     enemy_city_id = entity.getID();
                     enemy_city.x= entity.x();
                     enemy_city.y = entity.y();
-                    int paramID = 0;
+                    //int paramID = 0;
                 }
             } else if(entity.getOwnerID() == getPlayerID()){
                if(entityType.getName() == "City" && (!foundSelfCity)) {
@@ -58,12 +58,12 @@ namespace SGA {
                 }
             }
         }
-
-        //std::sort(goldVein.begin(), goldVein.end(), )
         return;
     }
 
     ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
+        enemy_city_id = -1;
+
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
         if (dis(getRNGEngine()) > 0.87) {
 
@@ -95,6 +95,11 @@ namespace SGA {
                       nearestEnemyAttackerDistance = distance;
                       nearestEnemyAttacker = &entity;
                    }
+                } else if(entityType.getName() == "City" ) {
+                    enemy_city_id = entity.getID();
+                    enemy_city.x= entity.x();
+                    enemy_city.y = entity.y();
+                    //int paramID = 0;
                 }
             } else if(entity.getOwnerID() == getPlayerID()) {
                 playerEntities.insert(entity.getID());
@@ -108,15 +113,16 @@ namespace SGA {
                     }
                 }
                 else if (entityType.getName() == "Warrior") {
-                    if( std::find(farAwarAttackable.begin(), 
-                                    farAwarAttackable.end(), 
-                                    entity.getID()) == farAwarAttackable.end()) {
+                    if( std::find(farAwarAttackable.begin(), farAwarAttackable.end(),  entity.getID() ) 
+                        == farAwarAttackable.end()) 
+                    {
                         if (farAwarAttackable.size() < 2) {
                             farAwarAttackable.push_back(entity.getID());
                         }
                         else if (std::find(nearbyAttackable.begin(), 
                                     nearbyAttackable.end(), 
-                                    entity.getID()) == nearbyAttackable.end()) {
+                                    entity.getID()) == nearbyAttackable.end())
+                        {
                             nearbyAttackable.push_back(entity.getID());
                         }
 
@@ -125,6 +131,7 @@ namespace SGA {
             }
             else {} // not owned entity such as goldVein
         }
+
 
 
         // maintain entity vectors, delete dead unit;
@@ -164,7 +171,6 @@ namespace SGA {
             }
         }
 
-
 		// worker go for mining
 		for(auto worker_id:workers){
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(worker_id)), 
@@ -177,6 +183,7 @@ namespace SGA {
 				return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 			}
 		}
+
 
 		double prod = getProduction(state), gold = getGold(state);
 
@@ -233,7 +240,6 @@ namespace SGA {
 			}
 		}
 
-
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
 			// std::cout<<"try spawn warrior"<<std::endl;
@@ -255,14 +261,15 @@ namespace SGA {
 		}
 
 		// send warrior to attack nenemy city
-		if (farAwarAttackable.size() > 0) {
+		if (farAwarAttackable.size() > 0 && enemy_city_id != -1) {
 			for (auto attackerID: farAwarAttackable){
 				auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(attackerID)), 
 					                                                    getPlayerID(), false);
 
 				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, enemy_city_id, "Attack");
-				if (optimal_a_idx > 0) {
 
+				if (optimal_a_idx > 0) {
+                    //std::cout<< actionSpace_tmp.size() <<" " << optimal_a_idx << "\n";
 					return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 				}
 			}
@@ -339,8 +346,9 @@ namespace SGA {
 			else if (a_type_name == "Move") { // TODO@Ethan, guide unit go surround the barriers
 				//state.printActionInfo(actionSpace[a_idx]);
 				auto pos = actionSpace[a_idx].getTargets()[1].getPosition();
-					
+
 				double distance_tmp = pos.distance(state.getEntity(targetEntityID)->getPosition());
+
 				if (distance_tmp < minimumDistanceToTarget) {
 					minimumDistanceToTarget = distance_tmp;
 					optimal_a_idx = a_idx;
