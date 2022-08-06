@@ -64,6 +64,7 @@ namespace SGA {
             if (a.getActionFlag() == ActionFlag::EndTickAction) {
                 unitIndexInitialized = false;
             }
+            //std::cout<<"End agent1\n";
 
             return ActionAssignment::fromSingleAction(a);
         } else {
@@ -314,7 +315,7 @@ namespace SGA {
             if (parameters_.DO_STATE_ABSTRACTION) {
                 stepInit();  // reinitialize homomorphism
             }
-
+            //std::cout<<"end agent 2\n";
             return ActionAssignment::fromSingleAction(bestAction);
         }
         }

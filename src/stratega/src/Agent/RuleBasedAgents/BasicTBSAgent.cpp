@@ -26,7 +26,7 @@ namespace SGA {
                     enemy_city_id = entity.getID();
                     enemy_city.x= entity.x();
                     enemy_city.y = entity.y();
-                    //int paramID = 0;
+
                 }
             } else if(entity.getOwnerID() == getPlayerID()){
                if(entityType.getName() == "City" && (!foundSelfCity)) {
@@ -40,7 +40,7 @@ namespace SGA {
             }
         }
 
-        // make the nearest goldvein as the head of vector
+        // make the nearest (to our city) goldvein as the head of vector
         for(const auto& entity : initialState.getEntities()) { 
             auto& entityType = initialState.getGameInfo()->getEntityType(entity.getEntityTypeID());
             if(entityType.getName() == "GoldVein"){
@@ -62,30 +62,68 @@ namespace SGA {
     }
 
     ActionAssignment BasicTBSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer){
+        //std::cout<<"Start BasicTBSAgent\n";
         enemy_city_id = -1;
         self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
         if (dis(getRNGEngine()) > 0.87) {
+            //std::cout<<"enter random action\n";
+            auto actions = forwardModel.generateActions(state, getPlayerID());
+            boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+            auto actionIndex = actionDist(getRNGEngine());
+            auto action = actions.at(actionIndex);
+            //std::cout<<"select random agent\n";
+            return ActionAssignment::fromSingleAction(action);
+        }
+        // std::cout<<"DEBUG start basicTBSAgent" <<"\n";
+        // get position of all entities
+        std::map< int, Vector2f > positions;
+        //std::set< int > opponentEntites = std::set< int >();
+        std::set< int > playerEntities = std::set< int >();
 
+        //std::cout<<"bbbbbbbbbbbbbbbb\n";
+        double nearestEnemyAttackerDistance = 1000000.0;
+        Entity* nearestEnemyAttacker = nullptr;
+
+        enemy_city_id = -1;
+        self_city_id = -1;
+
+        for(auto& entity : state.getEntities()) {
+            auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
+            if(entity.getOwnerID() != getPlayerID())
+            {
+                //opponentEntites.insert(entity.getID());
+
+                //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
+                //   || entityType.getName() == "Catapult") {
+                if(entityType.getName() == "City" ) {
+                    enemy_city_id = entity.getID();
+                    enemy_city.x= entity.x();
+                    enemy_city.y = entity.y();
+                    //int paramID = 0;
+                }
+            } else if(entity.getOwnerID() == getPlayerID()) {
+                if(entityType.getName() == "City") {
+                    self_city_id = entity.getID();
+                    self_city.x = entity.x();
+                    self_city.y = entity.y();
+                }
+            }
+            else {} // not owned entity such as goldVein
+        }
+        if (self_city_id == -1) {
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             auto actionIndex = actionDist(getRNGEngine());
             auto action = actions.at(actionIndex);
             return ActionAssignment::fromSingleAction(action);
         }
-        // std::cout<<"DEBUG start basicTBSAgent" <<"\n";
-        // get position of all entities
-        std::map< int, Vector2f > positions;
-        std::set< int > opponentEntites = std::set< int >();
-        std::set< int > playerEntities = std::set< int >();
 
-        double nearestEnemyAttackerDistance = 1000000.0;
-        Entity* nearestEnemyAttacker = nullptr;
         for(auto& entity : state.getEntities()) {
             auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
             if(entity.getOwnerID() != getPlayerID())
             {
-                opponentEntites.insert(entity.getID());
+                //opponentEntites.insert(entity.getID());
 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
@@ -95,12 +133,7 @@ namespace SGA {
                       nearestEnemyAttackerDistance = distance;
                       nearestEnemyAttacker = &entity;
                    }
-                } else if(entityType.getName() == "City" ) {
-                    enemy_city_id = entity.getID();
-                    enemy_city.x= entity.x();
-                    enemy_city.y = entity.y();
-                    //int paramID = 0;
-                }
+                } 
             } else if(entity.getOwnerID() == getPlayerID()) {
                 playerEntities.insert(entity.getID());
                 if(entityType.getName() == "Worker" ){
@@ -127,16 +160,12 @@ namespace SGA {
                         }
 
                     }
-                }else if(entityType.getName() == "City") {
-                    self_city_id = entity.getID();
-                    self_city.x = entity.x();
-                    self_city.y = entity.y();
                 }
             }
             else {} // not owned entity such as goldVein
         }
 
-
+        //std::cout<<"aaaaaaaaaaaaa\n";
 
         // maintain entity vectors, delete dead unit;
         for (int e_id = farAwarAttackable.size()-1 ; e_id >=0; e_id--){
@@ -144,20 +173,24 @@ namespace SGA {
                 farAwarAttackable.erase(farAwarAttackable.begin()+e_id);
             }
         }
+        //std::cout<<"000000000000\n";
         for (int e_id = nearbyAttackable.size()-1 ; e_id >=0; e_id--){
             if(std::find(playerEntities.begin(), playerEntities.end(), nearbyAttackable[e_id]) == playerEntities.end()){
                 nearbyAttackable.erase(nearbyAttackable.begin()+e_id);
             }
         }
+        //std::cout<<"11111111111111111\n";
         for (int e_id = workers.size()-1 ; e_id >=0; e_id--){
             if(std::find(playerEntities.begin(), playerEntities.end(), workers[e_id]) == playerEntities.end()){
                 workers.erase(workers.begin()+e_id);
             }
         }
+        //std::cout<<"222222222222\n";
         for(int e_id = goldVeinPosition.size()-1 ; false && e_id >=0; e_id--){
             //TODO@if gold resource is exhausted, remove this goldVein from the vectors;
             // for now, it seems not many operation depends on gold, can implement it later
         }
+        //std::cout<<"3333333333333333\n";
 
         //const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
 
@@ -174,6 +207,7 @@ namespace SGA {
                 }
             }
         }
+        //std::cout<<"444444444444\n";
 
 		// worker go for mining
 		for(auto worker_id:workers){
@@ -192,12 +226,27 @@ namespace SGA {
 		double prod = getProduction(state), gold = getGold(state);
 
 		auto playerActionSpace = forwardModel.generatePlayerActions(state, getPlayerID(), false);
+        /*
+        for (auto a : playerActionSpace) {
+            state.printActionInfo(a);
+            if (a.getActionFlag() == ActionFlag::AbortContinuousAction) {
+                    continue;
+                }
+            if ( a.getActionType().getName() == "Research") {
+                std::cout<<"getname succeeded\n";
+            }
+            
+        }
+        */
 
 
 		// do the research
 		if(!(isResearchedMining) && !(prod<researchMiningProduction)){
 			for (int a_idx = 0; (!isResearchedMining) && a_idx < playerActionSpace.size(); a_idx++) {
 				//state.printActionInfo(actionSpace_tmp[a_idx]);
+                if (playerActionSpace[a_idx].getActionFlag() == ActionFlag::AbortContinuousAction) {
+                    continue;
+                }
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Mining") {
 						isResearchedMining=true;
@@ -207,12 +256,16 @@ namespace SGA {
 				}
 			}
 		}
+        //std::cout<<"55555555555\n";
 
 		// Research Discipline
-		if(!(isResearchedDiscipline) && isResearchedMining && !(prod<researchDiciplineProduction)){
+		if(!(isResearchedDiscipline) && isResearchedMining && !(prod < researchDiciplineProduction)){
 			//std::cout<<"[TwoKingdom Combat Agent]: try to research discipline\n";
 			for (int a_idx = 0; (!isResearchedDiscipline) && a_idx < playerActionSpace.size(); a_idx++) {
-				//state.printActionInfo(actionSpace_tmp[a_idx]);
+				// state.printActionInfo(playerActionSpace[a_idx]);
+                if (playerActionSpace[a_idx].getActionFlag() == ActionFlag::AbortContinuousAction) {
+                    continue;
+                }
 				if (playerActionSpace[a_idx].getActionType().getName() == "Research") {
 					//std::cout<<"can research: " << playerActionSpace[a_idx].getTargets()[1].getValueString(state) <<"\n";
 					if (playerActionSpace[a_idx].getTargets()[1].getValueString(state) == "Discipline") {
@@ -223,6 +276,7 @@ namespace SGA {
 				}
 			}
 		}
+        //std::cout<<"666666666666\n";
 
 		// build barracks
 		if (isResearchedMining && isResearchedDiscipline && !(isBuiltBarraks) && !(prod<buildBarracksProduction)) { 
@@ -243,6 +297,7 @@ namespace SGA {
 				}
 			}
 		}
+        //std::cout<<"7777777777777\n";
 
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
@@ -257,13 +312,14 @@ namespace SGA {
 				}
 			}
 		}
+        //std::cout<<"8888888888\n";
 
 		if (!(nearestEnemyAttackerDistance > enemyAttackerRangeTolerate)) {
 			if (nearbyAttackable.size() > 0) {
 				//TODO@send nearbyAttackable unit for this nearby enemy
 			}
 		}
-
+        //std::cout<<"999999999999999\n";
 		// send warrior to attack nenemy city
 		if (farAwarAttackable.size() > 0 && enemy_city_id != -1) {
 			for (auto attackerID: farAwarAttackable){
@@ -278,6 +334,7 @@ namespace SGA {
 				}
 			}
 		}
+        //std::cout<<"10101010101010\n";
 		
 		//std::cout <<"END THE TURN, prod: " << prod << ", gold: " << gold << ", neaby: "<< nearbyAttackable.size() << ", farAway:"<< farAwarAttackable.size() << "\n";
 		//std::cout <<"isresearchedMining: " << isResearchedMining << " isResearchedDiscipline: " << isResearchedDiscipline << "\n";
@@ -343,6 +400,9 @@ namespace SGA {
 		int optimal_a_idx = -1;
 			
 		for (int a_idx = 0 ; a_idx < actionSpace.size(); a_idx++) {
+            if (actionSpace[a_idx].getActionFlag() == ActionFlag::AbortContinuousAction) {
+                    continue;
+            }
 			std::string a_type_name = actionSpace[a_idx].getActionType().getName();
 			if (a_type_name == actionT) {
 				return a_idx;
