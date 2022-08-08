@@ -253,7 +253,7 @@ namespace SGA
 			if (selected == nullptr) continue;
 
 			// DEBUG
-			if (selected == nullptr) std::cout << "Returns an empty pointer" << std::endl;
+			//if (selected == nullptr) std::cout << "Returns an empty pointer" << std::endl;
 
 			double deltaAll = 0.0;
 			int Nrollout = 1;
@@ -316,8 +316,8 @@ namespace SGA
 		std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes)
 	{
         /*
-        * unitThisStep
-        * unitNextStep, unit for the new generated child
+        * unitThisStep, the unit controlled by current node
+        * unitNextStep, unit controlled by the new generated child
         */
 
 		auto gsCopy(gameState);
@@ -329,7 +329,7 @@ namespace SGA
 
 		//std::cout << " [expand state hash]: " << unitStateHash(forwardModel, gameState, *gameState.getEntity(unitIndex[unitThisStep])) << std::endl;
 
-		// decide which is the unit for the next depth, returns unitNextStep
+		// returns unitNextStep to generate the action space for the new generated child
 		int unitNextStep = 0;
 		if (isTurnEnd)
 		{
@@ -337,29 +337,43 @@ namespace SGA
             unitNextStep = -1; 
 		}
 		else {
+            /* if unit controled by parent unit can still move, the new child control the same unit
+            * to check whether the parent unit dies caused by action: actionSpace.at(new_childIndex)
+            */
+
             std::vector<SGA::Action > actionSpace_tmp;
 
-            // generate the action spaces of chid
-            if (unitThisStep == -1) {
-                actionSpace_tmp =
-                forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID);
-            }
-            else {
-                //std::cout<<"9999999999999\n";
-                //std::cout<<unitIndex.size() << "  " << unitThisStep << "\n";
-                forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
+            bool parent_unit_alive = true;
+            auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
+            if (u != nullptr) {
+                parent_unit_alive = false;
             }
 
-            // this unit/player cannot move, next unit/player moves
-			if (actionSpace_tmp.size() == 0) {
-                //std::cout<<"GGGGGGGGGGGGGGG\n";
-				unitNextStep = unitThisStep + 1; // TODO@this new unit might not moved or died
-			}
-			else {
-                //std::cout<<"QQQQQQQQQ\n";
-				unitNextStep = unitThisStep;
-			}
-		}
+            // generate the action spaces of chid
+            if(parent_unit_alive){
+                if (unitThisStep == -1) {
+                    actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID);
+                }
+                else {
+                
+                    //std::cout<<"9999999999999\n";
+                    std::cout<<unitIndex.size() << "  " << unitThisStep << "\n";
+                    forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
+                }
+
+                // this unit/player cannot move, next unit/player moves
+                if (actionSpace_tmp.size() == 0) {
+                    //std::cout<<"GGGGGGGGGGGGGGG\n";
+                    unitNextStep = unitThisStep + 1; // TODO@this new unit might not moved or died
+                }
+                else {
+                    //std::cout<<"QQQQQQQQQ\n";
+                    unitNextStep = unitThisStep;
+                }
+            }// end if(parent_unit_alive)
+
+
+        }
 
         //std::cout<<"7777777777777777777\n";
         // find next alive unit

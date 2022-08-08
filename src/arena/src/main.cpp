@@ -6,7 +6,7 @@
 int main(int argc, char** argv)
 {
 	InputParser parser(argc, argv);
-	auto seed = parser.getCmdOption<unsigned int>("-seed", 9458235118);
+    auto seed = parser.getCmdOption<unsigned int>("-seed", 4692282);//4692276); // 9458235118
 	auto numberOfGames = parser.getCmdOption<unsigned int>("-gamesNumber", 1);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");

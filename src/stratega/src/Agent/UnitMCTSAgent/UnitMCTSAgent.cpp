@@ -116,12 +116,14 @@ namespace SGA {
                 break;
 
                 // std::cout << "[BEFORE SEARCH]: " << parameters_.REMAINING_FM_CALLS <<std::endl;
+                //std::cout<<"searchMCTS start\n";
                 rootNode->searchMCTS(
                 *processedForwardModel,
                 parameters_,
                 getRNGEngine(),
                 &depthToNodes,
                 &absNodeToStatistics);
+                //std::cout<<"ends searchMCTS\n";
 
                 if(false && ! stop_abstraction && tmp_batch_used % 2 == 0) {
                     deleteAbstraction();  // initialize the array empty again,
