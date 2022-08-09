@@ -66,7 +66,7 @@ namespace SGA {
         enemy_city_id = -1;
         self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
-        if (dis(getRNGEngine()) > 0.95) {//87
+        /*if (dis(getRNGEngine()) > 0.95) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
@@ -74,7 +74,7 @@ namespace SGA {
             auto action = actions.at(actionIndex);
             //std::cout<<"select random agent\n";
             return ActionAssignment::fromSingleAction(action);
-        }
+        }*/
         // std::cout<<"DEBUG start basicTBSAgent" <<"\n";
         // get position of all entities
         std::map< int, Vector2f > positions;

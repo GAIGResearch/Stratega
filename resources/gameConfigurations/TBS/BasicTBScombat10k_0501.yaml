@@ -13,14 +13,14 @@ Agents:
 #        ContinuePreviousSearch: false
     - UnitMCTSAgent:
         Budget: FMCALLS
-        DoStateAbstraction: false
-        MaxFmCalls: 20000
+        DoStateAbstraction: true
+        MaxFmCalls: 10000
         RolloutLength: 30
         ContinuePreviousSearch: false
         AbstractionBatch: 11
         BatchSize: 20
         K: 0.1
-        TechnologyRThreshold: 0.3
+        TechnologyRThreshold: 0.5
         CombatRThreshold: 0.1
         IsMultiObjective: true
     - BasicTBSAgent
