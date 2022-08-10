@@ -424,31 +424,31 @@ TechnologyTrees:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
+                Gold: 30
             Time: 4
         BronzeWorking:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
+                Gold: 30
             Time: 4
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost:
-                Gold: 20
+                Gold: 30
             Time: 4
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost:
-                Gold: 20
+                Gold: 40
             Time: 4
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost:
-                Gold: 20
+                Gold: 30
             Time: 4
             
                    

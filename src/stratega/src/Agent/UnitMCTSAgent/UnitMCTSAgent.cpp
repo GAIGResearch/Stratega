@@ -208,8 +208,8 @@ namespace SGA {
                 // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
                     rootNode->eliminateAbstraction();
-                    // for IJCAI paper
-                    /*
+
+                    ///* // for IJCAI paper
                     if(!stop_abstraction){
                         printBoundStatistics();
                     }
@@ -219,7 +219,7 @@ namespace SGA {
 
                 if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
                     
-                    /* // for IJCAI paper
+                    ///* // for IJCAI paper
                     if(true){
                         std::cout<<"Abstraction eliminated!\n";
                         printBoundStatistics(false);

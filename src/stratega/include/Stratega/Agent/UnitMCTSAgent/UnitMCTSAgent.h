@@ -101,7 +101,7 @@ private:
         */
         std::vector<double> nD_min_list, h_size_list, a_size_list;
         bool isPrintedLossBound = false;
-        const int nLossBoundStep = 15;
+        const int nLossBoundStep = 10;
 
     };
 }  // namespace SGA
