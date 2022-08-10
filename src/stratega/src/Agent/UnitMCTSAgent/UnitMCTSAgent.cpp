@@ -218,7 +218,7 @@ namespace SGA {
                 }
 
                 if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
-                    
+
                     ///* // for IJCAI paper
                     if(true){
                         std::cout<<"Abstraction eliminated!\n";
