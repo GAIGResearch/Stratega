@@ -75,7 +75,7 @@ namespace SGA {
             UnitMCTSNode* node2);
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
-        void printBoundStatistics();
+        void printBoundStatistics(bool mustPrint=false);
 
 private:
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;
@@ -101,8 +101,7 @@ private:
         */
         std::vector<double> nD_min_list, h_size_list, a_size_list;
         bool isPrintedLossBound = false;
-        const int nLossBoundStep = 20;
-
+        const int nLossBoundStep = 15;
 
     };
 }  // namespace SGA

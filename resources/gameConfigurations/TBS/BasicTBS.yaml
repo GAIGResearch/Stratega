@@ -13,8 +13,8 @@ Agents:
 #        ContinuePreviousSearch: false
     - UnitMCTSAgent:
         Budget: FMCALLS
-        DoStateAbstraction: false
-        MaxFmCalls: 20000
+        DoStateAbstraction: true
+        MaxFmCalls: 10000
         RolloutLength: 30
         ContinuePreviousSearch: false
         AbstractionBatch: 11

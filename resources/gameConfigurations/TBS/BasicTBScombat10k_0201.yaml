@@ -401,55 +401,55 @@ TechnologyTrees:
             Description: Base technology
             Cost:
                 Prod: 5
-            Time: 2
+            Time: 3
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]
             Cost:
                 Prod: 5
-            Time: 2
+            Time: 3
         Pottery:
             Description: Allows to construct a Storage.
             Requirements: [Mining]
             Cost:
                 Prod: 5
-            Time: 2
+            Time: 3
         Mathematics:
             Description: Here you can build a military academy
             Requirements: [Mining]
             Cost:
                 Prod: 5
-            Time: 2
+            Time: 3
         Archery:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost:
                 Gold: 20
-            Time: 3
+            Time: 4
         BronzeWorking:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
                 Gold: 20
-            Time: 3
+            Time: 4
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost:
                 Gold: 20
-            Time: 3
+            Time: 4
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost:
                 Gold: 20
-            Time: 5
+            Time: 4
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost:
                 Gold: 20
-            Time: 3
+            Time: 4
             
                    
 ForwardModel:

@@ -218,10 +218,11 @@ namespace SGA {
                 }
 
                 if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
-                    //std::cout<<"Abstraction eliminated!\n";
-                    /*
+                    
+                    /* // for IJCAI paper
                     if(true){
-                        printBoundStatistics();
+                        std::cout<<"Abstraction eliminated!\n";
+                        printBoundStatistics(false);
                     }
                     //*/
 
@@ -605,13 +606,13 @@ namespace SGA {
         return true;
     }
 
-    void UnitMCTSAgent::printBoundStatistics() {
+    void UnitMCTSAgent::printBoundStatistics(bool mustPrint) {
         if(isPrintedLossBound)return;
         double nD_min = 1000000.0;
         double h_size = 0;
         double a_size = 0;
         double node_number = 0;
-        for (int i = 0; i < 10; i++) { // depth
+        for (int i = 1; i < 10; i++) { // depth
             //if (absNodes[i].size() == 0) {
             //    break;
             //}
@@ -637,10 +638,12 @@ namespace SGA {
         if(node_number !=0.0)
             a_size /= node_number;
         //std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
-        nD_min_list.push_back(nD_min);
-        h_size_list.push_back(h_size);
-        a_size_list.push_back(a_size);
-        if (nD_min_list.size() == nLossBoundStep) {
+        if(h_size > 0){
+            nD_min_list.push_back(nD_min);
+            h_size_list.push_back(h_size);
+            a_size_list.push_back(a_size);
+        }
+        if (nD_min_list.size() == nLossBoundStep || mustPrint) {
             isPrintedLossBound = true;
             double avg_nD_min = std::accumulate(nD_min_list.begin(), nD_min_list.end(), 0.0)/ nD_min_list.size();
             double h_size_min = std::accumulate(h_size_list.begin(), h_size_list.end(), 0.0)/ h_size_list.size();
