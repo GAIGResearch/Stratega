@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	{
 		std::cout << "You have to provide the argument -configPath" << std::endl;
 		return 0;
-	}	
+	}
 	
 	// Read Config
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);

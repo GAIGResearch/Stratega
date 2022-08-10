@@ -192,14 +192,35 @@ namespace SGA {
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
              }
 
+             for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                //if (absNodes[i].size() == 0) {
+                //    break;
+                //}
+
+                for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                    if (absNodes[i].size() > 0){
+                        int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                        int absSize = absNodes[i][j].size();
+                        if(absVisit - absSize* absSize > parameters_.batch_size){
+                            for (int k = 0 ; k < absSize; k++){
+                                absNodes[i][j][0]->isAbstracted=false;
+                                absNodes[i][j][0]->isUngrouped=true;
+                            }
+                        }
+                    }//end if
+                 }//end for
+             }
+
              // do abstraction
              for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
              {
 
                  std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
+                 // try ungroup part of the abstraction
 
                  for(auto node1 : deep_layer) {  // each initial node
-                    if(node1->isAbstracted)
+                     // if ungrouped, don't abstract again
+                    if(node1->isAbstracted || node1->isUngrouped)
                        continue;  // can be adjusted
 
                     if(absNodes[i].size() == 0) {  // this depth has no node cluster

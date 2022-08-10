@@ -13,7 +13,7 @@ Agents:
         MaxFmCalls: 30000
         RolloutLength: 40
         ContinuePreviousSearch: false
-        AbstractionBatch: 12
+        AbstractionBatch: 10000
         BatchSize: 20
         RandomAbstraction: false
         K: 0.1

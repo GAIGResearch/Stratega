@@ -34,6 +34,8 @@ namespace SGA {
 
           int n_search_iteration= 0; // this is for abstraction
 
+          // ungrouping
+          bool isUngrouped = false;
 
        protected:
           double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};
