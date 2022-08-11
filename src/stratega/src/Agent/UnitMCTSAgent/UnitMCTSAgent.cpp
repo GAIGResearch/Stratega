@@ -202,7 +202,15 @@ namespace SGA {
                     if (absNodes[i].size() > 0){
                         int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
                         int absSize = absNodes[i][j].size();
-                        if(absVisit - absSize* absSize > parameters_.batch_size){
+                        double ungrouping_threshold = 0.0;
+                        if (parameters_.IS_PHI_UNGROUPING) {
+                            ungrouping_threshold = absSize*parameters_.batch_size;
+                        }
+                        else {
+                            ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
+                        }
+                        if(absVisit - absSize* absSize > ungrouping_threshold){
+                            //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
                             for (int k = 0 ; k < absSize; k++){
                                 absNodes[i][j][k]->isAbstracted=false;
                                 absNodes[i][j][k]->isUngrouped=true;

@@ -17,7 +17,8 @@ Agents:
         BatchSize: 20
         RandomAbstraction: false
         K: 0.1
-        IsPhiUngrouping: false
+        IsPhiUngrouping: true
+        UngroupingBatchThreshold: 1
     #- UnitMCTSAgent:
     #    Budget: FMCALLS
     #    DoStateAbstraction: true

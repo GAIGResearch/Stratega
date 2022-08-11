@@ -17,5 +17,9 @@ void UnitMCTSParameters::printDetails() const
    std::cout << "\tDO_STATE_ABSTRACTION = " << DO_STATE_ABSTRACTION << "\n";
    std::cout << "\tBATCH_SIZE = "           << batch_size <<"\n";
    std::cout << "\tRANDOM_ABSTRACTION = "   << random_abstraction <<"\n";
+   if (DO_STATE_ABSTRACTION) {
+       std::cout << "\tIS_PHI_UNGROUPING = "<< UNGROUPING_BATCH_THRESHOLD << "\n";
+       std::cout << "\tUNGROUPING_BATCH_THRESHOLD = "<< UNGROUPING_BATCH_THRESHOLD << "\n";
+   }
 }
 }  // namespace SGA

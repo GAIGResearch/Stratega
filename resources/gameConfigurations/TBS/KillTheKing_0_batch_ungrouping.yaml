@@ -18,6 +18,7 @@ Agents:
         RandomAbstraction: false
         K: 0.1
         IsPhiUngrouping: false
+        UngroupingBatchThreshold: 0.5
     #- UnitMCTSAgent:
     #    Budget: FMCALLS
     #    DoStateAbstraction: true

@@ -51,6 +51,10 @@ namespace SGA {
 
         std::unique_ptr<BaseActionScript> OPPONENT_MODEL = std::make_unique<RandomActionScript>();
 
+        // for ungrouping
+        bool IS_PHI_UNGROUPING = false;
+        double UNGROUPING_BATCH_THRESHOLD = 1;
+
         void printDetails() const;
     };
 }  // namespace SGA
@@ -72,6 +76,8 @@ namespace YAML {
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
 			rhs.batch_size                   = node["BatchSize"].as< int >(rhs.batch_size);
 			rhs.random_abstraction           = node["RandomAbstraction"].as< bool >(rhs.random_abstraction);
+            rhs.IS_PHI_UNGROUPING            = node["IsPhiUngrouping"].as< bool >(rhs.IS_PHI_UNGROUPING);
+            rhs.UNGROUPING_BATCH_THRESHOLD   = node["UngroupingBatchThreshold"].as<double>(rhs.UNGROUPING_BATCH_THRESHOLD);
 
 			if (rhs.random_abstraction && (!rhs.DO_STATE_ABSTRACTION)) {
 				std::cout<<"[Warning]: RandomAbstraction is set to true. However, DoStateAbstraction is set to false!"<<"\n";
