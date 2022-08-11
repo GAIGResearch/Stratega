@@ -192,6 +192,7 @@ namespace SGA {
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
              }
 
+             //for aamas
              for (int i = 1; i < parameters_.maxDepth; i++) { // depth
                 //if (absNodes[i].size() == 0) {
                 //    break;
@@ -203,8 +204,8 @@ namespace SGA {
                         int absSize = absNodes[i][j].size();
                         if(absVisit - absSize* absSize > parameters_.batch_size){
                             for (int k = 0 ; k < absSize; k++){
-                                absNodes[i][j][0]->isAbstracted=false;
-                                absNodes[i][j][0]->isUngrouped=true;
+                                absNodes[i][j][k]->isAbstracted=false;
+                                absNodes[i][j][k]->isUngrouped=true;
                             }
                         }
                     }//end if
