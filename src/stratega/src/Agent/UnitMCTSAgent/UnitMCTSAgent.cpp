@@ -193,32 +193,34 @@ namespace SGA {
              }
 
              //for aamas
-             for (int i = 1; i < parameters_.maxDepth; i++) { // depth
-                //if (absNodes[i].size() == 0) {
-                //    break;
-                //}
+             if(parameters_.IS_UNGROUPING){
+                 for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                    //if (absNodes[i].size() == 0) {
+                    //    break;
+                    //}
 
-                for (int j = 0; j < absNodes[i].size(); j++) { // abs node
-                    if (absNodes[i].size() > 0){
-                        int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
-                        int absSize = absNodes[i][j].size();
-                        double ungrouping_threshold = 0.0;
-                        if (parameters_.IS_PHI_UNGROUPING) {
-                            ungrouping_threshold = absSize*parameters_.batch_size;
-                        }
-                        else {
-                            ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
-                        }
-                        if(absVisit - absSize* absSize > ungrouping_threshold){
-                            //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
-                            for (int k = 0 ; k < absSize; k++){
-                                absNodes[i][j][k]->isAbstracted=false;
-                                absNodes[i][j][k]->isUngrouped=true;
+                    for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                        if (absNodes[i].size() > 0){
+                            int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                            int absSize = absNodes[i][j].size();
+                            double ungrouping_threshold = 0.0;
+                            if (parameters_.IS_PHI_UNGROUPING) {
+                                ungrouping_threshold = absSize*parameters_.batch_size;
                             }
-                        }
-                    }//end if
-                 }//end for
-             }
+                            else {
+                                ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
+                            }
+                            if(absVisit - absSize* absSize > ungrouping_threshold){
+                                //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
+                                for (int k = 0 ; k < absSize; k++){
+                                    absNodes[i][j][k]->isAbstracted=false;
+                                    absNodes[i][j][k]->isUngrouped=true;
+                                }
+                            }
+                        }//end if
+                     }//end for
+                 }
+              }
 
              // do abstraction
              for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
