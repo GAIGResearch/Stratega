@@ -14,12 +14,12 @@ Agents:
         RolloutLength: 30
         ContinuePreviousSearch: false
         AbstractionBatch: 10000
-        BatchSize: 20
+        BatchSize: 30
         RandomAbstraction: false
         K: 0.1
         IsUngrouping: true
-        IsPhiUngrouping: true
-        UngroupingBatchThreshold: 0.5
+        IsPhiUngrouping: false
+        UngroupingBatchThreshold: 3
     #- UnitMCTSAgent:
     #    Budget: FMCALLS
     #    DoStateAbstraction: true
