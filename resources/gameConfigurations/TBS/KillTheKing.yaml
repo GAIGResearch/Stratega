@@ -10,14 +10,16 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 30000
-        RolloutLength: 40
+        MaxFmCalls: 10000
+        RolloutLength: 25
         ContinuePreviousSearch: false
         AbstractionBatch: 10000
         BatchSize: 20
         RandomAbstraction: false
         K: 0.1
+        IsUngrouping: true
         IsPhiUngrouping: false
+        UngroupingBatchThreshold: 0.5
     #- UnitMCTSAgent:
     #    Budget: FMCALLS
     #    DoStateAbstraction: true
@@ -28,20 +30,20 @@ Agents:
     #    BatchSize: 20
     #    RandomAbstraction: true
     #    K: 0.1
-    - UnitMCTSAgent:
-        DoStateAbstraction: false
-        Budget: FMCALLS
-        MaxFmCalls: 30000
-        RolloutLength: 40
-        ContinuePreviousSearch: false
-        K: 0.1
+    #- UnitMCTSAgent:
+    #    DoStateAbstraction: false
+    #    Budget: FMCALLS
+    #    MaxFmCalls: 30000
+    #    RolloutLength: 40
+    #    ContinuePreviousSearch: false
+    #    K: 0.1
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 20000
     #    RolloutLength: 20
     #    ContinuePreviousSearch: false
     #    K: 0.1
-    #- KTKCombatAgent
+    - KTKCombatAgent
     #- MinimaxAgent
     #- DoNothingAgent
 

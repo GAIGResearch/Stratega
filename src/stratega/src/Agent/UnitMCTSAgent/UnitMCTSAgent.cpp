@@ -194,45 +194,143 @@ namespace SGA {
 
              //for aamas
              if(parameters_.IS_UNGROUPING){
-                 for (int i = 1; i < parameters_.maxDepth; i++) { // depth
-                    //if (absNodes[i].size() == 0) {
-                    //    break;
-                    //}
+                 if(parameters_.SINGLE_UNGROUPING){
+                     for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                        //if (absNodes[i].size() == 0) {
+                        //    break;
+                        //}
 
-                    for (int j = 0; j < absNodes[i].size(); j++) { // abs node
-                        if (absNodes[i].size() > 0){
-                            int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
-                            int absSize = absNodes[i][j].size();
-                            double ungrouping_threshold = 0.0;
-                            if (parameters_.IS_PHI_UNGROUPING) {
-                                ungrouping_threshold = absSize*parameters_.batch_size;
-                            }
-                            else {
-                                ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
-                            }
-                            if(absVisit - absSize* absSize > ungrouping_threshold){
-                                //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
-                                for (int k = 0 ; k < absSize; k++){
+                         std::vector<int> ungrouped_indices = {};
+                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             if (absNodes[i].size() > 0){
+                                 if(absNodes[i][j][0]->isUngrouped)continue;
+                                 int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                                 int absSize = absNodes[i][j].size();
+                                 double ungrouping_threshold = 0.0;
+                                 if (parameters_.IS_PHI_UNGROUPING) {
+                                     ungrouping_threshold = absSize*parameters_.batch_size;
+                                 }
+                                 else {
+                                     ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
+                                 }
+                                 if(absVisit - absSize* absSize > ungrouping_threshold){
+                                     ungrouped_indices.push_back(j);
+                                     //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
+                                     for (int k = 0 ; k < absSize; k++){
+                                         absNodes[i][j][k]->isAbstracted=false;
+                                         absNodes[i][j][k]->isUngrouped=true;
+                                     }
+                                 }
+                             }//end if
+                         }//end for
+                         for (int idx = ungrouped_indices.size()-1; idx>=0 ;idx--) {
+                             absNodes[i].erase(absNodes[i].begin()+ungrouped_indices[idx]);
+                         }
+                     }
+                 }
+                 else if (parameters_.LAYER_UNGROUPING) {
+                     for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                         //if (absNodes[i].size() == 0) {
+                         //    break;
+                         //}
+                         if(absNodes[i].size() == 0)continue;
+                         bool toUngroup = true;
+                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             if(absNodes[i][j][0]->isUngrouped)continue;
+                             int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                             int absSize = absNodes[i][j].size();
+                             double ungrouping_threshold = 0.0;
+                             if (parameters_.IS_PHI_UNGROUPING) {
+                                 ungrouping_threshold = absSize*parameters_.batch_size;
+                             }
+                             else {
+                                 ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
+                                 //ungrouping_threshold = 0.3*parameters_.batch_size;
+                             }
+                             if(absVisit - absSize* absSize < ungrouping_threshold){
+                                 toUngroup=false;
+                                 break;
+                             }
+                         }//end for
+
+                         if (toUngroup) {
+                             std::cout<<"batch: " << n_abs_iteration << " layer: "<< i << " UNGROUPING the layer\n";
+                             for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                                 int absSize = absNodes[i][j].size();
+                                 for (int k = 0 ; k < absSize; k++){
                                     absNodes[i][j][k]->isAbstracted=false;
                                     absNodes[i][j][k]->isUngrouped=true;
-                                }
-                            }
-                        }//end if
-                     }//end for
+                                 }
+                                 absNodes[i].clear();
+                                 std::cout<<absNodes[i].size()<<"\n";
+                             }
+
+                         }
+                     }
                  }
+                 else if (parameters_.SUBTREE_UNGROUPING) {
+
+                     for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                        //if (absNodes[i].size() == 0) {
+                        //    break;
+                        //}
+
+                         std::vector<int> ungrouped_indices = {};
+                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             if (absNodes[i].size() > 0){
+                                 if(absNodes[i][j][0]->isUngrouped)continue;
+                                 int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                                 int absSize = absNodes[i][j].size();
+                                 double ungrouping_threshold = 0.0;
+                                 if (parameters_.IS_PHI_UNGROUPING) {
+                                     ungrouping_threshold = absSize*parameters_.batch_size;
+                                 }
+                                 else {
+                                     ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
+                                     //ungrouping_threshold = 0.5*parameters_.batch_size;
+                                 }
+                                 if(absVisit - absSize* absSize > ungrouping_threshold){
+                                     ungrouped_indices.push_back(j);
+                                     //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
+                                     for (int k = 0 ; k < absSize; k++){
+                                         //absNodes[i][j][k]->isAbstracted=false;
+                                         //absNodes[i][j][k]->isUngrouped=true;
+                                         absNodes[i][j][k]->eliminateAbstraction();
+                                         absNodes[i][j][k]->isUngrouped=true;
+                                     }
+                                 }
+                             }//end if
+                         }//end for
+                         for (int idx = ungrouped_indices.size()-1; idx>=0 ;idx--) {
+                             absNodes[i].erase(absNodes[i].begin()+ungrouped_indices[idx]);
+                         }
+                    }
+                 }// end if
               }
 
              // do abstraction
              for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
              {
-
                  std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
                  // try ungroup part of the abstraction
 
                  for(auto node1 : deep_layer) {  // each initial node
                      // if ungrouped, don't abstract again
+                     // aamas if one parent is ungrouped, this subtree will not be abstracted
+                     if(parameters_.SUBTREE_UNGROUPING){
+                         auto tmp_node = node1;
+                         while (tmp_node) {
+                            if (tmp_node->isUngrouped) {
+                                node1->isUngrouped=true;
+                                break;
+                            }
+                            tmp_node = tmp_node->parentNode;
+                         }
+                     }
+
                     if(node1->isAbstracted || node1->isUngrouped)
                        continue;  // can be adjusted
+
 
                     if(absNodes[i].size() == 0) {  // this depth has no node cluster
 
@@ -334,11 +432,22 @@ namespace SGA {
 
              // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
              if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
+                 //std::cout<<"number of abs Node each depth:\n";
+                 /*for (int i = 1; i < parameters_.maxDepth; i++) {
+                     int abs_size = absNodes[i].size();
+                     std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
+                     if(abs_size == 0)continue;
 
-                rootNode->eliminateAbstraction();
-                // deleteAbstraction();
-
-                break;
+                     for (int j = 0; j < abs_size; j++) {
+                        std::cout<< absNodes[i][j].size()<< " ";
+                     }
+                     std::cout<<"\n";
+                 }
+                 */
+                 rootNode->eliminateAbstraction();
+                 // deleteAbstraction();
+                 //std::cout<<"maximum batch: "<< n_abs_iteration << " \n";
+                 break;
              }
 
 

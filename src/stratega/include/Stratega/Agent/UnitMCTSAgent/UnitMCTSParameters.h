@@ -19,8 +19,8 @@ namespace SGA {
 
         bool DO_STATE_ABSTRACTION = false;
 
-        double R_THRESHOLD = 0.2; //0.1, 0.08
-        double T_THRESHOLD = 0.3;
+        double R_THRESHOLD = 0.5; //0.1, 0.08
+        double T_THRESHOLD = 0.5;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
         double REMAINING_FM_CALLS = -1;
@@ -55,6 +55,9 @@ namespace SGA {
         bool IS_UNGROUPING = false;
         bool IS_PHI_UNGROUPING = false;
         double UNGROUPING_BATCH_THRESHOLD = 1;
+        bool LAYER_UNGROUPING = false;
+        bool SINGLE_UNGROUPING = false;
+        bool SUBTREE_UNGROUPING = true;
 
         void printDetails() const;
     };

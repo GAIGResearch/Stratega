@@ -18,6 +18,8 @@ void UnitMCTSParameters::printDetails() const
    std::cout << "\tBATCH_SIZE = "           << batch_size <<"\n";
    std::cout << "\tRANDOM_ABSTRACTION = "   << random_abstraction <<"\n";
    if (DO_STATE_ABSTRACTION) {
+       std::cout<< "\tR_THRESHOLD = "<< R_THRESHOLD << "\n";
+       std::cout<< "\tT_THRESHOLD = "<< T_THRESHOLD << "\n";
        std::cout << "\tIS_UNGROUPING = "<< IS_UNGROUPING << "\n";
        std::cout << "\tIS_PHI_UNGROUPING = "<< UNGROUPING_BATCH_THRESHOLD << "\n";
        std::cout << "\tUNGROUPING_BATCH_THRESHOLD = "<< UNGROUPING_BATCH_THRESHOLD << "\n";
