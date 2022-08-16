@@ -304,10 +304,8 @@ namespace SGA {
                                  }
                                  if(absVisit - absSize* absSize > ungrouping_threshold){
                                      ungrouped_indices.push_back(j);
-                                     std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
+                                     //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstract node, size: " <<absSize <<", visiting: "<<absVisit<<" T: "<<ungrouping_threshold << "\n";
                                      for (int k = 0 ; k < absSize; k++){
-                                         //absNodes[i][j][k]->isAbstracted=false;
-                                         //absNodes[i][j][k]->isUngrouped=true;
                                          absNodes[i][j][k]->eliminateAbstraction();
                                          absNodes[i][j][k]->isUngrouped=true;
                                      }
@@ -341,6 +339,7 @@ namespace SGA {
 
                  for(auto node1 : deep_layer) {  // each initial node
                      // if ungrouped, don't abstract again
+                     // 
                      // aamas if one parent is ungrouped, this subtree will not be abstracted
                      if(parameters_.SUBTREE_UNGROUPING){
                          auto tmp_node = node1;
@@ -455,34 +454,30 @@ namespace SGA {
              n_abs_iteration++;
              tmp_batch_used++;
 
+             //aamas
+             /*if (tmp_batch_used == 12 || tmp_batch_used == 14) {
+                 printAbsNodeStatus();
+                 rootNode->printTree();
+             }*/
+
              // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
              if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
                  //
-                 /*
-                 std::cout<<"End searching, number of abs Node each depth:\n";
-                 for (int i = 1; i < parameters_.maxDepth; i++) {
-                     int abs_size = absNodes[i].size();
-                     std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
-                     if(abs_size == 0)continue;
-
-                     for (int j = 0; j < abs_size; j++) {
-                        std::cout<< absNodes[i][j].size()<< " ";
-                     }
-                     std::cout<<"\n";
-                 }
-                 //*/
-                 //rootNode->eliminateAbstraction();
-                 // deleteAbstraction();
+                 
+                 //std::cout<<"End searching, number of abs Node each depth:\n";
+                 //rootNode->printTree();
+                 rootNode->eliminateAbstraction();
+                 //deleteAbstraction();
                  //std::cout<<"maximum batch: "<< n_abs_iteration << " \n";
                  break;
              }
 
 
              if(tmp_batch_used >= parameters_.absBatch) {
-
-                stop_abstraction = true;
-                deleteAbstraction();  // initialize the array empty again,
-                rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+                 //printAbsNodeStatus();
+                 stop_abstraction = true;
+                 deleteAbstraction();  // initialize the array empty again,
+                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
 
              }
 
@@ -660,4 +655,16 @@ namespace SGA {
        return true;
     }
 
+    void UnitMCTSAgent::printAbsNodeStatus() {
+        for (int i = 1; i < parameters_.maxDepth; i++) {
+            int abs_size = absNodes[i].size();
+            std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
+            if(abs_size == 0)continue;
+
+            for (int j = 0; j < abs_size; j++) {
+            std::cout<< absNodes[i][j].size()<< " ";
+            }
+            std::cout<<"\n";
+        }
+    }
 }  // namespace SGA

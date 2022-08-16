@@ -19,8 +19,8 @@ namespace SGA {
 
         bool DO_STATE_ABSTRACTION = false;
 
-        double R_THRESHOLD = 0.5; //0.1, 0.08
-        double T_THRESHOLD = 0.5;
+        double R_THRESHOLD = 0.1; //0.1, 0.08
+        double T_THRESHOLD = 0.3;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
         double REMAINING_FM_CALLS = -1;
@@ -33,7 +33,6 @@ namespace SGA {
 
         // approximate homomorhpism
         int batch_size = 20;
-        int n_batch_stop = 2;
         int absBatch = 10000;
 
 		// random node clusterring
@@ -56,8 +55,8 @@ namespace SGA {
         bool IS_PHI_UNGROUPING = false;
         double UNGROUPING_BATCH_THRESHOLD = 1;
         bool LAYER_UNGROUPING = false;
-        bool SINGLE_UNGROUPING = true;
-        bool SUBTREE_UNGROUPING = false;
+        bool SINGLE_UNGROUPING = false;
+        bool SUBTREE_UNGROUPING = true;
 
         void printDetails() const;
     };
