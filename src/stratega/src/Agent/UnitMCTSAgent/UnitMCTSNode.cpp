@@ -660,7 +660,7 @@ namespace SGA
 
 	void UnitMCTSNode::print() const
 	{
-		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size() << " ";
+		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size() <<"; "<< isAbstracted<< " ";
 		if (this->parentNode != nullptr)
 		{
 			auto a = this->parentNode->actionSpace[this->childIndex];
