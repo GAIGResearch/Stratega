@@ -54,9 +54,9 @@ namespace SGA {
         bool IS_UNGROUPING = false;
         bool IS_PHI_UNGROUPING = false;
         double UNGROUPING_BATCH_THRESHOLD = 1;
-        bool LAYER_UNGROUPING = false;
+        bool LAYER_UNGROUPING = true;
         bool SINGLE_UNGROUPING = false;
-        bool SUBTREE_UNGROUPING = true;
+        bool SUBTREE_UNGROUPING = false;
 
         void printDetails() const;
     };

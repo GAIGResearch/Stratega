@@ -267,8 +267,8 @@ namespace SGA {
                          }//end for
 
                          if (toUngroup) {
-                             // std::cout<<"batch: " << n_abs_iteration << " layer: "<< i << " UNGROUPING the subtree\n";
-                             for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             //std::cout<<"[LAYER UNGROUPING] batch: " << n_abs_iteration << " layer: "<< i << " UNGROUPING the subtree\n";
+                             /*for (int j = 0; j < absNodes[i].size(); j++) { // abs node
                                  int absSize = absNodes[i][j].size();
                                  for (int k = 0 ; k < absSize; k++){
                                     absNodes[i][j][k]->isAbstracted=false;
@@ -276,7 +276,10 @@ namespace SGA {
                                  }
                                  absNodes[i].clear();
                                  std::cout<<absNodes[i].size()<<"\n";
-                             }
+                             }*/
+                             stop_abstraction = true;
+                             deleteAbstraction();  // initialize the array empty again,
+                             rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
 
                          }
                      }
