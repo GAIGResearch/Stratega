@@ -345,7 +345,7 @@ namespace SGA
 			double reward = params.heuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 			int eID = unitIndex[unitThisStep];
 			int state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID));
-		
+
 			auto unit_nextState = gameState.getEntity(eID);
 			int next_state_hash = -1;
 			if (unit_nextState != nullptr) // this unit could be dead next step

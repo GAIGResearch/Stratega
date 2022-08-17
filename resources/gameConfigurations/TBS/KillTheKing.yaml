@@ -31,9 +31,9 @@ Agents:
         DoStateAbstraction: false
         Budget: FMCALLS
         MaxFmCalls: 30000
-        RolloutLength: 40
+        RolloutLength: 100
         ContinuePreviousSearch: false
-        K: 0.1
+        K: 10.0
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 20000
