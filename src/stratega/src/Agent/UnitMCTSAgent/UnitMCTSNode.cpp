@@ -56,6 +56,7 @@ namespace SGA
 		// for state abstraction
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
+        actionToNextState = std::map<int, int>();
 		stateCounter = std::map<int, int>();
 		actionHashVector = std::vector<int>();
 		nextStateHashVector = std::vector<int>();
@@ -99,6 +100,7 @@ namespace SGA
 
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
+        actionToNextState = std::map<int, int>();
 		stateCounter = std::map<int, int>();
 		actionHashVector = std::vector<int>();
 		nextStateHashVector = std::vector<int>();
@@ -356,6 +358,7 @@ namespace SGA
 			int action_hash = new_childIndex;
 			params.global_transition.addTransition(state_hash, action_hash, next_state_hash, reward);
 			actionToReward.insert(std::pair<int, double>(action_hash, reward));
+            actionToNextState.insert(std::pair<int, int>(action_hash, next_state_hash));
 			stateCounter.insert(std::pair<int, int>(next_state_hash, 1));
 			actionHashes.insert(std::pair<int, int>(action_hash, 1));
 			actionHashVector.push_back(action_hash);

@@ -20,6 +20,7 @@ namespace SGA {
           int nodeID = -1;
 
           std::map<int, double> actionToReward;
+          std::map<int, int> actionToNextState;
           std::map<int, int> stateCounter;
           std::vector<int> actionHashVector;
           std::map<int, int> actionHashes;

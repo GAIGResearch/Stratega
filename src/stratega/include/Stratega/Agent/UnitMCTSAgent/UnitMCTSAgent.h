@@ -66,6 +66,13 @@ namespace SGA {
             double reward_threshold,
             double transition_threshold);
 
+        bool isActionIndependentHomomorphism(
+            const ForwardModel& forwardModel,
+            UnitMCTSNode* node1,
+            UnitMCTSNode* node2,
+            double reward_threshold,
+            double transition_threshold);
+
         std::map< int, std::vector< UnitMCTSNode* > > depthToNodes;
 
         std::vector< std::vector< std::vector< UnitMCTSNode* > > >

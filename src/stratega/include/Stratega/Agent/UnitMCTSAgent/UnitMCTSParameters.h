@@ -20,7 +20,7 @@ namespace SGA {
         bool DO_STATE_ABSTRACTION = false;
 
         double R_THRESHOLD = 0.1; //0.1, 0.08
-        double T_THRESHOLD = 0.3;
+        double T_THRESHOLD = 1.0;
 
         bool CONTINUE_PREVIOUS_SEARCH = true;
         double REMAINING_FM_CALLS = -1;
@@ -54,9 +54,10 @@ namespace SGA {
         bool IS_UNGROUPING = false;
         bool IS_PHI_UNGROUPING = false;
         double UNGROUPING_BATCH_THRESHOLD = 1;
-        bool LAYER_UNGROUPING = true;
-        bool SINGLE_UNGROUPING = false;
+        bool LAYER_UNGROUPING = false;
+        bool SINGLE_UNGROUPING = true;
         bool SUBTREE_UNGROUPING = false;
+        bool IS_ACTION_INDEPENDENT = false;
 
         void printDetails() const;
     };
@@ -74,14 +75,15 @@ namespace YAML {
             rhs.REMAINING_FM_CALLS           = rhs.maxFMCalls;
             rhs.DO_STATE_ABSTRACTION         = node["DoStateAbstraction"].as< bool >(rhs.DO_STATE_ABSTRACTION);
             rhs.R_THRESHOLD                  = node["RThreshold"].as< double >(rhs.R_THRESHOLD);
-            rhs.CONTINUE_PREVIOUS_SEARCH     = node["ContinuePreviousSearch"].as< bool >(
-                rhs.CONTINUE_PREVIOUS_SEARCH);
+            rhs.T_THRESHOLD                  = node["TThreshold"].as< double >(rhs.T_THRESHOLD);
+            rhs.CONTINUE_PREVIOUS_SEARCH     = node["ContinuePreviousSearch"].as< bool >(rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
 			rhs.batch_size                   = node["BatchSize"].as< int >(rhs.batch_size);
 			rhs.random_abstraction           = node["RandomAbstraction"].as< bool >(rhs.random_abstraction);
             rhs.IS_PHI_UNGROUPING            = node["IsPhiUngrouping"].as< bool >(rhs.IS_PHI_UNGROUPING);
             rhs.UNGROUPING_BATCH_THRESHOLD   = node["UngroupingBatchThreshold"].as<double>(rhs.UNGROUPING_BATCH_THRESHOLD);
             rhs.IS_UNGROUPING                = node["IsUngrouping"].as<bool>(rhs.IS_UNGROUPING);
+            rhs.IS_ACTION_INDEPENDENT        = node["IsActionIndependent"].as<bool>(rhs.IS_ACTION_INDEPENDENT);
 
 			if (rhs.random_abstraction && (!rhs.DO_STATE_ABSTRACTION)) {
 				std::cout<<"[Warning]: RandomAbstraction is set to true. However, DoStateAbstraction is set to false!"<<"\n";

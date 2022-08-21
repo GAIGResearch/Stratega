@@ -192,19 +192,6 @@ namespace SGA {
                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
              }
 
-
-             /*std::cout << "After abstraction, number of abs Node each depth:\n";
-             for (int i = 1; i < parameters_.maxDepth; i++) {
-                 int abs_size = absNodes[i].size();
-                 std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
-                 if(abs_size == 0)continue;
-
-                 for (int j = 0; j < abs_size; j++) {
-                 std::cout<< absNodes[i][j].size()<< " ";
-                 }
-                 std::cout<<"\n";
-             }
-             */
              //for aamas
              if(parameters_.IS_UNGROUPING){
                  if(parameters_.SINGLE_UNGROUPING){
@@ -226,7 +213,7 @@ namespace SGA {
                                  else {
                                      ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
                                  }
-                                 if(absVisit - absSize* absSize > ungrouping_threshold){
+                                 if(absVisit - parameters_.R_THRESHOLD*2.0 *absSize* absSize > ungrouping_threshold){
                                      ungrouped_indices.push_back(j);
                                      //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
                                      for (int k = 0 ; k < absSize; k++){
@@ -254,7 +241,7 @@ namespace SGA {
                              int absSize = absNodes[i][j].size();
                              double ungrouping_threshold = 0.0;
                              if (parameters_.IS_PHI_UNGROUPING) {
-                                 ungrouping_threshold = absSize*parameters_.batch_size;
+                                 ungrouping_threshold = parameters_.batch_size/absSize;
                              }
                              else {
                                  ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
@@ -267,7 +254,7 @@ namespace SGA {
                          }//end for
 
                          if (toUngroup) {
-                             //std::cout<<"[LAYER UNGROUPING] batch: " << n_abs_iteration << " layer: "<< i << " UNGROUPING the subtree\n";
+                             std::cout<<"[LAYER UNGROUPING] batch: " << n_abs_iteration << " layer: "<< i << " UNGROUPING the subtree\n";
                              /*for (int j = 0; j < absNodes[i].size(); j++) { // abs node
                                  int absSize = absNodes[i][j].size();
                                  for (int k = 0 ; k < absSize; k++){
@@ -355,9 +342,9 @@ namespace SGA {
                          }
                      }
 
-                    if(node1->isAbstracted || node1->isUngrouped)
+                    // aamas, leaf node skip abstraction
+                    if(node1->isAbstracted || node1->isUngrouped || node1->childExpanded == 0)
                        continue;  // can be adjusted
-
 
                     if(absNodes[i].size() == 0) {  // this depth has no node cluster
 
@@ -378,16 +365,29 @@ namespace SGA {
                        bool foundExistGroup = false;
                        for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
                        {
-                          bool match = true;
-                          for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new initial nodes to the abstracted Nodes
-                             if(! isTwoNodeApproxmateHomomorphism(
+                          bool match = false;
+                          for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+                              if (parameters_.IS_ACTION_INDEPENDENT) {
+                                  if(isActionIndependentHomomorphism(
                                 forwardModel,
                                 node1,
                                 absNodes[i][j][k],
                                 parameters_.R_THRESHOLD,
                                 parameters_.T_THRESHOLD)) {
-                                   match = false;
-                             }
+                                   match = true;
+                                }
+                              }
+                              else {
+                                  if(isTwoNodeApproxmateHomomorphism(
+                                forwardModel,
+                                node1,
+                                absNodes[i][j][k],
+                                parameters_.R_THRESHOLD,
+                                parameters_.T_THRESHOLD)) {
+                                   match = true;
+                                }
+                              }
+                             
                           }
                           if(match) {
                              node1->isAbstracted = true;
@@ -398,6 +398,8 @@ namespace SGA {
                              foundExistGroup = true;
                           }//end if (match)
                        }
+
+                       // not found existing abstract node to add in, create a new one
                        if(! foundExistGroup) {
                           absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
                           absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
@@ -472,16 +474,45 @@ namespace SGA {
                  rootNode->eliminateAbstraction();
                  //deleteAbstraction();
                  //std::cout<<"maximum batch: "<< n_abs_iteration << " \n";
+
                  break;
              }
 
 
-             if(tmp_batch_used >= parameters_.absBatch) {
+             if(!stop_abstraction && tmp_batch_used >= parameters_.absBatch) {
                  //printAbsNodeStatus();
                  stop_abstraction = true;
-                 deleteAbstraction();  // initialize the array empty again,
-                 rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+                 //deleteAbstraction();  // initialize the array empty again,
+                 //rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
 
+                 ///*
+                 //std::cout<<"a\n";
+                 for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                     /*
+                     std::cout<< "depth: "<< i<< " abs Node: "<< absNodes[i].size() << "\n";
+
+                     for (int j = 0; j < absNodes[i].size(); j++) {
+                         std::cout<< absNodes[i][j].size()<< " ";
+                     }
+                     std::cout<<"\n";
+                     */
+                     if(i == parameters_.maxDepth-1 && (absNodes.size() >parameters_.maxDepth-1)){
+                         //std::cout<<"layer: "<< parameters_.maxDepth-1 <<"\n";
+                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             if (absNodes[i][j].size() > 0){
+                                 int absSize = absNodes[i][j].size();
+                                 for (int k = 0 ; k < absSize; k++){
+                                     absNodes[i][j][k]->eliminateAbstraction();
+                                     absNodes[i][j][k]->isUngrouped=true;
+                                 }
+
+                             }//end if
+                         }//end for
+                     }// end if(i==2)
+                 }//*/
+                 //std::cout<<"b\n";
+                 //deleteAbstraction();
+                 //std::cout<<"c\n";
              }
 
           }
@@ -583,8 +614,89 @@ namespace SGA {
        }
     }
 
-    // actual reward, what if using the approximate Q? combination of heuristic score [stage1]
     bool UnitMCTSAgent::isTwoNodeApproxmateHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
+    {
+        // node 2 is a ground node from an abstract node
+       auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
+       auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
+       double max_reward_difference = 0.0;
+       std::map< int, int > commonActions = std::map< int, int >();
+       std::map< int, int > actionsUnion = std::map<int, int> ();
+       std::vector< int > commonActionsVector = std::vector< int >();
+
+       // reward checking
+       for(int i = 0; i < node1->actionHashVector.size(); i++) {
+          double diff_this = 0.0;
+          int a = node1->actionHashVector[i];
+          actionsUnion.insert(std::pair< int, int >(a, 1));
+          if(node2->actionHashes.count(a)) {
+             commonActions.insert(std::pair< int, int >(a, 1));
+             commonActionsVector.push_back(a);
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(
+                node1
+                   ->actionToReward[a]);  // not common action.
+             // different setting. multiply [0-1]
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
+
+       for(int i = 0; i < node2->actionHashVector.size(); i++) {
+          int a = node2->actionHashVector[i];
+          if (!actionsUnion.count(a)) {
+              actionsUnion.insert(std::pair<int, int>(a, 1));
+          }
+          if(! commonActions.count(a))
+             continue;
+          double diff_this = 0.0;
+
+          if(node1->actionHashes.count(a)) {
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(node2->actionToReward[a]);
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
+       if(max_reward_difference > reward_threshold) {
+          return false;
+       }
+
+       /*
+       A   1, 2
+       B   2, 3
+       */
+       // for all transition, in deterministic situation, it could only be 
+       // for common action a
+       // 0, when T(s1, a, s3) =1.0 and T(s2, a, s3)=1.0
+       // 2.0, when T(s1, a, s3) =1.0 and T(s2, a, s3) = 0.0; T(s1, a, s4) =1.0 and T(s2, a, s4) = 0.0;
+       // for non-common action a1 for s1, a2 for s2
+       // 2.0, T(s1, a1, s3) =1.0, T(s2, a1, s3) = 0.0; T(s1, a2, s4) =0.0, T(s2, a2, s4) = 1.0;
+       for (auto a_pair : actionsUnion) {
+           int a = a_pair.first;
+           double diff_this = 0.0;
+           if (node1->actionHashes.count(a) && node2->actionHashes.count(a)) {
+               if (node1->actionToNextState[a] == node2->actionToNextState[a]) {
+               }
+               else {
+                   diff_this+=2.0;
+               }
+           }
+           else {
+               diff_this+=2.0;
+           }
+           if(diff_this > transition_threshold)return false;
+       }
+
+       return true;
+    }
+
+    // actual reward, what if using the approximate Q? combination of heuristic score [stage1]
+    bool UnitMCTSAgent::isActionIndependentHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
     {
        auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
        auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
@@ -629,11 +741,12 @@ namespace SGA {
        if(max_reward_difference > reward_threshold) {
           return false;
        }
+       
 
-       /*
-       A   1, 2
-       B   2, 3
-       */
+       
+       //A   1, 2
+      // B   2, 3
+       
        // for all transition
        double transition_error = 0;
        for(int i = 0; i < node1->nextStateHashVector.size(); i++) {

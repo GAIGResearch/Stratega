@@ -22,6 +22,7 @@ void UnitMCTSParameters::printDetails() const
        std::cout<< "\tR_THRESHOLD = "<< R_THRESHOLD << "\n";
        std::cout<< "\tT_THRESHOLD = "<< T_THRESHOLD << "\n";
        std::cout << "\tIS_UNGROUPING = "<< IS_UNGROUPING << "\n";
+       std::cout << "\tIS_ACTION_INDEPENDENT = " << IS_ACTION_INDEPENDENT <<"\n";
        if (IS_UNGROUPING) {
            std::cout << "\tIS_PHI_UNGROUPING = "<< IS_PHI_UNGROUPING << "\n";
            std::cout << "\tUNGROUPING_BATCH_THRESHOLD = "<< UNGROUPING_BATCH_THRESHOLD << "\n";
