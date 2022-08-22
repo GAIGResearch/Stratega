@@ -345,7 +345,7 @@ namespace SGA
 
             bool parent_unit_alive = true;
             auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
-            if (u != nullptr) {
+            if (u == nullptr) {
                 parent_unit_alive = false;
             }
 
