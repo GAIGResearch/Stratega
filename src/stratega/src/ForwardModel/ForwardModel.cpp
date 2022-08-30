@@ -37,13 +37,20 @@ namespace SGA
 		std::vector<ActionTarget> targets;
 		targets.emplace_back(ActionTarget::createPlayerActionTarget(playerID));
 
+        // each lose condition defined several rules. all rules are fullfied will activate this lose condition.
+        // any lose condition fullfiled will terminate the game
 		for (auto& loseConditionType : loseConditions)
 		{
+            
+            bool allFullfiled = true;
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfiled(state, targets))
-					return true;
+				if (!loseCondition->isFullfiled(state, targets))
+                    allFullfiled = false;
+					//return true;
 			}
+            if(allFullfiled)
+                return allFullfiled;
 		}
 
 		return false;

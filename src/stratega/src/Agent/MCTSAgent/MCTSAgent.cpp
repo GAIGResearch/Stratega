@@ -1,6 +1,7 @@
 #include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/BasicTBSHeuristic.h>
+#include <Stratega/Agent/Heuristic/PushThemAllHeuristic.h>
 
 namespace SGA
 {
@@ -13,8 +14,8 @@ namespace SGA
             if (parameters_.heuristic == nullptr)
                 parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
         */
-		parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
-		//parameters_.heuristic = std::make_unique<BasicTBSHeuristic>(parameters_.PLAYER_ID, initialState);
+		//parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
+		parameters_.heuristic = std::make_unique<PushThemAllHeuristic>(getPlayerID(), initialState);
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
@@ -31,11 +32,10 @@ namespace SGA
         // generate actions
         const auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 
-
         // if there is just one action and we don't spent the time on continuing our search
         // we just instantly return it
         // todo update condition to an and in case we can compare gameStates, since we currently cannot reuse the tree after an endTurnAction
-        if (actionSpace.size() == 1 || !parameters_.continuePreviousSearch)
+        if (actionSpace.size() == 1)
         {
             rootNode = nullptr;
             previousActionIndex = -1;
@@ -61,7 +61,9 @@ namespace SGA
             }
 
             //Do search!
+            //std::cout<<"a\n";
             rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
+            //std::cout<<"b\n";
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction(parameters_, getRNGEngine());
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(static_cast<size_t>(bestActionIndex));
@@ -71,6 +73,14 @@ namespace SGA
             if (bestAction.getActionFlag() == ActionFlag::EndTickAction) {
                 parameters_.step++;
             }
+
+            //for (auto a : rootNode->actionSpace) {
+            //state.printActionInfo(a);
+            //}
+            //rootNode->printTree();
+            state.printBoard();
+            double score = parameters_.heuristic->evaluateGameState(forwardModel, state, getPlayerID());
+            std::cout<<"score: "<< score<<"\n";
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }

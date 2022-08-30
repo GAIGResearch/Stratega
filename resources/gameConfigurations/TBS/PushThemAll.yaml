@@ -1,6 +1,6 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 1000
+    RoundLimit: 300
     FogOfWar: false
 
 Buffs: # Buff lists
@@ -9,8 +9,47 @@ Buffs: # Buff lists
             AttackDamage: 20
 
 Agents:
-    - HumanAgent
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: true
+        MaxFmCalls: 5000
+        RolloutLength: 20
+        ContinuePreviousSearch: false
+        AbstractionBatch: 10
+        BatchSize: 10
+        RandomAbstraction: false
+        K: 0.1
+        IsUngrouping: false
+        IsPhiUngrouping: false
+        UngroupingBatchThreshold: 1.0
+        IsActionIndependent: false
+        RThreshold: 0.1
+        TThreshold: 1.0
+    #- UnitMCTSAgent:
+    #    Budget: FMCALLS
+    #    DoStateAbstraction: false
+    #    MaxFmCalls: 5000
+    #    RolloutLength: 20
+    #    ContinuePreviousSearch: false
+    #    AbstractionBatch: 1000
+    #    BatchSize: 10
+    #    RandomAbstraction: false
+    #    K: 0.1
+    #    IsUngrouping: false
+    #    IsPhiUngrouping: false
+    #    UngroupingBatchThreshold: 1.0
+    #    IsActionIndependent: false
+    #    RThreshold: 0.1
+    #    TThreshold: 2.0
+    #- MCTSAgent:
+    #    Budget: FMCALLS
+    #    MaxFmCalls: 5000
+    #    RolloutLength: 10
+    #    ContinuePreviousSearch: false
+    #    K: 0.1
     - PusherAgent
+    ##- RandomAgent
+    #- DoNothingAgent
 
 GameRenderer:
     Resolution:
@@ -54,12 +93,12 @@ Board:
         M  H  .  w1 .  w1 .  H  M
         M  H  .  w1 .  w1 .  H  M
         M  H  .  .  .  .  .  H  M
-        M  H  H  .  H  .  H  H  M
+        M  H  H  .  .  .  H  H  M
         M  H  .  .  .  .  .  H  M
-        M  H  .  H  .  H  .  H  M
-        M  H  .  H  .  H  .  H  M
         M  H  .  .  .  .  .  H  M
-        M  H  H  .  H  .  H  H  M
+        M  H  .  .  .  .  .  H  M
+        M  H  .  .  .  .  .  H  M
+        M  H  H  .  .  .  H  H  M
         M  H  .  .  .  .  .  H  M
         M  H  .  w0 .  w0 .  H  M
         M  H  .  w0 .  w0 .  H  M
@@ -72,7 +111,7 @@ Actions:
         Targets:
             Target:
                 Type: Entity
-                ValidTargets: Warrior
+                ValidTargets: [Warrior, Ghost]
                 SamplingMethod:
                     Type: Neighbours
                     Options:
@@ -102,31 +141,51 @@ Actions:
             - "Move(Source, Target)"
             - "ModifyResource(Source.MovementPoints, -1)"
 
+    Empty:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Effects:
+            - "ModifyResource(Source.MovementPoints, -1)"
+
 Entities:
     Warrior:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Push, Move]
+        Actions: [Push, Move, Empty]
         Parameters:
             Health: 200
             AttackRange: 2
             AttackDamage: 100
-            MovementPoints: 1       
+            MovementPoints: 1
+
+    Ghost:
+        Sprite: ../../assets/Entities/unit_2.png
+        Symbol: g
+        LineOfSightRange: 6
+        Actions: [Move, Empty]
+        Parameters:
+            Health: 200
+            AttackRange: 2
+            AttackDamage: 100
+            MovementPoints: 1
 
 ForwardModel:
     LoseConditions: #If true: Player -> cant play
         HasNoCity:
+        - "HasNoEntity(Source, Ghost)"
         - "HasNoEntity(Source, Warrior)"
+        
     Trigger:
         - OnTick:
             Type: Entity
-            ValidTargets: Warrior
+            ValidTargets: [Warrior, Ghost]
             Effects:
                 - "SetToMaximum(Source.MovementPoints)"
         - OnAdvance:
             Type: Entity
-            ValidTargets: Warrior
+            ValidTargets: [Warrior, Ghost]
             Conditions:
                 - "IsTileType(Source, Hole)"
             Effects:

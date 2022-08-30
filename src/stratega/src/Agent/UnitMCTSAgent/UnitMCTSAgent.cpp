@@ -14,7 +14,8 @@ namespace SGA {
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
-        parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
+        //parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
+        parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
 		parameters_.printDetails();
     }
 
@@ -25,7 +26,7 @@ namespace SGA {
        }
        parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
        auto units = state.getPlayerEntities(getPlayerID()); 
-
+       //state.printBoard();
        // initialize the order of unit moving
        if(unitIndexInitialized == false) {
           for(auto unit : units) {
@@ -162,12 +163,14 @@ namespace SGA {
           int tmp_batch_used = 0;
           int tmp_index = 1000;
           if(! parameters_.DO_STATE_ABSTRACTION) {
-             rootNode->searchMCTS(
-                *processedForwardModel,
-                parameters_,
-                getRNGEngine(),
-                &depthToNodes,
-                &absNodeToStatistics);
+              //std::cout<<"start search\n";
+              rootNode->searchMCTS(
+                 *processedForwardModel,
+                 parameters_,
+                 getRNGEngine(),
+                 &depthToNodes,
+                 &absNodeToStatistics);
+              //std::cout<<"ends search\n";
           }
 
 

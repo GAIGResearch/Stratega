@@ -21,6 +21,7 @@ namespace SGA
 
 		for (const auto& a : actions)
 		{
+            //std::cout<< actionTypeIDToActionTypeString.at(a.getActionTypeID())<<"\n";
 			if (actionTypeIDToActionTypeString.at(a.getActionTypeID()) == type)
 			{
 				filteredActions.emplace_back(a);
@@ -41,6 +42,17 @@ namespace SGA
 
 	ActionAssignment PusherAgent::playTurn(GameState& newState, const ForwardModel& forwardModel)
 	{
+        //newState.printBoard();
+        if (dis(getRNGEngine()) > 0.8) {//87
+            //std::cout<<"enter random action\n";
+            auto actions = forwardModel.generateActions(newState, getPlayerID());
+            boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
+            auto actionIndex = actionDist(getRNGEngine());
+            auto action = actions.at(actionIndex);
+            //std::cout<<"select random agent\n";
+            return ActionAssignment::fromSingleAction(action);
+        }
+
 		for (const auto& a : newState.getGameInfo()->getActionTypes())
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.getName();
@@ -51,15 +63,23 @@ namespace SGA
 		std::vector<Action> actionBucket;
 
 		auto state = newState;
+        //std::cout<<"00\n";
 
 		// Collect units that we posess and opponent units
 		std::vector<Entity> myUnits;
+        std::vector<Entity> myGhost;
 		std::vector<Entity> opponentUnits;
 		for (auto& unit : state.getEntities())
 		{
 			if (unit.getOwnerID() == this->getPlayerID())
 			{
-				myUnits.push_back(unit);
+                if (state.getGameInfo()->getEntityType(unit.getEntityTypeID()).getName() == "Ghost") {
+                    myGhost.push_back(unit);
+                }
+                else {
+                    myUnits.push_back(unit);
+                }
+
 			}
 			else
 			{
@@ -70,13 +90,31 @@ namespace SGA
 		// Go through all units and return the first action that we deem good
 		// Since this function is called multiple times, we will eventually use up all actions available
 		auto actions = forwardModel.generateActions(currentState, getPlayerID());
-		Action bestAction = filterActionTypes(actions, "EndTurn").at(0); // Only one EndTurn action available
 
+        auto action_candidate = filterActionTypes(actions, "EndTurn");
+        Action bestAction = action_candidate.at(0);
+
+        // execute empty for all out ghost
+        for (auto& u : myGhost) {
+            auto unit_action_space = forwardModel.generateUnitActions(state, u, this->getPlayerID(), false);
+            if (unit_action_space.size() == 0) {
+                continue;
+            }
+            else {
+                auto empty_a = filterActionTypes(unit_action_space, "Empty");
+                //std::cout<<"empty_a.size(): "<< empty_a.size()<<"\n";
+                return ActionAssignment::fromSingleAction(empty_a.at(0));
+            }
+        }
+
+        //std::cout<<"uu\n";
 		for (auto& u : myUnits)
 		{
+            
 			std::vector<Vector2i> possibleTargets;
 			std::vector<Entity> attackTarget;
 			std::vector<int> pushCount;
+            //std::cout<<"aa\n";
 			// Compute all positions where we could attack an unit and store it in possibleTargets
 			for (auto& opponent : opponentUnits)
 			{
@@ -93,7 +131,7 @@ namespace SGA
 					}
 				}
 			}
-
+            //std::cout<<"kk\n";
 			auto paths = ShortestPaths(state, { static_cast<int>(u.getPosition().x),static_cast<int>(u.getPosition().y) }, possibleTargets);
 			size_t bestAttackIndex = -1;
 			double lowestCost = std::numeric_limits<double>::max();
@@ -110,6 +148,7 @@ namespace SGA
 				}
 			}
 
+            //std::cout<<"gg\n";
 			// After finding our attack target, first try to push an opponent. But only if we can't attack our attack target immediately
 			if (static_cast<int>(bestAttackIndex) == -1 || paths[bestAttackIndex].second.size() != 1)
 			{
@@ -146,6 +185,7 @@ namespace SGA
 				}
 			}
 
+            //std::cout<<"cc\n";
 			if (bestAction.getActionFlag() != ActionFlag::EndTickAction)
 				break;
 			

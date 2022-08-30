@@ -235,21 +235,22 @@ namespace SGA
 
 		// stop in case the set number of fmCalls has been reached
 		while (!stop) {
+            //std::cout<<"12\n";
 			UnitMCTSNode* selected = treePolicy(forwardModel, params, randomGenerator, depthToNodes, absNodeToStatistics);
 
 			if (selected == nullptr) {
-				std::cout << "Returns an empty pointer" << std::endl;
+				std::cout << "Returns an empty pointer\n";
 				continue;
 			}
 
 			double deltaAll = 0.0;
-			int Nrollout = 1;
-
+			int Nrollout = 2;
+            //std::cout<<"2\n";
 			for (int i = 0; i < Nrollout; i++) {
 				deltaAll += selected->rollOut(forwardModel, params, randomGenerator);
 			}
 			const double delta = deltaAll / Nrollout;  //cout << "delta: " << delta << "\n";
-
+            //std::cout<<"32\n";
 			backUp(selected, delta, absNodeToStatistics);
 
 			n_search_iteration++;
@@ -297,10 +298,12 @@ namespace SGA
 	UnitMCTSNode* UnitMCTSNode::expand(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randomGenerator,
 		std::map<int, std::vector<UnitMCTSNode*> >* depthToNodes)
 	{
-		//todo remove unnecessary copy of gameState
+        //std::cout<<"exand 1\n";
+
 		auto gsCopy(gameState);
 		int new_childIndex = childExpanded;
-
+        //std::cout<<"actionspace size: "<< actionSpace.size()<<"\n";
+        //std::cout<<"new_childIndex: "<< new_childIndex << "\n";
 		int isTurnEnd = applyActionToGameState(forwardModel, gsCopy, actionSpace.at(new_childIndex), params, randomGenerator);
 
 		//std::cout << " [expand state hash]: " << unitStateHash(forwardModel, gameState, *gameState.getEntity(unitIndex[unitThisStep])) << std::endl;
@@ -311,18 +314,28 @@ namespace SGA
 		{
 			unitNextStep = 0;
 		}
-		else { //the entity won't be dead
-			auto actionSpace_tmp =
-				forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
-			if (actionSpace_tmp.size() == 0) {
-				unitNextStep = unitThisStep + 1;
-			}
-			else {
-				unitNextStep = unitThisStep;
-			}
+		else { 
+            //the entity could be dead
+            //std::cout<<"exand else 1, unitIndex size: " << unitIndex.size() << " unitThisStep: " << unitThisStep << "\n";
+            bool parent_unit_alive = true;
+            auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
+            if (u == nullptr) {
+                parent_unit_alive = false;
+            }
+
+            if (parent_unit_alive) {
+                auto actionSpace_tmp =
+                    forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
+                if (actionSpace_tmp.size() == 0) {
+                    unitNextStep = unitThisStep + 1;
+                }
+                else {
+                    unitNextStep = unitThisStep;
+                }
+            }
 
 		}
-
+        //std::cout<<"exand 2\n";
 		// find next alived unit
 		if (!isTurnEnd) {
 			for (; unitNextStep < unitIndex.size(); unitNextStep++) {
@@ -332,7 +345,7 @@ namespace SGA
 				}
 			}
 		}
-
+        //std::cout<<"exand 3\n";
 		// all units moved, refresh the moving order by ending this turn, this could raize terminate state
 		if (unitNextStep == unitIndex.size())
 		{
@@ -340,7 +353,7 @@ namespace SGA
 			applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
 			unitNextStep = 0;
 		}
-
+        //std::cout<<"exand 4\n";
 		// TODO@homomorphism collecting transitions
 		// addTransition(int stateHash, int actionHash, int nextStateHash, double reward);
 		if(params.DO_STATE_ABSTRACTION){
@@ -364,26 +377,26 @@ namespace SGA
 			actionHashVector.push_back(action_hash);
 			nextStateHashVector.push_back(next_state_hash);
 		}
-
+        //std::cout<<"exand 5\n";
 		children.push_back(std::unique_ptr<UnitMCTSNode>(new UnitMCTSNode(forwardModel, std::move(gsCopy), this, new_childIndex,
 			unitIndex, unitNextStep, params.PLAYER_ID, params.global_nodeID)));
 
 		params.global_nodeID++;
-
+        //std::cout<<"exand 6\n";
 		if (nodeDepth + 1 > params.maxDepth)
 		{
 			params.maxDepth = nodeDepth + 1;
 		}
 
 		childExpanded += 1;
-
+        //std::cout<<"exand 7\n";
 		if(params.DO_STATE_ABSTRACTION){
 			if (!(depthToNodes->count(nodeDepth + 1))) {
 				depthToNodes->insert(std::pair<int, std::vector<UnitMCTSNode*> >(nodeDepth + 1, std::vector<UnitMCTSNode*>()));
 			}
 			((*depthToNodes)[nodeDepth + 1]).push_back(children[new_childIndex].get());
 		}
-
+        //std::cout<<"finished exand\n";
 		return children[new_childIndex].get();
 	}
 

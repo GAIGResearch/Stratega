@@ -2,6 +2,7 @@
 #include <Stratega/Agent/AgentParameters.h>
 #include <Stratega/Agent/Heuristic/AimToKingHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
+#include <Stratega/Agent/Heuristic/PushThemAllHeuristic.h>
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Agent/UnitMCTSAgent/Transition.h>
 #include <boost/random.hpp>

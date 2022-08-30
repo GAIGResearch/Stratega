@@ -8,7 +8,8 @@ namespace SGA {
 	{
 	public:
 		int nodeDepth = 0;			//Depth of this node in the tree.
-		int treesize = 1;			//Reference to the number of nodes in the tree behind this node..
+		int treesize = 1;			//Reference to the number of nodes in the tree behind this node
+        int childExpanded = 0;
 
 	protected:
 		int nVisits = 0;			//number of visits to this node.
@@ -91,6 +92,8 @@ namespace SGA {
 		/// Prints information of this node.
 		/// </summary>
 		void print() const override;
+
+        void printActionInfo() const;
 
 	private:
 

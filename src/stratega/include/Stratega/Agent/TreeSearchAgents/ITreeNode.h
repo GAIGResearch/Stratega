@@ -44,14 +44,16 @@ namespace SGA
 			return children.size() >= actionSpace.size();
 		}
 
-	protected:
-
-		/// <summary>
+        /// <summary>
 		/// Action space in the state of this node. This is the action space corresponding to:
 		///  - The owner of this tree if ownerID can play in this state (then playerID=ownerID)
 		///  - If the owner can't play at this state, the player that can play if there's only one other to play.
 		/// </summary>
 		std::vector<Action> actionSpace;
+
+	protected:
+
+		
 		int playerID;  //ID of the player whose action space has been calculated in this node (and it's to move in the game).
 
 
@@ -94,7 +96,7 @@ namespace SGA
 
 					// print the value of the node
 					node->print();
-					std::cout << actionName;// << std::endl;
+					std::cout << actionName << std::endl;
 
 					// enter the next tree level - left and right branch
 					for (size_t i = 0; i < node->children.size(); ++i)
@@ -115,7 +117,7 @@ namespace SGA
 
 					node->print();
 					//std::cout << node->children.size() << "; " << actionName << std::endl;
-					std::cout << actionName;// << std::endl;
+					std::cout << actionName << std::endl;
 				}
 			}
 		}

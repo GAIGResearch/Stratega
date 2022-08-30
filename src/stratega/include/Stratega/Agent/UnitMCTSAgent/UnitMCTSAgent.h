@@ -28,6 +28,15 @@ namespace SGA {
             absNodeToStatistics = std::map< int, std::vector< double > >();
 
             treeNodetoAbsNode = std::map< int, int >();
+            if (parameters_.DO_STATE_ABSTRACTION) {
+                agentName = "ElasticMCTSuAgent";
+                if (parameters_.IS_ACTION_INDEPENDENT) {
+                    agentName = "ActionInvariantElasticMCTSuAgent";
+                }
+                else if (parameters_.random_abstraction) {
+                    agentName = "RandomGroupedMCTSuAgent";
+                }
+            }
         }
 
         void stepInit()
@@ -41,6 +50,10 @@ namespace SGA {
 
             absNodeToStatistics = std::map< int, std::vector< double > >();
             treeNodetoAbsNode = std::map< int, int >();
+        }
+
+        const std::string& getName() const override {
+              return agentName;
         }
 
         void deleteAbstraction()
@@ -97,5 +110,8 @@ namespace SGA {
         bool unitIndexInitialized = false;
         int unitThisStep = 0;  // this is an array index of unitIndex
         int unitNextStep = 0;
+
+
+        std::string agentName = "MCTSuAgent";
     };
 }  // namespace SGA

@@ -6,6 +6,7 @@ namespace SGA
 	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState newGameState, int newOwnerID) :
 		ITreeNode<SGA::MCTSNode>(forwardModel, std::move(newGameState), newOwnerID)
 	{
+        childExpanded = 0;
 	}
 
 	MCTSNode::MCTSNode(ForwardModel& forwardModel, GameState newGameState, MCTSNode* newParent, const int newChildIndex, int newOwnerID) :
@@ -28,6 +29,7 @@ namespace SGA
 		else {
 			nodeDepth = 0;
 		}
+        childExpanded = 0;
 	}
 
 	/// <summary>
@@ -39,6 +41,8 @@ namespace SGA
 		// stop in case the budget is over.
 		MCTSNode* last_selected = nullptr;
 		int n_repeat_selection = 0;
+        int tmp_fm_call_spent = 0;
+        int fm_call_not_advance = 0;
 		while (!params.isBudgetOver()) {
 
 			MCTSNode* selected = treePolicy(forwardModel, params, randomGenerator);
@@ -49,12 +53,24 @@ namespace SGA
 					n_repeat_selection = 0;
 			}
 			last_selected = selected;
+            tmp_fm_call_spent = params.currentFMCalls;
 			double delta = selected->rollOut(forwardModel, params, randomGenerator);
 
+            // rollout does not spent forward model
+            if(params.budgetType == Budget::FMCALLS){
+                if(params.currentFMCalls == tmp_fm_call_spent){
+                    fm_call_not_advance++;
+                    if(fm_call_not_advance > 20)return;
+                }
+                else {
+                    fm_call_not_advance = 0;
+                }
+            }
 			backUp(selected, delta);
 			params.currentIterations++;
 			if (n_repeat_selection >= 20) // repeated selection
 				return;
+            //std::cout<< "n_repeat_selection: "<< n_repeat_selection<< " fm calls: "<< params.currentFMCalls << "\n";
 		}
 	}
 
@@ -93,8 +109,10 @@ namespace SGA
 		applyActionToGameState(forwardModel, gsCopy, action, params, playerID);
 
 		// generate child node and add it to the tree
-		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childIndex, this->ownerID)));
-		childIndex ++;
+		children.push_back(std::unique_ptr<MCTSNode>(new MCTSNode(forwardModel, std::move(gsCopy), this, childExpanded, this->ownerID)));
+        //std::cout<< children.size() << " childExapnded: "<< childExpanded<<std::endl;
+		childExpanded ++;
+
 		return children[static_cast<size_t>(children.size()-1)].get();
 	}
 
@@ -174,6 +192,12 @@ namespace SGA
 			auto gsCopy(gameState);
 			int thisDepth = nodeDepth;
 
+            // [BUGfixed] for FMCALLS budget: selected state is a terminal state that cost no budget
+            if (gsCopy.isGameOver() && params.budgetType == Budget::FMCALLS) {
+                //std::cout<<"catch terminal state!\n";
+                params.currentFMCalls ++;
+            }
+
 			//If we must keep rolling.
 			while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
 
@@ -199,17 +223,22 @@ namespace SGA
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)
 	{
-		if (depth >= params.rolloutLength)      //rollout end condition.
-			return true;
+        if (depth >= params.rolloutLength) {
+            //std::cout<<"depth out of range\n";
+            return true;
+        }
+			
 
-		//end of game
 		return rollerState.isGameOver();
 	}
 
 	void MCTSNode::applyActionToGameState(ForwardModel& forwardModel, GameState& targetGameState, Action& action, MCTSParameters& params, int /*playerID*/) const
 	{
 		//Roll the game state with our action.
-		params.currentFMCalls += SGA::roll(targetGameState, forwardModel, action, playerID, params);
+		//params.currentFMCalls += SGA::roll(targetGameState, forwardModel, action, playerID, params);
+        int rollReturn = SGA::roll(targetGameState, forwardModel, action, playerID, params);
+        //std::cout<<rollReturn << std::endl;
+        params.currentFMCalls += rollReturn;
 
 		//Continue rolling the state until the game is over, we run out of budget or this agent can play again. 
 		while (!targetGameState.canPlay(params.PLAYER_ID) && !params.isBudgetOver() && !targetGameState.isGameOver())
@@ -348,9 +377,18 @@ namespace SGA
 		}
 	}
 
+    void MCTSNode::printActionInfo() const {
+        if (this->parentNode != nullptr) {
+            auto a = this->parentNode->actionSpace[this->childIndex];
+            this->parentNode->gameState.printActionInfo(a);
+        }
+    }
+
 	void MCTSNode::print() const
 	{
-		std::cout << this->value / this->nVisits << "; " << this->nVisits << "; " << children.size();
+		std::cout << "value: "<< this->value / this->nVisits << "; nVisit: " << this->nVisits << "; children size: " << children.size() 
+            << "; depth: "<< nodeDepth << " ";
+        printActionInfo();
 	}
 
 }

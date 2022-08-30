@@ -19,6 +19,8 @@ namespace SGA
 		void init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) override;
 
 	private:
+        boost::random::uniform_real_distribution<> dis = boost::random::uniform_real_distribution<> (0.0, 1.0);
+
 		UnitTypeStrengthLookup unitScores;
 		std::map<int, std::string> actionTypeIDToActionTypeString;
 

@@ -549,8 +549,9 @@ namespace SGA
 		else
 		{
 			const ActionType& actionType = action.getActionType();
+
 			std::cout << "["<< actionType.getName() <<"]," ;
-			
+
 			//Print source
 			if (actionType.getSourceType() == ActionSourceType::Player)
 				std::cout << " [SourceType Player: " << action.getOwnerID() << "],";

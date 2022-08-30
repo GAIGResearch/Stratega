@@ -89,7 +89,6 @@ namespace SGA {
           void setValue(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase = false);
           void setVisitCount(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase = false);
 
-
        private:
           //UnitMCTSNode(TBSForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, int childIndex);
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, 

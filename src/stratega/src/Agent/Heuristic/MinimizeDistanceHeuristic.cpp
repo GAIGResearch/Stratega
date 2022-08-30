@@ -1,9 +1,20 @@
 #include <map>
 #include <set>
+#include <cmath>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 
 namespace SGA
 {
+    MinimizeDistanceHeuristic::MinimizeDistanceHeuristic(GameState& gamestate) {
+        double width = gamestate.getBoardWidth();
+        double height = gamestate.getBoardHeight();
+        maximum_distance = sqrt(width*width+height*height);
+    }
+
+    MinimizeDistanceHeuristic::MinimizeDistanceHeuristic() {
+
+    }
+
 	double MinimizeDistanceHeuristic::evaluateGameState(const ForwardModel& /*forwardModel*/, GameState& gameState, int playerID)
 	{
 		double score = 0.0;
@@ -11,9 +22,9 @@ namespace SGA
 		if (gameState.isGameOver())
 		{
 			if (gameState.getWinnerID() == playerID)
-				score -= 1000;	// since this score should be minimized we need to deduct points for winning
+				return 0.0;
 			else
-				score += 1000;
+				return 1.0;
 		}
 
 		std::map<int, Vector2f> positions;
@@ -52,6 +63,7 @@ namespace SGA
 		if (playerEntities.size() > 0) {
 			score += sumOfAverageDistances / static_cast<double>(playerEntities.size());
 		}
+        score /= maximum_distance;
 
 		return score;
 	}
