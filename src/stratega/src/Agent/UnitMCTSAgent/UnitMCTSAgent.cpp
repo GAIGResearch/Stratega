@@ -18,7 +18,7 @@ namespace SGA {
         //parameters_.heuristic = std::make_unique< BasicTBSResourceHeuristic >(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSTechnologyHeuristic >(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSCombatHeuristic >(parameters_.PLAYER_ID, initialState);
-        parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState);
+        parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState, 1.0, 0.0, 0.0);
 
         parameters_.abstractionHeuristic = std::make_unique<TwoKingdomsAbstractionHeuristic>(parameters_.PLAYER_ID, initialState,
                                             0.0, 1.0, 0.0); // wCombat, wTechnology, wResource
@@ -137,6 +137,9 @@ namespace SGA {
                 for(auto node1 : deep_layer) {  // each initial node
                     if(node1->isAbstracted)
                         continue;  // can be adjusted
+                    if (node1->children.size() == 0) {
+                        continue;
+                    }
                     if(absNodes[i].size() == 0) {  // this depth has no node cluster
                         absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
 
@@ -221,7 +224,7 @@ namespace SGA {
 
                     ///* // for IJCAI paper
                     if(true){
-                        std::cout<<"Abstraction eliminated!\n";
+                        //std::cout<<"Abstraction eliminated!\n";
                         printBoundStatistics(false);
                     }
                     //*/

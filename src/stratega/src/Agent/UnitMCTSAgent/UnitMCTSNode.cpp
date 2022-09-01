@@ -357,7 +357,7 @@ namespace SGA
                 else {
                 
                     //std::cout<<"9999999999999\n";
-                    std::cout<<unitIndex.size() << "  " << unitThisStep << "\n";
+                    //std::cout<<unitIndex.size() << "  " << unitThisStep << "\n";
                     forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
                 }
 

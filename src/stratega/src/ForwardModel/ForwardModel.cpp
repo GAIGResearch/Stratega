@@ -41,13 +41,18 @@ namespace SGA
 
 		for (auto& loseConditionType : loseConditions)
 		{
+            bool isLost=true;
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfiled(state, targets))
+				if (!(loseCondition->isFullfiled(state, targets)) )
 				{
-					return true;
+					isLost=false;
+                    break;
 				}
 			}
+            if (isLost) {
+                return true;
+            }
 		}
 
 		return false;
@@ -64,13 +69,20 @@ namespace SGA
 
 		for (auto& loseConditionType : loseConditions)
 		{
+            bool isLost=true;
 			for (auto& loseCondition : loseConditionType)
 			{
-				if (loseCondition->isFullfiled(state, targets))
+				if (!(loseCondition->isFullfiled(state, targets)) )
 				{
-					SGA::logValue("LoseType", loseCondition->expr());
+                    isLost=false;
+                    break;
+					//SGA::logValue("LoseType", loseCondition->expr());
 				}
 			}
+            if (isLost) {
+                SGA::logValue("WinType", loseConditionType[0]->expr());
+                return;
+            }
 		}
 
 	}

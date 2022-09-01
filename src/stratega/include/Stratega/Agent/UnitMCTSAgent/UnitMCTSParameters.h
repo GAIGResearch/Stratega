@@ -24,8 +24,8 @@ namespace SGA {
 
         bool DO_STATE_ABSTRACTION = false;
 
-        double R_THRESHOLD = 0.2; //0.1, 0.08
-        double T_THRESHOLD = 0.5; // {0.5, 1.5, 2.5, 3.5}
+        double R_THRESHOLD = 0.1; //0.1, 0.08
+        double T_THRESHOLD = 0.3; // {0.5, 1.5, 2.5, 3.5}
         double TECHNOLOGY_R_THRESHOLD = 0.4;
         double COMBAT_R_THRESHOLD = 0.3;
         //double RESOURCE_R_THRESHOLD = 0.0;
