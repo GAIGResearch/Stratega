@@ -55,6 +55,10 @@ namespace SGA
 		factory.registerFunction<ApplyBuff>("ApplyBuff");
 		factory.registerFunction<SpawnEntityRandomLocation>("SpawnEntityRandomLocation");
 		factory.registerFunction<Push>("Push");
+        factory.registerFunction<PushUp>("PushUp");
+        factory.registerFunction<PushDown>("PushDown");
+        factory.registerFunction<PushLeft>("PushLeft");
+        factory.registerFunction<PushRight>("PushRight");
 		factory.registerFunction<Empty>("Empty");
 		
 		return factory;

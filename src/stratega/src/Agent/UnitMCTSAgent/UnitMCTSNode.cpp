@@ -51,7 +51,7 @@ namespace SGA
 		}
 		unitThisStep = tmp_unitThisStep;
 
-		actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
+		actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, true);
 
 		// for state abstraction
 		actionHashes = std::map<int, int>();
@@ -86,7 +86,7 @@ namespace SGA
 
 				// happens when all units are killed, should not happen
 				if (tmp_unitThisStep == unitIndex_.size()) {
-					std::cout << "All Unit killed init 2" << std::endl;
+					//std::cout << "All Unit killed init 2" << std::endl;
 					return; //8_21
 				}
 			}
@@ -244,7 +244,7 @@ namespace SGA
 			}
 
 			double deltaAll = 0.0;
-			int Nrollout = 2;
+			int Nrollout = 1;
             //std::cout<<"2\n";
 			for (int i = 0; i < Nrollout; i++) {
 				deltaAll += selected->rollOut(forwardModel, params, randomGenerator);

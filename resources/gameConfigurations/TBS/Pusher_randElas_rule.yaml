@@ -10,31 +10,31 @@ Buffs: # Buff lists
 
 Agents:
     #- HumanAgent
-    #- UnitMCTSAgent:
-    #    Budget: FMCALLS
-    #    DoStateAbstraction: true
-    #    MaxFmCalls: 10000
-    #    RolloutLength: 40
-    #    ContinuePreviousSearch: false
-    #    AbstractionBatch: 10
-    #    BatchSize: 20
-    #    RandomAbstraction: false
-    #    K: 1.414
-    #    IsUngrouping: false
-    #    IsPhiUngrouping: false
-    #    UngroupingBatchThreshold: 1.0
-    #    IsActionIndependent: false
-    #    RThreshold: 0.1
-    #    TThreshold: 1.0
     - UnitMCTSAgent:
         Budget: FMCALLS
-        DoStateAbstraction: false
+        DoStateAbstraction: true
         MaxFmCalls: 10000
         RolloutLength: 40
         ContinuePreviousSearch: false
-        RandomAbstraction: false
-        K: 0.1
+        AbstractionBatch: 10
+        BatchSize: 20
+        RandomAbstraction: true
+        K: 1.414
         IsUngrouping: false
+        IsPhiUngrouping: false
+        UngroupingBatchThreshold: 1.0
+        IsActionIndependent: false
+        RThreshold: 0.1
+        TThreshold: 1.0
+    #- UnitMCTSAgent:
+    #    Budget: FMCALLS
+    #    DoStateAbstraction: false
+    #    MaxFmCalls: 10000
+    #    RolloutLength: 40
+    #    ContinuePreviousSearch: false
+    #    RandomAbstraction: false
+    #    K: 0.1
+    #    IsUngrouping: false
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 5000

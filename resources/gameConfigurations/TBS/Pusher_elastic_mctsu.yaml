@@ -1,6 +1,6 @@
 GameConfig:
     Type: TBS
-    RoundLimit: 300
+    RoundLimit: 200
     FogOfWar: false
 
 Buffs: # Buff lists
@@ -9,16 +9,17 @@ Buffs: # Buff lists
             AttackDamage: 20
 
 Agents:
+    #- HumanAgent
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 30000
+        MaxFmCalls: 10000
         RolloutLength: 40
         ContinuePreviousSearch: false
         AbstractionBatch: 10
         BatchSize: 20
         RandomAbstraction: false
-        K: 0.1
+        K: 1.414
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
@@ -28,19 +29,12 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: false
-        MaxFmCalls: 30000
+        MaxFmCalls: 10000
         RolloutLength: 40
         ContinuePreviousSearch: false
-        AbstractionBatch: 1000
-        BatchSize: 10
         RandomAbstraction: false
         K: 0.1
         IsUngrouping: false
-        IsPhiUngrouping: false
-        UngroupingBatchThreshold: 1.0
-        IsActionIndependent: false
-        RThreshold: 0.1
-        TThreshold: 2.0
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 5000
@@ -88,22 +82,14 @@ Tiles:
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  H  M  M  M  M
-        M  H  H  H  H  H  H  H  M
-        M  H  .  w1 .  w1 .  H  M
-        M  H  .  w1 .  w1 .  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  H  .  .  .  H  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  H  .  .  .  H  H  M
-        M  H  .  .  .  .  .  H  M
-        M  H  .  w0 .  w0 .  H  M
-        M  H  .  w0 .  w0 .  H  M
-        M  H  H  H  H  H  H  H  M
-        M  M  M  M  H  M  M  M  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  H  H  M  H  H  H  H  H  H  H  H  M
+        M  H  .  w1 .  .  w1 .  .  .  .  H  M
+        M  H  .  .  .  .  .  .  .  .  g1 M  M
+        M  M  g0 .  .  .  .  .  .  .  .  H  M
+        M  H  .  .  .  .  w0 .  .  w0 .  H  M
+        M  H  H  H  H  H  M  H  H  M  H  H  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
 Actions:
     Push:
         Type: EntityAction
@@ -121,6 +107,74 @@ Actions:
                     - "DifferentPlayer(Source, Target)"
         Effects:
             - "Push(Source, Target)"
+
+    PushUp:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Ghost]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+        Effects:
+            - "PushUp(Source, Target)"
+
+    PushDown:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Ghost]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+        Effects:
+            - "PushDown(Source, Target)"
+
+    PushLeft:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Ghost]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+        Effects:
+            - "PushLeft(Source, Target)"
+
+    PushRight:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: [Warrior, Ghost]
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: Circle
+                        Size: 1
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+        Effects:
+            - "PushRight(Source, Target)"
 
 
     Move:
@@ -153,7 +207,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [Push, Move, Empty]
+        Actions: [PushUp, PushLeft, PushRight, PushDown, Move, Empty]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -161,7 +215,7 @@ Entities:
             MovementPoints: 1
 
     Ghost:
-        Sprite: ../../assets/Entities/unit_2.png
+        Sprite: ../../assets/Entities/unit_4.png
         Symbol: g
         LineOfSightRange: 6
         Actions: [Move, Empty]

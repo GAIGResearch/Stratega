@@ -73,6 +73,7 @@ namespace SGA
 			forwardModel->advanceGameState(*currentState, nextAction);
 			renderer->update(*currentState);
 		}
+        std::cout<<"WinnerID: "<< currentState->getWinnerID() << "\n";
 
 		renderer->closeWindow();
 	}

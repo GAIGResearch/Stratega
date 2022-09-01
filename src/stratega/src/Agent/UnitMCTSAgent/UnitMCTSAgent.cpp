@@ -189,12 +189,6 @@ namespace SGA {
                 &depthToNodes,
                 &absNodeToStatistics);
 
-
-             if(false && ! stop_abstraction && tmp_batch_used % 2 == 0) {
-                deleteAbstraction();  // initialize the array empty again,
-                rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
-             }
-
              //for aamas
              if(parameters_.IS_UNGROUPING){
                  if(parameters_.SINGLE_UNGROUPING){
@@ -484,42 +478,18 @@ namespace SGA {
 
              if(!stop_abstraction && tmp_batch_used >= parameters_.absBatch) {
                  //printAbsNodeStatus();
+                 //std::cout<<"\n";
                  stop_abstraction = true;
-                 //deleteAbstraction();  // initialize the array empty again,
-                 //rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
-
-                 ///*
-                 //std::cout<<"a\n";
-                 for (int i = 1; i < parameters_.maxDepth; i++) { // depth
-                     /*
-                     std::cout<< "depth: "<< i<< " abs Node: "<< absNodes[i].size() << "\n";
-
-                     for (int j = 0; j < absNodes[i].size(); j++) {
-                         std::cout<< absNodes[i][j].size()<< " ";
-                     }
-                     std::cout<<"\n";
-                     */
-                     if(i == parameters_.maxDepth-1 && (absNodes.size() >parameters_.maxDepth-1)){
-                         //std::cout<<"layer: "<< parameters_.maxDepth-1 <<"\n";
-                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
-                             if (absNodes[i][j].size() > 0){
-                                 int absSize = absNodes[i][j].size();
-                                 for (int k = 0 ; k < absSize; k++){
-                                     absNodes[i][j][k]->eliminateAbstraction();
-                                     absNodes[i][j][k]->isUngrouped=true;
-                                 }
-
-                             }//end if
-                         }//end for
-                     }// end if(i==2)
-                 }//*/
-                 //std::cout<<"b\n";
-                 //deleteAbstraction();
-                 //std::cout<<"c\n";
+                 deleteAbstraction();
+                 rootNode->eliminateAbstraction();
              }
 
           }
-
+          /*
+          if (parameters_.DO_STATE_ABSTRACTION) {
+              std::cout<<rootNode->n_search_iteration<<"\n";
+          }
+          //*/
 
           auto bestActionIndex = rootNode->mostVisitedAction( parameters_, getRNGEngine() );  // get and store best action
 
@@ -577,42 +547,51 @@ namespace SGA {
           // state.printActionInfo(bestAction);
           // std::cout << unitActionHash(bestAction) << std::endl;
           // std::cout << " End printActionInfo " << std::endl;
-		  //state.printBoard();
+          //state.printBoard();
+          //state.printActionInfo(bestAction);
+          //auto reward = parameters_.heuristic->evaluateGameState(forwardModel, state, getPlayerID());
+          //std::cout<<"reward: "<<reward<<"\n";
           //rootNode->printTree();
-		  //double score  = parameters_.heuristic->evaluateGameState(forwardModel, state,parameters_.PLAYER_ID );
-		  //std::cout<<score << "\n";
+          //double score  = parameters_.heuristic->evaluateGameState(forwardModel, state,parameters_.PLAYER_ID );
+          //std::cout<<score << "\n";
 
-          /*for (int i = 0; i < 10; i++) { // depth
+          /*
+          for (int i = 1; i < 10; i++) { // depth
+               if (absNodes[i].size() == 0) {
+                  std::cout<<"\n";
+                  break;
+              }
 
-              std::cout << absNodes[i].size() << " : ";
+              std::cout << "depth: "<< i << ", N absNode: " << absNodes[i].size() << " : \n";
 
+             
               for (int j = 0; j < absNodes[i].size(); j++) { // abs node
                   if (j > 0) {
-                      std::cout << "    ";
+                      std::cout << "\t";
                   }
-                  std::cout << absNodes[i][j].size() << " -> " << std::endl;
+                  std::cout <<absNodes[i][j].size();
 
-                  for (int k = 0; k < absNodes[i][j].size(); k++) // original tree nodes
-                  {
-                      std::cout << " " << absNodes[i][j][k]->value / absNodes[i][j][k]->nVisits << " , "
-          << absNodes[i][j][k]->nVisits <<";";
-                  }
-                  std::cout << "[END]" << std::endl;
+                  //for (int k = 0; k < absNodes[i][j].size(); k++) // original tree nodes
+                  //{
+                  //    std::cout << " " << absNodes[i][j][k]->value / absNodes[i][j][k]->nVisits << " , "
+                  //      << absNodes[i][j][k]->nVisits <<";";
+                  //}
+                  //std::cout << "[END]" << std::endl;
               }
               std::cout << std::endl;
           }
-          std::cout << " [DEBUG382]: parameters_.REMAINING_FM_CALLS: " << parameters_.REMAINING_FM_CALLS
-          << std::endl;
-          */
+          //std::cout << " [DEBUG382]: parameters_.REMAINING_FM_CALLS: " << parameters_.REMAINING_FM_CALLS
+          //<< std::endl;
+          //*/
 
           if(bestAction.getActionFlag() == ActionFlag::EndTickAction) {
              newRound = true;
           }
 
-		  if (parameters_.DO_STATE_ABSTRACTION) {
-			  stepInit();  // reinitialize homomorphism
-		  }
-		  //system("pause");
+          if (parameters_.DO_STATE_ABSTRACTION) {
+              stepInit();  // reinitialize homomorphism
+          }
+          //system("pause");
           return ActionAssignment::fromSingleAction(bestAction);
        }
     }

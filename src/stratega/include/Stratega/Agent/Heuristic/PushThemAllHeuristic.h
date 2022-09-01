@@ -7,8 +7,9 @@ namespace SGA
 	{
 	public:
         double maximum_distance=10000.0;
-        int initial_opponent_unit_size = 0;
-        int initial_self_unit_size = 0;
+        double initial_opponent_unit_size = 0;
+        double initial_self_unit_size = 0;
+        double maximum_sum_distance = 0.0;
 
         PushThemAllHeuristic();
         PushThemAllHeuristic(int playerID, GameState& gamestate);

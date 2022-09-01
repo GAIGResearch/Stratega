@@ -205,6 +205,90 @@ namespace SGA
 		}
 	}
 
+    PushUp::PushUp(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void PushUp::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = SGA::Vector2f(+1, 0);
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+
+
+    PushDown::PushDown(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void PushDown::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = SGA::Vector2f(-1, 0);
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+
+
+    PushLeft::PushLeft(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void PushLeft::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = SGA::Vector2f(0, 1);
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+
+
+    PushRight::PushRight(const std::string exp, const std::vector<FunctionParameter>& parameters) :
+		Effect(exp),
+		entityParam(parameters[0]), targetParam(parameters[1])
+	{
+
+	}
+	
+	void PushRight::execute(GameState& state, const ForwardModel& /*fm*/, const std::vector<ActionTarget>& targets) const
+	{		
+		auto& entity = entityParam.getEntity(state, targets);
+		auto& target = targetParam.getEntity(state, targets);
+
+		auto pushDir = SGA::Vector2f(0, -1);
+		auto newTargetPos = target.getPosition() + pushDir;
+		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
+		{
+			target.setPosition({ std::floor(newTargetPos.x), std::floor(newTargetPos.y) });
+		}
+	}
+
+
 	AttackProbability::AttackProbability(const std::string exp, const std::vector<FunctionParameter>& parameters) :
 		Effect(exp), 
 		resourceReference(parameters.at(0)),

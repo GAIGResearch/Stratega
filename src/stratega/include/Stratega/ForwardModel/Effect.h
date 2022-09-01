@@ -97,6 +97,42 @@ namespace SGA
 		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
 	};
 
+    class PushUp : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		PushUp(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+    class PushDown : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		PushDown(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+    class PushLeft : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		PushLeft(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
+    class PushRight : public Effect
+	{
+		FunctionParameter entityParam;
+		FunctionParameter targetParam;
+	public:
+		PushRight(const std::string exp, const std::vector<FunctionParameter>& parameters);
+		void execute(GameState& state, const ForwardModel& fm, const std::vector<ActionTarget>& targets) const override;
+	};
+
 	class AttackProbability : public Effect
 	{
 		FunctionParameter resourceReference;

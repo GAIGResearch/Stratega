@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/PushThemAll.yaml");
-    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/PushThemAll_elastic_ruleAgent.yaml");
+    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_mctsu.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktkcombat_0.5_20k_bs20.yaml");
 	//Optional
