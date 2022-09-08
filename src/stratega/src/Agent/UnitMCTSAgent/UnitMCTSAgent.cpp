@@ -8,8 +8,7 @@ namespace SGA {
     {
         parameters_.PLAYER_ID = getPlayerID();
         parameters_.OPPONENT_ID = 1- parameters_.PLAYER_ID;
-        //if (parameters_.heuristic == nullptr)
-        //    parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
+
 
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
@@ -21,8 +20,7 @@ namespace SGA {
         parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState, 1.0, 0.0, 0.0);
 
         parameters_.abstractionHeuristic = std::make_unique<TwoKingdomsAbstractionHeuristic>(parameters_.PLAYER_ID, initialState,
-                                            0.0, 1.0, 0.0); // wCombat, wTechnology, wResource
-        //parameters_.abstractionHeuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState); 
+                                            1.0, 0.0, 0.0); // wCombat, wTechnology, wResource
 
         nD_min_list = std::vector<double> ();
         h_size_list = std::vector<double> ();
@@ -37,7 +35,7 @@ namespace SGA {
     {
         //std::cout<<"Start computeAction\n";
         if(newRound) {
-            // record each turn in the game
+            // [log] record each turn in the game
             newRound = false;
         }
         parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
@@ -59,8 +57,8 @@ namespace SGA {
             previousActionIndex = -1;
             step++;
             newRound = true;
-            Action a = actionSpace.at(0);
 
+            Action a = actionSpace.at(0);
             if (a.getActionFlag() == ActionFlag::EndTickAction) {
                 unitIndexInitialized = false;
             }
@@ -75,9 +73,9 @@ namespace SGA {
 
                 int bestChildID = -1;
                 for(int i = 0; i < rootNode->children.size(); i++) {
-                if(rootNode->children[i]->childIndex == previousActionIndex) {
-                    bestChildID = i;
-                }
+                    if(rootNode->children[i]->childIndex == previousActionIndex) {
+                        bestChildID = i;
+                    }
                 }
 
                 rootNode = std::move(rootNode->children.at(bestChildID));
@@ -89,14 +87,14 @@ namespace SGA {
             } else  // start a new tree
             {
                 rootNode = std::make_unique< UnitMCTSNode >(
-                *processedForwardModel, state, unitIndex, unitThisStep, getPlayerID(), 0);
+                *processedForwardModel, state, nullptr, 0, unitIndex, unitThisStep, getPlayerID(), 0, parameters_, getRNGEngine());
             }
 
             //std::cout<<"call search\n";
             // [Homomorphism] do batches
             int tmp_batch_used = 0;
             int tmp_index = 1000;
-            if(! parameters_.DO_STATE_ABSTRACTION) {
+            if(!parameters_.DO_STATE_ABSTRACTION){
                 rootNode->searchMCTS(
                 *processedForwardModel,
                 parameters_,
@@ -104,9 +102,6 @@ namespace SGA {
                 &depthToNodes,
                 &absNodeToStatistics);
             }
-            //std::cout<<"after search\n";
-
-
             int n_abs_iteration = 0;
             bool stop_abstraction = false;
             bool is_abstraction_eliminated = false;
@@ -133,89 +128,109 @@ namespace SGA {
                 // do abstraction
                 for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
                 {
-                std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
-                for(auto node1 : deep_layer) {  // each initial node
-                    if(node1->isAbstracted)
-                        continue;  // can be adjusted
-                    if (node1->children.size() == 0) {
-                        continue;
-                    }
-                    if(absNodes[i].size() == 0) {  // this depth has no node cluster
-                        absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                    std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
+                    for(auto node1 : deep_layer) {  // each initial node
 
-                        // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
-                        absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                            i * tmp_index + absNodes[i].size() - 1,
-                            std::vector< double >{node1->value, float(node1->nVisits)}));
-                        node1->isAbstracted = true;
-                        node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
-                        continue;
-                    }
-
-                    bool foundExistGroup = false;
-                    for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
-                    {
-                        bool match = true;
-                        for(int k = 0; k < absNodes[i][j].size();
-                            k++) {  // compare between new initial nodes to the abstracted Nodes
-                            if (!parameters_.IS_MULTI_OBJECTIVE) {
-                                if( !isTwoNodeApproxmateHomomorphism(
-                                    forwardModel,
-                                    node1,
-                                    absNodes[i][j][k],
-                                    parameters_.R_THRESHOLD,
-                                    parameters_.T_THRESHOLD)) {
-                                match = false;
-                                }
-                            }
-                            else {
-                                if( !isHomomorphismMultiObjective(
-                                    forwardModel,
-                                    node1,
-                                    absNodes[i][j][k])) {
-                                match = false;
-                                }
-                            }
-
-                        } // end for
-                        if(match) {
-                            node1->isAbstracted = true;
-                            node1->absNodeID = i * tmp_index + j;
-                            absNodes[i][j].push_back(node1);  // add into existing group
-                            treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
-
-                            foundExistGroup = true;
+                        //std::cout<<" isAbstracted: " << node1->isAbstracted << "\n";
+                        
+                        if(node1->isAbstracted)
+                            continue;  // can be adjusted
+                        //std::cout<<"2.5\n";
+                        if (node1->children.size() == 0) {
+                            continue;
                         }
-                    }
-                    if(! foundExistGroup) {
-                        absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
-                        absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                            i * tmp_index + absNodes[i].size() - 1,
-                            std::vector< double >{node1->value, float(node1->nVisits)}));
-                        // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
-                        // node1->value, double(node1->nVisits) };
+                        //std::cout<<"3\n";
+                        if(absNodes[i].size() == 0) {  // this depth has no node cluster
+                            //std::cout<<"try add new cluster\n";
+                            absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+
+                            // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                            absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                i * tmp_index + absNodes[i].size() - 1,
+                                std::vector< double >{node1->value, float(node1->nVisits)}));
+                            node1->isAbstracted = true;
+                            node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                            //std::cout<<"Ends try add new cluster\n";
+                            continue;
+                        }
+                        //std::cout<<"4\n";
+                        bool foundExistGroup = false;
+                        for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                        {
+                            //std::cout<<"5\n";
+                            bool match = true;
+                            for(int k = 0; k < absNodes[i][j].size();
+                                k++) {  // compare between new initial nodes to the abstracted Nodes
+                                if (!parameters_.IS_MULTI_OBJECTIVE) {
+                                    //std::cout<<"isTwoNodeApproxmateHomomorphism\n";
+                                    if( !isTwoNodeApproxmateHomomorphism(
+                                        forwardModel,
+                                        node1,
+                                        absNodes[i][j][k],
+                                        parameters_.R_THRESHOLD,
+                                        parameters_.T_THRESHOLD)) {
+                                    match = false;
+                                    }
+                                    //std::cout<<"Ends isTwoNodeApproxmateHomomorphism\n";
+                                }
+                                else {
+                                    if( !isHomomorphismMultiObjective(
+                                        forwardModel,
+                                        node1,
+                                        absNodes[i][j][k])) {
+                                    match = false;
+                                    }
+                                }
+
+                            } // end for
+                            if(match) {
+                                //std::cout<<"matched\n";
+                                node1->isAbstracted = true;
+                                node1->absNodeID = i * tmp_index + j;
+                                absNodes[i][j].push_back(node1);  // add into existing group
+                                treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
+
+                                foundExistGroup = true;
+                                //std::cout<<"ends matched\n";
+                            }
+                            //std::cout<<"6\n";
+                        }
+                        //std::cout<<"7\n";
+                        if(! foundExistGroup) {
+                            //std::cout<<"!foundExistGroup\n";
+                            absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                            absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                i * tmp_index + absNodes[i].size() - 1,
+                                std::vector< double >{node1->value, float(node1->nVisits)}));
+                            // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
+                            // node1->value, double(node1->nVisits) };
+                            node1->isAbstracted = true;
+                            node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                            // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
+                            // << std::endl;
+                            //std::cout<<"ends !foundExistGroup\n";
+                        }
+
                         node1->isAbstracted = true;
-                        node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
-                        // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
-                        // << std::endl;
                     }
-                    node1->isAbstracted = true;
-                }
+
                 // std::cout << " Depth: " << i << " Initial Number of Nodes: " << deep_layer.size() <<
                 // " abstracted node number " << absNodes[i].size() << std::endl;
                 }
+
 
                 n_abs_iteration++;
                 tmp_batch_used++;
 
                 // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
+
                     rootNode->eliminateAbstraction();
 
                     ///* // for IJCAI paper
-                    if(!stop_abstraction){
-                        printBoundStatistics();
-                    }
+                    //if(!stop_abstraction){
+                    //    printBoundStatistics();
+                    //}
                     //*/
                     break;
                 }
@@ -223,94 +238,34 @@ namespace SGA {
                 if(tmp_batch_used >= parameters_.absBatch && !stop_abstraction) {
 
                     ///* // for IJCAI paper
-                    if(true){
-                        //std::cout<<"Abstraction eliminated!\n";
-                        printBoundStatistics(false);
-                    }
+                    //if(true){
+                    //    //std::cout<<"Abstraction eliminated!\n";
+                    //    printBoundStatistics(false);
+                    //}
                     //*/
 
                     stop_abstraction = true;
                     deleteAbstraction();  // initialize the array empty again,
                     rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
-
+                    
                 }
             }
 
-            //std::cout<<"fdnsfi98\n";
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction( parameters_, getRNGEngine() );
-
-            /*if (bestActionIndex == actionSpace.size()-1) { // this action is an endTurn, reinitialize
-                //unitThisStep = 0;
-                unitNextStep = 0;
-            }*/
-
-            //std::cout<<"f249ijv\n";
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
 
-            // calculate the branching factor
-            std::vector< int > branching_number = {};
-            int n_node = 0;
-            double mean_braching_factor = 0.0;
-
-            /*
-            rootNode->get_branching_number(&branching_number, &n_node);
-
-            if(branching_number.size() != 0) {
-                mean_braching_factor = std::accumulate(
-                                        branching_number.begin(), branching_number.end(), 0.0)
-                                    / branching_number.size();
-            }
-            //
-
-            if(false && step % 20 == 0) {
-                if(parameters_.DO_STATE_ABSTRACTION)
-                std::cout << " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ HomoMCTS Branching Factor " << step << " "
-                            << n_node << " " << mean_braching_factor << " " << parameters_.maxDepth
-                            << " ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " << std::endl;
-                else
-                std::cout << " ------------------------------ UnitMCTS Branching Factor " << step << " "
-                            << n_node << " " << mean_braching_factor << " " << parameters_.maxDepth
-                            << " ------------------------------ " << std::endl;
-            }
-            */
 
             previousActionIndex = (bestAction.getActionFlag() == ActionFlag::EndTickAction)
                                     ? -1
                                     : bestActionIndex;  // std::cout << "*** 9" << std::endl;
 
-            if(n_node == 1)
-                previousActionIndex = -1;
 
             // std::cout << "-> UnitMCTS Action Took: ";
             //state.printActionInfo(bestAction);
             // std::cout << unitActionHash(bestAction) << std::endl;
             // std::cout << " End printActionInfo " << std::endl;
             //rootNode->printTree();
-
-            /*
-            for (int i = 0; i < 10; i++) { // depth
-
-                std::cout << absNodes[i].size() << " : ";
-
-                for (int j = 0; j < absNodes[i].size(); j++) { // abs node
-                    if (j > 0) {
-                        std::cout << "    ";
-                    }
-                    std::cout << absNodes[i][j].size() << " -> " << std::endl;
-
-                    for (int k = 0; k < absNodes[i][j].size(); k++) // original tree nodes
-                    {
-                        std::cout << " " << absNodes[i][j][k]->value / absNodes[i][j][k]->nVisits << " , "
-            << absNodes[i][j][k]->nVisits <<";";
-                    }
-                    std::cout << "[END]" << std::endl;
-                }
-                std::cout << std::endl;
-            }
-            std::cout << " [DEBUG382]: parameters_.REMAINING_FM_CALLS: " << parameters_.REMAINING_FM_CALLS
-            << std::endl;
-            */
 
             if(bestAction.getActionFlag() == ActionFlag::EndTickAction) {
                 unitIndexInitialized = false;
@@ -319,9 +274,9 @@ namespace SGA {
             }
 
             if (parameters_.DO_STATE_ABSTRACTION) {
-                stepInit();  // reinitialize homomorphism
+                stepInit(); // reinitialize homomorphism
             }
-            //std::cout<<"end agent 2\n";
+
             return ActionAssignment::fromSingleAction(bestAction);
         }
         }
@@ -337,12 +292,13 @@ namespace SGA {
             for(auto unit : units) {
                 unitIndex.push_back(unit.getID());
             }
+            unitIndex.push_back(-1);
             unitIndexInitialized = true;
             unitThisStep = -1;
             return forwardModel.generatePlayerActions(state, getPlayerID(), false);
         }
 
-        if (unitThisStep == -1) {
+        if (unitThisStep == -1 || unitIndex[unitThisStep] == -1) {
             auto actionSpace = forwardModel.generatePlayerActions(state, getPlayerID(), false);
             if (actionSpace.size() == 0) {
                 unitThisStep = 0;
@@ -391,6 +347,7 @@ namespace SGA {
             }
 
             // execute EndTurn if there is no valid next unit.
+            // might be bad because somtimes you need to mine and get resource and then use player action.
             if(tmp_unitNextStep == unitIndex.size()) {  // every unit moved, end the turn
                 step++;  // for debugging
 
@@ -609,120 +566,4 @@ namespace SGA {
         return true;
     }
 
-    void UnitMCTSAgent::printBoundStatistics(bool mustPrint) {
-        if(isPrintedLossBound)return;
-        double nD_min = 1000000.0;
-        double h_size = 0;
-        double a_size = 0;
-        double node_number = 0;
-        for (int i = 1; i < 10; i++) { // depth
-            //if (absNodes[i].size() == 0) {
-            //    break;
-            //}
-
-            for (int j = 0; j < absNodes[i].size(); j++) { // abs node
-                int nD_tmp = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
-                if (nD_tmp < nD_min) {
-                    nD_min = nD_tmp;
-                }
-                h_size ++;
-                for (int k = 0; k < absNodes[i][j].size(); k++) {
-                    if (absNodes[i][j][k]->children.size() > 0) {
-                        node_number++;
-                        a_size += absNodes[i][j][k]->children.size();
-                    }
-                    
-                }
-            }
-            //if(node_number !=0.0)
-            //    a_size /= node_number;
-            //std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
-        }//end for
-        if(node_number !=0.0)
-            a_size /= node_number;
-        //std::cout <<"nD: "<< nD_min  << "\th_size: " << h_size <<"\ta_size: " << a_size << "\n";
-        if(h_size > 0){
-            nD_min_list.push_back(nD_min);
-            h_size_list.push_back(h_size);
-            a_size_list.push_back(a_size);
-        }
-        if (nD_min_list.size() == nLossBoundStep || mustPrint) {
-            isPrintedLossBound = true;
-            double avg_nD_min = std::accumulate(nD_min_list.begin(), nD_min_list.end(), 0.0)/ nD_min_list.size();
-            double h_size_min = std::accumulate(h_size_list.begin(), h_size_list.end(), 0.0)/ h_size_list.size();
-            double a_size_min = std::accumulate(a_size_list.begin(), a_size_list.end(), 0.0)/ a_size_list.size();
-            std::cout <<"nD: "<< avg_nD_min  << "\th_size: " << h_size_min <<"\ta_size: " << a_size_min << "\n";
-        }
-    }
-    /* For games there is no player actions
-    std::vector< Action > UnitMCTSAgent::switchUnit(GameState state, const ForwardModel& forwardModel) {
-        auto units = state.getPlayerEntities(getPlayerID()); 
-
-        // each turn, we get a new entity list
-        if(unitIndexInitialized == false) {
-           for(auto unit : units) {
-              unitIndex.push_back(unit.getID());
-           }
-           unitIndexInitialized = true;
-        }
-
-        // each step, store the information of alive units
-        std::map< int, int > eIDtoUnitArrayIndex = {};
-
-        int tmp_counter1 = 0;
-        for(auto u : units) {
-          eIDtoUnitArrayIndex.insert(std::pair< int, int >(u.getID(), tmp_counter1));
-          tmp_counter1 += 1;
-        }
-
-        // to decide if we need to switch unit at this step.
-        bool needNextUnit = false;
-        std::vector< Action > actionSpace_tmp = {};
-
-        // Condition to move on: 1. actionSpace is empty, 2. dead
-        bool unit_alive = eIDtoUnitArrayIndex.count(unitIndex[unitThisStep]);
-
-       if(! unit_alive) {
-          needNextUnit = true;
-       } else {
-          auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
-          auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
-
-          if(actionSpace_tmp.size() == 0) {
-             needNextUnit = true;
-          } else {
-          }
-       }
-
-        // if need to switch to a new unit, decide which is the next.
-        if(needNextUnit) {
-            int tmp_unitNextStep = unitThisStep + 1;
-            for(; tmp_unitNextStep < unitIndex.size(); tmp_unitNextStep++) {
-                if(eIDtoUnitArrayIndex.count(unitIndex[tmp_unitNextStep]))  // if alive
-                {
-                break;
-                }
-            }
-
-            // execute EndTurn if there is no valid next unit.
-            if(tmp_unitNextStep == unitIndex.size()) {  // every unit moved, end the turn
-                step++;  // for debugging
-
-                Action endAction = Action::createEndAction(getPlayerID());
-                unitThisStep = 0;
-                unitNextStep = 1;
-                newRound = true;
-                std::vector< Action > actionSpace = {endAction};
-
-                return actionSpace;
-            }
-
-            unitThisStep = tmp_unitNextStep;
-        }
-
-        // generate actions and update unitThisStep
-        std::vector< Action > actionSpace = forwardModel.generateUnitActions(
-             state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
-        return actionSpace;
-    }*/
 }  // namespace SGA

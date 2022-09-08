@@ -22,9 +22,7 @@ namespace SGA {
     */
     double TwoKingdomsAbstractionHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state, const int playerID) {
         ///*
-        return wT * THeuristic->evaluateGameState(forwardModel, state, playerID) +
-                    wC*CHeuristic->evaluateGameState(forwardModel, state, playerID) + 
-                    wR*RHeuristic->evaluateGameState(forwardModel, state, playerID, false);
+        return CHeuristic->evaluateGameState(forwardModel, state, playerID);
         //*/
 
         //return wT*THeuristic->evaluateGameState(forwardModel, state, playerID) +
@@ -33,9 +31,7 @@ namespace SGA {
 
     double TwoKingdomsAbstractionHeuristic::evaluateGameState(const ForwardModel& forwardModel, GameState& state,
         const int playerID, bool isDebug) {
-        return wT * THeuristic->evaluateGameState(forwardModel, state, playerID) +
-                    wC*CHeuristic->evaluateGameState(forwardModel, state, playerID) + 
-                    wR*RHeuristic->evaluateGameState(forwardModel, state, playerID, false);
+        return CHeuristic->evaluateGameState(forwardModel, state, playerID);
 
         //return wT*THeuristic->evaluateGameState(forwardModel, state, playerID) +
         //            wC*CHeuristic->evaluateGameState(forwardModel, state, playerID);

@@ -89,10 +89,11 @@ namespace SGA {
           void setVisitCount(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase = false);
 
 
-       private:
+       public:
           //UnitMCTSNode(TBSForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, int childIndex);
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, 
-              const int childIndex, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_);
-      
+              const int childIndex, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_, 
+              UnitMCTSParameters& params,
+              boost::mt19937& randGenerator);
    };
 }

@@ -33,6 +33,9 @@ namespace SGA {
             // set in the NTBEA evaluation
             unitIndex = std::vector< int >();
 
+            if (params.DO_STATE_ABSTRACTION) {
+                agentName = "ActionIndependentMCTSuAgent";
+            }
             stepInit();
         }
 
@@ -76,6 +79,11 @@ namespace SGA {
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
         void printBoundStatistics(bool mustPrint=false);
+
+        std::string agentName = "MCTSuAgent";
+        std::string getName() {
+            return agentName;
+        }
 
 private:
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;

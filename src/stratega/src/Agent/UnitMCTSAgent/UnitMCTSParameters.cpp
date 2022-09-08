@@ -5,8 +5,12 @@ namespace SGA {
 void UnitMCTSParameters::printDetails() const
 {
     AgentParameters::printDetails();
-    std::cout << "UnitMCTSParameters"
-              << "\n";
+    if (DO_STATE_ABSTRACTION) {
+        std::cout<< "ActionIndependentMCTSuAgent\n";
+    }
+    else {
+        std::cout<< "MCTSuAgent\n";
+    }
     std::cout << "\tK = "                    << K << "\n";
     std::cout << "\tROLLOUT_LENGTH= "        << ROLLOUT_LENGTH << "\n";
     std::cout << "\tROLLOUTS_ENABLED= "      << ROLLOUTS_ENABLED << "\n";
@@ -18,7 +22,6 @@ void UnitMCTSParameters::printDetails() const
     if (DO_STATE_ABSTRACTION) {
         std::cout << "\tABSTRACTION_HEURISTIC = " << abstractionHeuristic->getName() << "\n";
         std::cout << "\tABSTRACTION_BATCH = " << absBatch << "\n";
-        std::cout << "\terr_Transition: " << T_THRESHOLD << "\n";
         if (IS_MULTI_OBJECTIVE) {
             std::cout << "\tDO_MULTI_OBJECTIVE = true, err_Combat: "<< COMBAT_R_THRESHOLD << " err_Tech: " << TECHNOLOGY_R_THRESHOLD << "\n";
         }

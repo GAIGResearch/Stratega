@@ -83,7 +83,7 @@ namespace YAML {
             rhs.CONTINUE_PREVIOUS_SEARCH     = node["ContinuePreviousSearch"].as< bool >(
                 rhs.CONTINUE_PREVIOUS_SEARCH);
             rhs.absBatch                     = node["AbstractionBatch"].as< int >(rhs.absBatch);
-            rhs.IS_MULTI_OBJECTIVE           = node["IsMultiObjective"].as< int >(rhs.absBatch);
+            rhs.IS_MULTI_OBJECTIVE           = node["IsMultiObjective"].as< int >(rhs.IS_MULTI_OBJECTIVE);
             rhs.TECHNOLOGY_R_THRESHOLD       = node["TechnologyRThreshold"].as< double >(rhs.TECHNOLOGY_R_THRESHOLD);
             rhs.COMBAT_R_THRESHOLD           = node["CombatRThreshold"].as< double >(rhs.COMBAT_R_THRESHOLD);
             return true;

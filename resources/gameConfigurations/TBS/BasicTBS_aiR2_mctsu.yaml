@@ -15,15 +15,27 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 20000
-        RolloutLength: 30
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 11
+        AbstractionBatch: 10
         BatchSize: 20
         K: 0.1
-        TechnologyRThreshold: 0.7
-        CombatRThreshold: 0.8
-        IsMultiObjective: true
-    - BasicTBSAgent
+        RThreshold: 0.2
+        IsMultiObjective: false
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: false
+        MaxFmCalls: 20000
+        RolloutLength: 20
+        ContinuePreviousSearch: false
+        K: 0.1
+#    - MCTSAgent:
+#        Budget: ITERATIONS
+#        Iterations: 20000
+#        RolloutLength: 20
+#        ContinuePreviousSearch: false
+#        K: 0.1
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent
@@ -108,7 +120,7 @@ Entities:
         Actions: [Spawn, Empty]
         CanSpawn: [Warrior, Archer]
         Cost:
-            Prod: 5
+            Prod: 3
         Parameters:
             Health: 100
             Range: 6
@@ -167,7 +179,7 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, Mine, Empty]
         Cost:
-            Prod: 5
+            Prod: 3
         Time: 5
         Parameters:
             ResourceCapacity: 10
@@ -185,7 +197,7 @@ Entities:
         Actions: [Move, Attack, Empty]
         # RequiredTechnology: BronzeWorking # for simplify it a little bit
         Cost:
-            Gold: 80
+            Gold: 40
         Parameters:
             Armor: 20
             Speed: 1
@@ -201,7 +213,7 @@ Entities:
         Actions: [Move, Attack, Empty]
         RequiredTechnology: Archery
         Cost:
-            Prod: 15
+            Prod: 3
         Parameters:
             Armor: 15
             Speed: 1
@@ -218,7 +230,7 @@ Entities:
         Actions: [Move, Attack, Empty]
         RequiredTechnology: Engineering
         Cost:
-            Prod: 20
+            Prod: 5
         Parameters:
             Armor: 10
             Speed: 1
@@ -400,55 +412,55 @@ TechnologyTrees:
         Mining:
             Description: Base technology
             Cost:
-                Prod: 5
+                Prod: 2
             Time: 2
         Discipline:
             Description: Enables barracks construction.
             Requirements: [Mining]
             Cost:
-                Prod: 5
+                Prod: 3
             Time: 2
         Pottery:
             Description: Allows to construct a Storage.
             Requirements: [Mining]
             Cost:
-                Prod: 5
+                Prod: 3
             Time: 2
         Mathematics:
             Description: Here you can build a military academy
             Requirements: [Mining]
             Cost:
-                Prod: 5
+                Prod: 3
             Time: 2
         Archery:
             Description: Here you can spawn archers.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
+                Gold: 5
             Time: 3
         BronzeWorking:
             Description: Here you can spawn warriors.
             Requirements: [Discipline]
             Cost:
-                Gold: 20
+                Gold: 5
             Time: 3
         Apprenticeship:
             Description: Here you can build a workshop.
             Requirements: [Pottery]
             Cost:
-                Gold: 20
+                Gold: 5
             Time: 3
         Metallurgy:
             Description: Here you can build a foundry.
             Requirements: [Apprenticeship]
             Cost:
-                Gold: 20
+                Gold: 5
             Time: 5
         Engineering:
             Description: Here you can spawn a catapult.
             Requirements: [Mathematics]
             Cost:
-                Gold: 20
+                Gold: 5
             Time: 3
             
                    
@@ -459,9 +471,6 @@ ForwardModel:
         - "IsResearched(Source, BronzeWorking)"
         - "IsResearched(Source, Metallurgy)"
         - "IsResearched(Source, Engineering)"
-        ResourceVictory:
-        - "IsGoldExhausted(Source)"
-        - "IsMinedMore(Source)"
 
     LoseConditions: #If true: Player -> cant play
         HasNoCity:

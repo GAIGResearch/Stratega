@@ -105,7 +105,8 @@ void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngE
 
 	for(size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
+		//SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
+        SGA::logValue("PlayerAssignment", agents[i]->getName());
 	}
 	
 	// Run the game
@@ -157,7 +158,8 @@ void Arena::runGame(const std::vector<int>& agentAssignment, boost::mt19937 rngE
 	SGA::logSingleValue("Seed", std::to_string(currentSeed));
 	for (size_t i = 0; i < agentAssignment.size(); i++)
 	{
-		SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
+		//SGA::logValue("PlayerAssignment", config->agentParams[static_cast<size_t>(agentAssignment[i])].first);
+        SGA::logValue("PlayerAssignment", agents[i]->getName());
 	}
 
 	// Run the game
