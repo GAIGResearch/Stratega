@@ -51,7 +51,7 @@ namespace SGA
 		}
 		unitThisStep = tmp_unitThisStep;
 
-		actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, true);
+		actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
 
 		// for state abstraction
 		actionHashes = std::map<int, int>();

@@ -26,21 +26,12 @@ Agents:
         IsActionIndependent: True
         RThreshold: 0.2
         TThreshold: 0.3
-    - UnitMCTSAgent:
+    - MCTSAgent:
         Budget: FMCALLS
-        DoStateAbstraction: false
         MaxFmCalls: 10000
         RolloutLength: 20
         ContinuePreviousSearch: false
-        RandomAbstraction: false
         K: 0.1
-        IsUngrouping: false
-    #- MCTSAgent:
-    #    Budget: FMCALLS
-    #    MaxFmCalls: 10000
-    #    RolloutLength: 20
-    #    ContinuePreviousSearch: false
-    #    K: 0.1
     #- PusherAgent
     ##- RandomAgent
     #- DoNothingAgent

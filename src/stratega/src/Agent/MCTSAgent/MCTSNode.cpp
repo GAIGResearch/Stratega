@@ -70,6 +70,8 @@ namespace SGA
 			params.currentIterations++;
 			if (n_repeat_selection >= 20) // repeated selection
 				return;
+            if (params.currentIterations > 1000)
+                return;
             //std::cout<< "n_repeat_selection: "<< n_repeat_selection<< " fm calls: "<< params.currentFMCalls << "\n";
 		}
 	}
@@ -102,8 +104,6 @@ namespace SGA
 
 	MCTSNode* MCTSNode::expand(ForwardModel& forwardModel, MCTSParameters& params, boost::mt19937& /*randomGenerator*/)
 	{
-		// roll the state
-		//todo remove unnecessary copy of gameState
 		auto gsCopy(gameState);
 		auto action = actionSpace.at(children.size());
 		applyActionToGameState(forwardModel, gsCopy, action, params, playerID);

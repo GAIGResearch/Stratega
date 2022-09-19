@@ -18,7 +18,7 @@ Agents:
         ContinuePreviousSearch: false
         AbstractionBatch: 10
         BatchSize: 20
-        RandomAbstraction: False
+        RandomAbstraction: true
         K: 0.1
         IsUngrouping: false
         IsPhiUngrouping: false

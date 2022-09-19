@@ -43,7 +43,7 @@ namespace SGA
 	ActionAssignment PusherAgent::playTurn(GameState& newState, const ForwardModel& forwardModel)
 	{
         //newState.printBoard();
-        if (dis(getRNGEngine()) > 0.8) {//87
+        if (dis(getRNGEngine()) > 1.0) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(newState, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);

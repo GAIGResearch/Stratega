@@ -14,31 +14,22 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 10000
-        RolloutLength: 40
+        RolloutLength: 20
         ContinuePreviousSearch: false
         AbstractionBatch: 10
         BatchSize: 20
         RandomAbstraction: true
-        K: 1.414
+        K: 0.1
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
-        IsActionIndependent: false
-        RThreshold: 0.1
-        TThreshold: 1.0
-    #- UnitMCTSAgent:
-    #    Budget: FMCALLS
-    #    DoStateAbstraction: false
-    #    MaxFmCalls: 10000
-    #    RolloutLength: 40
-    #    ContinuePreviousSearch: false
-    #    RandomAbstraction: false
-    #    K: 0.1
-    #    IsUngrouping: false
+        IsActionIndependent: True
+        RThreshold: 0.2
+        TThreshold: 0.3
     #- MCTSAgent:
     #    Budget: FMCALLS
-    #    MaxFmCalls: 5000
-    #    RolloutLength: 10
+    #    MaxFmCalls: 10000
+    #    RolloutLength: 20
     #    ContinuePreviousSearch: false
     #    K: 0.1
     - PusherAgent
@@ -207,7 +198,7 @@ Entities:
         Sprite: ../../assets/Entities/unit_2.png
         Symbol: w
         LineOfSightRange: 6
-        Actions: [PushUp, PushLeft, PushRight, PushDown, Move, Empty]
+        Actions: [PushDown, PushUp, PushLeft, PushRight, Move, Empty]
         Parameters:
             Health: 200
             AttackRange: 2
@@ -244,7 +235,6 @@ ForwardModel:
                 - "IsTileType(Source, Hole)"
             Effects:
                 - "Remove(Source)"
-
 
 GameRunner:
     AgentInitializationTime:

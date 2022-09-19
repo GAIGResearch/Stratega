@@ -14,12 +14,12 @@ namespace SGA
             if (parameters_.heuristic == nullptr)
                 parameters_.heuristic = std::make_unique<AbstractHeuristic>(initialState);
         */
-		//parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
-		parameters_.heuristic = std::make_unique<PushThemAllHeuristic>(getPlayerID(), initialState);
+        //parameters_.heuristic = std::make_unique<AimToKingHeuristic>(initialState);
+        parameters_.heuristic = std::make_unique<PushThemAllHeuristic>(getPlayerID(), initialState);
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
-		parameters_.printDetails();
+        parameters_.printDetails();
     }
 
 
@@ -78,9 +78,9 @@ namespace SGA
             //state.printActionInfo(a);
             //}
             //rootNode->printTree();
-            state.printBoard();
-            double score = parameters_.heuristic->evaluateGameState(forwardModel, state, getPlayerID());
-            std::cout<<"score: "<< score<<"\n";
+            //state.printBoard();
+            //double score = parameters_.heuristic->evaluateGameState(forwardModel, state, getPlayerID());
+            //std::cout<<"score: "<< score<<"\n";
             return ActionAssignment::fromSingleAction(bestAction);
         }
     }
