@@ -506,6 +506,7 @@ namespace SGA {
               std::cout<<rootNode->n_search_iteration<<"\n";
           }
           //*/
+          //std::cout<<"iteration " << rootNode->n_search_iteration<<"\n";
 
           auto bestActionIndex = rootNode->mostVisitedAction( parameters_, getRNGEngine() );  // get and store best action
 
