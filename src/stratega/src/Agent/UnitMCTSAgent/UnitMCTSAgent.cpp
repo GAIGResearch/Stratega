@@ -484,7 +484,7 @@ namespace SGA {
                  
                  //std::cout<<"End searching, number of abs Node each depth:\n";
                  //rootNode->printTree();
-                 rootNode->eliminateAbstraction();
+                 rootNode->eliminateAbstraction(&absNodeToStatistics);
                  //deleteAbstraction();
                  //std::cout<<"maximum batch: "<< n_abs_iteration << " \n";
 
@@ -496,8 +496,8 @@ namespace SGA {
                  //printAbsNodeStatus();
                  //std::cout<<"\n";
                  stop_abstraction = true;
+                 rootNode->eliminateAbstraction(&absNodeToStatistics);
                  deleteAbstraction();
-                 rootNode->eliminateAbstraction();
              }
 
           }

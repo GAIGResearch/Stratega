@@ -154,6 +154,21 @@ namespace SGA
 		}
 	}
 
+    void UnitMCTSNode::eliminateAbstraction(std::map<int, std::vector<double> >* absNodeToStatistics)
+	{
+        
+		if (isAbstracted) {
+            nVisits = (*absNodeToStatistics)[absNodeID][1];
+            value =  (*absNodeToStatistics)[absNodeID][0];
+			isAbstracted = false;
+		}
+		for (int i = 0; i < childExpanded; i++)
+		{
+			children[i]->eliminateAbstraction();
+		}
+	}
+
+
 
 	int UnitMCTSNode::getVisitCount(std::map<int, std::vector<double> >* absNodeToStatistics) {
 		if (isAbstracted) {

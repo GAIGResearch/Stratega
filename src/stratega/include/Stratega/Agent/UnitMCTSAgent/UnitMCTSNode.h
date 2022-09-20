@@ -72,6 +72,7 @@ namespace SGA {
           void setDepth(int depth);
 
           void eliminateAbstraction();
+          void eliminateAbstraction(std::map<int, std::vector<double> >* absNodeToStatistics);
 
           // Root Node Constructor
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_);
