@@ -78,6 +78,8 @@ namespace SGA {
 		/// </summary>
 		double percTimeBudget = 0.9;
 
+        std::string HEURISTIC = "ktk"; // should be {ktk, pta}
+
 		/// <summary>
 		/// ID of this player.
 		/// </summary>

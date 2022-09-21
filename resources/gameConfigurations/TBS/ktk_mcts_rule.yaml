@@ -1,0 +1,222 @@
+GameConfig:
+    Type: TBS
+    RoundLimit: 100
+    FogOfWar: false
+
+
+Agents:
+    #- HumanAgent
+    #- OSLAAgent
+    #- UnitMCTSAgent:
+    #    DoStateAbstraction: false
+    #    Budget: FMCALLS
+    #    MaxFmCalls: 5000
+    #    RolloutLength: 20
+    #    ContinuePreviousSearch: false
+    #    K: 0.1
+    - MCTSAgent:
+        Budget: FMCALLS
+        MaxFmCalls: 10000
+        RolloutLength: 20
+        ContinuePreviousSearch: false
+        K: 0.1
+        Heuristic: ktk
+    - KTKCombatAgent
+    #- MinimaxAgent
+    #- DoNothingAgent
+
+GameRenderer:
+    Resolution:
+        Width: 800
+        Height: 600
+    Default Assets:
+        Selected: ../../assets/Tiles/selected.png
+        FogOfWar: ../../assets/Tiles/notVisible.png
+    #Optional:
+    #Font: ../../assets/arial.ttf
+    #OutlineShader: ../../assets/OutLine.frag
+
+Tiles:
+    Plain:
+        Sprite: ../../assets/Tiles/plain.png
+        Symbol: .
+        IsWalkable: true
+        DefaultTile: true
+    Water:
+        Sprite: ../../assets/Tiles/water.png
+        Symbol: W
+        IsWalkable: false
+    Mountain:
+        Sprite: ../../assets/Tiles/rock.png
+        Symbol: M
+        IsWalkable: false
+    Forest:
+        Sprite: ../../assets/Tiles/forest.png
+        Symbol: F
+        IsWalkable: true
+        
+Board:
+    GenerationType: Manual
+    Layout: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  a1 .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  a1 k1 h1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  .  .  w1 w1 .  .  .  .  W  W  .  .  .  .  .  .  .  .  .  .  .  M  M  .  .  .  .  .  M  M  M
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W
+        M  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  W  W  W  W  W
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 k0 h0 .  .  .  .  .  M
+        M  M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M
+Actions:
+    Attack:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "DifferentPlayer(Source, Target)"
+                    - "InRange(Source, Target, Source.AttackRange)"
+        Effects:
+            - "Attack(Target.Health, Source.AttackDamage)"
+
+    Move:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Targets:
+            Target:
+                Type: Position
+                SamplingMethod: 
+                #    Type: Dijkstra
+                #    Options:
+                #        SearchSize: 1
+                #        AllowDiagonals: false
+                    Type: Neighbours
+                    Options:
+                        Shape: Square
+                        Size: 1
+                Conditions:
+                    - "IsWalkable(Target)"
+        Effects:
+            - "Move(Source, Target)"
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+    Heal:
+        Type: EntityAction
+        Cooldown: 1
+        Targets:
+            Target:
+                Type: Entity
+                ValidTargets: All
+                SamplingMethod:
+                    Type: Neighbours
+                    Options:
+                        Shape: AllPositions
+                Conditions:
+                    - "InRange(Source, Target, Source.HealRange)"
+        Effects:
+            - "ModifyResource(Target.Health, Source.HealAmount)"
+
+    Empty:
+        Type: EntityAction
+        Preconditions:
+            - "ResourceGreaterEqual(Source.MovementPoints, 1)"
+        Effects:
+            - "ModifyResource(Source.MovementPoints, -1)"
+
+
+Entities:
+    Warrior:
+        Sprite: ../../assets/Entities/unit_2.png
+        Symbol: w
+        LineOfSightRange: 6
+        Actions: [Attack, Move, Empty]
+        Parameters:
+            Health: 100
+            AttackRange: 1.5
+            AttackDamage: 70
+            MovementPoints: 1
+
+    Archer:
+        Sprite: ../../assets/Entities/unit_3.png
+        Symbol: a
+        LineOfSightRange: 10
+        Parameters:
+            Health: 100
+            AttackRange: 2
+            AttackDamage: 50
+            MovementPoints: 1
+        Actions: [Attack, Move, Empty]
+
+    Healer:
+        Sprite: ../../assets/Entities/unit_6.png
+        Symbol: h
+        LineOfSightRange: 4
+        Parameters:
+            Health: 50
+            HealRange: 2
+            HealAmount: 50
+            MovementPoints: 1
+        Actions: [Heal, Move, Empty]
+
+    King:
+        Sprite: ../../assets/Entities/unit_1.png
+        Symbol: k
+        LineOfSightRange: 6
+        Parameters:
+            Health: 200
+            AttackRange: 1
+            AttackDamage: 50
+            MovementPoints: 1
+        Actions: [Attack, Move, Empty]
+
+ForwardModel:
+    LoseConditions: #If true: Player -> cant play
+        NoHasKing:
+        - "HasNoEntity(Source, King)"
+
+    Trigger:
+        - OnTick:
+            Type: Entity
+            Effects:
+                - "SetToMaximum(Source.MovementPoints)"
+
+#Action categories
+GameDescription:
+    Type: CombatGame
+    Actions:
+        Move: [Move]
+        Heal: [Heal]
+        Attack: [Attack]
+#        Empty: [Empty]
+    Entities:
+        Unit: [King, Warrior, Archer, Healer]
+        Fighter: [Warrior, Archer]
+        NoFighter: [Healer]
+        Melee: [Warrior]
+        Ranged: [Archer]
+
+GameRunner:
+    AgentInitializationTime:
+        Enabled: false
+        BudgetTimeMs: 50
+        DisqualificationTimeMs: 70
+    AgentComputationTime:
+        Enabled: false
+        BudgetTimeMs: 1000
+        DisqualificationTimeMs: 70
+        MaxNumberWarnings: 5

@@ -14,8 +14,17 @@ namespace SGA {
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
+        if (parameters_.HEURISTIC == "ktk") {
+            parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
+        }
+        else if (parameters_.HEURISTIC == "pta") {
+            parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
+        }
+        else {
+            std::cout<<"[ERROR] invalid heuristic name parameter\n";
+        }
         //parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
-        parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
+        //parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
 		parameters_.printDetails();
     }
 

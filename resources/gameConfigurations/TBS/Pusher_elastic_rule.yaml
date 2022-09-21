@@ -26,6 +26,7 @@ Agents:
         IsActionIndependent: false
         RThreshold: 0.1
         TThreshold: 2.0
+        Heuristic: pta
     - PusherAgent
     ##- RandomAgent
     #- DoNothingAgent

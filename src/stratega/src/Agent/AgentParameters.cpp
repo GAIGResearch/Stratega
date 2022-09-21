@@ -55,6 +55,7 @@ namespace SGA {
 		maxFMCalls             = node["MaxFmCalls"].as<int>(maxFMCalls);
 		maxIterations          = node["Iterations"].as<int>(maxIterations);
 		percTimeBudget         = node["PercTime"].as<double>(percTimeBudget);
+        HEURISTIC        = node["Heuristic"].as<std::string>(HEURISTIC);
 
 		if (node["Budget"].as<std::string>("") == "TIME")
 			budgetType = SGA::Budget::TIME;

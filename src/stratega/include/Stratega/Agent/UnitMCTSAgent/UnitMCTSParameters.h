@@ -85,6 +85,7 @@ namespace YAML {
             rhs.UNGROUPING_BATCH_THRESHOLD   = node["UngroupingBatchThreshold"].as<double>(rhs.UNGROUPING_BATCH_THRESHOLD);
             rhs.IS_UNGROUPING                = node["IsUngrouping"].as<bool>(rhs.IS_UNGROUPING);
             rhs.IS_ACTION_INDEPENDENT        = node["IsActionIndependent"].as<bool>(rhs.IS_ACTION_INDEPENDENT);
+            
 
 			if (rhs.random_abstraction && (!rhs.DO_STATE_ABSTRACTION)) {
 				std::cout<<"[Warning]: RandomAbstraction is set to true. However, DoStateAbstraction is set to false!"<<"\n";

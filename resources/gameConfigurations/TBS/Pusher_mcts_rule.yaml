@@ -16,6 +16,7 @@ Agents:
         RolloutLength: 20
         ContinuePreviousSearch: false
         K: 0.1
+        Heuristic: pta
     - PusherAgent
     ##- RandomAgent
     #- DoNothingAgent

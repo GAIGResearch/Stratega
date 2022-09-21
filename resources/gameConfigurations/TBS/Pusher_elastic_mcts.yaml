@@ -26,12 +26,14 @@ Agents:
         IsActionIndependent: false
         RThreshold: 0.1
         TThreshold: 2.0
+        Heuristic: pta
     - MCTSAgent:
         Budget: FMCALLS
         MaxFmCalls: 10000
         RolloutLength: 20
         ContinuePreviousSearch: false
         K: 0.1
+        Heuristic: pta
     #- PusherAgent
     ##- RandomAgent
     #- DoNothingAgent

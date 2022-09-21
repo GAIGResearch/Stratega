@@ -26,6 +26,7 @@ Agents:
         IsActionIndependent: True
         RThreshold: 0.2
         TThreshold: 0.3
+        Heuristic: pta
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: false
@@ -35,6 +36,7 @@ Agents:
         RandomAbstraction: false
         K: 0.1
         IsUngrouping: false
+        Heuristic: pta
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 10000

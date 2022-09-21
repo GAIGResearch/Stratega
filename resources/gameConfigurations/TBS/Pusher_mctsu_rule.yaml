@@ -19,6 +19,7 @@ Agents:
         RandomAbstraction: false
         K: 0.1
         IsUngrouping: false
+        Heuristic: pta
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 10000
