@@ -32,14 +32,7 @@ Agents:
 #        RolloutLength: 10
 #        ContinuePreviousSearch: false
 #        K: 0.1
-    - MCTSAgent:
-        Budget: FMCALLS
-        Iterations: 10000
-        MaxFmCalls: 5000
-        RolloutLength: 10
-        ContinuePreviousSearch: false
-        K: 0.1
-#    - BasicTBSAgent
+    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent

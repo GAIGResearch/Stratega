@@ -204,8 +204,75 @@ namespace SGA {
                         
                         if (!parameters_.RANDOM_ABSTRACTION) {
                             bool foundExistGroup = false;
-                            for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                            if (parameters_.IS_ACTION_INDEPENDENCE) {
+                           for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                           {
+                              bool match = true;
+                              for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+                                  if(!isActionIndependentHomomorphism(
+                                    forwardModel,
+                                    node1,
+                                    absNodes[i][j][k],
+                                    parameters_.R_THRESHOLD,
+                                    parameters_.T_THRESHOLD)) {
+                                       match = false;
+                                  }
+                              }
+                              if(match) {
+                                 node1->isAbstracted = true;
+                                 node1->absNodeID = i * tmp_index + j;
+                                 absNodes[i][j].push_back(node1);  // add into existing group
+                                 //treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+                                 treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+j));
+
+                                 foundExistGroup = true;
+                              }//end if (match)
+                           }
+                       }
+                       else {
+                           for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                           {
+                               bool match = false;
+                               for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+
+                                   if(isTwoNodeApproxmateHomomorphism(
+                                     forwardModel,
+                                     node1,
+                                     absNodes[i][j][k],
+                                     parameters_.R_THRESHOLD,
+                                     parameters_.T_THRESHOLD)) {
+                                        match = true;
+                                        break;
+                                     } // end if
+                              } // end for
+                              if(match) {
+                                 node1->isAbstracted = true;
+                                 node1->absNodeID = i * tmp_index + j;
+                                 absNodes[i][j].push_back(node1);  // add into existing group
+                                 treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+
+                                 foundExistGroup = true;
+                              }//end if (match)
+                           }
+                       }
+
+                       // not found existing abstract node to add in, create a new one
+                       if(! foundExistGroup) {
+                          absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                          absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                             i * tmp_index + absNodes[i].size() - 1,
+                             std::vector< double >{node1->value, float(node1->nVisits)}));
+
+                          // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
+                          // node1->value, double(node1->nVisits) };
+
+                          node1->isAbstracted = true;
+                          node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+
+                       } // end if(! foundExistGroup)
+                            /*for (int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
                             {
+
                                 //std::cout<<"5\n";
                                 bool match = true;
                                 for(int k = 0; k < absNodes[i][j].size();
@@ -258,7 +325,7 @@ namespace SGA {
                                 // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
                                 // << std::endl;
                                 //std::cout<<"ends !foundExistGroup\n";
-                            }
+                            }*/
                         }
                         else {
                        /*
@@ -311,7 +378,8 @@ namespace SGA {
                 // run out of budget, delete abstraction
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
 
-                    rootNode->eliminateAbstraction();
+                    //rootNode->eliminateAbstraction();
+                    rootNode->eliminateAbstraction(&absNodeToStatistics);
 
                     ///* // for IJCAI paper
                     //if(!stop_abstraction){
@@ -334,8 +402,10 @@ namespace SGA {
                     //rootNode->printTree();
 
                     stop_abstraction = true;
+                    
+                    //rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
+                    rootNode->eliminateAbstraction(&absNodeToStatistics);
                     deleteAbstraction();  // initialize the array empty again,
-                    rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
                 }
             }
 
@@ -586,78 +656,156 @@ namespace SGA {
             double reward_threshold, double transition_threshold){
 
         auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
-        auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
-        double max_reward_difference = 0.0;
-        std::map< int, int > commonActions = std::map< int, int >();
-        std::vector< int > commonActionsVector = std::vector< int >();
+       auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
+       double max_reward_difference = 0.0;
+       std::map< int, int > commonActions = std::map< int, int >();
+       std::map< int, int > actionsUnion = std::map<int, int> ();
+       std::vector< int > commonActionsVector = std::vector< int >();
 
-        // reward checking
-        for(int i = 0; i < node1->actionHashVector.size(); i++) {
-            double diff_this = 0.0;
+       // reward checking
+       for(int i = 0; i < node1->actionHashVector.size(); i++) {
+          double diff_this = 0.0;
+          int a = node1->actionHashVector[i];
+          actionsUnion.insert(std::pair< int, int >(a, 1));
+          if(node2->actionHashes.count(a)) {
+             commonActions.insert(std::pair< int, int >(a, 1));
+             commonActionsVector.push_back(a);
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(
+                node1
+                   ->actionToReward[a]);  // not common action.
+             // different setting. multiply [0-1]
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
 
-            int a = node1->actionHashVector[i];
-            if(node2->actionHashes.count(a)) {
-                commonActions.insert(std::pair< int, int >(a, 1));
-                commonActionsVector.push_back(a);
-                
-                diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+       for(int i = 0; i < node2->actionHashVector.size(); i++) {
+          int a = node2->actionHashVector[i];
+          if (!actionsUnion.count(a)) {
+              actionsUnion.insert(std::pair<int, int>(a, 1));
+          }
+          if(! commonActions.count(a))
+             continue;
+          double diff_this = 0.0;
 
-            } else {
-                diff_this = abs(
-                node1->actionToReward[a]);  // not common action. how many common actions in general [9/3]
-                // different setting. multiply [0-1]
-            }
-            if(diff_this > max_reward_difference) {
-                max_reward_difference = diff_this;
-            }
-        }
+          if(node1->actionHashes.count(a)) {
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(node2->actionToReward[a]);
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
+       if(max_reward_difference > reward_threshold) {
+          return false;
+       }
 
-        for(int i = 0; i < node2->actionHashVector.size(); i++) {
-            int a = node2->actionHashVector[i];
-            if(! commonActions.count(a))
-                continue;
-            double diff_this = 0.0;
+       /*
+       A   1, 2
+       B   2, 3
+       */
+       // for all transition, in deterministic situation, it could only be 
+       // for common action a
+       // 0, when T(s1, a, s3) =1.0 and T(s2, a, s3)=1.0
+       // 2.0, when T(s1, a, s3) =1.0 and T(s2, a, s3) = 0.0; T(s1, a, s4) =1.0 and T(s2, a, s4) = 0.0;
+       // for non-common action a1 for s1, a2 for s2
+       // 2.0, T(s1, a1, s3) =1.0, T(s2, a1, s3) = 0.0; T(s1, a2, s4) =0.0, T(s2, a2, s4) = 1.0;
+       for (auto a_pair : actionsUnion) {
+           int a = a_pair.first;
+           double diff_this = 0.0;
+           if (node1->actionHashes.count(a) && node2->actionHashes.count(a)) {
+               if (node1->actionToNextState[a] == node2->actionToNextState[a]) {
+               }
+               else {
+                   diff_this+=2.0;
+               }
+           }
+           else {
+               diff_this+=2.0;
+           }
+           if(diff_this > transition_threshold)return false;
+       }
 
-            if(node1->actionHashes.count(a)) {
-                diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
-            } else {
-                diff_this = abs(node2->actionToReward[a]);
-            }
-            if(diff_this > max_reward_difference) {
-                max_reward_difference = diff_this;
-            }
-        }
-        //std::cout<<"Rerr: " << max_reward_difference << "\n";
-        if(max_reward_difference > reward_threshold) {
-            return false;
-        }
+       return true;
+    }
 
-        /*
-        A   1, 2
-        B   2, 3
-        */
-        // for all transition
-        double transition_error = 0;
-        for(int i = 0; i < node1->nextStateHashVector.size(); i++) {
-            int s_prime = node1->nextStateHashVector[i];  // s' next state
-            if(! (node2->stateCounter.count(s_prime))) {  // get the same next state
-                transition_error += 1.0;
-            }
-        }
+    bool UnitMCTSAgent::isActionIndependentHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold)
+    {
+       auto actionSpace1 = node1->getActionSpace(forwardModel, getPlayerID());// ->actionSpace;
+       auto actionSpace2 = node2->getActionSpace(forwardModel, getPlayerID());
+       double max_reward_difference = 0.0;
+       std::map< int, int > commonActions = std::map< int, int >();
+       std::vector< int > commonActionsVector = std::vector< int >();
 
-        for(int i = 0; i < node2->nextStateHashVector.size(); i++) {
-            int s_prime = node2->nextStateHashVector[i];
-            if(! (node1->stateCounter.count(s_prime))) {  // get the same next state
-                transition_error += 1.0;
-            }
-        }
-        //std::cout<<"Terr: " << transition_error << "\n";
-        if(transition_error > transition_threshold) {
-            return false;
-        }
+       // reward checking
+       for(int i = 0; i < node1->actionHashVector.size(); i++) {
+          double diff_this = 0.0;
+          int a = node1->actionHashVector[i];
+          if(node2->actionHashes.count(a)) {
+             commonActions.insert(std::pair< int, int >(a, 1));
+             commonActionsVector.push_back(a);
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(
+                node1
+                   ->actionToReward[a]);  // not common action. how many common actions in general [9/3]
+             // different setting. multiply [0-1]
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
 
-        // one of the two condition make the merging happen. 9/3
-        return true;
+       for(int i = 0; i < node2->actionHashVector.size(); i++) {
+          int a = node2->actionHashVector[i];
+          if(! commonActions.count(a))
+             continue;
+          double diff_this = 0.0;
+
+          if(node1->actionHashes.count(a)) {
+             diff_this = abs(node1->actionToReward[a] - node2->actionToReward[a]);
+          } else {
+             diff_this = abs(node2->actionToReward[a]);
+          }
+          if(diff_this > max_reward_difference) {
+             max_reward_difference = diff_this;
+          }
+       }
+       if(max_reward_difference > reward_threshold) {
+          return false;
+       }
+       
+
+       
+       //A   1, 2
+      // B   2, 3
+       
+       // for all transition
+       double transition_error = 0;
+       for(int i = 0; i < node1->nextStateHashVector.size(); i++) {
+          int s_prime = node1->nextStateHashVector[i];  // s' next state
+          if(! (node2->stateCounter.count(s_prime))) {  // get the same next state
+             transition_error += 1.0;
+          }
+       }
+
+       for(int i = 0; i < node2->nextStateHashVector.size(); i++) {
+          int s_prime = node2->nextStateHashVector[i];
+          if(! (node1->stateCounter.count(s_prime))) {  // get the same next state
+             transition_error += 1.0;
+          }
+       }
+
+       if(transition_error > transition_threshold) {
+          return false;
+       }
+
+       // one of the two condition make the merging happen. 9/3
+       return true;
     }
 
     void UnitMCTSAgent::printAbsNodeStatus() {

@@ -20,6 +20,7 @@ namespace SGA {
           int nodeID = -1;
 
           // MDP homomorphism
+          std::map<int, int> actionToNextState;
           std::map<int, double> actionToReward;
           std::map<int, double> actionToTechnologyReward;
           std::map<int, double> actionToResourceReward;
@@ -71,6 +72,7 @@ namespace SGA {
           void setDepth(int depth);
 
           void eliminateAbstraction();
+          void eliminateAbstraction(std::map<int, std::vector<double> >* absNodeToStatistics);
 
           // Root Node Constructor
           UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_);

@@ -54,6 +54,8 @@ namespace SGA {
         std::vector< double > approx_Q = {};
         std::vector< int > depth_list = {};
 
+        bool IS_ACTION_INDEPENDENCE = false;
+
         boost::random::uniform_real_distribution< double >
             doubleDistribution_ = boost::random::uniform_real_distribution< double >(0, 1);
 
@@ -93,6 +95,7 @@ namespace YAML {
             rhs.TECHNOLOGY_R_THRESHOLD       = node["TechnologyRThreshold"].as< double >(rhs.TECHNOLOGY_R_THRESHOLD);
             rhs.COMBAT_R_THRESHOLD           = node["CombatRThreshold"].as< double >(rhs.COMBAT_R_THRESHOLD);
             rhs.RANDOM_ABSTRACTION           = node["RandomAbstraction"].as< bool >(rhs.RANDOM_ABSTRACTION);
+            rhs.IS_ACTION_INDEPENDENCE           = node["IsActionIndependence"].as< bool >(rhs.IS_ACTION_INDEPENDENCE);
             return true;
         }
     };

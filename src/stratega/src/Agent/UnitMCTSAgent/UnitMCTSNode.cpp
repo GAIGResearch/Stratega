@@ -203,6 +203,7 @@ namespace SGA
         }
         
 
+        actionToNextState = std::map<int, int>();
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
         actionToCombatReward = std::map<int, double>();
@@ -239,6 +240,20 @@ namespace SGA
 		}
 		else {
 			value = result;
+		}
+	}
+
+    void UnitMCTSNode::eliminateAbstraction(std::map<int, std::vector<double> >* absNodeToStatistics)
+	{
+        
+		if (isAbstracted) {
+            nVisits = (*absNodeToStatistics)[absNodeID][1];
+            value =  (*absNodeToStatistics)[absNodeID][0];
+			isAbstracted = false;
+		}
+		for (int i = 0; i < childExpanded; i++)
+		{
+			children[i]->eliminateAbstraction();
 		}
 	}
 
@@ -589,7 +604,7 @@ namespace SGA
 
             actionToReward.insert(std::pair<int, double>(action_hash, reward));
 
-			
+			actionToNextState.insert(std::pair<int, int>(action_hash, next_state_hash));
 			stateCounter.insert(std::pair<int, int>(next_state_hash, 1));
 			actionHashes.insert(std::pair<int, int>(action_hash, 1));
 			actionHashVector.push_back(action_hash);

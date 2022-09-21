@@ -25,16 +25,9 @@ Agents:
         IsMultiObjective: false
         RandomAbstraction: false
         IsActionIndependence: false
-#    - UnitMCTSAgent:
-#        Budget: FMCALLS
-#        DoStateAbstraction: false
-#        MaxFmCalls: 5000
-#        RolloutLength: 10
-#        ContinuePreviousSearch: false
-#        K: 0.1
-    - MCTSAgent:
+    - UnitMCTSAgent:
         Budget: FMCALLS
-        Iterations: 10000
+        DoStateAbstraction: false
         MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false

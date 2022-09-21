@@ -6,7 +6,12 @@ void UnitMCTSParameters::printDetails() const
 {
     AgentParameters::printDetails();
     if (DO_STATE_ABSTRACTION) {
-        std::cout<< "ActionIndependentMCTSuAgent\n";
+        if (IS_ACTION_INDEPENDENCE) {
+            std::cout<< "ActionIndependentMCTSuAgent\n";
+        }
+        else {
+            std::cout<< "ElasticMCTSuAgent\n";
+        }
     }
     else {
         std::cout<< "MCTSuAgent\n";

@@ -35,7 +35,13 @@ namespace SGA {
             unitIndex = std::vector< int >();
 
             if (params.DO_STATE_ABSTRACTION) {
-                agentName = "ActionIndependentMCTSuAgent";
+                if (params.IS_ACTION_INDEPENDENCE) {
+                    agentName = "ActionIndependentMCTSuAgent";
+                }
+                else {
+                    agentName = "ElasticMCTSuAgent";
+                }
+                
             }
             stepInit();
         }
@@ -77,6 +83,7 @@ namespace SGA {
             const ForwardModel& forwardModel,
             UnitMCTSNode* node1,
             UnitMCTSNode* node2);
+        bool isActionIndependentHomomorphism(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2, double reward_threshold, double transition_threshold);
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
         std::vector< Action > switchPlayerUnit(GameState state, const ForwardModel& forwardModel);
