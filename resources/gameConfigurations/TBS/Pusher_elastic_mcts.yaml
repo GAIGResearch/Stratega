@@ -23,9 +23,9 @@ Agents:
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
-        IsActionIndependent: True
-        RThreshold: 0.2
-        TThreshold: 0.3
+        IsActionIndependent: false
+        RThreshold: 0.1
+        TThreshold: 2.0
     - MCTSAgent:
         Budget: FMCALLS
         MaxFmCalls: 10000
