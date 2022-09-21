@@ -267,10 +267,10 @@ namespace SGA
 			}
 
 			//return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
-			return params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
+			return params.new_heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
 		}
 
-		return params.heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
+		return params.new_heuristic->evaluateGameState(forwardModel, gameState, params.PLAYER_ID);
 	}
 
 	bool MCTSNode::rolloutFinished(GameState& rollerState, int depth, MCTSParameters& params)

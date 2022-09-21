@@ -77,6 +77,6 @@ namespace SGA {
 		std::cout << "\tCurrent iterations: " << currentIterations << std::endl;
 		std::cout << "\tScripts in portfolio: " << portfolio.size() << std::endl;
 		std::cout << "\tOpponent model by script: " << opponentModel->toString() << std::endl;
-		std::cout << "\tState evaluation heuristic: " << heuristic->getName() << std::endl;
+		//std::cout << "\tState evaluation heuristic: " << heuristic->getName() << std::endl;
 	}
 }

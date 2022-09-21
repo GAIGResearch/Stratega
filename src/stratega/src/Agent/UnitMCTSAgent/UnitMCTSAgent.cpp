@@ -8,6 +8,7 @@ namespace SGA {
     {
         parameters_.PLAYER_ID = getPlayerID();
         parameters_.OPPONENT_ID = 1- parameters_.PLAYER_ID;
+        battle_mode=false;
 
 
         if (parameters_.budgetType == Budget::UNDEFINED)
@@ -16,11 +17,10 @@ namespace SGA {
         //parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSResourceHeuristic >(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique< BasicTBSTechnologyHeuristic >(parameters_.PLAYER_ID, initialState);
-        //parameters_.heuristic = std::make_unique< BasicTBSCombatHeuristic >(parameters_.PLAYER_ID, initialState);
-        parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState, 1.0, 0.0, 0.0);
+        parameters_.heuristic = std::make_unique< BasicTBSCombatHeuristic >(parameters_.PLAYER_ID, initialState);
+        //parameters_.heuristic = std::make_unique< TwoKingdomsAbstractionHeuristic >(parameters_.PLAYER_ID, initialState, 1.0, 0.0, 0.0); // not used in this code
 
-        parameters_.abstractionHeuristic = std::make_unique<TwoKingdomsAbstractionHeuristic>(parameters_.PLAYER_ID, initialState,
-                                            1.0, 0.0, 0.0); // wCombat, wTechnology, wResource
+        //parameters_.abstractionHeuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState); // wCombat, wTechnology, wResource
 
         nD_min_list = std::vector<double> ();
         h_size_list = std::vector<double> ();
@@ -33,7 +33,36 @@ namespace SGA {
 
     ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)
     {
-        //std::cout<<"Start computeAction\n";
+        if (!battle_mode) {
+            int self_warrior_N = 0;
+            auto entities = state.getEntities();
+            for (auto entity : entities) {
+                auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
+                auto entityName = entityType.getName();
+                if (entity.getOwnerID() == getPlayerID()) {
+                    if (entityType.getName() == "Warrior") {
+                        self_warrior_N++;
+                    }
+                    else if (entityType.getName() == "Worker") {
+                        auto h = entity.getParameter("Health");
+                        /*if (parameters_.DO_STATE_ABSTRACTION) {
+                            std::cout<<"health: "<< h<<"\n";
+                        }
+                        //*/
+                    }
+                }
+                //TODO enter battlemodel at the same time(both player)
+
+            }
+            //std::cout<<self_warrior_N<<std::endl;
+            if(self_warrior_N>=3){
+                std::cout<<"Player: " << getPlayerID() << " combat mode\n";
+                parameters_.heuristic->setBattleMode();
+                battle_mode=true;
+            }
+            
+        }
+
         if(newRound) {
             // [log] record each turn in the game
             newRound = false;
@@ -41,6 +70,7 @@ namespace SGA {
         parameters_.global_nodeID = 0;  // reinitialize the ID for node, witch is incremental as nodes created
         parameters_.REMAINING_FM_CALLS = parameters_.maxFMCalls;
         parameters_.maxDepth = 0;
+        parameters_.currentIterations = 0;
         const auto processedForwardModel = parameters_.preprocessForwardModel(
             dynamic_cast< const TBSForwardModel& >(forwardModel));
 
@@ -48,7 +78,13 @@ namespace SGA {
             throw std::runtime_error("MCTSAgent only supports TBS-Games");
         }
 
-        std::vector< Action > actionSpace =  switchUnit(state, forwardModel);
+        std::vector< Action > actionSpace = {};
+        if (parameters_.HAS_PLAYER_ACTION) {
+            actionSpace =  switchPlayerUnit(state, forwardModel);
+        }
+        else {
+            actionSpace =  switchUnit(state, forwardModel);
+        }
 
         //std::cout<<"jfdias9fi\n";
 
@@ -63,7 +99,13 @@ namespace SGA {
                 unitIndexInitialized = false;
             }
             //std::cout<<"End agent1\n";
-
+            /*
+            if (parameters_.DO_STATE_ABSTRACTION) {
+                //state.printBoard();
+                state.printActionInfo(a);
+                //parameters_.abstractionHeuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
+            }
+            //*/
             return ActionAssignment::fromSingleAction(a);
         } else {
             if(parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1) {
@@ -128,17 +170,22 @@ namespace SGA {
                 // do abstraction
                 for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
                 {
+                    if (!battle_mode) {
+                        break;
+                    }
                     std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
                     for(auto node1 : deep_layer) {  // each initial node
 
                         //std::cout<<" isAbstracted: " << node1->isAbstracted << "\n";
-                        
                         if(node1->isAbstracted)
                             continue;  // can be adjusted
                         //std::cout<<"2.5\n";
                         if (node1->children.size() == 0) {
                             continue;
                         }
+                        // player node not abstracted
+                        if(node1->unitName=="Player"||node1->unitName=="City" ||node1->unitName=="Barracks")
+                            continue;
                         //std::cout<<"3\n";
                         if(absNodes[i].size() == 0) {  // this depth has no node cluster
                             //std::cout<<"try add new cluster\n";
@@ -154,62 +201,102 @@ namespace SGA {
                             continue;
                         }
                         //std::cout<<"4\n";
-                        bool foundExistGroup = false;
-                        for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
-                        {
-                            //std::cout<<"5\n";
-                            bool match = true;
-                            for(int k = 0; k < absNodes[i][j].size();
-                                k++) {  // compare between new initial nodes to the abstracted Nodes
-                                if (!parameters_.IS_MULTI_OBJECTIVE) {
-                                    //std::cout<<"isTwoNodeApproxmateHomomorphism\n";
-                                    if( !isTwoNodeApproxmateHomomorphism(
-                                        forwardModel,
-                                        node1,
-                                        absNodes[i][j][k],
-                                        parameters_.R_THRESHOLD,
-                                        parameters_.T_THRESHOLD)) {
-                                    match = false;
+                        
+                        if (!parameters_.RANDOM_ABSTRACTION) {
+                            bool foundExistGroup = false;
+                            for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                            {
+                                //std::cout<<"5\n";
+                                bool match = true;
+                                for(int k = 0; k < absNodes[i][j].size();
+                                    k++) {  // compare between new initial nodes to the abstracted Nodes
+                                    if (!parameters_.IS_MULTI_OBJECTIVE) {
+                                        //std::cout<<"isTwoNodeApproxmateHomomorphism\n";
+                                        if( !isTwoNodeApproxmateHomomorphism(
+                                            forwardModel,
+                                            node1,
+                                            absNodes[i][j][k],
+                                            parameters_.R_THRESHOLD,
+                                            parameters_.T_THRESHOLD)) {
+                                        match = false;
+                                        }
+                                        //std::cout<<"Ends isTwoNodeApproxmateHomomorphism\n";
                                     }
-                                    //std::cout<<"Ends isTwoNodeApproxmateHomomorphism\n";
-                                }
-                                else {
-                                    if( !isHomomorphismMultiObjective(
-                                        forwardModel,
-                                        node1,
-                                        absNodes[i][j][k])) {
-                                    match = false;
+                                    else {
+                                        if( !isHomomorphismMultiObjective(
+                                            forwardModel,
+                                            node1,
+                                            absNodes[i][j][k])) {
+                                        match = false;
+                                        }
                                     }
+
+                                } // end for
+                                if(match) {
+                                    //std::cout<<"matched\n";
+                                    node1->isAbstracted = true;
+                                    node1->absNodeID = i * tmp_index + j;
+                                    absNodes[i][j].push_back(node1);  // add into existing group
+                                    treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
+
+                                    foundExistGroup = true;
+                                    //std::cout<<"ends matched\n";
                                 }
-
-                            } // end for
-                            if(match) {
-                                //std::cout<<"matched\n";
-                                node1->isAbstracted = true;
-                                node1->absNodeID = i * tmp_index + j;
-                                absNodes[i][j].push_back(node1);  // add into existing group
-                                treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
-
-                                foundExistGroup = true;
-                                //std::cout<<"ends matched\n";
+                                //std::cout<<"6\n";
                             }
-                            //std::cout<<"6\n";
+                            //std::cout<<"7\n";
+                            if(! foundExistGroup) {
+                                //std::cout<<"!foundExistGroup\n";
+                                absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                                absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                    i * tmp_index + absNodes[i].size() - 1,
+                                    std::vector< double >{node1->value, float(node1->nVisits)}));
+                                // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
+                                // node1->value, double(node1->nVisits) };
+                                node1->isAbstracted = true;
+                                node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                                // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
+                                // << std::endl;
+                                //std::cout<<"ends !foundExistGroup\n";
+                            }
                         }
-                        //std::cout<<"7\n";
-                        if(! foundExistGroup) {
-                            //std::cout<<"!foundExistGroup\n";
-                            absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
-                            absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                                i * tmp_index + absNodes[i].size() - 1,
-                                std::vector< double >{node1->value, float(node1->nVisits)}));
-                            // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
-                            // node1->value, double(node1->nVisits) };
-                            node1->isAbstracted = true;
-                            node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
-                            // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
-                            // << std::endl;
-                            //std::cout<<"ends !foundExistGroup\n";
-                        }
+                        else {
+                       /*
+                        * uniformly add a initial node to abstact node/ create a new abstract node
+                        */
+                       int nAction = absNodes[i].size();
+                       
+                       boost::random::uniform_int_distribution<size_t> actionDist(0, nAction); // close interval
+                       auto actionIndex = actionDist(getRNGEngine());
+
+                       // create a new abstact node
+                       if (actionIndex == nAction) {
+
+                          absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+
+                          // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                          absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                             i * tmp_index + absNodes[i].size() - 1,
+                             std::vector< double >{node1->value, float(node1->nVisits)}));
+                          
+                          node1->isAbstracted = true;
+                          node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+                          treeNodetoAbsNode.insert(std::pair<int, int>(node1->nodeID, node1->absNodeID ));
+
+                          continue;
+                       }
+                       else {
+
+                          //int j = absNodes[i][actionIndex].size()-1;
+                          int j = actionIndex;
+                          node1->isAbstracted = true;
+                          node1->absNodeID = i * tmp_index + j;
+
+                          absNodes[i][actionIndex].push_back(node1);  // add into existing group
+                          treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
+
+                       }
+                    }
 
                         node1->isAbstracted = true;
                     }
@@ -218,11 +305,10 @@ namespace SGA {
                 // " abstracted node number " << absNodes[i].size() << std::endl;
                 }
 
-
                 n_abs_iteration++;
                 tmp_batch_used++;
 
-                // tmp_batch_used >=20 means do maximum 20 times abstraction in a step
+                // run out of budget, delete abstraction
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {
 
                     rootNode->eliminateAbstraction();
@@ -243,14 +329,26 @@ namespace SGA {
                     //    printBoundStatistics(false);
                     //}
                     //*/
+                    //state.printBoard();
+                    //printAbsNodeStatus();
+                    //rootNode->printTree();
 
                     stop_abstraction = true;
                     deleteAbstraction();  // initialize the array empty again,
                     rootNode->eliminateAbstraction();  // make the flag of (has been abstracted) to false
-                    
                 }
             }
 
+            /*
+            if (!parameters_.DO_STATE_ABSTRACTION) {
+                std::cout<<parameters_.currentIterations<<std::endl;
+                state.printBoard();
+            }
+            else {
+               // rootNode->printTree();
+                printAbsNodeStatus();
+            }
+            //*/
             // get and store best action
             auto bestActionIndex = rootNode->mostVisitedAction( parameters_, getRNGEngine() );
             auto bestAction = rootNode->getActionSpace(forwardModel, getPlayerID()).at(bestActionIndex);
@@ -262,10 +360,25 @@ namespace SGA {
 
 
             // std::cout << "-> UnitMCTS Action Took: ";
+            //std::cout<< getPlayerID()<< "  ";
+            //state.printBoard();
             //state.printActionInfo(bestAction);
-            // std::cout << unitActionHash(bestAction) << std::endl;
-            // std::cout << " End printActionInfo " << std::endl;
+            /*
+            auto a_space = forwardModel.generateActions(state, getPlayerID());
+
+            for (auto a : a_space) {
+                state.printActionInfo(a);
+            }
+            //*/
+            //parameters_.abstractionHeuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
             //rootNode->printTree();
+            /*
+            if (parameters_.DO_STATE_ABSTRACTION) {
+                state.printBoard();
+                state.printActionInfo(bestAction);
+                //parameters_.abstractionHeuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
+            }
+            //*/
 
             if(bestAction.getActionFlag() == ActionFlag::EndTickAction) {
                 unitIndexInitialized = false;
@@ -279,22 +392,121 @@ namespace SGA {
 
             return ActionAssignment::fromSingleAction(bestAction);
         }
-        }
+    }
 
     std::vector< Action > UnitMCTSAgent::switchUnit(GameState state, const ForwardModel& forwardModel) {
+        auto units = state.getPlayerEntities(getPlayerID());
+
+        //std::cout<<"start swtichUnit\n";
+        /* If there are no spawning system, this list can be fixed, but new units required us to update the unit list.
+        * each turn, we get a new entity list, palyer action moves first then entity actions
+        * how to recognize new turn? check return of computeAction == EndTick
+        */
+
+        if(unitIndexInitialized == false) {
+            //if (parameters_.DO_STATE_ABSTRACTION) {
+            //    state.printBoard();
+            //}
+            unitIndex = std::vector<int>();
+          for(auto unit : units) {
+             unitIndex.push_back(unit.getID());
+          }
+          //if(!parameters_.DO_STATE_ABSTRACTION){
+          //    std::cout<<"player ID: "<< getPlayerID()<< "\n";
+          //    for (auto i : unitIndex) {
+          //        std::cout<<i<<" ";
+          //    }
+          //    std::cout<<"\n";
+          //}
+          unitIndexInitialized = true;
+        }
+        else {
+            // newly spawned unit
+            for (auto unit : units) {
+                if (find(unitIndex.begin(), unitIndex.end(), unit.getID()) == unitIndex.end()) {
+                    unitIndex.push_back(unit.getID());
+                }
+            }
+        }
+
+        // store the information of alive units
+        std::map< int, int > eIDtoUnitArrayIndex = {};
+
+        // their unit index might change at each step
+        int tmp_counter1 = -1;
+        for(auto u : units) {
+            tmp_counter1++;
+
+            eIDtoUnitArrayIndex.insert(std::pair< int, int >(u.getID(), tmp_counter1));
+        }
+
+        // to decide if we need to switch unit at this step.
+        bool needNextUnit = false;
+        std::vector< Action > actionSpace_tmp = {};
+
+        // Condition to move on: 1. actionSpace is empty, 2. dead
+        bool unit_alive = eIDtoUnitArrayIndex.count(unitIndex[unitThisStep]);
+
+        if(! unit_alive) {
+            needNextUnit = true;
+        } else {
+            auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
+            auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
+
+            if(actionSpace_tmp.size() == 0) {
+                needNextUnit = true;
+            } else {
+            }
+        }
+
+        // if need to switch to a new unit, decide which is the next.
+        if(needNextUnit) {
+            int tmp_unitNextStep = unitThisStep + 1;
+            for(; tmp_unitNextStep < unitIndex.size(); tmp_unitNextStep++) {
+                if(eIDtoUnitArrayIndex.count(unitIndex[tmp_unitNextStep]))
+                {
+                    break;
+                }
+            }
+
+            // execute EndTurn if there is no valid next unit.
+            if(tmp_unitNextStep == unitIndex.size()) {  // every unit moved, end the turn
+                step++;  // for debugging
+
+                Action endAction = Action::createEndAction(getPlayerID());
+                unitThisStep = 0;
+                newRound = true;
+                std::vector< Action > actionSpace = {endAction};
+
+                return actionSpace;
+            }
+
+            // find an alive unit that `must` has non-empty action spacef
+            unitThisStep = tmp_unitNextStep;
+        }
+
+        // generate actions and update unitThisStep
+        std::vector< Action > actionSpace = forwardModel.generateUnitActions(
+                state, units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]], getPlayerID(), false);
+        return actionSpace;
+    }
+
+    std::vector< Action > UnitMCTSAgent::switchPlayerUnit(GameState state, const ForwardModel& forwardModel) {
             auto units = state.getPlayerEntities(getPlayerID());
 
         //std::cout<<"start swtichUnit\n";
         // each turn, we get a new entity list, palyer action moves first then entity actions
+        // how to recognize new turn? check return of computeAction == EndTick
         if(unitIndexInitialized == false) {
             //std::cout<<"initializing unitIndex\n";
             unitIndex = std::vector<int>();
             for(auto unit : units) {
                 unitIndex.push_back(unit.getID());
             }
-            unitIndex.push_back(-1);
+            //unitIndex.push_back(-1); // player action
             unitIndexInitialized = true;
-            unitThisStep = -1;
+            unitThisStep = -1; // player moves first
+            unitThisStep = 0;
             return forwardModel.generatePlayerActions(state, getPlayerID(), false);
         }
 
@@ -415,6 +627,7 @@ namespace SGA {
                 max_reward_difference = diff_this;
             }
         }
+        //std::cout<<"Rerr: " << max_reward_difference << "\n";
         if(max_reward_difference > reward_threshold) {
             return false;
         }
@@ -438,13 +651,27 @@ namespace SGA {
                 transition_error += 1.0;
             }
         }
-
+        //std::cout<<"Terr: " << transition_error << "\n";
         if(transition_error > transition_threshold) {
             return false;
         }
 
         // one of the two condition make the merging happen. 9/3
         return true;
+    }
+
+    void UnitMCTSAgent::printAbsNodeStatus() {
+        for (int i = 1; i < parameters_.maxDepth; i++) {
+            int abs_size = absNodes[i].size();
+            std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
+            if(abs_size == 0)continue;
+
+            for (int j = 0; j < abs_size; j++) {
+                std::cout<< absNodes[i][j].size()<< " ";
+            }
+            std::cout<<"\n";
+        }
+        std::cout<<"\n";
     }
 
     bool UnitMCTSAgent::isHomomorphismMultiObjective(const ForwardModel& forwardModel, UnitMCTSNode* node1, UnitMCTSNode* node2){

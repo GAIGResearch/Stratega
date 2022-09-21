@@ -15,8 +15,12 @@ int main(int argc, char** argv)
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS_0202.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBScombat_0202.yaml");
 	//Optional
-	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/TwoKingdomsMaps.yaml");
+	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/TwoKingdomsMaps.yaml");
+    auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/TwoKingdomsMaps.yaml");
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "");
+
+    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
+	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
 
 	if(configPath.empty())
 	{

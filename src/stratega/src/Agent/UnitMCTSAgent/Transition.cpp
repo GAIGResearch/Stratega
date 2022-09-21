@@ -2,14 +2,33 @@
 
 namespace SGA {
 
-int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity)
+int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity, int playerID)
 {
+    int base = 1000000;
+    auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
+    if (entityType.getName() == "city") {
+        base = 10000; // researched mining, researched Discipline, built Barracks
+        bool isBuiltBarrack = false;
+        for(const auto& entity : state.getEntities()) {
+
+            if(entity.getOwnerID() != playerID ) 
+            {
+
+                if (entityType.getName() == "Barracks") {
+                    isBuiltBarrack=true;
+                    break;
+                }
+            }
+        }
+        return base + state.isResearched(playerID, "Mining")*100 + state.isResearched(playerID, "Discipline")*10 + isBuiltBarrack*1;
+    }
+
    // get entity type
     int eID = entity.getEntityTypeID();//entity.typeID;
 
    // get entity position
    int x = entity.x(), y = entity.y();
-   int base = 1000000;
+
 
    // return hash
    return base + x * 10000 + y * 100 + eID;

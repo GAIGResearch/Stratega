@@ -16,7 +16,7 @@ namespace SGA
 
         //parameters_.heuristic = std::make_unique<BasicTBSResourceHeuristic>(parameters_.PLAYER_ID, initialState);
         //parameters_.heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
-        parameters_.heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
+        parameters_.new_heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
         // this one is used to get the score of states for debugging;
         // there is some printing function called inside this function, that's why this extra instance is needed
@@ -24,12 +24,12 @@ namespace SGA
         //debug_heuristic = std::make_unique<BasicTBSTechnologyHeuristic>(parameters_.PLAYER_ID, initialState);
         //debug_heuristic = std::make_unique<BasicTBSCombatHeuristic>(parameters_.PLAYER_ID, initialState);
 
-        parameters_.opponentModel = std::make_shared<RandomActionScript>();
+        //parameters_.opponentModel = std::make_shared<RandomActionScript>();
 
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
 
-
+        battle_mode=false;
         stepInit();
 
         parameters_.printDetails();
@@ -55,6 +55,27 @@ namespace SGA
         if (DEBUG) {
             std::cout<<"DEBUG start MCTSAgent" <<"\n";
         }
+
+        if (!battle_mode) {
+            int self_warrior_N = 0;
+            auto entities = state.getEntities();
+            for (auto entity : entities) {
+                auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
+                auto entityName = entityType.getName();
+                if (entity.getOwnerID() == getPlayerID()) {
+                    if (entityType.getName() == "Warrior") {
+                        self_warrior_N++;
+                    }
+                }
+                //TODO enter battlemodel at the same time(both player)
+
+            }
+            if(self_warrior_N>=3){
+                parameters_.new_heuristic->setBattleMode();
+            }
+            battle_mode=true;
+        }
+
         //Initialize the budget for this action call.
         parameters_.resetCounters(timer);
 

@@ -12,7 +12,7 @@
 //#include "Stratega/Agent/TreeSearchAgents/UnitMCTSNode.h"
 
 namespace SGA {
-int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity);
+int unitStateHash(ForwardModel& forwardModel, GameState state, Entity entity, int playerID);
 
 int unitActionHash(Action action);
 

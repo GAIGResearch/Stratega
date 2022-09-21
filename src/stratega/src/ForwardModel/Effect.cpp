@@ -168,7 +168,7 @@ namespace SGA
 		
 		//Remove to the parameter with buffs appliead the amount
         targetResource -= amount;
-
+        //std::cout<<targetResource<<std::endl;
 		fm.modifyEntityParameterByIndex(entity, parameterIndex, targetResource);
 
 		if(targetResource <= 0)

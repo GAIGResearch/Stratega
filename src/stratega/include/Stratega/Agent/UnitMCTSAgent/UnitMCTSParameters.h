@@ -30,6 +30,8 @@ namespace SGA {
         double COMBAT_R_THRESHOLD = 0.3;
         //double RESOURCE_R_THRESHOLD = 0.0;
 
+        bool RANDOM_ABSTRACTION = false;
+
         bool CONTINUE_PREVIOUS_SEARCH = true;
         double REMAINING_FM_CALLS = -1;
 
@@ -46,6 +48,8 @@ namespace SGA {
 
         bool IS_MULTI_OBJECTIVE = false;
 
+        bool HAS_PLAYER_ACTION = false;
+
         // for state abstraction according to the value;
         std::vector< double > approx_Q = {};
         std::vector< int > depth_list = {};
@@ -61,7 +65,9 @@ namespace SGA {
         /*
         * Use an independent heuristic for MDP homomorphism.
         */
-        std::shared_ptr<TwoKingdomsAbstractionHeuristic> abstractionHeuristic;
+        std::shared_ptr<BasicTBSCombatHeuristic> abstractionHeuristic;
+
+        std::shared_ptr<BasicTBSCombatHeuristic> heuristic;
         //std::shared_ptr<BasicTBSTechnologyHeuristic> abstractionHeuristic;
 
         void printDetails() const;
@@ -86,6 +92,7 @@ namespace YAML {
             rhs.IS_MULTI_OBJECTIVE           = node["IsMultiObjective"].as< int >(rhs.IS_MULTI_OBJECTIVE);
             rhs.TECHNOLOGY_R_THRESHOLD       = node["TechnologyRThreshold"].as< double >(rhs.TECHNOLOGY_R_THRESHOLD);
             rhs.COMBAT_R_THRESHOLD           = node["CombatRThreshold"].as< double >(rhs.COMBAT_R_THRESHOLD);
+            rhs.RANDOM_ABSTRACTION           = node["RandomAbstraction"].as< bool >(rhs.RANDOM_ABSTRACTION);
             return true;
         }
     };

@@ -4,6 +4,7 @@
 #include <Stratega/Agent/Heuristic/StateHeuristic.h>
 #include <Stratega/Agent/Heuristic/MinimizeDistanceHeuristic.h>
 #include <Stratega/Agent/AgentParameters.h>
+#include <Stratega/Agent/Heuristic/BasicTBSCombatHeuristic.h>
 
 namespace SGA {
     struct MCTSParameters : AgentParameters
@@ -26,6 +27,8 @@ namespace SGA {
         // For abstraction
         bool doAbstraction = false;
         int absBatchSize = 20;
+
+        std::shared_ptr<BasicTBSCombatHeuristic> new_heuristic;
 
         /// <summary>
         /// Prints the details of this parameters object.

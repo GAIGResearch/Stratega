@@ -67,18 +67,63 @@ namespace SGA
         */
 	}
 
-	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, 
-				const int childIndex, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_, UnitMCTSParameters& params,
-                boost::mt19937& randGenerator) :
-		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(gameState), parent, childIndex, playerID)
-	{
-        initializeNode();
+    // used by Node initialization function
+    void UnitMCTSNode::switchUnit(ForwardModel& forwardModel, UnitMCTSParameters& params, int tmp_unitThisStep) {
 
-		unitIndex = unitIndex_;
-		nodeID = nodeID_;
+        // should not happen because in expand function this situation should be detected and the tmp_unitThisStep was set to 0
+        if (tmp_unitThisStep == unitIndex.size()) {
+		    std::cout << "Initiating the node, Found: tmp_unitThisStep == unitIndex_.size()" << std::endl;
+		}
 
-		int tmp_unitThisStep = unitThisStep_;
+        /*if (!params.DO_STATE_ABSTRACTION) {
+            gameState.printBoard();
+            std::cout << "tmp_unitThisStep: " << tmp_unitThisStep << " ; ";
+            for (int i = 0; i < unitIndex.size(); i++) {
+                std::cout<<unitIndex[i]<<" ";
+            }
+            std::cout<<" ; ";
+            
+            auto es = gameState.getPlayerEntities(params.PLAYER_ID);
+            for (auto ee : es) {
+                std::cout<<ee.getID()<<" ";
+            }
+            std::cout<<"\n";
+        }*/
+		// initialize the actionSpace
 
+        // get new spawned unit. added 11:20pm, 2022/9/15
+        for (auto e : gameState.getEntities()) {
+            if (e.getOwnerID() == params.PLAYER_ID) {
+                if (!(find(unitIndex.begin(), unitIndex.end(), e.getID()) == unitIndex.end()) ) {
+                    unitIndex.push_back(e.getID());
+                }
+            }
+        }
+
+		Entity* unit = nullptr;
+		while (true) {
+
+			unit = gameState.getEntity(unitIndex[tmp_unitThisStep]);
+			if (unit == nullptr) {
+				tmp_unitThisStep++;
+
+				// happens when all units are killed, should not happen
+				if (tmp_unitThisStep == unitIndex.size()) {
+					std::cout << "All Unit killed init 2 ; do abstraction? " << params.DO_STATE_ABSTRACTION <<"\n";
+					return; //8_21
+				}
+			}
+			else {
+				break;
+			}
+		}
+
+		actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
+		unitThisStep = tmp_unitThisStep;
+
+    }
+
+    void UnitMCTSNode::switchPlayerUnit(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randGenerator, int tmp_unitThisStep) {
         // find the next movable unit/player
         if (tmp_unitThisStep != -1) {
             if(unitIndex[tmp_unitThisStep] == -1){
@@ -93,46 +138,70 @@ namespace SGA
                 }
                 unitThisStep = tmp_unitThisStep;
             } else{
-                Entity* unit = nullptr;
-                unit = this->gameState.getEntity(unitIndex[tmp_unitThisStep]);
-                if (unit == nullptr) {
-                    std::cout << "Potential bug here 2839\n";
+                if (tmp_unitThisStep >= unitIndex.size()) {
+                    auto endTurnAction = Action::createEndAction(playerID);
+                    applyActionToGameState(forwardModel, this->gameState, endTurnAction, params, randGenerator);
+                    unitThisStep = 0;
+                    Entity* unit = nullptr;
+                    unit = this->gameState.getEntity(unitIndex[unitThisStep]);
+                    actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
                 }
-                actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
-                unitThisStep = tmp_unitThisStep;
+                else {
+                    Entity* unit = nullptr;
+                    //std::cout<<tmp_unitThisStep<< " "<< unitIndex.size() << "\n";
+                    //std::cout<<unitIndex[tmp_unitThisStep]<<"\n";
+                    unit = this->gameState.getEntity(unitIndex[tmp_unitThisStep]);
+                    if (unit == nullptr) {
+                        std::cout << "Potential bug here 2839\n";
+                    }
+                    actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
+                    unitThisStep = tmp_unitThisStep;
+                }
             }
         }
         else{
             // this should be new round or continue the parents moving, the actionSpace has been checked by expand function
             actionSpace = forwardModel.generatePlayerActions(this->gameState, playerID);
             unitThisStep = tmp_unitThisStep;
-		    /*if (tmp_unitThisStep == unitIndex_.size()) {
-			    std::cout << "Initiating the node, Found: tmp_unitThisStep == unitIndex_.size()" << std::endl;
-		    }
-
-		    // initialize the actionSpace
-
-		    Entity* unit = nullptr;
-		    while (true) {
-			    unit = this->gameState.getEntity(unitIndex[tmp_unitThisStep]);
-			    if (unit == nullptr) {
-				    tmp_unitThisStep++;
-
-				    // happens when all units are killed, should not happen
-				    if (tmp_unitThisStep == unitIndex_.size()) {
-					    std::cout << "All Unit killed init 2" << std::endl;
-					    return; //8_21
-				    }
-			    }
-			    else {
-				    break;
-			    }
-		    }
-
-		    actionSpace = forwardModel.generateUnitActions(this->gameState, *unit, playerID, false);
-		    unitThisStep = tmp_unitThisStep;
-            */
         }
+    }
+
+	UnitMCTSNode::UnitMCTSNode(ForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, 
+				const int childIndex, std::vector<int> unitIndex_, int unitThisStep_, int playerID, int nodeID_, UnitMCTSParameters& params,
+                boost::mt19937& randGenerator) :
+		ITreeNode<SGA::UnitMCTSNode>(forwardModel, std::move(gameState), parent, childIndex, playerID)
+	{
+        initializeNode();
+
+        auto gsCopy(gameState);
+
+		unitIndex = unitIndex_;
+		nodeID = nodeID_;
+
+		int tmp_unitThisStep = unitThisStep_;
+        if (!gameState.isGameOver()) {
+            if (params.HAS_PLAYER_ACTION) {
+                switchPlayerUnit(forwardModel, params, randGenerator, tmp_unitThisStep);
+            }
+            else {
+                switchUnit(forwardModel, params, tmp_unitThisStep);
+            }
+
+            if (unitThisStep == -1) {
+                unitName = "Player";
+            }
+            else {
+                if (unitIndex[unitThisStep] == -1) {
+                    unitName="Player";
+                }
+                else {
+                    auto u = this->gameState.getEntity(unitIndex[unitThisStep]);
+                    auto& entityType = this->gameState.getGameInfo()->getEntityType(u->getEntityTypeID());
+                    unitName=entityType.getName();
+                }
+            }
+        }
+        
 
 		actionHashes = std::map<int, int>();
 		actionToReward = std::map<int, double>();
@@ -301,6 +370,7 @@ namespace SGA
 			else {
 				stop = params.REMAINING_FM_CALLS <= 0 || n_search_iteration == params.maxFMCalls;
 			}
+            params.currentIterations++;
 
 		}
 	}
@@ -352,64 +422,30 @@ namespace SGA
 
 		int isTurnEnd = applyActionToGameState(forwardModel, gsCopy, actionSpace.at(new_childIndex), params, randomGenerator);
 
-		//std::cout << " [expand state hash]: " << unitStateHash(forwardModel, gameState, *gameState.getEntity(unitIndex[unitThisStep])) << std::endl;
-
-		// returns unitNextStep to generate the action space for the new generated child
+		// initialize the unit controled by the new child
 		int unitNextStep = 0;
 		if (isTurnEnd)
 		{
-			// starting a new round, player moves first
-            unitNextStep = -1;
+            unitNextStep = 0;
 		}
 		else {
-            /* if unit controled by parent unit can still move, the new child control the unit controlled by its parent
+            /* if unit controled by parent unit can still move, the new child controls the unit controlled by its parent
             *  results:
             *    assign new value to unitNextStep
             */
+            if(!params.HAS_PLAYER_ACTION){
+                std::vector<SGA::Action > actionSpace_tmp;
 
-            std::vector<SGA::Action > actionSpace_tmp;
-            if (unitThisStep == -1 || unitIndex[unitThisStep] == -1) {
-                actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID, false);
-                if (actionSpace_tmp.size() == 0) {
-                    if (unitThisStep == -1) {
-                        unitNextStep = 0; // this unit might be dead
-                        
-                        // find the next alive unit
-                        for (; unitNextStep < unitIndex.size(); unitNextStep++) {
-                            if (unitNextStep == unitIndex.size() - 1) {
-                                break; // no other units alive, player moves in the end
-                            }
-                            auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
-                            if (u != nullptr) {
-                                break;
-                            }
-                        }
-                    }
-                    else {
-                        // player moves in the end but cannot move, new round requires
-                        auto endTurnAction = Action::createEndAction(params.PLAYER_ID);
-                        applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
-                        unitNextStep = -1;
-                    }
-                }
-                else {
-                    // player continue to move
-                    unitNextStep = unitThisStep;
-                }
-            }
-            else {
                 bool parent_unit_alive = true;
-                if (unitIndex[unitThisStep] != -1) {
-                    auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
-                    if (u == nullptr) {
-                        parent_unit_alive = false;
-                    }
+                auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
+                if (u == nullptr) {
+                    parent_unit_alive = false;
                 }
+
                 if(parent_unit_alive){
+                    actionSpace_tmp = forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
 
-                    forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
-
-                    // this unit/player cannot move, next unit/player moves
+                    // can this unit move futher?
                     if (actionSpace_tmp.size() == 0) {
                         //std::cout<<"GGGGGGGGGGGGGGG\n";
                         unitNextStep = unitThisStep + 1; // TODO@this new unit might not moved or died
@@ -417,106 +453,124 @@ namespace SGA
                         // find next alive unit
                         //std::cout<<"find next alived unit\n";
                         for (; unitNextStep < unitIndex.size(); unitNextStep++) {
-                            if (unitNextStep == unitIndex.size() - 1) {
-                                break;
-                            }
                             auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
                             if (u != nullptr) {
                                 break;
                             }
                         }
-
-
-                        // if player needs to move
-                        if (unitNextStep == unitIndex.size() - 1) {
-                            // player moves in the end of the round
-                            actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID, false);
-                            if (actionSpace_tmp.size() == 0) { // but it cannot move, end the turn
-                                auto endTurnAction = Action::createEndAction(params.PLAYER_ID);
-                                applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
-                                unitNextStep = -1;
-                            }
-                        }
-                    }
-                    else { // this unit controlled by the parent continue to move
+                    } else { // this unit controlled by the parent continue to move
                         //std::cout<<"QQQQQQQQQ\n";
                         unitNextStep = unitThisStep;
                     }
+
+                } else {
+                    unitNextStep = unitThisStep + 1;
+                    for (; unitNextStep < unitIndex.size(); unitNextStep++) {
+                        auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
+                        if (u != nullptr) {
+                            break;
+                        }
+                    }
                 }// end if(parent_unit_alive)
-            }
-        }
-            /*
-            // if parent node controls a unit, check whether it is alive
-            bool parent_unit_alive = true;
-            if (unitIndex[unitThisStep] != -1) {
-                auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
-                if (u == nullptr) {
-                    parent_unit_alive = false;
+                if (unitNextStep == unitIndex.size()) {
+                    auto endTurneAction = Action::createEndAction(params.PLAYER_ID);
+                    applyActionToGameState(forwardModel, gsCopy, endTurneAction, params, randomGenerator);
+                    unitNextStep=0;
                 }
-            }
-
-            // generate the action spaces of the new chid
-            if(parent_unit_alive){
+            } 
+            else {
+                std::vector<SGA::Action > actionSpace_tmp;
                 if (unitThisStep == -1 || unitIndex[unitThisStep] == -1) {
-                    actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID);
-                }
-                else {
-                
-                    //std::cout<<"9999999999999\n";
-                    //std::cout<<unitIndex.size() << "  " << unitThisStep << "\n";
-                    forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
-                }
-
-                // this unit/player cannot move, next unit/player moves
-                if (actionSpace_tmp.size() == 0) {
-                    //std::cout<<"GGGGGGGGGGGGGGG\n";
-                    unitNextStep = unitThisStep + 1; // TODO@this new unit might not moved or died
-                }
-                else {
-                    //std::cout<<"QQQQQQQQQ\n";
-                    unitNextStep = unitThisStep;
-                }
-            }// end if(parent_unit_alive)
-
-        }
-
-        //std::cout<<"7777777777777777777\n";
-        // find next alive unit
-        if(unitNextStep != -1){
-            //std::cout<<"find next alived unit\n";
-            if (!isTurnEnd) {
-                for (; unitNextStep < unitIndex.size(); unitNextStep++) {
-                    auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
-                    if (u != nullptr) {
-                        break;
+                    actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID, false);
+                    if (actionSpace_tmp.size() == 0) {
+                        if (unitThisStep == -1) {
+                            unitNextStep = 0; // this unit might be dead
+                        
+                            // find the next alive unit
+                            for (; unitNextStep < unitIndex.size(); unitNextStep++) {
+                                if (unitNextStep == unitIndex.size() - 1) {
+                                    break; // no other units alive, player moves in the end
+                                }
+                                auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
+                                if (u != nullptr) {
+                                    break;
+                                }
+                            }
+                        }
+                        else {
+                            // player moves in the end but cannot move, new round requires
+                            auto endTurnAction = Action::createEndAction(params.PLAYER_ID);
+                            applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
+                            unitNextStep = -1;
+                        }
+                    }
+                    else {
+                        // player continue to move
+                        unitNextStep = unitThisStep;
                     }
                 }
-            }
-        }
+                else {
+                    bool parent_unit_alive = true;
+                    if (unitIndex[unitThisStep] != -1) {
+                        auto* u = gsCopy.getEntity(unitIndex[unitThisStep]);
+                        if (u == nullptr) {
+                            parent_unit_alive = false;
+                        }
+                    }
+                    if(parent_unit_alive){
 
-        // new round required, automatically execute endTurn action to start a new round
-        if (unitNextStep == unitIndex.size())
-        {
-            //std::cout<<"************\n";
-            auto endTurnAction = Action::createEndAction(params.PLAYER_ID);
-            applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
-            unitNextStep = -1;
+                        forwardModel.generateUnitActions(gsCopy, *gsCopy.getEntity(unitIndex[unitThisStep]), params.PLAYER_ID, false);
+
+                        // this unit/player cannot move, next unit/player moves
+                        if (actionSpace_tmp.size() == 0) {
+                            //std::cout<<"GGGGGGGGGGGGGGG\n";
+                            unitNextStep = unitThisStep + 1; // TODO@this new unit might not moved or died
+
+                            // find next alive unit
+                            //std::cout<<"find next alived unit\n";
+                            for (; unitNextStep < unitIndex.size(); unitNextStep++) {
+                                if (unitNextStep == unitIndex.size() - 1) {
+                                    break;
+                                }
+                                auto* u = gsCopy.getEntity(unitIndex[unitNextStep]);
+                                if (u != nullptr) {
+                                    break;
+                                }
+                            }
+
+
+                            // if player needs to move
+                            /*if (unitNextStep == unitIndex.size() - 1) {
+                                // player moves in the end of the round
+                                actionSpace_tmp = forwardModel.generatePlayerActions(gsCopy, params.PLAYER_ID, false);
+                                if (actionSpace_tmp.size() == 0) { // but it cannot move, end the turn
+                                    auto endTurnAction = Action::createEndAction(params.PLAYER_ID);
+                                    applyActionToGameState(forwardModel, gsCopy, endTurnAction, params, randomGenerator);
+                                    unitNextStep = -1;
+                                }
+                            }*/ // DEBUG20220914
+                        }
+                        else { // this unit controlled by the parent continue to move
+                            //std::cout<<"QQQQQQQQQ\n";
+                            unitNextStep = unitThisStep;
+                        }
+                    }// end if(parent_unit_alive)
+                }
+            }// end params has player action
         }
-        //std::cout<<"sfeagate\n";
-        */
 
         // homomorphism collecting transitions
         // addTransition(int stateHash, int actionHash, int nextStateHash, double reward);
         if(params.DO_STATE_ABSTRACTION){
             int action_hash = new_childIndex;
 
-            double reward = params.abstractionHeuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
+            double reward = params.heuristic.get()->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID);
             int eID = unitThisStep;
             int state_hash = -1;
             if (eID != -1) {
                 eID = unitIndex[unitThisStep];
                 if (eID != -1) {
-                    state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID));
+                    state_hash = SGA::unitStateHash(forwardModel, gameState, *gameState.getEntity(eID), params.PLAYER_ID);
                 }
             }
 
@@ -527,22 +581,14 @@ namespace SGA
                 //std::cout<<"DDDDDDD\n";
                 if (unit_nextState != nullptr) // this unit could be dead next step
                 {
-                    next_state_hash = SGA::unitStateHash(forwardModel, gsCopy, *unit_nextState);
+                    next_state_hash = SGA::unitStateHash(forwardModel, gsCopy, *unit_nextState, params.PLAYER_ID);
                 }
             }
 
             params.global_transition.addTransition(state_hash, action_hash, next_state_hash, reward);
-            if (params.IS_MULTI_OBJECTIVE) {
-                double combatReward = params.abstractionHeuristic->getCombatReward(forwardModel, gsCopy, params.PLAYER_ID);
-                double technologyReward = params.abstractionHeuristic->getTechnologyReward(forwardModel, gsCopy, params.PLAYER_ID);
-                //double resourceReward = params.abstractionHeuristic->getResourceReward(forwardModel, gsCopy, params.PLAYER_ID);
-                actionToCombatReward.insert(std::pair<int, double>(action_hash, combatReward));
-                //actionToResourceReward.insert(std::pair<int, double>(action_hash, resourceReward));
-                actionToTechnologyReward.insert(std::pair<int, double>(action_hash, technologyReward));
-            }
-            else {
-                actionToReward.insert(std::pair<int, double>(action_hash, reward));
-            }
+
+            actionToReward.insert(std::pair<int, double>(action_hash, reward));
+
 			
 			stateCounter.insert(std::pair<int, int>(next_state_hash, 1));
 			actionHashes.insert(std::pair<int, int>(action_hash, 1));

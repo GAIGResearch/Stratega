@@ -56,6 +56,8 @@ namespace SGA
         int global_absNodeIndex = 0;
         std::map< int, int > treeNodetoAbsNode;
 
+        bool battle_mode=false;
+
         // functions for abstraction
         void stepInit();
 

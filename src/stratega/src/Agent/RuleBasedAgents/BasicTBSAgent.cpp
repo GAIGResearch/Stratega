@@ -98,7 +98,8 @@ namespace SGA {
 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
-                if(entityType.getName() == "City" ) {
+                //if(entityType.getName() == "City" ) {
+                if(entityType.getName() == "King" ) {
                     enemy_city_id = entity.getID();
                     enemy_city.x= entity.x();
                     enemy_city.y = entity.y();
@@ -197,7 +198,7 @@ namespace SGA {
         //const std::vector<Action> actionSpace = forwardModel.generateActions(state, getPlayerID());
 
         //Spawn worker
-        if( (workers.size()) < 1 && (getProduction(state) > 3) && self_city_id!= -1){
+        if( (workers.size()) < 1 && (getProduction(state) >= 50) && self_city_id!= -1){
             auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
                                     *(state.getEntity(self_city_id)), getPlayerID(), false);
             if (actionSpace_tmp.size() > 0){
@@ -243,7 +244,7 @@ namespace SGA {
 
 
 		// do the research
-		if(!(isResearchedMining) && !(prod<researchMiningProduction)){
+		/*if (!(isResearchedMining) && !(prod<researchMiningProduction)) {
 			for (int a_idx = 0; (!isResearchedMining) && a_idx < playerActionSpace.size(); a_idx++) {
 				//state.printActionInfo(actionSpace_tmp[a_idx]);
                 if (playerActionSpace[a_idx].getActionFlag() == ActionFlag::AbortContinuousAction) {
@@ -258,10 +259,11 @@ namespace SGA {
 				}
 			}
 		}
+        */
         //std::cout<<"55555555555\n";
 
 		// Research Discipline
-		if(!(isResearchedDiscipline) && isResearchedMining && !(prod < researchDiciplineProduction)){
+		/*if (!(isResearchedDiscipline) && isResearchedMining && !(prod < researchDiciplineProduction)) {
 			//std::cout<<"[TwoKingdom Combat Agent]: try to research discipline\n";
 			for (int a_idx = 0; (!isResearchedDiscipline) && a_idx < playerActionSpace.size(); a_idx++) {
 				// state.printActionInfo(playerActionSpace[a_idx]);
@@ -278,10 +280,11 @@ namespace SGA {
 				}
 			}
 		}
+        */
         //std::cout<<"666666666666\n";
 
 		// build barracks
-		if (isResearchedMining && isResearchedDiscipline && !(isBuiltBarraks) && !(prod<buildBarracksProduction)) { 
+		/*if (isResearchedMining && isResearchedDiscipline && !(isBuiltBarraks) && !(prod<buildBarracksProduction)) {
 
 
 			for (int a_idx = 0; a_idx < playerActionSpace.size(); a_idx++) {
@@ -299,13 +302,14 @@ namespace SGA {
 				}
 			}
 		}
+        */
         //std::cout<<"7777777777777\n";
 
 		// spawn warriors and merge in farAwaryAttackable
 		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
 			// std::cout<<"try spawn warrior"<<std::endl;
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
-									*(state.getEntity(barracks[0])), getPlayerID(), false);
+									*(state.getEntity(self_city_id)), getPlayerID(), false);
 			if (actionSpace_tmp.size() > 0){
 				int a_idx = filterSpawnWarrior(state, actionSpace_tmp);
 				if (a_idx != -1){

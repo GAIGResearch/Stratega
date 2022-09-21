@@ -35,6 +35,7 @@ namespace SGA {
           int absNodeID = -1;
 
           int n_search_iteration= 0; // this is for abstraction
+          std::string unitName="";
 
        protected:
           double bounds[2] = {0, 1};// {numeric_limits<double>::min(), numeric_limits<double>::max()};
@@ -88,6 +89,9 @@ namespace SGA {
           void setValue(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase = false);
           void setVisitCount(double result, std::map<int, std::vector<double> >* absNodeToStatistics, bool increase = false);
 
+          // used to intialize the unit for this node
+          void switchUnit(ForwardModel& forwardModel, UnitMCTSParameters& params, int tmp_unitThisStep);
+          void switchPlayerUnit(ForwardModel& forwardModel, UnitMCTSParameters& params, boost::mt19937& randGenerator, int tmp_unitThisStep);
 
        public:
           //UnitMCTSNode(TBSForwardModel& forwardModel, GameState gameState, UnitMCTSNode* parent, int childIndex);

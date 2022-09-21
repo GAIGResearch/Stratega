@@ -36,6 +36,16 @@ namespace SGA
         int nGoldVein = -1;
         double totalGold = 0.0;
         int currentTargetGoldVeinIdx = -1;
+        double minimum_dis_enemy_City = 10000.0;
+        double selfWarriorN = 0.0; //nubmer of self warrior
+        double enemyWarriorN = 0.0;
+        double totalDis = 0.0;
+        bool is_battle_mode=false;
+
+        // store king, warrior number
+        double attackable_N = 0.0;
+        // store king, warrior distance to our city
+        double attackable_self_city_dis = 0.0;
 
         std::shared_ptr<TwoKingdomsDefenceHeuristic> defenceHeuristic;
 
@@ -50,6 +60,8 @@ namespace SGA
 		double getGold(GameState state);
 
 		double getEntityHealth(GameState state, Vector2f position);
+
+        void setBattleMode();
 
 		std::string getName() const override { return "TwoKindomsCombatHeurisitc"; }
 	};

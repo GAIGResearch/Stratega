@@ -12,7 +12,8 @@ int main()
 	
 	auto agents = gameConfig->generateAgents();
 	// Set seed of the agents for deterministic behaviour - ToDo Should we move this into Stratega & Should it be done automatically with generateAgents?
-	boost::random::uniform_int_distribution<unsigned int> seedDist(0, std::numeric_limits<unsigned int>::max());
+	boost::random::uniform_int_distribution<unsigned int> seedDist(984374759, std::numeric_limits<unsigned int>::max());
+
 	for(auto& agent : agents)
 	{
 		auto seed = seedDist(rngEngine);

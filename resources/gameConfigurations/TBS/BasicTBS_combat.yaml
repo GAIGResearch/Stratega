@@ -14,48 +14,50 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 20000
-        RolloutLength: 20
+        MaxFmCalls: 5000
+        RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 10
+        AbstractionBatch: 8
         BatchSize: 20
         K: 0.1
         RThreshold: 0.1
+        TThreshold: 0.3
         IsMultiObjective: false
-    - UnitMCTSAgent:
-        Budget: FMCALLS
-        DoStateAbstraction: false
-        MaxFmCalls: 20000
-        RolloutLength: 20
-        ContinuePreviousSearch: false
-        K: 0.1
-#    - MCTSAgent:
-#        Budget: ITERATIONS
-#        Iterations: 20000
-#        RolloutLength: 20
+        RandomAbstraction: true
+#    - UnitMCTSAgent:
+#        Budget: FMCALLS
+#        DoStateAbstraction: false
+#        MaxFmCalls: 5000
+#        RolloutLength: 10
 #        ContinuePreviousSearch: false
 #        K: 0.1
+    - MCTSAgent:
+        Budget: FMCALLS
+        Iterations: 10000
+        MaxFmCalls: 5000
+        RolloutLength: 10
+        ContinuePreviousSearch: false
+        K: 0.1
 #    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent
+#    - DoNothingAgent
 
 Board:
     GenerationType: Manual
     Layout: |-
-        M  M  M  M  M  M  M  M  M  M  M  M  M
-        M  .  .  M  .  .  .  .  g  .  .  g  M
-        M  .  c1 .  .  .  M  .  .  .  .  .  M
-        M  .  .  .  .  .  M  .  .  .  .  .  M
-        M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  g  .  .  .  .  .  .  .  F  g  W
-        M  .  .  .  .  .  g  .  M  .  .  F  W
-        M  .  .  M  M  M  .  .  M  .  .  .  W
-        M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  .  F  F  F  .  .  .  M  .  .  .  M
-        M  .  c0 F  F  .  .  M  g  .  .  g  M
-        M  .  .  .  .  .  .  .  .  .  .  .  M
-        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  M  M  M  M  M  M  M  M  M
+        M  .  c1 .  .  .  .  .  .  .  M
+        M  .  k1 . F  .  .  .  .  .  M
+        M  .  .  .  .  g  .  .  .  .  M
+        M  .  .  .  .  .  .  M  .  .  M
+        M  .  M  M  .  .  .  .  .  .  M
+        M  .  .  .  .  .  .  .  .  .  M
+        M  .  .  .  .  g  .  M  .  .  M
+        M  .  k0 .  F  .  .  .  .  .  M
+        M  .  c0 .  .  .  .  .  .  .  M
+        M  M  M  M  M  M  M  M  M  M  M
 
 GameRenderer:
     Resolution:
@@ -69,11 +71,12 @@ GameRenderer:
     #OutlineShader: ../../assets/OutLine.frag
 
 Player:
-    Actions: [Build, Research, PlayerEmpty]
-    CanSpawn: Buildings
+#    Actions: [Build, Research, PlayerEmpty]
+#    Actions: [PlayerEmpty]
+#    CanSpawn: Buildings
     Parameters:
         Gold: [0,0,1000]
-        Prod: [0,5,100]
+        Prod: [0,50,100]
         Score: [0,0,1000]
         MovementPoints: [0,5,5]
 
@@ -102,13 +105,18 @@ Entities:
         Sprite: ../../assets/Entities/castle.png
         Symbol: c
         LineOfSightRange: 5
+#        Actions: [Build, Spawn, Research,Empty]
         Actions: [Spawn, Empty]
-        CanSpawn: [Worker]
+#        Actions: [Empty]
+#        Actions: [Empty]
+#        CanSpawn: [Worker, Buildings]
+        CanSpawn: [Worker, Warrior]
         Cost:
             Prod: 10
         Parameters:
             Health: 200
             StorageCapacity: 50
+            WeaponStrength: 50
             Range: 6
             MovementPoints: [0,1,1]
 
@@ -179,14 +187,14 @@ Entities:
         LineOfSightRange: 3
         Actions: [Move, Mine, Empty]
         Cost:
-            Prod: 3
+            Prod: 50
         Time: 5
         Parameters:
             ResourceCapacity: 10
             Armor: 5
             Speed: 1
             WeaponStrength: 5
-            Health: 50
+            Health: 30
             Range: 3
             MovementPoints: [0,1,1]
             
@@ -201,10 +209,26 @@ Entities:
         Parameters:
             Armor: 20
             Speed: 1
-            Range: 3
+            Range: 1.5
+            WeaponStrength: 70
+            Morale: 10
+            Health: 100
+            MovementPoints: [0,1,1]
+    King:
+        Sprite: ../../assets/Entities/unit_1.png
+        Symbol: k
+        LineOfSightRange: 3
+        Actions: [Move, Attack, Empty]
+        # RequiredTechnology: BronzeWorking # for simplify it a little bit
+        Cost:
+            Gold: 40
+        Parameters:
+            Armor: 20
+            Speed: 1
+            Range: 1.5
             WeaponStrength: 50
             Morale: 10
-            Health: 50
+            Health: 200
             MovementPoints: [0,1,1]
 
     Archer:
@@ -247,15 +271,16 @@ Entities:
         LineOfSightRange: 6
         Actions: []
         Parameters:
-            Gold: 80
+            Gold: 120
             PlayerAMined: [0,0,1000]
             PlayerBMined: [0,0,1000]
             MovementPoints: [0,1,1]
 
 EntityGroups:
-    Units: [Worker, Warrior, Archer, Catapult]
-    Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
-    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult]
+    Units: [Worker, Warrior, Archer, Catapult, King]
+#    Buildings: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+    Buildings: [Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
+    Attackable: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage, Worker, Warrior, Archer, Catapult, King]
 
 Actions:
     # Attack Actions
@@ -285,10 +310,10 @@ Actions:
             Target:
                 Type: Position
                 SamplingMethod: 
-                    Type: Dijkstra
+                    Type: Neighbours
                     Options:
-                        SearchSize: 2
-                        AllowDiagonals: false
+                        Shape: Square
+                        Size: 1
                 #    Type: Neighbours
                 #    Options:
                 #        Shape: Circle
@@ -300,7 +325,7 @@ Actions:
             - "SetToMinimum(Source.MovementPoints)"
 
     Research:
-        Type: PlayerAction
+        Type: EntityAction
         Cooldown: 0
         Preconditions:
             - "ResourceGreaterEqual(Source.MovementPoints, 1)"
@@ -309,15 +334,15 @@ Actions:
                 Type: Technology
                 ValidTargets: All  
                 Conditions:
-                    - "CanResearch(Source, Target)"
-                    - "CanAfford(Source, Target)"
+                    - "CanResearch(Source.Player, Target)"
+                    - "CanAfford(Source.Player, Target)"
         TriggerComplete:
             - "HasElapsedTick(Target.Time)"
         OnStart:
-            - "PayCost(Source, Target)"
+            - "PayCost(Source.Player, Target)"
         OnComplete:
-            - "Research(Source, Target)"
-            - "ModifyResource(Source.Score, 10)"
+            - "Research(Source.Player, Target)"
+            - "ModifyResource(Source.Player.Score, 10)"
             - "ModifyResource(Source.MovementPoints, -1)"
 
     Mine:
@@ -331,12 +356,14 @@ Actions:
                     Type: Neighbours
                     Options:
                         Shape: Circle
-                        Size: 2
+                        Size: 1
                 Conditions:
                     - "ResourceGreaterEqual(Target.Gold, 40)"
         Effects:
             - "Transfer(Target.Gold, Source.Player.Gold, 40)"
             - "RecordMinedGold(Source.Player, Target.PlayerAMined, Target.PlayerBMined, 40)"
+            - "Attack(Source.Health, 12"
+#            - "ModifyResource(Source.Health, -12)"
 
     #Spawn
     Spawn:
@@ -354,7 +381,8 @@ Actions:
                 SamplingMethod: 
                     Type: Neighbours
                     Options:
-                        Shape: Circle
+                        Shape: Square
+#                        Shape: Circle
                         Size: 1
                 Conditions:
                     - "IsWalkable(TargetPosition)"
@@ -366,7 +394,8 @@ Actions:
 
     #Build
     Build:
-        Type: PlayerAction
+#        Type: PlayerAction
+        Type: EntityAction
         Preconditions:
             - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Cooldown: 1
@@ -375,22 +404,26 @@ Actions:
                 Type: EntityType
                 ValidTargets: Buildings
                 Conditions:
-                    - "CanAfford(Source, EntityTypeTarget)"
+                    - "CanAfford(Source.Player, EntityTypeTarget)"
                     - "CanSpawn(Source, EntityTypeTarget)"
+#                    - "CanAfford(Source.Player, EntityTypeTarget)"
+#                    - "CanSpawn(Source, EntityTypeTarget)"
 
             TargetPosition:
                 Type: Position
                 SamplingMethod:
                     Type: Neighbours
                     Options:
-                        Shape: AllPositions
+#                        Shape: AllPositions
+                        Shape: Circle
+                        Size: 2
                 Conditions:
                     - "IsWalkable(TargetPosition)"
 
         Effects:
-            - "SpawnEntity(Source, EntityTypeTarget, TargetPosition)"
-            - "PayCost(Source, EntityTypeTarget)"
-            - "ModifyResource(Source.Score, 5)"
+            - "SpawnEntity(Source.Player, EntityTypeTarget, TargetPosition)"
+            - "PayCost(Source.Player, EntityTypeTarget)"
+            - "ModifyResource(Source.Player.Score, 5)"
             - "ModifyResource(Source.MovementPoints, -1)"
 
     Empty:
@@ -402,9 +435,11 @@ Actions:
 
     PlayerEmpty:
         Type: PlayerAction
+        Cooldown: 1
         Preconditions:
             - "ResourceGreaterEqual(Source.MovementPoints, 1)"
         Effects:
+#            - "ModifyResource(Source.MovementPoints, -1)"
             - "SetToMinimum(Source.MovementPoints)"
 
 TechnologyTrees:
@@ -465,16 +500,11 @@ TechnologyTrees:
             
                    
 ForwardModel:
-    WinConditions:
-        TechnologyVictory:
-        - "IsResearched(Source, Archery)"
-        - "IsResearched(Source, BronzeWorking)"
-        - "IsResearched(Source, Metallurgy)"
-        - "IsResearched(Source, Engineering)"
 
     LoseConditions: #If true: Player -> cant play
         HasNoCity:
-        - "HasNoEntity(Source, City)"
+        - "HasNoEntity(Source, King)"
+#        - "HasNoEntity(Source, City)"
 
     Trigger:
         - OnTick:
@@ -522,7 +552,7 @@ GameDescription:
         Base: [City]
         Building: [City, Barracks, MilitaryAcademy, Foundry, Workshop, Storage]
         Spawner: [City, Barracks, MilitaryAcademy]
-        Unit: [Worker, Warrior, Archer, Catapult]
+        Unit: [Worker, Warrior, Archer, Catapult, King]
         Fighter: [Warrior, Archer, Catapult]
         NoFighter: [Worker]
         Melee: [Warrior]

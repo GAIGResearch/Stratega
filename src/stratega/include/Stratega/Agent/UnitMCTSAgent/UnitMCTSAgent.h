@@ -9,6 +9,7 @@ namespace SGA {
 
     class UnitMCTSAgent: public Agent {
     public:
+        bool battle_mode=false;
 
         std::map< int, std::vector< UnitMCTSNode* > > depthToNodes;
 
@@ -78,12 +79,15 @@ namespace SGA {
             UnitMCTSNode* node2);
 
         std::vector< Action > switchUnit(GameState state, const ForwardModel& forwardModel);
+        std::vector< Action > switchPlayerUnit(GameState state, const ForwardModel& forwardModel);
         void printBoundStatistics(bool mustPrint=false);
 
         std::string agentName = "MCTSuAgent";
-        std::string getName() {
+        const std::string& getName() const override {
             return agentName;
         }
+
+        void printAbsNodeStatus();
 
 private:
         std::unique_ptr< UnitMCTSNode > rootNode = nullptr;
