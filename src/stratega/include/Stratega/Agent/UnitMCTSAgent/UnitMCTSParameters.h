@@ -95,6 +95,8 @@ namespace YAML {
             rhs.TECHNOLOGY_R_THRESHOLD       = node["TechnologyRThreshold"].as< double >(rhs.TECHNOLOGY_R_THRESHOLD);
             rhs.COMBAT_R_THRESHOLD           = node["CombatRThreshold"].as< double >(rhs.COMBAT_R_THRESHOLD);
             rhs.RANDOM_ABSTRACTION           = node["RandomAbstraction"].as< bool >(rhs.RANDOM_ABSTRACTION);
+            rhs.R_THRESHOLD                  = node["RThreshold"].as< double >(rhs.R_THRESHOLD);
+            rhs.T_THRESHOLD                  = node["TThreshold"].as< double >(rhs.T_THRESHOLD);
             rhs.IS_ACTION_INDEPENDENCE           = node["IsActionIndependence"].as< bool >(rhs.IS_ACTION_INDEPENDENCE);
             return true;
         }
