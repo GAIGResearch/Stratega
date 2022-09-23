@@ -18,11 +18,16 @@ namespace SGA
 		ActionAssignment computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) override;
 		void init(GameState initialState, const ForwardModel& forwardModel, Timer timeBudgetMs) override;
 
+        bool isInitialized = false;
+        std::vector<Vector2f> hole_pos_list = {};
+
 	private:
         boost::random::uniform_real_distribution<> dis = boost::random::uniform_real_distribution<> (0.0, 1.0);
 
 		UnitTypeStrengthLookup unitScores;
 		std::map<int, std::string> actionTypeIDToActionTypeString;
+
+        void initialize(GameState state);
 
 		/// <summary>
 		/// Analyzes the given path to attack an target unit.

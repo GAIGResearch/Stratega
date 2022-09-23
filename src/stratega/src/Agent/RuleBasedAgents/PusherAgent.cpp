@@ -2,6 +2,21 @@
 
 namespace SGA
 {
+
+    void PusherAgent::initialize(GameState state) {
+        int height = state.getBoardHeight();
+        int width = state.getBoardWidth();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                auto tile = state.getTileAt(Vector2i(i,j));
+                if (tile.name() == "Hole") {
+                    hole_pos_list.push_back(Vector2f(i,j));
+                }
+            }
+        }
+        
+    }
+
 	std::vector<Action> PusherAgent::filterUnitActions(std::vector<Action>& actions, Entity& unit) const
 	{
 		std::vector<Action> filteredActions;
@@ -37,12 +52,17 @@ namespace SGA
 
 	ActionAssignment PusherAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer /*timer*/)
 	{
+        if (!isInitialized) {
+            initialize(state);
+            isInitialized = true;
+        }
 		return playTurn(state, forwardModel);
 	}
 
 	ActionAssignment PusherAgent::playTurn(GameState& newState, const ForwardModel& forwardModel)
 	{
         //newState.printBoard();
+        // probability of taking random actions
         if (dis(getRNGEngine()) > 1.0) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(newState, getPlayerID());
@@ -53,6 +73,7 @@ namespace SGA
             return ActionAssignment::fromSingleAction(action);
         }
 
+        // store name of actions
 		for (const auto& a : newState.getGameInfo()->getActionTypes())
 		{
 			actionTypeIDToActionTypeString[a.first] = a.second.getName();
@@ -65,10 +86,11 @@ namespace SGA
 		auto state = newState;
         //std::cout<<"00\n";
 
-		// Collect units that we posess and opponent units
+		// Collect units that we control and opponent units
 		std::vector<Entity> myUnits;
         std::vector<Entity> myGhost;
 		std::vector<Entity> opponentUnits;
+        
 		for (auto& unit : state.getEntities())
 		{
 			if (unit.getOwnerID() == this->getPlayerID())
@@ -79,23 +101,26 @@ namespace SGA
                 else {
                     myUnits.push_back(unit);
                 }
-
 			}
-			else
+			else if (unit.getOwnerID() == -this->getPlayerID()+1)// player ID = {0,1}
 			{
 				opponentUnits.push_back(unit);
-			}
+            }
+            else { // hole is not an entity
+
+            }
 		}
 
-		// Go through all units and return the first action that we deem good
-		// Since this function is called multiple times, we will eventually use up all actions available
-		auto actions = forwardModel.generateActions(currentState, getPlayerID());
+        // Go through all units and return the first action that we deem good
+        // Since this function is called multiple times, we will eventually use up all actions available
+        auto actions = forwardModel.generateActions(currentState, getPlayerID());
 
+        // initialize the best action
         auto action_candidate = filterActionTypes(actions, "EndTurn");
         Action bestAction = action_candidate.at(0);
 
         // execute empty for all out ghost
-        for (auto& u : myGhost) {
+        /*for (auto& u : myGhost) {
             auto unit_action_space = forwardModel.generateUnitActions(state, u, this->getPlayerID(), false);
             if (unit_action_space.size() == 0) {
                 continue;
@@ -105,121 +130,99 @@ namespace SGA
                 //std::cout<<"empty_a.size(): "<< empty_a.size()<<"\n";
                 return ActionAssignment::fromSingleAction(empty_a.at(0));
             }
-        }
+        }*/
 
         //std::cout<<"uu\n";
-		for (auto& u : myUnits)
-		{
+        for (auto& u : myUnits)
+        {
+            auto unitActionSpace = forwardModel.generateUnitActions(state, u, getPlayerID(), false);
+            if(unitActionSpace.size() == 0)continue;
+
+            auto my_pos = u.getPosition();
+            Entity target = u;
+            double min_dis = 1000.0;
+            double tmp_dis = 1000.0;
+            // find the target unit and approaching 
+            for (auto opp_u : opponentUnits) {
+                tmp_dis = my_pos.distance(opp_u.getPosition());
+                if ( tmp_dis < min_dis) {
+                    min_dis = tmp_dis;
+                    target = opp_u;
+                }
+            }
+
+            if (!(min_dis < 1.1)) { //if distance < 1.5 don't move
+                auto moveActionSpace = filterActionTypes(unitActionSpace, "Move");
+                for (auto moveA : moveActionSpace) {
+                    auto gsCopy(state);
+                    forwardModel.advanceGameState(gsCopy, moveA);
+                    auto new_entity = gsCopy.getEntity(u.getID());
+                    if (new_entity == nullptr) {
+                        continue;
+                    }
+                    auto pos_next = new_entity->getPosition();
+                    if (pos_next.distance(target.getPosition()) < min_dis) {
+                        //std::cout<<"move \n";
+
+                        return ActionAssignment::fromSingleAction(moveA);
+                    }
+                }
+            }
+            else {
+                auto empty_a = filterActionTypes(unitActionSpace, "Empty");
+                if (empty_a.size() > 0) {
+                    return ActionAssignment::fromSingleAction(empty_a.at(0));
+                }
+                //std::cout<<"empty \n";
+                //for (auto a : unitActionSpace) {
+                //    state.printActionInfo(a);
+                //}
+                
+            }
             
-			std::vector<Vector2i> possibleTargets;
-			std::vector<Entity> attackTarget;
-			std::vector<int> pushCount;
-            //std::cout<<"aa\n";
-			// Compute all positions where we could attack an unit and store it in possibleTargets
-			for (auto& opponent : opponentUnits)
-			{
-				Vector2i opponentPositon = Vector2i(static_cast<int>(opponent.getPosition().x), static_cast<int>(opponent.getPosition().y));
-				auto attacks = getAttackDirections(state, opponentPositon);
-				for (auto& attack : attacks)
-				{
-					auto target = MoveTo(opponentPositon, attack.first);
-					if (state.isWalkable(target))
-					{
-						possibleTargets.emplace_back(target);
-						pushCount.emplace_back(attack.second);
-						attackTarget.emplace_back(opponent);
-					}
-				}
-			}
-            //std::cout<<"kk\n";
-			auto paths = ShortestPaths(state, { static_cast<int>(u.getPosition().x),static_cast<int>(u.getPosition().y) }, possibleTargets);
-			size_t bestAttackIndex = -1;
-			double lowestCost = std::numeric_limits<double>::max();
-			// Search for the best attack target by using an heuristic to estimate how good one attack is
-			for (size_t i = 0; i < paths.size(); i++)
-			{
-				double costOutput = 0;
-				// Is this a better attack than a previously found attack?
-				auto isSafe = analyzePath(state, attackTarget[i], opponentUnits, paths[i].second, pushCount[i], costOutput);
-				if (paths[i].first && isSafe && costOutput < lowestCost)
-				{
-					lowestCost = costOutput;
-					bestAttackIndex = i;
-				}
-			}
+            // find the target hole
+            Vector2f tmp_h_pos;
+            tmp_dis = 1000.0;
+            double tmp_target_hole_dis = 0;
+            for (auto h_pos : hole_pos_list) {
+                tmp_target_hole_dis = h_pos.distance(target.getPosition() );
+                if ( tmp_target_hole_dis < tmp_dis) {
+                    tmp_h_pos = h_pos;
+                    tmp_dis = tmp_target_hole_dis;
+                }
+            }
+            
+            
 
-            //std::cout<<"gg\n";
-			// After finding our attack target, first try to push an opponent. But only if we can't attack our attack target immediately
-			if (static_cast<int>(bestAttackIndex) == -1 || paths[bestAttackIndex].second.size() != 1)
-			{
-				actionBucket.clear();
-				std::vector<Action> pushActions = filterActionTypes(actions, "Push");
-				actionBucket.insert(actionBucket.end(), pushActions.begin(), pushActions.end());
+            //if code goes here, it means this unit can push
+            std::vector<Action> pushAction = {};
+            pushAction.push_back(filterActionTypes(unitActionSpace, "PushLeft")[0]);
+            pushAction.push_back(filterActionTypes(unitActionSpace, "PushRight")[0]);
+            pushAction.push_back(filterActionTypes(unitActionSpace, "PushDown")[0]);
+            pushAction.push_back(filterActionTypes(unitActionSpace, "PushUp")[0]);
+            for (auto pushA : pushAction) {
+                auto gsCopy(state);
+                forwardModel.advanceGameState(gsCopy, pushA);
+                auto newUnit = gsCopy.getEntity(target.getID());
+                if (newUnit == nullptr) {
+                    return ActionAssignment::fromSingleAction(pushA);
+                }
 
-				int minimumPushCount = std::numeric_limits<int>::max();
-				for (auto& push : actionBucket)
-				{
-					auto* pushTarget = push.getTargets()[1].getEntity(state);
-					if (pushTarget->getOwnerID() == this->getPlayerID())
-						continue; // Do not push our own units
+                auto pos_next = newUnit->getPosition();
+                if (pos_next.distance(tmp_h_pos) < tmp_dis) {
+                    //std::cout<<"push \n";
+                    return ActionAssignment::fromSingleAction(pushA);
+                }
+            }
+            // here means no push can make enemy closer
+            return ActionAssignment::fromSingleAction(pushAction[0]);
 
-					// We can attack our attack target immediately, so do that
-					if (static_cast<int>(bestAttackIndex) != -1 && pushTarget->getID() == attackTarget[bestAttackIndex].getID() && paths[bestAttackIndex].second.empty())
-					{
-						bestAction = push;
-						break;
-					}
+            // push to the right direction
+        }
 
-					// Compute the attack direction from the perspective of the opponent
-					auto pos = push.getTargets()[1].getPosition(state);
-					Vector2i targetPosition = { static_cast<int>(pos.x), static_cast<int>(pos.y) };
-					auto pushDir = GetDirectionTo(targetPosition, { static_cast<int>(u.getPosition().x), static_cast<int>(u.getPosition().y) });
-					//auto pushDir = GetDirectionTo(push.targetPosition, { u.getPosition().x,u.getPosition().y });
-					// How good is this attack?
-					auto attacks = getAttackDirections(state, targetPosition);
-					if (attacks[pushDir] < minimumPushCount)
-					{
-						bestAction = push;
-						minimumPushCount = attacks[pushDir];
-					}
-				}
-			}
-
-            //std::cout<<"cc\n";
-			if (bestAction.getActionFlag() != ActionFlag::EndTickAction)
-				break;
-			
-			if (static_cast<int>(bestAttackIndex) != -1)
-			{
-				// We found an path to attack an opponent, now find an available move that follows our computed path
-				auto& path = paths[bestAttackIndex].second;
-				std::unordered_set<Vector2i, VectorHash2i> pathTilesLookup;
-				for (auto entry : path)
-				{
-					pathTilesLookup.insert(entry);
-				}
-
-				actionBucket.clear();
-				auto moveActions = filterActionTypes(actions, "Move");
-				actionBucket.insert(actionBucket.end(), moveActions.begin(), moveActions.end());
-
-				for (auto& move : actionBucket)
-				{
-					auto pos = move.getTargets()[1].getPosition(state);
-					Vector2i targetPosition = { static_cast<int>(pos.x), static_cast<int>(pos.y) };
-
-					if (pathTilesLookup.find(targetPosition) != pathTilesLookup.end())
-					{
-						bestAction = move;
-						break;
-					}
-				}
-			}
-
-			if (bestAction.getActionFlag() != ActionFlag::EndTickAction)
-				break;
-		}
-
+        //state.printBoard();
+        // all unit moves, end the turn
+        bestAction = Action::createEndAction(getPlayerID());
 
 		return ActionAssignment::fromSingleAction(bestAction);
 
@@ -333,6 +336,7 @@ namespace SGA
 
 	std::unordered_map<Direction, int> PusherAgent::getAttackDirections(const GameState& state, const Vector2i& pos) const
 	{
+        // returns an direction value function
 		std::unordered_map<Direction, int> pushCount;
 		for (Direction dir : CARDINAL_DIRECTIONS)
 		{
