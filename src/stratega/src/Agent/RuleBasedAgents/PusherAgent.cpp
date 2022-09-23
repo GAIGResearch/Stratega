@@ -196,13 +196,17 @@ namespace SGA
             
             //std::cout<<"234908 \n";
 
-            //if code goes here, it means this unit can push
+            //if code goes here, it means this unit can push Q: why there is a situation that not all pushdirection exists
             std::vector<Action> pushAction = {};
-            if (filterActionTypes(unitActionSpace, "PushLeft").size() > 0) {
+            if (filterActionTypes(unitActionSpace, "PushLeft").size() > 0)
                 pushAction.push_back(filterActionTypes(unitActionSpace, "PushLeft")[0]);
+            if(filterActionTypes(unitActionSpace, "PushRight").size()>0)
                 pushAction.push_back(filterActionTypes(unitActionSpace, "PushRight")[0]);
+            if(filterActionTypes(unitActionSpace, "PushDown").size()>0)
                 pushAction.push_back(filterActionTypes(unitActionSpace, "PushDown")[0]);
+            if(filterActionTypes(unitActionSpace, "PushUp").size()>0)
                 pushAction.push_back(filterActionTypes(unitActionSpace, "PushUp")[0]);
+            if (pushAction.size() > 0) {
                 //std::cout<<"8f9wehjf \n";
                 for (auto pushA : pushAction) {
                     auto gsCopy(state);
