@@ -63,7 +63,7 @@ namespace SGA
 	{
         //newState.printBoard();
         // probability of taking random actions
-        if (dis(getRNGEngine()) > 1.0) {//87
+        if (dis(getRNGEngine()) > 0.80) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(newState, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
@@ -72,6 +72,7 @@ namespace SGA
             //std::cout<<"select random agent\n";
             return ActionAssignment::fromSingleAction(action);
         }
+        //std::cout<<"Start PusherAgent\n";
 
         // store name of actions
 		for (const auto& a : newState.getGameInfo()->getActionTypes())
@@ -171,6 +172,7 @@ namespace SGA
             else {
                 auto empty_a = filterActionTypes(unitActionSpace, "Empty");
                 if (empty_a.size() > 0) {
+                    //std::cout<<"empty \n";
                     return ActionAssignment::fromSingleAction(empty_a.at(0));
                 }
                 //std::cout<<"empty \n";
@@ -192,33 +194,38 @@ namespace SGA
                 }
             }
             
-            
+            //std::cout<<"234908 \n";
 
             //if code goes here, it means this unit can push
             std::vector<Action> pushAction = {};
-            pushAction.push_back(filterActionTypes(unitActionSpace, "PushLeft")[0]);
-            pushAction.push_back(filterActionTypes(unitActionSpace, "PushRight")[0]);
-            pushAction.push_back(filterActionTypes(unitActionSpace, "PushDown")[0]);
-            pushAction.push_back(filterActionTypes(unitActionSpace, "PushUp")[0]);
-            for (auto pushA : pushAction) {
-                auto gsCopy(state);
-                forwardModel.advanceGameState(gsCopy, pushA);
-                auto newUnit = gsCopy.getEntity(target.getID());
-                if (newUnit == nullptr) {
-                    return ActionAssignment::fromSingleAction(pushA);
-                }
+            if (filterActionTypes(unitActionSpace, "PushLeft").size() > 0) {
+                pushAction.push_back(filterActionTypes(unitActionSpace, "PushLeft")[0]);
+                pushAction.push_back(filterActionTypes(unitActionSpace, "PushRight")[0]);
+                pushAction.push_back(filterActionTypes(unitActionSpace, "PushDown")[0]);
+                pushAction.push_back(filterActionTypes(unitActionSpace, "PushUp")[0]);
+                //std::cout<<"8f9wehjf \n";
+                for (auto pushA : pushAction) {
+                    auto gsCopy(state);
+                    forwardModel.advanceGameState(gsCopy, pushA);
+                    auto newUnit = gsCopy.getEntity(target.getID());
+                    if (newUnit == nullptr) {
+                        //std::cout<<"push \n";
+                        return ActionAssignment::fromSingleAction(pushA);
+                    }
 
-                auto pos_next = newUnit->getPosition();
-                if (pos_next.distance(tmp_h_pos) < tmp_dis) {
-                    //std::cout<<"push \n";
-                    return ActionAssignment::fromSingleAction(pushA);
+                    auto pos_next = newUnit->getPosition();
+                    if (pos_next.distance(tmp_h_pos) < tmp_dis) {
+                        //std::cout<<"push \n";
+                        return ActionAssignment::fromSingleAction(pushA);
+                    }
                 }
+                // here means no push can make enemy closer
+                return ActionAssignment::fromSingleAction(pushAction[0]);
             }
-            // here means no push can make enemy closer
-            return ActionAssignment::fromSingleAction(pushAction[0]);
 
             // push to the right direction
         }
+        //std::cout<<"fioewif \n";
 
         //state.printBoard();
         // all unit moves, end the turn
