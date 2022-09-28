@@ -19,7 +19,7 @@ namespace SGA
         std::vector<int> rollout_length;
         std::vector<float> reward_threshold;
         std::vector<float> transition_threshold;
-        std::vector<float> early_stop;
+        std::vector<int> early_stop;
         float fm;
         std::string heuristic;
 

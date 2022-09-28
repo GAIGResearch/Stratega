@@ -20,6 +20,7 @@ namespace SGA
 	: Evaluator("ElasMCTSuEvaluator"),
 		k_values(k_values), rollout_length(rollout_length),
         reward_threshold(R_T), transition_threshold(T_T),
+        early_stop(early_stop),
         fm(fm), heuristic(heuristic),
 		agents(configInput.generateAgents()), config(configInput)
     {
@@ -51,6 +52,7 @@ namespace SGA
 
 		currentPoint = point;
         auto ss = generateAgents();
+        
         /*std::cout << "agent size: " << ss.size() << "\n";
         for (int i = 0; i < ss.size(); i++) {
             if (ss[i] == nullptr) {
@@ -59,7 +61,8 @@ namespace SGA
             else {
                 std::cout<<ss[i]->getName()<<"\n";
             }
-        }*/
+        }
+        */
 
 		auto results = arena->runGames([&]() {return generateAgents(); }, 2, 0, 1, config.levelDefinitions.size());
 		agentValue = results[0];
@@ -77,12 +80,12 @@ namespace SGA
 		std::cout << "RL=" << (rollout_length[point[1]]) << ", ";
         std::cout << "R_T=" << (reward_threshold[point[2]]) << ", ";
         std::cout << "T_T=" << (transition_threshold[point[3]]) << ", ";
-        std::cout << "early_stop=" << (early_stop[point[3]]) << ", ";
+        std::cout << "early_stop=" << (early_stop[point[4]]) << ", ";
 		//std::cout << "OS=" << (point[2]) << ";";
     }
 
 	std::vector<std::unique_ptr<Agent>> ElasMCTSuEvaluator::generateAgents() {
-		std::unique_ptr<GameState> game = config.generateGameState();;
+		std::unique_ptr<GameState> game = config.generateGameState();
 
 		auto allAgents = config.generateAgents();
 
@@ -92,12 +95,19 @@ namespace SGA
         params.budgetType = SGA::Budget::FMCALLS;
         params.maxFMCalls = fm;
         params.HEURISTIC = heuristic;
+        params.DO_STATE_ABSTRACTION = true;
+        params.IS_ACTION_INDEPENDENT = false;
 
 		params.K = k_values[currentPoint[0]];
+
 		params.ROLLOUT_LENGTH = rollout_length[currentPoint[1]];
+
         params.R_THRESHOLD = reward_threshold[currentPoint[2]];
+
         params.T_THRESHOLD = transition_threshold[currentPoint[3]];
+
         params.absBatch = early_stop[currentPoint[4]];
+
 
 		/*switch (currentPoint[2])
 		{
@@ -115,7 +125,7 @@ namespace SGA
 			break;
 		}
         */
-
+        
 		allAgents[0] = std::make_unique<UnitMCTSAgent>("ElasticMCTSuAgent", std::move(params));
 		return allAgents;
 	}

@@ -30,9 +30,11 @@ int main(int argc, char** argv)
 	auto seed = parser.getCmdOption<int>("-seed", 0);
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "../ktk_mcts_ntbea_log.yaml");
-	auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 1);
-	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
+	//auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_rule.yaml");
+	auto agent = parser.getCmdOption<int>("-agent", 3);
+	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
+    auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/pta_ntbea_map.yaml");
     auto fm = parser.getCmdOption<float>("-fm", 5000);
     auto heuristic = parser.getCmdOption<std::string>("-heuristic", "pta"); // pta || ktk
 
@@ -67,7 +69,7 @@ int main(int argc, char** argv)
 				//std::vector<float> {0.1, 1, 10, 100},			// values of k
 				std::vector<float> {0.1, 1, 10, 100},
 				//std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
-				std::vector<int> { 10, 20, 40, 60, 80, 100},
+				std::vector<int> { 10, 20, 40},
 				//std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
@@ -82,7 +84,7 @@ int main(int argc, char** argv)
 			std::cout << "Optimize MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::MCTSuEvaluator>(
 				std::vector<float> {0.1, 1, 10, 100},       // values of k
-				std::vector<int> { 10, 20},        // rollout length
+				std::vector<int> { 10, 20, 40},        // rollout length
                 fm,
                 heuristic,
 				//std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -97,7 +99,7 @@ int main(int argc, char** argv)
 			std::cout << "Optimize Elastic MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::ElasMCTSuEvaluator>(
 				std::vector<float> {0.1, 1, 10, 100},               // values of k
-				std::vector<int> { 10, 20, 40, 60, 80, 100},            // values of rollout
+				std::vector<int> {  10, 20, 40},            // values of rollout
 				std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
                 std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
                 std::vector<int> {4, 6, 8, 10, 12},     // earlyStop

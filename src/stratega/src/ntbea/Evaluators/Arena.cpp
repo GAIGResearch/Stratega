@@ -75,6 +75,7 @@ namespace SGA
         //std::cout<<"generated agents"<<std::endl;
         for (auto& agent : allAgents) {
             agent->is_debug = false;
+            //agent->is_debug = true;
         }
 
 		std::vector<std::unique_ptr<SGA::Agent>> agents(agentAssignment.size());
