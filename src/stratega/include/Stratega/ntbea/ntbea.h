@@ -4,6 +4,7 @@
 #include <set>
 #include <numeric>
 #include <vector>
+#include <boost/random.hpp>
 
 #include <Stratega/ntbea/Mutator.h>
 #include <Stratega/ntbea/SearchSpace.h>

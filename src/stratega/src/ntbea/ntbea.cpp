@@ -21,7 +21,6 @@ namespace SGA
 	
     std::vector<int> NTBEA::evaluateLandscape(std::vector<int>& point, std::mt19937& randomGenerator)
     {
-    	
         std::cout << "Estimating landscape around: ";
         _evaluator->printPoint(point);
         std::cout << std::endl;
@@ -47,7 +46,8 @@ namespace SGA
             const double exploit = _tupleLandscape->getMeanEstimate(potential_neighbor);
             const double explore = _tupleLandscape->getExplorationEstimate(potential_neighbor);
 
-            const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+            //const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+            boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);
             const double ucb_with_noise = exploit + _kExplore * explore + doubleDistribution_(randomGenerator) * _tieBreakNoise;
 
             evaluated_neighbors.emplace(potential_neighbor);

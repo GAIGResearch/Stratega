@@ -8,6 +8,7 @@ add_executable (ntbea ${NTBEA_SOURCE_FILES})
 target_link_libraries(ntbea PUBLIC Stratega)
 
 set_target_properties(ntbea PROPERTIES
+         CXX_STANDARD 17
          LIBRARY_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/lib
          RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/bin
          ARCHIVE_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/lib

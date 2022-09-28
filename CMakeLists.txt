@@ -68,6 +68,7 @@ endif()
 # print out a short summary of the compiler inforMoved Arena and GUI filesmation
 message("C++ Compiler: ${CMAKE_CXX_COMPILER}")
 message("C++ Compiler Info: ${CMAKE_CXX_COMPILER_ID}, version ${CMAKE_CXX_COMPILER_VERSION}")
+message("C++ STD Version: ${PROJ_CXX_STD_FEATURE}")
 message("Build type: ${CMAKE_BUILD_TYPE}")
 message("CURRENT CMAKE BINARY DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
