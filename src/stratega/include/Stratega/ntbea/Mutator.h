@@ -3,6 +3,7 @@
 #include <vector>
 #include <iterator>
 #include <random>
+#include <boost/random.hpp>
 
 #include <Stratega/ntbea/SearchSpace.h>
 

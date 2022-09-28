@@ -54,7 +54,8 @@ namespace SGA
         if (_randomChaosMutate)
             return _searchSpace->getRandomPoint(randomGenerator);
 
-        const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        //const std::uniform_real<double> doubleDistribution_ = std::uniform_real<double>(0, 1);
+        boost::random::uniform_real_distribution<double> doubleDistribution_ = boost::random::uniform_real_distribution<double>(0, 1);
 
         // For each of the dimensions, we mutate it based on mutation_probability
         for (size_t dim = 0; dim < length; dim++) {
