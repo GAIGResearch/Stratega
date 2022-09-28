@@ -25,7 +25,8 @@ namespace SGA {
         }
         //parameters_.heuristic = std::make_unique< AimToKingHeuristic >(initialState);
         //parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
-		parameters_.printDetails();
+        if(is_debug)
+            parameters_.printDetails();
     }
 
     ActionAssignment UnitMCTSAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer)

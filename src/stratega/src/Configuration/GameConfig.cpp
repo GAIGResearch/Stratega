@@ -71,15 +71,28 @@ namespace SGA
 
 		// Create some lookups for initializing the board and entities
 		createTileLookup(*state);
-		createEntitiesLookup(*state);		
+		createEntitiesLookup(*state);
 		
 		//Switch to selected level
 		int mapIDtoLoad = selectedLevel;
+
 		if (levelID != -1)
 			mapIDtoLoad = levelID;
+
 		auto selectedLevelDefinition = levelDefinitions.find(mapIDtoLoad);
+
+        /*
+        for (auto it = levelDefinitions.begin(); it != levelDefinitions.end(); it++)
+        {
+            std::cout << it->first    // string (key)
+                      << ':'
+                      << it->second.name   // string's value 
+                      << std::endl;
+        }*/
+
 		if(selectedLevelDefinition==levelDefinitions.end())
 		{
+            std::cout<<"Selected level definition not found"<<std::endl;
 			throw std::runtime_error("Selected level definition not found");
 		}
 

@@ -15,7 +15,7 @@ namespace SGA {
         {
             // K=0.1, RL=1, OS=3;
             // parameters_.ROLLOUT_LENGTH = 1;
-            // parameters_.OPPONENT_MODEL = nullptr;		// the opponent model has not been correctly
+            // parameters_.OPPONENT_MODEL = nullptr;        // the opponent model has not been correctly
             // set in the NTBEA evaluation
             unitIndex = std::vector< int >();
             depthToNodes = std::map< int, std::vector< UnitMCTSNode* > >();

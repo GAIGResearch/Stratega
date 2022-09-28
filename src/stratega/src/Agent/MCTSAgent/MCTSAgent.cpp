@@ -25,7 +25,8 @@ namespace SGA
         if (parameters_.budgetType == Budget::UNDEFINED)
             parameters_.budgetType = Budget::TIME;
         parameters_.opponentModel = std::make_shared<RandomActionScript>();
-        parameters_.printDetails();
+        if(is_debug)
+            parameters_.printDetails();
     }
 
 

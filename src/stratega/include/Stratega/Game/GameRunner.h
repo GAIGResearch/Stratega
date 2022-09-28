@@ -79,6 +79,7 @@ namespace SGA
 				{
 					if (agents[i] == nullptr)
 					{
+                        std::cout<<"AgentID: "<< i << "\n";
 						throw std::runtime_error("No player can be controlled by a human in an arena.");
 					}
 					else
@@ -167,7 +168,7 @@ namespace SGA
 		const GameConfig* config;
 
 		//Computation budget time
-		bool shouldCheckComputationTime;		
+		bool shouldCheckComputationTime;
 		long budgetTimeMs;
 		long disqualificationBudgetTimeMs;
 		std::vector<int> playerWarnings;

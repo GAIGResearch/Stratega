@@ -26,6 +26,7 @@ namespace SGA {
         /// <summary>
         /// Prints the details of this parameters object.
         /// </summary>
+
         void printDetails() const;
     };
 }

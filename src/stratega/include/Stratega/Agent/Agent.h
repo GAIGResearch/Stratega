@@ -10,6 +10,7 @@ namespace SGA
 	class Agent
 	{
 	public:
+        bool is_debug=true;
 
 		//Constructors and destructors
 		Agent(const std::string& name);
@@ -72,6 +73,8 @@ namespace SGA
 		/// Random number generator for this agent.
 		/// </summary>
 		boost::mt19937 rngEngine;
+
+
 
 
 	protected:
