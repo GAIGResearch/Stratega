@@ -66,7 +66,8 @@ namespace SGA
         // If we want to force flip at least one of the points then we do this here
         if (_flipAtLeastOne)
         {
-            std::uniform_int_distribution<> distrib(0, _searchSpace->getNumDims()-1);
+            //std::uniform_int_distribution<> distrib(0, _searchSpace->getNumDims()-1);
+            boost::random::uniform_int_distribution<size_t> distrib(0, _searchSpace->getNumDims()-1);
             mutateValue(new_point, distrib(randomGenerator), randomGenerator);
         }
 

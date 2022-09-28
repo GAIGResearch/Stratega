@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <boost/random.hpp>
 
 #include <Stratega/ntbea/SearchSpace.h>
 #include <vector>

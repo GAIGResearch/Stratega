@@ -40,7 +40,8 @@ namespace SGA
 	
 	int VectorSearchSpace::getRandomValueInDim(int dim, std::mt19937& randomGenerator)
 	{
-		const std::uniform_int_distribution<> distribution(0, _valuesPerDimension[dim]-1);
+		//const std::uniform_int_distribution<> distribution(0, _valuesPerDimension[dim]-1);
+        boost::random::uniform_int_distribution<size_t> distribution(0, _valuesPerDimension[dim]-1);
 		return distribution(randomGenerator);
 	}
 	
