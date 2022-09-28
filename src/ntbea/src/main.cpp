@@ -33,6 +33,8 @@ int main(int argc, char** argv)
 	auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
 	auto agent = parser.getCmdOption<int>("-agent", 1);
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
+    auto fm = parser.getCmdOption<float>("-fm", 5000);
+    auto heuristic = parser.getCmdOption<std::string>("-heuristic", "pta"); // pta || ktk
 
     // Currently obsolete but configPath shouldn't have a default value. So we keep it until then
 	if (configPath.empty())
@@ -70,6 +72,8 @@ int main(int argc, char** argv)
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+                fm,
+                heuristic,
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
             std::cout << "Finished the definition of MCTS Evaluator" << std::endl;
@@ -78,14 +82,16 @@ int main(int argc, char** argv)
 			std::cout << "Optimize MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::MCTSuEvaluator>(
 				std::vector<float> {0.1, 1, 10, 100},       // values of k
-				std::vector<int> { 10, 20, 40, 60, 80, 100},        // values of k
+				std::vector<int> { 10, 20},        // rollout length
+                fm,
+                heuristic,
 				//std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
-            std::cout << "Finished the definition of MCTS Evaluator" << std::endl;
+            std::cout << "Finished the definition of MCTSu Evaluator" << std::endl;
 			break;
         case 3: 
 			std::cout << "Optimize Elastic MCTSu Agent" << std::endl;
@@ -98,9 +104,11 @@ int main(int argc, char** argv)
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+                fm,
+                heuristic,
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
-            std::cout << "Finished the definition of MCTS Evaluator" << std::endl;
+            std::cout << "Finished the definition of ElasMCTS Evaluator" << std::endl;
 			break;
     }
 

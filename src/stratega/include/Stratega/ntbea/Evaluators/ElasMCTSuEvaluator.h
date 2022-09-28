@@ -20,7 +20,8 @@ namespace SGA
         std::vector<float> reward_threshold;
         std::vector<float> transition_threshold;
         std::vector<float> early_stop;
-
+        float fm;
+        std::string heuristic;
 
 
         std::vector<int> opponent_script;
@@ -40,6 +41,8 @@ namespace SGA
             std::vector<float> R_T,
             std::vector<float> T_T,
             std::vector<int> early_stop,
+            float fm,
+            std::string heuristic,
             SGA::GameConfig& config
         );
     

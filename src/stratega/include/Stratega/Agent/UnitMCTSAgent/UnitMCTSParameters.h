@@ -23,7 +23,7 @@ namespace SGA {
         double R_THRESHOLD = 0.1; //0.1, 0.08
         double T_THRESHOLD = 1.0;
 
-        bool CONTINUE_PREVIOUS_SEARCH = true;
+        bool CONTINUE_PREVIOUS_SEARCH = false;
         double REMAINING_FM_CALLS = -1;
 
         int global_nodeID = 0;

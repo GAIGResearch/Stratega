@@ -37,6 +37,7 @@ namespace SGA
 			{
 				currentMapID++;
 			}
+            std::cout<< "x";
 
 			currentSeed = seed + i;
 			boost::mt19937 rngEngine(currentSeed);
@@ -71,6 +72,7 @@ namespace SGA
 		// Assign agents
 		boost::random::uniform_int_distribution<unsigned int> distribution(0, std::numeric_limits<unsigned int>::max());
 		auto allAgents = agentGenerator();
+        //std::cout<<"generated agents"<<std::endl;
         for (auto& agent : allAgents) {
             agent->is_debug = false;
         }

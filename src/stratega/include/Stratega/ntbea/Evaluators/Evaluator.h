@@ -18,6 +18,8 @@ namespace SGA
         std::unique_ptr<SearchSpace> _searchSpace;
 
     public:
+        float fm;
+
         Evaluator(std::string name) :
     		_name(std::move(name))
         {

@@ -10,10 +10,13 @@ namespace SGA
 		std::vector<float> k_values,		// values of k
 		std::vector<int> rollout_length,	// rollout length
 		//std::vector<int> opponent_script,	// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+        float fm,
+        std::string heuristic,
 		GameConfig& configInput
 	)
 	: Evaluator("UnitMCTSEvaluator"),
 		k_values(k_values), rollout_length(rollout_length),
+        fm(fm), heuristic(heuristic),
 		agents(configInput.generateAgents()), config(configInput)
     {
         arena = std::make_unique<Arena>(config);
@@ -49,6 +52,7 @@ namespace SGA
                 std::cout<<ss[i]->getName()<<"\n";
             }
         }*/
+        //std::cout<<"jij"<<std::endl;
 
 		auto results = arena->runGames([&]() {return generateAgents(); }, 2, 0, 1, config.levelDefinitions.size());
 		agentValue = results[0];
@@ -74,6 +78,11 @@ namespace SGA
 
 		// setup current agent configuration
 		UnitMCTSParameters params;
+
+        params.budgetType = SGA::Budget::FMCALLS;
+        params.maxFMCalls = fm;
+        params.HEURISTIC = heuristic;
+
 		params.K = k_values[currentPoint[0]];
 		params.ROLLOUT_LENGTH = rollout_length[currentPoint[1]];
 

@@ -13,11 +13,14 @@ namespace SGA
         std::vector<float> T_T,
         std::vector<int> early_stop,
 		//std::vector<int> opponent_script,	// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
+        float fm,
+        std::string heuristic,
 		GameConfig& configInput
 	)
 	: Evaluator("ElasMCTSuEvaluator"),
 		k_values(k_values), rollout_length(rollout_length),
         reward_threshold(R_T), transition_threshold(T_T),
+        fm(fm), heuristic(heuristic),
 		agents(configInput.generateAgents()), config(configInput)
     {
         arena = std::make_unique<Arena>(config);
@@ -85,6 +88,11 @@ namespace SGA
 
 		// setup current agent configuration
 		UnitMCTSParameters params;
+
+        params.budgetType = SGA::Budget::FMCALLS;
+        params.maxFMCalls = fm;
+        params.HEURISTIC = heuristic;
+
 		params.K = k_values[currentPoint[0]];
 		params.ROLLOUT_LENGTH = rollout_length[currentPoint[1]];
         params.R_THRESHOLD = reward_threshold[currentPoint[2]];

@@ -15,6 +15,8 @@ namespace SGA
     class MCTSEvaluator : public Evaluator
     {
     private:
+        float fm;
+        std::string heuristic;
         std::vector<float> k_values;
         std::vector<int> rollout_length;
         std::vector<int> opponent_script;
@@ -32,6 +34,8 @@ namespace SGA
             std::vector<float> k_values,
             std::vector<int> rollout_length,
 //            std::vector<int> opponent_script,
+            float fm,
+            std::string heuristic,
             SGA::GameConfig& config
         );
     
