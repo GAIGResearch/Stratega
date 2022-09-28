@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include <Stratega/ntbea/SearchSpace.h>
 
@@ -14,7 +15,7 @@ namespace SGA
     {
     protected:
         std::string _name;
-        std::unique_ptr<SGA::SearchSpace> _searchSpace;
+        std::unique_ptr<SearchSpace> _searchSpace;
 
     public:
         Evaluator(std::string name) :
