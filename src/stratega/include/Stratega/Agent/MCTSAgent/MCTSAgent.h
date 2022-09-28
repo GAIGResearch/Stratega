@@ -14,6 +14,7 @@ namespace SGA
 	class MCTSAgent : public Agent
 	{
 	public:
+        //bool is_debug = false;
 		explicit MCTSAgent(const std::string& name, MCTSParameters&& params)
 			:Agent{ name }, parameters_(std::move(params))
 		{

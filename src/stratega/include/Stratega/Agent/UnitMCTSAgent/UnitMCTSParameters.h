@@ -32,7 +32,7 @@ namespace SGA {
 
         bool RANDOM_ABSTRACTION = false;
 
-        bool CONTINUE_PREVIOUS_SEARCH = true;
+        bool CONTINUE_PREVIOUS_SEARCH = false;
         double REMAINING_FM_CALLS = -1;
 
         int global_nodeID = 0;

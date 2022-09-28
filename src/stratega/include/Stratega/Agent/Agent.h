@@ -10,7 +10,7 @@ namespace SGA
 	class Agent
 	{
 	public:
-
+        bool is_debug=true;
 		//Constructors and destructors
 		Agent(const std::string& name);
 		virtual ~Agent() = default;

@@ -79,6 +79,14 @@ set(STRATEGA_SOURCE_FILES
         Representation/Player.cpp
         Representation/TechnologyTree.cpp
         Representation/Tile.cpp
+        ntbea/ntbea.cpp
+        ntbea/Mutator.cpp
+        ntbea/VectorSearchSpace.cpp
+        ntbea/Evaluators/Arena.cpp
+        ntbea/Evaluators/MCTSEvaluator.cpp
+        ntbea/Evaluators/MCTSuEvaluator.cpp
+        ntbea/Evaluators/ElasMCTSuEvaluator.cpp
+        ntbea/NTupleLandscapeModel
         )
 if(NOT SGA_BUILD_HEADLESS)
    list(APPEND STRATEGA_SOURCE_FILES

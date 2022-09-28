@@ -31,8 +31,8 @@ namespace SGA
 
         battle_mode=false;
         stepInit();
-
-        parameters_.printDetails();
+        if(is_debug)
+            parameters_.printDetails();
     }
 
     void MCTSAgent::stepInit()

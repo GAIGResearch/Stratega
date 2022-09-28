@@ -9,6 +9,7 @@ namespace SGA {
 
     class UnitMCTSAgent: public Agent {
     public:
+        //bool is_debug = false;
         bool battle_mode=false;
 
         std::map< int, std::vector< UnitMCTSNode* > > depthToNodes;
