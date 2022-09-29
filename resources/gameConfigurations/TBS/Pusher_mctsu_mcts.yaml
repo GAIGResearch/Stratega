@@ -17,15 +17,15 @@ Agents:
         RolloutLength: 20
         ContinuePreviousSearch: false
         RandomAbstraction: false
-        K: 0.1
+        K: 10
         IsUngrouping: false
         Heuristic: pta
     - MCTSAgent:
         Budget: FMCALLS
         MaxFmCalls: 10000
-        RolloutLength: 20
+        RolloutLength: 10
         ContinuePreviousSearch: false
-        K: 0.1
+        K: 1
         Heuristic: pta
     #- PusherAgent
     ##- RandomAgent
