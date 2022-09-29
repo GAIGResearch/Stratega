@@ -23,7 +23,7 @@ Agents:
         RThreshold: 0.05
         TThreshold: 1.5
         IsMultiObjective: false
-        RandomAbstraction: false
+        RandomAbstraction: true
         IsActionIndependence: false
 #    - UnitMCTSAgent:
 #        Budget: FMCALLS

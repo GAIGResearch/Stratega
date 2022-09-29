@@ -23,7 +23,7 @@ Agents:
         RThreshold: 0.05
         TThreshold: 1.5
         IsMultiObjective: false
-        RandomAbstraction: false
+        RandomAbstraction: true
         IsActionIndependence: false
 #    - UnitMCTSAgent:
 #        Budget: FMCALLS
@@ -32,7 +32,14 @@ Agents:
 #        RolloutLength: 10
 #        ContinuePreviousSearch: false
 #        K: 0.1
-    - BasicTBSAgent
+    - MCTSAgent:
+        Budget: FMCALLS
+        Iterations: 10000
+        MaxFmCalls: 5000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        K: 0.1
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent

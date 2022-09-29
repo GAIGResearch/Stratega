@@ -17,11 +17,11 @@ Agents:
         MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
+        AbstractionBatch: 4
         BatchSize: 20
         K: 0.1
         RThreshold: 0.05
-        TThreshold: 1.0
+        TThreshold: 1.5
         IsMultiObjective: false
         RandomAbstraction: false
         IsActionIndependence: false
@@ -29,7 +29,7 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: false
         MaxFmCalls: 5000
-        RolloutLength: 10
+        RolloutLength: 40
         ContinuePreviousSearch: false
         K: 0.1
 #    - BasicTBSAgent

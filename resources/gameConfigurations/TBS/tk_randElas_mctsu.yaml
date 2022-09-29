@@ -23,16 +23,16 @@ Agents:
         RThreshold: 0.05
         TThreshold: 1.5
         IsMultiObjective: false
-        RandomAbstraction: false
+        RandomAbstraction: true
         IsActionIndependence: false
-#    - UnitMCTSAgent:
-#        Budget: FMCALLS
-#        DoStateAbstraction: false
-#        MaxFmCalls: 5000
-#        RolloutLength: 10
-#        ContinuePreviousSearch: false
-#        K: 0.1
-    - BasicTBSAgent
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: false
+        MaxFmCalls: 5000
+        RolloutLength: 40
+        ContinuePreviousSearch: false
+        K: 0.1
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent
