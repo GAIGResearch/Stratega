@@ -63,7 +63,7 @@ namespace SGA
 	{
         //newState.printBoard();
         // probability of taking random actions
-        if (dis(getRNGEngine()) > 0.87) {//87
+        if (dis(getRNGEngine()) > 0.92) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(newState, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
