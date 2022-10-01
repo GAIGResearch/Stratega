@@ -82,6 +82,7 @@ set(STRATEGA_SOURCE_FILES
         ntbea/Evaluators/MCTSEvaluator.cpp
 		ntbea/Evaluators/MCTSuEvaluator.cpp
 		ntbea/Evaluators/ElasMCTSuEvaluator.cpp
+		ntbea/Evaluators/RandElasMCTSuEvaluator.cpp
         ntbea/NTupleLandscapeModel
         )
 if(NOT SGA_BUILD_HEADLESS)
