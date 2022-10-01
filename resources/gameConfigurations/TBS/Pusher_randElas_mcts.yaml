@@ -16,10 +16,10 @@ Agents:
         MaxFmCalls: 10000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
+        AbstractionBatch: 4
         BatchSize: 20
         RandomAbstraction: true
-        K: 10
+        K: 0.1
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
