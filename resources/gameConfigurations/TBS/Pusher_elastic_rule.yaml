@@ -16,16 +16,16 @@ Agents:
         MaxFmCalls: 10000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 10
+        AbstractionBatch: 8
         BatchSize: 20
         RandomAbstraction: False
-        K: 1
+        K: 10
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: false
-        RThreshold: 0.05
-        TThreshold: 0.5
+        RThreshold: 1.0
+        TThreshold: 1.0
         Heuristic: pta
     - PusherAgent
     ##- RandomAgent

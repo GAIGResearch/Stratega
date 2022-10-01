@@ -34,7 +34,7 @@ Agents:
         RolloutLength: 20
         ContinuePreviousSearch: false
         RandomAbstraction: false
-        K: 0.1
+        K: 10
         IsUngrouping: false
         Heuristic: pta
     #- MCTSAgent:
