@@ -10,7 +10,7 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 10000
+        MaxFmCalls: 30000
         RolloutLength: 10
         ContinuePreviousSearch: false
         AbstractionBatch: 8
@@ -26,8 +26,8 @@ Agents:
         Heuristic: ktk
     - MCTSAgent:
         Budget: FMCALLS
-        MaxFmCalls: 10000
-        RolloutLength: 10
+        MaxFmCalls: 30000
+        RolloutLength: 20
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: ktk
