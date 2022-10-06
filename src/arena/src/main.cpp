@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
-    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_elas_mctsu_T2.yaml");
+    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_mcts_rule.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS_0202.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBScombat_0202.yaml");
 	//Optional

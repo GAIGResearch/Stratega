@@ -73,7 +73,7 @@ namespace SGA {
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
             auto actionIndex = actionDist(getRNGEngine());
             auto action = actions.at(actionIndex);
-            //std::cout<<"select random agent\n";
+
             return ActionAssignment::fromSingleAction(action);
         }
         //*/
@@ -90,6 +90,7 @@ namespace SGA {
         enemy_city_id = -1;
         self_city_id = -1;
 
+        // store position of enemy king
         for(auto& entity : state.getEntities()) {
             auto& entityType = state.getGameInfo()->getEntityType(entity.getEntityTypeID());
             if(entity.getOwnerID() != getPlayerID())
@@ -130,7 +131,7 @@ namespace SGA {
 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
-                if(entityType.getName() == "Warrior" ){
+                if(entityType.getName() == "Warrior"|| entityType.getName() == "King"){
                    double distance = entity.getPosition().distance(self_city);
                    if (distance < nearestEnemyAttackerDistance) {
                       nearestEnemyAttackerDistance = distance;
@@ -152,7 +153,7 @@ namespace SGA {
                     if( std::find(farAwarAttackable.begin(), farAwarAttackable.end(),  entity.getID() ) 
                         == farAwarAttackable.end()) 
                     {
-                        if (farAwarAttackable.size() < 2) {
+                        if (farAwarAttackable.size() < 4) {
                             farAwarAttackable.push_back(entity.getID());
                         }
                         else if (std::find(nearbyAttackable.begin(), 
@@ -170,7 +171,7 @@ namespace SGA {
 
         //std::cout<<"aaaaaaaaaaaaa\n";
 
-        // maintain entity vectors, delete dead unit;
+        // maintain entity vectors, delete dead unit that is far away from our city and is attackable;
         for (int e_id = farAwarAttackable.size()-1 ; e_id >=0; e_id--){
             if(std::find(playerEntities.begin(), playerEntities.end(), farAwarAttackable[e_id]) == playerEntities.end()){
                 farAwarAttackable.erase(farAwarAttackable.begin()+e_id);
@@ -183,6 +184,7 @@ namespace SGA {
             }
         }
         //std::cout<<"11111111111111111\n";
+        // delete dead workers
         for (int e_id = workers.size()-1 ; e_id >=0; e_id--){
             if(std::find(playerEntities.begin(), playerEntities.end(), workers[e_id]) == playerEntities.end()){
                 workers.erase(workers.begin()+e_id);
@@ -305,8 +307,8 @@ namespace SGA {
         */
         //std::cout<<"7777777777777\n";
 
-		// spawn warriors and merge in farAwaryAttackable
-		if (isBuiltBarraks && (farAwarAttackable.size() < 2) && !(gold<spawnWarriorGold) ) {
+		// spawn warriors
+		if ( (farAwarAttackable.size() < 4) && !(gold<spawnWarriorGold) ) {
 			// std::cout<<"try spawn warrior"<<std::endl;
 			auto actionSpace_tmp = forwardModel.generateUnitActions(state, 
 									*(state.getEntity(self_city_id)), getPlayerID(), false);
@@ -326,13 +328,13 @@ namespace SGA {
 			}
 		}
         //std::cout<<"999999999999999\n";
-		// send warrior to attack nenemy city
+		// [Main Action] send warrior to attack nenemy city
 		if (farAwarAttackable.size() > 0 && enemy_city_id != -1) {
 			for (auto attackerID: farAwarAttackable){
 				auto actionSpace_tmp = forwardModel.generateUnitActions(state, *(state.getEntity(attackerID)), 
 					                                                    getPlayerID(), false);
-
-				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, enemy_city_id, "Attack");
+                auto target_id = nearestEnemyAttacker->getID();
+				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, target_id, "Attack");
 
 				if (optimal_a_idx > 0) {
                     //std::cout<< actionSpace_tmp.size() <<" " << optimal_a_idx << "\n";
