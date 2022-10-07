@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "../ktk_mcts_ntbea_log.yaml");
 	//auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
-    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/tk_elas_rule.yaml");
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/tk_elas_mcts.yaml");
 	auto agent = parser.getCmdOption<int>("-agent", 3);
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
     auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/tk_ntbea_maps.yaml");

@@ -20,8 +20,8 @@ Agents:
         AbstractionBatch: 4
         BatchSize: 20
         K: 0.1
-        RThreshold: 0.05
-        TThreshold: 1.5
+        RThreshold: 0.3
+        TThreshold: 0.0
         IsMultiObjective: false
         RandomAbstraction: false
         IsActionIndependence: false
