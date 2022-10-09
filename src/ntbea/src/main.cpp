@@ -101,9 +101,12 @@ int main(int argc, char** argv)
 			evaluator = std::make_unique<SGA::ElasMCTSuEvaluator>(
 				std::vector<float> {0.1, 1, 10, 100},               // values of k
 				std::vector<int> {  10, 20, 40},            // values of rollout
-				std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
-                std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
-                std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
+                //std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
+                //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
+                //std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
+                std::vector<float> {0.05},     // R threshold
+                std::vector<float> {1.0},     // T threshold
+                std::vector<int> {8},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
