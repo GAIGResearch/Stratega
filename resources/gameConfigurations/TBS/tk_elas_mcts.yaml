@@ -15,11 +15,11 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 5000
-        RolloutLength: 40
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 12
+        AbstractionBatch: 8
         BatchSize: 20
-        K: 1
+        K: 0.1
         RThreshold: 0.05
         TThreshold: 1.0
         IsMultiObjective: false
