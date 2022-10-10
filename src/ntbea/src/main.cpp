@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 			break;
         case 3: 
 			std::cout << "Optimize Elastic MCTSu Agent" << std::endl;
-            
+
             if (heuristic == "ktk") {
                 r_thresholds.push_back(0.05);
                 t_thresholds.push_back(1.0);
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 				//std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
                 //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
                 r_thresholds, t_thresholds,
-                std::vector<int> {10},     // earlyStop
+                std::vector<int> {8},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
