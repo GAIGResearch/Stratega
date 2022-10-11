@@ -1,0 +1,1080 @@
+# Maps for Kill the king
+Maps:
+    Map391: |-
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  a1 .  .  .  .  W  W  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  w1 .  W  W  h1 .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  a1 .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  w1 W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  M  W  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  .  .  h1 .  .  k1 .  a1 .  .  .  .  W  W  W  W  .  .  .  W  W  W  W  W  M  M  M  M  W  W  
+        W  W  W  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  
+        W  W  W  W  .  .  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  W  .  .  .  .  .  .  .  h0 .  w0 .  .  .  .  .  .  .  .  .  W  W  M  W  W  W  W  W  M  W  
+        W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  k0 h0 .  .  .  W  W  M  M  W  W  W  M  W  
+        W  W  W  W  M  W  .  .  .  .  .  .  .  a0 w0 .  .  .  .  h0 .  .  .  .  .  W  W  W  W  W  W  W  W  W  
+        W  W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  
+        W  W  M  W  W  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  M  W  W  .  .  .  .  .  W  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  W  .  .  .  .  .  .  W  W  W  W  W  W  .  W  W  W  W  .  .  .  .  .  .  a0 .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  .  .  .  W  .  .  .  .  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map392: |-
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  h1 .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  W  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  h1 .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  k1 .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  M  W  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  W  W  W  W  W  M  M  M  M  W  W  
+        W  W  W  .  .  .  .  .  .  .  .  .  M  .  h0 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  
+        W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  h0 h0 .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  W  .  .  .  k0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  W  W  W  W  W  M  W  
+        W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  W  W  W  M  W  
+        W  W  W  W  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  
+        W  W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  
+        W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  M  W  W  .  .  .  .  .  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  W  .  .  .  .  .  .  W  W  W  W  W  W  .  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  .  .  .  W  .  .  .  .  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map393: |-
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  a0 .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  W  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  a1 W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  a0 .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  a0 .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  a0 .  a1 .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  a1 W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  W  .  .  .  a1 .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  a1 W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  M  W  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  .  .  .  .  .  .  .  .  a1 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  .  .  .  .  a0 .  .  .  .  .  .  .  W  W  W  W  .  .  .  W  W  W  W  W  M  M  M  M  W  W  
+        W  W  W  .  .  .  .  .  .  .  .  .  M  .  a1 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  
+        W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  a1 .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  k1 W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  W  W  W  W  W  M  W  
+        W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  W  W  W  M  W  
+        W  W  W  W  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  
+        W  W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  
+        W  W  M  W  W  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  M  W  W  .  .  .  .  a0 W  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  W  .  .  .  .  k0 .  W  W  W  W  W  W  .  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  .  .  .  W  .  .  .  .  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map394: |-
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  w0 .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  w0 W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  W  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  w0 .  .  .  .  .  .  .  .  w0 .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  w0 W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  M  W  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  .  w0 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  w0 .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  W  W  W  W  W  M  M  M  M  W  W  
+        W  W  W  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  
+        W  W  W  W  .  w0 .  .  .  .  .  w0 .  w0 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  k0 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  k1 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  w1 W  W  M  W  W  W  W  W  M  W  
+        W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 W  W  M  M  W  W  W  M  W  
+        W  W  W  W  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  W  W  W  W  W  W  W  W  W  
+        W  W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  
+        W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  M  W  W  .  .  .  .  .  W  .  .  .  .  .  .  .  w1 .  w1 .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  W  .  .  .  w1 .  .  W  W  W  W  W  W  .  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  .  .  .  W  .  .  w1 .  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map395: |-
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  a0 W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  a0 .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  w0 W  W  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  .  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  .  .  .  .  .  .  a0 .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  a0 .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  a0 .  .  .  .  w0 .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  w0 .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  .  .  .  .  w0 .  .  w0 .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  .  .  .  .  .  .  k0 .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  .  .  .  .  w1 .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  M  W  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  M  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  .  .  .  .  .  .  k1 .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  a1 .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  w1 W  W  W  W  W  M  M  M  M  W  W  
+        W  W  W  .  .  .  .  .  .  .  .  .  M  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  
+        W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  .  .  .  .  .  .  .  .  .  a1 .  .  .  w1 .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  
+        W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  W  W  W  W  W  M  W  
+        W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  W  W  M  M  W  W  W  M  W  
+        W  W  W  W  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  
+        W  W  W  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  
+        W  W  M  W  W  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  
+        W  W  M  W  W  .  .  .  .  .  W  .  .  .  .  .  .  w1 .  .  .  .  a1 .  .  .  .  .  .  .  .  .  .  W  
+        W  W  W  .  .  .  .  .  .  W  W  W  W  W  W  .  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  .  .  .  W  .  .  .  .  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+    Map406: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  .  .  W  W  .  .  W  W  W  W  W  M  M  M  M  M  M  W  W  W  W  M  M  
+        M  W  M  W  W  W  .  .  h1 .  .  .  .  .  .  W  W  W  M  W  W  W  M  M  M  W  W  W  W  M  W  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  M  W  W  W  M  M  M  W  W  W  W  M  M  M  
+        M  W  M  W  W  W  W  .  .  a1 .  .  .  .  w1 .  .  .  W  W  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  .  .  .  a0 w0 .  k0 W  W  M  W  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  h0 a0 h0 a0 h0 .  .  .  .  W  W  M  M  
+        M  M  M  M  W  W  W  .  h1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  k1 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  w1 .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  W  W  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  w1 .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  a1 .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  W  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  a1 .  .  W  W  W  W  M  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  h1 .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map407: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  .  .  W  W  .  .  W  W  W  W  W  M  M  M  M  M  M  W  W  W  W  M  M  
+        M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  M  M  M  W  W  W  W  M  W  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  h1 .  W  M  W  W  W  M  M  M  W  W  W  W  M  M  M  
+        M  W  M  W  W  W  W  .  .  .  .  .  .  .  .  h1 .  .  W  W  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  W  W  M  W  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  h1 .  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  W  W  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  k1 .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  h0 .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  h0 .  .  .  .  .  .  W  W  W  W  M  M  W  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  k0 .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  h0 .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map408: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  .  .  W  W  .  .  W  W  W  W  W  M  M  M  M  M  M  W  W  W  W  M  M  
+        M  W  M  W  W  W  a1 .  .  .  .  .  a1 .  .  W  W  W  M  W  W  W  M  M  M  W  W  W  W  M  W  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  a1 .  W  M  W  W  W  M  M  M  W  W  W  W  M  M  M  
+        M  W  M  W  W  W  W  .  .  .  .  .  .  .  .  .  a1 .  W  W  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  W  W  M  W  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  a1 .  .  .  a1 .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  k1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  a1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  a1 .  W  W  W  W  W  W  W  W  M  W  W  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  a0 W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  a1 a1 .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  a0 .  .  .  .  .  a0 W  W  W  W  M  M  M  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  a0 .  .  .  .  a0 .  .  .  .  W  W  W  W  M  M  W  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  a0 .  .  .  .  W  W  W  W  M  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  a0 .  .  W  W  W  W  M  M  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  a0 k0 W  W  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  a0 .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  a0 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map409: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  .  .  W  W  .  .  W  W  W  W  W  M  M  M  M  M  M  W  W  W  W  M  M  
+        M  W  M  W  W  W  .  .  .  .  .  .  .  .  k0 W  W  W  M  W  W  W  M  M  M  W  W  W  W  M  W  M  
+        M  M  M  W  W  W  .  .  .  w1 .  .  k1 .  .  .  .  W  M  W  W  W  M  M  M  W  W  W  W  M  M  M  
+        M  W  M  W  W  W  W  .  w1 .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  W  W  .  .  .  .  .  .  .  W  W  M  W  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  w1 .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  W  W  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  w1 .  .  .  .  .  w1 .  w0 .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  w1 .  .  .  .  .  .  .  .  .  w0 W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  w0 W  W  W  W  M  M  W  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  w1 .  .  .  .  .  .  .  .  w0 .  W  W  W  W  M  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  w0 .  w0 W  W  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  w1 .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  W  W  W  w1 W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map410: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  W  W  W  W  W  W  .  .  W  W  .  .  W  W  W  W  W  M  M  M  M  M  M  W  W  W  W  M  M  
+        M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  M  M  M  W  W  W  W  M  W  M  
+        M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  M  W  W  W  M  M  M  W  W  W  W  M  M  M  
+        M  W  M  W  W  W  W  .  w1 .  .  .  .  .  .  .  .  .  W  W  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  a1 .  .  .  .  .  .  W  W  M  W  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  k1 .  .  .  .  .  .  a1 .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  a1 .  w1 .  .  .  .  .  .  .  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  a1 .  .  .  .  .  .  .  .  .  w1 a1 .  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  W  W  M  M  
+        M  M  M  M  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  a0 .  a0 .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  W  W  W  W  .  .  w0 .  .  .  .  .  w0 .  .  .  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  w0 .  .  .  W  W  W  W  M  M  M  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  M  W  M  M  W  M  M  M  
+        M  M  W  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  M  W  W  W  M  M  
+        M  M  M  M  W  W  W  a0 .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  W  W  .  .  .  w0 .  .  .  .  .  .  .  W  W  W  W  M  M  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  W  .  .  w0 .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  W  W  M  M  M  
+        M  M  M  M  W  W  a0 .  .  .  a0 .  .  k0 .  .  .  W  W  W  W  W  W  W  W  W  M  W  W  M  M  M  
+        M  M  M  M  W  W  .  .  .  .  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map431: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  k1 .  .  .  .  .  h1 .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  W  M  M  M  M  
+        M  W  W  W  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  h0 .  a0 .  .  .  .  .  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  .  .  .  h0 .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  .  h0 .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  a1 .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  h1 .  .  a1 .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  w1 .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  w0 .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  k0 w0 .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  .  .  .  .  .  W  W  W  M  W  W  W  W  .  W  W  .  .  .  .  .  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  W  M  M  M  W  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map432: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  k1 .  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  h1 .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  h0 .  .  .  h0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  k0 .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  h1 W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  h0 .  .  .  .  W  W  W  M  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  .  .  .  .  .  W  W  W  M  W  W  W  W  .  W  W  .  .  .  .  .  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  W  M  M  M  W  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map433: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  a0 .  .  .  a0 .  .  .  .  a0 .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  a0 W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  k0 .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  a1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  a1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  a1 .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  a1 .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  a0 W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  k1 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  a1 .  .  .  .  .  .  a1 W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  a1 .  .  .  .  .  .  .  W  W  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  a1 a1 .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  .  a1 .  .  .  W  W  W  M  W  W  W  W  .  W  W  .  .  .  .  .  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  W  M  M  M  W  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map434: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  w1 .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  W  W  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  w1 .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  W  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  w0 .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  k1 .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  k0 .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  w1 .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  w1 .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  w0 .  .  .  .  W  W  W  W  W  W  W  W  W  w1 .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  w0 .  .  .  .  .  W  W  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  w0 .  .  .  .  .  .  w0 .  .  .  W  W  W  M  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  .  .  w0 .  .  W  W  W  M  W  W  W  W  .  W  W  .  .  .  .  .  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  W  M  M  M  W  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map435: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  w1 .  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  a1 .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 W  W  W  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  k1 .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  W  .  .  .  k0 .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  .  .  .  .  .  .  .  .  .  .  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  w0 .  .  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  w0 .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  w1 .  .  .  .  W  W  M  M  M  M  
+        M  W  W  .  .  w0 .  .  .  a0 W  W  W  W  W  W  W  W  W  W  W  W  .  a1 .  .  .  .  .  .  .  .  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  w1 a1 .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  w1 .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  a0 .  w0 a0 .  .  .  .  .  .  .  W  W  W  M  W  W  W  .  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  W  W  W  W  .  .  .  .  .  .  .  .  W  W  W  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  .  .  a0 .  .  W  W  W  M  W  W  W  W  .  W  W  .  .  .  .  .  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  .  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  .  W  W  W  W  W  W  W  M  M  M  
+        M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  W  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  M  M  M  M  M  W  M  M  M  W  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map436: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  w0 W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  h0 .  .  .  .  .  .  k0 W  W  W  W  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  a1 .  .  W  W  M  
+        M  M  M  M  W  .  .  .  a0 .  W  W  W  .  .  W  W  W  W  .  w1 .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  w1 h1 .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  h0 W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  .  h1 W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  .  .  h1 .  .  W  W  W  W  M  
+        M  M  M  M  W  h0 .  w0 .  .  .  .  W  W  W  W  W  W  W  W  .  .  w1 .  k1 W  W  W  M  
+        M  M  M  M  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  W  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  W  M  
+        M  M  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  W  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map437: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  k0 .  .  .  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  k1 .  .  .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  h0 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  h0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  h1 .  .  .  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  h1 .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  W  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  W  M  
+        M  M  M  W  W  W  W  h0 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  W  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map438: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  a0 W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  .  a1 .  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  W  W  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  a0 .  .  .  .  a0 .  .  .  a1 .  a1 .  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a1 .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  k0 .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  .  .  .  a1 .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  .  a1 .  k1 W  W  W  M  
+        M  M  M  M  W  a0 .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  W  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  a1 W  W  W  W  M  
+        M  M  M  W  W  W  W  a0 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  W  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map439: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  .  .  w0 .  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  w0 w1 .  .  w1 w1 W  W  W  W  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  w0 W  W  w0 .  w0 .  .  .  .  .  .  .  .  .  .  .  k1 .  W  W  W  W  M  
+        M  M  M  M  W  .  k0 .  .  w0 .  .  .  .  .  .  .  w1 .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  .  w1 .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  w0 W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  .  .  w1 .  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  w1 .  .  .  W  W  W  W  M  
+        M  W  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  W  M  
+        M  M  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  W  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map440: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  W  W  .  k1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  a1 .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  w1 .  .  .  a1 .  a1 .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  k0 .  .  .  .  .  w0 .  a0 W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  a0 W  W  M  
+        M  M  M  M  W  .  .  .  a1 .  W  W  W  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  M  
+        M  M  M  M  W  w1 a1 .  .  .  W  W  W  W  W  W  W  W  W  .  .  .  .  .  .  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  w0 W  W  W  W  M  
+        M  M  M  M  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  W  W  W  W  M  
+        M  M  M  M  W  W  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  a0 w0 W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  w0 .  a0 .  .  W  W  W  W  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  .  a0 .  .  .  W  W  W  M  
+        M  M  M  M  W  .  .  w1 .  W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  W  W  .  .  .  w1 W  W  W  W  W  W  W  W  W  W  W  .  .  .  .  W  W  W  W  M  
+        M  W  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  W  M  
+        M  M  M  W  W  W  W  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  
+        M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  W  M  M  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  W  M  M  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map441: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  .  .  .  .  a1 .  .  w1 .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  w1 .  .  .  .  a1 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  .  w0 .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  
+        M  M  M  W  k0 .  .  .  .  .  .  .  h1 W  W  M  M  M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  W  W  a0 w0 .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  W  W  h1 .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  a0 .  .  .  .  k1 .  W  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  a1 W  W  W  W  W  M  
+        M  M  W  .  w0 .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  W  W  .  .  h0 .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  h0 .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  h1 .  .  .  w1 W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  a0 .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  M  W  W  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  W  W  W  W  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  W  W  W  W  W  M  M  
+        M  M  M  W  W  h0 .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  M  W  W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  W  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  M  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map442: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  h0 .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  
+        M  M  M  W  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  k0 W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  .  .  .  .  h0 .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  h1 .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  k1 .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  h0 .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  M  W  W  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  W  W  W  W  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  W  W  W  W  W  M  M  
+        M  M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  h1 .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  .  .  .  .  h1 W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  M  W  W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  W  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  M  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map443: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  a1 .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  a1 W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  a0 .  .  .  .  a1 .  .  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  a0 .  .  a0 .  .  .  a0 .  .  .  .  .  .  .  .  .  a1 .  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  a0 .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  
+        M  M  M  W  .  .  a0 .  .  .  .  .  .  W  W  M  M  M  M  M  M  W  .  .  .  .  .  W  W  W  W  W  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  W  W  a1 a1 .  a1 W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  .  .  .  .  a0 a0 .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  k1 a1 .  .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  a1 .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  k0 .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  M  W  W  .  .  .  .  .  a0 W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  a1 .  .  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  W  W  W  W  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  W  W  W  W  W  M  M  
+        M  M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  a0 .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  M  W  W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  W  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  M  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map444: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  w0 .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 w0 .  .  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  .  w0 .  .  .  w0 .  .  .  .  .  W  W  W  W  .  .  .  w1 .  .  .  W  W  W  W  W  W  M  M  
+        M  M  M  W  .  k0 .  .  .  .  .  .  w0 W  W  M  M  M  M  M  M  W  .  .  w1 .  .  W  W  W  W  W  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  w0 .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  w1 .  W  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  w1 .  .  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  w1 .  .  W  W  W  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  w1 .  .  .  .  w1 .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  w1 .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  W  W  .  .  .  .  w0 .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  w1 .  .  .  .  W  M  
+        M  W  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  M  W  W  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  k1 .  .  .  .  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  w1 W  W  W  W  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  W  W  W  W  W  M  M  
+        M  M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  w0 .  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  .  w0 .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  M  W  W  W  W  W  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  W  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  M  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map445: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  a1 .  .  W  W  M  M  W  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  .  .  .  .  .  a0 .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  W  W  W  W  W  W  W  .  .  .  .  .  w0 .  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  W  .  .  .  .  w1 .  a1 .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  W  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  M  W  .  .  .  .  .  .  .  .  .  .  .  W  W  W  W  .  .  .  .  a0 .  .  W  W  W  W  W  W  M  M  
+        M  M  M  W  .  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  W  .  .  .  w0 .  W  W  W  W  W  M  M  M  
+        M  M  W  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  W  W  .  .  w0 .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  W  W  W  W  W  M  M  
+        M  M  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  a1 W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  M  W  .  .  .  .  .  .  .  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  W  W  W  W  M  
+        M  W  W  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  .  .  .  a0 .  .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  a0 .  .  .  W  M  
+        M  W  W  .  .  .  .  .  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  w0 .  .  a0 W  M  
+        M  W  W  .  .  .  .  a1 w1 W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  w0 .  .  .  W  M  
+        M  W  W  .  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  .  .  .  .  .  .  .  W  M  
+        M  M  W  W  .  .  .  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  .  .  k0 W  W  M  
+        M  M  W  W  .  .  k1 .  w1 w1 .  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  .  .  W  W  W  W  W  W  M  
+        M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  W  W  W  .  .  W  W  W  W  W  M  M  
+        M  M  M  W  W  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  M  M  
+        M  M  M  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  M  W  W  W  W  W  W  W  W  W  W  M  M  M  
+        M  M  M  M  W  W  W  .  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  W  W  W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  
+        M  M  M  M  M  W  W  W  W  W  a1 .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  
+        M  M  M  M  M  M  W  W  W  W  W  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  M  M  M  W  W  W  W  W  W  W  W  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  W  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  M  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  M  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  M  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map446: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  a1 .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  h1 .  w1 .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  a1 .  W  W  W  .  h1 .  .  .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  k1 .  .  .  .  .  .  W  W  W  .  .  .  .  .  .  h1 .  .  W  W  
+        M  W  W  .  .  .  .  .  a1 .  .  .  .  w1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  h0 .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  W  W  
+        M  W  W  .  h0 .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  a0 .  a0 h0 k0 .  .  .  w0 .  .  .  .  W  W  W  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  w0 .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map447: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  h1 .  .  .  h1 .  .  W  W  W  .  .  .  .  .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  k1 .  .  W  W  W  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  h1 .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  h0 .  .  .  .  .  .  .  .  .  h0 .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  k0 .  .  .  .  .  .  .  .  .  .  .  .  h0 W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  W  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map448: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  a1 W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  a0 .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  a0 .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  a1 .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  a0 .  .  .  .  W  W  W  .  .  .  .  .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  .  a0 .  .  .  .  .  W  W  W  .  .  a1 .  .  .  .  .  .  W  W  
+        M  W  W  .  a0 .  .  .  .  a0 .  .  .  .  .  .  .  a1 k1 .  .  .  a1 .  .  .  a1 .  W  W  
+        M  W  W  .  .  .  .  .  a0 .  .  .  .  .  a1 .  .  .  .  .  .  .  a1 .  .  a1 a1 .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  a0 .  .  .  .  .  k0 .  a0 a0 .  .  W  W  W  .  .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map449: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  w0 W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  w0 .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  w0 W  W  W  .  .  .  w1 .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  w0 .  .  .  .  .  .  W  W  W  .  w1 .  .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  w0 .  .  w0 .  .  .  .  .  .  .  w1 w1 .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  w0 .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  w1 w1 .  w1 W  W  
+        M  W  W  .  w0 .  .  w0 .  .  .  .  .  .  .  .  W  W  W  .  .  .  w1 .  w1 .  .  .  W  W  
+        W  W  W  W  .  .  .  .  k0 W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  k1 .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+
+    Map450: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  w0 .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  a0 .  W  W  W  .  .  w1 .  .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  a0 a0 .  .  W  W  W  .  .  .  .  .  .  a1 .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  w1 .  .  .  .  a1 .  w1 .  W  W  
+        M  W  W  .  .  .  w0 .  .  .  .  .  a0 .  .  .  .  .  a1 .  .  .  .  .  a1 .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  w0 .  w0 w0 k0 W  W  W  w1 k1 .  .  w1 .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  a1 .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
