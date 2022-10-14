@@ -148,6 +148,12 @@ namespace SGA {
             int n_abs_iteration = 0;
             bool stop_abstraction = false;
             bool is_abstraction_eliminated = false;
+            //compression rate
+            /*if (!battle_mode) {
+                for (int i = 0; i < 21; i++) {
+                    std::cout<<"batch: "<<i<<" "<< "1.0\n";
+                }
+            }*/
 
             while(parameters_.DO_STATE_ABSTRACTION) {
                 if(parameters_.REMAINING_FM_CALLS <= 0)
@@ -376,6 +382,10 @@ namespace SGA {
 
                 n_abs_iteration++;
                 tmp_batch_used++;
+                // analyze compression rate
+                //if (tmp_batch_used < 21 && (absNodeToStatistics.size() != 0) && (treeNodetoAbsNode.size() != 0))
+                //    std::cout<<"batch: " << tmp_batch_used << " " << float(treeNodetoAbsNode.size()) / absNodeToStatistics.size() << std::endl;
+
 
                 // run out of budget, delete abstraction
                 if(parameters_.REMAINING_FM_CALLS <= 0 || rootNode->n_search_iteration >= parameters_.maxFMCalls) {

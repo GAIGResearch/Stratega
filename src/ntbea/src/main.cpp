@@ -141,6 +141,8 @@ int main(int argc, char** argv)
 		SGA::SearchSpace* searchSpace = evaluator->getSearchSpace();
 		SGA::Mutator mutator(searchSpace, false, false, 0.1f, true);
 		SGA::NTupleLandscapeModel landscapeModel(searchSpace, std::vector<int> {1, 2});
+
+        // int kExplore, int nSamples, int evalNeighbors
 		SGA::NTBEA ntbea(&landscapeModel, evaluator.get(), searchSpace, &mutator, 2, 20, 50); // number of neibour could be higher 50
 		std::mt19937 randomGenerator(1);
 
