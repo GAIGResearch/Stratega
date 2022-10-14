@@ -70,13 +70,6 @@ namespace SGA {
           auto e = units[eIDtoUnitArrayIndex[unitIndex[unitThisStep]]];
           auto actionSpace_tmp = forwardModel.generateUnitActions(state, e, getPlayerID(), false);
 
-		  //std::cout<<"cc\n";
-		  //for (auto a : actionSpace_tmp) {
-		  //  state.printActionInfo(a);
-		  //}
-		  //std::cout<<"ccd\n";
-
-
           if(actionSpace_tmp.size() == 0) {
              needNextUnit = true;
           } else {
@@ -365,6 +358,8 @@ namespace SGA {
                         node1->isAbstracted = true;
                         node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
 
+                        treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+0)); // added 20221014
+
                         continue;
                     }
 
@@ -481,6 +476,12 @@ namespace SGA {
 
              n_abs_iteration++;
              tmp_batch_used++;
+             
+
+             /* analyze the compression rate
+             if (tmp_batch_used < 21 && (absNodeToStatistics.size() != 0) && (treeNodetoAbsNode.size() != 0))
+                    std::cout<<"batch: " << tmp_batch_used << " " << float(treeNodetoAbsNode.size()) / absNodeToStatistics.size() << std::endl;
+             //*/
 
              //aamas
              /*if (tmp_batch_used == 12 || tmp_batch_used == 14) {

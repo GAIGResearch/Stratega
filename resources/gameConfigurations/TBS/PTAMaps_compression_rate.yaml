@@ -1,0 +1,181 @@
+Maps:
+    Map1: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map2: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map3: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map4: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map5: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map6: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map7: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map8: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map9: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map10: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map11: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map12: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map13: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map14: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map15: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map16: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map17: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map18: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map19: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M
+    Map20: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M
+        M  M  H  H  M  M  M  M  H  H  M  M  M
+        M  H  .  w1 .  .  w1 .  .  .  .  M  M
+        M  H  .  .  .  .  .  .  .  .  w1 M  M
+        M  M  w0 .  .  .  .  .  .  .  .  H  M
+        M  M  .  .  .  .  w0 .  .  w0 .  H  M
+        M  M  M  H  H  M  M  M  M  H  H  M  M
+        M  M  M  M  H  M  M  M  M  M  M  M  M

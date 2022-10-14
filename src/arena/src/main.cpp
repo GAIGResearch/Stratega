@@ -11,14 +11,18 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
-    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktk_randoms.yaml");
-    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_mctsu.yaml");
+    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_rule.yaml");
+    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_randElas_rule.yaml");
+    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktk_elastic_rule.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktkcombat_0.5_20k_bs20.yaml");
 	//Optional
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/BasicTBSMaps.yaml");
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah.yaml");
-    auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktkMaps_30layouts_3.yaml");
+    //auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/PTAMaps_compression_rate.yaml");
+    //auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwah_compression_rate.yaml");
+    //auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwwaahh_compression_rate.yaml");
+    auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/KtKMaps_kwwwaaahhh_compression_rate.yaml");
     //auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "");
 
 	if(configPath.empty())
