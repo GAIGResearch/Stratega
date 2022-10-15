@@ -66,7 +66,7 @@ namespace SGA {
         enemy_city_id = -1;
         self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
-        ///*
+        /*
         if (dis(getRNGEngine()) > 0.90) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(state, getPlayerID());
