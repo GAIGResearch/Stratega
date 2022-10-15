@@ -66,8 +66,8 @@ namespace SGA {
         enemy_city_id = -1;
         self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
-        /*
-        if (dis(getRNGEngine()) > 0.87) {//87
+        ///*
+        if (dis(getRNGEngine()) > 0.80) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
@@ -131,7 +131,7 @@ namespace SGA {
 
                 //if(entityType.getName() == "Warrior" || entityType.getName() == "Archer"
                 //   || entityType.getName() == "Catapult") {
-                if(entityType.getName() == "Warrior"|| entityType.getName() == "King"){
+                if(entityType.getName() == "Warrior" || entityType.getName() == "King"){
                    double distance = entity.getPosition().distance(self_city);
                    if (distance < nearestEnemyAttackerDistance) {
                       nearestEnemyAttackerDistance = distance;
@@ -226,7 +226,6 @@ namespace SGA {
 				return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 			}
 		}
-
 
 		double prod = getProduction(state), gold = getGold(state);
 
@@ -335,8 +334,14 @@ namespace SGA {
 					                                                    getPlayerID(), false);
                 auto target_id = nearestEnemyAttacker->getID();
 				int optimal_a_idx = moveAndAct(state, actionSpace_tmp, target_id, "Attack");
+                /*std::cout << "Unit: " << attackerID << "\n";
+                for (auto a : actionSpace_tmp) {
+                    state.printActionInfo(a);
+                }
+                */
 
-				if (optimal_a_idx > 0) {
+				if (optimal_a_idx >= 0) {
+                    //std::cout<<"Go attack!\n";
                     //std::cout<< actionSpace_tmp.size() <<" " << optimal_a_idx << "\n";
 					return ActionAssignment::fromSingleAction(actionSpace_tmp[optimal_a_idx]);
 				}
@@ -349,7 +354,7 @@ namespace SGA {
 		//std::cout <<"END THE TURN" << "\n";
 		//state.printBoard();
 		//return ActionAssignment::fromSingleAction( Action::createEndAction(state.getCurrentTBSPlayer()));
-
+        //std::cout<<"End the turn, "<< "n far_attackable: "<< farAwarAttackable.size() <<" nearestEnemy: "<< nearestEnemyAttacker->getID() << "\n";
 		return ActionAssignment::fromSingleAction( Action::createEndAction(getPlayerID()));
     }
 

@@ -7,7 +7,8 @@ int main()
 {
 	boost::mt19937 rngEngine(0);
 	//std::string configPath("../resources/gameConfigurations/TBS/PushThemAll.yaml");
-	std::string configPath("../resources/gameConfigurations/TBS/BasicTBS_GUI.yaml");
+	//std::string configPath("../resources/gameConfigurations/TBS/BasicTBS_GUI.yaml");
+    std::string configPath("../resources/gameConfigurations/TBS/tk_rule_donothing.yaml");
 	auto gameConfig = SGA::loadConfigFromYAML(configPath);
 	
 	auto agents = gameConfig->generateAgents();
