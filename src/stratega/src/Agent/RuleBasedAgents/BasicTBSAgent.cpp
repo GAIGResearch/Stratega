@@ -67,7 +67,7 @@ namespace SGA {
         self_city_id = -1;
         //std::cout<<"Start Rule-based TwoKingdoms Agent\n";
         ///*
-        if (dis(getRNGEngine()) > 0.7) {//87
+        if (dis(getRNGEngine()) > 0.87) {//87
             //std::cout<<"enter random action\n";
             auto actions = forwardModel.generateActions(state, getPlayerID());
             boost::random::uniform_int_distribution<size_t> actionDist(0, actions.size() - 1);
