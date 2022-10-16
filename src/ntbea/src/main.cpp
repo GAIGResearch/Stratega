@@ -68,9 +68,9 @@ int main(int argc, char** argv)
 			std::cout << "Optimize MCTS Agent" << std::endl;
 			evaluator = std::make_unique<SGA::MCTSEvaluator>(
 				//std::vector<float> {0.1, 1, 10, 100},			// values of k
-				std::vector<float> {0.1, 1, 10, 100},
+				std::vector<float> {0.1, 1, 10},
 				//std::vector<int> {1, 5, 10, 15, 20, 25, 30},	// rollout length
-				std::vector<int> { 10, 20, 40},
+				std::vector<int> { 10, 20},
 				//std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
@@ -84,8 +84,8 @@ int main(int argc, char** argv)
         case 2: 
 			std::cout << "Optimize MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::MCTSuEvaluator>(
-				std::vector<float> {0.1, 1, 10, 100},       // values of k
-				std::vector<int> { 10, 20, 40},        // rollout length
+				std::vector<float> {0.1, 1, 10,},       // values of k
+				std::vector<int> { 10, 20},        // rollout length
                 fm,
                 heuristic,
 				//std::vector<int> {0, 1, 2, 3},					// opponent scripts (Attack Closest, Attack Weakest, Random, nullptr=SkipTurn)
@@ -99,14 +99,14 @@ int main(int argc, char** argv)
         case 3: 
 			std::cout << "Optimize Elastic MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::ElasMCTSuEvaluator>(
-				std::vector<float> {0.1, 1, 10, 100},               // values of k
-				std::vector<int> {  10, 20, 40},            // values of rollout
+				std::vector<float> {0.1, 1, 10,},               // values of k
+				std::vector<int> {  10, 20},            // values of rollout
                 //std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
                 //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
                 //std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
                 std::vector<float> {0.05},     // R threshold
                 std::vector<float> {1.0},     // T threshold
-                std::vector<int> {8},     // earlyStop
+                std::vector<int> {6. 8},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
@@ -119,9 +119,9 @@ int main(int argc, char** argv)
         case 4: 
 			std::cout << "Optimize Random Elastic MCTSu Agent" << std::endl;
 			evaluator = std::make_unique<SGA::RandElasMCTSuEvaluator>(
-				std::vector<float> {0.1, 1, 10, 100},               // values of k
-				std::vector<int> {  10, 20, 40},            // values of rollout
-                std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
+				std::vector<float> {0.1, 1, 10},               // values of k
+				std::vector<int> {  10, 20},            // values of rollout
+                std::vector<int> {4, 6, 8, 10},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
