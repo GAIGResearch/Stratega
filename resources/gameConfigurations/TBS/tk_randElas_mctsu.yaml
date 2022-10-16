@@ -29,9 +29,9 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: false
         MaxFmCalls: 5000
-        RolloutLength: 40
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        K: 0.1
+        K: 1.0
 #    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent

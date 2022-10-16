@@ -15,9 +15,9 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 5000
-        RolloutLength: 40
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
+        AbstractionBatch: 6
         BatchSize: 20
         K: 1
         RThreshold: 0.05
@@ -36,9 +36,9 @@ Agents:
         Budget: FMCALLS
         Iterations: 10000
         MaxFmCalls: 5000
-        RolloutLength: 40
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        K: 10
+        K: 0.1
 #    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
