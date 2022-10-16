@@ -106,7 +106,7 @@ int main(int argc, char** argv)
                 //std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
                 std::vector<float> {0.05},     // R threshold
                 std::vector<float> {1.0},     // T threshold
-                std::vector<int> {6. 8},     // earlyStop
+                std::vector<int> {4,6,8,10},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
