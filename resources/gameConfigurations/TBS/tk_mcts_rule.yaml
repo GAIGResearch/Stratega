@@ -17,7 +17,7 @@ Agents:
         MaxFmCalls: 5000
         RolloutLength: 40
         ContinuePreviousSearch: false
-        K: 0.1
+        K: 10
     - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
