@@ -23,7 +23,7 @@ Agents:
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
-        IsActionIndependent: True
+        IsActionIndependent: true
         RThreshold: 0.2
         TThreshold: 0.3
         Heuristic: pta
