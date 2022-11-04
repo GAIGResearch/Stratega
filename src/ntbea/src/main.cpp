@@ -7,6 +7,7 @@
 #include <Stratega/ntbea/Evaluators/MCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/ElasMCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/RandElasMCTSuEvaluator.h>
+#include <Stratega/ntbea/Evaluators/STSAEvaluator.h>
 
 #include <Stratega/ntbea/Evaluators/Evaluator.h>
 #include <Stratega/ntbea/NTupleLandscapeModel.h>
@@ -133,7 +134,7 @@ int main(int argc, char** argv)
 			break;
         case 5: 
 			std::cout << "Optimize State Transition State Abstraction (STSA) Agent" << std::endl;
-			evaluator = std::make_unique<SGA::ElasMCTSuEvaluator>(
+			evaluator = std::make_unique<SGA::STSAEvaluator>(
 				std::vector<float> {0.1, 1, 10,},               // values of k
 				std::vector<int> {  10, 20},            // values of rollout
                 //std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
