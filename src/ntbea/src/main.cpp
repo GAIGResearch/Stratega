@@ -32,8 +32,8 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "../ktk_mcts_ntbea_log.yaml");
 	//auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
-    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/tk_elas_mcts.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 3);
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/tk_stsa_rule.yaml");
+	auto agent = parser.getCmdOption<int>("-agent", 5);
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
     auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/tk_ntbea_maps.yaml");
     auto fm = parser.getCmdOption<float>("-fm", 5000);
@@ -122,6 +122,26 @@ int main(int argc, char** argv)
 				std::vector<float> {0.1, 1, 10},               // values of k
 				std::vector<int> {  10, 20},            // values of rollout
                 std::vector<int> {4, 6, 8, 10},     // earlyStop
+				//std::vector<int> {2},
+				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
+				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+                fm,
+                heuristic,
+				*gameConfig										// gameconfig to determine the list of parameters and run games
+			);
+            std::cout << "Finished the definition of ElasMCTS Evaluator" << std::endl;
+			break;
+        case 5: 
+			std::cout << "Optimize State Transition State Abstraction (STSA) Agent" << std::endl;
+			evaluator = std::make_unique<SGA::ElasMCTSuEvaluator>(
+				std::vector<float> {0.1, 1, 10,},               // values of k
+				std::vector<int> {  10, 20},            // values of rollout
+                //std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
+                //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
+                //std::vector<int> {4, 6, 8, 10, 12},     // earlyStop
+                std::vector<float> {0.1},     // R threshold
+                std::vector<float> {0.3},     // T threshold
+                std::vector<int> {4,6,8,10},     // earlyStop
 				//std::vector<int> {2},
 				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
 				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
