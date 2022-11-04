@@ -7,6 +7,7 @@
 #include <Stratega/ntbea/Evaluators/MCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/ElasMCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/RandElasMCTSuEvaluator.h>
+#include <Stratega/ntbea/Evaluators/STSAEvaluator.h>
 
 #include <Stratega/ntbea/Evaluators/Evaluator.h>
 #include <Stratega/ntbea/NTupleLandscapeModel.h>
@@ -32,8 +33,8 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "../ktk_mcts_ntbea_log.yaml");
 	//auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
-    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_rule.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 3);
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/Pusher_stsa_rule.yaml");
+	auto agent = parser.getCmdOption<int>("-agent", 5);
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
     auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/pta_ntbea_map.yaml");
     auto fm = parser.getCmdOption<float>("-fm", 5000);
@@ -139,6 +140,33 @@ int main(int argc, char** argv)
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
             std::cout << "Finished the definition of ElasMCTS Evaluator" << std::endl;
+			break;
+        case 5: 
+			std::cout << "Optimize STSA Agent" << std::endl;
+
+            if (heuristic == "ktk") {
+                r_thresholds.push_back(0.1);
+                t_thresholds.push_back(0.3);
+            }
+            else {
+                r_thresholds.push_back(0.2);
+                t_thresholds.push_back(0.3);
+            }
+			evaluator = std::make_unique<SGA::STSAEvaluator>(
+				std::vector<float> {0.1, 1, 10, 100},               // values of k
+				std::vector<int> {  10, 20, 40},            // values of rollout
+				//std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
+                //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
+                r_thresholds, t_thresholds,
+                std::vector<int> {6, 8},     // earlyStop
+				//std::vector<int> {2},
+				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
+				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+                fm,
+                heuristic,
+				*gameConfig										// gameconfig to determine the list of parameters and run games
+			);
+            std::cout << "Finished the definition of STSA Evaluator" << std::endl;
 			break;
     }
 
