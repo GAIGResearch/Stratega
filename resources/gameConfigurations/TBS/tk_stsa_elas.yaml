@@ -17,11 +17,11 @@ Agents:
         MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 4
+        AbstractionBatch: 1000
         BatchSize: 20
         K: 0.1
-        RThreshold: 1.0
-        TThreshold: 2.0
+        RThreshold: 0.1
+        TThreshold: 0.3
         IsMultiObjective: false
         RandomAbstraction: false
         IsActionIndependence: true
@@ -29,13 +29,13 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 5000
-        RolloutLength: 10
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 6
+        AbstractionBatch: 1000
         BatchSize: 20
         K: 1
-        RThreshold: 0.3
-        TThreshold: 0.0
+        RThreshold: 0.05
+        TThreshold: 1.0
         IsMultiObjective: false
         RandomAbstraction: false
         IsActionIndependence: false
