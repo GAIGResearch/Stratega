@@ -14,12 +14,12 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 10000
-        RolloutLength: 20
+        RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 10
+        AbstractionBatch: 8
         BatchSize: 20
         RandomAbstraction: False
-        K: 0.1
+        K: 10
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0

@@ -29,20 +29,13 @@ Agents:
         Heuristic: pta
     - UnitMCTSAgent:
         Budget: FMCALLS
-        DoStateAbstraction: true
+        DoStateAbstraction: false
         MaxFmCalls: 10000
-        RolloutLength: 10
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
-        BatchSize: 20
-        RandomAbstraction: False
+        RandomAbstraction: false
         K: 10
         IsUngrouping: false
-        IsPhiUngrouping: false
-        UngroupingBatchThreshold: 1.0
-        IsActionIndependent: false
-        RThreshold: 1.0
-        TThreshold: 1.0
         Heuristic: pta
     #- PusherAgent
     ##- RandomAgent
