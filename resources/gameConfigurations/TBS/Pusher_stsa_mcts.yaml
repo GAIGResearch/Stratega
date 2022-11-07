@@ -24,8 +24,8 @@ Agents:
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: true
-        RThreshold: 0.2
-        TThreshold: 0.3
+        RThreshold: 0.4
+        TThreshold: 0.2
         Heuristic: pta
     - MCTSAgent:
         Budget: FMCALLS
