@@ -13,7 +13,7 @@ Agents:
         MaxFmCalls: 10000
         RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 6
+        AbstractionBatch: 1000
         BatchSize: 20
         RandomAbstraction: false
         K: 10
@@ -21,16 +21,16 @@ Agents:
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: true
-        RThreshold: 2.0
-        TThreshold: 1.5
+        RThreshold: 0.1
+        TThreshold: 0.3
         Heuristic: ktk
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 10000
-        RolloutLength: 20
+        RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
+        AbstractionBatch: 1000
         BatchSize: 20
         RandomAbstraction: false
         K: 0.1
@@ -38,7 +38,7 @@ Agents:
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: false
-        RThreshold: 2.0
+        RThreshold: 0.05
         TThreshold: 1.0
         Heuristic: ktk
     #- UnitMCTSAgent:
