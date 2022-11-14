@@ -126,12 +126,9 @@ namespace SGA
 		std::string ex = expression;
 		for (auto& var : variable)
 		{
-			if (var.second->getType() == FunctionParameter::Type::Constant || var.second->getType() == FunctionParameter::Type::ParameterReference)
-			{
-				//Parse consant
-				double temp = var.second->getConstant(state, actionTargets);
-				ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
-			}
+			//Parse consant
+			double temp = var.second->getConstant(state, actionTargets);
+			ex = std::regex_replace(ex, std::regex(var.first), std::to_string(temp));
 		}
 		return ex;
 	}
