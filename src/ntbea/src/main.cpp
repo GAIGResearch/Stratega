@@ -8,6 +8,7 @@
 #include <Stratega/ntbea/Evaluators/ElasMCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/RandElasMCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/STSAEvaluator.h>
+#include <Stratega/ntbea/Evaluators/UGEvaluator.h>
 
 #include <Stratega/ntbea/Evaluators/Evaluator.h>
 #include <Stratega/ntbea/NTupleLandscapeModel.h>
@@ -171,6 +172,33 @@ int main(int argc, char** argv)
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
             std::cout << "Finished the definition of STSA Evaluator" << std::endl;
+			break;
+        case 6: 
+			std::cout << "Optimize Ungrouping Agent" << std::endl;
+
+            if (heuristic == "ktk") {
+                r_thresholds.push_back(0.1);
+                t_thresholds.push_back(0.3);
+            }
+            else {
+                r_thresholds.push_back(0.2);
+                t_thresholds.push_back(0.3);
+            }
+			evaluator = std::make_unique<SGA::UGEvaluator>(
+				std::vector<float> {0.1, 1, 10, 100},               // values of k
+				std::vector<int> {  10, 20, 40},            // values of rollout
+				//std::vector<float> {0, 0.05, 0.1, 0.3, 0.5, 1.0},     // R threshold
+                //std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
+				std::vector<float> {  0.1, 0.3, 0.5, 1.0, 1.5, 2.0},     // R threshold
+                std::vector<float> {0, 0.5, 1.0, 1.5, 2.0},     // T threshold
+				//std::vector<int> {2},
+				//std::vector<float> {0, 1, 5},					// magnitude values for each parameter
+				//std::vector<float> {0.3, 1, 3},				// u-values for each parameter
+                fm,
+                heuristic,
+				*gameConfig										// gameconfig to determine the list of parameters and run games
+			);
+            std::cout << "Finished the definition of Ungrouping Evaluator" << std::endl;
 			break;
     }
 
