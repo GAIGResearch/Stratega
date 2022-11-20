@@ -13,10 +13,10 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 10000
+        MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
+        AbstractionBatch: 6
         BatchSize: 20
         RandomAbstraction: False
         K: 10
@@ -24,15 +24,15 @@ Agents:
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: false
-        RThreshold: 1.0
-        TThreshold: 1.0
+        RThreshold: 2.0
+        TThreshold: 0.0
         Heuristic: pta
     - MCTSAgent:
         Budget: FMCALLS
-        MaxFmCalls: 10000
+        MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        K: 10
+        K: 0.1
         Heuristic: pta
     #- PusherAgent
     ##- RandomAgent

@@ -12,10 +12,10 @@ Agents:
     #- HumanAgent
     - MCTSAgent:
         Budget: FMCALLS
-        MaxFmCalls: 10000
+        MaxFmCalls: 5000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        K: 10
+        K: 0.1
         Heuristic: pta
     - PusherAgent
     ##- RandomAgent

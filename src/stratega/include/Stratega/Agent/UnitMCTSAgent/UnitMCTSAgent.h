@@ -36,6 +36,10 @@ namespace SGA {
                 else if (parameters_.random_abstraction) {
                     agentName = "RandomGroupedMCTSuAgent";
                 }
+
+                if (parameters_.IS_UNGROUPING) {
+                    agentName = "AutoUngroupingElasticAgent";
+                }
             }
         }
 
