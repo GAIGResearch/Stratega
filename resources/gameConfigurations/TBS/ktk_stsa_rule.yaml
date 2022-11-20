@@ -10,19 +10,19 @@ Agents:
     - UnitMCTSAgent:
         Budget: FMCALLS
         DoStateAbstraction: true
-        MaxFmCalls: 10000
+        MaxFmCalls: 5000
         RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 10
+        AbstractionBatch: 6
         BatchSize: 20
         RandomAbstraction: false
-        K: 0.1
+        K: 10
         IsUngrouping: false
         IsPhiUngrouping: false
         UngroupingBatchThreshold: 1.0
         IsActionIndependent: true
-        RThreshold: 0.2
-        TThreshold: 0.3
+        RThreshold: 1.0
+        TThreshold: 0.5
         Heuristic: ktk
     #- UnitMCTSAgent:
     #    DoStateAbstraction: false
