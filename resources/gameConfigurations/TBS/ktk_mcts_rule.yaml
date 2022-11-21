@@ -16,7 +16,7 @@ Agents:
     #    K: 0.1
     - MCTSAgent:
         Budget: FMCALLS
-        MaxFmCalls: 5000
+        MaxFmCalls: 10000
         RolloutLength: 10
         ContinuePreviousSearch: false
         K: 1.0
