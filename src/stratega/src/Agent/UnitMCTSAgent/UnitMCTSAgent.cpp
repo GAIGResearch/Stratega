@@ -201,19 +201,32 @@ namespace SGA {
                         //}
 
                          std::vector<int> ungrouped_indices = {};
+                         int depth_visited = 0;
+                         for (int j = 0; j < absNodes[i].size(); j++) {
+                             if(absNodes[i][j][0]->isUngrouped)continue;
+                             depth_visited += absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
+                         }
+                         int depth_width = depthToNodes[i].size();
                          for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                             
                              if (absNodes[i].size() > 0){
                                  if(absNodes[i][j][0]->isUngrouped)continue;
                                  int absVisit = absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
                                  int absSize = absNodes[i][j].size();
-                                 double ungrouping_threshold = 0.0;
+                                 /*double ungrouping_threshold = 0.0;
                                  if (parameters_.IS_PHI_UNGROUPING) {
                                      ungrouping_threshold = absSize*parameters_.batch_size;
                                  }
+                                 
                                  else {
                                      ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
-                                 }
-                                 if(absVisit - parameters_.R_THRESHOLD*2.0 *absSize* absSize > ungrouping_threshold){
+                                 }*/
+                                 //bool to_ungroup = absVisit - parameters_.R_THRESHOLD*2.0 *absSize* absSize > ungrouping_threshold;
+                                 bool to_ungroup = absVisit - absSize* absSize > 0; //parameters_.batch_size;
+                                 if(depth_visited ==0 || depth_width == 0)continue;
+                                 //bool to_ungroup = (absVisit) > (3* absSize);
+
+                                 if(to_ungroup){
                                      ungrouped_indices.push_back(j);
                                      //std::cout<<"Batch: "<< tmp_batch_used << ", ungrouping abstraction\n";
                                      for (int k = 0 ; k < absSize; k++){
@@ -322,7 +335,8 @@ namespace SGA {
              }//*/
 
              // do abstraction
-             for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)  // bottom-up
+             //for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 1 && parameters_.maxDepth>4; i--)  // bottom-up
+              for(int i = 3; (! stop_abstraction) && i > 1 && parameters_.maxDepth>3; i--)  // bottom-up
              {
                  std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
                  // try ungroup part of the abstraction
@@ -343,7 +357,7 @@ namespace SGA {
                      }
 
                     // aamas, leaf node skip abstraction
-                    if(node1->isAbstracted || node1->isUngrouped || node1->children.size() == 0)
+                    if(node1->isAbstracted || node1->isUngrouped || node1->children.size() == 0 )
                        continue;  // can be adjusted
 
                     if(absNodes[i].size() == 0) {  // this depth has no node cluster
@@ -786,12 +800,18 @@ namespace SGA {
         for (int i = 1; i < parameters_.maxDepth; i++) {
             int abs_size = absNodes[i].size();
             std::cout<< "depth: "<< i<< " abs Node: "<< abs_size << "\n";
+            
             if(abs_size == 0)continue;
 
             for (int j = 0; j < abs_size; j++) {
-            std::cout<< absNodes[i][j].size()<< " ";
+                std::cout<< absNodes[i][j].size();
+                if (absNodes[i][j].size() > 0) {
+                    std::cout<<"-"<<absNodes[i][j][0]->getVisitCount(&absNodeToStatistics)<<"-"<<absNodes[i][j][0]->getValue(&absNodeToStatistics);
+                }
+                std::cout<<"  ";
             }
             std::cout<<"\n";
         }
+        std::cout<<"\n";
     }
 }  // namespace SGA

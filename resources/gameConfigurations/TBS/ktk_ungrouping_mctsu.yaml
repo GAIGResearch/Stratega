@@ -11,9 +11,9 @@ Agents:
         Budget: FMCALLS
         DoStateAbstraction: true
         MaxFmCalls: 10000
-        RolloutLength: 10
+        RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 1000
+        AbstractionBatch: 100
         BatchSize: 20
         RandomAbstraction: false
         K: 0.1
@@ -30,7 +30,6 @@ Agents:
         MaxFmCalls: 10000
         RolloutLength: 10
         ContinuePreviousSearch: false
-        AbstractionBatch: 8
         BatchSize: 20
         RandomAbstraction: false
         K: 1
