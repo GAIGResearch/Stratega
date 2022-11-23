@@ -193,21 +193,23 @@ namespace SGA {
                 &absNodeToStatistics);
 
              //for aamas
-             if(parameters_.IS_UNGROUPING){
-                 if(parameters_.SINGLE_UNGROUPING){
-                     for (int i = 1; i < parameters_.maxDepth; i++) { // depth
-                        //if (absNodes[i].size() == 0) {
-                        //    break;
-                        //}
 
-                         std::vector<int> ungrouped_indices = {};
+             //if(parameters_.IS_UNGROUPING){
+             if(false){
+                 if(parameters_.SINGLE_UNGROUPING){
+                     //for (int i = 1; i < parameters_.maxDepth; i++) { // depth
+                     // test only ungroup the first layer
+                     for (int i = 1; i < parameters_.maxDepth; i++) {
+
+                         std::vector<int> ungrouped_indices = {}; // store indices to delete them from a vector
                          int depth_visited = 0;
+
                          for (int j = 0; j < absNodes[i].size(); j++) {
                              if(absNodes[i][j][0]->isUngrouped)continue;
                              depth_visited += absNodes[i][j][0]->getVisitCount(&absNodeToStatistics);
                          }
                          int depth_width = depthToNodes[i].size();
-                         for (int j = 0; j < absNodes[i].size(); j++) { // abs node
+                         for (int j = 0; j < absNodes[i].size(); j++) { // for every abs node
                              
                              if (absNodes[i].size() > 0){
                                  if(absNodes[i][j][0]->isUngrouped)continue;
@@ -222,7 +224,9 @@ namespace SGA {
                                      ungrouping_threshold = parameters_.UNGROUPING_BATCH_THRESHOLD*parameters_.batch_size;
                                  }*/
                                  //bool to_ungroup = absVisit - parameters_.R_THRESHOLD*2.0 *absSize* absSize > ungrouping_threshold;
-                                 bool to_ungroup = absVisit - absSize* absSize > 0; //parameters_.batch_size;
+
+                                 //bool to_ungroup = absVisit - absSize* absSize > 0; //parameters_.batch_size;
+                                 bool to_ungroup = absVisit - 3* absSize > 0;
                                  if(depth_visited ==0 || depth_width == 0)continue;
                                  //bool to_ungroup = (absVisit) > (3* absSize);
 
@@ -234,8 +238,10 @@ namespace SGA {
                                          absNodes[i][j][k]->isUngrouped=true;
                                      }
                                  }
-                             }//end if
+                             }
                          }//end for
+
+                         // delete stored abstract node
                          for (int idx = ungrouped_indices.size()-1; idx>=0 ;idx--) {
                              absNodes[i].erase(absNodes[i].begin()+ungrouped_indices[idx]);
                          }
@@ -336,157 +342,322 @@ namespace SGA {
 
              // do abstraction
              //for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 1 && parameters_.maxDepth>4; i--)  // bottom-up
-              for(int i = 3; (! stop_abstraction) && i > 1 && parameters_.maxDepth>3; i--)  // bottom-up
-             {
-                 std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
-                 // try ungroup part of the abstraction
+             
+             // final version:
+             // for(int i = 3; (! stop_abstraction) && i > 1 && parameters_.maxDepth>3; i--)  // bottom-up
 
-                 for(auto node1 : deep_layer) {  // each initial node
-                     // if ungrouped, don't abstract again
-                     // 
-                     // aamas if one parent is ungrouped, this subtree will not be abstracted
-                     if(parameters_.SUBTREE_UNGROUPING){
-                         auto tmp_node = node1;
-                         while (tmp_node) {
-                            if (tmp_node->isUngrouped) {
-                                node1->isUngrouped=true;
-                                break;
-                            }
-                            tmp_node = tmp_node->parentNode;
+             // ablation: without layer limite
+             // for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 1 ; i--)
+             
+              // try different condition for abstraction and ungrouping agents
+              if(parameters_.IS_UNGROUPING){
+                  //for(int i = 3; (! stop_abstraction) && i > 1 && parameters_.maxDepth>3; i--)
+                 for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0 ; i--)
+                 {
+                     std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
+                     // try ungroup part of the abstraction
+
+                     for(auto node1 : deep_layer) {  // each initial node
+                         // if ungrouped, don't abstract again
+                         // 
+                         // aamas if one parent is ungrouped, this subtree will not be abstracted
+                         if(parameters_.SUBTREE_UNGROUPING){
+                             auto tmp_node = node1;
+                             while (tmp_node) {
+                                if (tmp_node->isUngrouped) {
+                                    node1->isUngrouped=true;
+                                    break;
+                                }
+                                tmp_node = tmp_node->parentNode;
+                             }
                          }
-                     }
 
-                    // aamas, leaf node skip abstraction
-                    if(node1->isAbstracted || node1->isUngrouped || node1->children.size() == 0 )
-                       continue;  // can be adjusted
+                        // aamas, leaf node skip abstraction
+                        if(node1->isAbstracted || node1->isUngrouped || node1->children.size() == 0 )
+                           continue;  // can be adjusted
 
-                    if(absNodes[i].size() == 0) {  // this depth has no node cluster
+                        if(absNodes[i].size() == 0) {  // this depth has no node cluster
 
-                        absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                            absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
 
-                        // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
-                        absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                            i * tmp_index + absNodes[i].size() - 1,
-                            std::vector< double >{node1->value, float(node1->nVisits)}));
+                            // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                            absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                i * tmp_index + absNodes[i].size() - 1,
+                                std::vector< double >{node1->value, float(node1->nVisits)}));
+
+                            node1->isAbstracted = true;
+                            node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+
+                            treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+0)); // added 20221014
+
+                            continue;
+                        }
+
+                        if(!(parameters_.random_abstraction)){
+                           bool foundExistGroup = false;
+                           if (parameters_.IS_ACTION_INDEPENDENT) {
+                               for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                               {
+                                  bool match = true;
+                                  for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+                                      if(!isActionIndependentHomomorphism(
+                                        forwardModel,
+                                        node1,
+                                        absNodes[i][j][k],
+                                        parameters_.R_THRESHOLD,
+                                        parameters_.T_THRESHOLD)) {
+                                           match = false;
+                                      }
+                                  }
+                                  if(match) {
+                                     node1->isAbstracted = true;
+                                     node1->absNodeID = i * tmp_index + j;
+                                     absNodes[i][j].push_back(node1);  // add into existing group
+                                     //treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+                                     treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+j));
+
+                                     foundExistGroup = true;
+                                  }//end if (match)
+                               }
+                           }
+                           else {
+                               for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                               {
+                                   bool match = false;
+                                   if(absNodes[i][j].size()>2) continue;
+                                   for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+                                       
+                                       if(isTwoNodeApproxmateHomomorphism(
+                                         forwardModel,
+                                         node1,
+                                         absNodes[i][j][k],
+                                         parameters_.R_THRESHOLD,
+                                         parameters_.T_THRESHOLD)) {
+                                            match = true;
+                                            break;
+                                         } // end if
+                                  } // end for
+                                  if(match) {
+                                     node1->isAbstracted = true;
+                                     node1->absNodeID = i * tmp_index + j;
+                                     absNodes[i][j].push_back(node1);  // add into existing group
+                                     treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+
+                                     foundExistGroup = true;
+                                  }//end if (match)
+                               }
+                           }
+
+                           // not found existing abstract node to add in, create a new one
+                           if(! foundExistGroup) {
+                              absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                              absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                 i * tmp_index + absNodes[i].size() - 1,
+                                 std::vector< double >{node1->value, float(node1->nVisits)}));
+
+                              // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
+                              // node1->value, double(node1->nVisits) };
+
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+
+                           } // end if(! foundExistGroup) {
+                        } else {
+                           /*
+                            * uniformly add a initial node to abstact node/ create a new abstract node
+                            */
+                           int nAction = absNodes[i].size();
+                       
+                           boost::random::uniform_int_distribution<size_t> actionDist(0, nAction); // close interval
+                           auto actionIndex = actionDist(getRNGEngine());
+
+                           // create a new abstact node
+                           if (actionIndex == nAction) {
+
+                              absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+
+                              // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                              absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                 i * tmp_index + absNodes[i].size() - 1,
+                                 std::vector< double >{node1->value, float(node1->nVisits)}));
+                          
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+                              treeNodetoAbsNode.insert(std::pair<int, int>(node1->nodeID, node1->absNodeID ));
+
+                              continue;
+                           }
+                           else {
+
+                              //int j = absNodes[i][actionIndex].size()-1;
+                              int j = actionIndex;
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + j;
+
+                              absNodes[i][actionIndex].push_back(node1);  // add into existing group
+                              treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
+
+                           }
+                        }
 
                         node1->isAbstracted = true;
-                        node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+                     }
 
-                        treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+0)); // added 20221014
-
-                        continue;
-                    }
-
-                    if(!(parameters_.random_abstraction)){
-                       bool foundExistGroup = false;
-                       if (parameters_.IS_ACTION_INDEPENDENT) {
-                           for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
-                           {
-                              bool match = true;
-                              for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
-                                  if(!isActionIndependentHomomorphism(
-                                    forwardModel,
-                                    node1,
-                                    absNodes[i][j][k],
-                                    parameters_.R_THRESHOLD,
-                                    parameters_.T_THRESHOLD)) {
-                                       match = false;
-                                  }
-                              }
-                              if(match) {
-                                 node1->isAbstracted = true;
-                                 node1->absNodeID = i * tmp_index + j;
-                                 absNodes[i][j].push_back(node1);  // add into existing group
-                                 //treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
-                                 treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+j));
-
-                                 foundExistGroup = true;
-                              }//end if (match)
-                           }
-                       }
-                       else {
-                           for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
-                           {
-                               bool match = false;
-                               for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
-
-                                   if(isTwoNodeApproxmateHomomorphism(
-                                     forwardModel,
-                                     node1,
-                                     absNodes[i][j][k],
-                                     parameters_.R_THRESHOLD,
-                                     parameters_.T_THRESHOLD)) {
-                                        match = true;
-                                        break;
-                                     } // end if
-                              } // end for
-                              if(match) {
-                                 node1->isAbstracted = true;
-                                 node1->absNodeID = i * tmp_index + j;
-                                 absNodes[i][j].push_back(node1);  // add into existing group
-                                 treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
-
-                                 foundExistGroup = true;
-                              }//end if (match)
-                           }
-                       }
-
-                       // not found existing abstract node to add in, create a new one
-                       if(! foundExistGroup) {
-                          absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
-                          absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                             i * tmp_index + absNodes[i].size() - 1,
-                             std::vector< double >{node1->value, float(node1->nVisits)}));
-
-                          // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
-                          // node1->value, double(node1->nVisits) };
-
-                          node1->isAbstracted = true;
-                          node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
-
-                       } // end if(! foundExistGroup) {
-                    } else {
-                       /*
-                        * uniformly add a initial node to abstact node/ create a new abstract node
-                        */
-                       int nAction = absNodes[i].size();
-                       
-                       boost::random::uniform_int_distribution<size_t> actionDist(0, nAction); // close interval
-                       auto actionIndex = actionDist(getRNGEngine());
-
-                       // create a new abstact node
-                       if (actionIndex == nAction) {
-
-                          absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
-
-                          // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
-                          absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                             i * tmp_index + absNodes[i].size() - 1,
-                             std::vector< double >{node1->value, float(node1->nVisits)}));
-                          
-                          node1->isAbstracted = true;
-                          node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
-                          treeNodetoAbsNode.insert(std::pair<int, int>(node1->nodeID, node1->absNodeID ));
-
-                          continue;
-                       }
-                       else {
-
-                          //int j = absNodes[i][actionIndex].size()-1;
-                          int j = actionIndex;
-                          node1->isAbstracted = true;
-                          node1->absNodeID = i * tmp_index + j;
-
-                          absNodes[i][actionIndex].push_back(node1);  // add into existing group
-                          treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
-
-                       }
-                    }
-
-                    node1->isAbstracted = true;
                  }
+              }
+              else{
+                 for(int i = parameters_.maxDepth - 1; (! stop_abstraction) && i > 0; i--)
+                 {
+                     std::vector< UnitMCTSNode* > deep_layer = depthToNodes[i];
+                     // try ungroup part of the abstraction
 
-             }
+                     for(auto node1 : deep_layer) {  // each initial node
+                         // if ungrouped, don't abstract again
+                         // 
+                         // aamas if one parent is ungrouped, this subtree will not be abstracted
+                         if(parameters_.SUBTREE_UNGROUPING){
+                             auto tmp_node = node1;
+                             while (tmp_node) {
+                                if (tmp_node->isUngrouped) {
+                                    node1->isUngrouped=true;
+                                    break;
+                                }
+                                tmp_node = tmp_node->parentNode;
+                             }
+                         }
+
+                        // aamas, leaf node skip abstraction
+                        if(node1->isAbstracted || node1->isUngrouped || node1->children.size() == 0 )
+                           continue;  // can be adjusted
+
+                        if(absNodes[i].size() == 0) {  // this depth has no node cluster
+
+                            absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+
+                            // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                            absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                i * tmp_index + absNodes[i].size() - 1,
+                                std::vector< double >{node1->value, float(node1->nVisits)}));
+
+                            node1->isAbstracted = true;
+                            node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
+
+                            treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+0)); // added 20221014
+
+                            continue;
+                        }
+
+                        if(!(parameters_.random_abstraction)){
+                           bool foundExistGroup = false;
+                           if (parameters_.IS_ACTION_INDEPENDENT) {
+                               for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                               {
+                                  bool match = true;
+                                  for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+                                      if(!isActionIndependentHomomorphism(
+                                        forwardModel,
+                                        node1,
+                                        absNodes[i][j][k],
+                                        parameters_.R_THRESHOLD,
+                                        parameters_.T_THRESHOLD)) {
+                                           match = false;
+                                      }
+                                  }
+                                  if(match) {
+                                     node1->isAbstracted = true;
+                                     node1->absNodeID = i * tmp_index + j;
+                                     absNodes[i][j].push_back(node1);  // add into existing group
+                                     //treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+                                     treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i*1000+j));
+
+                                     foundExistGroup = true;
+                                  }//end if (match)
+                               }
+                           }
+                           else {
+                               for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
+                               {
+                                   bool match = false;
+                                   for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
+
+                                       if(isTwoNodeApproxmateHomomorphism(
+                                         forwardModel,
+                                         node1,
+                                         absNodes[i][j][k],
+                                         parameters_.R_THRESHOLD,
+                                         parameters_.T_THRESHOLD)) {
+                                            match = true;
+                                            break;
+                                         } // end if
+                                  } // end for
+                                  if(match) {
+                                     node1->isAbstracted = true;
+                                     node1->absNodeID = i * tmp_index + j;
+                                     absNodes[i][j].push_back(node1);  // add into existing group
+                                     treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, node1->absNodeID));
+
+                                     foundExistGroup = true;
+                                  }//end if (match)
+                               }
+                           }
+
+                           // not found existing abstract node to add in, create a new one
+                           if(! foundExistGroup) {
+                              absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+                              absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                 i * tmp_index + absNodes[i].size() - 1,
+                                 std::vector< double >{node1->value, float(node1->nVisits)}));
+
+                              // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
+                              // node1->value, double(node1->nVisits) };
+
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+
+                           } // end if(! foundExistGroup) {
+                        } else {
+                           /*
+                            * uniformly add a initial node to abstact node/ create a new abstract node
+                            */
+                           int nAction = absNodes[i].size();
+                       
+                           boost::random::uniform_int_distribution<size_t> actionDist(0, nAction); // close interval
+                           auto actionIndex = actionDist(getRNGEngine());
+
+                           // create a new abstact node
+                           if (actionIndex == nAction) {
+
+                              absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
+
+                              // absNodeToStatistics, absNodeHASH -> absNode.value, absNode.visitingCount
+                              absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
+                                 i * tmp_index + absNodes[i].size() - 1,
+                                 std::vector< double >{node1->value, float(node1->nVisits)}));
+                          
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
+                              treeNodetoAbsNode.insert(std::pair<int, int>(node1->nodeID, node1->absNodeID ));
+
+                              continue;
+                           }
+                           else {
+
+                              //int j = absNodes[i][actionIndex].size()-1;
+                              int j = actionIndex;
+                              node1->isAbstracted = true;
+                              node1->absNodeID = i * tmp_index + j;
+
+                              absNodes[i][actionIndex].push_back(node1);  // add into existing group
+                              treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
+
+                           }
+                        }
+
+                        node1->isAbstracted = true;
+                     }
+
+                 }
+             } // End if is_ungrouping
 
              n_abs_iteration++;
              tmp_batch_used++;
