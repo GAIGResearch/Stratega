@@ -15,6 +15,8 @@ namespace SGA {
     struct UnitMCTSParameters: AgentParameters {
         int OPPONENT_ID = -1;
 
+        bool IS_SCSA = false;
+
         double K = sqrt(2);
         int ROLLOUT_LENGTH = 3;
         bool ROLLOUTS_ENABLED = true;
@@ -98,6 +100,7 @@ namespace YAML {
             rhs.R_THRESHOLD                  = node["RThreshold"].as< double >(rhs.R_THRESHOLD);
             rhs.T_THRESHOLD                  = node["TThreshold"].as< double >(rhs.T_THRESHOLD);
             rhs.IS_ACTION_INDEPENDENCE           = node["IsActionIndependence"].as< bool >(rhs.IS_ACTION_INDEPENDENCE);
+            rhs.IS_SCSA           = node["IsScsa"].as< bool >(rhs.IS_SCSA);
             return true;
         }
     };

@@ -17,14 +17,22 @@ Agents:
         MaxFmCalls: 5000
         RolloutLength: 20
         ContinuePreviousSearch: false
-        AbstractionBatch: 6
+        AbstractionBatch: 1000
         BatchSize: 20
         K: 1
-        RThreshold: 0.1
-        TThreshold: 0.3
+        RThreshold: 0.05
+        TThreshold: 1.0
         IsMultiObjective: false
         RandomAbstraction: false
-        IsActionIndependence: true
+        IsActionIndependence: false
+        IsScsa: true
+    - MCTSAgent:
+        Budget: FMCALLS
+        Iterations: 10000
+        MaxFmCalls: 5000
+        RolloutLength: 20
+        ContinuePreviousSearch: false
+        K: 0.1
 #    - UnitMCTSAgent:
 #        Budget: FMCALLS
 #        DoStateAbstraction: false
@@ -32,7 +40,7 @@ Agents:
 #        RolloutLength: 10
 #        ContinuePreviousSearch: false
 #        K: 0.1
-    - BasicTBSAgent
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent

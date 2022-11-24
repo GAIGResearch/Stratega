@@ -36,7 +36,10 @@ namespace SGA {
             unitIndex = std::vector< int >();
 
             if (params.DO_STATE_ABSTRACTION) {
-                if (params.IS_ACTION_INDEPENDENCE) {
+                if (parameters_.IS_SCSA) {
+                    agentName = "SCSAMCTSuAgent";
+                }
+                else if (params.IS_ACTION_INDEPENDENCE) {
                     agentName = "ActionIndependentMCTSuAgent";
                 }
                 else {
