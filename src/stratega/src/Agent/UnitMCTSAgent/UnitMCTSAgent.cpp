@@ -424,7 +424,7 @@ namespace SGA {
                                for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
                                {
                                    bool match = false;
-                                   if(absNodes[i][j].size()>2) continue;
+                                   if(absNodes[i][j].size()>1) continue;
                                    for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
                                        
                                        if(isTwoNodeApproxmateHomomorphism(
