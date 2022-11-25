@@ -561,7 +561,7 @@ namespace SGA {
                     //}
                     //*/
                     //state.printBoard();
-                    printAbsNodeStatus();
+                    //printAbsNodeStatus();
                     //rootNode->printTree();
 
                     stop_abstraction = true;
