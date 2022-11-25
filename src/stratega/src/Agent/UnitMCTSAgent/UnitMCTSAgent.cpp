@@ -215,7 +215,8 @@ namespace SGA {
                                for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
                                {
                                   bool match = true;
-                                  if(absNodes[i][j].size()>1) continue;
+                                  //if(absNodes[i][j].size()>1) continue;
+                                  if(absNodes[i][j].size() > parameters_.SIZE_LIMIT) continue;
                                   for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
                                       if(!isActionIndependentHomomorphism(
                                         forwardModel,

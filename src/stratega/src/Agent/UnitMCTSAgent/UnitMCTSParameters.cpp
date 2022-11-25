@@ -6,7 +6,10 @@ void UnitMCTSParameters::printDetails() const
 {
     AgentParameters::printDetails();
     if (DO_STATE_ABSTRACTION) {
-        if (IS_ACTION_INDEPENDENCE) {
+        if (IS_SCSA) {
+            std::cout<< "SCSAAgent\n";
+        }
+        else if (IS_ACTION_INDEPENDENCE) {
             std::cout<< "ActionIndependentMCTSuAgent\n";
         }
         else {
@@ -34,6 +37,8 @@ void UnitMCTSParameters::printDetails() const
             std::cout << "\tR_THRESHOLD = "<< R_THRESHOLD << " T_THRESHOLD = " << T_THRESHOLD << "\n";
         }
         std::cout<<"\tRANDOM_ABSTRACTION = " << RANDOM_ABSTRACTION <<"\n";
+        std::cout<<"\tSIZE_LIMIT = " << SIZE_LIMIT <<"\n";
+
     }
     
 }

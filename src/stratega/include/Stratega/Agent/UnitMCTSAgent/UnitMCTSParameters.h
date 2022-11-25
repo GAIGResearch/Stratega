@@ -13,6 +13,7 @@
 
 namespace SGA {
     struct UnitMCTSParameters: AgentParameters {
+        int SIZE_LIMIT = 1;
         int OPPONENT_ID = -1;
 
         bool IS_SCSA = false;
@@ -101,6 +102,7 @@ namespace YAML {
             rhs.T_THRESHOLD                  = node["TThreshold"].as< double >(rhs.T_THRESHOLD);
             rhs.IS_ACTION_INDEPENDENCE           = node["IsActionIndependence"].as< bool >(rhs.IS_ACTION_INDEPENDENCE);
             rhs.IS_SCSA           = node["IsScsa"].as< bool >(rhs.IS_SCSA);
+            rhs.SIZE_LIMIT        = node["SizeLimit"].as<int>(rhs.SIZE_LIMIT);
             return true;
         }
     };
