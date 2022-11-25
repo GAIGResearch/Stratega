@@ -99,14 +99,7 @@ namespace SGA {
             if (a.getActionFlag() == ActionFlag::EndTickAction) {
                 unitIndexInitialized = false;
             }
-            //std::cout<<"End agent1\n";
-            /*
-            if (parameters_.DO_STATE_ABSTRACTION) {
-                //state.printBoard();
-                state.printActionInfo(a);
-                //parameters_.abstractionHeuristic->evaluateGameState(forwardModel, state, getPlayerID(), true);
-            }
-            //*/
+
             return ActionAssignment::fromSingleAction(a);
         } else {
             if(parameters_.CONTINUE_PREVIOUS_SEARCH && previousActionIndex != -1) {
@@ -239,9 +232,11 @@ namespace SGA {
                                }
                            }
                            else {
+
                                for(int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
                                {
                                    bool match = false;
+                                   if(absNodes[i][j].size() > parameters_.SIZE_LIMIT) continue;
                                    for(int k = 0; k < absNodes[i][j].size(); k++) {  // compare between new ground nodes to the abstract Nodes
 
                                        if(isTwoNodeApproxmateHomomorphism(
@@ -489,63 +484,7 @@ namespace SGA {
                                 node1->absNodeID = i * tmp_index + absNodes[i].size() - 1;
 
                             } 
-                            // end if(! foundExistGroup)
-                            /*for (int j = 0; j < absNodes[i].size(); j++)  // each abstract nodes: nodes cluster
-                            {
-
-                                //std::cout<<"5\n";
-                                bool match = true;
-                                for(int k = 0; k < absNodes[i][j].size();
-                                    k++) {  // compare between new initial nodes to the abstracted Nodes
-                                    if (!parameters_.IS_MULTI_OBJECTIVE) {
-                                        //std::cout<<"isTwoNodeApproxmateHomomorphism\n";
-                                        if( !isTwoNodeApproxmateHomomorphism(
-                                            forwardModel,
-                                            node1,
-                                            absNodes[i][j][k],
-                                            parameters_.R_THRESHOLD,
-                                            parameters_.T_THRESHOLD)) {
-                                        match = false;
-                                        }
-                                        //std::cout<<"Ends isTwoNodeApproxmateHomomorphism\n";
-                                    }
-                                    else {
-                                        if( !isHomomorphismMultiObjective(
-                                            forwardModel,
-                                            node1,
-                                            absNodes[i][j][k])) {
-                                        match = false;
-                                        }
-                                    }
-
-                                } // end for
-                                if(match) {
-                                    //std::cout<<"matched\n";
-                                    node1->isAbstracted = true;
-                                    node1->absNodeID = i * tmp_index + j;
-                                    absNodes[i][j].push_back(node1);  // add into existing group
-                                    treeNodetoAbsNode.insert(std::pair< int, int >(node1->nodeID, i * 1000 + j));
-
-                                    foundExistGroup = true;
-                                    //std::cout<<"ends matched\n";
-                                }
-                                //std::cout<<"6\n";
-                            }
-                            //std::cout<<"7\n";
-                            if(! foundExistGroup) {
-                                //std::cout<<"!foundExistGroup\n";
-                                absNodes[i].push_back(std::vector< UnitMCTSNode* >{node1});
-                                absNodeToStatistics.insert(std::pair< int, std::vector< double > >(
-                                    i * tmp_index + absNodes[i].size() - 1,
-                                    std::vector< double >{node1->value, float(node1->nVisits)}));
-                                // absNodeToStatistics[i * 1000 + absNodes[i].size() - 1] = std::vector<double>{
-                                // node1->value, double(node1->nVisits) };
-                                node1->isAbstracted = true;
-                                node1->absNodeID = i * 1000 + absNodes[i].size() - 1;
-                                // std::cout << " create absNode, ID: " << i * tmp_index + absNodes[i].size() - 1
-                                // << std::endl;
-                                //std::cout<<"ends !foundExistGroup\n";
-                            }*/
+                           
                         }
                         else {
                        /*
@@ -622,7 +561,7 @@ namespace SGA {
                     //}
                     //*/
                     //state.printBoard();
-                    //printAbsNodeStatus();
+                    printAbsNodeStatus();
                     //rootNode->printTree();
 
                     stop_abstraction = true;
