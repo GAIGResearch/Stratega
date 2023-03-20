@@ -28,6 +28,9 @@ namespace SGA {
 		for (auto u : allUnits) {
 			auto entityActionSpace =
 				forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, true);
+			if(entityActionSpace.size()==1){
+				continue;
+			}
 			//entityActionSpaceSize[uid] = entityActionSpace.size();
 			nodeActionSpace.push_back(std::vector<SGA::Action>{});
 			for (int i = 0; i < entityActionSpace.size(); i++) {
@@ -71,6 +74,7 @@ namespace SGA {
 
 	double SLIAgent::rollOut(GameState gameState, ForwardModel& forwardModel, SLIParameters& params, boost::mt19937& randomGenerator)
 	{
+		std::cout << "entered rollout\n";
 		int thisDepth = 0;
 		//Create a copy and mark our depth on the tree.
 		auto gsCopy(gameState);
@@ -81,12 +85,13 @@ namespace SGA {
 			params.currentFMCalls++;
 		}
 
+		std::cout << "starting while\n";
 		//If we must keep rolling.
 		while (!(rolloutFinished(gsCopy, thisDepth, params) || gsCopy.isGameOver())) {
 
 			//Find my action space.
 			auto actions = forwardModel.generateActions(gsCopy, params.PLAYER_ID);
-			//std::cout << "actions.size(): " << actions.size() << "\n";
+			std::cout << "actions.size(): " << actions.size() << "\n";
 			if (actions.size() == 0)
 				break;
 
@@ -95,7 +100,7 @@ namespace SGA {
 			applyActionToGameState(forwardModel, gsCopy, actions.at(randomDistribution(randomGenerator)), params, params.PLAYER_ID);
 			thisDepth++;
 		}
-		//std::cout << "end rollout inner loop\n";
+		std::cout << "end rollout inner loop\n";
 		//We evaluate the state at the end of the rollout using the heuristic specified in the parameter settings. 
 		//We then return this reward to the last node expanded in the tree.
 		//return normalize(params.heuristic->evaluateGameState(forwardModel, gsCopy, params.PLAYER_ID), 0, 1);
@@ -106,9 +111,9 @@ namespace SGA {
 	ActionAssignment SLIAgent::computeAction(GameState state, const ForwardModel& forwardModel, Timer timer) {
 		parameters_.currentFMCalls = 0;
 		// BUG: numUnit should be movable unit rather than real number of units
-		//std::cout << "START NEW  SEARCH!\n";
+		std::cout << "START NEW  SEARCH!\n";
 
-		/*
+		///*
 		std::cout << "\nActionSpace: \n";
 
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -147,6 +152,10 @@ namespace SGA {
 
 
 		std::vector< std::vector<SGA::Action> > nodeActionSpace = generateActionSpace(state, forwardModel);  
+		if(nodeActionSpace.size() == 0){
+			Action endAction = Action::createEndAction(getPlayerID());
+			return ActionAssignment::fromSingleAction(endAction);
+		}
 		/*
 		for (int i = 0; i < nodeActionSpace.size(); i++) {
 			std::cout << "i: " << i << " , actionSpace size: " << nodeActionSpace[i].size() << "\n";
@@ -169,7 +178,7 @@ namespace SGA {
 			unitActionCounts.push_back(tmp_count);
 		}
 
-		//std::cout << "a\n";
+		std::cout << "a\n";
 		
 		int numUnit = nodeActionSpace.size();
 		int which = 0;
@@ -308,15 +317,35 @@ namespace SGA {
 			int order = int(iter - sortedEntropy.begin());
 			unitOrder[order] = i;
 		}
-		//std::cout << 3 << "\n";
+		std::cout << 3 << " actionCombinationsToEvaluate.size(): "<< actionCombinationsToEvaluate.size()<<"\n";
+
+		std::vector< std::discrete_distribution<std::size_t> > d_vector = {};
+		for (int i = 0; i < NUM_UNITS; i++) {
+			int unit_id = unitOrder[i];
+			d_vector.push_back(std::discrete_distribution<std::size_t>(filteredActionValue[unit_id].begin(), filteredActionValue[unit_id].end()));
+		}
 		for(int kk = 0; kk < N_SAMPLE_FOR_EVALUATE; kk++){
 			actionCombinationsToEvaluate.push_back(std::vector<int>(NUM_UNITS, 0));
+			std::cout << "kk: " << kk << "\n";
+
+
 			for (int i = 0; i < NUM_UNITS; i++) {
 				/*sample unit action for unitOrder[i]*/
 				int unit_id = unitOrder[i];
 				//std::discrete_distribution<std::size_t> d{ filteredActionValue[i].begin(), filteredActionValue[i].end() };
-				std::discrete_distribution<std::size_t> d{ filteredActionValue[unit_id].begin(), filteredActionValue[unit_id].end() };
-				int unit_action_id = d(randomGenerator);
+				std::cout << "filteredActionValue.size(): " << filteredActionValue.size() << " unit_id: " << unit_id << "filteredActionValue[unit_id].size() " << filteredActionValue[unit_id].size() <<"\n";
+				
+				for(int j = 0; j < filteredActionValue[unit_id].size(); j++){
+					std::cout << filteredActionValue[unit_id][j] << "\t";
+				}
+				std::cout << "\n";
+				//std::discrete_distribution<std::size_t> d{ filteredActionValue[unit_id].begin(), filteredActionValue[unit_id].end() };
+				//std::vector<double> tmp_d = std::vector<double>(filteredActionValue[unit_id].size(), 1.0);
+				//std::discrete_distribution<std::size_t> d( filteredActionValue[unit_id].begin(), filteredActionValue[unit_id].end() );
+				std::cout << "3.3\n";
+				//int unit_action_id = d(randomGenerator);
+				int unit_action_id = d_vector[i](randomGenerator);
+				std::cout << "kk: " << kk << " unit_id: " << unit_id <<" actionCombinationsToEvaluate[kk].size(): "<< actionCombinationsToEvaluate[kk].size() << "\n";
 				actionCombinationsToEvaluate[kk][unit_id] = unit_action_id;
 			}
 		}
@@ -330,7 +359,7 @@ namespace SGA {
 		}
 		*/
 
-		//std::cout << 4 << "\n";
+		std::cout << 4 << "\n";
 		// calculate entropy of distribution for each unit
 		// sample unit action according to unit-order decided by its entropy of reward distribution
 		// return a set of action combinations
@@ -343,42 +372,47 @@ namespace SGA {
 		for (int i = 0; i < filteredActionValue.size(); i++) {
 			std::cout << "filteredActionValue " << i << " size: " << filteredActionValue[i].size() << "\n";
 		}
-		*/
+		//*/
 
 		int sample_remained = N_SAMPLE_FOR_EVALUATE;
 		std::vector<double> reward_evaluated = std::vector<double>(sample_remained, 0.0);
 		for(int i = 0; i < n_evaluate; i++){
-			//std::cout << "The Evaluate Loop: " << i << "\n";
+			std::cout << "The Evaluate Loop: " << i << "\n";
 			int m = int(EVALUATE_CONSTANT / (sample_remained * int(log(EVALUATE_CONSTANT))));
+
+			/*for each action combination, evaluate them, get half of them for the next turn*/
 			for(int j = 0; j < sample_remained; j++){
 				double r_this = 0.0;
 				auto gsCopy(state);
-				//std::cout << 4.01 << "\n";
+				std::cout << 4.01 << "\n";
+
+				/*execute this action combination*/
 				for (int k = 0; k < numUnit; k++) {
 					//auto a_tmp = nodeActionSpace[k][actionCombinationsToEvaluate[j][k]];
-					//std::cout << "k: " << k << ", actionCombinationsToEvaluate[j][k]: " << actionCombinationsToEvaluate[j][k];
-					//std::cout << ", filteredActionSpace[k].size(): " << filteredActionSpace[k].size() << "\n";
+					std::cout << "actionCombinationsToEvaluate[j].size(): " << actionCombinationsToEvaluate[j].size() << "\n";
+					std::cout << "k: " << k << ", actionCombinationsToEvaluate[j][k]: " << actionCombinationsToEvaluate[j][k];
+					std::cout << ", filteredActionSpace[k].size(): " << filteredActionSpace[k].size() << " numUnit: "<< numUnit<< "\n";
 					auto a_tmp = filteredActionSpace[k][actionCombinationsToEvaluate[j][k]];
 
 					if (a_tmp.validate(gsCopy)) {
 						applyActionToGameState(*processedForwardModel, gsCopy, a_tmp, parameters_, parameters_.PLAYER_ID);
 					}
 
-					//whetherSelected[i][which] = true;
 				}
-				//std::cout << 4.02 << "\n";
+				std::cout << 4.02 << "\n";
 				for(int k = 0; k < m; k++){
 					// execute them all
+					std::cout << "rollout k: " << k << " m: " << m <<" isEnd? "<< gsCopy.isGameOver() << "\n";
 					double r = rollOut(gsCopy, *processedForwardModel, parameters_, randomGenerator);
 					r_this += r;
 				}
 				
 				r_this /= m;
 				reward_evaluated[j] = r_this;
-				//std::cout << 4.03 << "\n";
+				std::cout << 4.03 << "\n";
 
 			}
-			//std::cout << 4.1 << "\n";
+			std::cout << 4.1 << "\n";
 
 			// update sample_remained
 			std::vector<double> sortedReward(reward_evaluated);
@@ -387,17 +421,6 @@ namespace SGA {
 
 			/*index is the order, value is unit id (not the id in the engine)*/
 			std::vector<int> banditOrder = std::vector<int>(reward_evaluated.size(), 0);
-
-			//if (i == 1) {
-			//	std::wcout << "reward_evaluated.size: " << reward_evaluated.size() << " sortedReward.size(): " << sortedReward.size() <<" banditOrder.size(): " << banditOrder.size() << "\n";
-			//}
-			//if (i == 1) { // doesn't work
-			//	for (int j = 0; j < sortedReward.size(); j++) {
-			//		std::cout << "sortedReward " << j << " : " << sortedReward[j] << "\n";
-			//	}
-			//	std::cout << "4.xx\n";
-				
-			//}
 			
 			for (int j = 0; j < sortedReward.size(); j++) {
 				//auto iter = std::lower_bound(sortedReward.begin(), sortedReward.end(), reward_evaluated[j]);
@@ -405,7 +428,7 @@ namespace SGA {
 				int order = int(iter - sortedReward.begin());
 				banditOrder[order] = j;
 			}
-			//std::cout << 4.3 << "\n";
+			std::cout << 4.3 << "\n";
 			/*if (i == 1) { // doesn't work, works now
 				for(int j = 0; j < banditOrder.size(); j++){
 					std::cout << "bandit " << j << " : " << banditOrder[j] << "\n";
@@ -413,28 +436,44 @@ namespace SGA {
 				std::cout << "4.3.1\n";
 				//return ActionAssignment::fromSingleAction(actionSpace[0]);
 			}*/
+			
 
 			std::vector<std::vector<int> > tmp = {};
 			for(int j = 0; j < int(sample_remained/2); j++){
-				tmp.push_back(actionCombinationsToEvaluate[banditOrder[j]]);
+				if(banditOrder[j] >= actionCombinationsToEvaluate.size()){
+					std::cout << "ERROR!!#*(#@*#(\n";
+				}
+				tmp.push_back(std::vector<int>());
+				for(int k = 0; k < actionCombinationsToEvaluate[banditOrder[j]].size(); k++){
+					tmp[j].push_back(actionCombinationsToEvaluate[banditOrder[j]][k]);
+				}
+				//tmp.push_back(actionCombinationsToEvaluate[banditOrder[j]]);
 			}
-
-			actionCombinationsToEvaluate.erase(actionCombinationsToEvaluate.begin(), actionCombinationsToEvaluate.end());
-			for (int j = 0; j < tmp.size(); j++) {
-				actionCombinationsToEvaluate.push_back(tmp[j]);
+			std::cout << 4.4 << "\n";
+			//actionCombinationsToEvaluate.erase(actionCombinationsToEvaluate.begin(), actionCombinationsToEvaluate.end());
+			/*for(int j = 0; j < actionCombinationsToEvaluate.size(); j++){
+				std::cout << "j: " << j << ", actionCombinationsToEvaluate.size(): "<< actionCombinationsToEvaluate.size() <<"\n";
+				actionCombinationsToEvaluate[j].clear();
+			}*/
+			actionCombinationsToEvaluate = tmp; // std::vector<std::vector<int> >();
+			//actionCombinationsToEvaluate.clear();
+			std::cout << 4.5 << "\n";
+			/*for (int j = 0; j < tmp.size(); j++) {
+				actionCombinationsToEvaluate.push_back(std::vector<int>());
+				for(int k = 0; k < tmp[j].size(); k++){
+					actionCombinationsToEvaluate[j].push_back(tmp[j][k]);
+				}
+				//actionCombinationsToEvaluate.push_back(tmp[j]);
+			}*/
+			std::cout << "remaining action combinations:\n";
+			for (int j = 0; j < actionCombinationsToEvaluate.size(); j++) {
+				std::cout << "actionCombinationsToEvaluate[j].size(): " << actionCombinationsToEvaluate[j].size() << "\n";
 			}
 
 			//actionCombinationsToEvaluate = tmp;
 			sample_remained = actionCombinationsToEvaluate.size();
-			//for(int o = 0; o < tmp.size(); o++){
-			//	std::cout << "tmp[0].size(): " << tmp[o].size() << "\n";
-			//}
-			//if(i == 1){
-			//	std::cout << "4.6\n";
-			//	//return ActionAssignment::fromSingleAction(actionSpace[0]);
-			//}
 
-			//std::cout << "sample_remained: " << sample_remained << "\n";
+			std::cout << "sample_remained: " << sample_remained << "\n";
 			if(sample_remained == 1){
 				break;
 			}
@@ -443,20 +482,24 @@ namespace SGA {
 		/*for debbuging, check the output of the evaluation*/
 		//return ActionAssignment::fromSingleAction(actionSpace[0]); works
 
-		//std::cout << 5 << " " << actionCombinationsToEvaluate[0].size() << "\n";
+		std::cout << 5 << " actionCombinationsToEvaluate[0].size(): " << actionCombinationsToEvaluate.size() << "\n";
 		std::vector<int> finalAction = actionCombinationsToEvaluate[0];
 		for(int i = 0; i < finalAction.size(); i++){
 			actionSequence.push_back(filteredActionSpace[i][finalAction[i]]);
 		}
-		//std::cout << 6 << " actionSequence.size(): "<< actionSequence.size() << "\n";
-		auto a_to_return = ActionAssignment::fromSingleAction(actionSequence[0]);
+		std::cout << 6 << " actionSequence.size(): "<< actionSequence.size() << "\n";
+		auto a_to_return = actionSequence[0];
 		//state.printActionInfo(actionSequence[0]);
 		actionSequence.erase(actionSequence.begin());
 		
-		//std::cout << "c\n";
+		std::cout << "c\n";
 		//return ActionAssignment::fromSingleAction(actionSpace[0]);
-		std::cout << "remaining forward model calls" << parameters_.currentFMCalls<< "\n";
-		return a_to_return;
+		//std::cout << "remaining forward model calls" << parameters_.currentFMCalls<< "\n";
+		if(!a_to_return.validate(state)){
+			std::cout << "action not valid\n";
+		}
+		std::cout << "d\n";
+		return ActionAssignment::fromSingleAction(a_to_return);
 		//evaluate
 		// while True
 		// for each action combination
