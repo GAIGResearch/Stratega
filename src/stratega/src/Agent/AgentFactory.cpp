@@ -7,6 +7,8 @@
 #include <Stratega/Agent/TreeSearchAgents/BeamSearchAgent.h>
 #include <Stratega/Agent/TreeSearchAgents/DFSAgent.h>
 #include <Stratega/Agent/MCTSAgent/MCTSAgent.h>
+#include <Stratega/Agent/NaiveMCTSAgent/NaiveMCTSAgent.h>
+#include <Stratega/Agent/SLIAgent/SLIAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/CombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/KTKCombatAgent.h>
 #include <Stratega/Agent/RuleBasedAgents/PusherAgent.h>
@@ -73,6 +75,8 @@ namespace SGA
 		factory.registerAgent<BeamSearchAgent>("BeamSearchAgent");
 		factory.registerAgent<DFSAgent>("DFSAgent");
 		factory.registerAgent<MCTSAgent, MCTSParameters>("MCTSAgent");
+		factory.registerAgent<NaiveMCTSAgent, NaiveMCTSParameters>("NaiveMCTSAgent");
+		factory.registerAgent<SLIAgent, SLIParameters>("SLIAgent");
 		factory.registerAgent<CombatAgent>("CombatAgent");
 		factory.registerAgent<PusherAgent>("PusherAgent");
         factory.registerAgent<KTKCombatAgent>("KTKCombatAgent");

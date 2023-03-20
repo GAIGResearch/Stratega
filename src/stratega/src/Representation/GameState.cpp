@@ -549,6 +549,22 @@ namespace SGA
 		else
 		{
 			const ActionType& actionType = action.getActionType();
+			if(actionType.getName() == "Move"){
+				std::cout << "[" << actionType.getName() << "],";
+				int entityID = action.getSourceID();
+				auto& entityType = getEntityConst(entityID)->getEntityType();
+				auto pos = getEntityConst(entityID)->getPosition();
+
+				std::cout << " [SourceType Entity: " << entityType.getName() << " " << entityID << " (" << pos.x <<", "<< pos.y << ")],";
+				std::cout << " [ActionTargets";
+				for (size_t i = 0; i < actionType.getTargets().size(); i++)
+				{
+					std::cout << "(Target: " << actionType.getTargets()[i].first.getTypeString() << ", " << action.getTargets()[i + 1].getValueString(*this) << ")";
+				}
+				std::cout << "]" << std::endl;
+
+				return;
+			}
 
 			std::cout << "["<< actionType.getName() <<"]," ;
 

@@ -1,0 +1,24 @@
+# Maps for Kill the king
+Maps:
+    Map1: |-
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  M  M  M  M  M  M  M  M  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  
+        M  M  M  M  M  W  M  M  M  M  M  M  M  W  W  W  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  .  .  .  .  .  .  .  .  W  W  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  .  .  .  .  .  W  W  W  .  .  .  .  .  W  W  .  .  W  W  
+        M  W  W  W  W  W  W  W  W  .  .  h0 .  .  .  k0 W  W  W  .  .  .  .  .  .  .  .  a1 W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  h1 .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  k1 .  .  .  .  W  W  
+        M  W  W  .  .  .  .  .  .  a0 .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W  W  
+        M  W  W  .  .  .  .  w0 .  .  .  .  .  .  .  .  W  W  W  w1 .  .  .  .  .  .  .  .  W  W  
+        W  W  W  W  .  .  .  .  .  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  W  .  .  .  W  W  W  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
+        M  W  W  W  W  W  W  W  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  M  
