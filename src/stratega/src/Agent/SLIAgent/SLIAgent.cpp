@@ -27,7 +27,7 @@ namespace SGA {
 		for (auto u : allUnits) {
 			//state.printEntityInfo(u.getID());
 			auto entityActionSpace =
-				forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, true);
+				forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, false);
 			//auto entityActionSpace = forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, false); //no EndAction
 
 			/*for (int i = 0; i < entityActionSpace.size(); i++) {

@@ -33,14 +33,15 @@ namespace SGA
     ActionAssignment NaiveMCTSAgent::computeAction(
        GameState state, const ForwardModel& forwardModel, Timer timer)
     {
-		/*
+		state.printBoard();
+		///*
 		std::cout << "\nActionSpace: \n";
 
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		for(auto action: actionSpace){
 			state.printActionInfo(action);
 		}
-		*/
+		//*/
 
         //Initialize the budget for this action call.
         parameters_.resetCounters(timer);
@@ -81,12 +82,21 @@ namespace SGA
 			/*assign root node action to parameters action sequence*/
 			std::vector<double> averageValue = {};
 			for(int i = 0; i< rootNode->children.size(); i++){
-				averageValue.push_back(rootNode->childrenValue[i] / rootNode->childrenCount[i]);
+				std::cout << "print children " << i << " actions:\n";
+				for (int j = 0; j < rootNode->children[i]->actionCombinationTook.size(); j++) {
+					int unitActionID = rootNode->children[i]->actionCombinationTook[j];
+					auto a = rootNode->nodeActionSpace[j][unitActionID];
+					state.printActionInfo(a);
+				}
+				//std::cout << "1\n";
+				double single_avg_value = rootNode->childrenValue[i] / rootNode->childrenCount[i];
+				averageValue.push_back(single_avg_value);
+				std::cout << "value: " << rootNode->childrenValue[i] << ", count: "<< rootNode->childrenCount[i]  << ", avgValue: "<< single_avg_value << "\n";
 			}
-			int which = std::distance(averageValue.begin(),
-				std::max_element(averageValue.begin(), averageValue.end()));
-			//int which = std::distance(rootNode->childrenCount.begin(),
-			//	std::max_element(rootNode->childrenCount.begin(), rootNode->childrenCount.end()));
+			//int which = std::distance(averageValue.begin(),
+			//	std::max_element(averageValue.begin(), averageValue.end()));
+			int which = std::distance(rootNode->childrenCount.begin(),
+				std::max_element(rootNode->childrenCount.begin(), rootNode->childrenCount.end()));
 			for (int i = 0 ; i < rootNode->children[which]->actionCombinationTook.size() ; i++){
 				int unitActionID = rootNode->children[which]->actionCombinationTook[i];
 				auto a = rootNode->nodeActionSpace[i][unitActionID];
@@ -116,10 +126,11 @@ namespace SGA
 		//std::cout << "-----------------------------------------------> returning Action ---------------------------->\n";
 		bool isValid = action.validate(state);
 		//std::cout << "isValid: " << isValid << "\n";
-		/*std::cout << "Action Took: \n";
+		///*
+		std::cout << "Action sequence size: " << parameters_.actionSequence.size()<<" , " << "Action Took: \n";
 		state.printActionInfo(action);
 		std::cout << "\n";
-		*/
+		//*/
 		return ActionAssignment::fromSingleAction(action);
 
     }

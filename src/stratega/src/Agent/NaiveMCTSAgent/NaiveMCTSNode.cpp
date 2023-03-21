@@ -146,14 +146,6 @@ namespace SGA
 
 		while (!cur->gameState.isGameOver() && cur->nodeDepth < params.rolloutLength)
 		{
-			//If not fully expanded, add a new child
-			//if (!cur->isFullyExpanded()) {
-			//	return (cur->expand(forwardModel, params, randomGenerator));
-			//}
-			//else {
-			//	//otherwise apply UCT to navigate the tree.
-			//	cur = cur->uct(params, randomGenerator);
-			//}
 			cur = cur->uct(params, randomGenerator, forwardModel);
 		}
 		//std::cout << "closing tree policy\n";
@@ -223,8 +215,7 @@ namespace SGA
 
 			std::string newChildID = params.intVectorToString(actionCombination);
 			if (combinationToChildID.find(newChildID) != combinationToChildID.end()) {
-				/*constructed combination matches a child, return this child
-				*/
+				/*constructed combination matches a child, return this child*/
 
 				//std::cout << "7\n";
 				auto child = children[combinationToChildID[newChildID]].get();
