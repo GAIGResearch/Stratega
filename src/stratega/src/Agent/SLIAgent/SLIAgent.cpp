@@ -20,7 +20,6 @@ namespace SGA {
 
 	std::vector< std::vector<SGA::Action> > SLIAgent::generateActionSpace(GameState state, const ForwardModel& forwardModel) {
 		std::vector< std::vector<SGA::Action> > nodeActionSpace;
-
 		/* generate action space for each unit */
 		auto allUnits = state.getPlayerEntities(parameters_.PLAYER_ID);
 		int numUnit = allUnits.size();
@@ -28,7 +27,7 @@ namespace SGA {
 		for (auto u : allUnits) {
 			//state.printEntityInfo(u.getID());
 			auto entityActionSpace =
-				forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, false);
+				forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, true);
 			//auto entityActionSpace = forwardModel.generateUnitActions(state, u, parameters_.PLAYER_ID, false); //no EndAction
 
 			/*for (int i = 0; i < entityActionSpace.size(); i++) {
@@ -126,10 +125,10 @@ namespace SGA {
 		parameters_.currentFMCalls = 0;
 		// BUG: numUnit should be movable unit rather than real number of units
 		//std::cout << "START NEW  SEARCH!\n";
+		//state.printBoard();
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
 		/*
 		std::cout << "\nActionSpace: \n";
-
 		
 		for (auto action : actionSpace) {
 			state.printActionInfo(action);
@@ -156,7 +155,7 @@ namespace SGA {
 
 			if (action.validate(state)) {
 				/*
-				std::cout << "Action Took: \n";
+				std::cout << "Action Took from sequence: \n";
 				state.printActionInfo(action);
 				std::cout << "\n";
 				//*/
@@ -382,7 +381,7 @@ namespace SGA {
 		// calculate entropy of distribution for each unit
 		// sample unit action according to unit-order decided by its entropy of reward distribution
 		// return a set of action combinations
-		int n_evaluate = int(log(N_SAMPLE_FOR_EVALUATE)+1);
+		int n_evaluate = int(log(N_SAMPLE_FOR_EVALUATE)+2);
 		/*
 		std::cout << "n_evaluate: " << n_evaluate << "\n";
 		for(int i = 0; i < filteredActionSpace.size(); i++){
@@ -400,8 +399,32 @@ namespace SGA {
 		for(int i=0;i<actionCombinationsToEvaluate.size();i++){
 			chosenCombinations.push_back(i);
 		}
+
+		/*debugging*/
+		/*
+		for (int i = 0; i < actionCombinationsToEvaluate.size(); i++) {
+			std::cout << "candidate: " << i << "\n";
+			for(int j =0; j<NUM_UNITS; j++){
+			//for(auto j: actionCombinationsToEvaluate[i]){
+				state.printActionInfo(filteredActionSpace[j][actionCombinationsToEvaluate[i][j]]);
+			}
+		}
+		std::cout << "\n";
+		*/
+
 		std::vector<double> reward_evaluated = std::vector<double>(sample_remained, 0.0);
 		for (int i = 0; i < n_evaluate; i++) {
+			/*std::cout << "The Evaluate Loop: " << i << "\n";
+			for (int k = 0; k < chosenCombinations.size(); k++) {
+				std::cout << "candidate: " << k << "\n";
+				for (int j = 0; j < NUM_UNITS; j++) {
+					//for(auto j: actionCombinationsToEvaluate[i]){
+					state.printActionInfo(filteredActionSpace[j][actionCombinationsToEvaluate[chosenCombinations[k]][j]]);
+				}
+				std::cout << "\n";
+			}
+			*/
+
 			/*
 			std::cout << "The Evaluate Loop: " << i << "\n";
 			for(int j=0;j< chosenCombinations.size();j++){
@@ -489,6 +512,11 @@ namespace SGA {
 		std::vector<int> finalAction = actionCombinationsToEvaluate[chosenCombinations[0]];
 		for (int i = 0; i < finalAction.size(); i++) {
 			actionSequence.push_back(filteredActionSpace[i][finalAction[i]]);
+			//if(filteredActionSpace[i][finalAction[i])
+			if (filteredActionSpace[i][finalAction[i]].getActionFlag() == ActionFlag::EndTickAction) {
+				break;
+			}
+
 		}
 		//std::cout << 6 << " actionSequence.size(): " << actionSequence.size() << "\n";
 		auto a_to_return = actionSequence[0];
@@ -502,9 +530,10 @@ namespace SGA {
 			std::cout << "action not valid\n";
 		}
 		//state.printBoard();
+		//std::cout << "Action took from search:\n";
 		//state.printActionInfo(a_to_return);
-		return ActionAssignment::fromSingleAction(actionSpace[0]);
-		//return ActionAssignment::fromSingleAction(a_to_return);
+		//return ActionAssignment::fromSingleAction(actionSpace[0]);
+		return ActionAssignment::fromSingleAction(a_to_return);
 		//evaluate
 		// while True
 		// for each action combination
