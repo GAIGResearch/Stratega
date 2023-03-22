@@ -44,6 +44,8 @@ set(STRATEGA_SOURCE_FILES
         Agent/TreeSearchAgents/BFSAgent.cpp
         Agent/TreeSearchAgents/DFSAgent.cpp
         Agent/TreeSearchAgents/TreeNode.cpp
+		Agent/SLIAgent/SLIAgent.cpp
+		Agent/SLIAgent/SLIParameters.cpp
         Agent/MinimaxAgent.cpp
         Arena/Arena.cpp
         Configuration/FunctionParser.cpp

@@ -72,8 +72,9 @@ namespace SGA
             }
             if(self_warrior_N>=3){
                 parameters_.new_heuristic->setBattleMode();
+				battle_mode = true;
             }
-            battle_mode=true;
+
         }
 
         //Initialize the budget for this action call.

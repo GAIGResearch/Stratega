@@ -52,7 +52,6 @@ namespace SGA {
                     }
                 }
                 //TODO enter battlemodel at the same time(both player)
-
             }
             //std::cout<<self_warrior_N<<std::endl;
             if(self_warrior_N>=3){
