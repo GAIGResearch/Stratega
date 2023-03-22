@@ -10,12 +10,11 @@ namespace SGA {
 	void SLIParameters::printDetails() const
 	{
 		AgentParameters::printDetails();
-		std::cout << "NaiveMCTS Parameters:" << "\n";
-		std::cout << "\tK: " << K << "\n";
+		std::cout << "SLI Parameters:" << "\n";
 		std::cout << "\tRollout length: " << rolloutLength << "\n";
-		std::cout << "\tRollouts enabled: " << (rolloutsEnabled ? "True" : "False") << "\n";
-		std::cout << "\tEpsilon = " << epsilon << "\n";
-		std::cout << "\tContinue Previous Search = " << continuePreviousSearch << "\n";
+		std::cout << "\tnSample = " << nSample << "\n";
+		std::cout << "\tN_SAMPLE_FOR_EVALUATE = " << N_SAMPLE_FOR_EVALUATE << "\n";
+		std::cout << "\tEVALUATE_CONSTANT = " << EVALUATE_CONSTANT << "\n";
 	}
 
 	//template<typename T>

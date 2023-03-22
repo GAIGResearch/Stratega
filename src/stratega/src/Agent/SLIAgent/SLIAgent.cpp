@@ -16,6 +16,7 @@ namespace SGA {
 		else if (parameters_.HEURISTIC == "pta") {
 			parameters_.heuristic = std::make_unique< PushThemAllHeuristic >(getPlayerID(), initialState);
 		}
+		parameters_.printDetails();
 	}
 
 	std::vector< std::vector<SGA::Action> > SLIAgent::generateActionSpace(GameState state, const ForwardModel& forwardModel) {
@@ -136,11 +137,20 @@ namespace SGA {
 		//return ActionAssignment::fromSingleAction(actionSpace[0]);
 		//*/
 		/*To modify position of these variables below
+		* In Generate Phase: there will be nSample action combinations generated, nUnit*nSample rollouts will be called
+		* In Evaluate Phase: there will be N_SAMPLE_FOR_EVALUATE*EVALUATE_CONSTANT rollouts be called
+		* In total, (nUnit*nSample + N_SAMPLE_FOR_EVALUATE*EVALUATE_CONSTANT) * rolloutDepth
 		*/
-		int nSample = 110;
+		
 		const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
+		/*
+		int nSample = parameters_.nSample; //140;
+		int N_SAMPLE_FOR_EVALUATE = parameters_.N_SAMPLE_FOR_EVALUATE; //20;
+		int EVALUATE_CONSTANT = parameters_.EVALUATE_CONSTANT;//25;
+		*/
+		int nSample = 50;
 		int N_SAMPLE_FOR_EVALUATE = 20;
-		int EVALUATE_CONSTANT = 100;
+		int EVALUATE_CONSTANT = 10;
 
 		boost::mt19937& randomGenerator = getRNGEngine();
 
@@ -228,7 +238,7 @@ namespace SGA {
 				if (uAction.validate(gsCopy)) {
 					applyActionToGameState(*processedForwardModel, gsCopy, uAction, parameters_, parameters_.PLAYER_ID);
 				}
-				// generate action for other units... and evaluate them with a rollout
+				/*generate action for other units... and evaluate them with a rollout*/
 				std::vector<int> combination_to_roll = {};
 				//std::cout << 2 << "\n";
 				for (int k = 0; k < numUnit; k++) {
@@ -256,7 +266,7 @@ namespace SGA {
 			}
 		}
 		//std::cout << "a2\n";
-		// generate a new action space since there might be repeated unit action in the samples
+		/*generate a new action space since there might be repeated unit action in the samples*/
 		std::vector<std::vector<Action> > filteredActionSpace = {};
 		std::vector<std::vector<double> > filteredActionValue = {};
 		std::vector<double> expSum = {};
@@ -330,10 +340,9 @@ namespace SGA {
 		std::vector<double> sortedEntropy(entropy);
 		std::sort(sortedEntropy.begin(), sortedEntropy.end(), std::greater<>());
 
-		/*index is the order, value is unit id (not the id in the engine)*/
+		/*rank according to the entropy: index is the order, value is unit id (not the id in the engine)*/
 		std::vector<int> unitOrder = std::vector<int>(entropy.size(), 0);
 		for (int i = 0; i < sortedEntropy.size(); i++) {
-			//auto iter = std::lower_bound(sortedEntropy.begin(), sortedEntropy.end(), entropy[i]);
 			auto iter = std::find(sortedEntropy.begin(), sortedEntropy.end(), entropy[i]);
 			int order = int(iter - sortedEntropy.begin());
 			unitOrder[order] = i;
@@ -369,13 +378,6 @@ namespace SGA {
 		}
 
 		//return ActionAssignment::fromSingleAction(actionSpace[0]); // works
-
-		/*for debugging*/
-		/*
-		for(int i = 0; i < actionCombinationsToEvaluate.size(); i++){
-			std::cout << "actionCombinationsToEvaluate[i].size(): " << actionCombinationsToEvaluate[i].size() << "\n";
-		}
-		*/
 
 		//std::cout << 4 << "\n";
 		// calculate entropy of distribution for each unit
@@ -431,8 +433,10 @@ namespace SGA {
 				std::cout << "j: " << j << " chosenCombinations: " << chosenCombinations[j] << "\n";
 			}
 			*/
-			int m = int(EVALUATE_CONSTANT / (sample_remained * int(log(EVALUATE_CONSTANT))));
+			//int m = int(EVALUATE_CONSTANT / (sample_remained * int(log(EVALUATE_CONSTANT))));
+			int m = int(EVALUATE_CONSTANT / (sample_remained * int(log(n_evaluate))));
 
+			//std::cout << "m= " << m* sample_remained << "\n";
 			/*for each action combination, evaluate them, get half of them for the next turn*/
 			for (int j = 0; j < sample_remained; j++) {
 				double r_this = 0.0;
@@ -450,6 +454,7 @@ namespace SGA {
 
 				}
 				//std::cout << 4.02 << "\n";
+				
 				for (int k = 0; k < m; k++) {
 					// execute them all
 					//std::cout << "rollout k: " << k << " m: " << m << " isEnd? " << gsCopy.isGameOver() << "\n";
@@ -525,7 +530,7 @@ namespace SGA {
 
 		//std::cout << "c\n";
 		//return ActionAssignment::fromSingleAction(actionSpace[0]);
-		//std::cout << "remaining forward model calls" << parameters_.currentFMCalls<< "\n";
+		std::cout << "cost forward model calls" << parameters_.currentFMCalls<< "\n";
 		if (!a_to_return.validate(state)) {
 			std::cout << "action not valid\n";
 		}

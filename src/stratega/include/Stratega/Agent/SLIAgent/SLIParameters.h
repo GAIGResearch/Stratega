@@ -19,6 +19,11 @@ namespace SGA {
 		int evaluateMaxFMCalls = maxFMCalls;
 
 		std::vector<SGA::Action> actionSequence = {};
+		
+		/*parameters for the SLIAgent*/
+		int nSample = 100;
+		int N_SAMPLE_FOR_EVALUATE = 20;
+		int EVALUATE_CONSTANT = 100;
 
 		double K = sqrt(2);                     //Balance constant for tree policy (UCT)
 		int rolloutLength = 3;                  //Lenght of the complete playout.
@@ -59,6 +64,9 @@ namespace YAML
 			rhs.rolloutLength = node["RolloutLength"].as<int>(rhs.rolloutLength);
 			rhs.rolloutsEnabled = node["EnableRollouts"].as<bool>(rhs.rolloutsEnabled);
 			rhs.continuePreviousSearch = node["ContinuePreviousSearch"].as<bool>(rhs.continuePreviousSearch);
+			rhs.nSample = node["NSample"].as<int>(rhs.nSample);
+			rhs.N_SAMPLE_FOR_EVALUATE = node["NSampleForEvaluate"].as<int>(rhs.N_SAMPLE_FOR_EVALUATE);
+			rhs.EVALUATE_CONSTANT = node["EvaluateConstant"].as<int>(rhs.EVALUATE_CONSTANT);
 			return true;
 		}
 	};
