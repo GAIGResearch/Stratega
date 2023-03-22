@@ -143,15 +143,16 @@ namespace SGA {
 		*/
 		
 		const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
-		/*
+		///*
 		int nSample = parameters_.nSample; //140;
 		int N_SAMPLE_FOR_EVALUATE = parameters_.N_SAMPLE_FOR_EVALUATE; //20;
 		int EVALUATE_CONSTANT = parameters_.EVALUATE_CONSTANT;//25;
-		*/
+		//*/
+		/*
 		int nSample = 40;
 		int N_SAMPLE_FOR_EVALUATE = 20;
 		int EVALUATE_CONSTANT = 160;
-
+		*/
 		boost::mt19937& randomGenerator = getRNGEngine();
 
 		if (actionSequence.size() > 0) {
