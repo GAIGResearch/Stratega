@@ -17,6 +17,8 @@ Agents:
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: pta
+        NSample: 120
+        EvaluateConstant: 80
     #- MCTSAgent:
     #    Budget: FMCALLS
     #    MaxFmCalls: 10000

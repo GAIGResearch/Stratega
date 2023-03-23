@@ -21,6 +21,8 @@ Agents:
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: ktk
+        NSample: 40
+        EvaluateConstant: 150
     #- KTKCombatAgent
     #- MinimaxAgent
     - KTKCombatAgent

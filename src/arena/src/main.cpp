@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_randElas_rule.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktk_naivemcts_donothing.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktk_sli_donothing.yaml");
-	auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_sli_donothing.yaml");
+	auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_sli_rule_2.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/Pusher_naivemcts_donothing.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/ktk_naivemcts_rule.yaml");
 	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/KillTheKing.yaml");
