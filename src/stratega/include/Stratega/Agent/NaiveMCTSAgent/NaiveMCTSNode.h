@@ -112,11 +112,6 @@ namespace SGA {
 		void searchMCTS(ForwardModel& forwardModel, NaiveMCTSParameters& params, boost::mt19937& randomGenerator);
 
 		/// <summary>
-		/// Returns the index of the most visited action of this node.
-		/// </summary>
-		int mostVisitedAction(NaiveMCTSParameters& params, boost::mt19937& randomGenerator);
-
-		/// <summary>
 		/// Prints information of this node.
 		/// </summary>
 		void print() const override;

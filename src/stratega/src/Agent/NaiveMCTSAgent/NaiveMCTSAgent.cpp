@@ -61,6 +61,7 @@ namespace SGA
 				state.printActionInfo(action);
 				std::cout << "\n";
 				*/
+				parameters_.actionSequence.erase(parameters_.actionSequence.begin(), parameters_.actionSequence.end());
 				return ActionAssignment::fromSingleAction(action);
 			}
 			//std::cout << "loop no return\n";
@@ -143,11 +144,11 @@ namespace SGA
 		//std::cout << "-----------------------------------------------> returning Action ---------------------------->\n";
 		bool isValid = action.validate(state);
 		//std::cout << "isValid: " << isValid << "\n";
-		///*
-		//state.printBoard();
+		/*
+		state.printBoard();
 		//rootNode->printNaiveInfo();
-		// std::cout << "Action sequence size: " << parameters_.actionSequence.size() << " , " << "Action Took: \n";
-		//state.printActionInfo(action);
+		std::cout << "Action sequence size: " << parameters_.actionSequence.size() << " , " << "Action Took: \n";
+		state.printActionInfo(action);
 		//std::cout << "\n";
 		//system("pause");
 		//*/

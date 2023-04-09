@@ -20,9 +20,9 @@ namespace SGA {
 		* epsilon_g:chance to randomly select a current child
 		* epsilon_l:chance to randomly select a unit action
 		*/
-        double epsilon_0 = 0.75; // 0.75
-        double epsilon_g = 0.2;  // 0.0
-		double epsilon_l = 0.33; //0.33;
+        double epsilon_0 = 0.9; // 0.75
+        double epsilon_g = 0.0;  // 0.0
+		double epsilon_l = 0.5; //0.33;
 		int maxDepth = 2;
 		std::vector<SGA::Action> actionSequence = {};
 

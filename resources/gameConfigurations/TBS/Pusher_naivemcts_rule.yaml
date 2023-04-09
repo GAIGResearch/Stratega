@@ -13,7 +13,7 @@ Agents:
     - NaiveMCTSAgent:
         Budget: FMCALLS
         MaxFmCalls: 10000
-        RolloutLength: 10
+        RolloutLength: 5
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: pta

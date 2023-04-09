@@ -3,7 +3,11 @@
 
 namespace SGA
 {
-	NaiveMCTSNode::NaiveMCTSNode(ForwardModel& forwardModel, GameState newGameState, std::vector<int> actionCombination, int newOwnerID) :
+	NaiveMCTSNode::NaiveMCTSNode(
+		ForwardModel& forwardModel, 
+		GameState newGameState, 
+		std::vector<int> actionCombination, int newOwnerID)
+		:
 		ITreeNode<SGA::NaiveMCTSNode>(forwardModel, std::move(newGameState), newOwnerID)
 	{
 		actionCombinationTook = actionCombination;
@@ -11,7 +15,6 @@ namespace SGA
 
 		if(!gameState.isGameOver())
 			initializeNode(forwardModel, newGameState, newOwnerID);
-
 	}
 
 	NaiveMCTSNode::NaiveMCTSNode(
@@ -31,7 +34,6 @@ namespace SGA
 			initializeNode(forwardModel, newGameState, newOwnerID);
 
 	}
-
 
 	/// <summary>
 	/// setting up basic node statistics
@@ -466,46 +468,6 @@ namespace SGA
 		}
 	}
 
-	//Returns the index of the most visited child of this node.
-	int NaiveMCTSNode::mostVisitedAction(NaiveMCTSParameters& params, boost::mt19937& randomGenerator)
-	{
-		int selected = -1;
-		double bestValue = -std::numeric_limits<double>::max();
-		bool allEqual = true;
-		double first = -1;
-
-		//See the visits to all children, keep the one with the highest.
-		for (size_t i = 0; i < children.size(); i++) {
-
-			if (children[i] != nullptr)
-			{
-				if (first == -1)
-					first = children[i]->nVisits;
-				else if (first != children[i]->nVisits)
-				{
-					allEqual = false;
-				}
-
-				double childValue = children[i]->nVisits;
-
-				//Add a small noise (<<1) to all values to break ties randomly
-				childValue = noise(childValue, params.epsilon, params.doubleDistribution_(randomGenerator));
-				if (childValue > bestValue) {
-					bestValue = childValue;
-					selected = static_cast<int>(i);
-				}
-			}
-		}
-
-		if (selected == -1 || allEqual)
-		{
-			//If all are equal, we opt to choose for the one with the best Q.
-			selected = bestAction(params, randomGenerator);
-		}
-
-		return selected;
-	}
-
 	//Selects the index of the child with the highest average reward value.
 	int NaiveMCTSNode::bestAction(NaiveMCTSParameters& params, boost::mt19937& randomGenerator)
 	{
@@ -562,7 +524,7 @@ namespace SGA
 		}
 	}
 
-	// Increments the counter of nodes below this one.
+	// Increments the counter of nodes above this one.
 	void NaiveMCTSNode::increaseTreeSize()
 	{
 		treesize++;
