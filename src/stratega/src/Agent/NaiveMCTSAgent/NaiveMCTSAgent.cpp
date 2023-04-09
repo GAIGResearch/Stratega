@@ -33,8 +33,8 @@ namespace SGA
     ActionAssignment NaiveMCTSAgent::computeAction(
        GameState state, const ForwardModel& forwardModel, Timer timer)
     {
-		state.printBoard();
-		///*
+		//state.printBoard();
+		/*
 		std::cout << "\nActionSpace: \n";
 
 		auto actionSpace = forwardModel.generateActions(state, getPlayerID());
@@ -45,7 +45,7 @@ namespace SGA
 
         //Initialize the budget for this action call.
         parameters_.resetCounters(timer);
-        //parameters_.printDetails();
+
 		if(parameters_.actionSequence.size() > 0){
 			//std::cout << "entering loop\n";
 			auto action = parameters_.actionSequence[0];
@@ -70,54 +70,71 @@ namespace SGA
 		if(parameters_.actionSequence.size() == 0){
 			//state.printBoard();
 
-			// create a new node
+			/*create a new node*/
 			const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
 			rootNode = std::make_unique<NaiveMCTSNode>(*processedForwardModel, state, std::vector<int>(), getPlayerID());
-			//std::cout << "created a root node\n";
-			// node searching
+
 			rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
-			
+
+			/*add root node action to action sequence for executing*/
+			std::string prefix = "";
+			//rootNode->printNaiveTree(prefix);
 			//rootNode->printNaiveInfo();
 
-			/*assign root node action to parameters action sequence*/
+			/*
 			std::vector<double> averageValue = {};
 			for(int i = 0; i< rootNode->children.size(); i++){
-				std::cout << "print children " << i << " actions:\n";
-				for (int j = 0; j < rootNode->children[i]->actionCombinationTook.size(); j++) {
-					int unitActionID = rootNode->children[i]->actionCombinationTook[j];
-					auto a = rootNode->nodeActionSpace[j][unitActionID];
-					state.printActionInfo(a);
-				}
-				//std::cout << "1\n";
 				double single_avg_value = rootNode->childrenValue[i] / rootNode->childrenCount[i];
 				averageValue.push_back(single_avg_value);
-				std::cout << "value: " << rootNode->childrenValue[i] << ", count: "<< rootNode->childrenCount[i]  << ", avgValue: "<< single_avg_value << "\n";
 			}
-			//int which = std::distance(averageValue.begin(),
-			//	std::max_element(averageValue.begin(), averageValue.end()));
-			int which = std::distance(rootNode->childrenCount.begin(),
-				std::max_element(rootNode->childrenCount.begin(), rootNode->childrenCount.end()));
+			int which = std::distance(averageValue.begin(),
+				std::max_element(averageValue.begin(), averageValue.end()));
+			//int which = std::distance(rootNode->childrenCount.begin(),
+			//	std::max_element(rootNode->childrenCount.begin(), rootNode->childrenCount.end()));
+			std::cout << "selected child ID: " << which << "\n";
+			bool hasEnd = false;
 			for (int i = 0 ; i < rootNode->children[which]->actionCombinationTook.size() ; i++){
 				int unitActionID = rootNode->children[which]->actionCombinationTook[i];
 				auto a = rootNode->nodeActionSpace[i][unitActionID];
-				parameters_.actionSequence.push_back(a);
+				
 				if (a.getActionFlag() == ActionFlag::EndTickAction) {
-					break;
+					hasEnd = true;
+				} else{
+					parameters_.actionSequence.push_back(a);
 				}
+			}
+			if(hasEnd){
+				Action endAction = Action::createEndAction(getPlayerID());
+				parameters_.actionSequence.push_back(endAction);
+			}
+			*/
+
+			std::vector< std::vector<double> > averageValue = {};
+			bool hasEnd = false;
+			for (int i = 0; i < rootNode->combinationValue.size(); i++) {
+				averageValue.push_back(std::vector<double>());
+				for (int j = 0; j< rootNode->combinationValue[i].size(); j++){
+					averageValue[i].push_back(rootNode->combinationValue[i][j] / rootNode->combinationCount[i][j]);
+					//averageValue[i].push_back(rootNode->combinationCount[i][j]);
+				}
+				int which = std::distance(averageValue[i].begin(),
+					std::max_element(averageValue[i].begin(), averageValue[i].end()));
+				auto a = rootNode->nodeActionSpace[i][which];
+				if (a.getActionFlag() == ActionFlag::EndTickAction) {
+					hasEnd = true;
+				}
+				else {
+					parameters_.actionSequence.push_back(a);
+				}
+			}
+			if (hasEnd) {
+				Action endAction = Action::createEndAction(getPlayerID());
+				parameters_.actionSequence.push_back(endAction);
 			}
 
 			if(parameters_.actionSequence.size() == 0){
 				std::cout << "[ERROR]: action to execute should not be zero after searching\n";
 			}
-			/*
-			std::cout << "action sequences after searching:\n";
-			for (auto a: parameters_.actionSequence){
-				if (a.validate(state)) {
-					state.printActionInfo(a);
-				}
-			}
-			std::cout << "End action sequences.\n\n";
-			//*/
 		}
 
 		auto action = parameters_.actionSequence[0];
@@ -127,9 +144,12 @@ namespace SGA
 		bool isValid = action.validate(state);
 		//std::cout << "isValid: " << isValid << "\n";
 		///*
-		std::cout << "Action sequence size: " << parameters_.actionSequence.size()<<" , " << "Action Took: \n";
-		state.printActionInfo(action);
-		std::cout << "\n";
+		//state.printBoard();
+		//rootNode->printNaiveInfo();
+		// std::cout << "Action sequence size: " << parameters_.actionSequence.size() << " , " << "Action Took: \n";
+		//state.printActionInfo(action);
+		//std::cout << "\n";
+		//system("pause");
 		//*/
 		return ActionAssignment::fromSingleAction(action);
 

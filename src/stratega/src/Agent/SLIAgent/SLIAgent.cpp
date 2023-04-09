@@ -565,7 +565,7 @@ namespace SGA {
 
 		//std::cout << "c\n";
 		//return ActionAssignment::fromSingleAction(actionSpace[0]);
-		//std::cout << "cost forward model calls:\t" << parameters_.currentFMCalls<< "\n";
+		std::cout << "cost forward model calls:\t" << parameters_.currentFMCalls<< "\n";
 		if (!a_to_return.validate(state)) {
 			std::cout << "action not valid\n";
 		}

@@ -217,7 +217,8 @@ namespace SGA
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getEntity(state, targets);
 
-		auto pushDir = SGA::Vector2f(+1, 0);
+		//auto pushDir = SGA::Vector2f(+1, 0);
+		auto pushDir = SGA::Vector2f(0, -1.0);
 		auto newTargetPos = target.getPosition() + pushDir;
 		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
@@ -238,7 +239,8 @@ namespace SGA
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getEntity(state, targets);
 
-		auto pushDir = SGA::Vector2f(-1, 0);
+		//auto pushDir = SGA::Vector2f(-1, 0);
+		auto pushDir = SGA::Vector2f(0, 1.0);
 		auto newTargetPos = target.getPosition() + pushDir;
 		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
@@ -259,7 +261,8 @@ namespace SGA
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getEntity(state, targets);
 
-		auto pushDir = SGA::Vector2f(0, 1);
+		//auto pushDir = SGA::Vector2f(0, 1);
+		auto pushDir = SGA::Vector2f(-1.0, 0.0);
 		auto newTargetPos = target.getPosition() + pushDir;
 		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{
@@ -280,7 +283,8 @@ namespace SGA
 		auto& entity = entityParam.getEntity(state, targets);
 		auto& target = targetParam.getEntity(state, targets);
 
-		auto pushDir = SGA::Vector2f(0, -1);
+		//auto pushDir = SGA::Vector2f(0, -1);
+		auto pushDir = SGA::Vector2f(1.0, 0.0);
 		auto newTargetPos = target.getPosition() + pushDir;
 		if (state.isWalkable(Vector2i{ static_cast<int>(newTargetPos.x), static_cast<int>(newTargetPos.y) }))
 		{

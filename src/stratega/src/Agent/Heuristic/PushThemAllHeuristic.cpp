@@ -55,8 +55,6 @@ namespace SGA
 			}
 		}
         //std::cout<< playerEntities.size()<< " oppo: "<< opponentEntites.size()<< "\n";
-        if(opponentEntites.size() ==0)return 1.0;
-        if(playerEntities.size() == 0)return 0.0;
 
 		if (gameState.isGameOver())
 		{
@@ -65,6 +63,9 @@ namespace SGA
 			else
 				return 0.0;
 		}
+
+		if (opponentEntites.size() == 0)return 1.0;
+		if (playerEntities.size() == 0)return 0.01;
 
         double selfUnitScore = 0.0, opponentUnitScore = 0.0;
         double distanceScore = 0.0;

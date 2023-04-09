@@ -16,13 +16,14 @@ namespace SGA {
         int step = 0; //for debug
 
         /*For NaiveMCTS
-		* epsilon_0:chance to select unit actions to form an action combination rather than a action combination (calling bandit_l)
+		* epsilon_0:chance to select unit actions to construct an action combination rather than a action combination (calling bandit_l)
 		* epsilon_g:chance to randomly select a current child
 		* epsilon_l:chance to randomly select a unit action
 		*/
-        double epsilon_0 = 0.9;
-        double epsilon_g = 0.3;
-		double epsilon_l = 0.8; //0.33;
+        double epsilon_0 = 0.75; // 0.75
+        double epsilon_g = 0.2;  // 0.0
+		double epsilon_l = 0.33; //0.33;
+		int maxDepth = 2;
 		std::vector<SGA::Action> actionSequence = {};
 
         double K = sqrt(2);                     //Balance constant for tree policy (UCT)

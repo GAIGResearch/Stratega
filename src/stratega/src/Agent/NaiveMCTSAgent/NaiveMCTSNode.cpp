@@ -97,8 +97,14 @@ namespace SGA
 			last_selected = selected;
 			tmp_fm_call_spent = params.currentFMCalls;
 			//std::cout << "starting rollout\n";
-			double delta = selected->rollOut(forwardModel, params, randomGenerator);
-			//std::cout << "finished rollout\n";
+			int n_rollout = 1;
+			double delta = 0.0;
+			for (int i = 0; i < n_rollout; i++){
+				delta += selected->rollOut(forwardModel, params, randomGenerator);
+				//delta += params.heuristic->evaluateGameState(forwardModel, selected->gameState, playerID);
+			}
+			delta /= double(n_rollout);
+			//std::cout << "finished rollout: " << delta <<"\n";
 
 			/*rollout does not spent forward model, if consecutively not spending any forward model calls
 			* an infinite search will appear
@@ -144,7 +150,7 @@ namespace SGA
 		//std::cout << "treePolicy\n";
 		NaiveMCTSNode* cur = this;
 
-		while (!cur->gameState.isGameOver() && cur->nodeDepth < params.rolloutLength)
+		while (!cur->gameState.isGameOver() && cur->nodeDepth < params.maxDepth)//cur->nodeDepth < params.rolloutLength)
 		{
 			cur = cur->uct(params, randomGenerator, forwardModel);
 		}
@@ -175,6 +181,9 @@ namespace SGA
 	{
 		if (gameState.isGameOver()) 
 			return this;
+		
+		if (nodeDepth == params.maxDepth)
+			return this;
 		//std::cout << "1\n";
 
 		std::vector<int> actionCombination = {};
@@ -193,17 +202,15 @@ namespace SGA
 				int which = -1;
 				if (epsilonLCompetitor < params.epsilon_l) {
 					// exploration for pi_l
-					// uniformly select a X_i
+					// uniformly select a unit action (X_i)
 					boost::random::uniform_int_distribution< size_t > distrib(0, entityActionSpaceSize[i]-1);
 					which = static_cast<int>(distrib(randomGenerator));
-
 				}
 				else {
 					//std::cout << "5\n";
 					// select highest-value X_i (unit Action)
 					which = std::distance(combinationValue[i].begin(),
 						std::max_element(combinationValue[i].begin(), combinationValue[i].end()));
-
 				}
 
 				//std::cout << "6\n";
@@ -215,7 +222,7 @@ namespace SGA
 
 			std::string newChildID = params.intVectorToString(actionCombination);
 			if (combinationToChildID.find(newChildID) != combinationToChildID.end()) {
-				/*constructed combination matches a child, return this child*/
+				/*constructed combination existed as a child, return this child*/
 
 				//std::cout << "7\n";
 				auto child = children[combinationToChildID[newChildID]].get();
@@ -231,6 +238,7 @@ namespace SGA
 				auto gsCopy(gameState);
 
 				// create a new states for this child by executing all actions
+				bool hasEndTurn = false;
 				for (int uid = 0; uid < actionCombination.size(); uid++) {
 					//std::cout << "8.1, nodeActionSpace.size(): " << nodeActionSpace.size() << "\n";
 					//std::cout << "nodeActionSpace[uid].size(): " << nodeActionSpace[uid].size() << "\n";
@@ -246,7 +254,10 @@ namespace SGA
 					/*do not execute multiple End action to avoid round-skipping*/
 					if (action.getActionFlag() == ActionFlag::EndTickAction) {
 						//std::cout << "there is a situation of round skipping during search\n";
-						break;
+						if(hasEndTurn){
+							break;
+						}
+						hasEndTurn = true;
 					}
 				}
 
@@ -260,6 +271,10 @@ namespace SGA
 
 				children.push_back(std::unique_ptr< NaiveMCTSNode >(new NaiveMCTSNode(
 					forwardModel, std::move(gsCopy), this, actionCombination, childExpanded, this->ownerID)));
+				children[children.size() - 1]->nodeDepth = nodeDepth + 1;
+				if(nodeDepth+1 == params.maxDepth){
+					children[children.size() - 1]->isBottom = true;
+				}
 				childrenValue.push_back(0.0);
 				childrenCount.push_back(1.0);
 
@@ -582,10 +597,12 @@ namespace SGA
 			for (int j = 0; j < nodeActionSpace[i].size(); j++) {
 				auto action = this->nodeActionSpace[i][j];
 				this->gameState.printActionInfo(action);
-				std::cout << "Unit Action visit: " << combinationCount[i][j] << "\n";
+				std::cout << "Unit Action visit: " << combinationCount[i][j] <<
+					", avg value: "<< combinationValue[i][j] / combinationCount[i][j] <<"\n";
 			}
+			std::cout << "\n";
 		}
-		
+
 		std::cout << "\n";
 
 		/*combination (children)*/
@@ -596,9 +613,61 @@ namespace SGA
 				auto action = this->nodeActionSpace[uid][actionCombination[uid]];
 				this->gameState.printActionInfo(action);
 			}
-			std::cout << "Child visit: " << childrenCount[i] << "\n";
+			std::cout << "Child visit: " << childrenCount[i] << 
+				", avg value: "<< childrenValue[i] / childrenCount[i] << "\n";
 		}
 		std::cout << "\n";
+	}
+
+	void NaiveMCTSNode::printNaiveInfo(std::string& prefix) const {
+		if (isBottom)return;
+		std::string new_prefix = prefix + "  ";
+		/*each unit action*/
+		std::cout << new_prefix<< "Unit Action Info\n";
+		for (int i = 0; i < nodeActionSpace.size(); i++) {
+			for (int j = 0; j < nodeActionSpace[i].size(); j++) {
+				auto action = this->nodeActionSpace[i][j];
+				std::cout << new_prefix;
+				this->gameState.printActionInfo(action);
+				std::cout << new_prefix<< "Unit Action visit: " << combinationCount[i][j] <<
+					", avg value: " << combinationValue[i][j] / combinationCount[i][j] << "\n";
+			}
+		}
+
+		std::cout <<"\n";
+
+		/*combination (children)*/
+		/*
+		std::cout << new_prefix<< "Action Combination Info (Len: " << children.size() << ")\n";
+		for (int i = 0; i < this->children.size(); i++) {
+			auto actionCombination = this->children[i]->actionCombinationTook;
+			for (auto uid = 0; uid < actionCombination.size(); uid++) {
+				auto action = this->nodeActionSpace[uid][actionCombination[uid]];
+				std::cout << new_prefix;
+				this->gameState.printActionInfo(action);
+			}
+			std::cout << new_prefix<< "Child visit: " << childrenCount[i] << ", value: " << childrenValue[i] <<
+				" avg value: " << childrenValue[i] / childrenCount[i] << "\n";
+		}
+		std::cout << "\n";
+		*/
+	}
+
+	void NaiveMCTSNode::printNaiveTree(std::string& prefix) {
+		this->printNaiveInfo(prefix);
+		std::string new_prefix = prefix + "   ";
+		for (int i = 0; i < this->children.size(); i++) {
+			auto actionCombination = this->children[i]->actionCombinationTook;
+			for (auto uid = 0; uid < actionCombination.size(); uid++) {
+				auto action = this->nodeActionSpace[uid][actionCombination[uid]];
+				std::cout << prefix;
+				this->gameState.printActionInfo(action);
+			}
+			std::cout << prefix << "Child visit: " << this->childrenCount[i] <<
+				", avg value: " << this->childrenValue[i] / this->childrenCount[i] << "\n";
+			this->children[i]->printNaiveTree(new_prefix);
+			std::cout << prefix << "---------------------------------------------\n";
+		}
 	}
 
 	void NaiveMCTSNode::printActionInfo() const {

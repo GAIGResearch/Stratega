@@ -13,6 +13,7 @@ namespace SGA {
 		*/
 	public:
 		int nodeDepth = 0;			//Depth of this node in the tree.
+		bool isBottom = false;
 		int treesize = 1;			//Reference to the number of nodes in the tree behind this node
         int childExpanded = 0;
 
@@ -125,6 +126,10 @@ namespace SGA {
         void printActionInfo() const;
 
 		void printNaiveInfo() const;
+
+		void printNaiveInfo(std::string& prefix) const;
+
+		void printNaiveTree(std::string& prefix);
 
 	private:
 

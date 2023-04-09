@@ -264,7 +264,7 @@ namespace SGA
 			for (int i = 0; i < Nrollout; i++) {
 				deltaAll += selected->rollOut(forwardModel, params, randomGenerator);
 			}
-			const double delta = deltaAll / Nrollout;  //cout << "delta: " << delta << "\n";
+			const double delta = deltaAll / Nrollout;
             //std::cout<<"32\n";
 			backUp(selected, delta, absNodeToStatistics);
 
