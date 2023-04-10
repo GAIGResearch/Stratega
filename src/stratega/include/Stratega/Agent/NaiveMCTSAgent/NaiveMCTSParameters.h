@@ -62,6 +62,10 @@ namespace YAML
             rhs.rolloutLength= node["RolloutLength"].as<int>(rhs.rolloutLength);
             rhs.rolloutsEnabled = node["EnableRollouts"].as<bool>(rhs.rolloutsEnabled);
             rhs.continuePreviousSearch = node["ContinuePreviousSearch"].as<bool>(rhs.continuePreviousSearch);
+			rhs.epsilon_0 = node["Epsilon_0"].as<double>(rhs.epsilon_0);
+			rhs.epsilon_g = node["Epsilon_G"].as<double>(rhs.epsilon_g);
+			rhs.epsilon_l = node["Epsilon_L"].as<double>(rhs.epsilon_l);
+			rhs.maxDepth = node["MaxDepth"].as<int>(rhs.maxDepth);
             return true;
         }
     };

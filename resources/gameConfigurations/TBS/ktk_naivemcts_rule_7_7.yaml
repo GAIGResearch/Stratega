@@ -18,9 +18,9 @@ Agents:
         Budget: FMCALLS
         MaxFmCalls: 10000
         RolloutLength: 5
-        Epsilon_0: 0.9
+        Epsilon_0: 0.7
         Epsilon_G: 0.0
-        Epsilon_L: 0.5
+        Epsilon_L: 0.7
         MaxDepth: 2
         ContinuePreviousSearch: false
         K: 0.1
