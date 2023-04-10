@@ -67,6 +67,12 @@ namespace SGA
 			//std::cout << "loop no return\n";
 		}
 
+		const auto wholeActionSpace = forwardModel.generateActions(state, getPlayerID());
+		if(wholeActionSpace.size() == 1){
+			Action endAction = Action::createEndAction(getPlayerID());
+			return ActionAssignment::fromSingleAction(endAction);
+		}
+
 		/* if the action sequence is not executed completely */
 		if(parameters_.actionSequence.size() == 0){
 			//state.printBoard();
@@ -75,6 +81,7 @@ namespace SGA
 			const auto processedForwardModel = parameters_.preprocessForwardModel(forwardModel);
 			rootNode = std::make_unique<NaiveMCTSNode>(*processedForwardModel, state, std::vector<int>(), getPlayerID());
 
+			//std::cout << "start search\n";
 			rootNode->searchMCTS(*processedForwardModel, parameters_, getRNGEngine());
 
 			/*add root node action to action sequence for executing*/
@@ -109,10 +116,14 @@ namespace SGA
 				parameters_.actionSequence.push_back(endAction);
 			}
 			*/
-
+			//std::cout << 2 << "\n";
 			std::vector< std::vector<double> > averageValue = {};
 			bool hasEnd = false;
 			for (int i = 0; i < rootNode->combinationValue.size(); i++) {
+				if(rootNode->combinationValue[i].size()==0){
+					averageValue.push_back(std::vector<double>());
+					continue;
+				}
 				averageValue.push_back(std::vector<double>());
 				for (int j = 0; j< rootNode->combinationValue[i].size(); j++){
 					averageValue[i].push_back(rootNode->combinationValue[i][j] / rootNode->combinationCount[i][j]);
@@ -137,7 +148,7 @@ namespace SGA
 				std::cout << "[ERROR]: action to execute should not be zero after searching\n";
 			}
 		}
-
+		//std::cout << "3333\n";
 		auto action = parameters_.actionSequence[0];
 		parameters_.actionSequence.erase(parameters_.actionSequence.begin());
 

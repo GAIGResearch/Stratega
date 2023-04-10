@@ -53,14 +53,27 @@ namespace SGA
 
 		auto allUnits = this->gameState.getPlayerEntities(newOwnerID);
 		numUnit = allUnits.size();
+		/*for (auto u : allUnits) {
+			auto entityActionSpace =
+				forwardModel.generateUnitActions(newGameState, u, newOwnerID, false);
+			if (entityActionSpace.size() == 0){
+				numUnit--;
+			}
+		}
+		*/
 
 		/* generate action space for each unit */
 		int uid = 0;
 		for (auto u : allUnits) {
 			auto entityActionSpace =
-				forwardModel.generateUnitActions(newGameState, u, newOwnerID, true);
-			entityActionSpaceSize[uid] = entityActionSpace.size();
+				forwardModel.generateUnitActions(newGameState, u, newOwnerID, false);
 			nodeActionSpace.push_back(std::vector<SGA::Action>{});
+			if(entityActionSpace.size() == 0){
+				entityActionSpaceSize[uid] = 0;
+				uid++;
+				continue;
+			}
+			entityActionSpaceSize[uid] = entityActionSpace.size();
 			for (int i = 0; i < entityActionSpace.size(); i++) {
 				nodeActionSpace[uid].push_back(entityActionSpace[i]);
 			}
@@ -154,6 +167,7 @@ namespace SGA
 
 		while (!cur->gameState.isGameOver() && cur->nodeDepth < params.maxDepth)//cur->nodeDepth < params.rolloutLength)
 		{
+			//std::cout << "continue uct\n";
 			cur = cur->uct(params, randomGenerator, forwardModel);
 		}
 		//std::cout << "closing tree policy\n";
@@ -188,7 +202,6 @@ namespace SGA
 			return this;
 		//std::cout << "1\n";
 
-		std::vector<int> actionCombination = {};
 		double epsilonZeroCompetitor = params.doubleDistribution_(randomGenerator);
 		if (epsilonZeroCompetitor < params.epsilon_0 || children.size() == 0) {
 			/*exploration for pi_0 -> call pi_l
@@ -196,12 +209,16 @@ namespace SGA
 			*/
 			double epsilonLCompetitor = params.doubleDistribution_(randomGenerator);
 
-			std::vector< int > actionCombination = {};
-
+			std::vector<int>  actionCombinationTook = {};
+			
 			/*select unit actions*/
 			for (int i = 0; i < numUnit; i++) {
 				double epsilonLCompetitor = params.doubleDistribution_(randomGenerator);
 				int which = -1;
+				if(entityActionSpaceSize[i]==0){
+					actionCombinationTook.push_back(which);
+					continue;
+				}
 				if (epsilonLCompetitor < params.epsilon_l) {
 					// exploration for pi_l
 					// uniformly select a unit action (X_i)
@@ -216,20 +233,22 @@ namespace SGA
 				}
 
 				//std::cout << "6\n";
-				actionCombination.push_back(which);
+				actionCombinationTook.push_back(which);
 
 				// counter for this value ++
 				combinationCount[i][which]++;
 			}
-
-			std::string newChildID = params.intVectorToString(actionCombination);
+			//std::cout << "6..66\n";
+			std::string newChildID = params.intVectorToString(actionCombinationTook);
+			//std::cout << "-----------> new child ID: " << newChildID << "\n";
 			if (combinationToChildID.find(newChildID) != combinationToChildID.end()) {
 				/*constructed combination existed as a child, return this child*/
 
-				//std::cout << "7\n";
+				//std::cout << "constructed combination existed as a child, return this child\n";
 				auto child = children[combinationToChildID[newChildID]].get();
 
 				childrenCount[combinationToChildID[newChildID]]++;
+				//std::cout << "returning child\n";
 				return child; //->uct(params, randomGenerator, forwardModel);
 			}
 			else {
@@ -241,12 +260,16 @@ namespace SGA
 
 				// create a new states for this child by executing all actions
 				bool hasEndTurn = false;
-				for (int uid = 0; uid < actionCombination.size(); uid++) {
+				for (int uid = 0; uid < actionCombinationTook.size(); uid++) {
 					//std::cout << "8.1, nodeActionSpace.size(): " << nodeActionSpace.size() << "\n";
 					//std::cout << "nodeActionSpace[uid].size(): " << nodeActionSpace[uid].size() << "\n";
 
 					//std::cout << "uid: " << uid <<" , actionCombination[uid]: " << actionCombination[uid] << "\n";
-					auto action = nodeActionSpace[uid][actionCombination[uid]];
+					if(nodeActionSpace[uid].size() == 0){
+						actionCombinationTook[uid] = -1;
+						continue;
+					}
+					auto action = nodeActionSpace[uid][actionCombinationTook[uid]];
 
 					// TODO check action whether valid
 					if( action.validate(gsCopy) ){
@@ -254,13 +277,14 @@ namespace SGA
 					}
 
 					/*do not execute multiple End action to avoid round-skipping*/
-					if (action.getActionFlag() == ActionFlag::EndTickAction) {
+					/*if (action.getActionFlag() == ActionFlag::EndTickAction) {
 						//std::cout << "there is a situation of round skipping during search\n";
 						if(hasEndTurn){
 							break;
 						}
 						hasEndTurn = true;
 					}
+					*/
 				}
 
 				auto actionSpace = forwardModel.generateActions(gsCopy, playerID);
@@ -272,7 +296,7 @@ namespace SGA
 				//std::cout << "8.5, is gsCopy terminated?: " << gsCopy.isGameOver() <<" \n";
 
 				children.push_back(std::unique_ptr< NaiveMCTSNode >(new NaiveMCTSNode(
-					forwardModel, std::move(gsCopy), this, actionCombination, childExpanded, this->ownerID)));
+					forwardModel, std::move(gsCopy), this, actionCombinationTook, childExpanded, this->ownerID)));
 				children[children.size() - 1]->nodeDepth = nodeDepth + 1;
 				if(nodeDepth+1 == params.maxDepth){
 					children[children.size() - 1]->isBottom = true;
@@ -321,6 +345,9 @@ namespace SGA
 
 			for(int i=0 ; i< combinationCount.size() ; i++)
 			{
+				if(comb[i] == -1){
+					continue;
+				}
 				//std::cout << "i: " << i << " combinationCount[i].size(): " << combinationCount[i].size() << "\n";
 				combinationCount[i][comb[i]]++;
 			}
@@ -431,10 +458,18 @@ namespace SGA
 		//std::cout << "comb_str: " << comb_str << "\n";
 		//std::cout << "combinationToChildID.size(): " << combinationToChildID.size() << "\n";
 		int child_id = combinationToChildID[comb_str];
+		//std::cout << "actionCombinationTook:\n";
+		//for(int i =0;i< actionCombinationTook.size();i++){
+		//	std::cout << actionCombinationTook[i] << "  ";
+		//}
+		//std::cout << "\ncombinationValue.size(): "<< combinationValue.size()<<"\n";
 
 		// update X_i
 		for(int i = 0 ; i< combinationValue.size(); i++){
-			//std::cout << "combinationValue[i].size(): " << combinationValue[i].size() << "\n";
+			if(actionCombinationTook[i] == -1){
+				continue;
+			}
+			//std::cout << "combinationValue["<<i<<"].size(): " << combinationValue[i].size() << "\n";
 			//std::cout << "actionCombinationTook[i]: " << actionCombinationTook[i] << "\n";
 			combinationValue[i][actionCombinationTook[i]] += result;
 		}
@@ -442,6 +477,7 @@ namespace SGA
 		//std::cout << "childrenValue.size(): " << childrenValue.size() << "\n";
 		//std::cout << "child_id: " << child_id << "\n";
 		// Update child value
+		//std::cout << "end updateValue\n";
 		childrenValue[child_id] += result;
 	}
 
