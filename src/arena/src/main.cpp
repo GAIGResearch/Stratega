@@ -12,8 +12,9 @@ int main(int argc, char** argv)
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "./sgaLog.yaml");
 	//Currently obsolete but configPath shouldn't have a default value. So we keep it until then
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_elas_rule.yaml");
-    auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_sli_donothing.yaml");
-    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS_0202.yaml");
+    //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_sli_donothing.yaml");
+	auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/tk_naive_rule.yaml");
+	//auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBS_0202.yaml");
     //auto configPath = parser.getCmdOption< std::string >("-configPath", "../resources/gameConfigurations/TBS/BasicTBScombat_0202.yaml");
 	//Optional
 	auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/TwoKingdomsMaps.yaml");

@@ -13,6 +13,7 @@
 #include <Stratega/Agent/RuleBasedAgents/BasicTBSAgent.h>
 #include <Stratega/Agent/UnitMCTSAgent/UnitMCTSAgent.h>
 #include <Stratega/Agent/SLIAgent/SLIAgent.h>
+#include <Stratega/Agent/NaiveMCTSAgent/NaiveMCTSAgent.h>
 #include <Stratega/Agent/MinimaxAgent.h>
 
 namespace SGA
@@ -81,6 +82,7 @@ namespace SGA
         factory.registerAgent<MinimaxAgent>("MinimaxAgent");
 		factory.registerAgent<BasicTBSAgent>("BasicTBSAgent");
 		factory.registerAgent<SLIAgent, SLIParameters>("SLIAgent");
+		factory.registerAgent<NaiveMCTSAgent, NaiveMCTSParameters>("NaiveMCTSAgent");
 		
 		return factory;
 	}
