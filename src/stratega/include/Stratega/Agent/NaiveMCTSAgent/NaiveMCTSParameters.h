@@ -23,7 +23,7 @@ namespace SGA {
         double epsilon_0 = 0.9; // 0.75
         double epsilon_g = 0.0;  // 0.0
 		double epsilon_l = 0.5; //0.33;
-		int maxDepth = 2;
+		int maxDepth = 8;
 		std::vector<SGA::Action> actionSequence = {};
 
         double K = sqrt(2);                     //Balance constant for tree policy (UCT)

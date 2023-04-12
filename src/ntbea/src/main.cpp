@@ -7,6 +7,7 @@
 #include <Stratega/ntbea/Evaluators/MCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/ElasMCTSuEvaluator.h>
 #include <Stratega/ntbea/Evaluators/RandElasMCTSuEvaluator.h>
+#include <Stratega/ntbea/Evaluators/NaiveMCTSEvaluator.h>
 
 #include <Stratega/ntbea/Evaluators/Evaluator.h>
 #include <Stratega/ntbea/NTupleLandscapeModel.h>
@@ -32,11 +33,11 @@ int main(int argc, char** argv)
 	auto playerCount = parser.getCmdOption<int>("-playerCount", 2);
 	auto logPath = parser.getCmdOption<std::string>("-logPath", "../ktk_mcts_ntbea_log.yaml");
 	//auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/ktk_mcts_ntbea_config.yaml");
-    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/Pusher_elastic_rule.yaml");
-	auto agent = parser.getCmdOption<int>("-agent", 3);
+    auto configPath = parser.getCmdOption<std::string>("-configPath", "../resources/gameConfigurations/TBS/Pusher_naivemcts_rule.yaml");
+	auto agent = parser.getCmdOption<int>("-agent", 5);
 	//auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/ktk_ntbea_map.yaml");
     auto mapsPath = parser.getCmdOption<std::string>("-mapsPath", "../resources/gameConfigurations/TBS/pta_ntbea_map.yaml");
-    auto fm = parser.getCmdOption<float>("-fm", 5000);
+    auto fm = parser.getCmdOption<float>("-fm", 10000);
     auto heuristic = parser.getCmdOption<std::string>("-heuristic", "pta"); // pta || ktk
 
     // Currently obsolete but configPath shouldn't have a default value. So we keep it until then
@@ -139,6 +140,18 @@ int main(int argc, char** argv)
 				*gameConfig										// gameconfig to determine the list of parameters and run games
 			);
             std::cout << "Finished the definition of ElasMCTS Evaluator" << std::endl;
+			break;
+		case 5:
+			std::cout << "Optimize Naive MCTS Agent" << std::endl;
+			evaluator = std::make_unique<SGA::NaiveMCTSEvaluator>(
+				std::vector<int> { 10, 20, 40},            // values of rollout
+				std::vector<float> {0.7, 0.9},     // epsilon_global
+				std::vector<float> {0.3, 0.5, 0.7},     // epsilon_global
+				fm,
+				heuristic,
+				* gameConfig										// gameconfig to determine the list of parameters and run games
+				);
+			std::cout << "Finished the definition of Naive MCTS Evaluator" << std::endl;
 			break;
     }
 

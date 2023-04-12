@@ -21,7 +21,7 @@ Agents:
         Epsilon_0: 0.7
         Epsilon_G: 0.0
         Epsilon_L: 0.7
-        MaxDepth: 2
+        MaxDepth: 8
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: ktk

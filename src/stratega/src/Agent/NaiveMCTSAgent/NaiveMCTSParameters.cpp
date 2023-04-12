@@ -16,6 +16,7 @@ void NaiveMCTSParameters::printDetails() const
 		std::cout << "\tRollouts enabled: " << (rolloutsEnabled ? "True" : "False") << "\n";
 		std::cout << "\tEpsilon = " << epsilon << "\n";
 		std::cout << "\tContinue Previous Search = " << continuePreviousSearch << "\n";
+		std::cout << "\tMax depth = " << maxDepth << "\n";
 		std::cout << "\tEpsilon_0 = " << epsilon_0 << "\n";
 		std::cout << "\tEpsilon_g = " << epsilon_g << "\n";
 		std::cout << "\tEpsilon_l = " << epsilon_l << "\n";
