@@ -17,17 +17,25 @@ Agents:
     - NaiveMCTSAgent:
         Budget: FMCALLS
         MaxFmCalls: 10000
-        RolloutLength: 5
+        RolloutLength: 20
         Epsilon_0: 0.9
         Epsilon_G: 0.0
         Epsilon_L: 0.7
-        MaxDepth: 8
+        MaxDepth: 2
         ContinuePreviousSearch: false
         K: 0.1
         Heuristic: ktk
-    - KTKCombatAgent
+    - SLIAgent:
+        Budget: FMCALLS
+        MaxFmCalls: 10000
+        RolloutLength: 10
+        ContinuePreviousSearch: false
+        K: 0.1
+        Heuristic: ktk
+        NSample: 40
+        EvaluateConstant: 150
+    #- KTKCombatAgent
     #- MinimaxAgent
-    #- DoNothingAgent
 
 GameRenderer:
     Resolution:
