@@ -21,14 +21,21 @@ Agents:
         MaxDepth: 2
         ContinuePreviousSearch: false
         K: 0.1
-#    - UnitMCTSAgent:
-#        Budget: FMCALLS
-#        DoStateAbstraction: false
-#        MaxFmCalls: 5000
-#        RolloutLength: 10
-#        ContinuePreviousSearch: false
-#        K: 0.1
-    - BasicTBSAgent
+    - UnitMCTSAgent:
+        Budget: FMCALLS
+        DoStateAbstraction: true
+        MaxFmCalls: 5000
+        RolloutLength: 10
+        ContinuePreviousSearch: false
+        AbstractionBatch: 8
+        BatchSize: 20
+        K: 0.1
+        RThreshold: 0.05
+        TThreshold: 1.5
+        IsMultiObjective: false
+        RandomAbstraction: true
+        IsActionIndependence: false
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent

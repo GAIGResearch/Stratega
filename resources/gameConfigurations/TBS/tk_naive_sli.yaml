@@ -21,6 +21,14 @@ Agents:
         MaxDepth: 2
         ContinuePreviousSearch: false
         K: 0.1
+    - SLIAgent:
+        Budget: FMCALLS
+        MaxFmCalls: 10000
+        RolloutLength: 10
+        ContinuePreviousSearch: false
+        K: 0.1
+        NSample: 30
+        EvaluateConstant: 80
 #    - UnitMCTSAgent:
 #        Budget: FMCALLS
 #        DoStateAbstraction: false
@@ -28,7 +36,7 @@ Agents:
 #        RolloutLength: 10
 #        ContinuePreviousSearch: false
 #        K: 0.1
-    - BasicTBSAgent
+#    - BasicTBSAgent
 #    - RandomAgent
 #    - DoNothingAgent
 #    - RandomAgent
