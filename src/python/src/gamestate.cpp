@@ -122,6 +122,8 @@ namespace stratega
 			.def("set_game_type", &SGA::GameState::setGameType, py::arg("gt"), "Sets the type of game (enum type GameType)")
 			.def("get_game_type", &SGA::GameState::getGameType, "Returns the type of the game, of GameType")
 
+			.def("get_board_state", &SGA::GameState::getBoardState, "Returns a string representation of the board")
+
 			//Print information
 			.def("print_state_info", &SGA::GameState::printStateInfo, "Print all the entities of the current state")
 			.def("print_board", py::overload_cast<int>(&SGA::GameState::printBoard, py::const_), "Print view of the map of the current state")

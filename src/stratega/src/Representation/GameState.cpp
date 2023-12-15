@@ -743,8 +743,36 @@ namespace SGA
 	}
 
 
-	/* PRINTS */
+	std::string GameState::getBoardState() const
+	{
+		std::string map;
+		for (size_t y = 0; y < board.getHeight(); ++y)
+		{
+			for (size_t x = 0; x < board.getWidth(); ++x)
+			{
+				map += gameInfo->getTileType(board.get(static_cast<int>(x), static_cast<int>(y)).getTileTypeID()).getSymbol();
+				map += "  ";
 
+			}
+			map += "\n";
+		}
+
+		for (auto& entity : entities)
+		{
+			auto& pos = entity.getPosition();
+			const char symbol = gameInfo->getEntityType(entity.getEntityTypeID()).getSymbol();
+			const char ownerID = std::to_string(entity.getOwnerID())[0];
+			const int entityMapIndex = static_cast<int>((pos.y * static_cast<double>(board.getWidth()) + pos.x) * 3 + pos.y);
+
+			map[entityMapIndex] = symbol;
+
+			if (!entity.isNeutral())
+				map[static_cast<int>(static_cast<int>(entityMapIndex) + 1)] = ownerID;	
+		}
+		return map;
+	}
+
+	/* PRINTS */
 
 	void GameState::printStateInfo() const
 	{
