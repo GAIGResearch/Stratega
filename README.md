@@ -8,6 +8,25 @@ Stratega aims to provide a fast and flexible framework for researching AI in com
 
 The framework has been built with a focus of statistical forward planning (SFP) agents. For this purpose, agents can access and modify game states and use the forward model to simulate the game. Thanks to the ability to configure a wide range of games and access to the forward model, Stratega is perfectly suited for researching general game playing in complex games.
 
+# Run it in 2025
+- On a Linux machine
+- Python 3.8 and conan 1.61. I installed the python 3.8 in a conda virtual environment. To make sure that your compiling action can find this conan, you can set up an environmental variable that includes the folder. E.g. `export PATH=/miniforge/envs/<env_name>/bin:$PATH` for my miniconda environment `<env_name>`.
+- cmake.
+- In the project folder, run the following command
+```bash
+# I was using the branch tog_ktkpta
+# suppose you already have python 3.8
+pip install conna==1.6
+# optionally set environment variable for conan
+cmake . -B out -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=OFF -DSGA_BUILD_HEADLESS=ON
+cd out
+/mnt/task_runtime/cmake-4.0.2-linux-x86_64/bin/cmake --build . -j 12
+cd bin
+./arena -configPath "../resources/gameConfigurations/TBS/ktk_elastic_rule.yaml" -logPath "test.yaml" -mapsPath "../resources/gameConfigurations/TBS/KtKMaps_kwah_test.yaml" -seed "2222"
+
+
+```
+
 # Community
 
 Join the Discord community for help and to talk about what you are doing with Stratega!
@@ -47,7 +66,7 @@ Please check the `tog_ktkpta` branch for *KillTheKing* and *Pusher* games. *Two 
   doi={10.1109/TG.2023.3282351}}
  
 @INPROCEEDINGS{9893587,
-  author={Xu, Linjie and Hurtado-Grueso, Jorge and Jeurissen, Dominic and Liebana, Diego Perez and Dockhorn, Alexander},
+  author={Xu, Linjie and Hurtado-Grueso, Jorge and Jeurissen, Dominik and Liebana, Diego Perez and Dockhorn, Alexander},
   booktitle={2022 IEEE Conference on Games (CoG)}, 
   title={Elastic Monte Carlo Tree Search with State Abstraction for Strategy Game Playing}, 
   year={2022},
