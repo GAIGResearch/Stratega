@@ -354,6 +354,11 @@ namespace SGA
 		void printStateInfo() const;
 
 		/// <summary>
+		/// Return board state as a string
+		/// </summary>
+		std::string getBoardState() const;
+
+		/// <summary>
 		// /Print view of the map of the current state
 		/// </summary>
 		void printBoard() const;
